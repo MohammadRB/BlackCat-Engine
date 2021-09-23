@@ -25,6 +25,16 @@ namespace black_cat
 			}
 		}
 
+		void bc_rigid_body_component::set_kinematic(bool p_enable) noexcept
+		{
+			{
+				physics::bc_scene_lock l_lock(m_scene);
+
+				auto l_px_body = get_body();
+				l_px_body.set_rigid_body_flags(physics::bc_rigid_body_flag::kinematic, p_enable);
+			}
+		}
+
 		void bc_rigid_body_component::added_to_scene(physics::bc_scene& p_scene, physics::bc_rigid_body& p_body)
 		{
 			m_scene = &p_scene;

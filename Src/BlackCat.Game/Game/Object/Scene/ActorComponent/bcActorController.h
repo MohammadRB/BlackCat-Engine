@@ -15,6 +15,8 @@ namespace black_cat
 		struct bc_actor_component_initialize_context;
 		struct bc_actor_component_load_context;
 		struct bc_actor_component_write_context;
+		struct bc_actor_component_network_load_context;
+		struct bc_actor_component_network_write_context;
 		struct bc_actor_component_update_content;
 		struct bc_actor_component_event_context;
 		struct bc_actor_component_debug_draw_context;
@@ -26,20 +28,44 @@ namespace black_cat
 
 			virtual void initialize(const bc_actor_component_initialize_context& p_context);
 
+			virtual void load_instance(const bc_actor_component_load_context& p_context);
+
+			virtual void write_instance(const bc_actor_component_write_context& p_context);
+
+			virtual void load_network_instance(const bc_actor_component_network_load_context& p_context);
+
+			virtual void write_network_instance(const bc_actor_component_network_write_context& p_context);
+			
 			virtual void added_to_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene);
 			
 			virtual void update(const bc_actor_component_update_content& p_context);
 
-			virtual void debug_draw(const bc_actor_component_debug_draw_context& p_context);
-
 			virtual void removed_from_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene);
 			
 			virtual void handle_event(const bc_actor_component_event_context& p_context);
+			
+			virtual void debug_draw(const bc_actor_component_debug_draw_context& p_context);
 		};
 
 		inline bci_actor_controller::~bci_actor_controller() = default;
 
 		inline void bci_actor_controller::initialize(const bc_actor_component_initialize_context& p_context)
+		{
+		}
+
+		inline void bci_actor_controller::load_instance(const bc_actor_component_load_context& p_context)
+		{
+		}
+
+		inline void bci_actor_controller::write_instance(const bc_actor_component_write_context& p_context)
+		{
+		}
+
+		inline void bci_actor_controller::load_network_instance(const bc_actor_component_network_load_context& p_context)
+		{
+		}
+
+		inline void bci_actor_controller::write_network_instance(const bc_actor_component_network_write_context& p_context)
 		{
 		}
 
@@ -51,15 +77,15 @@ namespace black_cat
 		{
 		}
 
-		inline void bci_actor_controller::debug_draw(const bc_actor_component_debug_draw_context& p_context)
-		{
-		}
-
 		inline void bci_actor_controller::removed_from_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene)
 		{
 		}
 		
 		inline void bci_actor_controller::handle_event(const bc_actor_component_event_context& p_context)
+		{
+		}
+
+		inline void bci_actor_controller::debug_draw(const bc_actor_component_debug_draw_context& p_context)
 		{
 		}
 	}

@@ -74,15 +74,21 @@ namespace black_cat
 
 			void client_disconnected(const platform::bc_network_address& p_address) override;
 
-			void acknowledge_message(const platform::bc_network_address& p_address, bc_network_message_id p_message_id) override;
+			void acknowledge_message(const platform::bc_network_address& p_address, bc_network_message_id p_ack_id, core::bc_string p_ack_data) override;
 
 			void replicate_scene(const platform::bc_network_address& p_address) override;
+
+			void replicate_actor(const platform::bc_network_address& p_address, bc_actor& p_actor) override;
+
+			void remove_actor(const platform::bc_network_address& p_address, bc_actor& p_actor) override;
 			
 			// Deserialization visitor methods
 			
 			bc_actor create_actor(const bcCHAR* p_entity_name) override;
 
 			bc_actor get_actor(bc_actor_network_id p_actor_network_id) override;
+
+			void _add_message_to_clients(bc_network_message_ptr p_message, const platform::bc_network_address* p_exclude_client = nullptr);
 			
 			void _retry_messages_with_acknowledgment(bc_network_packet_time p_current_time, bc_network_server_manager_client& p_client);
 			
@@ -93,7 +99,7 @@ namespace black_cat
 			bc_network_server_manager_client* _find_client(const platform::bc_network_address& p_address);
 
 			bool _event_handler(core::bci_event& p_event);
-			
+
 			core::bc_event_manager* m_event_manager;
 			bc_game_system* m_game_system;
 			

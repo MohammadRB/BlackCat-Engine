@@ -141,8 +141,8 @@ namespace black_cat
 				}
 
 				l_actor = m_actor_component_manager.create_actor();
-				
 				m_actor_component_manager.create_component<bc_mediate_component>(l_actor);
+				
 				auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
 				l_mediate_component->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
 				l_mediate_component->initialize
@@ -179,6 +179,18 @@ namespace black_cat
 					);
 				}
 
+				l_mediate_component->initialize_entity
+				(
+					bc_actor_component_initialize_entity_context
+					(
+						l_entity_entry->second.m_parameters,
+						m_content_stream_manager,
+						m_game_system,
+						p_scene,
+						l_actor
+					)
+				);
+				
 				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
 				{
 					const auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
@@ -205,18 +217,16 @@ namespace black_cat
 						throw bc_invalid_argument_exception("Invalid actor controller name");
 					}
 
-					l_mediate_component->set_controller
+					auto l_controller = l_controller_ite->second();
+					l_controller->initialize(bc_actor_component_initialize_context
 					(
-						l_controller_ite->second(),
-						bc_actor_component_initialize_context
-						(
-							l_entity_entry->second.m_parameters,
-							m_content_stream_manager,
-							m_game_system,
-							p_scene,
-							l_actor
-						)
-					);
+						l_entity_entry->second.m_parameters,
+						m_content_stream_manager,
+						m_game_system,
+						p_scene,
+						l_actor
+					));
+					l_mediate_component->set_controller(std::move(l_controller));
 				}
 			}
 			catch (const std::exception& p_exception)

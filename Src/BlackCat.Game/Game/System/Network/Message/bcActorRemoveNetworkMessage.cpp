@@ -35,7 +35,7 @@ namespace black_cat
 
 		void bc_actor_remove_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
-			// TODO
+			p_context.m_visitor.remove_actor(p_context.m_address, m_actor);
 		}
 
 		void bc_actor_remove_network_message::serialize_message(const bc_network_message_serialization_context& p_context)

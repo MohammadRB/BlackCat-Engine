@@ -3,8 +3,6 @@
 #include "Game/GamePCH.h"
 #include "Game/System/Network/Message/bcClientConnectNetworkMessage.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
-#include "Game/System/Network/Client/bcNetworkClientManager.h"
-#include "Game/System/Network/Server/bcNetworkServerManager.h"
 
 namespace black_cat
 {
@@ -21,7 +19,7 @@ namespace black_cat
 
 		bc_client_connect_network_message& bc_client_connect_network_message::operator=(bc_client_connect_network_message&&) noexcept = default;
 		
-		void bc_client_connect_network_message::acknowledge(const bc_network_message_client_context& p_context) noexcept
+		void bc_client_connect_network_message::acknowledge(const bc_network_message_client_acknowledge_context& p_context) noexcept
 		{
 			p_context.m_visitor.connection_approved();
 		}

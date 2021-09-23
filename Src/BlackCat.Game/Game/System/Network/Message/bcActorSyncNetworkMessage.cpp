@@ -48,7 +48,7 @@ namespace black_cat
 		void bc_actor_sync_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)
 		{
 			const auto* l_actor_network_id = p_context.m_params.find("net_id")->second.as<bc_actor_network_id>();
-			if (!l_actor_network_id || *l_actor_network_id == bc_actor::invalid_id)
+			if (!l_actor_network_id)
 			{
 				core::bc_log(core::bc_log_type::error, bcL("Failed to deserialize actor network id in sync network message"));
 				return;

@@ -60,6 +60,19 @@ namespace black_cat
 			const platform::bc_network_address& m_address;
 			bci_network_message_server_visitor& m_visitor;
 		};
+
+		struct bc_network_message_client_acknowledge_context
+		{
+			bci_network_message_client_visitor& m_visitor;
+			core::bc_string m_ack_data;
+		};
+
+		struct bc_network_message_server_acknowledge_context
+		{
+			const platform::bc_network_address& m_address;
+			bci_network_message_server_visitor& m_visitor;
+			core::bc_string m_ack_data;
+		};
 		
 		class BC_GAME_DLL bci_network_message : public core::bci_message
 		{
@@ -79,6 +92,12 @@ namespace black_cat
 			 * \return
 			 */
 			virtual bool need_acknowledgment() const noexcept;
+
+			/**
+			 * \brief After message execution, if acknowledgment is required, this string will be included in acknowledge message
+			 * \return 
+			 */
+			virtual core::bc_string get_acknowledgment_data() const noexcept;
 			
 			/**
 			 * \brief Serialize command into json key/value pair which is provided as parameter
@@ -108,13 +127,13 @@ namespace black_cat
 			 * \brief Execute message logic when message delivery is acknowledged
 			 * \param p_context 
 			 */
-			virtual void acknowledge(const bc_network_message_client_context& p_context) noexcept;
+			virtual void acknowledge(const bc_network_message_client_acknowledge_context& p_context) noexcept;
 
 			/**
 			 * \brief Execute message logic when message delivery is acknowledged
 			 * \param p_context
 			 */
-			virtual void acknowledge(const bc_network_message_server_context& p_context) noexcept;
+			virtual void acknowledge(const bc_network_message_server_acknowledge_context& p_context) noexcept;
 		
 		protected:
 			explicit bci_network_message(const bcCHAR* p_name) noexcept

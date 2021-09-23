@@ -22,7 +22,7 @@
       ]
     },
     {
-      "name": "box-net",
+      "name": "box-server",
       "components": [
         {
           "name": "simple_mesh",
@@ -30,7 +30,7 @@
             "mesh": "box",
             "lod_scale": 3.0,
             "materials": {
-              "cube": "shine_red"
+              "cube": "red"
             }
           }
         },
@@ -46,7 +46,37 @@
         {
           "name": "network",
           "parameters": {
-            "data_dir": "replicate_sync" 
+            "data_dir": "replicate_sync"
+          }
+        }
+      ]
+    },
+    {
+      "name": "box-client",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "box",
+            "lod_scale": 3.0,
+            "materials": {
+              "cube": "green"
+            }
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {
+            "mass": 30.0,
+            "collider_materials": {
+              "cube": "iron"
+            }
+          }
+        },
+        {
+          "name": "network",
+          "parameters": {
+            "data_dir": "replicate_sync_from_client"
           }
         }
       ]
@@ -130,7 +160,7 @@
           "parameters": {
             "mesh": "xbot",
             "materials": {
-              "Beta_Surface": "shine_red"
+              "Beta_Surface": "red"
             },
             "animations": [
               "xbot-neutral-idle"
@@ -176,7 +206,7 @@
           "parameters": {
             "mesh": "xbot",
             "materials": {
-              "Beta_Surface": "shine_blue"
+              "Beta_Surface": "blue"
             },
             "animations": [
               "xbot-neutral-idle"
@@ -224,7 +254,7 @@
           "parameters": {
             "mesh": "xbot",
             "materials": {
-              "Beta_Surface": "shine_red"
+              "Beta_Surface": "red"
             },
             "animations": [
               "xbot-neutral-idle",

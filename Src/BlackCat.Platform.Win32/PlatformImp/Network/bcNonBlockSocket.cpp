@@ -37,6 +37,7 @@ namespace black_cat
 				bc_throw_network_exception();
 			}
 
+			// Set socket into non-blocking mode
 			unsigned long l_arg = 1;
 			const auto l_opt_result = ioctlsocket(m_pack.m_socket, FIONBIO, &l_arg);
 			if (l_opt_result == SOCKET_ERROR)

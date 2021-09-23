@@ -6,7 +6,6 @@
 #include "Core/Container/bcStateMachine.h"
 #include "Core/File/bcMemoryStream.h"
 #include "Core/Utility/bcNullable.h"
-#include "Core/Utility/bcLogger.h"
 #include "PlatformImp/Network/bcNonBlockSocket.h"
 
 namespace black_cat
@@ -81,18 +80,6 @@ namespace black_cat
 				}
 			}
 
-			void on_enter() override
-			{
-				if(m_last_exception.has_value())
-				{
-					core::bc_log(core::bc_log_type::error) << m_last_exception->get_full_message() << core::bc_lend;
-				}
-			}
-
-			void on_exit() override
-			{
-			}
-			
 			platform::bc_non_block_socket* m_socket;
 			core::bc_nullable<bc_network_exception> m_last_exception;
 		};
@@ -176,7 +163,7 @@ namespace black_cat
 						return state_transition::empty();
 					}
 					
-					constexpr auto l_local_buffer_size = 1000;
+					constexpr auto l_local_buffer_size = 64000;
 					bcBYTE l_buffer[l_local_buffer_size];
 					
 					while(true)
@@ -190,6 +177,8 @@ namespace black_cat
 						p_event.m_stream.write(l_buffer, l_bytes_received);
 						p_event.m_bytes_received += l_bytes_received;
 					}
+
+					return state_transition::transfer_to<bc_client_socket_receiving_state>();
 				}
 				catch (const bc_network_exception& p_exception)
 				{
@@ -201,8 +190,6 @@ namespace black_cat
 						}
 					);
 				}
-				
-				return state_transition::empty();
 			}
 		
 			platform::bc_non_block_socket* m_socket;
@@ -257,8 +244,8 @@ namespace black_cat
 			{
 				try
 				{
-					const bool l_is_available = m_socket->is_receive_available();
-					if (l_is_available)
+					//const bool l_is_available = m_socket->is_receive_available();
+					//if (l_is_available)
 					{
 						return state_transition::transfer_to<bc_client_socket_connected_state>();
 					}
@@ -274,7 +261,7 @@ namespace black_cat
 					);
 				}
 
-				return state_transition::empty();
+				//return state_transition::empty();
 			}
 		
 			platform::bc_non_block_socket* m_socket;
@@ -285,7 +272,8 @@ namespace black_cat
 			bc_client_socket_error_state,
 			bc_client_socket_connecting_state,
 			bc_client_socket_connected_state,
-			bc_client_socket_sending_state
+			bc_client_socket_sending_state,
+			bc_client_socket_receiving_state
 		>
 		{
 		public:
@@ -295,7 +283,8 @@ namespace black_cat
 					bc_client_socket_error_state(p_socket),
 					bc_client_socket_connecting_state(p_socket),
 					bc_client_socket_connected_state(p_socket),
-					bc_client_socket_sending_state(p_socket)
+					bc_client_socket_sending_state(p_socket),
+					bc_client_socket_receiving_state(p_socket)
 				),
 				m_socket(&p_socket)
 			{
@@ -317,6 +306,12 @@ namespace black_cat
 				return *m_socket;
 			}
 
+			void update(const core_platform::bc_clock::update_param& p_clock)
+			{
+				bc_client_socket_update_event l_update{ p_clock };
+				process_event(l_update);
+			}
+		
 		private:
 			platform::bc_non_block_socket* m_socket;
 		};

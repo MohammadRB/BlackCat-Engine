@@ -5,6 +5,7 @@
 #include "Core/Utility/bcLogger.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/System/Network/Message/bcActorReplicateNetworkMessage.h"
 
 namespace black_cat
@@ -28,6 +29,13 @@ namespace black_cat
 
 		bc_actor_replicate_network_message& bc_actor_replicate_network_message::operator=(bc_actor_replicate_network_message&&) noexcept = default;
 
+		core::bc_string bc_actor_replicate_network_message::get_acknowledgment_data() const noexcept
+		{
+			const auto* l_network_component = m_actor.get_component<bc_network_component>();
+			const auto l_network_id = l_network_component->get_network_id();
+			return core::bc_to_string(l_network_id);
+		}
+
 		void bc_actor_replicate_network_message::execute(const bc_network_message_client_context& p_context) noexcept
 		{
 			p_context.m_visitor.replicate_actor(m_actor);
@@ -35,7 +43,16 @@ namespace black_cat
 
 		void bc_actor_replicate_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
-			// TODO
+			p_context.m_visitor.replicate_actor(p_context.m_address, m_actor);
+		}
+
+		void bc_actor_replicate_network_message::acknowledge(const bc_network_message_client_acknowledge_context& p_context) noexcept
+		{
+			const auto l_network_id = core::bc_stoi(p_context.m_ack_data);
+			auto* l_network_component = m_actor.get_component<bc_network_component>();
+
+			l_network_component->set_network_id(l_network_id);
+			p_context.m_visitor.replicate_actor(m_actor);
 		}
 
 		void bc_actor_replicate_network_message::serialize_message(const bc_network_message_serialization_context& p_context)

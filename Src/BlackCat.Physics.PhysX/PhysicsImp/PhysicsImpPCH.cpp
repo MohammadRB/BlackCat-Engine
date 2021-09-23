@@ -12,22 +12,22 @@ namespace black_cat
 	{
 		static_assert
 		(
-			static_cast< bcUINT32 >(bc_query_hit_type::none) == physx::PxQueryHitType::eNONE &&
-			static_cast< bcUINT32 >(bc_query_hit_type::touch) == physx::PxQueryHitType::eTOUCH &&
-			static_cast< bcUINT32 >(bc_query_hit_type::block) == physx::PxQueryHitType::eBLOCK,
+			static_cast<bcUINT32>(bc_query_hit_type::none) == physx::PxQueryHitType::eNONE &&
+			static_cast<bcUINT32>(bc_query_hit_type::touch) == physx::PxQueryHitType::eTOUCH &&
+			static_cast<bcUINT32>(bc_query_hit_type::block) == physx::PxQueryHitType::eBLOCK,
 			"bc_query_hit_type value is incompatible with physX values"
 		);
 
 		static_assert
 		(
-			static_cast< bcUINT32 >(bc_hit_flag::position) == physx::PxHitFlag::ePOSITION &&
-			static_cast< bcUINT32 >(bc_hit_flag::normal) == physx::PxHitFlag::eNORMAL &&
-			static_cast< bcUINT32 >(bc_hit_flag::distance) == physx::PxHitFlag::eDISTANCE &&
-			static_cast< bcUINT32 >(bc_hit_flag::mesh_multiple) == physx::PxHitFlag::eMESH_MULTIPLE &&
-			static_cast< bcUINT32 >(bc_hit_flag::mesh_any) == physx::PxHitFlag::eMESH_ANY &&
-			static_cast< bcUINT32 >(bc_hit_flag::mesh_both_side) == physx::PxHitFlag::eMESH_BOTH_SIDES &&
-			static_cast< bcUINT32 >(bc_hit_flag::precise_sweep) == physx::PxHitFlag::ePRECISE_SWEEP &&
-			static_cast< bcUINT32 >(bc_hit_flag::face_index) == physx::PxHitFlag::eFACE_INDEX,
+			static_cast<bcUINT32>(bc_hit_flag::position) == physx::PxHitFlag::ePOSITION &&
+			static_cast<bcUINT32>(bc_hit_flag::normal) == physx::PxHitFlag::eNORMAL &&
+			static_cast<bcUINT32>(bc_hit_flag::distance) == physx::PxHitFlag::eDISTANCE &&
+			static_cast<bcUINT32>(bc_hit_flag::mesh_multiple) == physx::PxHitFlag::eMESH_MULTIPLE &&
+			static_cast<bcUINT32>(bc_hit_flag::mesh_any) == physx::PxHitFlag::eMESH_ANY &&
+			static_cast<bcUINT32>(bc_hit_flag::mesh_both_side) == physx::PxHitFlag::eMESH_BOTH_SIDES &&
+			static_cast<bcUINT32>(bc_hit_flag::precise_sweep) == physx::PxHitFlag::ePRECISE_SWEEP &&
+			static_cast<bcUINT32>(bc_hit_flag::face_index) == physx::PxHitFlag::eFACE_INDEX,
 			"bc_hit_flag value is incompatible with physX values"
 		);
 

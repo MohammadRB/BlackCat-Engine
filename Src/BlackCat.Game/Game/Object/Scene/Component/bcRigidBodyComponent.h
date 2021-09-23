@@ -25,9 +25,16 @@ namespace black_cat
 
 			/**
 			 * \brief Enable or disable simulation of physics actor
+			 * \n bc_actor_flag::disable_gravity and bc_actor_flag::disable_simulation are affected
 			 * \param p_enable 
 			 */
 			void set_enable(bool p_enable) noexcept;
+
+			/**
+			 * \brief Enable or disable kinematic mode for the actor
+			 * \param p_enable 
+			 */
+			void set_kinematic(bool p_enable) noexcept;
 			
 		protected:
 			bc_rigid_body_component() noexcept;

@@ -68,7 +68,7 @@ namespace black_cat
 			
 			void connection_approved() override;
 			
-			void acknowledge_message(bc_network_message_id p_message_id) override;
+			void acknowledge_message(bc_network_message_id p_ack_id, core::bc_string p_ack_data) override;
 
 			void load_scene(const bcECHAR* p_scene_name) override;
 			

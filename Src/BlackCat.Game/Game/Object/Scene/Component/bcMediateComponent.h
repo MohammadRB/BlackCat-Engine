@@ -42,7 +42,7 @@ namespace black_cat
 
 			void set_entity_name(const bcCHAR* p_entity_name) noexcept;
 
-			void set_controller(core::bc_unique_ptr< bci_actor_controller > p_controller, const bc_actor_component_initialize_context& p_context);
+			void set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller);
 
 			bc_scene* get_scene() const noexcept;
 			
@@ -56,6 +56,10 @@ namespace black_cat
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
+			void load_instance(const bc_actor_component_load_context& p_context) override;
+			
+			void write_instance(const bc_actor_component_write_context& p_context) override;
+			
 			void load_network_instance(const bc_actor_component_network_load_context& p_context) override;
 
 			void write_network_instance(const bc_actor_component_network_write_context& p_context) override;

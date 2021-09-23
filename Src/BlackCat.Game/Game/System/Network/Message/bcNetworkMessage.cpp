@@ -11,6 +11,11 @@ namespace black_cat
 	{
 		core_platform::bc_atomic<bc_network_message_id> bci_network_message::s_id_counter(0);
 
+		core::bc_string bci_network_message::get_acknowledgment_data() const noexcept
+		{
+			return {};
+		}
+
 		void bci_network_message::serialize(const bc_network_message_serialization_context& p_context)
 		{
 			m_id = s_id_counter.fetch_add(1);
@@ -39,11 +44,11 @@ namespace black_cat
 		{
 		}
 
-		void bci_network_message::acknowledge(const bc_network_message_client_context& p_context) noexcept
+		void bci_network_message::acknowledge(const bc_network_message_client_acknowledge_context& p_context) noexcept
 		{
 		}
 
-		void bci_network_message::acknowledge(const bc_network_message_server_context& p_context) noexcept
+		void bci_network_message::acknowledge(const bc_network_message_server_acknowledge_context& p_context) noexcept
 		{
 		}
 	}

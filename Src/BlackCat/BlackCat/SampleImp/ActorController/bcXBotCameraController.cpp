@@ -27,11 +27,11 @@ namespace black_cat
 		m_detached_rifle_name(nullptr)
 	{
 		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
-		m_key_listener_handle = l_event_manager->register_event_listener< platform::bc_app_event_key >
+		m_key_listener_handle = l_event_manager->register_event_listener<platform::bc_app_event_key>
 		(
 			core::bc_event_manager::delegate_type(*this, &bc_xbot_camera_controller::_on_event)
 		);
-		m_pointing_listener_handle = l_event_manager->register_event_listener< platform::bc_app_event_pointing >
+		m_pointing_listener_handle = l_event_manager->register_event_listener<platform::bc_app_event_pointing>
 		(
 			core::bc_event_manager::delegate_type(*this, &bc_xbot_camera_controller::_on_event)
 		);
@@ -105,7 +105,8 @@ namespace black_cat
 	void bc_xbot_camera_controller::update(const game::bc_actor_component_update_content& p_context)
 	{
 		bc_xbot_controller::update(p_context);
-		
+
+		// Zero previous delta
 		m_pointing_delta_x = 0;
 		set_look_delta(m_pointing_delta_x);
 	}
@@ -137,25 +138,27 @@ namespace black_cat
 					get_position() + get_look_direction() * m_camera_z_offset + core::bc_vector3f(0, m_camera_y_offset, 0),
 					get_position() + get_look_direction() * m_camera_look_at_offset
 				);
-				m_camera->update
+				/*m_camera->update
 				(
 					get_position() + core::bc_vector3f(1,0,0) * m_camera_z_offset + core::bc_vector3f(0, m_camera_y_offset, 0),
 					get_position()
-				);
+				);*/
 			}
 		}
 	}
 
 	bool bc_xbot_camera_controller::_on_event(core::bci_event& p_event) noexcept
 	{
-		if (core::bci_message::is<platform::bc_app_event_pointing>(p_event))
+		auto* l_pointing_event = core::bci_message::as<platform::bc_app_event_pointing>(p_event);
+		if (l_pointing_event)
 		{
-			return _on_pointing(static_cast<platform::bc_app_event_pointing&>(p_event));
+			return _on_pointing(*l_pointing_event);
 		}
 
-		if (core::bci_message::is<platform::bc_app_event_key>(p_event))
+		auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
+		if (l_key_event)
 		{
-			return _on_key(static_cast<platform::bc_app_event_key&>(p_event));
+			return _on_key(*l_key_event);
 		}
 
 		return false;

@@ -11,6 +11,8 @@
 #include "Game/System/Input/bcFreeCamera.h"
 #include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
+#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
+#include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
 #include "BlackCat/RenderPass/bcBackBufferWritePass.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
@@ -137,6 +139,27 @@ namespace box
 
 	bool bx_application::application_event(core::bci_event& p_event)
 	{
+		auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
+		if(l_key_event)
+		{
+			if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
+			{
+				auto& l_input_system = m_game_system->get_input_system();
+				auto& l_camera = *l_input_system.get_camera();
+				auto* l_scene = m_game_system->get_scene();
+
+				game::bc_actor l_actor = l_scene->create_actor("box-client", core::bc_matrix4f::translation_matrix(l_camera.get_position()));
+
+				auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
+				auto l_rigid = l_rigid_component->get_body();
+				if (l_rigid.is_rigid_dynamic().is_valid())
+				{
+					const auto l_direction = l_camera.get_forward();
+					l_rigid.set_linear_velocity(l_direction * 70);
+				}
+			}
+		}
+		
 		auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event);
 		if (l_exit_event)
 		{
@@ -181,13 +204,13 @@ namespace box
 
 	void bx_application::connecting_to_server(const platform::bc_network_address& p_address)
 	{
-		auto [l_family, l_ip, l_port] = p_address.get_traits();
-		core::bc_log(core::bc_log_type::info) << "connecting to server " << l_ip << ":" << l_port << core::bc_lend;
+		//auto [l_family, l_ip, l_port] = p_address.get_traits();
+		//core::bc_log(core::bc_log_type::info) << "connecting to server " << l_ip << ":" << l_port << core::bc_lend;
 	}
 
 	void bx_application::connected_to_server(const platform::bc_network_address& p_address)
 	{
-		core::bc_log(core::bc_log_type::info) << "connected to server" << core::bc_lend;
+		//core::bc_log(core::bc_log_type::info) << "connected to server" << core::bc_lend;
 	}
 
 	void bx_application::message_packet_sent(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
@@ -204,6 +227,6 @@ namespace box
 
 	void bx_application::error_occurred(const bc_network_exception* p_exception)
 	{
-		core::bc_log(core::bc_log_type::error) << "error occurred in network connection: " << (p_exception ? p_exception->get_full_message().c_str() : "") << core::bc_lend;
+		//core::bc_log(core::bc_log_type::error) << "error occurred in network connection: " << (p_exception ? p_exception->get_full_message().c_str() : "") << core::bc_lend;
 	}
 }

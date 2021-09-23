@@ -166,7 +166,7 @@ namespace black_cat
 			auto l_decal_ptr = load_decal(p_name);
 			if(l_decal_ptr == nullptr)
 			{
-				core::bc_string_frame l_msg = "No entry found for decal with name '";
+				core::bc_string_frame l_msg = "No entry was found for decal with name '";
 				l_msg += p_name;
 				l_msg += "'";
 

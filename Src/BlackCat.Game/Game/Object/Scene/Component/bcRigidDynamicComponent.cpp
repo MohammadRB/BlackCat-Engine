@@ -124,13 +124,13 @@ namespace black_cat
 				const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();
 				const auto l_data_dir = l_network_replicate_event->get_data_dir();
 
-				if(l_network_type == bc_network_type::server && l_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
+				if
+				(
+					(l_network_type == bc_network_type::server && l_data_dir == bc_actor_network_data_dir::replicate_sync_from_client) ||
+					(l_network_type == bc_network_type::client && l_data_dir == bc_actor_network_data_dir::replicate_sync)
+				)
 				{
-					set_enable(false);
-				}
-				else if (l_network_type == bc_network_type::client && l_data_dir == bc_actor_network_data_dir::replicate_sync)
-				{
-					set_enable(false);
+					set_kinematic(true);
 				}
 			}
 		}

@@ -60,7 +60,13 @@ namespace black_cat
 			void add_message_waiting_acknowledgment_if_not_exist(bc_message_with_time p_message) noexcept;
 
 			void erase_message_waiting_acknowledgment(bc_network_message_id p_id) noexcept;
+
+			core::bc_span<bc_actor> get_replicated_actors();
 			
+			void add_replicated_actor(bc_actor p_actor);
+
+			void erase_replicated_actor(bc_actor p_actor);
+		
 		private:
 			core_platform::bc_mutex m_mutex;
 			platform::bc_network_address m_address;
@@ -72,13 +78,15 @@ namespace black_cat
 			bc_network_message_id m_last_executed_message_id;
 			core::bc_vector<bc_network_message_ptr> m_messages;
 			core::bc_vector<bc_message_with_time> m_messages_waiting_acknowledgment;
+
+			core::bc_vector<bc_actor> m_replicated_actors;
 		};
 
 		inline bc_network_server_manager_client::bc_network_server_manager_client(const platform::bc_network_address& p_address)
 			: m_address(p_address),
 			m_ready_for_sync(false),
 			m_last_sync_time(0),
-			m_rtt_sampler(100),
+			m_rtt_sampler(20),
 			m_last_executed_message_id(0)
 		{
 		}
@@ -90,7 +98,8 @@ namespace black_cat
 			m_rtt_sampler(std::move(p_other.m_rtt_sampler)),
 			m_last_executed_message_id(p_other.m_last_executed_message_id),
 			m_messages(std::move(p_other.m_messages)),
-			m_messages_waiting_acknowledgment(std::move(p_other.m_messages_waiting_acknowledgment))
+			m_messages_waiting_acknowledgment(std::move(p_other.m_messages_waiting_acknowledgment)),
+			m_replicated_actors(std::move(p_other.m_replicated_actors))
 		{
 		}
 
@@ -105,6 +114,7 @@ namespace black_cat
 			m_last_executed_message_id = p_other.m_last_executed_message_id;
 			m_messages = std::move(p_other.m_messages);
 			m_messages_waiting_acknowledgment = std::move(p_other.m_messages_waiting_acknowledgment);
+			m_replicated_actors = std::move(p_other.m_replicated_actors);
 			
 			return *this;
 		}
@@ -216,6 +226,30 @@ namespace black_cat
 				}
 			);
 			m_messages_waiting_acknowledgment.erase(l_msg_ite);
+		}
+
+		inline core::bc_span<bc_actor> bc_network_server_manager_client::get_replicated_actors()
+		{
+			return core::bc_make_span(m_replicated_actors);
+		}
+
+		inline void bc_network_server_manager_client::add_replicated_actor(bc_actor p_actor)
+		{
+			m_replicated_actors.push_back(p_actor);
+		}
+
+		inline void bc_network_server_manager_client::erase_replicated_actor(bc_actor p_actor)
+		{
+			const auto l_ite = std::find_if
+			(
+				std::begin(m_replicated_actors),
+				std::end(m_replicated_actors),
+				[&](const bc_actor& p_entry)
+				{
+					return p_entry == p_actor;
+				}
+			);
+			m_replicated_actors.erase(l_ite);
 		}
 	}	
 }

@@ -33,15 +33,30 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		void bc_mediate_component::set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller, const bc_actor_component_initialize_context& p_context)
+		void bc_mediate_component::set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller)
 		{
 			m_controller = std::move(p_controller);
-			m_controller->initialize(p_context);
 		}
 
 		void bc_mediate_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			m_scene = &p_context.m_scene;
+		}
+
+		void bc_mediate_component::load_instance(const bc_actor_component_load_context& p_context)
+		{
+			if (m_controller)
+			{
+				m_controller->load_instance(p_context);
+			}
+		}
+
+		void bc_mediate_component::write_instance(const bc_actor_component_write_context& p_context)
+		{
+			if (m_controller)
+			{
+				m_controller->write_instance(p_context);
+			}
 		}
 
 		void bc_mediate_component::load_network_instance(const bc_actor_component_network_load_context& p_context)
@@ -57,12 +72,22 @@ namespace black_cat
 			l_transform.set_rotation(bc_matrix3f_rotation_zyx(l_euler_rot));
 
 			p_context.m_actor.add_event(bc_world_transform_actor_event(l_transform));
+
+			if (m_controller)
+			{
+				m_controller->load_network_instance(p_context);
+			}
 		}
 
 		void bc_mediate_component::write_network_instance(const bc_actor_component_network_write_context& p_context)
 		{
 			json_parse::bc_write(p_context.m_parameters, "pos", m_world_transform.get_translation());
 			json_parse::bc_write(p_context.m_parameters, "rot", bc_matrix4f_decompose_to_euler_angles(m_world_transform));
+
+			if (m_controller)
+			{
+				m_controller->write_network_instance(p_context);
+			}
 		}
 
 		void bc_mediate_component::update(const bc_actor_component_update_content& p_context)

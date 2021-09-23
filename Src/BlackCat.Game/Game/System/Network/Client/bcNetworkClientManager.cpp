@@ -37,7 +37,7 @@ namespace black_cat
 			m_address(p_address),
 			m_hook(&p_hook),
 			m_last_sync_time(0),
-			m_rtt_sampler(100),
+			m_rtt_sampler(20),
 			m_last_executed_message_id(0),
 			m_messages_buffer(p_network_system)
 		{
@@ -129,7 +129,7 @@ namespace black_cat
 				});
 				if (l_ite == std::cend(m_sync_actors))
 				{
-					core::bc_log(core::bc_log_type::error, bcL("actor network id was not found"));
+					core::bc_log(core::bc_log_type::error, bcL("actor was not found in sync list"));
 					return;
 				}
 
@@ -149,8 +149,7 @@ namespace black_cat
 
 		void bc_network_client_manager::update(const bc_network_manager_update_context& p_context)
 		{
-			bc_client_socket_update_event l_update_event{ p_context.m_clock };
-			bc_client_socket_state_machine::process_event(l_update_event);
+			bc_client_socket_state_machine::update(p_context.m_clock);
 
 			if(!m_socket_is_ready)
 			{
@@ -162,6 +161,7 @@ namespace black_cat
 			if(l_elapsed_since_last_sync > l_rtt_time)
 			{
 				_send_to_server();
+				bc_client_socket_state_machine::update(p_context.m_clock);
 			}
 
 			_receive_from_server();
@@ -171,13 +171,20 @@ namespace black_cat
 
 		void bc_network_client_manager::on_enter(bc_client_socket_error_state& p_state)
 		{
-			m_hook->error_occurred(p_state.get_last_exception());
 			m_socket_is_connected = false;
 			m_socket_is_ready = false;
+
+			core::bc_log(core::bc_log_type::error)
+				<< "error occurred in network connection: "
+				<< (p_state.get_last_exception() ? p_state.get_last_exception()->get_full_message().c_str() : "")
+				<< core::bc_lend;
+			m_hook->error_occurred(p_state.get_last_exception());
 		}
 
 		void bc_network_client_manager::on_enter(bc_client_socket_connecting_state& p_state)
 		{
+			auto [l_family, l_ip, l_port] = m_address.get_traits();
+			core::bc_log(core::bc_log_type::info) << "connecting to server " << l_ip << ":" << l_port << core::bc_lend;
 			m_hook->connecting_to_server(m_address);
 		}
 
@@ -198,10 +205,11 @@ namespace black_cat
 
 		void bc_network_client_manager::connection_approved()
 		{
+			core::bc_log(core::bc_log_type::info) << "connected to server" << core::bc_lend;
 			m_hook->connected_to_server(m_address);
 		}
 
-		void bc_network_client_manager::acknowledge_message(bc_network_message_id p_message_id)
+		void bc_network_client_manager::acknowledge_message(bc_network_message_id p_ack_id, core::bc_string p_ack_data)
 		{
 			bc_network_message_ptr l_message;
 
@@ -214,12 +222,12 @@ namespace black_cat
 					std::cend(m_messages_waiting_acknowledgment),
 					[=](const bc_message_with_time& p_msg)
 					{
-						return p_msg.m_message->get_id() == p_message_id;
+						return p_msg.m_message->get_id() == p_ack_id;
 					}
 				);
 				if (l_message_ite == std::end(m_messages_waiting_acknowledgment))
 				{
-					core::bc_log(core::bc_log_type::warning) << "no message was found with id " << p_message_id << " to acknowledge" << core::bc_lend;
+					core::bc_log(core::bc_log_type::warning) << "no message was found with id " << p_ack_id << " to acknowledge" << core::bc_lend;
 					return;
 				}
 
@@ -227,7 +235,7 @@ namespace black_cat
 				m_messages_waiting_acknowledgment.erase(l_message_ite);
 			}
 
-			l_message->acknowledge(bc_network_message_client_context{*this});
+			l_message->acknowledge(bc_network_message_client_acknowledge_context{*this, std::move(p_ack_data)});
 		}
 
 		void bc_network_client_manager::load_scene(const bcECHAR* p_scene_name)
@@ -287,6 +295,8 @@ namespace black_cat
 					m_network_actors.erase(l_ite);
 				}
 			}
+
+			m_game_system->get_scene()->remove_actor(p_actor);
 		}
 
 		bc_actor bc_network_client_manager::create_actor(const bcCHAR* p_entity_name)
@@ -349,7 +359,10 @@ namespace black_cat
 				bc_client_socket_send_event l_send_event{ *l_stream, l_stream_size, 0 };
 				bc_client_socket_state_machine::process_event(l_send_event);
 
-				m_hook->message_packet_sent(l_stream_size, core::bc_make_cspan(m_messages));
+				if(l_send_event.m_bytes_sent != l_send_event.m_bytes_to_send)
+				{
+					return;
+				}
 				
 				for (auto& l_message : m_messages)
 				{
@@ -381,6 +394,8 @@ namespace black_cat
 
 				m_messages.clear();
 				m_last_sync_time = bc_current_packet_time();
+
+				m_hook->message_packet_sent(l_stream_size, core::bc_make_cspan(m_messages));
 			}
 		}
 		
@@ -410,8 +425,6 @@ namespace black_cat
 				core::bc_log(core::bc_log_type::warning) << "Deserialization of network packet encountered error: '" << l_exception.what() << "'" << core::bc_lend;
 			}
 
-			m_hook->message_packet_received(l_receive_event.m_bytes_received, core::bc_make_cspan(l_messages));
-
 			bc_network_message_id l_max_message_id = 0;
 			for(const auto& l_message : l_messages)
 			{
@@ -423,7 +436,7 @@ namespace black_cat
 				
 				if (l_message->need_acknowledgment())
 				{
-					send_message(bc_acknowledge_network_message(l_message->get_id()));
+					send_message(bc_acknowledge_network_message(*l_message));
 				}
 				
 				l_message->execute(bc_network_message_client_context
@@ -437,6 +450,8 @@ namespace black_cat
 			m_last_executed_message_id = l_max_message_id;
 			m_rtt_sampler.add_sample(bc_elapsed_packet_time(l_packet_time));
 			//m_last_sync_time = bc_current_packet_time();
+
+			m_hook->message_packet_received(l_receive_event.m_bytes_received, core::bc_make_cspan(l_messages));
 		}
 	}	
 }

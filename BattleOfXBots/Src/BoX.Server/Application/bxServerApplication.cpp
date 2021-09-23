@@ -127,12 +127,12 @@ namespace box
 
 	void bx_server_application::client_connected()
 	{
-		core::bc_log(core::bc_log_type::info) << "new client connected" << core::bc_lend;
+		//core::bc_log(core::bc_log_type::info) << "new client connected" << core::bc_lend;
 	}
 
 	void bx_server_application::client_disconnected()
 	{
-		core::bc_log(core::bc_log_type::info) << "client disconnected" << core::bc_lend;
+		//core::bc_log(core::bc_log_type::info) << "client disconnected" << core::bc_lend;
 	}
 
 	void bx_server_application::message_packet_sent(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
@@ -149,7 +149,7 @@ namespace box
 
 	void bx_server_application::error_occurred(const bc_network_exception* p_exception, const platform::bc_network_address* p_client)
 	{
-		if(p_client)
+		/*if(p_client)
 		{
 			core::bc_log(core::bc_log_type::error) << "error occurred in client network connection (" << std::get<core::bc_string_frame>(p_client->get_traits()) << "): ";
 		}
@@ -158,6 +158,6 @@ namespace box
 			core::bc_log(core::bc_log_type::error) << "error occurred in network connection: ";
 		}
 		
-		core::bc_log(core::bc_log_type::error) <<  (p_exception ? p_exception->get_full_message().c_str() : "") << core::bc_lend;
+		core::bc_log(core::bc_log_type::error) <<  (p_exception ? p_exception->get_full_message().c_str() : "") << core::bc_lend;*/
 	}
 }

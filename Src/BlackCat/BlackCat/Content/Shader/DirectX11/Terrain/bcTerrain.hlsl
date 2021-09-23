@@ -45,6 +45,8 @@ cbuffer g_cb_parameter                      : register(BC_RENDER_STATE_CB1)
 	float g_physics_y_scale				    : packoffset(c1.y);
 	uint g_distance_detail                  : packoffset(c1.z);		// Distance from camera that render will happen with full detail
 	uint g_height_detail                    : packoffset(c1.w);		// Lower values result in higher details
+	uint g_texturemap_width					: packoffset(c2.x);
+	uint g_texturemap_height				: packoffset(c2.y);
 };
 
 cbuffer g_cb_materials                      : register(BC_RENDER_STATE_CB2)
@@ -143,9 +145,7 @@ bc_material_property get_material_properties(uint p_index)
 
 bc_texture_data get_texture(float2 p_texcoord)
 {
-	const float l_multiplier = 256 * 256;
-
-	uint2 l_texcoord = int2(p_texcoord.x * g_width, p_texcoord.y * g_height);
+	uint2 l_texcoord = int2(p_texcoord.x * g_texturemap_width, p_texcoord.y * g_texturemap_height);
     uint4 l_texturemap = g_texturemap.Load(int3(l_texcoord, 0));
 	float l_texturemap_values[8];
 
@@ -164,103 +164,103 @@ bc_texture_data get_texture(float2 p_texcoord)
 	l_texturemap_values[6] = (l_texturemap.w >> 8) / 255.0f;
 	l_texturemap_values[7] = (l_texturemap.w & 255) / 255.0f;
 
-	uint l_wdith = (g_width * g_xz_multiplier);
-    float l_texture_coefficent;
+	uint l_width = g_width * g_xz_multiplier;
+    float l_texture_coefficient;
 
-    l_texture_coefficent = l_texturemap_values[0];
-    if (l_texture_coefficent > 0.0)
+    l_texture_coefficient = l_texturemap_values[0];
+    if (l_texture_coefficient > 0.0)
 	{
         bc_material_property l_material = get_material_properties(0);
-        float l_scale = l_wdith / l_material.m_scale;
+        float l_scale = l_width / l_material.m_scale;
 
-        l_result.m_diffuse += g_diffuse_1.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_normal += g_normal_1.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficent;
-        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficent;
+        l_result.m_diffuse += g_diffuse_1.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_normal += g_normal_1.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficient;
+        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficient;
     }
 
-    l_texture_coefficent = l_texturemap_values[1];
-    if (l_texture_coefficent > 0.0)
+    l_texture_coefficient = l_texturemap_values[1];
+    if (l_texture_coefficient > 0.0)
 	{
         bc_material_property l_material = get_material_properties(1);
-        float l_scale = l_wdith / l_material.m_scale;
+        float l_scale = l_width / l_material.m_scale;
 
-        l_result.m_diffuse += g_diffuse_2.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_normal += g_normal_2.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficent;
-        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficent;
+        l_result.m_diffuse += g_diffuse_2.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_normal += g_normal_2.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficient;
+        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficient;
     }
 
-    l_texture_coefficent = l_texturemap_values[2];
-    if (l_texture_coefficent > 0.0)
+    l_texture_coefficient = l_texturemap_values[2];
+    if (l_texture_coefficient > 0.0)
 	{
         bc_material_property l_material = get_material_properties(2);
-        float l_scale = l_wdith / l_material.m_scale;
+        float l_scale = l_width / l_material.m_scale;
 
-        l_result.m_diffuse += g_diffuse_3.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_normal += g_normal_3.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficent;
-        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficent;
+        l_result.m_diffuse += g_diffuse_3.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_normal += g_normal_3.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficient;
+        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficient;
     }
 
-    l_texture_coefficent = l_texturemap_values[3];
-    if (l_texture_coefficent > 0.0)
+    l_texture_coefficient = l_texturemap_values[3];
+    if (l_texture_coefficient > 0.0)
 	{
         bc_material_property l_material = get_material_properties(3);
-        float l_scale = l_wdith / l_material.m_scale;
+        float l_scale = l_width / l_material.m_scale;
 
-        l_result.m_diffuse += g_diffuse_4.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_normal += g_normal_4.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficent;
-        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficent;
+        l_result.m_diffuse += g_diffuse_4.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_normal += g_normal_4.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficient;
+        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficient;
     }
 
-    l_texture_coefficent = l_texturemap_values[4];
-    if (l_texture_coefficent > 0.0)
+    l_texture_coefficient = l_texturemap_values[4];
+    if (l_texture_coefficient > 0.0)
 	{
         bc_material_property l_material = get_material_properties(4);
-        float l_scale = l_wdith / l_material.m_scale;
+        float l_scale = l_width / l_material.m_scale;
 
-        l_result.m_diffuse += g_diffuse_5.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_normal += g_normal_5.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficent;
-        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficent;
+        l_result.m_diffuse += g_diffuse_5.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_normal += g_normal_5.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficient;
+        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficient;
     }
 
-    l_texture_coefficent = l_texturemap_values[5];
-    if (l_texture_coefficent > 0.0)
+    l_texture_coefficient = l_texturemap_values[5];
+    if (l_texture_coefficient > 0.0)
 	{
         bc_material_property l_material = get_material_properties(5);
-        float l_scale = l_wdith / l_material.m_scale;
+        float l_scale = l_width / l_material.m_scale;
 
-        l_result.m_diffuse += g_diffuse_6.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_normal += g_normal_6.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficent;
-        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficent;
+        l_result.m_diffuse += g_diffuse_6.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_normal += g_normal_6.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficient;
+        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficient;
     }
 
-    l_texture_coefficent = l_texturemap_values[6];
-    if (l_texture_coefficent > 0.0)
+    l_texture_coefficient = l_texturemap_values[6];
+    if (l_texture_coefficient > 0.0)
 	{
         bc_material_property l_material = get_material_properties(6);
-        float l_scale = l_wdith / l_material.m_scale;
+        float l_scale = l_width / l_material.m_scale;
 
-        l_result.m_diffuse += g_diffuse_7.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_normal += g_normal_7.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficent;
-        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficent;
+        l_result.m_diffuse += g_diffuse_7.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_normal += g_normal_7.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficient;
+        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficient;
     }
 
-    l_texture_coefficent = l_texturemap_values[7];
-    if (l_texture_coefficent > 0.0)
+    l_texture_coefficient = l_texturemap_values[7];
+    if (l_texture_coefficient > 0.0)
 	{
         bc_material_property l_material = get_material_properties(7);
-        float l_scale = l_wdith / l_material.m_scale;
+        float l_scale = l_width / l_material.m_scale;
 
-        l_result.m_diffuse += g_diffuse_8.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_normal += g_normal_8.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficent;
-        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficent;
-        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficent;
+        l_result.m_diffuse += g_diffuse_8.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_normal += g_normal_8.Sample(g_texture_sampler, p_texcoord * l_scale).xyz * l_texture_coefficient;
+        l_result.m_specular_intensity += l_material.m_specular_intensity * l_texture_coefficient;
+        l_result.m_specular_power += l_material.m_specular_power * l_texture_coefficient;
     }
 
     return l_result;

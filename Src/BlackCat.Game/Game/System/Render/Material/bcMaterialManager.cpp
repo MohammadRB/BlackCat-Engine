@@ -300,7 +300,7 @@ namespace black_cat
 
 			if(!l_material_ptr)
 			{
-				core::bc_string_frame l_msg = "No entry found for material with name '";
+				core::bc_string_frame l_msg = "No entry was found for material with name '";
 				l_msg += p_name;
 				l_msg += "'";
 

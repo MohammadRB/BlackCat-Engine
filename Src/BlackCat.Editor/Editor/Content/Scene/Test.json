@@ -6,7 +6,9 @@
     "material_files": [
         "Scene\\Test_Material.json"
     ],
-    "decal_files": [],
+    "decal_files": [
+        "Data\\Decal.json"
+    ],
     "entity_files": [
         "Scene\\Test_EntityType.json"
     ],
@@ -70,7 +72,7 @@
             "parameters": {}
         },
         {
-            "entity_name": "box-net",
+            "entity_name": "box-server",
             "position": [
                 65.0,
                 120.0,

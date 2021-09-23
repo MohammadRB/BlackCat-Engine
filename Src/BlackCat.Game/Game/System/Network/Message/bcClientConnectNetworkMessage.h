@@ -24,7 +24,7 @@ namespace black_cat
 
 			bool need_acknowledgment() const noexcept override;
 			
-			void acknowledge(const bc_network_message_client_context& p_context) noexcept override;
+			void acknowledge(const bc_network_message_client_acknowledge_context& p_context) noexcept override;
 
 			void execute(const bc_network_message_server_context& p_context) noexcept override;
 			

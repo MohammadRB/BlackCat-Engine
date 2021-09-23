@@ -36,7 +36,7 @@ namespace black_cat
 
 		bc_xbot_controller(bc_xbot_controller&&) = default;
 		
-		virtual ~bc_xbot_controller() override = default;
+		~bc_xbot_controller() override = default;
 
 		bc_xbot_controller& operator=(bc_xbot_controller&&) = default;
 		

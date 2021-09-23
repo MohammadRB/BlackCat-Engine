@@ -32,10 +32,14 @@ namespace black_cat
 
 			virtual void client_disconnected(const platform::bc_network_address& p_address) = 0;
 
-			virtual void acknowledge_message(const platform::bc_network_address& p_address, bc_network_message_id p_message_id) = 0;
+			virtual void acknowledge_message(const platform::bc_network_address& p_address, bc_network_message_id p_ack_id, core::bc_string p_ack_data) = 0;
 
 			virtual void replicate_scene(const platform::bc_network_address& p_address) = 0;
 
+			virtual void replicate_actor(const platform::bc_network_address& p_address, bc_actor& p_actor) = 0;
+
+			virtual void remove_actor(const platform::bc_network_address& p_address, bc_actor& p_actor) = 0;
+		
 		protected:
 			bci_network_message_server_visitor() = default;
 
@@ -47,7 +51,7 @@ namespace black_cat
 		public:
 			virtual void connection_approved() = 0;
 
-			virtual void acknowledge_message(bc_network_message_id p_message_id) = 0;
+			virtual void acknowledge_message(bc_network_message_id p_ack_id, core::bc_string p_ack_data) = 0;
 
 			virtual void load_scene(const bcECHAR* p_scene_name) = 0;
 

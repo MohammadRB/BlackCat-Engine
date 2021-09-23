@@ -141,7 +141,7 @@ namespace black_cat
 			const auto l_world_pos = p_world_position - l_local_pos;
 			core::bc_matrix3f l_local_rotation;
 
-			if(graphic::bc_render_api_info::use_left_handed())
+			if constexpr (graphic::bc_render_api_info::use_left_handed())
 			{
 				l_local_rotation.rotation_between_two_vector_lh(core::bc_vector3f::up(), p_dir);
 			}

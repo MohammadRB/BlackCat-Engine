@@ -17,10 +17,11 @@ namespace black_cat
 		{
 		}
 
-		bc_acknowledge_network_message::bc_acknowledge_network_message(bc_network_message_id p_acknowledged_message_id)
+		bc_acknowledge_network_message::bc_acknowledge_network_message(const bci_network_message& p_message)
 			: bc_acknowledge_network_message()
 		{
-			m_ack_message_id = p_acknowledged_message_id;
+			m_ack_message_id = p_message.get_id();
+			m_ack_data = p_message.get_acknowledgment_data();
 		}
 
 		bc_acknowledge_network_message::bc_acknowledge_network_message(bc_acknowledge_network_message&&) noexcept = default;
@@ -28,25 +29,27 @@ namespace black_cat
 		bc_acknowledge_network_message::~bc_acknowledge_network_message() = default;
 
 		bc_acknowledge_network_message& bc_acknowledge_network_message::operator=(bc_acknowledge_network_message&&) noexcept = default;
-		
+
 		void bc_acknowledge_network_message::execute(const bc_network_message_client_context& p_context) noexcept
 		{
-			p_context.m_visitor.acknowledge_message(get_acknowledged_message_id());
+			p_context.m_visitor.acknowledge_message(get_acknowledged_message_id(), std::move(m_ack_data));
 		}
 
 		void bc_acknowledge_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
-			p_context.m_visitor.acknowledge_message(p_context.m_address, get_acknowledged_message_id());
+			p_context.m_visitor.acknowledge_message(p_context.m_address, get_acknowledged_message_id(), std::move(m_ack_data));
 		}
 
 		void bc_acknowledge_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
 			p_context.m_params.add("ack_id", core::bc_any(m_ack_message_id));
+			p_context.m_params.add("ack_data", core::bc_any(m_ack_data));
 		}
 
 		void bc_acknowledge_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)
 		{
 			auto* l_ack_id = p_context.m_params.find("ack_id")->second.as<bc_network_message_id>();
+			auto* l_ack_data = p_context.m_params.find("ack_data")->second.as<core::bc_string>();
 			if (!l_ack_id)
 			{
 				core::bc_log(core::bc_log_type::error, bcL("Failed to deserialize acknowledge network message id"));
@@ -54,6 +57,7 @@ namespace black_cat
 			}
 
 			m_ack_message_id = *l_ack_id;
+			m_ack_data = std::move(*l_ack_data);
 		}
 	}	
 }
