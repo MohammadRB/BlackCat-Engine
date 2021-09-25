@@ -26,11 +26,6 @@ namespace black_cat
 	{
 		class bc_game_system;
 		class bc_actor;
-
-		enum class bc_network_type : bcUBYTE
-		{
-			not_started, server, client
-		};
 		
 		struct bc_network_system_parameter
 		{
@@ -86,13 +81,12 @@ namespace black_cat
 			core::bc_event_manager* m_event_manager;
 			bc_game_system* m_game_system;
 			message_factory_container m_message_factories;
-			bc_network_type m_network_type;
 			core::bc_unique_ptr<bci_network_manager> m_manager;
 		};
 
 		inline bc_network_type bc_network_system::get_network_type() const noexcept
 		{
-			return m_network_type;
+			return m_manager ? m_manager->get_network_type() : bc_network_type::not_started;
 		}
 		
 		template<class TMessage>

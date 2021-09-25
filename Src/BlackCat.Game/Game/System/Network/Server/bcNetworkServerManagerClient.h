@@ -8,7 +8,8 @@
 #include "Core/File/bcMemoryStream.h"
 #include "Core/Math/bcValueSampler.h"
 #include "PlatformImp/Network/bcNetworkAddress.h"
-#include "Game/System/Network/bcNetworkMessageBuffer.h"
+#include "Game/System/Network/bcNetworkMessageIdBuffer.h"
+#include "Game/System/Network/bcNetworkMessageSerializationBuffer.h"
 
 namespace black_cat
 {
@@ -49,7 +50,7 @@ namespace black_cat
 
 			bc_network_message_id get_last_executed_message_id() const noexcept;
 
-			core::bc_span<bc_network_message_ptr> get_messages() noexcept;
+			core::bc_const_span<bc_network_message_ptr> get_messages() const noexcept;
 			
 			void add_message(bc_network_message_ptr p_message);
 
@@ -61,7 +62,11 @@ namespace black_cat
 
 			void erase_message_waiting_acknowledgment(bc_network_message_id p_id) noexcept;
 
-			core::bc_span<bc_actor> get_replicated_actors();
+			void add_executed_retry_message_id(bc_network_message_id p_id) noexcept;
+
+			bool executed_retry_message_id_exist(bc_network_message_id p_id) noexcept;
+			
+			core::bc_const_span<bc_actor> get_replicated_actors() const;
 			
 			void add_replicated_actor(bc_actor p_actor);
 
@@ -78,6 +83,7 @@ namespace black_cat
 			bc_network_message_id m_last_executed_message_id;
 			core::bc_vector<bc_network_message_ptr> m_messages;
 			core::bc_vector<bc_message_with_time> m_messages_waiting_acknowledgment;
+			bc_network_message_id_buffer m_executed_retry_messages;
 
 			core::bc_vector<bc_actor> m_replicated_actors;
 		};
@@ -87,7 +93,8 @@ namespace black_cat
 			m_ready_for_sync(false),
 			m_last_sync_time(0),
 			m_rtt_sampler(20),
-			m_last_executed_message_id(0)
+			m_last_executed_message_id(0),
+			m_executed_retry_messages(50)
 		{
 		}
 
@@ -99,6 +106,7 @@ namespace black_cat
 			m_last_executed_message_id(p_other.m_last_executed_message_id),
 			m_messages(std::move(p_other.m_messages)),
 			m_messages_waiting_acknowledgment(std::move(p_other.m_messages_waiting_acknowledgment)),
+			m_executed_retry_messages(std::move(p_other.m_executed_retry_messages)),
 			m_replicated_actors(std::move(p_other.m_replicated_actors))
 		{
 		}
@@ -114,6 +122,7 @@ namespace black_cat
 			m_last_executed_message_id = p_other.m_last_executed_message_id;
 			m_messages = std::move(p_other.m_messages);
 			m_messages_waiting_acknowledgment = std::move(p_other.m_messages_waiting_acknowledgment);
+			m_executed_retry_messages = std::move(p_other.m_executed_retry_messages);
 			m_replicated_actors = std::move(p_other.m_replicated_actors);
 			
 			return *this;
@@ -174,9 +183,9 @@ namespace black_cat
 			return m_last_executed_message_id;
 		}
 
-		inline core::bc_span<bc_network_message_ptr> bc_network_server_manager_client::get_messages() noexcept
+		inline core::bc_const_span<bc_network_message_ptr> bc_network_server_manager_client::get_messages() const noexcept
 		{
-			return core::bc_make_span(m_messages);
+			return core::bc_make_cspan(m_messages);
 		}
 		
 		inline void bc_network_server_manager_client::add_message(bc_network_message_ptr p_message)
@@ -228,9 +237,19 @@ namespace black_cat
 			m_messages_waiting_acknowledgment.erase(l_msg_ite);
 		}
 
-		inline core::bc_span<bc_actor> bc_network_server_manager_client::get_replicated_actors()
+		inline void bc_network_server_manager_client::add_executed_retry_message_id(bc_network_message_id p_id) noexcept
 		{
-			return core::bc_make_span(m_replicated_actors);
+			m_executed_retry_messages.add_id(p_id);
+		}
+
+		inline bool bc_network_server_manager_client::executed_retry_message_id_exist(bc_network_message_id p_id) noexcept
+		{
+			return m_executed_retry_messages.id_exist(p_id);
+		}
+
+		inline core::bc_const_span<bc_actor> bc_network_server_manager_client::get_replicated_actors() const
+		{
+			return core::bc_make_cspan(m_replicated_actors);
 		}
 
 		inline void bc_network_server_manager_client::add_replicated_actor(bc_actor p_actor)

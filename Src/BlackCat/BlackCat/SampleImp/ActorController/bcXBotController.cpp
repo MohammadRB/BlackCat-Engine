@@ -260,7 +260,7 @@ namespace black_cat
 	void bc_xbot_controller::handle_event(const game::bc_actor_component_event_context& p_context)
 	{
 		const auto* l_world_transform_event = core::bci_message::as<game::bc_world_transform_actor_event>(p_context.m_event);
-		if(l_world_transform_event && !l_world_transform_event->is_px_simulation_transform())
+		if(l_world_transform_event && l_world_transform_event->get_transform_type() != game::bc_transform_event_type::physics)
 		{
 			const auto& l_world_transform = l_world_transform_event->get_transform();
 			m_position = l_world_transform.get_translation() - m_local_origin;
@@ -379,12 +379,23 @@ namespace black_cat
 
 	void bc_xbot_controller::on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit)
 	{
-		if(p_hit.get_actor().get_type() == physics::bc_actor_type::rigid_dynamic)
+		const auto l_rigid_actor = p_hit.get_actor();
+		const auto l_is_rigid_dynamic = l_rigid_actor.get_type() == physics::bc_actor_type::rigid_dynamic;
+		if(!l_is_rigid_dynamic)
 		{
-			const auto l_ccontroller_actor = p_hit.get_ccontroller().get_actor().is_rigid_body();
-			const auto l_multiplier = (m_move_amount / m_run_speed);
-			p_hit.get_actor().is_rigid_dynamic().add_force(m_move_direction * l_multiplier * l_ccontroller_actor.get_mass());
+			return;
 		}
+
+		auto l_rigid_dynamic = l_rigid_actor.is_rigid_dynamic();
+		const auto l_is_rigid_kinematic = core::bc_enum::has(l_rigid_dynamic.get_rigid_body_flags(), physics::bc_rigid_body_flag::kinematic);
+		if(l_is_rigid_kinematic)
+		{
+			return;
+		}
+		
+		const auto l_ccontroller_actor = p_hit.get_ccontroller().get_actor().is_rigid_body();
+		const auto l_multiplier = (m_move_amount / m_run_speed);
+		l_rigid_dynamic.add_force(m_move_direction * l_multiplier * l_ccontroller_actor.get_mass());
 	}
 
 	void bc_xbot_controller::on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit)
@@ -958,7 +969,7 @@ namespace black_cat
 		game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_rifle_idle_job), l_world_transform);
 		game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_rifle_running_job), l_world_transform);
 		
-		m_actor.add_event(game::bc_world_transform_actor_event(l_world_transform, true));
+		m_actor.add_event(game::bc_world_transform_actor_event(l_world_transform, game::bc_transform_event_type::physics));
 	}
 
 	void bc_xbot_controller::_update_weapon_transform()

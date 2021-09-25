@@ -13,7 +13,7 @@
 #include "PlatformImp/Network/bcNetworkAddress.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/System/Network/bcNetworkManager.h"
-#include "Game/System/Network/bcNetworkMessageBuffer.h"
+#include "Game/System/Network/bcNetworkMessageSerializationBuffer.h"
 #include "Game/System/Network/Message/bcNetworkMessage.h"
 #include "Game/System/Network/Server/bcNetworkServerManagerHook.h"
 #include "Game/System/Network/Server/bcServerSocketStateMachine.h"
@@ -33,6 +33,7 @@ namespace black_cat
 		class bc_network_system;
 
 		class BC_GAME_DLL bc_network_server_manager : public bci_network_manager,
+				private bci_network_message_serialization_visitor,
 				private bci_network_message_deserialization_visitor,
 				private bci_network_message_server_visitor,
 				private bc_server_socket_state_machine
@@ -53,6 +54,8 @@ namespace black_cat
 
 			bc_network_server_manager& operator=(bc_network_server_manager&&) noexcept;
 
+			bc_network_type get_network_type() const noexcept override;
+			
 			void add_actor_to_sync(bc_actor& p_actor) override;
 			
 			void remove_actor_from_sync(bc_actor& p_actor) override;
@@ -88,14 +91,18 @@ namespace black_cat
 
 			bc_actor get_actor(bc_actor_network_id p_actor_network_id) override;
 
+			// Private methods
+			
 			void _add_message_to_clients(bc_network_message_ptr p_message, const platform::bc_network_address* p_exclude_client = nullptr);
 			
-			void _retry_messages_with_acknowledgment(bc_network_packet_time p_current_time, bc_network_server_manager_client& p_client);
+			void _retry_messages_waiting_acknowledgment(bc_network_packet_time p_current_time, const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client);
 			
-			void _send_to_client(bc_network_server_manager_client& p_client);
+			void _send_to_client(const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client);
 
-			void _receive_from_clients();
+			bcSIZE _receive_from_clients();
 
+			bc_network_server_manager_client* _check_if_contains_client_connect_message(platform::bc_network_address& p_address, core::bc_span<bc_network_message_ptr> p_messages);
+			
 			bc_network_server_manager_client* _find_client(const platform::bc_network_address& p_address);
 
 			bool _event_handler(core::bci_event& p_event);
@@ -115,7 +122,7 @@ namespace black_cat
 			core::bc_unordered_map<bc_actor_network_id, bc_actor> m_network_actors;
 			
 			core::bc_memory_stream m_memory_buffer;
-			bc_network_message_buffer m_messages_buffer;
+			bc_network_message_serialization_buffer m_messages_buffer;
 
 			core::bc_event_listener_handle m_scene_change_event;
 			core::bc_string m_scene_name;

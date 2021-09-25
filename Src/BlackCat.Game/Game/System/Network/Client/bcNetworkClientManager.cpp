@@ -39,6 +39,7 @@ namespace black_cat
 			m_last_sync_time(0),
 			m_rtt_sampler(20),
 			m_last_executed_message_id(0),
+			m_executed_retry_messages(50),
 			m_messages_buffer(p_network_system)
 		{
 			m_socket.reset(&bc_client_socket_state_machine::get_socket());
@@ -63,6 +64,7 @@ namespace black_cat
 			m_messages(std::move(p_other.m_messages)),
 			m_messages_waiting_acknowledgment(std::move(p_other.m_messages_waiting_acknowledgment)),
 			m_memory_buffer(std::move(p_other.m_memory_buffer)),
+			m_executed_retry_messages(std::move(p_other.m_executed_retry_messages)),
 			m_messages_buffer(std::move(p_other.m_messages_buffer))
 		{
 		}
@@ -89,9 +91,15 @@ namespace black_cat
 			m_messages = std::move(p_other.m_messages);
 			m_messages_waiting_acknowledgment = std::move(p_other.m_messages_waiting_acknowledgment);
 			m_memory_buffer = std::move(p_other.m_memory_buffer);
+			m_executed_retry_messages = std::move(p_other.m_executed_retry_messages);
 			m_messages_buffer = std::move(p_other.m_messages_buffer);
 			
 			return *this;
+		}
+
+		bc_network_type bc_network_client_manager::get_network_type() const noexcept
+		{
+			return bc_network_type::client;
 		}
 
 		void bc_network_client_manager::add_actor_to_sync(bc_actor& p_actor)
@@ -160,7 +168,7 @@ namespace black_cat
 			const auto l_rtt_time = m_rtt_sampler.average_value();
 			if(l_elapsed_since_last_sync > l_rtt_time)
 			{
-				_send_to_server();
+				_send_to_server(p_context.m_clock);
 				bc_client_socket_state_machine::update(p_context.m_clock);
 			}
 
@@ -227,7 +235,7 @@ namespace black_cat
 				);
 				if (l_message_ite == std::end(m_messages_waiting_acknowledgment))
 				{
-					core::bc_log(core::bc_log_type::warning) << "no message was found with id " << p_ack_id << " to acknowledge" << core::bc_lend;
+					core::bc_log(core::bc_log_type::error) << "no message was found with id " << p_ack_id << " to acknowledge" << core::bc_lend;
 					return;
 				}
 
@@ -321,22 +329,23 @@ namespace black_cat
 			}
 		}
 
-		void bc_network_client_manager::_retry_messages_with_acknowledgment(bc_network_packet_time p_current_time)
+		void bc_network_client_manager::_retry_messages_waiting_acknowledgment(bc_network_packet_time p_current_time, const core_platform::bc_clock::update_param& p_clock)
 		{
 			for(auto& l_msg : m_messages_waiting_acknowledgment)
 			{
-				const auto l_elapsed_since_last_send = p_current_time - l_msg.m_time;
-#ifndef BC_DEBUG
-				if (l_elapsed_since_last_send > m_rtt_sampler.average_value() * 3)
+				l_msg.m_elapsed += p_clock.m_elapsed;
+				if (l_msg.m_elapsed > m_rtt_sampler.average_value() * 4)
 				{
 					l_msg.m_time = p_current_time;
+					l_msg.m_elapsed = 0;
+					l_msg.m_message->set_is_retry();
+					
 					m_messages.push_back(l_msg.m_message);
 				}
-#endif				
 			}
 		}
 
-		void bc_network_client_manager::_send_to_server()
+		void bc_network_client_manager::_send_to_server(const core_platform::bc_clock::update_param& p_clock)
 		{
 			const auto l_current_time = bc_current_packet_time();
 			
@@ -348,14 +357,14 @@ namespace black_cat
 					m_messages.push_back(bc_make_network_message(bc_actor_sync_network_message(l_actor)));
 				}
 
-				_retry_messages_with_acknowledgment(l_current_time);
+				_retry_messages_waiting_acknowledgment(l_current_time, p_clock);
 				
 				if(m_messages.empty())
 				{
 					return;
 				}
 
-				const auto [l_stream, l_stream_size] = m_messages_buffer.serialize(l_current_time, core::bc_make_span(m_messages));
+				const auto [l_stream_size, l_stream] = m_messages_buffer.serialize(*this, l_current_time, core::bc_make_cspan(m_messages));
 				bc_client_socket_send_event l_send_event{ *l_stream, l_stream_size, 0 };
 				bc_client_socket_state_machine::process_event(l_send_event);
 
@@ -385,6 +394,7 @@ namespace black_cat
 								bc_message_with_time
 								{
 									l_current_time,
+									0,
 									std::move(l_message)
 								}
 							);
@@ -422,21 +432,31 @@ namespace black_cat
 			}
 			catch (const std::exception& l_exception)
 			{
-				core::bc_log(core::bc_log_type::warning) << "Deserialization of network packet encountered error: '" << l_exception.what() << "'" << core::bc_lend;
+				core::bc_log(core::bc_log_type::error) << "Deserialization of network packet encountered error: '" << l_exception.what() << "'" << core::bc_lend;
+				return;
 			}
 
 			bc_network_message_id l_max_message_id = 0;
 			for(const auto& l_message : l_messages)
 			{
-				if(l_message->get_id() < m_last_executed_message_id)
+				const auto l_message_id = l_message->get_id();
+
+				if (l_message_id < m_last_executed_message_id && !l_message->get_is_retry())
 				{
 					// discard out of order message
+					continue;
+				}
+
+				if (l_message->get_is_retry() && m_executed_retry_messages.id_exist(l_message_id))
+				{
+					// discard duplicate message
 					continue;
 				}
 				
 				if (l_message->need_acknowledgment())
 				{
 					send_message(bc_acknowledge_network_message(*l_message));
+					m_executed_retry_messages.add_id(l_message_id);
 				}
 				
 				l_message->execute(bc_network_message_client_context
@@ -444,14 +464,13 @@ namespace black_cat
 					*this
 				});
 				
-				l_max_message_id = std::max(l_max_message_id, l_message->get_id());
+				l_max_message_id = std::max(l_max_message_id, l_message_id);
 			}
 
 			m_last_executed_message_id = l_max_message_id;
 			m_rtt_sampler.add_sample(bc_elapsed_packet_time(l_packet_time));
-			//m_last_sync_time = bc_current_packet_time();
 
 			m_hook->message_packet_received(l_receive_event.m_bytes_received, core::bc_make_cspan(l_messages));
 		}
-	}	
+	}
 }

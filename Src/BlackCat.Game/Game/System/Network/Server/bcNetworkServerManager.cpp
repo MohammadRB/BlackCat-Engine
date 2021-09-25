@@ -91,6 +91,11 @@ namespace black_cat
 			return *this;
 		}
 
+		bc_network_type bc_network_server_manager::get_network_type() const noexcept
+		{
+			return bc_network_type::server;
+		}
+
 		void bc_network_server_manager::add_actor_to_sync(bc_actor& p_actor)
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
@@ -168,12 +173,15 @@ namespace black_cat
 					const auto l_elapsed_since_last_sync = bc_current_packet_time() - l_client.get_last_sync_time();
 					if (l_elapsed_since_last_sync > l_client.get_rtt_time())
 					{
-						_send_to_client(l_client);
+						_send_to_client(p_context.m_clock, l_client);
 						bc_server_socket_state_machine::update(p_context.m_clock);
 					}
 				}
 
-				_receive_from_clients();
+				while(_receive_from_clients())
+				{
+					bc_server_socket_state_machine::update(p_context.m_clock);
+				}
 			}
 		}
 
@@ -243,8 +251,13 @@ namespace black_cat
 				core::bc_log(core::bc_log_type::error) << "unable to find disconnected client" << core::bc_lend;
 				return;
 			}
-			
-			auto l_client_replicated_actors = l_client_ite->get_replicated_actors();
+
+			// Make a copy of actors because internal array will be modified in 'remove_actor'
+			core::bc_vector_frame<bc_actor> l_client_replicated_actors
+			(
+				std::begin(l_client_ite->get_replicated_actors()), 
+				std::end(l_client_ite->get_replicated_actors())
+			);
 			for (auto& l_actor : l_client_replicated_actors)
 			{
 				remove_actor(p_address, l_actor);
@@ -273,14 +286,14 @@ namespace black_cat
 
 			if (l_msg_ite == std::end(l_messages))
 			{
-				core::bc_log(core::bc_log_type::warning) << "no message was found with id " << p_ack_id << " to acknowledge" << core::bc_lend;
+				core::bc_log(core::bc_log_type::error) << "no message was found with id " << p_ack_id << " to acknowledge" << core::bc_lend;
 				return;
 			}
 
 			auto& l_message = *(*l_msg_ite).m_message;
 			l_message.acknowledge
 			(
-				bc_network_message_server_acknowledge_context{p_address, *this, std::move(p_ack_data)}
+				bc_network_message_server_acknowledge_context{ *this, p_address, std::move(p_ack_data)}
 			);
 
 			l_client->erase_message_waiting_acknowledgment(p_ack_id);
@@ -402,22 +415,23 @@ namespace black_cat
 			}
 		}
 
-		void bc_network_server_manager::_retry_messages_with_acknowledgment(bc_network_packet_time p_current_time, bc_network_server_manager_client& p_client)
+		void bc_network_server_manager::_retry_messages_waiting_acknowledgment(bc_network_packet_time p_current_time, const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client)
 		{
 			for (auto& l_msg : p_client.get_messages_waiting_acknowledgment())
 			{
-				const auto l_elapsed_since_last_send = p_current_time - l_msg.m_time;
-#ifndef BC_DEBUG
-				if (l_elapsed_since_last_send > p_client.get_rtt_time() * 3)
+				l_msg.m_elapsed += p_clock.m_elapsed;
+				if (l_msg.m_elapsed > p_client.get_rtt_time() * 4)
 				{
 					l_msg.m_time = p_current_time;
+					l_msg.m_elapsed = 0;
+					l_msg.m_message->set_is_retry();
+					
 					p_client.add_message(l_msg.m_message);
 				}
-#endif
 			}
 		}
 
-		void bc_network_server_manager::_send_to_client(bc_network_server_manager_client& p_client)
+		void bc_network_server_manager::_send_to_client(const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client)
 		{
 			const auto l_current_time = bc_current_packet_time();
 			
@@ -437,7 +451,7 @@ namespace black_cat
 					}
 				}
 
-				_retry_messages_with_acknowledgment(l_current_time, p_client);
+				_retry_messages_waiting_acknowledgment(l_current_time, p_clock, p_client);
 				
 				auto l_client_messages = p_client.get_messages();
 				if(l_client_messages.empty())
@@ -445,7 +459,7 @@ namespace black_cat
 					return;
 				}
 				
-				const auto [l_stream, l_stream_size] = m_messages_buffer.serialize(l_current_time, l_client_messages);
+				const auto [l_stream_size, l_stream] = m_messages_buffer.serialize(*this, l_current_time, l_client_messages);
 				bc_server_socket_send_event l_send_event{p_client.get_address(), *l_stream, l_stream_size};
 				bc_server_socket_state_machine::process_event(l_send_event);
 
@@ -454,13 +468,14 @@ namespace black_cat
 					return;
 				}
 				
-				for (auto& l_message : l_client_messages)
+				for (const auto& l_message : l_client_messages)
 				{
 					if (l_message->need_acknowledgment())
 					{
 						p_client.add_message_waiting_acknowledgment_if_not_exist(bc_message_with_time 
 						{
 							l_current_time,
+							0,
 							l_message
 						});
 					}
@@ -473,7 +488,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_network_server_manager::_receive_from_clients()
+		bcSIZE bc_network_server_manager::_receive_from_clients()
 		{
 			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
 			platform::bc_network_address l_address;
@@ -484,38 +499,31 @@ namespace black_cat
 			const auto l_bytes_received = l_receive_event.m_bytes_received;
 			if(!l_bytes_received)
 			{
-				return;
+				return l_bytes_received;
 			}
 
 			auto* l_client = _find_client(l_address);
 
 			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
-			const auto [l_packet_time, l_messages] = m_messages_buffer.deserialize(*this, m_memory_buffer, l_bytes_received);
 
-			// Check to see if a new client connection is requested
+			bc_network_packet_time l_packet_time;
+			core::bc_span<bc_network_message_ptr> l_messages;
+
+			try
+			{
+				std::tie(l_packet_time, l_messages) = m_messages_buffer.deserialize(*this, m_memory_buffer, l_bytes_received);
+			}
+			catch (const std::exception & l_exception)
+			{
+				core::bc_log(core::bc_log_type::error) << "Deserialization of network packet encountered error: '" << l_exception.what() << "'" << core::bc_lend;
+				return l_bytes_received;
+			}
+
 			if (!l_client)
 			{
-				for (const auto& l_message : l_messages)
-				{
-					if (!core::bci_message::is<bc_client_connect_network_message>(*l_message))
-					{
-						continue;
-					}
-
-					l_message->execute(bc_network_message_server_context
-					{
-						l_address,
-						*this
-					});
-
-					// after message execution client should have added
-					l_client = _find_client(l_address);
-					l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(*l_message)));
-
-					break;
-				}
-								
-				return;
+				// Check to see if a new client connection is requested
+				l_client = _check_if_contains_client_connect_message(l_address, l_messages);
+				return l_bytes_received;
 			}
 			
 			const bc_network_message_id l_last_executed_message_id = l_client->get_last_executed_message_id();
@@ -526,32 +534,71 @@ namespace black_cat
 
 				for (const auto& l_message : l_messages)
 				{
-					if (l_message->get_id() < l_last_executed_message_id)
+					const auto l_message_id = l_message->get_id();
+
+					if (l_message_id < l_last_executed_message_id && !l_message->get_is_retry())
 					{
 						// discard out of order message
 						continue;
 					}
 
+					if (l_message->get_is_retry() && l_client->executed_retry_message_id_exist(l_message_id))
+					{
+						// discard duplicate message
+						continue;
+					}
+
 					l_message->execute(bc_network_message_server_context
 					{
-						l_address,
-						*this
+						*this,
+						l_address
 					});
 
 					if (l_message->need_acknowledgment())
 					{
 						l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(*l_message)));
+						l_client->add_executed_retry_message_id(l_message_id);
 					}
 
-					l_max_message_id = std::max(l_max_message_id, l_message->get_id());
+					l_max_message_id = std::max(l_max_message_id, l_message_id);
 				}
 
 				l_client->set_last_executed_message_id(l_max_message_id);
 				l_client->add_rtt_time(bc_elapsed_packet_time(l_packet_time));
-				//l_client->set_last_sync_time(bc_current_packet_time());
 			}
 
 			m_hook->message_packet_received(l_bytes_received, core::bc_make_cspan(l_messages));
+
+			return l_bytes_received;
+		}
+
+		bc_network_server_manager_client* bc_network_server_manager::_check_if_contains_client_connect_message(platform::bc_network_address& p_address, core::bc_span<bc_network_message_ptr> p_messages)
+		{
+			for (const auto& l_message : p_messages)
+			{
+				if (!core::bci_message::is<bc_client_connect_network_message>(*l_message))
+				{
+					continue;
+				}
+
+				l_message->execute
+				(
+					bc_network_message_server_context
+					{
+						*this,
+						p_address
+					}
+				);
+
+				// after message execution client should have added
+				auto* l_client = _find_client(p_address);
+				l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(*l_message)));
+				l_client->add_executed_retry_message_id(l_message->get_id());
+
+				return l_client;
+			}
+
+			return nullptr;
 		}
 
 		bc_network_server_manager_client* bc_network_server_manager::_find_client(const platform::bc_network_address& p_address)

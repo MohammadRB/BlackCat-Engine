@@ -16,7 +16,6 @@ namespace black_cat
 		bc_network_system::bc_network_system()
 			: m_event_manager(nullptr),
 			m_game_system(nullptr),
-			m_network_type(bc_network_type::not_started),
 			m_manager(nullptr)
 		{
 		}
@@ -25,7 +24,6 @@ namespace black_cat
 			: m_event_manager(p_other.m_event_manager),
 			m_game_system(p_other.m_game_system),
 			m_message_factories(std::move(p_other.m_message_factories)),
-			m_network_type(p_other.m_network_type),
 			m_manager(std::move(p_other.m_manager))
 		{
 		}
@@ -43,7 +41,6 @@ namespace black_cat
 			m_event_manager = p_other.m_event_manager;
 			m_game_system = p_other.m_game_system;
 			m_message_factories = std::move(p_other.m_message_factories);
-			m_network_type = p_other.m_network_type;
 			m_manager = std::move(p_other.m_manager);
 
 			return *this;
@@ -52,13 +49,11 @@ namespace black_cat
 		void bc_network_system::start_server(bci_network_server_manager_hook& p_hook, bcUINT16 p_port)
 		{
 			m_manager = core::bc_make_unique<bc_network_server_manager>(bc_network_server_manager(*m_event_manager, *m_game_system, *this, p_hook, p_port));
-			m_network_type = bc_network_type::server;
 		}
 
 		void bc_network_system::start_client(bci_network_client_manager_hook& p_hook, const platform::bc_network_address& p_address)
 		{
 			m_manager = core::bc_make_unique<bc_network_client_manager>(bc_network_client_manager(*m_game_system, *this, p_hook, p_address));
-			m_network_type = bc_network_type::client;
 		}
 
 		void bc_network_system::add_actor(bc_actor& p_actor)

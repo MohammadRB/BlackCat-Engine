@@ -48,8 +48,6 @@ namespace black_cat
 
 			bc_pointing_device_state get_state() const noexcept;
 
-		protected:
-
 		private:
 			explicit bc_platform_pointing_device(bcUBYTE p_device_index);
 

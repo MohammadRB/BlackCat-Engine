@@ -12,7 +12,8 @@
 #include "PlatformImp/Network/bcNetworkAddress.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/System/Network/bcNetworkManager.h"
-#include "Game/System/Network/bcNetworkMessageBuffer.h"
+#include "Game/System/Network/bcNetworkMessageSerializationBuffer.h"
+#include "Game/System/Network/bcNetworkMessageIdBuffer.h"
 #include "Game/System/Network/Message/bcNetworkMessage.h"
 #include "Game/System/Network/Client/bcNetworkClientManagerHook.h"
 #include "Game/System/Network/Client/bcClientSocketStateMachine.h"
@@ -26,6 +27,7 @@ namespace black_cat
 		class bc_network_system;
 
 		class BC_GAME_DLL bc_network_client_manager : public bci_network_manager,
+				private bci_network_message_serialization_visitor,
 				private bci_network_message_deserialization_visitor,
 				private bci_network_message_client_visitor,
 				private bc_client_socket_state_machine
@@ -44,6 +46,8 @@ namespace black_cat
 			~bc_network_client_manager() override;
 
 			bc_network_client_manager& operator=(bc_network_client_manager&&) noexcept;
+
+			bc_network_type get_network_type() const noexcept override;
 			
 			void add_actor_to_sync(bc_actor& p_actor) override;
 			
@@ -80,12 +84,12 @@ namespace black_cat
 
 			bc_actor get_actor(bc_actor_network_id p_actor_network_id) override;
 			
-			void _retry_messages_with_acknowledgment(bc_network_packet_time p_current_time);
+			void _retry_messages_waiting_acknowledgment(bc_network_packet_time p_current_time, const core_platform::bc_clock::update_param& p_clock);
 			
-			void _send_to_server();
+			void _send_to_server(const core_platform::bc_clock::update_param& p_clock);
 			
 			void _receive_from_server();
-
+			
 			bc_game_system* m_game_system;
 			
 			bool m_socket_is_connected;
@@ -104,8 +108,10 @@ namespace black_cat
 			bc_network_message_id m_last_executed_message_id;
 			core::bc_vector<bc_network_message_ptr> m_messages;
 			core::bc_vector<bc_message_with_time> m_messages_waiting_acknowledgment;
+			bc_network_message_id_buffer m_executed_retry_messages;
+
 			core::bc_memory_stream m_memory_buffer;
-			bc_network_message_buffer m_messages_buffer;
+			bc_network_message_serialization_buffer m_messages_buffer;
 		};
 	}
 }

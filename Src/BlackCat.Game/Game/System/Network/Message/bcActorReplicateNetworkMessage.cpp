@@ -4,8 +4,8 @@
 
 #include "Core/Utility/bcLogger.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
-#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/System/Network/Message/bcActorReplicateNetworkMessage.h"
 
 namespace black_cat
@@ -58,9 +58,21 @@ namespace black_cat
 		void bc_actor_replicate_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
 			p_context.m_params.reserve(10);
+
+			const bcCHAR* l_entity_name;
+
+			if(p_context.m_visitor.get_network_type() == bc_network_type::server)
+			{
+				const auto* l_network_component = m_actor.get_component<bc_network_component>();
+				l_entity_name = l_network_component->get_network_entity_name();
+			}
+			else
+			{
+				const auto* l_mediate_component = m_actor.get_component<bc_mediate_component>();
+				l_entity_name = l_mediate_component->get_entity_name();
+			}
 			
-			const auto* l_mediate_component = m_actor.get_component<bc_mediate_component>();
-			p_context.m_params.add("ent", core::bc_any(core::bc_string_frame(l_mediate_component->get_entity_name())));
+			p_context.m_params.add("ent", core::bc_any(core::bc_string_frame(l_entity_name)));
 
 			core::bc_vector_frame<bci_actor_component*> l_components(10);
 			const bc_actor_component_network_write_context l_context(p_context.m_params, m_actor);
@@ -77,7 +89,13 @@ namespace black_cat
 				return;
 			}
 
-			m_actor = p_context.m_visitor.create_actor(l_entity_name->c_str());
+			try
+			{
+				m_actor = p_context.m_visitor.create_actor(l_entity_name->c_str());
+			}
+			catch (...)
+			{
+			}
 
 			core::bc_vector_frame<bci_actor_component*> l_components(10);
 			bc_actor_load_network_instance(l_components, bc_actor_component_network_load_context(p_context.m_params, m_actor));

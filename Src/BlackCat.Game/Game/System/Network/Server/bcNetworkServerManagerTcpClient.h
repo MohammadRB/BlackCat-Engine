@@ -7,7 +7,7 @@
 #include "Core/File/bcMemoryStream.h"
 #include "Core/Math/bcValueSampler.h"
 #include "PlatformImp/Network/bcNonBlockSocket.h"
-#include "Game/System/Network/bcNetworkMessageBuffer.h"
+#include "Game/System/Network/bcNetworkMessageSerializationBuffer.h"
 #include "Game/System/Network/Server/bcServerTcpClientSocketStateMachine.h"
 
 namespace black_cat

@@ -71,7 +71,7 @@ namespace black_cat
 			l_transform.set_translation(l_position);
 			l_transform.set_rotation(bc_matrix3f_rotation_zyx(l_euler_rot));
 
-			p_context.m_actor.add_event(bc_world_transform_actor_event(l_transform));
+			p_context.m_actor.add_event(bc_world_transform_actor_event(l_transform, bc_transform_event_type::network));
 
 			if (m_controller)
 			{

@@ -41,6 +41,7 @@ namespace black_cat
 
 		struct bc_network_message_serialization_context
 		{
+			bci_network_message_serialization_visitor& m_visitor;
 			core::bc_json_key_value& m_params;
 		};
 
@@ -57,8 +58,8 @@ namespace black_cat
 
 		struct bc_network_message_server_context
 		{
-			const platform::bc_network_address& m_address;
 			bci_network_message_server_visitor& m_visitor;
+			const platform::bc_network_address& m_address;
 		};
 
 		struct bc_network_message_client_acknowledge_context
@@ -69,8 +70,8 @@ namespace black_cat
 
 		struct bc_network_message_server_acknowledge_context
 		{
-			const platform::bc_network_address& m_address;
 			bci_network_message_server_visitor& m_visitor;
+			const platform::bc_network_address& m_address;
 			core::bc_string m_ack_data;
 		};
 		
@@ -86,13 +87,24 @@ namespace black_cat
 			 * \return 
 			 */
 			bc_network_message_id get_id() const noexcept;
-
+			
 			/**
 			 * \brief Indicate whether message must be acknowledged by the receiver or not
 			 * \return
 			 */
 			virtual bool need_acknowledgment() const noexcept;
 
+			/**
+			 * \brief Indicates messages is sent again because acknowledge message is not received by sender
+			 * \return 
+			 */
+			bool get_is_retry() const noexcept;
+
+			/**
+			 * \brief Mark message is retry message because acknowledge message is not received by sender
+			 */
+			void set_is_retry() noexcept;
+			
 			/**
 			 * \brief After message execution, if acknowledgment is required, this string will be included in acknowledge message
 			 * \return 
@@ -136,11 +148,7 @@ namespace black_cat
 			virtual void acknowledge(const bc_network_message_server_acknowledge_context& p_context) noexcept;
 		
 		protected:
-			explicit bci_network_message(const bcCHAR* p_name) noexcept
-				: bci_message(p_name),
-				m_id(0)
-			{
-			}
+			explicit bci_network_message(const bcCHAR* p_name) noexcept;
 
 			bci_network_message(bci_network_message&&) noexcept = default;
 
@@ -154,6 +162,7 @@ namespace black_cat
 			static core_platform::bc_atomic<bc_network_message_id> s_id_counter;
 			
 			mutable bc_network_message_id m_id;
+			bool m_is_retry;
 		};
 
 		inline bc_network_message_id bci_network_message::get_id() const noexcept
@@ -164,6 +173,16 @@ namespace black_cat
 		inline bool bci_network_message::need_acknowledgment() const noexcept
 		{
 			return false;
+		}
+
+		inline bool bci_network_message::get_is_retry() const noexcept
+		{
+			return m_is_retry;
+		}
+
+		inline void bci_network_message::set_is_retry() noexcept
+		{
+			m_is_retry = true;
 		}
 	}
 }

@@ -4,17 +4,28 @@
 
 #include "Core/Container/bcString.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/System/Network/bcNetworkDefinitions.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		using bc_network_message_id = bcINT32; // it must be int because in json deserialization it is interpreted as int
-		using bc_network_message_hash = core::bc_string_cmp_hash;
+		class bci_network_message_serialization_visitor
+		{
+		public:
+			virtual bc_network_type get_network_type() const noexcept = 0;
 
+		protected:
+			bci_network_message_serialization_visitor() = default;
+
+			virtual ~bci_network_message_serialization_visitor() = default;
+		};
+		
 		class bci_network_message_deserialization_visitor
 		{
 		public:
+			virtual bc_network_type get_network_type() const noexcept = 0;
+			
 			virtual bc_actor create_actor(const bcCHAR* p_entity_name) = 0;
 
 			virtual bc_actor get_actor(bc_actor_network_id p_actor_network_id) = 0;
@@ -22,7 +33,7 @@ namespace black_cat
 		protected:
 			bci_network_message_deserialization_visitor() = default;
 
-			~bci_network_message_deserialization_visitor() = default;
+			virtual ~bci_network_message_deserialization_visitor() = default;
 		};
 
 		class bci_network_message_server_visitor
@@ -43,7 +54,7 @@ namespace black_cat
 		protected:
 			bci_network_message_server_visitor() = default;
 
-			~bci_network_message_server_visitor() = default;
+			virtual ~bci_network_message_server_visitor() = default;
 		};
 
 		class bci_network_message_client_visitor
@@ -62,7 +73,7 @@ namespace black_cat
 		protected:
 			bci_network_message_client_visitor() = default;
 
-			~bci_network_message_client_visitor() = default;
+			virtual ~bci_network_message_client_visitor() = default;
 		};
 	}
 }

@@ -15,10 +15,15 @@ namespace black_cat
 			: m_key_device(platform::bc_human_interface_device::create_key_device(0)),
 			m_pointing_device(platform::bc_human_interface_device::create_pointing_device(0)),
 			m_editor_camera(nullptr),
-			m_editor_mode(false)
+			m_editor_mode(false),
+			m_window_has_focus(true)
 		{
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 			m_window_resize_event_handle = l_event_manager->register_event_listener<platform::bc_app_event_window_resize>
+			(
+				core::bc_event_manager::delegate_type(*this, &bc_input_system::_event_handler)
+			);
+			m_window_focus_event_handle = l_event_manager->register_event_listener<platform::bc_app_event_window_focus>
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_input_system::_event_handler)
 			);
@@ -30,13 +35,17 @@ namespace black_cat
 
 		bc_input_system::bc_input_system(bc_input_system&& p_other) noexcept
 			: m_window_resize_event_handle(std::move(p_other.m_window_resize_event_handle)),
+			m_window_focus_event_handle(std::move(p_other.m_window_focus_event_handle)),
+			m_editor_mode_event_handle(std::move(p_other.m_editor_mode_event_handle)),
 			m_key_device(p_other.m_key_device),
 			m_pointing_device(p_other.m_pointing_device),
 			m_cameras(std::move(p_other.m_cameras)),
 			m_editor_camera(p_other.m_editor_camera),
-			m_editor_mode(p_other.m_editor_mode)
+			m_editor_mode(p_other.m_editor_mode),
+			m_window_has_focus(p_other.m_window_has_focus)
 		{
 			m_window_resize_event_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_input_system::_event_handler));
+			m_window_focus_event_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_input_system::_event_handler));
 			m_editor_mode_event_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_input_system::_event_handler));
 		}
 
@@ -45,13 +54,17 @@ namespace black_cat
 		bc_input_system& bc_input_system::operator=(bc_input_system&& p_other) noexcept
 		{
 			m_window_resize_event_handle = std::move(p_other.m_window_resize_event_handle);
+			m_window_focus_event_handle = std::move(p_other.m_window_focus_event_handle);
+			m_editor_mode_event_handle = std::move(p_other.m_editor_mode_event_handle);
 			m_key_device = p_other.m_key_device;
 			m_pointing_device = p_other.m_pointing_device;
 			m_cameras = std::move(p_other.m_cameras);
 			m_editor_camera = p_other.m_editor_camera;
 			m_editor_mode = p_other.m_editor_mode;
+			m_window_has_focus = p_other.m_window_has_focus;
 
 			m_window_resize_event_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_input_system::_event_handler));
+			m_window_focus_event_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_input_system::_event_handler));
 			m_editor_mode_event_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_input_system::_event_handler));
 			
 			return *this;
@@ -103,8 +116,11 @@ namespace black_cat
 
 		void bc_input_system::update(core_platform::bc_clock::update_param p_clock_update_param)
 		{
-			m_key_device.update();
-			m_pointing_device.update();
+			if(m_window_has_focus)
+			{
+				m_key_device.update();
+				m_pointing_device.update();
+			}
 
 			auto* l_camera = get_camera();
 			if (l_camera)
@@ -123,6 +139,15 @@ namespace black_cat
 					l_camera->set_projection(l_window_resize_event->width(), l_window_resize_event->height());
 				}
 
+				return true;
+			}
+
+			auto* l_window_focus_event = core::bci_message::as<platform::bc_app_event_window_focus>(p_event);
+			if (l_window_focus_event)
+			{
+				// TODO check if event belongs to main window
+				m_window_has_focus = l_window_focus_event->get_focus();
+				
 				return true;
 			}
 

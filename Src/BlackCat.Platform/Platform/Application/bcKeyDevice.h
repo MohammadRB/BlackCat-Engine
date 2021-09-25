@@ -164,8 +164,6 @@ namespace black_cat
 
 			bc_key_state get_key_state(bc_key p_key) const noexcept;
 
-		protected:
-
 		private:
 			explicit bc_platform_key_device(bcUBYTE p_device_index);
 

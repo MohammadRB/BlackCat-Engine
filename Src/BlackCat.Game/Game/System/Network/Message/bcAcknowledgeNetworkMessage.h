@@ -37,13 +37,13 @@ namespace black_cat
 
 			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
 
-			bc_network_message_id m_ack_message_id;
+			bc_network_message_id m_ack_id;
 			mutable core::bc_string m_ack_data;
 		};
 
 		inline bc_network_message_id bc_acknowledge_network_message::get_acknowledged_message_id() const noexcept
 		{
-			return m_ack_message_id;
+			return m_ack_id;
 		}
 
 		inline core::bc_string bc_acknowledge_network_message::get_acknowledged_message_data() const noexcept

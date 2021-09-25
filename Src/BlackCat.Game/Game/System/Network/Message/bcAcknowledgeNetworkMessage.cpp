@@ -13,14 +13,14 @@ namespace black_cat
 	{
 		bc_acknowledge_network_message::bc_acknowledge_network_message()
 			: bci_network_message(message_name()),
-			m_ack_message_id(0)
+			m_ack_id(0)
 		{
 		}
 
 		bc_acknowledge_network_message::bc_acknowledge_network_message(const bci_network_message& p_message)
 			: bc_acknowledge_network_message()
 		{
-			m_ack_message_id = p_message.get_id();
+			m_ack_id = p_message.get_id();
 			m_ack_data = p_message.get_acknowledgment_data();
 		}
 
@@ -42,7 +42,7 @@ namespace black_cat
 
 		void bc_acknowledge_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
-			p_context.m_params.add("ack_id", core::bc_any(m_ack_message_id));
+			p_context.m_params.add("ack_id", core::bc_any(m_ack_id));
 			p_context.m_params.add("ack_data", core::bc_any(m_ack_data));
 		}
 
@@ -56,7 +56,7 @@ namespace black_cat
 				return;
 			}
 
-			m_ack_message_id = *l_ack_id;
+			m_ack_id = *l_ack_id;
 			m_ack_data = std::move(*l_ack_data);
 		}
 	}	

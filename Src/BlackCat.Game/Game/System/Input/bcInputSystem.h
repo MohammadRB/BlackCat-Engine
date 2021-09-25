@@ -81,6 +81,7 @@ namespace black_cat
 			bool _event_handler(core::bci_event& p_event);
 
 			core::bc_event_listener_handle m_window_resize_event_handle;
+			core::bc_event_listener_handle m_window_focus_event_handle;
 			core::bc_event_listener_handle m_editor_mode_event_handle;
 			platform::bc_key_device m_key_device;
 			platform::bc_pointing_device m_pointing_device;
@@ -90,6 +91,7 @@ namespace black_cat
 
 			bci_camera* m_editor_camera;
 			bool m_editor_mode;
+			bool m_window_has_focus{};
 		};
 	}
 }

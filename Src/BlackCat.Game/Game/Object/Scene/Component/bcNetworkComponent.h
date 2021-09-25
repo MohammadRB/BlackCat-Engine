@@ -36,6 +36,8 @@ namespace black_cat
 			void set_network_id(bc_actor_network_id p_id) noexcept;
 
 			bc_actor_network_data_dir get_network_data_dir() const noexcept;
+
+			const bcCHAR* get_network_entity_name() const noexcept;
 			
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 			
@@ -50,6 +52,7 @@ namespace black_cat
 		private:
 			bc_actor_network_id m_id;
 			bc_actor_network_data_dir m_data_dir;
+			const bcCHAR* m_network_entity_name;
 		};
 
 		inline bc_actor_network_id bc_network_component::get_network_id() const noexcept
@@ -65,6 +68,11 @@ namespace black_cat
 		inline bc_actor_network_data_dir bc_network_component::get_network_data_dir() const noexcept
 		{
 			return m_data_dir;
+		}
+
+		inline const bcCHAR* bc_network_component::get_network_entity_name() const noexcept
+		{
+			return m_network_entity_name;
 		}
 	}
 }

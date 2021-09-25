@@ -76,7 +76,8 @@
         {
           "name": "network",
           "parameters": {
-            "data_dir": "replicate_sync_from_client"
+            "data_dir": "replicate_sync_from_client",
+            "entity_name": "box-server"
           }
         }
       ]

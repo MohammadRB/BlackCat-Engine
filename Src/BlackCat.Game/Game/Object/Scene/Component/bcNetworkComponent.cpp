@@ -4,6 +4,7 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Network/Message/bcActorReplicateNetworkMessage.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
@@ -17,7 +18,8 @@ namespace black_cat
 		bc_network_component::bc_network_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
 			: bci_actor_component(p_actor_index, p_index),
 			m_id(bc_actor::invalid_id),
-			m_data_dir(bc_actor_network_data_dir::replicate)
+			m_data_dir(bc_actor_network_data_dir::replicate),
+			m_network_entity_name(nullptr)
 		{
 		}
 
@@ -35,6 +37,7 @@ namespace black_cat
 		void bc_network_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			const auto& l_data_dir_param = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_network_data_dir);
+			const auto* l_network_entity_name_param = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_network_entity_name);
 			
 			if(l_data_dir_param == "replicate")
 			{
@@ -51,6 +54,16 @@ namespace black_cat
 			else
 			{
 				throw bc_invalid_argument_exception("Invalid value for network data direction parameter");
+			}
+
+			if(l_network_entity_name_param)
+			{
+				m_network_entity_name = l_network_entity_name_param->c_str();
+			}
+			else
+			{
+				const auto* l_mediate_component = p_context.m_actor.get_component<bc_mediate_component>();
+				m_network_entity_name = l_mediate_component->get_entity_name();
 			}
 		}
 

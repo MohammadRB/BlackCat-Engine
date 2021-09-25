@@ -18,8 +18,18 @@ namespace black_cat
 
 		void bci_network_message::serialize(const bc_network_message_serialization_context& p_context)
 		{
-			m_id = s_id_counter.fetch_add(1);
+			if(!m_is_retry)
+			{
+				m_id = s_id_counter.fetch_add(1, core_platform::bc_memory_order::relaxed);
+			}
+
 			p_context.m_params.add("msg_id", core::bc_any(m_id));
+			
+			if(m_is_retry)
+			{
+				p_context.m_params.add("is_rty", core::bc_any(m_is_retry));
+			}
+
 			serialize_message(p_context);
 		}
 
@@ -33,6 +43,14 @@ namespace black_cat
 			}
 
 			m_id = *l_id;
+
+			const auto l_is_retry_param = p_context.m_params.find("is_rty");
+			if(l_is_retry_param != std::end(p_context.m_params))
+			{
+				const auto* l_is_retry = l_is_retry_param->second.as<bool>();
+				m_is_retry = l_is_retry ? *l_is_retry : false;
+			}
+			
 			deserialize_message(p_context);
 		}
 
@@ -49,6 +67,13 @@ namespace black_cat
 		}
 
 		void bci_network_message::acknowledge(const bc_network_message_server_acknowledge_context& p_context) noexcept
+		{
+		}
+
+		bci_network_message::bci_network_message(const bcCHAR* p_name) noexcept
+			: bci_message(p_name),
+			m_id(0),
+			m_is_retry(false)
 		{
 		}
 	}

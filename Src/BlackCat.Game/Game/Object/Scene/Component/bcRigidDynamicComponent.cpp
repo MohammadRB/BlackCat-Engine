@@ -88,11 +88,29 @@ namespace black_cat
 		void bc_rigid_dynamic_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
 			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
-			if(l_world_transform_event && !l_world_transform_event->is_px_simulation_transform())
+			if(l_world_transform_event)
 			{
+				const auto l_transform_type = l_world_transform_event->get_transform_type();
+				if(l_transform_type == bc_transform_event_type::physics)
+				{
+					return;
+				}
+				
 				{
 					physics::bc_scene_lock l_lock(get_scene());
-					m_px_actor_ref->set_global_pose(physics::bc_transform(l_world_transform_event->get_transform()));
+
+					if(l_transform_type == bc_transform_event_type::teleport)
+					{
+						m_px_actor_ref->set_global_pose(physics::bc_transform(l_world_transform_event->get_transform()));
+					}
+					else if(l_transform_type == bc_transform_event_type::network)
+					{
+						const auto l_is_kinematic = core::bc_enum::has(m_px_actor_ref->get_rigid_body_flags(), physics::bc_rigid_body_flag::kinematic);
+						if(l_is_kinematic)
+						{
+							m_px_actor_ref->set_kinematic_target(physics::bc_transform(l_world_transform_event->get_transform()));
+						}
+					}
 				}
 				return;
 			}
