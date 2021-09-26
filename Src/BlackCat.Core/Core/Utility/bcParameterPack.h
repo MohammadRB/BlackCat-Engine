@@ -63,9 +63,9 @@ namespace black_cat
 		};
 
 		/**
-		 * \brief This class can hold any data type, which for small data types it use an internal buffer and for large data,
-		 * memory will be allocated from frame allocator.
-		 * You can use both copy and movable objects but if you use movable only object and try to copy this object
+		 * \brief This class can hold any data type, which for small data types it uses an internal buffer and for large
+		 * data types memory will be allocated from frame allocator.
+		 * \n You can use both copy and movable objects but if you use movable only object and try to copy this object
 		 * a logic exception will be thrown
 		 */
 		class bc_parameter_pack : public bc_object_allocator
@@ -130,7 +130,7 @@ namespace black_cat
 			bool used_internal_buffer() const;
 
 		private:
-			static constexpr bcUINT s_buffer_size = sizeof(bc_string);
+			static constexpr bcUINT s_buffer_size = sizeof(_bc_parameter_pack_concrete_object<bc_string>);
 
 			bcBYTE m_buffer[s_buffer_size];
 			_bc_parameter_pack_object* m_object;
@@ -153,7 +153,8 @@ namespace black_cat
 				<
 					!std::is_same_v<std::decay_t<T>, bc_parameter_pack> &&
 					!std::is_same_v<std::decay_t<T>, bc_any>
-				>>
+				>
+			>
 			explicit bc_any(T&& p_value);
 			
 			bc_any(const bc_any& p_other);
@@ -376,9 +377,17 @@ namespace black_cat
 			set_value(std::forward<T>(p_value));
 		}
 		
-		inline bc_any::bc_any(const bc_any& p_other) = default;
+		inline bc_any::bc_any(const bc_any& p_other)
+			: bc_any()
+		{
+			operator=(p_other);
+		}
 
-		inline bc_any::bc_any(bc_any&& p_other) noexcept = default;
+		inline bc_any::bc_any(bc_any&& p_other) noexcept
+			: bc_any()
+		{
+			operator=(std::move(p_other));
+		}
 
 		inline bc_any::~bc_any() = default;
 

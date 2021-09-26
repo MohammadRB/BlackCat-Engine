@@ -419,8 +419,13 @@ namespace black_cat
 		{
 			for (auto& l_msg : p_client.get_messages_waiting_acknowledgment())
 			{
+				auto l_rtt_multiplier = 4;
+#ifdef BC_DEBUG
+				l_rtt_multiplier = 10;
+#endif
+				
 				l_msg.m_elapsed += p_clock.m_elapsed;
-				if (l_msg.m_elapsed > p_client.get_rtt_time() * 4)
+				if (l_msg.m_elapsed > p_client.get_rtt_time() * l_rtt_multiplier)
 				{
 					l_msg.m_time = p_current_time;
 					l_msg.m_elapsed = 0;

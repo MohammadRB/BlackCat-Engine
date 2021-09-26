@@ -13,13 +13,15 @@ namespace black_cat
 	namespace game
 	{
 		bc_actor_replicate_network_message::bc_actor_replicate_network_message()
-			: bci_network_message(message_name())
+			: bci_network_message(message_name()),
+			m_deserialization_visitor(nullptr)
 		{
 		}
 
 		bc_actor_replicate_network_message::bc_actor_replicate_network_message(const bc_actor& p_actor)
 			: bci_network_message(message_name()),
-			m_actor(p_actor)
+			m_actor(p_actor),
+			m_deserialization_visitor(nullptr)
 		{
 		}
 
@@ -31,23 +33,35 @@ namespace black_cat
 
 		core::bc_string bc_actor_replicate_network_message::get_acknowledgment_data() const noexcept
 		{
-			const auto* l_network_component = m_actor.get_component<bc_network_component>();
+			/*const auto* l_network_component = m_actor.get_component<bc_network_component>();
 			const auto l_network_id = l_network_component->get_network_id();
-			return core::bc_to_string(l_network_id);
+			return core::bc_to_string(l_network_id);*/
+			return core::bc_to_string(m_actor_network_id);
 		}
 
 		void bc_actor_replicate_network_message::execute(const bc_network_message_client_context& p_context) noexcept
 		{
+			core::bc_log(core::bc_log_type::debug) << "actor replicate: client execute" << core::bc_lend;
+
+			_create_actor();
 			p_context.m_visitor.replicate_actor(m_actor);
 		}
 
 		void bc_actor_replicate_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
+			core::bc_log(core::bc_log_type::debug) << "actor replicate: server execute" << core::bc_lend;
+
+			_create_actor();
 			p_context.m_visitor.replicate_actor(p_context.m_address, m_actor);
+
+			const auto* l_network_component = m_actor.get_component<bc_network_component>();
+			m_actor_network_id = l_network_component->get_network_id();
 		}
 
 		void bc_actor_replicate_network_message::acknowledge(const bc_network_message_client_acknowledge_context& p_context) noexcept
 		{
+			core::bc_log(core::bc_log_type::debug) << "actor replicate: client acknowledge" << core::bc_lend;
+			
 			const auto l_network_id = core::bc_stoi(p_context.m_ack_data);
 			auto* l_network_component = m_actor.get_component<bc_network_component>();
 
@@ -57,6 +71,8 @@ namespace black_cat
 
 		void bc_actor_replicate_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
+			core::bc_log(core::bc_log_type::debug) << "actor replicate: serialize" << core::bc_lend;
+			
 			p_context.m_params.reserve(10);
 
 			const bcCHAR* l_entity_name;
@@ -72,7 +88,7 @@ namespace black_cat
 				l_entity_name = l_mediate_component->get_entity_name();
 			}
 			
-			p_context.m_params.add("ent", core::bc_any(core::bc_string_frame(l_entity_name)));
+			p_context.m_params.add("ent", core::bc_any(core::bc_string(l_entity_name)));
 
 			core::bc_vector_frame<bci_actor_component*> l_components(10);
 			const bc_actor_component_network_write_context l_context(p_context.m_params, m_actor);
@@ -82,23 +98,36 @@ namespace black_cat
 
 		void bc_actor_replicate_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)
 		{
-			const auto* l_entity_name = p_context.m_params.find("ent")->second.as<core::bc_string>();
-			if(!l_entity_name)
+			core::bc_log(core::bc_log_type::debug) << "actor replicate: deserialize" << core::bc_lend;
+			
+			m_deserialization_visitor = &p_context.m_visitor;
+			m_deserialization_values = p_context.m_params;
+
+			const auto l_net_id_param = p_context.m_params.find("net_id")->second.as<bc_actor_network_id>();
+			if (!l_net_id_param)
+			{
+				m_actor_network_id = bc_actor::invalid_id;
+				return;
+			}
+
+			m_actor_network_id = *l_net_id_param;
+		}
+
+		void bc_actor_replicate_network_message::_create_actor()
+		{
+			const auto* l_entity_name = m_deserialization_values.find("ent")->second.as<core::bc_string>();
+			if (!l_entity_name)
 			{
 				core::bc_log(core::bc_log_type::error, bcL("Failed to deserialize actor entity name in replicate network message"));
 				return;
 			}
 
-			try
-			{
-				m_actor = p_context.m_visitor.create_actor(l_entity_name->c_str());
-			}
-			catch (...)
-			{
-			}
+			m_actor = m_deserialization_visitor->create_actor(l_entity_name->c_str());
 
 			core::bc_vector_frame<bci_actor_component*> l_components(10);
-			bc_actor_load_network_instance(l_components, bc_actor_component_network_load_context(p_context.m_params, m_actor));
+			bc_actor_load_network_instance(l_components, bc_actor_component_network_load_context(m_deserialization_values, m_actor));
+
+			m_deserialization_values.clear();
 		}
 	}
 }

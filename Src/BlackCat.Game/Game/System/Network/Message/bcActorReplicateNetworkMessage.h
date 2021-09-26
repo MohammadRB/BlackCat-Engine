@@ -40,8 +40,13 @@ namespace black_cat
 			void serialize_message(const bc_network_message_serialization_context& p_context) override;
 
 			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
+
+			void _create_actor();
 			
 			bc_actor m_actor;
+			bc_actor_network_id m_actor_network_id;
+			bci_network_message_deserialization_visitor* m_deserialization_visitor;
+			core::bc_json_key_value m_deserialization_values;
 		};
 
 		inline bool bc_actor_replicate_network_message::need_acknowledgment() const noexcept

@@ -4,6 +4,7 @@
 
 #include "Core/Utility/bcLogger.h"
 #include "Game/System/Network/Message/bcActorSyncNetworkMessage.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 
 namespace black_cat
