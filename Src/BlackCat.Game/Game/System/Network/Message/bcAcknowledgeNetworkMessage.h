@@ -16,7 +16,7 @@ namespace black_cat
 		public:
 			bc_acknowledge_network_message();
 
-			explicit bc_acknowledge_network_message(const bci_network_message& p_message);
+			bc_acknowledge_network_message(bc_network_message_id p_id, core::bc_string p_ack_data);
 
 			bc_acknowledge_network_message(bc_acknowledge_network_message&&) noexcept;
 

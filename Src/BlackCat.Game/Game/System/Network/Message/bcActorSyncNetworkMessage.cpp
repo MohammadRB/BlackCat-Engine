@@ -58,7 +58,7 @@ namespace black_cat
 			m_actor = p_context.m_visitor.get_actor(*l_actor_network_id);
 			if(!m_actor.is_valid())
 			{
-				core::bc_log(core::bc_log_type::warning, bcL("Failed to find network actor in sync network message"));
+				core::bc_log(core::bc_log_type::warning) << "Failed to find actor with network id " << *l_actor_network_id << " in sync network message" << core::bc_lend;
 				return;
 			}
 

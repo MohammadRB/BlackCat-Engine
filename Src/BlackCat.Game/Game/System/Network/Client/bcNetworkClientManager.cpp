@@ -39,7 +39,7 @@ namespace black_cat
 			m_last_sync_time(0),
 			m_rtt_sampler(20),
 			m_last_executed_message_id(0),
-			m_executed_retry_messages(50),
+			m_executed_messages(25),
 			m_messages_buffer(p_network_system)
 		{
 			m_socket.reset(&bc_client_socket_state_machine::get_socket());
@@ -64,7 +64,7 @@ namespace black_cat
 			m_messages(std::move(p_other.m_messages)),
 			m_messages_waiting_acknowledgment(std::move(p_other.m_messages_waiting_acknowledgment)),
 			m_memory_buffer(std::move(p_other.m_memory_buffer)),
-			m_executed_retry_messages(std::move(p_other.m_executed_retry_messages)),
+			m_executed_messages(std::move(p_other.m_executed_messages)),
 			m_messages_buffer(std::move(p_other.m_messages_buffer))
 		{
 		}
@@ -91,7 +91,7 @@ namespace black_cat
 			m_messages = std::move(p_other.m_messages);
 			m_messages_waiting_acknowledgment = std::move(p_other.m_messages_waiting_acknowledgment);
 			m_memory_buffer = std::move(p_other.m_memory_buffer);
-			m_executed_retry_messages = std::move(p_other.m_executed_retry_messages);
+			m_executed_messages = std::move(p_other.m_executed_messages);
 			m_messages_buffer = std::move(p_other.m_messages_buffer);
 			
 			return *this;
@@ -235,7 +235,8 @@ namespace black_cat
 				);
 				if (l_message_ite == std::end(m_messages_waiting_acknowledgment))
 				{
-					core::bc_log(core::bc_log_type::error) << "no message was found with id " << p_ack_id << " to acknowledge" << core::bc_lend;
+					// It is possible multiple ack message arrive but only one of them will see original message
+					core::bc_log(core::bc_log_type::warning) << "no message was found with id " << p_ack_id << " to acknowledge" << core::bc_lend;
 					return;
 				}
 
@@ -335,7 +336,7 @@ namespace black_cat
 			{
 				auto l_rtt_multiplier = 4;
 #ifdef BC_DEBUG
-				l_rtt_multiplier = 10;
+				l_rtt_multiplier *= 3;
 #endif
 				
 				l_msg.m_elapsed += p_clock.m_elapsed;
@@ -359,6 +360,13 @@ namespace black_cat
 
 				for (auto& l_actor : m_sync_actors)
 				{
+					const auto* l_network_component = l_actor.get_component<bc_network_component>();
+					if(l_network_component->get_network_id() == bc_actor::invalid_id)
+					{
+						// It is not replicated yet
+						continue;
+					}
+					
 					m_messages.push_back(bc_make_network_message(bc_actor_sync_network_message(l_actor)));
 				}
 
@@ -391,9 +399,9 @@ namespace black_cat
 								return p_entry.m_message->get_id() == l_message->get_id();
 							}
 						);
+						// If message is not already added 
 						if (l_ite == std::cend(m_messages_waiting_acknowledgment))
 						{
-							// Message is not already in the buffer to be acknowledged
 							m_messages_waiting_acknowledgment.push_back
 							(
 								bc_message_with_time
@@ -452,22 +460,25 @@ namespace black_cat
 					continue;
 				}
 
-				if (l_message->get_is_retry() && m_executed_retry_messages.id_exist(l_message_id))
+				core::bc_string* l_ack_data;
+				if (l_message->get_is_retry() && (l_ack_data = m_executed_messages.find_acknowledge_data(l_message_id)) != nullptr)
 				{
 					// discard duplicate message
+					send_message(bc_acknowledge_network_message(l_message_id, *l_ack_data));
 					continue;
-				}
-				
-				if (l_message->need_acknowledgment())
-				{
-					send_message(bc_acknowledge_network_message(*l_message));
-					m_executed_retry_messages.add_id(l_message_id);
 				}
 				
 				l_message->execute(bc_network_message_client_context
 				{
 					*this
 				});
+
+				if (l_message->need_acknowledgment())
+				{
+					auto l_ack_data = l_message->get_acknowledgment_data();
+					send_message(bc_acknowledge_network_message(l_message_id, l_ack_data));
+					m_executed_messages.add_acknowledged_message(l_message_id, std::move(l_ack_data));
+				}
 				
 				l_max_message_id = std::max(l_max_message_id, l_message_id);
 			}

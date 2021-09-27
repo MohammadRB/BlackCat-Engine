@@ -13,7 +13,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/System/Network/bcNetworkManager.h"
 #include "Game/System/Network/bcNetworkMessageSerializationBuffer.h"
-#include "Game/System/Network/bcNetworkMessageIdBuffer.h"
+#include "Game/System/Network/bcNetworkMessageAcknowledgeBuffer.h"
 #include "Game/System/Network/Message/bcNetworkMessage.h"
 #include "Game/System/Network/Client/bcNetworkClientManagerHook.h"
 #include "Game/System/Network/Client/bcClientSocketStateMachine.h"
@@ -108,7 +108,7 @@ namespace black_cat
 			bc_network_message_id m_last_executed_message_id;
 			core::bc_vector<bc_network_message_ptr> m_messages;
 			core::bc_vector<bc_message_with_time> m_messages_waiting_acknowledgment;
-			bc_network_message_id_buffer m_executed_retry_messages;
+			bc_network_message_acknowledge_buffer m_executed_messages;
 
 			core::bc_memory_stream m_memory_buffer;
 			bc_network_message_serialization_buffer m_messages_buffer;

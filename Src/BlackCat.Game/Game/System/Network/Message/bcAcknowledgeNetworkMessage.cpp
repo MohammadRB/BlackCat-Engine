@@ -17,11 +17,11 @@ namespace black_cat
 		{
 		}
 
-		bc_acknowledge_network_message::bc_acknowledge_network_message(const bci_network_message& p_message)
-			: bc_acknowledge_network_message()
+		bc_acknowledge_network_message::bc_acknowledge_network_message(bc_network_message_id p_id, core::bc_string p_ack_data)
+			: bci_network_message(message_name()),
+			m_ack_id(p_id),
+			m_ack_data(std::move(p_ack_data))
 		{
-			m_ack_id = p_message.get_id();
-			m_ack_data = p_message.get_acknowledgment_data();
 		}
 
 		bc_acknowledge_network_message::bc_acknowledge_network_message(bc_acknowledge_network_message&&) noexcept = default;

@@ -286,7 +286,8 @@ namespace black_cat
 
 			if (l_msg_ite == std::end(l_messages))
 			{
-				core::bc_log(core::bc_log_type::error) << "no message was found with id " << p_ack_id << " to acknowledge" << core::bc_lend;
+				// It is possible multiple ack message arrive but only one of them will see original message
+				core::bc_log(core::bc_log_type::warning) << "no message was found with id " << p_ack_id << " to acknowledge" << core::bc_lend;
 				return;
 			}
 
@@ -421,7 +422,7 @@ namespace black_cat
 			{
 				auto l_rtt_multiplier = 4;
 #ifdef BC_DEBUG
-				l_rtt_multiplier = 10;
+				l_rtt_multiplier *= 3;
 #endif
 				
 				l_msg.m_elapsed += p_clock.m_elapsed;
@@ -547,9 +548,11 @@ namespace black_cat
 						continue;
 					}
 
-					if (l_message->get_is_retry() && l_client->executed_retry_message_id_exist(l_message_id))
+					core::bc_string* l_ack_data;
+					if (l_message->get_is_retry() && (l_ack_data = l_client->find_acknowledge_data(l_message_id)) != nullptr)
 					{
 						// discard duplicate message
+						l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message_id, *l_ack_data)));
 						continue;
 					}
 
@@ -561,8 +564,9 @@ namespace black_cat
 
 					if (l_message->need_acknowledgment())
 					{
-						l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(*l_message)));
-						l_client->add_executed_retry_message_id(l_message_id);
+						auto l_ack_data = l_message->get_acknowledgment_data();
+						l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message_id, l_ack_data)));
+						l_client->add_acknowledged_message(l_message_id, std::move(l_ack_data));
 					}
 
 					l_max_message_id = std::max(l_max_message_id, l_message_id);
@@ -597,8 +601,9 @@ namespace black_cat
 
 				// after message execution client should have added
 				auto* l_client = _find_client(p_address);
-				l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(*l_message)));
-				l_client->add_executed_retry_message_id(l_message->get_id());
+				auto l_ack_data = l_message->get_acknowledgment_data();
+				l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message->get_id(), l_ack_data)));
+				l_client->add_acknowledged_message(l_message->get_id(), std::move(l_ack_data));
 
 				return l_client;
 			}
