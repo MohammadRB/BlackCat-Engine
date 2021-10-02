@@ -110,6 +110,10 @@ namespace black_cat
 						{
 							m_px_actor_ref->set_kinematic_target(physics::bc_transform(l_world_transform_event->get_transform()));
 						}
+						else
+						{
+							m_px_actor_ref->set_global_pose(physics::bc_transform(l_world_transform_event->get_transform()));
+						}
 					}
 				}
 				return;

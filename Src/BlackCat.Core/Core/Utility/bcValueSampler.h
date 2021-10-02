@@ -2,9 +2,8 @@
 
 #pragma once
 
-#include "Core/Container/bcArray.h"
 #include "CorePlatform/bcType.h"
-#include <cstring>
+#include "Core/Container/bcArray.h"
 
 namespace black_cat
 {
@@ -14,7 +13,7 @@ namespace black_cat
 		class bc_value_sampler
 		{
 		public:
-			bc_value_sampler(TValue p_default_value);
+			explicit bc_value_sampler(TValue p_default_value);
 
 			bc_value_sampler(const bc_value_sampler&) noexcept;
 

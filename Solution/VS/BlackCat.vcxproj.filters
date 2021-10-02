@@ -213,6 +213,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcLightFlarePass.h">
       <Filter>BlackCat\RenderPass\PostProcess</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRigidDynamicNetworkActorController.h">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -334,6 +337,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcLightFlarePass.cpp">
       <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRigidDynamicNetworkActorController.cpp">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -19,6 +19,7 @@ namespace black_cat
 			debug = 2,
 			warning = 4,
 			error = 8,
+			only_file = 16,
 			all = info | debug | warning | error
 		};
 		

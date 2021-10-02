@@ -5,7 +5,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcSpan.h"
 #include "Core/File/bcMemoryStream.h"
-#include "Core/Math/bcValueSampler.h"
+#include "Core/Utility/bcValueSampler.h"
 #include "PlatformImp/Network/bcNonBlockSocket.h"
 #include "Game/System/Network/bcNetworkMessageSerializationBuffer.h"
 #include "Game/System/Network/Server/bcServerTcpClientSocketStateMachine.h"

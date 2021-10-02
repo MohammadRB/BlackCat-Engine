@@ -23,6 +23,7 @@
     },
     {
       "name": "box-server",
+      "controller": "rigid_dynamic_network",
       "components": [
         {
           "name": "simple_mesh",
@@ -53,6 +54,7 @@
     },
     {
       "name": "box-client",
+      "controller": "rigid_dynamic_network",
       "components": [
         {
           "name": "simple_mesh",

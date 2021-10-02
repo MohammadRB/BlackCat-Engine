@@ -6,7 +6,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcSpan.h"
 #include "Core/File/bcMemoryStream.h"
-#include "Core/Math/bcValueSampler.h"
+#include "Core/Utility/bcValueSampler.h"
 #include "PlatformImp/Network/bcNetworkAddress.h"
 #include "Game/System/Network/bcNetworkMessageAcknowledgeBuffer.h"
 #include "Game/System/Network/bcNetworkMessageSerializationBuffer.h"
@@ -42,9 +42,9 @@ namespace black_cat
 
 			void set_last_sync_time(bc_network_packet_time p_time) noexcept;
 
-			bc_network_packet_time get_rtt_time() const noexcept;
+			bc_network_packet_time get_tt_time() const noexcept;
 
-			void add_rtt_time(bc_network_packet_time p_time) noexcept;
+			void add_tt_time(bc_network_packet_time p_time) noexcept;
 
 			void set_last_executed_message_id(bc_network_message_id p_id) noexcept;
 
@@ -66,7 +66,7 @@ namespace black_cat
 
 			core::bc_string* find_acknowledge_data(bc_network_message_id p_id) noexcept;
 			
-			core::bc_const_span<bc_actor> get_replicated_actors() const;
+			core::bc_span<bc_actor> get_replicated_actors();
 			
 			void add_replicated_actor(bc_actor p_actor);
 
@@ -78,7 +78,7 @@ namespace black_cat
 
 			bool m_ready_for_sync;
 			bc_network_packet_time m_last_sync_time;
-			core::bc_value_sampler<bc_network_packet_time, 64> m_rtt_sampler;
+			core::bc_value_sampler<bc_network_packet_time, 64> m_tt_sampler;
 
 			bc_network_message_id m_last_executed_message_id;
 			core::bc_vector<bc_network_message_ptr> m_messages;
@@ -92,7 +92,7 @@ namespace black_cat
 			: m_address(p_address),
 			m_ready_for_sync(false),
 			m_last_sync_time(0),
-			m_rtt_sampler(20),
+			m_tt_sampler(20),
 			m_last_executed_message_id(0),
 			m_executed_messages(25)
 		{
@@ -102,7 +102,7 @@ namespace black_cat
 			: m_address(std::move(p_other.m_address)),
 			m_ready_for_sync(p_other.m_ready_for_sync),
 			m_last_sync_time(p_other.m_last_sync_time),
-			m_rtt_sampler(std::move(p_other.m_rtt_sampler)),
+			m_tt_sampler(std::move(p_other.m_tt_sampler)),
 			m_last_executed_message_id(p_other.m_last_executed_message_id),
 			m_messages(std::move(p_other.m_messages)),
 			m_messages_waiting_acknowledgment(std::move(p_other.m_messages_waiting_acknowledgment)),
@@ -118,7 +118,7 @@ namespace black_cat
 			m_address = std::move(p_other.m_address);
 			m_ready_for_sync = p_other.m_ready_for_sync;
 			m_last_sync_time = p_other.m_last_sync_time;
-			m_rtt_sampler = std::move(p_other.m_rtt_sampler);
+			m_tt_sampler = std::move(p_other.m_tt_sampler);
 			m_last_executed_message_id = p_other.m_last_executed_message_id;
 			m_messages = std::move(p_other.m_messages);
 			m_messages_waiting_acknowledgment = std::move(p_other.m_messages_waiting_acknowledgment);
@@ -163,14 +163,14 @@ namespace black_cat
 			m_last_sync_time = p_time;
 		}
 		
-		inline bc_network_packet_time bc_network_server_manager_client::get_rtt_time() const noexcept
+		inline bc_network_packet_time bc_network_server_manager_client::get_tt_time() const noexcept
 		{
-			return m_rtt_sampler.average_value();
+			return m_tt_sampler.average_value();
 		}
 
-		inline void bc_network_server_manager_client::add_rtt_time(bc_network_packet_time p_time) noexcept
+		inline void bc_network_server_manager_client::add_tt_time(bc_network_packet_time p_time) noexcept
 		{
-			m_rtt_sampler.add_sample(p_time);
+			m_tt_sampler.add_sample(p_time);
 		}
 
 		inline void bc_network_server_manager_client::set_last_executed_message_id(bc_network_message_id p_id) noexcept
@@ -247,9 +247,9 @@ namespace black_cat
 			return m_executed_messages.find_acknowledge_data(p_id);
 		}
 
-		inline core::bc_const_span<bc_actor> bc_network_server_manager_client::get_replicated_actors() const
+		inline core::bc_span<bc_actor> bc_network_server_manager_client::get_replicated_actors()
 		{
-			return core::bc_make_cspan(m_replicated_actors);
+			return core::bc_make_span(m_replicated_actors);
 		}
 
 		inline void bc_network_server_manager_client::add_replicated_actor(bc_actor p_actor)

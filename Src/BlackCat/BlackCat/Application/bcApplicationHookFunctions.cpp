@@ -14,6 +14,7 @@
 #include "Core/bcUtility.h"
 #include "Game/Application/bcEngineApplicationParameter.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/System/Input/bcFileLogger.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/System/Script/bcScriptBinding.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
@@ -71,6 +72,7 @@
 #include "BlackCat/SampleImp/ActorController/bcRocketActorController.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotController.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotCameraController.h"
+#include "BlackCat/SampleImp/ActorController/bcRigidDynamicNetworkActorController.h"
 #include "BlackCat/SampleImp/Particle/bcExplosionParticle.h"
 #include "BlackCat/SampleImp/Particle/bcWeaponParticle.h"
 
@@ -93,9 +95,9 @@ namespace black_cat
 #endif
 		core::bc_service_manager::start_up();
 
-		core::bc_register_service(core::bc_make_service<core::bc_logger>());
+		auto* l_logger = core::bc_register_service(core::bc_make_service<core::bc_logger>());
 #ifdef BC_DEBUG
-		core::bc_get_service<core::bc_logger>()->register_listener(core::bc_log_type::all, core::bc_make_unique<platform::bc_ide_logger>(core::bc_alloc_type::program));
+		l_logger->register_listener(core::bc_log_type::all, core::bc_make_unique<platform::bc_ide_logger>(core::bc_alloc_type::program));
 #endif
 		core::bc_register_service
 		(
@@ -119,6 +121,16 @@ namespace black_cat
 			*l_game_system
 		));
 		core::bc_register_service(std::move(l_game_system));
+
+		l_logger->register_listener
+		(
+			core::bc_log_type::all, 
+			core::bc_make_unique<game::bc_file_logger>(game::bc_file_logger
+			(
+				core::bc_get_service<game::bc_game_system>()->get_file_system().get_content_data_path(bcL("Log")).c_str(),
+				p_parameters.m_app_parameters.m_app_name
+			))
+		);
 	}
 
 	void bc_register_engine_loaders(game::bc_engine_application_parameter& p_parameters)
@@ -187,7 +199,8 @@ namespace black_cat
 			game::bc_actor_controller_register<bc_explosion_actor_controller>("explosion"),
 			game::bc_actor_controller_register<bc_rocket_controller>("rocket"),
 			game::bc_actor_controller_register<bc_xbot_controller>("xbot"),
-			game::bc_actor_controller_register<bc_xbot_camera_controller>("xbot_player")
+			game::bc_actor_controller_register<bc_xbot_camera_controller>("xbot_player"),
+			game::bc_actor_controller_register<bc_rigid_dynamic_network_actor_controller>("rigid_dynamic_network")
 		);
 	}
 

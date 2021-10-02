@@ -69,11 +69,11 @@ namespace black_cat
 
 			// If nodes in underlying data structure modify bits(like doubly linked list) override this function
 			// to return correct pointers /
-			bcInline virtual NodeType* getNode() noexcept(true)
+			BC_INLINE virtual NodeType* getNode() noexcept(true)
 			{
 				return mPointer.load(core_platform::bc_memory_order::seqcst);
 			}
-			bcInline core_platform::bc_atomic< NodeType* >* getAtomicNode() noexcept(true)
+			BC_INLINE core_platform::bc_atomic< NodeType* >* getAtomicNode() noexcept(true)
 			{
 				return &mPointer;
 			}
@@ -175,7 +175,7 @@ namespace black_cat
 					mAllocator->free(mFreeList);
 				}
 
-				bcInline void addToFreeList(Type pValue) noexcept(true)
+				BC_INLINE void addToFreeList(Type pValue) noexcept(true)
 				{
 					mFreeList[mCount] = pValue;
 					++mCount;
@@ -183,7 +183,7 @@ namespace black_cat
 					BC_ASSERT(mCount <= mCapacity);
 				}
 
-				bcInline Type getFreeItem() noexcept(true)
+				BC_INLINE Type getFreeItem() noexcept(true)
 				{
 					BC_ASSERT(mCount > 0);
 
@@ -353,7 +353,7 @@ namespace black_cat
 			//Allocator mAllocator;
 			
 		private:
-			bcInline void _cleanUpLocal()
+			BC_INLINE void _cleanUpLocal()
 			{
 				bcUINT32 lThreadIndex = _getCurrentThreadIndex();
 				ThreadData& lData = mThreadData[lThreadIndex];
@@ -367,7 +367,7 @@ namespace black_cat
 				}
 			}
 
-			bcInline void _cleanUpAll()
+			BC_INLINE void _cleanUpAll()
 			{
 				for(bcUINT32 lThread = 0; lThread < mConfig->mNumThread; ++lThread)
 				{
@@ -388,7 +388,7 @@ namespace black_cat
 				}
 			}
 
-			bcInline bool _isInHPList(NodeType** pPlist, bcUINT32 pNumList, NodeType* lNode)
+			BC_INLINE bool _isInHPList(NodeType** pPlist, bcUINT32 pNumList, NodeType* lNode)
 			{
 				for(bcUINT32 i = 0; i < pNumList; ++i)
 				{
@@ -398,7 +398,7 @@ namespace black_cat
 				return false;
 			}
 				
-			bcInline void _scan()
+			BC_INLINE void _scan()
 			{
 				bcUINT32 lThreadIndex = _getCurrentThreadIndex();
 				ThreadData& lData = mThreadData[lThreadIndex];
@@ -545,7 +545,7 @@ namespace black_cat
 				//mMyIndex.Destroy();
 			}
 
-			bcInline NodeType* deRefLink(LinkType* pLink)
+			BC_INLINE NodeType* deRefLink(LinkType* pLink)
 			{
 				LinkType* lLink = pLink;
 
@@ -566,7 +566,7 @@ namespace black_cat
 					}
 				}
 			}
-			bcInline void ref(NodeType* pNode)
+			BC_INLINE void ref(NodeType* pNode)
 			{
 				NodeType* lNode = pNode;
 
@@ -576,7 +576,7 @@ namespace black_cat
 
 				lHP.store(lNode, core_platform::bc_memory_order::seqcst);
 			}
-			bcInline void releaseRef(NodeType* pNode)
+			BC_INLINE void releaseRef(NodeType* pNode)
 			{
 				bcUINT32 lThreadIndex = _getCurrentThreadIndex();
 				bcINT32 lIndex;
@@ -629,7 +629,7 @@ namespace black_cat
 				return false;
 			}*/
 			// TODO check this function for concurrency problem
-			bcInline bool compareAndSwapRef(LinkType* pLink, LinkType* pExpected, LinkType* pNew)
+			BC_INLINE bool compareAndSwapRef(LinkType* pLink, LinkType* pExpected, LinkType* pNew)
 			{
 				LinkType* lLink = pLink;
 				LinkType* lExpected = pExpected;
@@ -690,7 +690,7 @@ namespace black_cat
 				}
 			}*/
 			// TODO check this function for concurrency problem
-			bcInline void storeRef(LinkType* pLink, LinkType* pNew)
+			BC_INLINE void storeRef(LinkType* pLink, LinkType* pNew)
 			{
 				LinkType* lLink = pLink;
 				LinkType* lNew = pNew;
@@ -711,7 +711,7 @@ namespace black_cat
 			}
 
 			// If you don't call object constructure in _alloc function, don't forget to call that after this function
-			bcInline NodeType* newNode()
+			BC_INLINE NodeType* newNode()
 			{
 				//NodeType* lNode = mAllocator.Alloc(sizeof(NodeType));
 				NodeType* lNode = static_cast<NodeType*>(mConfig->_alloc());
@@ -726,7 +726,7 @@ namespace black_cat
 				return lNode;
 			}
 			// Call object deconstructure in _free function
-			bcInline void deleteNode(NodeType* pNode)
+			BC_INLINE void deleteNode(NodeType* pNode)
 			{
 				NodeType* lNode = pNode;
 				releaseRef(lNode);

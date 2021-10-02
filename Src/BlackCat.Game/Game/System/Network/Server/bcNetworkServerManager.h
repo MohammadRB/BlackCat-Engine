@@ -7,7 +7,6 @@
 #include "Core/Concurrency/bcMutexTest.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
-#include "Core/Math/bcValueSampler.h"
 #include "Core/File/bcMemoryStream.h"
 #include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "PlatformImp/Network/bcNetworkAddress.h"
@@ -89,7 +88,7 @@ namespace black_cat
 			
 			bc_actor create_actor(const bcCHAR* p_entity_name) override;
 
-			bc_actor get_actor(bc_actor_network_id p_actor_network_id) override;
+			bc_replicated_actor get_actor(bc_actor_network_id p_actor_network_id) override;
 
 			// Private methods
 			

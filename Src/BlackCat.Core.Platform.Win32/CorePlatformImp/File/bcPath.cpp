@@ -196,10 +196,11 @@ namespace black_cat
 		bool bc_platform_path<g_api_win32>::is_file() const
 		{
 			if (!exist())
+			{
 				return false;
+			}
 
 			DWORD l_attributes = GetFileAttributes(m_pack.m_path.c_str());
-
 			if (l_attributes == INVALID_FILE_ATTRIBUTES)
 			{
 				win_call(false);
@@ -213,6 +214,19 @@ namespace black_cat
 		bool bc_platform_path<g_api_win32>::exist() const
 		{
 			return PathFileExists(m_pack.m_path.c_str());
+		}
+
+		template< >
+		BC_COREPLATFORMIMP_DLL
+		void bc_platform_path<g_api_win32>::create_directory() const noexcept(false)
+		{
+			CreateDirectory(m_pack.m_path.c_str(), nullptr);
+			
+			const auto l_last_error = GetLastError();
+			if(l_last_error != S_OK && l_last_error != ERROR_ALREADY_EXISTS)
+			{
+				win_call(false);
+			}
 		}
 
 		template< >

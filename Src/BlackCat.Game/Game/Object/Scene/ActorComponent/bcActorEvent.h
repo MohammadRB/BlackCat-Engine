@@ -22,7 +22,7 @@ namespace black_cat
 			void set_next(bc_actor_event* p_event) noexcept;
 
 		protected:
-			bc_actor_event(const bcCHAR* p_name, bc_actor_event* p_next = nullptr) noexcept;
+			explicit bc_actor_event(const bcCHAR* p_name) noexcept;
 
 			bc_actor_event(const bc_actor_event& p_other) noexcept;
 
@@ -44,9 +44,9 @@ namespace black_cat
 			m_next = p_event;
 		}
 
-		inline bc_actor_event::bc_actor_event(const bcCHAR* p_name, bc_actor_event* p_next) noexcept
+		inline bc_actor_event::bc_actor_event(const bcCHAR* p_name) noexcept
 			: core::bc_event(p_name),
-			m_next(p_next)
+			m_next(nullptr)
 		{
 		}
 

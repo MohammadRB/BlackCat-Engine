@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CorePlatformImp/Utility/bcClock.h"
-#include "Core/Math/bcValueSampler.h"
-#include <numeric>
+#include "Core/Utility/bcValueSampler.h"
 
 namespace black_cat
 {

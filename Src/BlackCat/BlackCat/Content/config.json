@@ -24,5 +24,15 @@
     "rps_txt_drw"
   ],
   "key_values": {
+    "camera_position": [
+      45.0,
+      40.0,
+      -870.0
+    ],
+    "camera_lookat": [
+      45.0,
+      40.0,
+      -869.0
+    ]
   }
 }

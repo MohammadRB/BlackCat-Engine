@@ -64,9 +64,16 @@ namespace black_cat
 				return;
 			}
 			
-			core::bc_estring l_message;
+			core::bc_estring_frame l_message;
 			platform::bc_console_window_text_color l_color;
 
+#ifdef BC_UNICODE
+			l_message.reserve(std::wcslen(p_msg) + 10);
+#else
+			l_message.reserve(std::strlen(p_msg) + 10);
+#endif
+			
+			
 			switch (p_type)
 			{
 			case bc_console_output_type::info: 

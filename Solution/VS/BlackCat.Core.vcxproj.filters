@@ -291,9 +291,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcStopWatch.h">
       <Filter>Core\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcValueSampler.h">
-      <Filter>Core\Math</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcCurve.h">
       <Filter>Core\Math</Filter>
     </ClInclude>
@@ -334,6 +331,12 @@
       <Filter>Core\File</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcLoggerOutputStream.h">
+      <Filter>Core\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcValueSampler.h">
+      <Filter>Core\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcValueChangeRateSampler.h">
       <Filter>Core\Utility</Filter>
     </ClInclude>
   </ItemGroup>

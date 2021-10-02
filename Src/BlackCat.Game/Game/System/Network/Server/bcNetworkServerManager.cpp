@@ -171,7 +171,8 @@ namespace black_cat
 					auto& l_client = m_clients[l_ite];
 
 					const auto l_elapsed_since_last_sync = bc_current_packet_time() - l_client.get_last_sync_time();
-					if (l_elapsed_since_last_sync > l_client.get_rtt_time())
+					const auto l_tt_time = l_client.get_tt_time();
+					if (l_elapsed_since_last_sync > l_tt_time)
 					{
 						_send_to_client(p_context.m_clock, l_client);
 						bc_server_socket_state_machine::update(p_context.m_clock);
@@ -378,7 +379,7 @@ namespace black_cat
 			return l_actor;
 		}
 
-		bc_actor bc_network_server_manager::get_actor(bc_actor_network_id p_actor_network_id)
+		bci_network_message_deserialization_visitor::bc_replicated_actor bc_network_server_manager::get_actor(bc_actor_network_id p_actor_network_id)
 		{
 			{
 				core_platform::bc_mutex_guard l_lock(m_actors_lock);
@@ -386,10 +387,10 @@ namespace black_cat
 				const auto l_ite = m_network_actors.find(p_actor_network_id);
 				if (l_ite == std::end(m_network_actors))
 				{
-					return bc_actor();
+					return { bc_actor(), false };
 				}
 
-				return l_ite->second;
+				return { l_ite->second, false };
 			}
 		}
 
@@ -426,7 +427,7 @@ namespace black_cat
 #endif
 				
 				l_msg.m_elapsed += p_clock.m_elapsed;
-				if (l_msg.m_elapsed > p_client.get_rtt_time() * l_rtt_multiplier)
+				if (l_msg.m_elapsed > p_client.get_tt_time() * l_rtt_multiplier)
 				{
 					l_msg.m_time = p_current_time;
 					l_msg.m_elapsed = 0;
@@ -451,7 +452,7 @@ namespace black_cat
 
 						for (auto& l_actor : m_network_actors)
 						{
-							// sync if actor is active
+							// TODO sync if actor is active
 							p_client.add_message(bc_make_network_message(bc_actor_sync_network_message(std::get<bc_actor>(l_actor))));
 						}
 					}
@@ -573,7 +574,14 @@ namespace black_cat
 				}
 
 				l_client->set_last_executed_message_id(l_max_message_id);
-				l_client->add_rtt_time(bc_elapsed_packet_time(l_packet_time));
+				l_client->add_tt_time(bc_elapsed_packet_time(l_packet_time));
+
+				const auto l_tt_time = l_client->get_tt_time();
+				for(auto& l_actor : l_client->get_replicated_actors())
+				{
+					auto* l_network_component = l_actor.get_component<bc_network_component>();
+					l_network_component->set_ping(l_tt_time);
+				}
 			}
 
 			m_hook->message_packet_received(l_bytes_received, core::bc_make_cspan(l_messages));

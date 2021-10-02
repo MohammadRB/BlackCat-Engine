@@ -181,7 +181,7 @@ namespace black_cat
 
 				for (bci_actor_component* l_component : l_components)
 				{
-					l_component->update(bc_actor_component_update_content(p_clock, m_query_manager, m_game_system, l_actor));
+					l_component->update(bc_actor_component_update_content(p_clock, m_query_manager, m_game_system, l_actor, true));
 				}
 
 				l_components.clear();

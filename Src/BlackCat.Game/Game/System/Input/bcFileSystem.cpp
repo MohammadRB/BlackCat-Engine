@@ -16,10 +16,10 @@ namespace black_cat
 			: m_content_manager(&p_content_manager),
 			m_content_stream_manager(&p_content_stream_manager)
 		{
-			core::bc_path l_execute_path(core::bc_path(core::bc_path::get_program_path().c_str()).get_directory().c_str());
+			const auto l_execute_path = core::bc_path(core::bc_path(core::bc_path::get_program_path().c_str()).get_directory().c_str());
 			m_execute_path = l_execute_path.get_string();
 
-			core::bc_path l_temp = l_execute_path;
+			auto l_temp = l_execute_path;
 			l_temp.combine(core::bc_path(bcL("Content")));
 			m_content_base_path = l_temp.get_string();
 

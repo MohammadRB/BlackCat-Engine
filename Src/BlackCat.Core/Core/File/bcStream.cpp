@@ -26,7 +26,7 @@ namespace black_cat
 				return false;
 			}
 
-			return p_stream.read(reinterpret_cast< bcBYTE* >(p_char), sizeof(bcWCHAR)) == sizeof(bcWCHAR);
+			return p_stream.read(reinterpret_cast<bcBYTE*>(p_char), sizeof(bcWCHAR)) == sizeof(bcWCHAR);
 		}
 
 		bool bc_read_line(bci_stream_adapter& p_stream, bc_string_frame& p_line)
@@ -103,6 +103,56 @@ namespace black_cat
 			}
 
 			return l_read;
+		}
+
+		bool bc_write_char(bci_stream_adapter& p_stream, const bcCHAR* p_char)
+		{
+			if (!p_stream.can_write())
+			{
+				return false;
+			}
+
+			return p_stream.write(p_char, sizeof(bcCHAR)) == sizeof(bcCHAR);
+		}
+
+		bool bc_write_char(bci_stream_adapter& p_stream, const bcWCHAR* p_char)
+		{
+			if (!p_stream.can_write())
+			{
+				return false;
+			}
+
+			return p_stream.write(reinterpret_cast<const bcBYTE*>(p_char), sizeof(bcWCHAR)) == sizeof(bcWCHAR);
+		}
+
+		bool bc_write_line(bci_stream_adapter& p_stream, const bcCHAR* p_line, bcSIZE p_length)
+		{
+			if (!p_stream.can_write())
+			{
+				return false;
+			}
+
+			const auto l_size = p_length * sizeof(bcCHAR);
+			const bool l_write = p_stream.write(p_line, l_size) == l_size;
+
+			p_stream.write("\n", sizeof(bcCHAR));
+			
+			return l_write;
+		}
+
+		bool bc_write_line(bci_stream_adapter& p_stream, const bcWCHAR* p_line, bcSIZE p_length)
+		{
+			if (!p_stream.can_write())
+			{
+				return false;
+			}
+
+			const auto l_size = p_length * sizeof(bcWCHAR);
+			const bool l_write = p_stream.write(reinterpret_cast<const bcBYTE*>(p_line), l_size) == l_size;
+
+			p_stream.write(reinterpret_cast<const bcBYTE*>(L"\n"), sizeof(bcWCHAR));
+			
+			return l_write;
 		}
 	}
 }

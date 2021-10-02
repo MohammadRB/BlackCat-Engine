@@ -27,21 +27,21 @@ namespace black_cat
 
 			~bc_platform_condition_variable();
 
-			bcInline void notify_one();
+			BC_INLINE void notify_one();
 
-			bcInline void notify_all() noexcept(true);
+			BC_INLINE void notify_all() noexcept(true);
 
 			template< typename Lockable >
-			bcInline void wait(Lockable& p_lock);
+			BC_INLINE void wait(Lockable& p_lock);
 
 			template < typename Lockable, typename Predicate >
-			bcInline void wait(Lockable& p_lock, Predicate p_pred);
+			BC_INLINE void wait(Lockable& p_lock, Predicate p_pred);
 
 			template < typename Lockable >
-			bcInline bool wait_for(Lockable& p_lock, const bcUINT64 p_nano);
+			BC_INLINE bool wait_for(Lockable& p_lock, const bcUINT64 p_nano);
 
 			template < typename Lockable, typename Predicate >
-			bcInline bool wait_for(Lockable& p_lock, const bcUINT64 p_nano, Predicate p_pred);
+			BC_INLINE bool wait_for(Lockable& p_lock, const bcUINT64 p_nano, Predicate p_pred);
 
 		protected:
 

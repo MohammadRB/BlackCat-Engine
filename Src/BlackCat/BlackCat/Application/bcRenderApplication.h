@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/bcEvent.h"
-#include "Core/Math/bcValueSampler.h"
+#include "Core/Utility/bcValueSampler.h"
 #include "Core/Utility/bcStopWatch.h"
 #include "Game/Application/bcRenderApplication.h"
 #include "Game/System/bcGameSystem.h"

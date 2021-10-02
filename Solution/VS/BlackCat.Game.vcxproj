@@ -349,6 +349,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorEvent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorController.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorNetworkController.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcEntityManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScene.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcSceneCheckPoint.h" />
@@ -411,6 +412,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCameraInstance.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcChasingCamera.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcConfigFile.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFileLogger.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFileSystem.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFreeCamera.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Input\bcGlobalConfig.h" />
@@ -556,6 +558,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcCameraFrustum.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcChasingCamera.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcConfigFile.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFileLogger.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFileSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFreeCamera.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcGlobalConfig.cpp" />

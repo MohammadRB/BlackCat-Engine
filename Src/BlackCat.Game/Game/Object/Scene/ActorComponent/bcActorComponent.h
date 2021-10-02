@@ -99,13 +99,15 @@ namespace black_cat
 
 		struct bc_actor_component_network_load_context
 		{
-			bc_actor_component_network_load_context(const core::bc_json_key_value& p_parameters, bc_actor& p_actor)
+			bc_actor_component_network_load_context(const core::bc_json_key_value& p_parameters, bc_actor& p_actor, bool p_is_self_replicated = false)
 				: m_parameters(p_parameters),
+				m_is_self_replicated(p_is_self_replicated),
 				m_actor(p_actor)
 			{
 			}
 
 			const core::bc_json_key_value& m_parameters;
+			bool m_is_self_replicated;
 			bc_actor& m_actor;
 		};
 
@@ -123,11 +125,16 @@ namespace black_cat
 
 		struct bc_actor_component_update_content
 		{
-			bc_actor_component_update_content(const core_platform::bc_clock::update_param& p_clock, core::bc_query_manager& p_query_manager, bc_game_system& p_game_system, bc_actor& p_actor)
+			bc_actor_component_update_content(const core_platform::bc_clock::update_param& p_clock, 
+				core::bc_query_manager& p_query_manager, 
+				bc_game_system& p_game_system, 
+				bc_actor& p_actor, 
+				bool p_is_double_update = false)
 				: m_clock(p_clock),
 				m_query_manager(p_query_manager),
 				m_game_system(p_game_system),
-				m_actor(p_actor)
+				m_actor(p_actor),
+				m_is_double_update(p_is_double_update)
 			{
 			}
 
@@ -135,11 +142,15 @@ namespace black_cat
 			core::bc_query_manager& m_query_manager;
 			bc_game_system& m_game_system;
 			bc_actor& m_actor;
+			bool m_is_double_update;
 		};
 
 		struct bc_actor_component_event_context
 		{
-			bc_actor_component_event_context(core::bc_query_manager& p_query_manager, bc_game_system& p_game_system, bc_actor& p_actor, const bc_actor_event& p_event)
+			bc_actor_component_event_context(core::bc_query_manager& p_query_manager, 
+				bc_game_system& p_game_system, 
+				bc_actor& p_actor, 
+				const bc_actor_event& p_event)
 				: m_query_manager(p_query_manager),
 				m_game_system(p_game_system),
 				m_actor(p_actor),

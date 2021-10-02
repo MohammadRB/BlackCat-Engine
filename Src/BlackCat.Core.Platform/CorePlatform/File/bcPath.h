@@ -31,7 +31,7 @@ namespace black_cat
 			using platform_pack = bc_platform_path_pack<TPlatform>;
 
 		public:
-			explicit bc_platform_path(const bcECHAR* p_path);
+			bc_platform_path(const bcECHAR* p_path);
 
 			bc_platform_path(const bc_platform_path& p_other);
 
@@ -74,13 +74,19 @@ namespace black_cat
 			bool is_relative() const;
 
 			/**
-			 * \brief If path doesn't exist, it will return false
+			 * \brief Check if path is pointing to a file rather than a directory.
+			 * \n If path does not exist, it will return false.
 			 * \return 
 			 */
 			bool is_file() const;
 
 			bool exist() const;
 
+			/**
+			 * \brief Create directory if it does not exist 
+			 */
+			void create_directory() const noexcept(false);
+			
 			/**
 			 * \brief Delete directory or file
 			 */

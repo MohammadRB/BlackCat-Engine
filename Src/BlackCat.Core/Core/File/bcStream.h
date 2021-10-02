@@ -352,5 +352,39 @@ namespace black_cat
 		 * \return
 		 */
 		bool BC_CORE_DLL bc_read_all_lines(bci_stream_adapter& p_stream, bc_wstring_frame& p_content);
+
+		/**
+		 * \brief Write a char to stream if stream is writable and stream position isn't at end
+		 * \param p_stream
+		 * \param p_char
+		 * \return
+		 */
+		bool BC_CORE_DLL bc_write_char(bci_stream_adapter& p_stream, const bcCHAR* p_char);
+
+		/**
+		 * \brief Write a char to stream if stream is writable and stream position isn't at end
+		 * \param p_stream
+		 * \param p_char
+		 * \return
+		 */
+		bool BC_CORE_DLL bc_write_char(bci_stream_adapter& p_stream, const bcWCHAR* p_char);
+
+		/**
+		 * \brief Write a line to stream if stream is readable and stream position isn't at end
+		 * \param p_stream
+		 * \param p_line
+		 * \param p_length
+		 * \return
+		 */
+		bool BC_CORE_DLL bc_write_line(bci_stream_adapter& p_stream, const bcCHAR* p_line, bcSIZE p_length);
+
+		/**
+		 * \brief Write a line to stream if stream is readable and stream position isn't at end
+		 * \param p_stream
+		 * \param p_line
+		 * \param p_length
+		 * \return
+		 */
+		bool BC_CORE_DLL bc_write_line(bci_stream_adapter& p_stream, const bcWCHAR* p_line, bcSIZE p_length);
 	}
 }

@@ -27,6 +27,11 @@ namespace black_cat
 		public:
 			virtual ~bci_log_listener() = default;
 
+			virtual bool is_file()
+			{
+				return false;
+			}
+			
 			virtual void on_log(bc_log_type p_type, const bcECHAR* p_log) = 0;
 		};
 
@@ -75,7 +80,7 @@ namespace black_cat
 
 		private:
 			using key_type = std::underlying_type<bc_log_type>::type;
-			using map_type = bc_array<bc_vector<_bc_log_listener_container>, 4>;
+			using listener_map_type = bc_array<bc_vector<_bc_log_listener_container>, 4>;
 
 		public:
 			bc_logger();
@@ -95,24 +100,22 @@ namespace black_cat
 
 			void log_info(const bcECHAR* p_log)
 			{
-				_log(bc_log_type::info, p_log);
+				log(bc_log_type::info, p_log);
 			}
 
 			void log_debug(const bcECHAR* p_log)
 			{
-#ifdef BC_DEBUG
-				_log(bc_log_type::debug, p_log);
-#endif
+				log(bc_log_type::debug, p_log);
 			}
 
 			void log_warning(const bcECHAR* p_log)
 			{
-				_log(bc_log_type::warning, p_log);
+				log(bc_log_type::warning, p_log);
 			}
 			
 			void log_error(const bcECHAR* p_log)
 			{
-				_log(bc_log_type::error, p_log);
+				log(bc_log_type::error, p_log);
 			}
 
 			/**
@@ -128,9 +131,7 @@ namespace black_cat
 
 			bc_logger_output_stream& log_debug()
 			{
-#ifdef BC_DEBUG
 				return log(bc_log_type::debug);
-#endif
 			}
 
 			bc_logger_output_stream& log_warning()
@@ -144,14 +145,14 @@ namespace black_cat
 			}
 			
 			/**
-			 * \brief Register and take the ownership of listener. Use binary OR to pass multiple type.
+			 * \brief Register and take the ownership of listener. Use binary OR to pass multiple types.
 			 * \param p_types
 			 * \param p_listener 
 			 */
 			void register_listener(bc_log_type p_types, bc_unique_ptr<bci_log_listener> p_listener);
 
 			/**
-			 * \brief Register listener. Use binary OR to pass multiple type.
+			 * \brief Register listener. Use binary OR to pass multiple types.
 			 * \param p_types
 			 * \param p_listener 
 			 */
@@ -160,13 +161,13 @@ namespace black_cat
 			void unregister_listener(bci_log_listener* p_listener);
 
 		private:
-			void _log(bc_log_type p_type, const bcECHAR* p_log);
+			void _log(bc_log_type p_type, const bcECHAR* p_log, bool p_file_modifier);
 
 			void _register_listener(bc_log_type p_types, _bc_log_listener_container p_listener);
 
 			void _replicate_last_logs(bc_log_type p_types, bci_log_listener* p_listener);
 
-			map_type m_listeners;
+			listener_map_type m_listeners;
 			bc_thread_local<bc_logger_output_stream> m_log_stream;
 
 			core_platform::bc_mutex m_logs_mutex;

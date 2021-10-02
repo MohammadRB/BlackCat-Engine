@@ -237,7 +237,6 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcCurve.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcMatrix3f.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcMatrix4f.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcValueSampler.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcVector2f.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcVector3f.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Math\bcVector4f.h" />
@@ -311,6 +310,8 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcPtr.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcDelegate.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcSingleton.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcValueChangeRateSampler.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcValueSampler.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcVelocity.h" />
   </ItemGroup>
   <ItemGroup>

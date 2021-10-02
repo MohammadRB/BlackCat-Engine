@@ -3,3 +3,4 @@
 #pragma once
 
 #include "CorePlatform/bcType.h"
+#include "CorePlatformImp/CorePlatformImpPCH.h"

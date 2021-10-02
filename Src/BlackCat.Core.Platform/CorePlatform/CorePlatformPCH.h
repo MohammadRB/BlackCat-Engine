@@ -2,24 +2,26 @@
 
 #pragma once
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cassert>
+#include <chrono>
+#include <cmath>
+#include <cstddef>
+#include <cstdio>
 #include <cstdlib>
+#include <cstdlib>
+#include <cstring>
+#include <cwchar>
+#include <functional>
+#include <iterator>
+#include <limits>
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
-#include <cstddef>
 #include <type_traits>
-#include <functional>
-#include <math.h>
-#include <iterator>
-#include <limits>
 #include <utility>
-#include <chrono>
-#include <assert.h>
 
 #ifndef bcInline
-#define bcInline inline
+#define BC_INLINE inline
 #endif
 
 #ifndef asm

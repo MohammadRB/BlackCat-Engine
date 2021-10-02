@@ -45,22 +45,22 @@ namespace black_cat
 							core_platform::bc_memory_order::seqcst);
 					}
 
-					bcInline Node* pointer() const noexcept(true)
+					BC_INLINE Node* pointer() const noexcept(true)
 					{
 						return reinterpret_cast<Node*>(
 							reinterpret_cast<bcINT32>(mPointer.load(core_platform::bc_memory_order::seqcst)) & ptrMask);
 					}
-					bcInline bool del() const noexcept(true)
+					BC_INLINE bool del() const noexcept(true)
 					{
 						return reinterpret_cast<bcINT32>(mPointer.load(core_platform::bc_memory_order::seqcst)) & dMask;
 					}
-					bcInline NodeType* getNode() noexcept(true) override
+					BC_INLINE NodeType* getNode() noexcept(true) override
 					{
 						return reinterpret_cast<Node*>(
 							reinterpret_cast<bcINT32>(mPointer.load(core_platform::bc_memory_order::seqcst)) & ptrMask);
 					}
 
-					bcInline bool compareAndSwap(const Link& pExpected, const Link& pNew) noexcept(true)
+					BC_INLINE bool compareAndSwap(const Link& pExpected, const Link& pNew) noexcept(true)
 					{
 						Node* lExpected = pExpected.mPointer.load(core_platform::bc_memory_order::seqcst);
 						Node* lNew = pNew.mPointer.load(core_platform::bc_memory_order::seqcst);
@@ -183,7 +183,7 @@ namespace black_cat
 				mAllocator.free(lNode);
 			}
 
-			bcInline NodeType* _createNode(const ValueType& pValue)
+			BC_INLINE NodeType* _createNode(const ValueType& pValue)
 			{
 				NodeType* lNode = mMemMng.newNode();
 				BC_ASSERT((reinterpret_cast<bcINT32>(lNode)& LinkType::dMask) == 0);
@@ -191,7 +191,7 @@ namespace black_cat
 
 				return lNode;
 			}
-			bcInline NodeType* _createNode(ValueType&& pValue)
+			BC_INLINE NodeType* _createNode(ValueType&& pValue)
 			{
 				NodeType* lNode = mMemMng.newNode();
 				BC_ASSERT((reinterpret_cast<bcINT32>(lNode)& LinkType::dMask) == 0);
@@ -199,7 +199,7 @@ namespace black_cat
 
 				return lNode;
 			}
-			bcInline void _setMark(LinkType* pLink)
+			BC_INLINE void _setMark(LinkType* pLink)
 			{
 				/*while(true)
 				{
@@ -223,7 +223,7 @@ namespace black_cat
 				}
 			}
 
-			bcInline bool _next(NodeType** pNode)
+			BC_INLINE bool _next(NodeType** pNode)
 			{
 				while (true)
 				{
@@ -253,7 +253,7 @@ namespace black_cat
 						return true;
 				}
 			}
-			bcInline bool _prev(NodeType** pNode)
+			BC_INLINE bool _prev(NodeType** pNode)
 			{
 				while (true)
 				{
@@ -287,7 +287,7 @@ namespace black_cat
 				}
 			}
 
-			bcInline bool _read(NodeType* pNode, bcNullable< ValueType >* pData)
+			BC_INLINE bool _read(NodeType* pNode, bcNullable< ValueType >* pData)
 			{
 				BC_ASSERT(pNode != mHead || pNode != mTail);
 
@@ -300,7 +300,7 @@ namespace black_cat
 				return false;
 			}
 
-			bcInline void _insertBefore(NodeType* pNext, NodeType* pNode)
+			BC_INLINE void _insertBefore(NodeType* pNext, NodeType* pNode)
 			{
 				if (pNext == mHead)
 					return _insertAfter(pNext, pNode);
@@ -331,7 +331,7 @@ namespace black_cat
 				mMemMng.releaseRef(lPrev);
 				mMemMng.releaseRef(lNext);
 			}
-			bcInline void _insertAfter(NodeType* pPrev, NodeType* pNode)
+			BC_INLINE void _insertAfter(NodeType* pPrev, NodeType* pNode)
 			{
 				if (pPrev == mTail)
 					return _insertBefore(pPrev, pNode);
@@ -366,7 +366,7 @@ namespace black_cat
 			}
 
 			// Delete node and move pointer forward or backward /
-			bcInline bool _delete(Node** pNode, bcNullable< ValueType >* pData = nullptr, bool pMoveForward = true)
+			BC_INLINE bool _delete(Node** pNode, bcNullable< ValueType >* pData = nullptr, bool pMoveForward = true)
 			{
 				NodeType* lNode = *pNode;
 
@@ -420,7 +420,7 @@ namespace black_cat
 				}
 			}
 
-			bcInline NodeType* _correctPrev(NodeType* pPrev, NodeType* pNode)
+			BC_INLINE NodeType* _correctPrev(NodeType* pPrev, NodeType* pNode)
 			{
 				NodeType* lPrev = pPrev;
 				NodeType* lLastLink = nullptr;
@@ -492,7 +492,7 @@ namespace black_cat
 			}
 
 		protected:
-			bcInline NodeType* _insertBefore(NodeType* pNext, ValueType& pValue)
+			BC_INLINE NodeType* _insertBefore(NodeType* pNext, ValueType& pValue)
 			{
 				NodeType* lNode = _createNode(pValue);
 				_insertBefore(pNext, lNode);
@@ -502,7 +502,7 @@ namespace black_cat
 
 				return lNode;
 			}
-			bcInline NodeType* _insertBefore(NodeType* pNext, ValueType&& pValue)
+			BC_INLINE NodeType* _insertBefore(NodeType* pNext, ValueType&& pValue)
 			{
 				NodeType* lNode = _createNode(pValue);
 				_insertBefore(pNext, lNode);
@@ -512,7 +512,7 @@ namespace black_cat
 
 				return lNode;
 			}
-			bcInline NodeType* _insertAfter(NodeType* pPrev, ValueType& pValue)
+			BC_INLINE NodeType* _insertAfter(NodeType* pPrev, ValueType& pValue)
 			{
 				NodeType* lNode = _createNode(pValue);
 				_insertAfter(pPrev, lNode);
@@ -522,7 +522,7 @@ namespace black_cat
 
 				return lNode;
 			}
-			bcInline NodeType* _insertAfter(NodeType* pPrev, ValueType&& pValue)
+			BC_INLINE NodeType* _insertAfter(NodeType* pPrev, ValueType&& pValue)
 			{
 				NodeType* lNode = _createNode(pValue);
 				_insertAfter(pPrev, lNode);
@@ -533,7 +533,7 @@ namespace black_cat
 				return lNode;
 			}
 
-			bcInline bool _erase(NodeType** pNode, bcNullable< ValueType >* pData)
+			BC_INLINE bool _erase(NodeType** pNode, bcNullable< ValueType >* pData)
 			{
 				bool lDeleted = _delete(pNode, pData);
 				if (lDeleted)
@@ -542,8 +542,8 @@ namespace black_cat
 				return lDeleted;
 			}
 
-			bcInline bool _moveForward(NodeType** pNode) { return _next(pNode); }
-			bcInline bool _moveBackWard(NodeType** pNode) { return _prev(pNode); }
+			BC_INLINE bool _moveForward(NodeType** pNode) { return _next(pNode); }
+			BC_INLINE bool _moveBackWard(NodeType** pNode) { return _prev(pNode); }
 
 			bcLockFreeMemMng< ValueType, NodeType, LinkType, Allocator> mMemMng;
 

@@ -24,11 +24,18 @@ namespace black_cat
 		class bci_network_message_deserialization_visitor
 		{
 		public:
+			struct bc_replicated_actor
+			{
+				bc_actor m_actor;
+				bool m_is_self_replicated;
+			};
+		
+		public:
 			virtual bc_network_type get_network_type() const noexcept = 0;
 			
 			virtual bc_actor create_actor(const bcCHAR* p_entity_name) = 0;
 
-			virtual bc_actor get_actor(bc_actor_network_id p_actor_network_id) = 0;
+			virtual bc_replicated_actor get_actor(bc_actor_network_id p_actor_network_id) = 0;
 
 		protected:
 			bci_network_message_deserialization_visitor() = default;

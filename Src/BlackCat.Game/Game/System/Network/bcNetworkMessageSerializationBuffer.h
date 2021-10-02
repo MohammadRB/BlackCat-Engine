@@ -7,6 +7,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcSpan.h"
 #include "Core/File/bcMemoryStream.h"
+#include "Game/System/Network/bcNetworkDefinitions.h"
 #include "Game/System/Network/Message/bcNetworkMessage.h"
 #include "Game/bcExport.h"
 
@@ -16,8 +17,6 @@ namespace black_cat
 	{
 		class bc_network_system;
 		class bc_scene;
-		
-		using bc_network_packet_time = core_platform::bc_clock::big_clock;
 
 		BC_GAME_DLL bc_network_packet_time bc_current_packet_time() noexcept;
 

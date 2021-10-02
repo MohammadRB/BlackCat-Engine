@@ -15,7 +15,7 @@ namespace black_cat
 		class BC_CORE_DLL bc_path
 		{
 		public:
-			explicit bc_path(const bcECHAR* p_path);
+			bc_path(const bcECHAR* p_path);
 
 			bc_path(const bc_path& p_other);
 
@@ -68,13 +68,22 @@ namespace black_cat
 			bool is_relative() const;
 
 			/**
-			 * \brief If path does not exist, it will return false
-			 * \return 
+			 * \brief Check if path is pointing to a file rather than a directory.
+			 * \n If path does not exist, it will return false.
+			 * \return
 			 */
 			bool is_file() const;
 
 			bool exist() const;
 
+			/**
+			 * \brief Create directory if it does not exist
+			 */
+			void create_directory() const noexcept(false);
+
+			/**
+			 * \brief Delete directory or file
+			 */
 			void delete_path() const noexcept(false);
 
 			static bc_estring get_program_path();

@@ -155,6 +155,11 @@ namespace black_cat
 			return m_path.exist();
 		}
 
+		void bc_path::create_directory() const noexcept(false)
+		{
+			m_path.create_directory();
+		}
+
 		void bc_path::delete_path() const noexcept(false)
 		{
 			m_path.delete_path();

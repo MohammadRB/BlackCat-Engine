@@ -5,6 +5,7 @@
 #include "PlatformImp/Script/bcScriptGlobalPrototypeBuilder.h"
 #include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
 #include "Game/System/Script/bcScriptBinding.h"
+#include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
 #include "BoX.Server/Application/bxServerApplication.h"
 #include "BoX.Server/Application/bxServerScript.h"
@@ -62,6 +63,7 @@ namespace box
 	{
 	}
 
+	bcFLOAT g_elapsed_since_last = 0;
 	void bx_server_application::application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update)
 	{
 #ifdef BC_DEBUG
@@ -74,6 +76,18 @@ namespace box
 			m_server_started = true;
 		}
 #endif
+
+		g_elapsed_since_last += p_clock.m_elapsed_second;
+		if(g_elapsed_since_last > 20)
+		{
+			g_elapsed_since_last = 0;
+			
+			auto* l_scene = m_game_system->get_scene();
+			auto l_actor = l_scene->create_actor("box-server", core::bc_matrix4f::translation_matrix({ 44,33,-870 }));
+			auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
+			auto l_rigid = l_rigid_component->get_body();
+			l_rigid.set_linear_velocity(core::bc_vector3f{ .17, .05, .87 } * 40);
+		}
 	}
 
 	void bx_server_application::application_render(core_platform::bc_clock::update_param p_clock)

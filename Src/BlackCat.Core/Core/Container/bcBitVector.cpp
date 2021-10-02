@@ -189,7 +189,7 @@ namespace black_cat
 				}
 
 				p_result = (l_block_ite * (sizeof(block_t) * 8)) + l_found_bit;
-				return l_found_bit < m_capacity;
+				return p_result < m_capacity;
 			}
 
 			return false;
@@ -228,7 +228,7 @@ namespace black_cat
 
 		void bc_bit_vector::resize(bcUINT32 p_capacity, bc_alloc_type p_alloc_type)
 		{
-			const auto l_new_block_count = static_cast<bcSIZE>(std::ceilf(p_capacity / (sizeof(block_t) * 8.0f)));
+			const auto l_new_block_count = static_cast<bcSIZE>(p_capacity / (sizeof(block_t) * 8)) + 1;
 			if(l_new_block_count == m_block_count)
 			{
 				m_capacity = p_capacity;

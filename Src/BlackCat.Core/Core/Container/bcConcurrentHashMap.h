@@ -136,7 +136,7 @@ namespace black_cat
 			}
 
 			// Get successor chunk, this function will iterate top and down to found first next chunk /
-			bcInline Chunk* _getSuccessorChunk(const Chunk* pChunk)
+			BC_INLINE Chunk* _getSuccessorChunk(const Chunk* pChunk)
 			{
 				const Chunk* lChunk = pChunk;
 				Chunk* lNextChunk = nullptr;
@@ -174,7 +174,7 @@ namespace black_cat
 			}
 
 			// Get preDecessor chunk, this function will iterate top and down to found first prev chunk /
-			bcInline Chunk* _getPreDecessorChunk(const Chunk* pChunk)
+			BC_INLINE Chunk* _getPreDecessorChunk(const Chunk* pChunk)
 			{
 				const Chunk* lChunk = pChunk;
 				Chunk* lPrevChunk = nullptr;
@@ -211,7 +211,7 @@ namespace black_cat
 				}
 			}
 
-			bcInline NodeListNodeType* _nextNode(NodeListNodeType* pNode, bool pReleaseParameterNode = true)
+			BC_INLINE NodeListNodeType* _nextNode(NodeListNodeType* pNode, bool pReleaseParameterNode = true)
 			{
 				NodeType* lNode = &pNode->mValue;
 				Chunk* lChunk = lNode->mChunk;
@@ -244,7 +244,7 @@ namespace black_cat
 				return lResult;
 			}
 
-			bcInline NodeListNodeType* _prevNode(NodeListNodeType* pNode, bool pReleaseParameterNode = true)
+			BC_INLINE NodeListNodeType* _prevNode(NodeListNodeType* pNode, bool pReleaseParameterNode = true)
 			{
 				NodeType* lNode = &pNode->mValue;
 				Chunk* lChunk = lNode->mChunk;
@@ -278,7 +278,7 @@ namespace black_cat
 				return lResult;
 			}
 
-			bcInline Chunk* _getFirstChuck()
+			BC_INLINE Chunk* _getFirstChuck()
 			{
 				// For visibility of mSubLevels for other threads(cache coherency) we use mFlag /
 				bc_atomic_flag::bcAtomicFlagTestAndSet(mFlag, bcMemoryOrder_Acquire);
@@ -292,7 +292,7 @@ namespace black_cat
 
 				return lChunk;
 			}
-			bcInline Chunk* _getLastChunk()
+			BC_INLINE Chunk* _getLastChunk()
 			{
 				// For visibility of mSubLevels for other threads(cache coherency) we use mFlag /
 				bc_atomic_flag::bcAtomicFlagTestAndSet(mFlag, bcMemoryOrder_Acquire);
@@ -310,7 +310,7 @@ namespace black_cat
 				return lChunk;
 			}
 
-			bcInline NodeListNodeType* _getFirstNode()
+			BC_INLINE NodeListNodeType* _getFirstNode()
 			{
 				Chunk* lChunk = _getFirstChuck();
 				NodeIterator lBeginIterator = mNodeList.createIteratorFromReference(lChunk->mFirstItem);
@@ -318,7 +318,7 @@ namespace black_cat
 				lBeginIterator.releaseReference();
 				return _nextNode(lBeginNode, false);
 			}
-			bcInline NodeListNodeType* _getLastNode()
+			BC_INLINE NodeListNodeType* _getLastNode()
 			{
 				Chunk* lChunk = _getLastChunk();
 				NodeIterator lEndIterator = mNodeList.createIteratorFromReference(lChunk->lEndIterator);
@@ -327,12 +327,12 @@ namespace black_cat
 				return _prevNode(lEndNode, false);
 			}
 
-			bcInline HashKeyType _hashKey(const KeyType& pValue)
+			BC_INLINE HashKeyType _hashKey(const KeyType& pValue)
 			{
 				return mHash(pValue);
 			}
 
-			bcInline Chunk* _findChunk(HashKeyType pKey)
+			BC_INLINE Chunk* _findChunk(HashKeyType pKey)
 			{
 				bcUINT32 lDepth = 1;
 				Chunk* lTargetChunk = &mChunks[pKey % mLevelSizes[0]];

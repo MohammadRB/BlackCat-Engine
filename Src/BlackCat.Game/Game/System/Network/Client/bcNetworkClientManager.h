@@ -6,7 +6,7 @@
 #include "PlatformImp/Network/bcNonBlockSocket.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
-#include "Core/Math/bcValueSampler.h"
+#include "Core/Utility/bcValueSampler.h"
 #include "Core/Concurrency/bcMutexTest.h"
 #include "Core/File/bcMemoryStream.h"
 #include "PlatformImp/Network/bcNetworkAddress.h"
@@ -82,7 +82,7 @@ namespace black_cat
 			
 			bc_actor create_actor(const bcCHAR* p_entity_name) override;
 
-			bc_actor get_actor(bc_actor_network_id p_actor_network_id) override;
+			bc_replicated_actor get_actor(bc_actor_network_id p_actor_network_id) override;
 			
 			void _retry_messages_waiting_acknowledgment(bc_network_packet_time p_current_time, const core_platform::bc_clock::update_param& p_clock);
 			
@@ -98,7 +98,7 @@ namespace black_cat
 			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;
 			bci_network_client_manager_hook* m_hook;
 			bc_network_packet_time m_last_sync_time;
-			core::bc_value_sampler<bc_network_packet_time, 64> m_rtt_sampler;
+			core::bc_value_sampler<bc_network_packet_time, 64> m_tt_sampler;
 
 			core::bc_mutex_test m_actors_lock;
 			core::bc_vector<bc_actor> m_sync_actors;

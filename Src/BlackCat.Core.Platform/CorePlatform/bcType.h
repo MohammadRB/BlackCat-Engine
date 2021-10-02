@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
 #include "CorePlatform/CorePlatformPCH.h"
 
 namespace black_cat

@@ -3,10 +3,12 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Utility/bcJsonParse.h"
+#include "Core/Utility/bcLogger.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
@@ -61,18 +63,6 @@ namespace black_cat
 
 		void bc_mediate_component::load_network_instance(const bc_actor_component_network_load_context& p_context)
 		{
-			core::bc_vector3f l_position;
-			core::bc_vector3f l_euler_rot;
-
-			json_parse::bc_load(p_context.m_parameters, "pos", l_position);
-			json_parse::bc_load(p_context.m_parameters, "rot", l_euler_rot);
-
-			auto l_transform = core::bc_matrix4f::identity();
-			l_transform.set_translation(l_position);
-			l_transform.set_rotation(bc_matrix3f_rotation_zyx(l_euler_rot));
-
-			p_context.m_actor.add_event(bc_world_transform_actor_event(l_transform, bc_transform_event_type::network));
-
 			if (m_controller)
 			{
 				m_controller->load_network_instance(p_context);
@@ -81,9 +71,6 @@ namespace black_cat
 
 		void bc_mediate_component::write_network_instance(const bc_actor_component_network_write_context& p_context)
 		{
-			json_parse::bc_write(p_context.m_parameters, "pos", m_world_transform.get_translation());
-			json_parse::bc_write(p_context.m_parameters, "rot", bc_matrix4f_decompose_to_euler_angles(m_world_transform));
-
 			if (m_controller)
 			{
 				m_controller->write_network_instance(p_context);
@@ -92,7 +79,7 @@ namespace black_cat
 
 		void bc_mediate_component::update(const bc_actor_component_update_content& p_context)
 		{
-			if(m_scene && m_bound_box_changed)
+			if(m_scene && m_bound_box_changed && !p_context.m_is_double_update)
 			{
 				m_scene->update_actor(p_context.m_actor);
 				m_bound_box_changed = false;

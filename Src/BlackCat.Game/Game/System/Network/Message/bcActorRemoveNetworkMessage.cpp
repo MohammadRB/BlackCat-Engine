@@ -52,7 +52,7 @@ namespace black_cat
 				return;
 			}
 
-			m_actor = p_context.m_visitor.get_actor(*l_actor_network_id);
+			m_actor = p_context.m_visitor.get_actor(*l_actor_network_id).m_actor;
 			if (!m_actor.is_valid())
 			{
 				core::bc_log(core::bc_log_type::warning, bcL("Failed to find network actor in remove network message"));
