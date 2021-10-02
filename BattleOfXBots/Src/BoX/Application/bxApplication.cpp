@@ -203,30 +203,26 @@ namespace box
 	}
 
 	void bx_application::connecting_to_server(const platform::bc_network_address& p_address)
-	{
-		//auto [l_family, l_ip, l_port] = p_address.get_traits();
-		//core::bc_log(core::bc_log_type::info) << "connecting to server " << l_ip << ":" << l_port << core::bc_lend;
+	{	
 	}
 
 	void bx_application::connected_to_server(const platform::bc_network_address& p_address)
 	{
-		//core::bc_log(core::bc_log_type::info) << "connected to server" << core::bc_lend;
 	}
 
-	void bx_application::message_packet_sent(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
+	void bx_application::message_packet_sent(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		//core::bc_log(core::bc_log_type::debug) << "network message packet sent with size of '" << p_packet_size << "' bytes" << core::bc_lend;
-		//core::bc_log(core::bc_log_type::debug) << "network message sent with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
+		const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
+		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet sent to server: " << l_packet << core::bc_lend;
 	}
 
-	void bx_application::message_packet_received(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
+	void bx_application::message_packet_received(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		//core::bc_log(core::bc_log_type::debug) << "network message packet received with size of '" << p_packet_size << "' bytes" << core::bc_lend;
-		//core::bc_log(core::bc_log_type::debug) << "network message received with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
+		const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
+		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet received from server: " << l_packet << core::bc_lend;
 	}
 
 	void bx_application::error_occurred(const bc_network_exception* p_exception)
 	{
-		//core::bc_log(core::bc_log_type::error) << "error occurred in network connection: " << (p_exception ? p_exception->get_full_message().c_str() : "") << core::bc_lend;
 	}
 }

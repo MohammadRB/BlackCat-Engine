@@ -40,7 +40,9 @@ namespace black_cat
 			
 			bc_logger_output_stream& operator=(const bc_logger_output_stream&) = delete;
 
-			bc_logger_output_stream& start_log(bc_logger& p_logger, bc_log_type p_log_type);
+			bc_logger_output_stream& start_log(bc_logger& p_logger, bc_log_type p_log_type) noexcept;
+
+			bc_logger_output_stream& add_only_file_modifier() noexcept;
 
 			bc_logger_output_stream& operator<<(bool p_bool);
 			
@@ -241,9 +243,15 @@ namespace black_cat
 			return *this;
 		}
 
-		inline bc_logger_output_stream& bc_lend(bc_logger_output_stream& p_output_stream)
+		inline bc_logger_output_stream& bc_lend(bc_logger_output_stream& p_output_stream) noexcept
 		{
 			p_output_stream.flush_log();
+			return p_output_stream;
+		}
+
+		inline bc_logger_output_stream& bc_only_file(bc_logger_output_stream& p_output_stream) noexcept
+		{
+			p_output_stream.add_only_file_modifier();
 			return p_output_stream;
 		}
 	}

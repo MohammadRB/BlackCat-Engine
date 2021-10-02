@@ -4,8 +4,8 @@
 
 #include "PlatformImp/Network/bcNetworkDefinitions.h"
 
-#include "Platform/Network/bcNetworkAddress.h"
 #include <WinSock2.h>
+#include "Platform/Network/bcNetworkAddress.h"
 
 namespace black_cat
 {

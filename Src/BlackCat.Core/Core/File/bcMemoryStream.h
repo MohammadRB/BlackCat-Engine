@@ -60,7 +60,7 @@ namespace black_cat
 			
 			bcUINT64 get_eof_position() const override;
 			
-			bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) override;
+			bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) const override;
 			
 			bcSIZE write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write) override;
 			
@@ -223,7 +223,7 @@ namespace black_cat
 			return m_buffer_size;
 		}
 
-		inline bcSIZE bc_memory_stream::read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read)
+		inline bcSIZE bc_memory_stream::read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) const
 		{
 			const auto l_bytes_can_read = static_cast<bcSIZE>(std::max(static_cast < bcINT64>(0), m_buffer_size - static_cast<bcINT64>(m_position)));
 			const auto l_bytes_to_read = std::min(l_bytes_can_read, p_bytes_to_read);

@@ -7,6 +7,8 @@
 #include "Game/System/Script/bcDefaultGameConsole.h"
 #include "Game/System/Network/Server/bcNetworkServerManagerHook.h"
 #include "BlackCat/Application/bcRenderApplication.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 
 using namespace black_cat;
 
@@ -44,12 +46,19 @@ namespace box
 		
 		void client_disconnected() override;
 		
-		void message_packet_sent(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
+		void message_packet_sent(const platform::bc_network_address& p_client,
+			const core::bc_memory_stream& p_packet,
+			bcSIZE p_packet_size,
+			core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
 
-		void message_packet_received(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
+		void message_packet_received(const platform::bc_network_address& p_client,
+			const core::bc_memory_stream& p_packet,
+			bcSIZE p_packet_size,
+			core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
 		
-		void error_occurred(const bc_network_exception* p_exception, const platform::bc_network_address* p_client) override;
-	
+		void error_occurred(const platform::bc_network_address* p_client, const bc_network_exception* p_exception) override;
+
+	private:
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
 		platform::bc_script_context* m_server_script_context = nullptr;
 		platform::bc_script_object_ref m_server_script_object;

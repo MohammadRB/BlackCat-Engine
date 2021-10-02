@@ -6,6 +6,15 @@
 #include "Core/Container/bcString.h"
 #include "CorePlatform/bcPlatform.h"
 #include "Platform/Network/bcNetworkDefinitions.h"
+#include "Platform/bcExport.h"
+
+namespace black_cat
+{
+	namespace core
+	{
+		class bc_logger_output_stream;
+	}
+}
 
 namespace black_cat
 {
@@ -58,5 +67,7 @@ namespace black_cat
 		};
 
 		using bc_network_address = bc_platform_network_address<core_platform::g_current_platform>;
+
+		BC_PLATFORMSHARED_DLL core::bc_logger_output_stream& operator<<(core::bc_logger_output_stream& p_stream, const bc_network_address& p_address);
 	}	
 }

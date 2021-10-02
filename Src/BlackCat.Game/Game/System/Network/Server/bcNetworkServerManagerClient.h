@@ -56,9 +56,9 @@ namespace black_cat
 
 			void clear_messages() noexcept;
 
-			core::bc_span<bc_message_with_time> get_messages_waiting_acknowledgment() noexcept;
+			core::bc_span<bc_retry_message> get_messages_waiting_acknowledgment() noexcept;
 			
-			void add_message_waiting_acknowledgment_if_not_exist(bc_message_with_time p_message) noexcept;
+			void add_message_waiting_acknowledgment_if_not_exist(bc_retry_message p_message) noexcept;
 
 			void erase_message_waiting_acknowledgment(bc_network_message_id p_id) noexcept;
 
@@ -82,7 +82,7 @@ namespace black_cat
 
 			bc_network_message_id m_last_executed_message_id;
 			core::bc_vector<bc_network_message_ptr> m_messages;
-			core::bc_vector<bc_message_with_time> m_messages_waiting_acknowledgment;
+			core::bc_vector<bc_retry_message> m_messages_waiting_acknowledgment;
 			bc_network_message_acknowledge_buffer m_executed_messages;
 
 			core::bc_vector<bc_actor> m_replicated_actors;
@@ -198,18 +198,18 @@ namespace black_cat
 			m_messages.clear();
 		}
 
-		inline core::bc_span<bc_message_with_time> bc_network_server_manager_client::get_messages_waiting_acknowledgment() noexcept
+		inline core::bc_span<bc_retry_message> bc_network_server_manager_client::get_messages_waiting_acknowledgment() noexcept
 		{
 			return core::bc_make_span(m_messages_waiting_acknowledgment);
 		}
 		
-		inline void bc_network_server_manager_client::add_message_waiting_acknowledgment_if_not_exist(bc_message_with_time p_message) noexcept
+		inline void bc_network_server_manager_client::add_message_waiting_acknowledgment_if_not_exist(bc_retry_message p_message) noexcept
 		{
 			const auto l_ite = std::find_if
 			(
 				std::cbegin(m_messages_waiting_acknowledgment),
 				std::cend(m_messages_waiting_acknowledgment),
-				[&](const bc_message_with_time& p_entry)
+				[&](const bc_retry_message& p_entry)
 				{
 					return p_entry.m_message->get_id() == p_message.m_message->get_id();
 				}
@@ -229,7 +229,7 @@ namespace black_cat
 			(
 				std::begin(m_messages_waiting_acknowledgment),
 				std::end(m_messages_waiting_acknowledgment),
-				[&](const bc_message_with_time& p_msg)
+				[&](const bc_retry_message& p_msg)
 				{
 					return p_msg.m_message->get_id() == p_id;
 				}

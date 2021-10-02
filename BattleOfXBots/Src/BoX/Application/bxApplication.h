@@ -38,9 +38,9 @@ namespace box
 		
 		void connected_to_server(const platform::bc_network_address& p_address) override;
 		
-		void message_packet_sent(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
+		void message_packet_sent(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
 		
-		void message_packet_received(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
+		void message_packet_received(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
 		
 		void error_occurred(const bc_network_exception* p_exception) override;
 	

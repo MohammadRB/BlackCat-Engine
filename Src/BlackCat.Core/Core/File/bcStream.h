@@ -78,7 +78,7 @@ namespace black_cat
 			 * \param p_bytes_to_read
 			 * \return
 			 */
-			virtual bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) = 0;
+			virtual bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) const = 0;
 
 			/**
 			 * \brief Return number of bytes which has been written

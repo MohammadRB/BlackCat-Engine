@@ -112,7 +112,7 @@ namespace black_cat
 		core::bc_register_service(core::bc_make_service<core::bc_counter_value_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
-		auto l_game_system = core::bc_make_service<game::bc_game_system>();
+		auto* l_game_system = core::bc_register_service(core::bc_make_service<game::bc_game_system>());
 		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>(*core::bc_get_service<core::bc_query_manager>(), *l_game_system));
 		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>
 		(
@@ -120,14 +120,13 @@ namespace black_cat
 			*core::bc_get_service<game::bc_actor_component_manager>(),
 			*l_game_system
 		));
-		core::bc_register_service(std::move(l_game_system));
 
 		l_logger->register_listener
 		(
 			core::bc_log_type::all, 
 			core::bc_make_unique<game::bc_file_logger>(game::bc_file_logger
 			(
-				core::bc_get_service<game::bc_game_system>()->get_file_system().get_content_data_path(bcL("Log")).c_str(),
+				l_game_system->get_file_system().get_content_data_path(bcL("Log")).c_str(),
 				p_parameters.m_app_parameters.m_app_name
 			))
 		);
@@ -143,24 +142,33 @@ namespace black_cat
 		core::bc_register_loader<graphic::bc_pixel_shader_content, bc_pixel_shader_loader>("pixel_shader", core::bc_make_loader<bc_pixel_shader_loader>());
 		core::bc_register_loader<graphic::bc_compute_shader_content, bc_compute_shader_loader>("compute_shader", core::bc_make_loader<bc_compute_shader_loader>());
 		core::bc_register_loader<game::bc_mesh_collider, bc_mesh_collider_loader>("mesh_collider", core::bc_make_loader<bc_mesh_collider_loader>());
-		core::bc_register_loader<game::bc_mesh, bc_mesh_loader>("mesh", core::bc_make_loader< bc_mesh_loader >());
+		core::bc_register_loader<game::bc_mesh, bc_mesh_loader>("mesh", core::bc_make_loader<bc_mesh_loader>());
 		core::bc_register_loader<game::bc_skinned_animation, bc_skinned_animation_loader>("animation", core::bc_make_loader<bc_skinned_animation_loader>());
 		core::bc_register_loader<game::bc_scene, bc_scene_loader>
 		(
 			"scene",
 			core::bc_make_loader<bc_scene_loader>
 			(
-				[]()
-				{
-					return std::move
-					(
-						physics::bc_scene_builder()
-						.enable_locking()
-						.enable_ccd()
-						.use_simulation_callback(core::bc_make_unique<game::bc_physics_simulation_callback>())
-					);
-				},
-				std::move(p_parameters.m_app_parameters.m_scene_graph_factory)
+				bc_scene_loader
+				(
+					[]()
+					{
+						return std::move
+						(
+							physics::bc_scene_builder()
+							.enable_locking()
+							.enable_ccd()
+							.use_simulation_callback
+							(
+								core::bc_make_unique<game::bc_physics_simulation_callback>
+								(
+									game::bc_physics_simulation_callback(core::bc_get_service<game::bc_game_system>()->get_physics_system())
+								)
+							)
+						);
+					},
+					std::move(p_parameters.m_app_parameters.m_scene_graph_factory)
+				)
 			)
 		);
 		core::bc_register_loader<game::bc_scene_check_point, bc_scene_check_point_loader>("scene_check_point", core::bc_make_loader<bc_scene_check_point_loader>());

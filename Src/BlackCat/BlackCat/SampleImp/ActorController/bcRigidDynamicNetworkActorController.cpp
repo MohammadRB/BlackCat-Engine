@@ -63,15 +63,16 @@ namespace black_cat
 
 	void bc_rigid_dynamic_network_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
 	{
+		return;
 		if (p_context.m_is_double_update)
 		{
 			return;
 		}
 
-		if(p_context.m_game_system.get_network_system().get_network_type() == game::bc_network_type::client)
+		/*if(p_context.m_game_system.get_network_system().get_network_type() == game::bc_network_type::client)
 		{
 			return;
-		}
+		}*/
 		
 		const auto l_extrapolated_pos = m_network_component->get_extrapolated_value("pos", p_context.m_clock).second;
 		const auto l_extrapolated_rot = m_network_component->get_extrapolated_value("rot", p_context.m_clock).second;

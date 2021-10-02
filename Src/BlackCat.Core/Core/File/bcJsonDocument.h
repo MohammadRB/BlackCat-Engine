@@ -1157,6 +1157,7 @@ namespace black_cat
 
 				rapidjson::StringBuffer l_json_buffer;
 				rapidjson::PrettyWriter<rapidjson::StringBuffer> l_json_writer(l_json_buffer);
+				l_json_writer.SetMaxDecimalPlaces(m_max_decimal_places);
 				l_json_document.Accept(l_json_writer);
 
 				bc_string_frame l_result = l_json_buffer.GetString();
@@ -1170,6 +1171,7 @@ namespace black_cat
 
 				rapidjson::StringBuffer l_json_buffer;
 				rapidjson::Writer<rapidjson::StringBuffer> l_json_writer(l_json_buffer);
+				l_json_writer.SetMaxDecimalPlaces(m_max_decimal_places);
 				l_json_document.Accept(l_json_writer);
 
 				bc_string_frame l_result = l_json_buffer.GetString();
@@ -1206,8 +1208,19 @@ namespace black_cat
 				return get();
 			}
 
+			bcUINT32 get_max_decimal_places() const noexcept
+			{
+				return m_max_decimal_places;
+			}
+			
+			void set_max_decimal_places(bcUINT32 p_decimal_places) noexcept
+			{
+				m_max_decimal_places = p_decimal_places;
+			}
+
 		private:
 			T m_value;
+			bcUINT32 m_max_decimal_places{7};
 		};
 	}
 }

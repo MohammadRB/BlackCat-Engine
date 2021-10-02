@@ -66,6 +66,7 @@ namespace black_cat
 			const core::bc_const_span<bc_network_message_ptr>& p_messages)
 		{
 			core::bc_json_document<bc_network_packet> l_json_packet;
+			l_json_packet.set_max_decimal_places(2);
 			l_json_packet->m_time.set(p_time);
 
 			for (const auto& l_command : p_messages)

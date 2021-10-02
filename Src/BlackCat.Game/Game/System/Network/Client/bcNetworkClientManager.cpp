@@ -191,8 +191,7 @@ namespace black_cat
 
 		void bc_network_client_manager::on_enter(bc_client_socket_connecting_state& p_state)
 		{
-			auto [l_family, l_ip, l_port] = m_address.get_traits();
-			core::bc_log(core::bc_log_type::info) << "connecting to server " << l_ip << ":" << l_port << core::bc_lend;
+			core::bc_log(core::bc_log_type::info) << "connecting to server " << m_address << core::bc_lend;
 			m_hook->connecting_to_server(m_address);
 		}
 
@@ -228,7 +227,7 @@ namespace black_cat
 				(
 					std::cbegin(m_messages_waiting_acknowledgment),
 					std::cend(m_messages_waiting_acknowledgment),
-					[=](const bc_message_with_time& p_msg)
+					[=](const bc_retry_message& p_msg)
 					{
 						return p_msg.m_message->get_id() == p_ack_id;
 					}
@@ -332,7 +331,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_network_client_manager::_retry_messages_waiting_acknowledgment(bc_network_packet_time p_current_time, const core_platform::bc_clock::update_param& p_clock)
+		void bc_network_client_manager::_retry_messages_waiting_acknowledgment(const core_platform::bc_clock::update_param& p_clock)
 		{
 			for(auto& l_msg : m_messages_waiting_acknowledgment)
 			{
@@ -344,7 +343,6 @@ namespace black_cat
 				l_msg.m_elapsed += p_clock.m_elapsed;
 				if (l_msg.m_elapsed > m_tt_sampler.average_value() * l_rtt_multiplier)
 				{
-					l_msg.m_time = p_current_time;
 					l_msg.m_elapsed = 0;
 					l_msg.m_message->set_is_retry();
 					
@@ -365,14 +363,18 @@ namespace black_cat
 					const auto* l_network_component = l_actor.get_component<bc_network_component>();
 					if(l_network_component->get_network_id() == bc_actor::invalid_id)
 					{
-						// TODO It is not replicated yet
+						// It is not replicated yet
+						continue;
+					}
+					if(!l_network_component->get_sync_enabled())
+					{
 						continue;
 					}
 					
 					m_messages.push_back(bc_make_network_message(bc_actor_sync_network_message(l_actor)));
 				}
 
-				_retry_messages_waiting_acknowledgment(l_current_time, p_clock);
+				_retry_messages_waiting_acknowledgment(p_clock);
 				
 				if(m_messages.empty())
 				{
@@ -396,7 +398,7 @@ namespace black_cat
 						(
 							std::cbegin(m_messages_waiting_acknowledgment),
 							std::cend(m_messages_waiting_acknowledgment),
-							[&](const bc_message_with_time& p_entry)
+							[&](const bc_retry_message& p_entry)
 							{
 								return p_entry.m_message->get_id() == l_message->get_id();
 							}
@@ -406,9 +408,8 @@ namespace black_cat
 						{
 							m_messages_waiting_acknowledgment.push_back
 							(
-								bc_message_with_time
+								bc_retry_message
 								{
-									l_current_time,
 									0,
 									std::move(l_message)
 								}
@@ -420,7 +421,8 @@ namespace black_cat
 				m_messages.clear();
 				m_last_sync_time = bc_current_packet_time();
 
-				m_hook->message_packet_sent(l_stream_size, core::bc_make_cspan(m_messages));
+				l_stream->set_position(core::bc_stream_seek::start, 0);
+				m_hook->message_packet_sent(*l_stream, l_stream_size, core::bc_make_cspan(m_messages));
 			}
 		}
 		
@@ -488,7 +490,8 @@ namespace black_cat
 			m_last_executed_message_id = l_max_message_id;
 			m_tt_sampler.add_sample(bc_elapsed_packet_time(l_packet_time));
 
-			m_hook->message_packet_received(l_receive_event.m_bytes_received, core::bc_make_cspan(l_messages));
+			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
+			m_hook->message_packet_received(m_memory_buffer, l_receive_event.m_bytes_received, core::bc_make_cspan(l_messages));
 
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);

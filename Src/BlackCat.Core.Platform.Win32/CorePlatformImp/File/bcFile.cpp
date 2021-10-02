@@ -179,7 +179,7 @@ namespace black_cat
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		bcSIZE bc_platform_file<g_api_win32>::read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read)
+		bcSIZE bc_platform_file<g_api_win32>::read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) const
 		{
 			_check_file_is_open(m_pack.m_file, m_pack.m_error_code);
 

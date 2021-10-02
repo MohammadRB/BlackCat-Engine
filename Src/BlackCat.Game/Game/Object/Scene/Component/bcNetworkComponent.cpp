@@ -6,9 +6,11 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
+#include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcNetworkReplicateActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcRigidDynamicSleepActorEvent.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat
@@ -17,10 +19,11 @@ namespace black_cat
 	{
 		bc_network_component::bc_network_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
 			: bci_actor_component(p_actor_index, p_index),
-			m_ping(-1),
 			m_id(bc_actor::invalid_id),
 			m_data_dir(bc_actor_network_data_dir::replicate),
-			m_network_entity_name(nullptr)
+			m_network_entity_name(nullptr),
+			m_ping(-1),
+			m_sync_enabled(true)
 		{
 		}
 
@@ -70,6 +73,12 @@ namespace black_cat
 
 		void bc_network_component::initialize_entity(const bc_actor_component_initialize_entity_context& p_context)
 		{
+			auto* l_rigid_dynamic_component = p_context.m_actor.get_component<bc_rigid_dynamic_component>();
+			if(l_rigid_dynamic_component)
+			{
+				auto l_rigid_dynamic = l_rigid_dynamic_component->get_dynamic_body();
+				l_rigid_dynamic.set_actor_flag(physics::bc_actor_flag::send_sleep_wake, true);
+			}
 		}
 
 		void bc_network_component::load_network_instance(const bc_actor_component_network_load_context& p_context)
@@ -95,11 +104,17 @@ namespace black_cat
 
 		void bc_network_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();
-
+			const auto* l_rigid_dynamic_sleep_event = core::bci_message::as<bc_rigid_dynamic_sleep_actor_event>(p_context.m_event);
+			if(l_rigid_dynamic_sleep_event)
+			{
+				set_sync_enabled(!l_rigid_dynamic_sleep_event->get_is_sleep());
+				return;
+			}
+			
 			const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
 			if (l_scene_add_event)
 			{
+				const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();
 				if (l_network_type == bc_network_type::server)
 				{
 					if (m_data_dir == bc_actor_network_data_dir::replicate_sync)
@@ -138,6 +153,7 @@ namespace black_cat
 			const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event);
 			if (l_scene_remove_event)
 			{
+				const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();
 				if (l_network_type == bc_network_type::server)
 				{
 					if (m_data_dir == bc_actor_network_data_dir::replicate_sync)

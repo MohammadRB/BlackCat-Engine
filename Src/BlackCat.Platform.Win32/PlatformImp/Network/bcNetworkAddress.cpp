@@ -2,11 +2,12 @@
 
 #include "PlatformImp/PlatformImpPCH.h"
 
+#include <WS2tcpip.h>
+#include "Core/Utility/bcLoggerOutputStream.h"
 #include "Platform/bcException.h"
 #include "PlatformImp/Network/bcNetworkAddress.h"
 #include "PlatformImp/bcExport.h"
 #include "PlatformImp/bcUtility.h"
-#include <WS2tcpip.h>
 
 namespace black_cat
 {
@@ -105,6 +106,13 @@ namespace black_cat
 			}*/
 			
 			return bc_network_address(l_pack);
+		}
+
+		BC_PLATFORMSHARED_DLL core::bc_logger_output_stream& operator<<(core::bc_logger_output_stream& p_stream, const bc_network_address& p_address)
+		{
+			const auto [l_socket, l_ip, l_port] = p_address.get_traits();
+			p_stream << l_ip << ":" << l_port;
+			return p_stream;
 		}
 	}
 }

@@ -84,7 +84,7 @@ namespace black_cat
 
 			bc_replicated_actor get_actor(bc_actor_network_id p_actor_network_id) override;
 			
-			void _retry_messages_waiting_acknowledgment(bc_network_packet_time p_current_time, const core_platform::bc_clock::update_param& p_clock);
+			void _retry_messages_waiting_acknowledgment(const core_platform::bc_clock::update_param& p_clock);
 			
 			void _send_to_server(const core_platform::bc_clock::update_param& p_clock);
 			
@@ -107,7 +107,7 @@ namespace black_cat
 			core_platform::bc_mutex m_messages_lock;
 			bc_network_message_id m_last_executed_message_id;
 			core::bc_vector<bc_network_message_ptr> m_messages;
-			core::bc_vector<bc_message_with_time> m_messages_waiting_acknowledgment;
+			core::bc_vector<bc_retry_message> m_messages_waiting_acknowledgment;
 			bc_network_message_acknowledge_buffer m_executed_messages;
 
 			core::bc_memory_stream m_memory_buffer;

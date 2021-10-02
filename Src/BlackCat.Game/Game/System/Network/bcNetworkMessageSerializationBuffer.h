@@ -22,9 +22,8 @@ namespace black_cat
 
 		BC_GAME_DLL bc_network_packet_time bc_elapsed_packet_time(const bc_network_packet_time& p_packet_time) noexcept;
 
-		struct bc_message_with_time
+		struct bc_retry_message
 		{
-			bc_network_packet_time m_time;
 			core_platform::bc_clock::small_delta_time m_elapsed;
 			bc_network_message_ptr m_message;
 		};

@@ -201,8 +201,7 @@ namespace black_cat
 			
 			if (l_client_address)
 			{
-				auto [l_family, l_ip, l_port] = l_client_address->get_traits();
-				core::bc_log(core::bc_log_type::error) << "error occurred in client network connection (" << l_ip << ":" << l_port << "): ";
+				core::bc_log(core::bc_log_type::error) << "error occurred in client network connection " << l_client_address << ": ";
 			}
 			else
 			{
@@ -210,7 +209,7 @@ namespace black_cat
 			}
 
 			core::bc_log(core::bc_log_type::error) << (p_state.get_last_exception() ? p_state.get_last_exception()->get_full_message().c_str() : "") << core::bc_lend;
-			m_hook->error_occurred(p_state.get_last_exception(), p_state.get_last_client_address());
+			m_hook->error_occurred(p_state.get_last_client_address(), p_state.get_last_exception());
 		}
 
 		void bc_network_server_manager::on_enter(bc_server_socket_listening_state& p_state)
@@ -231,7 +230,7 @@ namespace black_cat
 				l_client.set_ready_for_sync(false);
 			}
 
-			core::bc_log(core::bc_log_type::info) << "new client connected" << core::bc_lend;
+			core::bc_log(core::bc_log_type::info) << "new client connected " << p_address << core::bc_lend;
 			m_hook->client_connected();
 		}
 
@@ -266,7 +265,7 @@ namespace black_cat
 			
 			m_clients.erase(l_client_ite);
 
-			core::bc_log(core::bc_log_type::info) << "client disconnected" << core::bc_lend;
+			core::bc_log(core::bc_log_type::info) << "client disconnected " << p_address << core::bc_lend;
 			m_hook->client_disconnected();
 		}
 
@@ -279,7 +278,7 @@ namespace black_cat
 			(
 				std::begin(l_messages),
 				std::end(l_messages),
-				[&](const bc_message_with_time& p_msg)
+				[&](const bc_retry_message& p_msg)
 				{
 					return p_msg.m_message->get_id() == p_ack_id;
 				}
@@ -417,7 +416,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_network_server_manager::_retry_messages_waiting_acknowledgment(bc_network_packet_time p_current_time, const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client)
+		void bc_network_server_manager::_retry_messages_waiting_acknowledgment(const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client)
 		{
 			for (auto& l_msg : p_client.get_messages_waiting_acknowledgment())
 			{
@@ -429,7 +428,6 @@ namespace black_cat
 				l_msg.m_elapsed += p_clock.m_elapsed;
 				if (l_msg.m_elapsed > p_client.get_tt_time() * l_rtt_multiplier)
 				{
-					l_msg.m_time = p_current_time;
 					l_msg.m_elapsed = 0;
 					l_msg.m_message->set_is_retry();
 					
@@ -452,13 +450,18 @@ namespace black_cat
 
 						for (auto& l_actor : m_network_actors)
 						{
-							// TODO sync if actor is active
+							const auto* l_network_component = l_actor.second.get_component<bc_network_component>();
+							if(!l_network_component->get_sync_enabled())
+							{
+								continue;
+							}
+							
 							p_client.add_message(bc_make_network_message(bc_actor_sync_network_message(std::get<bc_actor>(l_actor))));
 						}
 					}
 				}
 
-				_retry_messages_waiting_acknowledgment(l_current_time, p_clock, p_client);
+				_retry_messages_waiting_acknowledgment(p_clock, p_client);
 				
 				auto l_client_messages = p_client.get_messages();
 				if(l_client_messages.empty())
@@ -479,9 +482,8 @@ namespace black_cat
 				{
 					if (l_message->need_acknowledgment())
 					{
-						p_client.add_message_waiting_acknowledgment_if_not_exist(bc_message_with_time 
+						p_client.add_message_waiting_acknowledgment_if_not_exist(bc_retry_message 
 						{
-							l_current_time,
 							0,
 							l_message
 						});
@@ -491,7 +493,8 @@ namespace black_cat
 				p_client.clear_messages();
 				p_client.set_last_sync_time(bc_current_packet_time());
 
-				m_hook->message_packet_sent(l_stream_size, core::bc_make_cspan(l_client_messages));
+				l_stream->set_position(core::bc_stream_seek::start, 0);
+				m_hook->message_packet_sent(p_client.get_address(), *l_stream, l_stream_size, core::bc_make_cspan(l_client_messages));
 			}
 		}
 
@@ -584,7 +587,8 @@ namespace black_cat
 				}
 			}
 
-			m_hook->message_packet_received(l_bytes_received, core::bc_make_cspan(l_messages));
+			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
+			m_hook->message_packet_received(l_client->get_address(), m_memory_buffer, l_bytes_received, core::bc_make_cspan(l_messages));
 
 			return l_bytes_received;
 		}

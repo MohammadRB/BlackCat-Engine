@@ -94,7 +94,7 @@ namespace black_cat
 			
 			void _add_message_to_clients(bc_network_message_ptr p_message, const platform::bc_network_address* p_exclude_client = nullptr);
 			
-			void _retry_messages_waiting_acknowledgment(bc_network_packet_time p_current_time, const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client);
+			void _retry_messages_waiting_acknowledgment(const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client);
 			
 			void _send_to_client(const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client);
 

@@ -71,7 +71,7 @@ namespace black_cat
 
 			bcUINT64 get_eof_position() const override;
 
-			bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) override;
+			bcSIZE read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) const override;
 
 			bcSIZE write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write) override;
 
@@ -242,7 +242,7 @@ namespace black_cat
 			return m_file.get_eof_pointer();
 		}
 
-		inline bcSIZE bc_file_stream::read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read)
+		inline bcSIZE bc_file_stream::read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) const
 		{
 			return m_file.read(p_buffer, p_bytes_to_read);
 		}

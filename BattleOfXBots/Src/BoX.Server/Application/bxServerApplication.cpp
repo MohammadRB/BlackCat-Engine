@@ -9,6 +9,8 @@
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
 #include "BoX.Server/Application/bxServerApplication.h"
 #include "BoX.Server/Application/bxServerScript.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 
 using namespace black_cat;
 
@@ -76,7 +78,7 @@ namespace box
 			m_server_started = true;
 		}
 #endif
-
+		
 		g_elapsed_since_last += p_clock.m_elapsed_second;
 		if(g_elapsed_since_last > 20)
 		{
@@ -136,42 +138,35 @@ namespace box
 
 	void bx_server_application::started_listening(bcUINT16 p_port)
 	{
-		//core::bc_log(core::bc_log_type::info) << "started listening on port " << p_port << core::bc_lend;
 	}
 
 	void bx_server_application::client_connected()
 	{
-		//core::bc_log(core::bc_log_type::info) << "new client connected" << core::bc_lend;
 	}
 
 	void bx_server_application::client_disconnected()
 	{
-		//core::bc_log(core::bc_log_type::info) << "client disconnected" << core::bc_lend;
 	}
 
-	void bx_server_application::message_packet_sent(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
+	void bx_server_application::message_packet_sent(const platform::bc_network_address& p_client,
+		const core::bc_memory_stream& p_packet,
+		bcSIZE p_packet_size,
+		core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		//core::bc_log(core::bc_log_type::debug) << "network message packet sent with size of '" << p_packet_size << "' bytes" << core::bc_lend;
-		//core::bc_log(core::bc_log_type::debug) << "network message sent with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
+		const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
+		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet sent to client: " << p_client << " " << l_packet << core::bc_lend;
 	}
 
-	void bx_server_application::message_packet_received(bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
+	void bx_server_application::message_packet_received(const platform::bc_network_address& p_client,
+		const core::bc_memory_stream& p_packet,
+		bcSIZE p_packet_size,
+		core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		//core::bc_log(core::bc_log_type::debug) << "network message packet received with size of '" << p_packet_size << "' bytes" << core::bc_lend;
-		//core::bc_log(core::bc_log_type::debug) << "network message received with hash '" << p_message.get_message_name() << "' and id " << p_message.get_id() << core::bc_lend;
+		const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
+		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet received from client: " << p_client << " " << l_packet << core::bc_lend;
 	}
 
-	void bx_server_application::error_occurred(const bc_network_exception* p_exception, const platform::bc_network_address* p_client)
+	void bx_server_application::error_occurred(const platform::bc_network_address* p_client, const bc_network_exception* p_exception)
 	{
-		/*if(p_client)
-		{
-			core::bc_log(core::bc_log_type::error) << "error occurred in client network connection (" << std::get<core::bc_string_frame>(p_client->get_traits()) << "): ";
-		}
-		else
-		{
-			core::bc_log(core::bc_log_type::error) << "error occurred in network connection: ";
-		}
-		
-		core::bc_log(core::bc_log_type::error) <<  (p_exception ? p_exception->get_full_message().c_str() : "") << core::bc_lend;*/
 	}
 }
