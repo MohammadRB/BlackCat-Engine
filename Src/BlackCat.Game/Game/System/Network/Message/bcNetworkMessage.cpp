@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		core_platform::bc_atomic<bc_network_message_id> bci_network_message::s_id_counter(0);
+		core_platform::bc_atomic<bc_network_message_id> bci_network_message::s_id_counter(1);
 
 		core::bc_string bci_network_message::get_acknowledgment_data() const noexcept
 		{
@@ -18,7 +18,7 @@ namespace black_cat
 
 		void bci_network_message::serialize(const bc_network_message_serialization_context& p_context)
 		{
-			if(!m_is_retry)
+			if(m_id == 0)
 			{
 				m_id = s_id_counter.fetch_add(1, core_platform::bc_memory_order::relaxed);
 			}

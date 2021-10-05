@@ -16,6 +16,7 @@ namespace black_cat
 		struct bc_network_manager_update_context
 		{
 			const core_platform::bc_clock::update_param& m_clock;
+			const bool m_send_rtt_message;
 		};
 		
 		class bci_network_manager

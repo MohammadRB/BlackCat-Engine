@@ -26,7 +26,9 @@ namespace black_cat
 
 		bc_render_application& operator=(bc_render_application&&) = delete;
 
-	protected:
+		bcFLOAT get_fps() const noexcept;
+		
+	protected:		
 		game::bc_game_system* m_game_system;
 
 	private:
@@ -40,6 +42,16 @@ namespace black_cat
 
 		virtual void application_render(core_platform::bc_clock::update_param p_clock) = 0;
 
+		virtual void application_pause_idle(const core_platform::bc_clock::update_param& p_clock);
+
+		virtual void application_render_pause_idle(const core_platform::bc_clock::update_param& p_clock);
+
+		virtual void application_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock);
+
+		virtual void application_swap_frame(const core_platform::bc_clock::update_param& p_clock);
+
+		virtual void application_render_swap_frame(const core_platform::bc_clock::update_param& p_clock);
+		
 		virtual bool application_event(core::bci_event& p_event) = 0;
 
 		virtual void application_unload_content(core::bc_content_stream_manager& p_stream_manager) = 0;
@@ -58,15 +70,15 @@ namespace black_cat
 
 		void app_render(const core_platform::bc_clock::update_param& p_clock) override final;
 
-		void app_pause_idle(const core_platform::bc_clock::update_param& p_clock) override;
+		void app_pause_idle(const core_platform::bc_clock::update_param& p_clock) override final;
 
-		void app_render_pause_idle(const core_platform::bc_clock::update_param& p_clock) override;
+		void app_render_pause_idle(const core_platform::bc_clock::update_param& p_clock) override final;
 		
-		void app_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock) override;
+		void app_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock) override final;
 		
-		void app_swap_frame(const core_platform::bc_clock::update_param& p_clock) override;
+		void app_swap_frame(const core_platform::bc_clock::update_param& p_clock) override final;
 
-		void app_render_swap_frame(const core_platform::bc_clock::update_param& p_clock) override;
+		void app_render_swap_frame(const core_platform::bc_clock::update_param& p_clock) override final;
 		
 		bool app_event(core::bci_event& p_event) override final;
 
@@ -77,7 +89,7 @@ namespace black_cat
 		void app_close_engine_components() override final;
 		
 		core::bc_value_sampler<core_platform::bc_clock::small_delta_time, 64> m_fps_sampler;
-		bcUINT32 m_fps;
+		core_platform::bc_clock::small_delta_time m_fps;
 
 		core::bc_stop_watch m_update_watch;
 		core::bc_stop_watch m_render_watch;

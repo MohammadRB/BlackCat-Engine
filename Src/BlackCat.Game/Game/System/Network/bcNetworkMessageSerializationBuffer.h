@@ -39,11 +39,10 @@ namespace black_cat
 
 			bc_network_message_serialization_buffer& operator=(bc_network_message_serialization_buffer&&) noexcept = default;
 
-			std::pair<bcUINT32, core::bc_memory_stream*> serialize(bci_network_message_serialization_visitor& p_visitor,
-				bc_network_packet_time p_time,
+			std::pair<bcUINT32, core::bc_memory_stream*> serialize(bci_network_message_serialization_visitor& p_visitor, 
 				const core::bc_const_span<bc_network_message_ptr>& p_messages);
 
-			std::pair<bc_network_packet_time, core::bc_span<bc_network_message_ptr>> deserialize(bci_network_message_deserialization_visitor& p_visitor, 
+			core::bc_span<bc_network_message_ptr> deserialize(bci_network_message_deserialization_visitor& p_visitor, 
 				core::bc_memory_stream& p_buffer,
 				bcUINT32 p_buffer_size);
 

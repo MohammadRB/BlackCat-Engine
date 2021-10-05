@@ -159,7 +159,7 @@ namespace black_cat
 				return *this;
 			}
 
-			void operator ()(core_platform::bc_thread::id p_thread_id)
+			void operator()(core_platform::bc_thread::id p_thread_id)
 			{
 				try
 				{
@@ -168,20 +168,16 @@ namespace black_cat
 				catch (const std::exception& p_exp)
 				{
 					auto l_msg = bc_string("Task with thread id " + bc_to_string(p_thread_id) + " exited with error: ") + p_exp.what();
-
 					m_promise.set_exception(std::make_exception_ptr(bc_thread_resource_exception(l_msg.c_str())));
-
-					bc_app_event_debug l_debug_event(std::move(l_msg));
-					bc_get_service< bc_event_manager >()->process_event(l_debug_event);
+					bc_app_event_error l_error_event(std::move(l_msg));
+					bc_get_service<bc_event_manager>()->process_event(l_error_event);
 				}
 				catch (...)
 				{
 					auto l_msg = bc_string("Task with thread id " + bc_to_string(p_thread_id) + " exited with unknown error.");
-					
 					m_promise.set_exception(std::make_exception_ptr(bc_thread_resource_exception(l_msg.c_str())));
-
-					bc_app_event_debug l_debug_event(std::move(l_msg));
-					bc_get_service< bc_event_manager >()->process_event(l_debug_event);
+					bc_app_event_error l_error_event(std::move(l_msg));
+					bc_get_service<bc_event_manager>()->process_event(l_error_event);
 				}
 			}
 

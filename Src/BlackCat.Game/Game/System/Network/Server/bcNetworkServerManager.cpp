@@ -9,6 +9,7 @@
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Network/Server/bcNetworkServerManager.h"
+#include "Game/System/Network/Message/bcPingNetworkMessage.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 #include "Game/System/Network/Message/bcClientConnectNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorReplicateNetworkMessage.h"
@@ -170,9 +171,17 @@ namespace black_cat
 				{
 					auto& l_client = m_clients[l_ite];
 
+					if (p_context.m_send_rtt_message)
+					{
+						{
+							core_platform::bc_lock_guard<bc_network_server_manager_client> l_client_lock(l_client);
+							l_client.add_message(bc_make_network_message(bc_ping_network_message()));
+						}
+					}
+
 					const auto l_elapsed_since_last_sync = bc_current_packet_time() - l_client.get_last_sync_time();
-					const auto l_tt_time = l_client.get_tt_time();
-					if (l_elapsed_since_last_sync > l_tt_time)
+					const auto l_rtt_time = l_client.get_rtt_time() / 2;
+					if (l_elapsed_since_last_sync > l_rtt_time)
 					{
 						_send_to_client(p_context.m_clock, l_client);
 						bc_server_socket_state_machine::update(p_context.m_clock);
@@ -216,6 +225,13 @@ namespace black_cat
 		{
 			m_socket_is_listening = true;
 			m_hook->started_listening(m_port);
+		}
+
+		void bc_network_server_manager::rtt_sample(const platform::bc_network_address& p_address, bc_network_packet_time p_rtt)
+		{
+			// Clients lock is already acquired in the receive function 
+			auto* l_client = _find_client(p_address);
+			l_client->add_rtt_time(p_rtt);
 		}
 
 		void bc_network_server_manager::client_connected(const platform::bc_network_address& p_address)
@@ -420,13 +436,14 @@ namespace black_cat
 		{
 			for (auto& l_msg : p_client.get_messages_waiting_acknowledgment())
 			{
+				const auto l_rtt_time = p_client.get_rtt_time() / 2;
 				auto l_rtt_multiplier = 4;
 #ifdef BC_DEBUG
 				l_rtt_multiplier *= 3;
 #endif
 				
 				l_msg.m_elapsed += p_clock.m_elapsed;
-				if (l_msg.m_elapsed > p_client.get_tt_time() * l_rtt_multiplier)
+				if (l_msg.m_elapsed > l_rtt_time* l_rtt_multiplier)
 				{
 					l_msg.m_elapsed = 0;
 					l_msg.m_message->set_is_retry();
@@ -438,8 +455,6 @@ namespace black_cat
 
 		void bc_network_server_manager::_send_to_client(const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client)
 		{
-			const auto l_current_time = bc_current_packet_time();
-			
 			{
 				core_platform::bc_lock_guard<bc_network_server_manager_client> l_client_lock(p_client);
 
@@ -469,8 +484,8 @@ namespace black_cat
 					return;
 				}
 				
-				const auto [l_stream_size, l_stream] = m_messages_buffer.serialize(*this, l_current_time, l_client_messages);
-				bc_server_socket_send_event l_send_event{p_client.get_address(), *l_stream, l_stream_size};
+				const auto [l_stream_size, l_stream] = m_messages_buffer.serialize(*this, l_client_messages);
+				bc_server_socket_send_event l_send_event{p_client.get_address(), *l_stream, l_stream_size, 0};
 				bc_server_socket_state_machine::process_event(l_send_event);
 
 				if(l_send_event.m_bytes_sent != l_send_event.m_bytes_to_send)
@@ -513,15 +528,12 @@ namespace black_cat
 			}
 
 			auto* l_client = _find_client(l_address);
-
-			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
-
-			bc_network_packet_time l_packet_time;
 			core::bc_span<bc_network_message_ptr> l_messages;
 
 			try
 			{
-				std::tie(l_packet_time, l_messages) = m_messages_buffer.deserialize(*this, m_memory_buffer, l_bytes_received);
+				m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
+				l_messages = m_messages_buffer.deserialize(*this, m_memory_buffer, l_bytes_received);
 			}
 			catch (const std::exception & l_exception)
 			{
@@ -577,9 +589,8 @@ namespace black_cat
 				}
 
 				l_client->set_last_executed_message_id(l_max_message_id);
-				l_client->add_tt_time(bc_elapsed_packet_time(l_packet_time));
 
-				const auto l_tt_time = l_client->get_tt_time();
+				const auto l_tt_time = l_client->get_rtt_time()/ 2;
 				for(auto& l_actor : l_client->get_replicated_actors())
 				{
 					auto* l_network_component = l_actor.get_component<bc_network_component>();

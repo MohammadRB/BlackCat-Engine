@@ -22,6 +22,7 @@
 #include "Game/System/Render/Decal/bcDecalManager.h"
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/System/Network/Message/bcStringNetworkMessage.h"
+#include "Game/System/Network/Message/bcPingNetworkMessage.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 #include "Game/System/Network/Message/bcClientConnectNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorReplicateNetworkMessage.h"
@@ -217,6 +218,7 @@ namespace black_cat
 		p_network_system.register_messages
 		<
 			game::bc_string_network_message,
+			game::bc_ping_network_message,
 			game::bc_acknowledge_network_message,
 			game::bc_client_connect_network_message,
 			game::bc_client_disconnect_network_message,

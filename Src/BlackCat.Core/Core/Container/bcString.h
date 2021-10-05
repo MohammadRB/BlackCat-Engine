@@ -1964,33 +1964,462 @@ namespace black_cat
 			return p_str;
 		}
 
-		template< typename T >
-		inline bc_estring bc_to_estring(T&& p_value)
+		inline bc_estring bc_to_estring(bcINT p_value, const bcWCHAR* p_format = L"%d")
 		{
 #ifdef BC_UNICODE
-			return bc_to_wstring(std::forward<T>(p_value));
+			return bc_to_wstring(p_value, p_format);
 #else
-			return bc_to_string(std::forward<T>(p_value));
+			return bc_to_string(p_value, p_format);
 #endif
 		}
 
-		template< typename T >
-		inline bc_estring_program bc_to_estring_program(T&& p_value)
+		inline bc_estring bc_to_estring(long p_value, const bcWCHAR* p_format = L"%ld")
 		{
 #ifdef BC_UNICODE
-			return bc_to_wstring_program(std::forward<T>(p_value));
+			return bc_to_wstring(p_value, p_format);
 #else
-			return bc_to_string_program(std::forward<T>(p_value));
+			return bc_to_string(p_value, p_format);
 #endif
 		}
 
-		template< typename T >
-		inline bc_estring_frame bc_to_estring_frame(T&& p_value)
+		inline bc_estring bc_to_estring(long long p_value, const bcWCHAR* p_format = L"%lld")
 		{
 #ifdef BC_UNICODE
-			return bc_to_wstring_frame(std::forward<T>(p_value));
+			return bc_to_wstring(p_value, p_format);
 #else
-			return bc_to_string_frame(std::forward<T>(p_value));
+			return bc_to_string(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(bcUINT p_value, const bcWCHAR* p_format = L"%u")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_value, p_format);
+#else
+			return bc_to_string(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(unsigned long p_value, const bcWCHAR* p_format = L"%lu")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_value, p_format);
+#else
+			return bc_to_string(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(unsigned long long p_value, const bcWCHAR* p_format = L"%llu")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_value, p_format);
+#else
+			return bc_to_string(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(bcFLOAT p_value, const bcWCHAR* p_format = L"%f")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_value, p_format);
+#else
+			return bc_to_string(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(bcDOUBLE p_value, const bcWCHAR* p_format = L"%f")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_value, p_format);
+#else
+			return bc_to_string(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(long double p_value, const bcWCHAR* p_format = L"%lf")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_value, p_format);
+#else
+			return bc_to_string(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(const bcCHAR* p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_str);
+#else
+			return bc_to_string(p_str);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(const bc_string& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_str);
+#else
+			return bc_to_string(p_str);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(const bc_string_program& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_str);
+#else
+			return bc_to_string(p_str);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(const bc_string_frame& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_str);
+#else
+			return bc_to_string(p_str);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(const bcWCHAR* p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_str);
+#else
+			return bc_to_string(p_str);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(const bc_wstring& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_str);
+#else
+			return bc_to_string(p_str);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(const bc_wstring_program& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_str);
+#else
+			return bc_to_string(p_str);
+#endif
+		}
+
+		inline bc_estring bc_to_estring(const bc_wstring_frame& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring(p_str);
+#else
+			return bc_to_string(p_str);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(bcINT p_value, const bcWCHAR* p_format = L"%d")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_value, p_format);
+#else
+			return bc_to_string_program(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(long p_value, const bcWCHAR* p_format = L"%ld")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_value, p_format);
+#else
+			return bc_to_string_program(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(long long p_value, const bcWCHAR* p_format = L"%lld")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_value, p_format);
+#else
+			return bc_to_string_program(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(bcUINT p_value, const bcWCHAR* p_format = L"%u")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_value, p_format);
+#else
+			return bc_to_string_program(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(unsigned long p_value, const bcWCHAR* p_format = L"%lu")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_value, p_format);
+#else
+			return bc_to_string_program(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(unsigned long long p_value, const bcWCHAR* p_format = L"%llu")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_value, p_format);
+#else
+			return bc_to_string_program(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(bcFLOAT p_value, const bcWCHAR* p_format = L"%f")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_value, p_format);
+#else
+			return bc_to_string_program(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(bcDOUBLE p_value, const bcWCHAR* p_format = L"%f")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_value, p_format);
+#else
+			return bc_to_string_program(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(long double p_value, const bcWCHAR* p_format = L"%lf")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_value, p_format);
+#else
+			return bc_to_string_program(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(const bcCHAR* p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_str);
+#else
+			return bc_to_string_program(p_str);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(const bc_string& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_str);
+#else
+			return bc_to_string_program(p_str);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(const bc_string_program& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_str);
+#else
+			return bc_to_string_program(p_str);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(const bc_string_frame& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_str);
+#else
+			return bc_to_string_program(p_str);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(const bcWCHAR* p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_str);
+#else
+			return bc_to_string_program(p_str);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(const bc_wstring& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_str);
+#else
+			return bc_to_string_program(p_str);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(const bc_wstring_program& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_str);
+#else
+			return bc_to_string_program(p_str);
+#endif
+		}
+
+		inline bc_estring_program bc_to_estring_program(const bc_wstring_frame& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_program(p_str);
+#else
+			return bc_to_string_program(p_str);
+#endif
+		}
+		
+		inline bc_estring_frame bc_to_estring_frame(bcINT p_value, const bcWCHAR* p_format = L"%d")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_value, p_format);
+#else
+			return bc_to_string_frame(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(long p_value, const bcWCHAR* p_format = L"%ld")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_value, p_format);
+#else
+			return bc_to_string_frame(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(long long p_value, const bcWCHAR* p_format = L"%lld")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_value, p_format);
+#else
+			return bc_to_string_frame(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(bcUINT p_value, const bcWCHAR* p_format = L"%u")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_value, p_format);
+#else
+			return bc_to_string_frame(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(unsigned long p_value, const bcWCHAR* p_format = L"%lu")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_value, p_format);
+#else
+			return bc_to_string_frame(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(unsigned long long p_value, const bcWCHAR* p_format = L"%llu")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_value, p_format);
+#else
+			return bc_to_string_frame(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(bcFLOAT p_value, const bcWCHAR* p_format = L"%f")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_value, p_format);
+#else
+			return bc_to_string_frame(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(bcDOUBLE p_value, const bcWCHAR* p_format = L"%f")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_value, p_format);
+#else
+			return bc_to_string_frame(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(long double p_value, const bcWCHAR* p_format = L"%lf")
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_value, p_format);
+#else
+			return bc_to_string_frame(p_value, p_format);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(const bcCHAR* p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_str);
+#else
+			return bc_to_string_frame(p_str);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(const bc_string& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_str);
+#else
+			return bc_to_string_frame(p_str);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(const bc_string_program& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_str);
+#else
+			return bc_to_string_frame(p_str);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(const bc_string_frame& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_str);
+#else
+			return bc_to_string_frame(p_str);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(const bcWCHAR* p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_str);
+#else
+			return bc_to_string_frame(p_str);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(const bc_wstring& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_str);
+#else
+			return bc_to_string_frame(p_str);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(const bc_wstring_program& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_str);
+#else
+			return bc_to_string_frame(p_str);
+#endif
+		}
+
+		inline bc_estring_frame bc_to_estring_frame(const bc_wstring_frame& p_str)
+		{
+#ifdef BC_UNICODE
+			return bc_to_wstring_frame(p_str);
+#else
+			return bc_to_string_frame(p_str);
 #endif
 		}
 

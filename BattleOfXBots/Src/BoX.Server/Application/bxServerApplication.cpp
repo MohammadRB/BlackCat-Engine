@@ -10,7 +10,6 @@
 #include "BoX.Server/Application/bxServerApplication.h"
 #include "BoX.Server/Application/bxServerScript.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
-#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 
 using namespace black_cat;
 
@@ -40,6 +39,7 @@ namespace box
 	
 	void bx_server_application::application_start_engine_components(game::bc_engine_application_parameter& p_parameters)
 	{
+		m_app_name = p_parameters.m_app_parameters.m_app_name;
 		auto& l_game_console = m_game_system->get_console();
 
 		m_console = core::bc_make_unique<game::bc_default_game_console>(*this, l_game_console);
@@ -79,7 +79,7 @@ namespace box
 		}
 #endif
 		
-		g_elapsed_since_last += p_clock.m_elapsed_second;
+		/*g_elapsed_since_last += p_clock.m_elapsed_second;
 		if(g_elapsed_since_last > 20)
 		{
 			g_elapsed_since_last = 0;
@@ -89,22 +89,28 @@ namespace box
 			auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
 			auto l_rigid = l_rigid_component->get_body();
 			l_rigid.set_linear_velocity(core::bc_vector3f{ .17, .05, .87 } * 40);
-		}
+		}*/
 	}
 
 	void bx_server_application::application_render(core_platform::bc_clock::update_param p_clock)
 	{
 	}
 
-	bool bx_server_application::application_event(core::bci_event& p_event)
+	void bx_server_application::application_swap_frame(const core_platform::bc_clock::update_param& p_clock)
 	{
-		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
-		
+		core::bc_estring_frame l_caption(m_app_name);
+		l_caption += bcL(" ") + core::bc_to_estring_frame(get_fps(), L"%.1f");
+		m_console->get_console_window()->set_caption(l_caption.c_str());
+	}
+	
+	bool bx_server_application::application_event(core::bci_event& p_event)
+	{		
 		auto* l_close_event = core::bci_message::as<platform::bc_app_event_window_close>(p_event);
 		if (l_close_event)
 		{
 			if (m_console->get_console_window()->get_id() == l_close_event->get_window_id())
 			{
+				auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 				platform::bc_app_event_exit l_exit_event(0);
 				l_event_manager->process_event(l_exit_event);
 			}
@@ -153,8 +159,8 @@ namespace box
 		bcSIZE p_packet_size,
 		core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
-		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet sent to client: " << p_client << " " << l_packet << core::bc_lend;
+		//const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
+		//core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet sent to client: " << p_client << " " << l_packet << core::bc_lend;
 	}
 
 	void bx_server_application::message_packet_received(const platform::bc_network_address& p_client,
@@ -162,8 +168,8 @@ namespace box
 		bcSIZE p_packet_size,
 		core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
-		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet received from client: " << p_client << " " << l_packet << core::bc_lend;
+		//const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
+		//core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet received from client: " << p_client << " " << l_packet << core::bc_lend;
 	}
 
 	void bx_server_application::error_occurred(const platform::bc_network_address* p_client, const bc_network_exception* p_exception)

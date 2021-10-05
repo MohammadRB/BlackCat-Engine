@@ -16,7 +16,8 @@ namespace black_cat
 		bc_network_system::bc_network_system()
 			: m_event_manager(nullptr),
 			m_game_system(nullptr),
-			m_manager(nullptr)
+			m_manager(nullptr),
+			m_last_rtt_test(0)
 		{
 		}
 
@@ -24,7 +25,8 @@ namespace black_cat
 			: m_event_manager(p_other.m_event_manager),
 			m_game_system(p_other.m_game_system),
 			m_message_factories(std::move(p_other.m_message_factories)),
-			m_manager(std::move(p_other.m_manager))
+			m_manager(std::move(p_other.m_manager)),
+			m_last_rtt_test(p_other.m_last_rtt_test)
 		{
 		}
 
@@ -42,6 +44,7 @@ namespace black_cat
 			m_game_system = p_other.m_game_system;
 			m_message_factories = std::move(p_other.m_message_factories);
 			m_manager = std::move(p_other.m_manager);
+			m_last_rtt_test = p_other.m_last_rtt_test;
 
 			return *this;
 		}
@@ -73,7 +76,15 @@ namespace black_cat
 				return;
 			}
 
-			m_manager->update(bc_network_manager_update_context{ p_clock });
+			m_last_rtt_test += p_clock.m_elapsed;
+			const auto l_send_rtt = m_last_rtt_test >= 500;
+			
+			m_manager->update(bc_network_manager_update_context{ p_clock, l_send_rtt });
+
+			if (l_send_rtt)
+			{
+				m_last_rtt_test = 0;
+			}
 		}
 
 		core::bc_task<void> bc_network_system::update_async(const core_platform::bc_clock::update_param& p_clock)

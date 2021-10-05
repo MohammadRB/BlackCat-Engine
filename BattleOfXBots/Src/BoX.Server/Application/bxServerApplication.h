@@ -7,8 +7,6 @@
 #include "Game/System/Script/bcDefaultGameConsole.h"
 #include "Game/System/Network/Server/bcNetworkServerManagerHook.h"
 #include "BlackCat/Application/bcRenderApplication.h"
-#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
-#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 
 using namespace black_cat;
 
@@ -31,6 +29,8 @@ namespace box
 		void application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update) override;
 		
 		void application_render(core_platform::bc_clock::update_param p_clock) override;
+
+		void application_swap_frame(const core_platform::bc_clock::update_param& p_clock) override;
 		
 		bool application_event(core::bci_event& p_event) override;
 		
@@ -58,11 +58,11 @@ namespace box
 		
 		void error_occurred(const platform::bc_network_address* p_client, const bc_network_exception* p_exception) override;
 
-	private:
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
 		platform::bc_script_context* m_server_script_context = nullptr;
 		platform::bc_script_object_ref m_server_script_object;
 
-		bool m_server_started = false;
+		bool m_server_started{ false };
+		const bcECHAR* m_app_name{ nullptr };
 	};
 }

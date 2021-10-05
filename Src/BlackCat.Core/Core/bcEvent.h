@@ -58,51 +58,6 @@ namespace black_cat
 			bc_string m_message;
 		};
 
-		class bc_app_event_debug : public bc_app_event
-		{
-			BC_EVENT(app_wrn)
-
-		public:
-			explicit bc_app_event_debug(const bcCHAR* p_message)
-				: bc_app_event(message_name()),
-				m_message(p_message)
-			{
-			}
-
-			explicit bc_app_event_debug(bc_string p_message)
-				: bc_app_event(message_name()),
-				m_message(std::move(p_message))
-			{
-			}
-
-			bc_app_event_debug(const bc_app_event_debug&) = default;
-
-			bc_app_event_debug(bc_app_event_debug&& p_other) noexcept(std::is_nothrow_move_constructible< bc_string >::value)
-				: bc_app_event(p_other),
-				m_message(std::move(p_other.m_message))
-			{
-			}
-
-			~bc_app_event_debug() = default;
-
-			bc_app_event_debug& operator =(const bc_app_event_debug&) = default;
-
-			bc_app_event_debug& operator =(bc_app_event_debug&& p_other) noexcept(std::is_nothrow_move_assignable< bc_string >::value)
-			{
-				m_message = std::move(p_other.m_message);
-
-				return *this;
-			}
-
-			const bc_string& get_message() const noexcept
-			{
-				return m_message;
-			}
-
-		private:
-			bc_string m_message;
-		};
-
 		class bc_event_frame_update_start : public bc_app_event
 		{
 			BC_EVENT(fr_up_s)
@@ -176,8 +131,9 @@ namespace black_cat
 			BC_EVENT(fr_sw)
 
 		public:
-			bc_event_frame_swap()
-				: bc_app_event(message_name())
+			explicit bc_event_frame_swap(bcFLOAT p_fps)
+				: bc_app_event(message_name()),
+				m_fps(p_fps)
 			{
 			}
 
@@ -186,6 +142,14 @@ namespace black_cat
 			~bc_event_frame_swap() = default;
 
 			bc_event_frame_swap& operator=(const bc_event_frame_swap&) = default;
+
+			bcFLOAT get_fps() const noexcept
+			{
+				return m_fps;
+			}
+			
+		private:
+			bcFLOAT m_fps;
 		};
 	}
 }

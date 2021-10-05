@@ -82,6 +82,8 @@ namespace black_cat
 			bc_game_system* m_game_system;
 			message_factory_container m_message_factories;
 			core::bc_unique_ptr<bci_network_manager> m_manager;
+
+			core_platform::bc_clock::small_delta_time m_last_rtt_test;
 		};
 
 		inline bc_network_type bc_network_system::get_network_type() const noexcept

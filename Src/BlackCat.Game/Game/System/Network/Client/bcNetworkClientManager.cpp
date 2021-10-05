@@ -10,6 +10,7 @@
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Network/Client/bcNetworkClientManager.h"
+#include "Game/System/Network/Message/bcPingNetworkMessage.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 #include "Game/System/Network/Message/bcClientConnectNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorReplicateNetworkMessage.h"
@@ -37,7 +38,7 @@ namespace black_cat
 			m_address(p_address),
 			m_hook(&p_hook),
 			m_last_sync_time(0),
-			m_tt_sampler(20),
+			m_rtt_sampler(20),
 			m_last_executed_message_id(0),
 			m_executed_messages(25),
 			m_messages_buffer(p_network_system)
@@ -57,7 +58,7 @@ namespace black_cat
 			m_socket(std::move(p_other.m_socket)),
 			m_hook(p_other.m_hook),
 			m_last_sync_time(p_other.m_last_sync_time),
-			m_tt_sampler(p_other.m_tt_sampler),
+			m_rtt_sampler(p_other.m_rtt_sampler),
 			m_sync_actors(std::move(p_other.m_sync_actors)),
 			m_network_actors(std::move(p_other.m_network_actors)),
 			m_last_executed_message_id(p_other.m_last_executed_message_id),
@@ -82,7 +83,7 @@ namespace black_cat
 			m_socket = std::move(p_other.m_socket);
 			m_hook = p_other.m_hook;
 			m_last_sync_time = p_other.m_last_sync_time;
-			m_tt_sampler = p_other.m_tt_sampler;
+			m_rtt_sampler = p_other.m_rtt_sampler;
 
 			m_sync_actors = std::move(p_other.m_sync_actors);
 			m_network_actors = std::move(p_other.m_network_actors);
@@ -164,9 +165,14 @@ namespace black_cat
 				return;
 			}
 
+			if(p_context.m_send_rtt_message)
+			{
+				send_message(bc_ping_network_message());
+			}
+			
 			const auto l_elapsed_since_last_sync = bc_current_packet_time() - m_last_sync_time;
-			const auto l_tt_time = m_tt_sampler.average_value();
-			if(l_elapsed_since_last_sync > l_tt_time)
+			const auto l_rtt_time = m_rtt_sampler.average_value() / 2;
+			if(l_elapsed_since_last_sync > l_rtt_time)
 			{
 				_send_to_server(p_context.m_clock);
 				bc_client_socket_state_machine::update(p_context.m_clock);
@@ -174,7 +180,7 @@ namespace black_cat
 
 			_receive_from_server();
 						
-			core::bc_get_service<core::bc_counter_value_manager>()->add_counter("ping", core::bc_to_wstring(l_tt_time));
+			core::bc_get_service<core::bc_counter_value_manager>()->add_counter("ping", core::bc_to_wstring(l_rtt_time));
 		}
 
 		void bc_network_client_manager::on_enter(bc_client_socket_error_state& p_state)
@@ -208,6 +214,11 @@ namespace black_cat
 		void bc_network_client_manager::on_enter(bc_client_socket_sending_state& p_state)
 		{
 			m_socket_is_ready = false;
+		}
+
+		void bc_network_client_manager::rtt_sample(bc_network_packet_time p_rtt)
+		{
+			m_rtt_sampler.add_sample(p_rtt);
 		}
 
 		void bc_network_client_manager::connection_approved()
@@ -333,6 +344,7 @@ namespace black_cat
 
 		void bc_network_client_manager::_retry_messages_waiting_acknowledgment(const core_platform::bc_clock::update_param& p_clock)
 		{
+			const auto l_rtt_time = m_rtt_sampler.average_value() / 2;
 			for(auto& l_msg : m_messages_waiting_acknowledgment)
 			{
 				auto l_rtt_multiplier = 4;
@@ -341,7 +353,7 @@ namespace black_cat
 #endif
 				
 				l_msg.m_elapsed += p_clock.m_elapsed;
-				if (l_msg.m_elapsed > m_tt_sampler.average_value() * l_rtt_multiplier)
+				if (l_msg.m_elapsed > l_rtt_time* l_rtt_multiplier)
 				{
 					l_msg.m_elapsed = 0;
 					l_msg.m_message->set_is_retry();
@@ -353,8 +365,6 @@ namespace black_cat
 
 		void bc_network_client_manager::_send_to_server(const core_platform::bc_clock::update_param& p_clock)
 		{
-			const auto l_current_time = bc_current_packet_time();
-			
 			{
 				core_platform::bc_mutex_guard l_lock(m_messages_lock);
 
@@ -381,7 +391,7 @@ namespace black_cat
 					return;
 				}
 
-				const auto [l_stream_size, l_stream] = m_messages_buffer.serialize(*this, l_current_time, core::bc_make_cspan(m_messages));
+				const auto [l_stream_size, l_stream] = m_messages_buffer.serialize(*this, core::bc_make_cspan(m_messages));
 				bc_client_socket_send_event l_send_event{ *l_stream, l_stream_size, 0 };
 				bc_client_socket_state_machine::process_event(l_send_event);
 
@@ -438,14 +448,12 @@ namespace black_cat
 				return;
 			}
 
-			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
-
-			bc_network_packet_time l_packet_time;
 			core::bc_span<bc_network_message_ptr> l_messages;
 
 			try
 			{
-				std::tie(l_packet_time, l_messages) = m_messages_buffer.deserialize(*this, l_receive_event.m_stream, l_receive_event.m_bytes_received);
+				m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
+				l_messages = m_messages_buffer.deserialize(*this, m_memory_buffer, l_receive_event.m_bytes_received);
 			}
 			catch (const std::exception& l_exception)
 			{
@@ -488,21 +496,20 @@ namespace black_cat
 			}
 
 			m_last_executed_message_id = l_max_message_id;
-			m_tt_sampler.add_sample(bc_elapsed_packet_time(l_packet_time));
-
-			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
-			m_hook->message_packet_received(m_memory_buffer, l_receive_event.m_bytes_received, core::bc_make_cspan(l_messages));
 
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
 
-				const auto l_tt_time = m_tt_sampler.average_value();
+				const auto l_rtt_time = m_rtt_sampler.average_value() / 2;
 				for(auto& [l_net_id, l_actor] : m_network_actors)
 				{
 					auto* l_network_component = l_actor.get_component<bc_network_component>();
-					l_network_component->set_ping(l_tt_time);
+					l_network_component->set_ping(l_rtt_time);
 				}
 			}
+
+			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
+			m_hook->message_packet_received(m_memory_buffer, l_receive_event.m_bytes_received, core::bc_make_cspan(l_messages));
 		}
 	}
 }

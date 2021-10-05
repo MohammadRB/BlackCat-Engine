@@ -307,10 +307,6 @@ namespace black_cat
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
 			);
-			m_event_handle_debug = l_event_manager->register_event_listener<core::bc_app_event_debug>
-			(
-				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
-			);
 			m_event_handle_key = l_event_manager->register_event_listener<platform::bc_app_event_key>
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
@@ -335,7 +331,6 @@ namespace black_cat
 			m_event_handle_window_close.reset();
 			m_event_handle_app_active.reset();
 			m_event_handle_app_exit.reset();
-			m_event_handle_debug.reset();
 			m_event_handle_error.reset();
 			m_event_handle_key.reset();
 			m_event_handle_pointing.reset();
@@ -431,17 +426,10 @@ namespace black_cat
 			auto* l_error_event = core::bci_message::as<core::bc_app_event_error>(p_event);
 			if (l_error_event)
 			{
-				core::bc_log(core::bc_log_type::error, core::bc_to_estring_frame(l_error_event->get_message()).c_str());
+				core::bc_log(core::bc_log_type::error) << l_error_event->get_message() << core::bc_lend;
 				l_handled = true;
 			}
-
-			auto* l_debug_event = core::bci_message::as<core::bc_app_event_debug>(p_event);
-			if (l_debug_event)
-			{
-				core::bc_log(core::bc_log_type::debug, core::bc_to_estring_frame(l_debug_event->get_message()).c_str());
-				l_handled = true;
-			}
-
+			
 			const bool l_handled1 = app_event(p_event);
 			return l_handled || l_handled1;
 		}

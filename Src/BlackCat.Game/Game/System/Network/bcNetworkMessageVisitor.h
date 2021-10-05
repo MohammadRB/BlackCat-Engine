@@ -46,6 +46,8 @@ namespace black_cat
 		class bci_network_message_server_visitor
 		{
 		public:
+			virtual void rtt_sample(const platform::bc_network_address& p_address, bc_network_packet_time p_rtt) = 0;
+			
 			virtual void client_connected(const platform::bc_network_address& p_address) = 0;
 
 			virtual void client_disconnected(const platform::bc_network_address& p_address) = 0;
@@ -67,6 +69,8 @@ namespace black_cat
 		class bci_network_message_client_visitor
 		{
 		public:
+			virtual void rtt_sample(bc_network_packet_time p_rtt) = 0;
+			
 			virtual void connection_approved() = 0;
 
 			virtual void acknowledge_message(bc_network_message_id p_ack_id, core::bc_string p_ack_data) = 0;

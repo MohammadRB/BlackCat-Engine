@@ -222,7 +222,14 @@ namespace black_cat
 				return l_extrapolated_value;
 			}
 
-			l_extrapolated_value.second *= p_clock.m_elapsed / m_ping;
+			const auto l_extrapolation_ratio = p_clock.m_elapsed / static_cast<core_platform::bc_clock::small_delta_time>(m_ping);
+			l_extrapolated_value.second *= l_extrapolation_ratio;
+
+			core::bc_log(core::bc_log_type::debug) << core::bc_only_file
+				<< "extrapolation ratio: " << l_extrapolation_ratio
+				<< " elapsed: " << p_clock.m_elapsed
+				<< " ping: " << m_ping
+				<< core::bc_lend;
 			return l_extrapolated_value;
 		}
 	}

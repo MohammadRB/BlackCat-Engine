@@ -642,6 +642,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\Event\bcRigidDynamicSleepActorEvent.h">
       <Filter>Game\Object\Scene\Component\Event</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcPingNetworkMessage.h">
+      <Filter>Game\System\Network\Message</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -967,6 +970,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Input\bcFileLogger.cpp">
       <Filter>Game\System\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcPingNetworkMessage.cpp">
+      <Filter>Game\System\Network\Message</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

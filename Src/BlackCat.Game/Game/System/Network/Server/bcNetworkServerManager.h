@@ -71,6 +71,8 @@ namespace black_cat
 			void on_enter(bc_server_socket_listening_state& p_state) override;
 
 			// Server visitor methods
+
+			void rtt_sample(const platform::bc_network_address& p_address, bc_network_packet_time p_rtt) override;
 			
 			void client_connected(const platform::bc_network_address& p_address) override;
 

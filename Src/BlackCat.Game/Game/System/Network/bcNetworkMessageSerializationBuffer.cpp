@@ -21,13 +21,12 @@ namespace black_cat
 		
 		BC_JSON_STRUCTURE(bc_network_packet)
 		{
-			BC_JSON_VALUE(bc_network_packet_time, time);
 			BC_JSON_ARRAY(bc_network_packet_command, commands);
 		};
 
 		core::bc_vector_frame<core::bc_string_frame> _split_multiple_packets(const core::bc_string_frame& p_packet)
 		{
-			constexpr bcCHAR l_delimiter[] = "{\"time\":";
+			constexpr bcCHAR l_delimiter[] = "{\"commands\":";
 			
 			core::bc_string_frame::size_type l_next_packet_pos = 0;
 			core::bc_vector_frame<core::bc_string_frame> l_packets;
@@ -62,12 +61,10 @@ namespace black_cat
 		}
 
 		std::pair<bcUINT32, core::bc_memory_stream*> bc_network_message_serialization_buffer::serialize(bci_network_message_serialization_visitor& p_visitor,
-			const bc_network_packet_time p_time,
 			const core::bc_const_span<bc_network_message_ptr>& p_messages)
 		{
 			core::bc_json_document<bc_network_packet> l_json_packet;
 			l_json_packet.set_max_decimal_places(2);
-			l_json_packet->m_time.set(p_time);
 
 			for (const auto& l_command : p_messages)
 			{
@@ -84,7 +81,7 @@ namespace black_cat
 			return std::make_pair<bcUINT32, core::bc_memory_stream*>(l_packet_str.size() , &m_serialize_buffer);
 		}
 
-		std::pair<bc_network_packet_time, core::bc_span<bc_network_message_ptr>> bc_network_message_serialization_buffer::deserialize(bci_network_message_deserialization_visitor& p_visitor, 
+		core::bc_span<bc_network_message_ptr> bc_network_message_serialization_buffer::deserialize(bci_network_message_deserialization_visitor& p_visitor, 
 			core::bc_memory_stream& p_buffer,
 			bcUINT32 p_buffer_size)
 		{
@@ -92,7 +89,6 @@ namespace black_cat
 			
 			const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_buffer.get_position_data()), p_buffer_size);
 			const auto l_sub_packets = _split_multiple_packets(l_packet);
-			bc_network_packet_time l_min_packet_time = std::numeric_limits<bc_network_packet_time>::max();
 
 			for (auto& l_sub_packet : l_sub_packets)
 			{
@@ -110,11 +106,9 @@ namespace black_cat
 					l_command->deserialize(bc_network_message_deserialization_context{ p_visitor, *l_json_command->m_values });
 					m_deserialize_buffer.push_back(std::move(l_command));
 				}
-
-				l_min_packet_time = std::min(l_min_packet_time, *l_json_packet->m_time);
 			}
 
-			return std::make_pair(l_min_packet_time, core::bc_make_span(m_deserialize_buffer));
+			return core::bc_make_span(m_deserialize_buffer);
 		}
 	}
 }
