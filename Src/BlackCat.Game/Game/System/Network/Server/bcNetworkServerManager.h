@@ -72,7 +72,9 @@ namespace black_cat
 
 			// Server visitor methods
 
-			void rtt_sample(const platform::bc_network_address& p_address, bc_network_packet_time p_rtt) override;
+			bc_network_rtt get_rtt_time(const platform::bc_network_address& p_address) noexcept override;
+			
+			void add_rtt_sample(const platform::bc_network_address& p_address, bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept override;
 			
 			void client_connected(const platform::bc_network_address& p_address) override;
 

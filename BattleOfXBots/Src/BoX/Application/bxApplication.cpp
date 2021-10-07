@@ -119,7 +119,6 @@ namespace box
 
 	void bx_application::application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update)
 	{
-#ifdef BC_DEBUG
 		constexpr auto l_client_start_delay = 1.0f;
 		if(m_client_start_time <= l_client_start_delay && !p_is_partial_update)
 		{
@@ -130,7 +129,6 @@ namespace box
 				l_script_system.run_script_throw(game::bc_script_context::app, L"client.connect(\"127.0.0.1\", 6699);");
 			}
 		}
-#endif
 	}
 
 	void bx_application::application_render(core_platform::bc_clock::update_param p_clock)

@@ -257,17 +257,6 @@ namespace black_cat
 			app_start_engine_components(p_parameters);
 			m_app = core::bc_make_unique<platform::bc_application>(core::bc_alloc_type::program, p_parameters.m_app_parameters);
 
-			/*if (p_parameters.m_app_parameters.m_output_window == nullptr)
-			{
-				m_default_output_window = core::bc_make_unique<bc_render_application_basic_output_window>(create_basic_render_window
-				(
-					core::bc_to_estring(p_parameters.m_app_parameters.m_app_name),
-					800,
-					450
-				));
-				p_parameters.m_app_parameters.m_output_window = m_default_output_window.get();
-			}*/
-
 			m_output_window = p_parameters.m_app_parameters.m_output_window_factory();
 			m_clock = core::bc_make_unique<core_platform::bc_clock>(core::bc_alloc_type::program);
 

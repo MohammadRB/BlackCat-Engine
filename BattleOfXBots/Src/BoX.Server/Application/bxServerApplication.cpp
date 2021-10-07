@@ -68,7 +68,6 @@ namespace box
 	bcFLOAT g_elapsed_since_last = 0;
 	void bx_server_application::application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update)
 	{
-#ifdef BC_DEBUG
 		if(!m_server_started)
 		{
 			auto& l_script_system = m_game_system->get_script_system();
@@ -77,7 +76,6 @@ namespace box
 
 			m_server_started = true;
 		}
-#endif
 		
 		/*g_elapsed_since_last += p_clock.m_elapsed_second;
 		if(g_elapsed_since_last > 20)

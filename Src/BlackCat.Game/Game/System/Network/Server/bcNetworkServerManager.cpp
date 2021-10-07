@@ -227,11 +227,27 @@ namespace black_cat
 			m_hook->started_listening(m_port);
 		}
 
-		void bc_network_server_manager::rtt_sample(const platform::bc_network_address& p_address, bc_network_packet_time p_rtt)
+		bc_network_rtt bc_network_server_manager::get_rtt_time(const platform::bc_network_address& p_address) noexcept
+		{
+			// Clients lock is already acquired in the receive function 
+			auto* l_client = _find_client(p_address);
+			return l_client->get_rtt_time();
+		}
+
+		void bc_network_server_manager::add_rtt_sample(const platform::bc_network_address& p_address, bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept
 		{
 			// Clients lock is already acquired in the receive function 
 			auto* l_client = _find_client(p_address);
 			l_client->add_rtt_time(p_rtt);
+			l_client->set_remote_rtt_time(p_remote_rtt);
+
+			const auto l_rtt = l_client->get_rtt_time() / 2;
+			const auto l_remote_rtt = l_client->get_remote_rtt_time() / 2;
+			for (auto& l_actor : l_client->get_replicated_actors())
+			{
+				auto* l_network_component = l_actor.get_component<bc_network_component>();
+				l_network_component->set_ping(l_rtt, l_remote_rtt);
+			}
 		}
 
 		void bc_network_server_manager::client_connected(const platform::bc_network_address& p_address)
@@ -589,13 +605,6 @@ namespace black_cat
 				}
 
 				l_client->set_last_executed_message_id(l_max_message_id);
-
-				const auto l_tt_time = l_client->get_rtt_time()/ 2;
-				for(auto& l_actor : l_client->get_replicated_actors())
-				{
-					auto* l_network_component = l_actor.get_component<bc_network_component>();
-					l_network_component->set_ping(l_tt_time);
-				}
 			}
 
 			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);

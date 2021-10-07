@@ -39,9 +39,11 @@ namespace black_cat
 
 			const bcCHAR* get_network_entity_name() const noexcept;
 
-			bc_network_packet_time get_ping() const noexcept;
+			bc_network_rtt get_out_ping() const noexcept;
 
-			void set_ping(bc_network_packet_time p_ping) noexcept;
+			bc_network_rtt get_in_ping() const noexcept;
+
+			void set_ping(bc_network_rtt p_out_ping, bc_network_rtt p_in_ping) noexcept;
 
 			bool get_sync_enabled() const noexcept;
 
@@ -69,7 +71,8 @@ namespace black_cat
 			std::pair<bool, core::bc_vector3f> get_extrapolated_value(const bcCHAR* p_name) const noexcept;
 			
 			/**
-			 * \brief Get property rate of change based on ping time scaled with elapsed clock
+			 * \brief Get property rate of change based on ping time scaled with elapsed clock.
+			 * \n Also add sample to extrapolator if no new sample was provided
 			 * \param p_name 
 			 * \param p_clock 
 			 * \return 
@@ -80,9 +83,10 @@ namespace black_cat
 			bc_actor_network_id m_id;
 			bc_actor_network_data_dir m_data_dir;
 			const bcCHAR* m_network_entity_name;
-			bc_network_packet_time m_ping;
+			bc_network_rtt m_out_ping;
+			bc_network_rtt m_in_ping;
 			bool m_sync_enabled;
-			core::bc_vector<std::pair<const bcCHAR*, bc_network_v3_extrapolation>> m_extrapolators;
+			core::bc_vector<std::tuple<const bcCHAR*, bc_network_v3_extrapolation, core_platform::bc_clock::small_delta_time>> m_extrapolators;
 		};
 
 		inline bc_actor_network_id bc_network_component::get_network_id() const noexcept
@@ -105,14 +109,20 @@ namespace black_cat
 			return m_network_entity_name;
 		}
 		
-		inline bc_network_packet_time bc_network_component::get_ping() const noexcept
+		inline bc_network_rtt bc_network_component::get_out_ping() const noexcept
 		{
-			return m_ping;
+			return m_out_ping;
 		}
 
-		inline void bc_network_component::set_ping(bc_network_packet_time p_ping) noexcept
+		inline bc_network_rtt bc_network_component::get_in_ping() const noexcept
 		{
-			m_ping = p_ping;
+			return m_in_ping;
+		}
+
+		inline void bc_network_component::set_ping(bc_network_rtt p_out_ping, bc_network_rtt p_in_ping) noexcept
+		{
+			m_out_ping = p_out_ping;
+			m_in_ping = p_in_ping;
 		}
 
 		inline bool bc_network_component::get_sync_enabled() const noexcept

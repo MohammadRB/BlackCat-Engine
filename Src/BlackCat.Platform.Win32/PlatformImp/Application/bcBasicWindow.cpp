@@ -17,7 +17,7 @@ namespace black_cat
 		void _get_window_size(HWND p_hwnd, bcUINT32& p_width, bcUINT32& p_height)
 		{
 			RECT l_rect;
-			if (GetWindowRect(p_hwnd, &l_rect))
+			if (GetClientRect(p_hwnd, &l_rect))
 			{
 				p_width = l_rect.right - l_rect.left;
 				p_height = l_rect.bottom - l_rect.top;

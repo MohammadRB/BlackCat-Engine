@@ -50,9 +50,9 @@ namespace black_cat
 			return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 		}
 
-		bc_network_packet_time bc_elapsed_packet_time(const bc_network_packet_time& p_packet_time) noexcept
+		bc_network_rtt bc_elapsed_packet_time(const bc_network_packet_time& p_packet_time) noexcept
 		{
-			return bc_current_packet_time() - p_packet_time;
+			return static_cast<bc_network_rtt>(bc_current_packet_time() - p_packet_time);
 		}
 
 		bc_network_message_serialization_buffer::bc_network_message_serialization_buffer(bc_network_system& p_network_system)

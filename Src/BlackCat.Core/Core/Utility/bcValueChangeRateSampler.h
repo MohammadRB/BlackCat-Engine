@@ -32,6 +32,8 @@ namespace black_cat
 
 			bc_value_change_rate_sampler& operator=(const bc_value_change_rate_sampler&) noexcept;
 
+			void add_sample() noexcept;
+			
 			void add_sample(const T& p_sample) noexcept;
 
 			T change_rate() const noexcept;
@@ -62,6 +64,12 @@ namespace black_cat
 
 		template<typename T, bcUINT32... TRatios>
 		bc_value_change_rate_sampler<T, TRatios...>& bc_value_change_rate_sampler<T, TRatios...>::operator=(const bc_value_change_rate_sampler&) noexcept = default;
+
+		template<typename T, bcUINT32... TRatios>
+		void bc_value_change_rate_sampler<T, TRatios...>::add_sample() noexcept
+		{
+			add_sample(static_cast<T>(m_samples[0]));
+		}
 
 		template<typename T, bcUINT32... TRatios>
 		void bc_value_change_rate_sampler<T, TRatios...>::add_sample(const T& p_sample) noexcept

@@ -38,7 +38,8 @@ namespace black_cat
 			m_address(p_address),
 			m_hook(&p_hook),
 			m_last_sync_time(0),
-			m_rtt_sampler(20),
+			m_rtt_sampler(100),
+			m_remote_rtt(100),
 			m_last_executed_message_id(0),
 			m_executed_messages(25),
 			m_messages_buffer(p_network_system)
@@ -59,6 +60,7 @@ namespace black_cat
 			m_hook(p_other.m_hook),
 			m_last_sync_time(p_other.m_last_sync_time),
 			m_rtt_sampler(p_other.m_rtt_sampler),
+			m_remote_rtt(p_other.m_remote_rtt),
 			m_sync_actors(std::move(p_other.m_sync_actors)),
 			m_network_actors(std::move(p_other.m_network_actors)),
 			m_last_executed_message_id(p_other.m_last_executed_message_id),
@@ -84,6 +86,7 @@ namespace black_cat
 			m_hook = p_other.m_hook;
 			m_last_sync_time = p_other.m_last_sync_time;
 			m_rtt_sampler = p_other.m_rtt_sampler;
+			m_remote_rtt = p_other.m_remote_rtt;
 
 			m_sync_actors = std::move(p_other.m_sync_actors);
 			m_network_actors = std::move(p_other.m_network_actors);
@@ -179,8 +182,9 @@ namespace black_cat
 			}
 
 			_receive_from_server();
-						
-			core::bc_get_service<core::bc_counter_value_manager>()->add_counter("ping", core::bc_to_wstring(l_rtt_time));
+
+			auto l_ping_counter = L"In: " + core::bc_to_wstring(m_remote_rtt / 2, L"%.1f") + L" / Out: " + core::bc_to_wstring(l_rtt_time, L"%.1f");
+			core::bc_get_service<core::bc_counter_value_manager>()->add_counter("ping", std::move(l_ping_counter));
 		}
 
 		void bc_network_client_manager::on_enter(bc_client_socket_error_state& p_state)
@@ -216,9 +220,27 @@ namespace black_cat
 			m_socket_is_ready = false;
 		}
 
-		void bc_network_client_manager::rtt_sample(bc_network_packet_time p_rtt)
+		bc_network_rtt bc_network_client_manager::get_rtt_time() noexcept
+		{
+			return m_rtt_sampler.average_value();
+		}
+
+		void bc_network_client_manager::add_rtt_sample(bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept
 		{
 			m_rtt_sampler.add_sample(p_rtt);
+			m_remote_rtt = p_remote_rtt;
+
+			{
+				core::bc_mutex_test_guard l_lock(m_actors_lock);
+
+				const auto l_rtt = m_rtt_sampler.average_value() / 2;
+				const auto l_remote_rtt = m_remote_rtt / 2;
+				for (auto& [l_net_id, l_actor] : m_network_actors)
+				{
+					auto* l_network_component = l_actor.get_component<bc_network_component>();
+					l_network_component->set_ping(l_rtt, l_remote_rtt);
+				}
+			}
 		}
 
 		void bc_network_client_manager::connection_approved()
@@ -496,17 +518,6 @@ namespace black_cat
 			}
 
 			m_last_executed_message_id = l_max_message_id;
-
-			{
-				core::bc_mutex_test_guard l_lock(m_actors_lock);
-
-				const auto l_rtt_time = m_rtt_sampler.average_value() / 2;
-				for(auto& [l_net_id, l_actor] : m_network_actors)
-				{
-					auto* l_network_component = l_actor.get_component<bc_network_component>();
-					l_network_component->set_ping(l_rtt_time);
-				}
-			}
 
 			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
 			m_hook->message_packet_received(m_memory_buffer, l_receive_event.m_bytes_received, core::bc_make_cspan(l_messages));

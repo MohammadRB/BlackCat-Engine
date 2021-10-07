@@ -20,7 +20,7 @@ namespace black_cat
 
 		BC_GAME_DLL bc_network_packet_time bc_current_packet_time() noexcept;
 
-		BC_GAME_DLL bc_network_packet_time bc_elapsed_packet_time(const bc_network_packet_time& p_packet_time) noexcept;
+		BC_GAME_DLL bc_network_rtt bc_elapsed_packet_time(const bc_network_packet_time& p_packet_time) noexcept;
 
 		struct bc_retry_message
 		{

@@ -24,6 +24,8 @@ namespace black_cat
 			bc_ping_network_message& operator=(bc_ping_network_message&&) noexcept;
 
 			bool need_acknowledgment() const noexcept override;
+
+			core::bc_string get_acknowledgment_data() const noexcept override;
 			
 			void acknowledge(const bc_network_message_client_acknowledge_context& p_context) noexcept override;
 			
@@ -39,6 +41,7 @@ namespace black_cat
 			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
 			
 			bc_network_packet_time m_serialize_time;
+			bc_network_rtt m_remote_host_rtt;
 		};
 	}	
 }

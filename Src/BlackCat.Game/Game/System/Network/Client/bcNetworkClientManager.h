@@ -70,7 +70,9 @@ namespace black_cat
 
 			// Client visitor methods
 
-			void rtt_sample(bc_network_packet_time p_rtt) override;
+			bc_network_rtt get_rtt_time() noexcept override;
+			
+			void add_rtt_sample(bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept override;
 			
 			void connection_approved() override;
 			
@@ -91,7 +93,7 @@ namespace black_cat
 			void _send_to_server(const core_platform::bc_clock::update_param& p_clock);
 			
 			void _receive_from_server();
-			
+
 			bc_game_system* m_game_system;
 			bool m_socket_is_connected;
 			bool m_socket_is_ready;
@@ -99,7 +101,8 @@ namespace black_cat
 			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;
 			bci_network_client_manager_hook* m_hook;
 			bc_network_packet_time m_last_sync_time;
-			core::bc_value_sampler<bc_network_packet_time, 32> m_rtt_sampler;
+			core::bc_value_sampler<bc_network_rtt, 32> m_rtt_sampler;
+			bc_network_rtt m_remote_rtt;
 
 			core::bc_mutex_test m_actors_lock;
 			core::bc_vector<bc_actor> m_sync_actors;
