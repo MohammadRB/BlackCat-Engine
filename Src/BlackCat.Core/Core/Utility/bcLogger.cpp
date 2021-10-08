@@ -70,26 +70,32 @@ namespace black_cat
 		{
 			if(!p_file_modifier)
 			{
+				auto l_logs_ptr = m_logs_ptr.load(core_platform::bc_memory_order::relaxed);
+				auto l_new_logs_ptr = l_logs_ptr;
+				do
 				{
-					core_platform::bc_mutex_guard l_guard(m_logs_mutex);
+					l_new_logs_ptr = (l_logs_ptr + 1) % m_logs.size();
+				} while (m_logs_ptr.compare_exchange_weak(&l_logs_ptr, l_new_logs_ptr, core_platform::bc_memory_order::relaxed));
 
-					m_logs[m_logs_ptr].first = p_type;
-					m_logs[m_logs_ptr].second = p_log;
-					m_logs_ptr = (m_logs_ptr + 1) % m_logs.size();
-				}
+				m_logs[l_logs_ptr].first = p_type;
+				m_logs[l_logs_ptr].second = p_log;
 			}
 			
 			const auto l_entry_index = static_cast<key_type>(std::log2(static_cast<listener_map_type::size_type>(p_type)));
 			auto& l_entry = m_listeners.at(l_entry_index);
 
-			for (auto& l_listener : l_entry)
 			{
-				if(p_file_modifier && !l_listener->is_file())
+				core_platform::bc_shared_mutex_shared_guard l_listeners_lock(m_listener_mutex);
+
+				for (auto& l_listener : l_entry)
 				{
-					continue;
+					if (p_file_modifier && !l_listener->is_file())
+					{
+						continue;
+					}
+
+					l_listener->on_log(p_type, p_log);
 				}
-				
-				l_listener->on_log(p_type, p_log);
 			}
 		}
 
@@ -97,15 +103,19 @@ namespace black_cat
 		{
 			auto* l_listener = *p_listener;
 
-			for (auto l_type : { bc_log_type::info, bc_log_type::debug, bc_log_type::warning, bc_log_type::error })
 			{
-				if (!bc_enum::has(p_types, l_type))
-				{
-					continue;
-				}
+				core_platform::bc_shared_mutex_guard l_listeners_lock(m_listener_mutex);
 
-				const auto l_entry_index = static_cast<key_type>(std::log2(static_cast<listener_map_type::size_type>(l_type)));
-				m_listeners.at(l_entry_index).push_back(p_listener);
+				for (auto l_type : { bc_log_type::info, bc_log_type::debug, bc_log_type::warning, bc_log_type::error })
+				{
+					if (!bc_enum::has(p_types, l_type))
+					{
+						continue;
+					}
+
+					const auto l_entry_index = static_cast<key_type>(std::log2(static_cast<listener_map_type::size_type>(l_type)));
+					m_listeners.at(l_entry_index).push_back(p_listener);
+				}
 			}
 
 			_replicate_last_logs(p_types, l_listener);
@@ -114,12 +124,12 @@ namespace black_cat
 		void bc_logger::_replicate_last_logs(bc_log_type p_types, bci_log_listener* p_listener)
 		{
 			{
-				core_platform::bc_mutex_guard l_guard(m_logs_mutex);
+				core_platform::bc_shared_mutex_shared_guard l_listeners_lock(m_listener_mutex);
 
-				auto l_logs_ptr = m_logs_ptr;
-				for (auto l_ite = 0U; l_ite != m_logs.size(); ++l_ite)
+				auto l_logs_ptr = m_logs_ptr.load(core_platform::bc_memory_order::relaxed);
+				for (auto l_ite = 0U; l_ite != m_logs.size(); ++l_ite, l_logs_ptr = (l_logs_ptr + 1) % m_logs.size())
 				{
-					auto& [l_type, l_log] = m_logs[l_logs_ptr];
+					auto& [l_type, l_log] = m_logs[l_logs_ptr];					
 					if (l_log.empty())
 					{
 						continue;
@@ -129,8 +139,6 @@ namespace black_cat
 					{
 						p_listener->on_log(l_type, l_log.c_str());
 					}
-
-					l_logs_ptr = (l_logs_ptr + 1) % m_logs.size();
 				}
 			}
 		}

@@ -43,7 +43,7 @@ namespace black_cat
 		m_run_speed(0),
 		m_walk_speed(0),
 		m_move_speed(0),
-		m_clock(0, 0),
+		m_clock(0, 0, 0),
 		m_look_delta_x(0),
 		m_forward_pressed(false),
 		m_backward_pressed(false),
@@ -693,12 +693,7 @@ namespace black_cat
 		const auto l_right_velocity = m_right_velocity.get_value();
 		const auto l_left_velocity = m_left_velocity.get_value();
 		const auto l_walk_velocity = m_walk_velocity.get_value();
-
-		/*if(l_forward_velocity > 0)
-		{
-			core::bc_log(core::bc_log_type::debug, core::bc_to_estring_frame(l_forward_velocity).c_str());
-		}*/
-		
+				
 		core::bc_matrix3f l_look_rotation;
 		core::bc_vector3f l_right_vector;
 		core::bc_vector3f l_left_vector;
@@ -742,7 +737,7 @@ namespace black_cat
 			l_left_vector * l_left_velocity;
 		m_move_amount = std::max({ l_forward_velocity, l_backward_velocity, l_right_velocity, l_left_velocity }) * m_move_speed;
 
-		if (core::bc_vector3f::length_sq(m_move_direction) == 0)
+		if (core::bc_vector3f::length_sq(m_move_direction) <= 0)
 		{
 			m_move_amount = 0;
 		}
@@ -755,7 +750,7 @@ namespace black_cat
 		m_move_direction.normalize();
 		
 		// if two vectors are exactly opposite of each other 'rotation_between_two_vector' method in matrix3x3 will have undefined result
-		if (m_move_direction.dot(m_look_direction) == -1.f)
+		if (m_move_direction.dot(m_look_direction) >= -1.f)
 		{
 			m_move_direction.x -= 0.01f;
 			m_move_direction.normalize();

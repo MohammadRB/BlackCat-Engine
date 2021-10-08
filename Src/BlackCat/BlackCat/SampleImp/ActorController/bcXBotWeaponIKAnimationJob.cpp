@@ -30,7 +30,7 @@ namespace black_cat
 			p_main_hand_first_joint,
 			p_main_hand_middle_joint,
 			p_main_hand_last_joint,
-			core::bc_vector3f(-0.2, 0, -1),
+			core::bc_vector3f(-.2f, 0, -1),
 			core::bc_vector3f(0, 1, 0)
 		),
 		m_second_hand_job
@@ -40,7 +40,7 @@ namespace black_cat
 			p_second_hand_first_joint,
 			p_second_hand_middle_joint,
 			p_second_hand_last_joint,
-			core::bc_vector3f(0.2, 0, 1),
+			core::bc_vector3f(.2f, 0, 1),
 			core::bc_vector3f(0, 1, 0)
 		),
 		m_offset_joint_index(0),

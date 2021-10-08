@@ -5,6 +5,7 @@
 #include "Core/File/bcPath.h"
 #include "Core/Container/bcString.h"
 #include "Graphic/bcRenderApiInfo.h"
+#include "Game/Application/bcRenderApplication.h"
 #include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/Input/bcGlobalConfig.h"
 
@@ -54,8 +55,13 @@ namespace black_cat
 			l_temp.combine(core::bc_path(bcL("Content\\Scene")));
 			m_content_scene_path = l_temp.get_string();
 
-			m_global_config = core::bc_make_unique<bc_global_config>(core::bc_alloc_type::program, m_content_base_path.c_str());
-			set_global_config(*m_global_config);
+			const auto l_config_name = core::bc_estring_frame(bc_get_application().get_app_name()) + bcL(".config");
+			m_global_config = core::bc_make_unique<bc_global_config>
+			(
+				core::bc_alloc_type::program, 
+				bc_global_config(m_content_base_path.c_str(), l_config_name.c_str())
+			);
+			g_global_config = m_global_config.get();
 		}
 
 		bc_file_system::bc_file_system(bc_file_system&& p_other) noexcept

@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Core/bcEvent.h"
-#include "Core/Utility/bcValueSampler.h"
 #include "Core/Utility/bcStopWatch.h"
 #include "Game/Application/bcRenderApplication.h"
 #include "Game/System/bcGameSystem.h"
@@ -25,8 +24,6 @@ namespace black_cat
 		~bc_render_application() override;
 
 		bc_render_application& operator=(bc_render_application&&) = delete;
-
-		bcFLOAT get_fps() const noexcept;
 		
 	protected:		
 		game::bc_game_system* m_game_system;
@@ -88,9 +85,6 @@ namespace black_cat
 
 		void app_close_engine_components() override final;
 		
-		core::bc_value_sampler<core_platform::bc_clock::small_delta_time, 64> m_fps_sampler;
-		core_platform::bc_clock::small_delta_time m_fps;
-
 		core::bc_stop_watch m_update_watch;
 		core::bc_stop_watch m_render_watch;
 		core::bc_stop_watch m_swap_watch;

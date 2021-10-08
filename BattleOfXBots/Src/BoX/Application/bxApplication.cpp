@@ -70,7 +70,7 @@ namespace box
 		auto& l_input_system = m_game_system->get_input_system();
 		auto& l_render_system = m_game_system->get_render_system();
 		auto& l_script_system = m_game_system->get_script_system();
-		auto& l_global_config = get_global_config();
+		auto& l_global_config = bc_get_global_config();
 		
 		m_console = core::bc_make_unique<game::bc_default_game_console>(*this, l_game_console);
 		m_console->show();
@@ -161,7 +161,7 @@ namespace box
 		auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event);
 		if (l_exit_event)
 		{
-			auto& l_global_config = get_global_config();
+			auto& l_global_config = bc_get_global_config();
 			auto* l_camera = m_game_system->get_input_system().get_camera();
 			if(!l_camera)
 			{

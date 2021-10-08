@@ -43,7 +43,7 @@ namespace black_cat
 			platform::bc_application_parameter l_app_parameters
 			(
 				m_instance,
-				bcL("blackcat_editor_app"),
+				bcL("BlackCatEditor"),
 				m_cmd_line
 			);
 			game::bc_render_application_parameter l_render_app_parameters

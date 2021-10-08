@@ -114,7 +114,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_input_system::update(core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_input_system::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 			if(m_window_has_focus)
 			{

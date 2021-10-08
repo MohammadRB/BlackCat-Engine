@@ -67,7 +67,7 @@ namespace black_cat
 
 			void run_script(const bcWCHAR* p_script, core_platform::bc_future<platform::bc_script_variable>* p_result, bool p_output_to_console = false);
 
-			void update(core_platform::bc_clock::update_param p_clock_update_param);
+			void update(const core_platform::bc_clock::update_param& p_clock);
 
 			static void bind(platform::bc_script_context& p_context, platform::bc_script_global_prototype_builder& p_global_prototype, bc_game_console& p_instance);
 			

@@ -128,11 +128,11 @@ namespace black_cat
 			}
 		}
 
-		void bc_game_console::update(core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_game_console::update(const core_platform::bc_clock::update_param& p_clock)
 		{
 			if (m_imp)
 			{
-				m_imp->update(p_clock_update_param);
+				m_imp->update(p_clock);
 			}
 
 			platform::bc_script_variable l_result;

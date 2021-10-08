@@ -103,7 +103,7 @@ namespace black_cat
 					p_event.get_hit_position(),
 					p_event.get_hit_normal(),
 					nullptr,
-					p_event.get_bullet_mass() / get_global_config().get_bullet_reference_mass()
+					p_event.get_bullet_mass() / bc_get_global_config().get_bullet_reference_mass()
 				);
 			}
 
@@ -125,7 +125,7 @@ namespace black_cat
 		{
 			const auto l_bound_box_half_extends = p_bound_box.get_half_extends();
 			const auto l_box_length = std::max({ l_bound_box_half_extends.x, l_bound_box_half_extends.y, l_bound_box_half_extends.z }) * 2;
-			m_lod_factor = l_box_length * m_lod_scale * get_global_config().get_lod_global_scale();
+			m_lod_factor = l_box_length * m_lod_scale * bc_get_global_config().get_lod_global_scale();
 		}
 	}
 }

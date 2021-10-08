@@ -31,7 +31,7 @@ namespace black_cat
 
 	bc_light_flare_pass::bc_light_flare_pass()
 	{
-		m_flare_size_distance = s_flare_size_distance * get_global_config().get_global_scale();
+		m_flare_size_distance = s_flare_size_distance * bc_get_global_config().get_global_scale();
 	}
 
 	void bc_light_flare_pass::initialize_resources(game::bc_render_system& p_render_system)

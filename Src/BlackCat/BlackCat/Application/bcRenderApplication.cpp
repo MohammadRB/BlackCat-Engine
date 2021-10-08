@@ -21,19 +21,12 @@ namespace black_cat
 {
 	bc_render_application::bc_render_application()
 		: game::bc_render_application(),
-		m_game_system(nullptr),
-		m_fps_sampler(0),
-		m_fps(0)
+		m_game_system(nullptr)
 	{
 	}
 
 	bc_render_application::~bc_render_application() = default;
-
-	bcFLOAT bc_render_application::get_fps() const noexcept
-	{
-		return m_fps;
-	}
-
+	
 	void bc_render_application::application_pause_idle(const core_platform::bc_clock::update_param& p_clock)
 	{
 	}
@@ -194,10 +187,8 @@ namespace black_cat
 
 		m_update_watch.restart();
 		m_render_watch.restart();
-		m_fps_sampler.add_sample(p_clock.m_elapsed);
-		m_fps = 1000.0f / m_fps_sampler.average_value();
 
-		l_counter_value_manager->add_counter("fps", m_fps);
+		l_counter_value_manager->add_counter("fps", get_fps());
 		l_counter_value_manager->add_counter("update_time", m_update_watch.average_total_elapsed());
 		l_counter_value_manager->add_counter("render_time", m_render_watch.average_total_elapsed());
 
@@ -206,7 +197,7 @@ namespace black_cat
 		m_game_system->swap_frame(p_clock);
 		application_swap_frame(p_clock);
 		
-		core::bc_event_frame_swap l_event_frame_swap(m_fps);
+		core::bc_event_frame_swap l_event_frame_swap(get_fps());
 		l_event_manager->process_event(l_event_frame_swap);
 
 		m_swap_watch.stop();

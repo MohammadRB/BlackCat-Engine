@@ -5,7 +5,6 @@
 #include "CorePlatform/bcType.h"
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcString.h"
-#include "Core/Utility/bcValueChangeRateSampler.h"
 
 namespace black_cat
 {
@@ -33,7 +32,5 @@ namespace black_cat
 		using bc_network_message_hash = core::bc_string_cmp_hash;
 		using bc_network_packet_time = core_platform::bc_clock::big_clock;
 		using bc_network_rtt = core_platform::bc_clock::small_delta_time;
-		template<typename T>
-		using bc_network_extrapolation = core::bc_value_change_rate_sampler<T, 80, 15, 5>;
 	}
 }

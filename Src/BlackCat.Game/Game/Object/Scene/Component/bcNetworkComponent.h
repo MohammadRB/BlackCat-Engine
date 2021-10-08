@@ -4,6 +4,7 @@
 
 #include "Core/Container/bcVector.h"
 #include "Core/Math/bcVector3f.h"
+#include "Core/Utility/bcValueChangeRateSampler.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/System/Network/bcNetworkDefinitions.h"
 #include "Game/System/Network/bcNetworkManager.h"
@@ -13,6 +14,9 @@ namespace black_cat
 {
 	namespace game
 	{
+		template<typename T>
+		using bc_network_extrapolation = core::bc_value_change_rate_sampler<T, 80, 15, 5>;
+		
 		using bc_network_v3_extrapolation = bc_network_extrapolation<core::bc_vector3f>;
 
 		class BC_GAME_DLL bc_network_component : public bci_actor_component

@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include "Core/Utility/bcInitializable.h"
 #include "Core/Messaging/Event/bcEventManager.h"
+#include "Core/Utility/bcValueSampler.h"
+#include "Core/Utility/bcInitializable.h"
 #include "PlatformImp/Application/bcApplication.h"
 #include "Game/bcExport.h"
 #include "Game/Application/bcIRenderApplicationOutputWindow.h"
@@ -24,10 +25,14 @@ namespace black_cat
 
 			bc_render_application& operator=(bc_render_application&&) = delete;
 
-			const bci_render_application_output_window* get_output_window() const;
+			const bcECHAR* get_app_name() const noexcept;
+			
+			const bci_render_application_output_window* get_output_window() const noexcept;
 
-			const core_platform::bc_clock& get_clock() const;
+			const core_platform::bc_clock& get_clock() const noexcept;
 
+			bcFLOAT get_fps() const noexcept;
+			
 			/**
 			 * \brief Specify an upper range for application fps or use a value lower than 0 for unlimited fps.
 			 * \param p_fps 
@@ -137,17 +142,20 @@ namespace black_cat
 			 */
 			virtual void app_close_engine_components() = 0;
 
-			void _initialize(bc_engine_application_parameter& p_platform_parameters) override;
+			void _initialize(bc_engine_application_parameter& p_parameters) override;
 
 			void _destroy() override;
 
 			bool _app_event(core::bci_event& p_event);
 
+			const bcECHAR* m_app_name;
 			core::bc_unique_ptr<platform::bc_application> m_app;
 			bci_render_application_output_window* m_output_window;
 			core::bc_unique_ptr<core_platform::bc_clock> m_clock;
 			bcUINT32 m_min_update_rate;
 			bcINT32 m_render_rate;
+			core::bc_value_sampler<core_platform::bc_clock::small_delta_time, 64> m_fps_sampler;
+			core_platform::bc_clock::small_delta_time m_fps;
 
 			bool m_is_terminated;
 			bool m_paused;
@@ -163,15 +171,12 @@ namespace black_cat
 			core::bc_event_listener_handle m_event_handle_key;
 			core::bc_event_listener_handle m_event_handle_pointing;
 		};
+	}
 
-		inline const bci_render_application_output_window* bc_render_application::get_output_window() const
-		{
-			return m_output_window;
-		}
+	extern BC_GAME_DLL game::bc_render_application* g_application;
 
-		inline const core_platform::bc_clock& bc_render_application::get_clock() const
-		{
-			return *m_clock;
-		}
+	inline game::bc_render_application& bc_get_application()
+	{
+		return *g_application;
 	}
 }

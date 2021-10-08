@@ -11,6 +11,8 @@
 
 namespace black_cat
 {
+	game::bc_render_application* g_application = nullptr;
+
 	namespace game
 	{
 		struct bc_render_loop_state
@@ -52,17 +54,41 @@ namespace black_cat
 		};
 		
 		bc_render_application::bc_render_application()
-			: m_app(nullptr),
+			: m_app_name(nullptr),
+			m_app(nullptr),
 			m_output_window(nullptr),
 			m_clock(nullptr),
 			m_min_update_rate(0),
 			m_render_rate(0),
+			m_fps_sampler(0),
+			m_fps(0),
 			m_is_terminated(false),
 			m_paused(false),
 			m_termination_code(0)
 		{
+			g_application = this;
 		}
 
+		const bcECHAR* bc_render_application::get_app_name() const noexcept
+		{
+			return m_app_name;
+		}
+
+		const bci_render_application_output_window* bc_render_application::get_output_window() const noexcept
+		{
+			return m_output_window;
+		}
+
+		const core_platform::bc_clock& bc_render_application::get_clock() const noexcept
+		{
+			return *m_clock;
+		}
+		
+		bcFLOAT bc_render_application::get_fps() const noexcept
+		{
+			return m_fps;
+		}
+		
 		void bc_render_application::set_fps(bcUINT32 p_fps)
 		{
 			if (p_fps > 0)
@@ -134,6 +160,7 @@ namespace black_cat
 				core_platform::bc_clock::small_delta_time l_sleep_time = 0;
 				core_platform::bc_clock::small_delta_time l_elapsed = 0;
 				core_platform::bc_clock::small_delta_time l_local_elapsed = 0;
+				core_platform::bc_clock::small_delta_time l_average_elapsed = 0;
 				core_platform::bc_clock::big_delta_time l_total_elapsed = 0;
 
 				core::bc_log(core::bc_log_type::info) << "update loop started" << core::bc_lend;
@@ -148,7 +175,7 @@ namespace black_cat
 
 					if (m_paused)
 					{
-						const auto l_clock = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed);
+						const auto l_clock = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed, l_average_elapsed);
 						l_render_thread_state.m_clock = l_clock;
 						l_render_thread_state.m_signal.store(bc_render_loop_state::signal::pause, core_platform::bc_memory_order::release);
 
@@ -161,8 +188,9 @@ namespace black_cat
 					m_clock->update();
 
 					l_elapsed = m_clock->get_elapsed();
+					l_average_elapsed = m_fps_sampler.average_value();
 					l_total_elapsed = m_clock->get_total_elapsed();
-					const auto l_clock = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed);
+					const auto l_clock = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed, l_average_elapsed);
 
 #ifdef BC_DEBUG
 					if (l_elapsed > 1000.0f)
@@ -180,7 +208,7 @@ namespace black_cat
 
 					while (l_update_call_counter > 0)
 					{
-						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed, std::min(l_elapsed, l_min_update_elapsed)), l_update_call_counter > 1);
+						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed, l_average_elapsed, std::min(l_elapsed, l_min_update_elapsed)), l_update_call_counter > 1);
 						--l_update_call_counter;
 					}
 
@@ -192,7 +220,9 @@ namespace black_cat
 					}
 
 					l_render_thread_state.m_signal.store(bc_render_loop_state::signal::swap, core_platform::bc_memory_order::release);
-					
+
+					m_fps_sampler.add_sample(l_elapsed);
+					m_fps = 1000.0f / m_fps_sampler.average_value();
 					app_swap_frame(l_clock);
 
 					while (l_render_thread_state.m_signal.load(core_platform::bc_memory_order::acquire) != bc_render_loop_state::signal::ready)
@@ -254,18 +284,19 @@ namespace black_cat
 
 		void bc_render_application::_initialize(bc_engine_application_parameter& p_parameters)
 		{
+			m_app_name = p_parameters.m_app_parameters.m_app_name;
 			app_start_engine_components(p_parameters);
 			m_app = core::bc_make_unique<platform::bc_application>(core::bc_alloc_type::program, p_parameters.m_app_parameters);
 
 			m_output_window = p_parameters.m_app_parameters.m_output_window_factory();
 			m_clock = core::bc_make_unique<core_platform::bc_clock>(core::bc_alloc_type::program);
 
+			m_min_update_rate = 60;
+			m_render_rate = m_min_update_rate;
+			
 			m_is_terminated = false;
 			m_paused = false;
 			m_termination_code = 0;
-
-			m_min_update_rate = 60;
-			m_render_rate = m_min_update_rate;
 
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 			m_event_handle_window_state = l_event_manager->register_event_listener<platform::bc_app_event_window_state>

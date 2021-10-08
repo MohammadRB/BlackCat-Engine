@@ -9,11 +9,18 @@ namespace black_cat
 	
 	namespace game
 	{
-		bc_global_config::bc_global_config(const bcECHAR* p_content_path)
+		bc_global_config::bc_global_config(const bcECHAR* p_content_path, const bcECHAR* p_content_file_name)
 			: bc_config_file()
 		{
+			const bcECHAR* l_content_file_extension = bcL(".json");
+			core::bc_estring_frame l_content_file_name(p_content_file_name);
+			if(!core::bc_string_ends_with(l_content_file_name.c_str(), l_content_file_name.size(), l_content_file_extension, 5))
+			{
+				l_content_file_name.append(l_content_file_extension);
+			}
+			
 			m_json = core::bc_make_unique<core::bc_json_document<bc_config_layout>>();
-			load(p_content_path, bcL("config.json"));
+			load(p_content_path, l_content_file_name.c_str());
 
 			auto& l_json = *m_json;
 			if (!l_json->m_global_scale.get_had_value())

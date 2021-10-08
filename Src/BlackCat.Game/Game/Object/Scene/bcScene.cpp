@@ -49,7 +49,7 @@ namespace black_cat
 			m_scene_graph(std::move(p_scene_graph)),
 			m_px_scene(std::move(p_px_scene))
 		{
-			m_global_scale = get_global_config().get_global_scale();
+			m_global_scale = bc_get_global_config().get_global_scale();
 			m_bullet_manager = core::bc_make_unique<bc_bullet_manager>(bc_bullet_manager(*m_physics));
 			m_light_manager = core::bc_make_unique<bc_light_manager>(bc_light_manager());
 			m_particle_manager = core::bc_make_unique<bc_particle_manager>(bc_particle_manager());

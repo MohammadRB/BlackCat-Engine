@@ -16,7 +16,7 @@ int WINAPI WinMain(HINSTANCE p_instance, HINSTANCE p_prev_instance, CHAR* p_cmd_
 	(
 		p_instance,
 		bcL("BattleOfXbots"),
-		nullptr
+		p_cmd_line
 	);
 	game::bc_render_application_parameter l_render_app_parameters
 	(

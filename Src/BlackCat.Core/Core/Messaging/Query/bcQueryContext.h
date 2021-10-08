@@ -21,7 +21,7 @@ namespace black_cat
 			TQuery& get_shared_query() const;
 
 			bc_query_manager* m_query_manager{ nullptr };
-			core_platform::bc_clock::update_param m_clock{ 0, 0 };
+			core_platform::bc_clock::update_param m_clock{ 0, 0, 0 };
 		
 		protected:
 			bc_query_context();

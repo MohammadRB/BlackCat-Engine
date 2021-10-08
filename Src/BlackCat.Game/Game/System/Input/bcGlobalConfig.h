@@ -26,7 +26,7 @@ namespace black_cat
 		class bc_global_config final : public bc_config_file
 		{
 		public:
-			explicit bc_global_config(const bcECHAR* p_content_path);
+			bc_global_config(const bcECHAR* p_content_path, const bcECHAR* p_content_file_name = bcL("config"));
 
 			bc_global_config(bc_global_config&&) noexcept;
 
@@ -99,13 +99,8 @@ namespace black_cat
 	}
 
 	extern BC_GAME_DLL game::bc_global_config* g_global_config;
-
-	inline void set_global_config(game::bc_global_config& p_config)
-	{
-		g_global_config = &p_config;
-	}
-
-	inline game::bc_global_config& get_global_config()
+	
+	inline game::bc_global_config& bc_get_global_config()
 	{
 		return *g_global_config;
 	}

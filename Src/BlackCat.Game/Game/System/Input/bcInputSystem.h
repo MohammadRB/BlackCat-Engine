@@ -75,7 +75,7 @@ namespace black_cat
 
 			void remove_camera(const bci_camera* p_camera);
 			
-			void update(core_platform::bc_clock::update_param p_clock_update_param);
+			void update(const core_platform::bc_clock::update_param& p_clock_update_param);
 
 		private:
 			bool _event_handler(core::bci_event& p_event);

@@ -169,6 +169,7 @@ namespace black_cat
 						p_context.m_game_system.get_network_system().remove_actor(p_context.m_actor);
 					}
 				}
+				// TODO check for other cases when actor is replicated but is removed from remote host
 
 				return;
 			}
@@ -235,11 +236,11 @@ namespace black_cat
 			auto& l_extrapolator = std::get<1>(*l_ite);
 			auto& l_extrapolator_elapsed = std::get<2>(*l_ite);
 			
-			const auto l_extrapolation_ratio = p_clock.m_elapsed / static_cast<core_platform::bc_clock::small_delta_time>(m_in_ping);
+			const auto l_extrapolation_ratio = p_clock.m_average_elapsed / static_cast<core_platform::bc_clock::small_delta_time>(m_in_ping);
 			auto l_extrapolated_value = l_extrapolator.change_rate();
 			l_extrapolated_value *= l_extrapolation_ratio;
 
-			l_extrapolator_elapsed += p_clock.m_elapsed;
+			l_extrapolator_elapsed += p_clock.m_average_elapsed;
 			if(l_extrapolator_elapsed > m_in_ping * 4)
 			{
 				// If we had no new sample repeat last sample to prevent false extrapolation
@@ -247,11 +248,11 @@ namespace black_cat
 				l_extrapolator_elapsed = 0;
 			}
 			
-			core::bc_log(core::bc_log_type::debug) << core::bc_only_file
+			/*core::bc_log(core::bc_log_type::debug) << core::bc_only_file
 				<< "extrapolation ratio: " << l_extrapolation_ratio
-				<< " elapsed: " << p_clock.m_elapsed
+				<< " elapsed: " << p_clock.m_average_elapsed
 				<< " ping: " << m_in_ping
-				<< core::bc_lend;
+				<< core::bc_lend;*/
 			return std::make_pair(true, l_extrapolated_value);
 		}
 	}

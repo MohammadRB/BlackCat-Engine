@@ -107,7 +107,7 @@ namespace black_cat
 						l_bullet_hit_event->get_hit_position(),
 						l_bullet_hit_event->get_hit_normal(),
 						&l_particle_color,
-						l_bullet_hit_event->get_bullet_mass() / get_global_config().get_bullet_reference_mass()
+						l_bullet_hit_event->get_bullet_mass() / bc_get_global_config().get_bullet_reference_mass()
 					);
 				}
 				

@@ -4,6 +4,8 @@
 
 #include "CorePlatform/bcType.h"
 #include "CorePlatform/CorePlatformPCH.h"
+#include "CorePlatformImp/Concurrency/bcMutex.h"
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/Concurrency/bcThreadLocal.h"
 #include "Core/Container/bcString.h"
@@ -167,11 +169,11 @@ namespace black_cat
 
 			void _replicate_last_logs(bc_log_type p_types, bci_log_listener* p_listener);
 
+			core_platform::bc_shared_mutex m_listener_mutex;
 			listener_map_type m_listeners;
 			bc_thread_local<bc_logger_output_stream> m_log_stream;
 
-			core_platform::bc_mutex m_logs_mutex;
-			bcSIZE m_logs_ptr;
+			core_platform::bc_atomic<bcSIZE> m_logs_ptr;
 			bc_vector<std::pair<bc_log_type, bc_estring>> m_logs;
 		};
 

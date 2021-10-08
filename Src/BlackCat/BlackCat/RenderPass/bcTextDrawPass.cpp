@@ -65,7 +65,7 @@ namespace black_cat
 		};
 
 		bcUINT32 l_counter_ite = 0;
-		const auto& l_counter_values = get_global_config().get_counter_values();
+		const auto& l_counter_values = bc_get_global_config().get_counter_values();
 		core::bc_vector_frame<graphic::bc_device_text> l_texts;
 		l_texts.reserve(l_counter_values.size());
 

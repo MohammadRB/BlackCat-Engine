@@ -16,7 +16,7 @@ namespace black_cat
 			const auto l_main_camera_distance = (p_main_camera_position - p_position).magnitude();
 			const auto l_main_camera_mesh_index = static_cast<bcUINT32>(l_main_camera_distance / p_lod_factor);
 
-			if (l_main_camera_mesh_index > get_global_config().get_lod_culling_index())
+			if (l_main_camera_mesh_index > bc_get_global_config().get_lod_culling_index())
 			{
 				return std::make_pair(-1, nullptr);
 			}
