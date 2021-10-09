@@ -49,10 +49,10 @@ namespace black_cat
 	{
 		bc_xbot_controller::operator=(std::move(p_other));
 		
-		m_key_listener_handle = std::move(p_other.m_key_listener_handle);
-		m_pointing_listener_handle = std::move(p_other.m_pointing_listener_handle);
 		m_input_system = p_other.m_input_system;
 		m_camera = p_other.m_camera;
+		m_key_listener_handle = std::move(p_other.m_key_listener_handle);
+		m_pointing_listener_handle = std::move(p_other.m_pointing_listener_handle);
 
 		m_camera_y_offset = p_other.m_camera_y_offset;
 		m_camera_z_offset = p_other.m_camera_z_offset;

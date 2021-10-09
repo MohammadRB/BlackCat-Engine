@@ -216,6 +216,12 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRigidDynamicNetworkActorController.h">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotNetworkActorController.h">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotStateMachine.h">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -339,6 +345,9 @@
       <Filter>BlackCat\RenderPass\PostProcess</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRigidDynamicNetworkActorController.cpp">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotNetworkActorController.cpp">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
   </ItemGroup>

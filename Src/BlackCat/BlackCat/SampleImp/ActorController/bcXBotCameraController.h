@@ -46,11 +46,11 @@ namespace black_cat
 		void _attach_weapon(const bcCHAR* p_entity);
 
 		void _detach_weapon();
-		
-		core::bc_event_listener_handle m_key_listener_handle;
-		core::bc_event_listener_handle m_pointing_listener_handle;
+
 		game::bc_input_system* m_input_system;
 		game::bc_chasing_camera* m_camera;
+		core::bc_event_listener_handle m_key_listener_handle;
+		core::bc_event_listener_handle m_pointing_listener_handle;
 
 		bcFLOAT m_camera_y_offset;
 		bcFLOAT m_camera_z_offset;
