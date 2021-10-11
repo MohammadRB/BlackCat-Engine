@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/Memory/bcMemoryManagment.h"
-#include "Core/Utility/bcServiceManager.h"
+#include "Core/Utility/bcLogger.h"
 #include "PlatformImp/Network/bcNetworkDefinitions.h"
 
 namespace black_cat

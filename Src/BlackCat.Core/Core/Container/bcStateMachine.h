@@ -112,6 +112,7 @@ namespace black_cat
 		class bc_state : bc_state_event_driver<TMachine, TEvents>...
 		{
 		protected:
+			using machine_t = TMachine;
 			using state_transition = bc_state_transition<TMachine>;
 			using bc_state_event_driver<TMachine, TEvents>::handle...;
 			template<class ...TStates> friend class bc_state_machine;
@@ -124,7 +125,12 @@ namespace black_cat
 			~bc_state() = default;
 
 			bc_state& operator=(const bc_state&) noexcept = default;
-		
+
+			machine_t& get_machine() noexcept
+			{
+				return m_machine;
+			}
+			
 		private:
 			template<class TEvent>
 			state_transition process_event(TEvent& p_event)
@@ -156,6 +162,8 @@ namespace black_cat
 			virtual void on_exit()
 			{
 			}
+
+			machine_t* m_machine{ nullptr };
 		};
 
 		template<class TState>
@@ -183,6 +191,16 @@ namespace black_cat
 			explicit bc_state_machine(TStates... p_states)
 				: m_states(std::make_tuple(std::move(p_states)...))
 			{
+				auto l_expansion_list = 
+				{
+					(
+						[&]()
+						{
+							std::get<TStates>(m_states).m_machine = static_cast<typename TStates::machine_t*>(this);
+							return true;
+						}()
+					)...
+				};
 				m_current_state = &std::get<0>(m_states);
 			}
 
