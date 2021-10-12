@@ -49,17 +49,20 @@ namespace black_cat
 
 			const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();
 			const auto l_network_data_dir = m_network_component->get_network_data_dir();
-			if
-			(
-				(l_network_type == bc_network_type::server && l_network_data_dir == bc_actor_network_data_dir::replicate_sync) ||
-				(l_network_type == bc_network_type::client && l_network_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
-			)
+			if(l_network_type != bc_network_type::not_started)
 			{
-				m_replication_side = bc_actor_replication_side::origin;
-			}
-			else
-			{
-				m_replication_side = bc_actor_replication_side::replicated;
+				if
+				(
+					(l_network_type == bc_network_type::server && l_network_data_dir == bc_actor_network_data_dir::replicate_sync) ||
+					(l_network_type == bc_network_type::client && l_network_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
+				)
+				{
+					m_replication_side = bc_actor_replication_side::origin;
+				}
+				else
+				{
+					m_replication_side = bc_actor_replication_side::replicated;
+				}
 			}
 		}
 

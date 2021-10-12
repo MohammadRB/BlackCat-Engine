@@ -128,7 +128,7 @@ namespace black_cat
 
 			machine_t& get_machine() noexcept
 			{
-				return m_machine;
+				return *m_machine;
 			}
 			
 		private:
@@ -188,20 +188,16 @@ namespace black_cat
 			using bc_state_machine_transition_driver<TStates>::on_exit...;
 			
 		public:
-			explicit bc_state_machine(TStates... p_states)
+			/**
+			 * \brief Clients must transfer to initial state explicitly, because in state transfer
+			 * any virtual call would be forwarded to client classes which are not constructed yet
+			 * \param p_states 
+			 */
+			bc_state_machine(TStates... p_states)
 				: m_states(std::make_tuple(std::move(p_states)...))
 			{
-				auto l_expansion_list = 
-				{
-					(
-						[&]()
-						{
-							std::get<TStates>(m_states).m_machine = static_cast<typename TStates::machine_t*>(this);
-							return true;
-						}()
-					)...
-				};
 				m_current_state = &std::get<0>(m_states);
+				_set_machine_pointer();
 			}
 
 			bc_state_machine(bc_state_machine&& p_other) noexcept
@@ -215,6 +211,7 @@ namespace black_cat
 					},
 					p_other.m_current_state
 				);
+				_set_machine_pointer();
 			}
 
 			~bc_state_machine() = default;
@@ -230,6 +227,7 @@ namespace black_cat
 					},
 					p_other.m_current_state
 				);
+				_set_machine_pointer();
 				
 				return *this;
 			}
@@ -281,6 +279,20 @@ namespace black_cat
 			}
 			
 		private:
+			void _set_machine_pointer()
+			{
+				auto l_expansion_list =
+				{
+					(
+						[&]()
+						{
+							std::get<TStates>(m_states).m_machine = static_cast<typename TStates::machine_t*>(this);
+							return true;
+						}()
+					)...
+				};
+			}
+			
 			std::tuple<TStates...> m_states;
 			std::variant<TStates*...> m_current_state;
 		};

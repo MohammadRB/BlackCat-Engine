@@ -38,6 +38,12 @@ namespace black_cat
 		m_scene(nullptr),
 		m_skinned_component(nullptr),
 		m_bound_box_max_side_length(0),
+		m_active_job(nullptr),
+		m_look_speed(0),
+		m_run_speed(0),
+		m_walk_speed(0),
+		m_move_speed(0),
+		m_clock(0, 0, 0),
 		m_look_delta_x(0),
 		m_forward_pressed(false),
 		m_backward_pressed(false),
@@ -51,8 +57,11 @@ namespace black_cat
 		m_left_velocity(m_forward_velocity),
 		m_walk_velocity(m_forward_velocity),
 		m_position(),
-		m_state_machine(),
-		m_weapon(nullptr)
+		m_look_direction(),
+		m_move_direction(),
+		m_move_amount(0),
+		m_weapon(nullptr),
+		m_weapon_shoot_time(-1)
 	{
 	}
 
@@ -118,6 +127,8 @@ namespace black_cat
 		m_rifle_joint = m_skinned_component->get_skeleton()->find_joint_by_name(l_rifle_joint_value.c_str());
 		m_local_origin = core::bc_vector3f(0);
 		m_local_forward = core::bc_vector3f(0, 0, -1);
+		m_look_direction = m_local_forward;
+		m_move_direction = m_local_forward;
 
 		m_idle_job = _create_idle_animation
 		(
@@ -199,19 +210,14 @@ namespace black_cat
 			
 			l_rigid_controller_component->reset_controller(std::move(l_px_controller));
 		}
-
+		
 		m_px_controller = l_rigid_controller_component->get_controller();
-		m_state_machine = core::bc_make_unique<bc_xbot_state_machine>(bc_xbot_state_machine
-		(
-			m_local_forward, 
-			7.f, 
-			m_bound_box_max_side_length * 1.3f, 
-			m_bound_box_max_side_length * 0.6f, 
-			*m_idle_job, 
-			*m_running_job, 
-			*m_rifle_idle_job, 
-			*m_rifle_running_job
-		));
+		
+		m_look_speed = 10.0f;
+		m_run_speed = m_bound_box_max_side_length * 1.3f;
+		m_walk_speed = m_bound_box_max_side_length * 0.6f;
+		
+		m_active_job = m_idle_job.get();
 	}
 
 	void bc_xbot_controller::update(const game::bc_actor_component_update_content& p_context)
@@ -220,26 +226,17 @@ namespace black_cat
 		{
 			return;
 		}
-		
-		_update_input(p_context.m_clock);
-		m_state_machine->update
-		(
-			bc_xbot_state_update_params
-			{
-				p_context.m_clock,
-				m_position,
-				m_look_delta_x,
-				m_look_velocity.get_value(),
-				m_forward_velocity.get_value(),
-				m_right_velocity.get_value(),
-				m_left_velocity.get_value(),
-				m_backward_velocity.get_value(),
-				m_walk_velocity.get_value()
-			}
-		);
-		_update_world_transform(p_context.m_clock);
 
-		m_skinned_component->add_animation_job(&m_state_machine->get_active_animation());
+		m_clock = p_context.m_clock;
+		_update_input();
+		_update_direction();
+		_update_active_animation();
+		_update_world_transform();
+
+		if(m_active_job)
+		{
+			m_skinned_component->add_animation_job(m_active_job);
+		}
 	}
 
 	void bc_xbot_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
@@ -252,7 +249,7 @@ namespace black_cat
 		}
 		
 		m_scene = nullptr;
-		m_state_machine = nullptr;
+		m_active_job = nullptr;
 		
 		if(m_weapon.has_value())
 		{
@@ -335,13 +332,23 @@ namespace black_cat
 		l_weapon.m_rate_of_fire_seconds = l_weapon_component->get_rate_of_fire_seconds();
 
 		m_weapon.reset(l_weapon);
-		m_state_machine->attach_weapon(*m_weapon, m_rifle_joint.second, m_rifle_joint_offset);
+		m_weapon_shoot_time = 0;
+
+		auto* l_rifle_idle_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(static_cast<game::bc_sequence_animation_job&>(*m_rifle_idle_job));
+		auto* l_rifle_running_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(static_cast<game::bc_sequence_animation_job&>(*m_rifle_running_job));
+
+		l_rifle_idle_ik_job->set_offset_joint(m_rifle_joint.second);
+		l_rifle_idle_ik_job->set_offset(m_rifle_joint_offset);
+		l_rifle_running_ik_job->set_offset_joint(m_rifle_joint.second);
+		l_rifle_running_ik_job->set_offset(m_rifle_joint_offset);
 	}
 
 	void bc_xbot_controller::detach_weapon() noexcept
 	{
-		m_state_machine->detach_weapon();
 		m_weapon.reset();
+
+		/*bc_animation_job_helper::find_job<bc_partial_blending_animation_job>(static_cast<bc_sequence_animation_job&>(*m_idle_job))->set_enabled(false);
+		bc_animation_job_helper::find_job<bc_partial_blending_animation_job>(static_cast<bc_sequence_animation_job&>(*m_running_job))->set_enabled(false);*/
 	}
 
 	void bc_xbot_controller::shoot_weapon() noexcept
@@ -350,9 +357,24 @@ namespace black_cat
 		{
 			return;
 		}
+		
+		auto* l_additive_blend_job = game::bc_animation_job_helper::find_job<game::bc_additive_blending_animation_job>(static_cast<game::bc_sequence_animation_job&>(*m_active_job));
+		if(!l_additive_blend_job || !l_additive_blend_job->get_additive_layer())
+		{
+			return;
+		}
 
-		m_state_machine->shoot_weapon();
-		m_scene->add_bullet(m_weapon->m_component->shoot(m_state_machine->m_state.m_look_direction));
+		if(m_weapon_shoot_time >= 0)
+		{
+			return;
+		}
+
+		m_weapon_shoot_time = 0;
+		l_additive_blend_job->get_additive_layer()->set_local_time(0);
+		l_additive_blend_job->get_additive_layer()->set_enabled(true);
+		l_additive_blend_job->set_enabled(true);
+
+		m_scene->add_bullet(m_weapon->m_component->shoot(m_look_direction));
 	}
 
 	void bc_xbot_controller::on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit)
@@ -372,8 +394,8 @@ namespace black_cat
 		}
 		
 		const auto l_ccontroller_actor = p_hit.get_ccontroller().get_actor().is_rigid_body();
-		const auto l_multiplier = (m_state_machine->m_state.m_move_amount / m_state_machine->m_state.m_run_speed);
-		l_rigid_dynamic.add_force(m_state_machine->m_state.m_move_direction * l_multiplier * l_ccontroller_actor.get_mass());
+		const auto l_multiplier = (m_move_amount / m_run_speed);
+		l_rigid_dynamic.add_force(m_move_direction * l_multiplier * l_ccontroller_actor.get_mass());
 	}
 
 	void bc_xbot_controller::on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit)
@@ -601,44 +623,44 @@ namespace black_cat
 			.build();
 	}
 
-	void bc_xbot_controller::_update_input(const core_platform::bc_clock::update_param& p_clock)
+	void bc_xbot_controller::_update_input()
 	{
 		core_platform::atomic_thread_fence(core_platform::bc_memory_order::acquire);
 
 		if (m_look_delta_x != 0)
 		{
-			m_look_velocity.push(p_clock.m_elapsed_second);
+			m_look_velocity.push(m_clock.m_elapsed_second);
 		}
 		else
 		{
-			m_look_velocity.release(p_clock.m_elapsed_second);
+			m_look_velocity.release(m_clock.m_elapsed_second);
 		}
 
 		if (m_forward_pressed)
 		{
-			m_forward_velocity.push(p_clock.m_elapsed_second);
+			m_forward_velocity.push(m_clock.m_elapsed_second);
 		}
 		else
 		{
-			m_forward_velocity.release(p_clock.m_elapsed_second);
+			m_forward_velocity.release(m_clock.m_elapsed_second);
 		}
 
 		if (m_right_pressed)
 		{
-			m_right_velocity.push(p_clock.m_elapsed_second);
+			m_right_velocity.push(m_clock.m_elapsed_second);
 		}
 		else
 		{
-			m_right_velocity.release(p_clock.m_elapsed_second);
+			m_right_velocity.release(m_clock.m_elapsed_second);
 		}
 
 		if (m_left_pressed)
 		{
-			m_left_velocity.push(p_clock.m_elapsed_second);
+			m_left_velocity.push(m_clock.m_elapsed_second);
 		}
 		else
 		{
-			m_left_velocity.release(p_clock.m_elapsed_second);
+			m_left_velocity.release(m_clock.m_elapsed_second);
 		}
 
 		const bool l_is_moving_forward = m_forward_velocity.get_value() || m_right_velocity.get_value() || m_left_velocity.get_value();
@@ -646,24 +668,254 @@ namespace black_cat
 
 		if (m_backward_pressed && (!l_is_moving_forward || l_is_moving_backward))
 		{
-			m_backward_velocity.push(p_clock.m_elapsed_second);
+			m_backward_velocity.push(m_clock.m_elapsed_second);
 		}
 		else
 		{
-			m_backward_velocity.release(p_clock.m_elapsed_second);
+			m_backward_velocity.release(m_clock.m_elapsed_second);
 		}
 
 		if (m_walk_pressed)
 		{
-			m_walk_velocity.push(p_clock.m_elapsed_second);
+			m_walk_velocity.push(m_clock.m_elapsed_second);
 		}
 		else
 		{
-			m_walk_velocity.release(p_clock.m_elapsed_second);
+			m_walk_velocity.release(m_clock.m_elapsed_second);
 		}
 	}
 
-	void bc_xbot_controller::_update_world_transform(const core_platform::bc_clock::update_param& p_clock)
+	void bc_xbot_controller::_update_direction()
+	{
+		const auto l_look_velocity = m_look_velocity.get_value();
+		const auto l_forward_velocity = m_forward_velocity.get_value();
+		const auto l_backward_velocity = m_backward_velocity.get_value();
+		const auto l_right_velocity = m_right_velocity.get_value();
+		const auto l_left_velocity = m_left_velocity.get_value();
+		const auto l_walk_velocity = m_walk_velocity.get_value();
+				
+		core::bc_matrix3f l_look_rotation;
+		core::bc_vector3f l_right_vector;
+		core::bc_vector3f l_left_vector;
+
+		if constexpr (graphic::bc_render_api_info::use_left_handed())
+		{
+			l_look_rotation.rotation_y_lh(core::bc_to_radian(m_look_delta_x * l_look_velocity * m_look_speed * m_clock.m_elapsed_second));
+		}
+		else
+		{
+			l_look_rotation.rotation_y_rh(core::bc_to_radian(m_look_delta_x * l_look_velocity * m_look_speed * m_clock.m_elapsed_second));
+		}
+
+		m_look_direction = core::bc_vector3f::normalize(l_look_rotation * m_look_direction);
+
+		if constexpr (graphic::bc_render_api_info::use_left_handed())
+		{
+			core::bc_matrix3f l_right_left_direction;
+
+			l_right_left_direction.rotation_y_lh(core::bc_to_radian(l_right_velocity * 90));
+			l_right_vector = core::bc_vector3f::normalize(l_right_left_direction * m_look_direction);
+
+			l_right_left_direction.rotation_y_lh(core::bc_to_radian(l_left_velocity * -90));
+			l_left_vector = core::bc_vector3f::normalize(l_right_left_direction * m_look_direction);
+		}
+		else
+		{
+			core::bc_matrix3f l_right_left_direction;
+
+			l_right_left_direction.rotation_y_rh(core::bc_to_radian(l_right_velocity * 90));
+			l_right_vector = core::bc_vector3f::normalize(l_right_left_direction * m_look_direction);
+
+			l_right_left_direction.rotation_y_rh(core::bc_to_radian(l_left_velocity * -90));
+			l_left_vector = core::bc_vector3f::normalize(l_right_left_direction * m_look_direction);
+		}
+
+		m_move_speed = (1 - l_walk_velocity) * m_run_speed + l_walk_velocity * m_walk_speed;
+		m_move_direction = m_look_direction * l_forward_velocity +
+			m_look_direction * -l_backward_velocity +
+			l_right_vector * l_right_velocity +
+			l_left_vector * l_left_velocity;
+		m_move_amount = std::max({ l_forward_velocity, l_backward_velocity, l_right_velocity, l_left_velocity }) * m_move_speed;
+
+		if (core::bc_vector3f::length_sq(m_move_direction) <= 0)
+		{
+			m_move_amount = 0;
+		}
+		
+		if (m_move_amount <= 0)
+		{
+			m_move_direction = m_look_direction;
+		}
+
+		m_move_direction.normalize();
+		
+		// if two vectors are exactly opposite of each other 'rotation_between_two_vector' method in matrix3x3 will have undefined result
+		if (m_move_direction.dot(m_look_direction) >= -1.f)
+		{
+			m_move_direction.x -= 0.01f;
+			m_move_direction.normalize();
+		}
+	}
+
+	void bc_xbot_controller::_update_active_animation()
+	{
+		m_active_job = nullptr;
+
+		if (m_move_amount <= 0)
+		{
+			if(m_weapon.has_value())
+			{
+				switch (m_weapon->m_class)
+				{
+				case game::bc_weapon_class::rifle:
+					m_active_job = get_rifle_idle_animation();
+					break;
+				default:
+					core::bc_log(core::bc_log_type::error) << "xbot weapon class is unknown" << core::bc_lend;
+					BC_ASSERT(false);
+				}
+			}
+			else
+			{
+				m_active_job = get_idle_animation();
+			}
+
+			_blend_idle_animation(*m_active_job);
+			_weapon_ik_animation(m_weapon.get(), *m_active_job);
+		}
+		else
+		{
+			if (m_weapon.has_value())
+			{
+				switch (m_weapon->m_class)
+				{
+				case game::bc_weapon_class::rifle:
+					m_active_job = get_rifle_running_animation();
+					break;
+				default:
+					core::bc_log(core::bc_log_type::error) << "xbot weapon class is unknown" << core::bc_lend;
+					BC_ASSERT(false);
+				}
+			}
+			else
+			{
+				m_active_job = get_running_animation();
+			}
+
+			_blend_running_animation(*m_active_job);
+			_weapon_ik_animation(m_weapon.get(), *m_active_job);
+		}
+
+		_blend_weapon_shoot_animation();
+	}
+
+	void bc_xbot_controller::_blend_idle_animation(game::bci_animation_job& p_idle_animation)
+	{
+		const auto l_look_velocity = m_look_velocity.get_value();
+		bcFLOAT l_weights[3] = { l_look_velocity, 1 - l_look_velocity, l_look_velocity };
+
+		auto* l_blending_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(static_cast<game::bc_sequence_animation_job&>(p_idle_animation));
+		l_blending_job->set_weights(&l_weights[0]);
+
+		if (l_look_velocity == 0.f)
+		{
+			bcFLOAT l_times[3] = { 0, -1, 0 };
+			l_blending_job->set_local_times(&l_times[0]);
+		}
+		else
+		{
+			bcFLOAT l_times[3] = { -1, 0, -1 };
+			l_blending_job->set_local_times(&l_times[0]);
+		}
+
+		auto* l_aim_job = game::bc_animation_job_helper::find_job<game::bc_aim_animation_job>(static_cast<game::bc_sequence_animation_job&>(*m_active_job));
+		l_aim_job->set_world_target(m_position + m_look_direction * 1000);
+	}
+
+	void bc_xbot_controller::_blend_running_animation(game::bci_animation_job& p_running_animation)
+	{
+		const auto l_run_weight = (m_move_speed - m_walk_speed) / (m_run_speed - m_walk_speed);
+		const auto l_walk_weight = 1 - l_run_weight;
+		const auto l_move_speed_normalize = m_move_amount / m_move_speed;
+		bcFLOAT l_weights[] = 
+		{
+			1 - l_move_speed_normalize,
+			l_move_speed_normalize * l_walk_weight,
+			l_move_speed_normalize * l_walk_weight,
+			l_move_speed_normalize * l_run_weight,
+			l_move_speed_normalize * l_run_weight,
+		};
+
+		const auto l_move_direction_dot = m_look_direction.dot(m_move_direction);
+		if (l_move_direction_dot >= -0.01f)
+		{
+			l_weights[2] = 0;
+			l_weights[4] = 0;
+		}
+		else
+		{
+			l_weights[1] = 0;
+			l_weights[3] = 0;
+		}
+
+		auto* l_blending_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(static_cast<game::bc_sequence_animation_job&>(p_running_animation));
+		l_blending_job->set_weights(&l_weights[0]);
+
+		auto* l_aim_job = game::bc_animation_job_helper::find_job<game::bc_aim_animation_job>(static_cast<game::bc_sequence_animation_job&>(*m_active_job));
+		l_aim_job->set_world_target(m_position + m_look_direction * 1000);
+	}
+
+	void bc_xbot_controller::_blend_weapon_shoot_animation()
+	{
+		if (!m_weapon.has_value())
+		{
+			return;
+		}
+		
+		auto* l_additive_blend_job = game::bc_animation_job_helper::find_job<game::bc_additive_blending_animation_job>(static_cast<game::bc_sequence_animation_job&>(*m_active_job));
+		if (!l_additive_blend_job)
+		{
+			return;
+		}
+
+		auto* l_additive_layer = l_additive_blend_job->get_additive_layer().get();
+		if(!l_additive_layer)
+		{
+			return;
+		}
+
+		if (m_weapon_shoot_time >= 0)
+		{
+			m_weapon_shoot_time += m_clock.m_elapsed_second;
+
+			if (m_weapon_shoot_time >= m_weapon->m_rate_of_fire_seconds)
+			{
+				m_weapon_shoot_time = -1;
+			}
+		}
+		
+		l_additive_blend_job->set_weights(1, m_move_amount ? std::max((m_move_amount / m_run_speed) * 2, 1.4f) : 1); // Increase weapon shoot impact in running mode
+
+		// Once weapon shoot animation stopped disable additive blend
+		if(!l_additive_layer->get_enabled())
+		{
+			l_additive_layer->set_local_time(0);
+			l_additive_blend_job->set_enabled(false);
+		}
+	}
+
+	void bc_xbot_controller::_weapon_ik_animation(bc_xbot_weapon* p_weapon, game::bci_animation_job& p_main_animation)
+	{
+		auto* l_weapon_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(static_cast<game::bc_sequence_animation_job&>(p_main_animation));
+		if(!l_weapon_ik_job)
+		{
+			return;
+		}
+
+		l_weapon_ik_job->set_weapon(p_weapon);
+	}
+
+	void bc_xbot_controller::_update_world_transform()
 	{
 		auto l_px_controller_pre_filter = physics::bc_scene_query_pre_filter_callback
 		(
@@ -683,24 +935,24 @@ namespace black_cat
 		
 		{
 			physics::bc_scene_lock l_lock(&l_px_scene);
-			const auto l_displacement = (m_state_machine->m_state.m_move_direction * m_state_machine->m_state.m_move_amount + l_px_scene.get_gravity() * m_bound_box_max_side_length) * p_clock.m_elapsed_second;
+			const auto l_displacement = (m_move_direction * m_move_amount + l_px_scene.get_gravity() * m_bound_box_max_side_length) * m_clock.m_elapsed_second;
 			
-			m_px_controller.move(l_displacement, p_clock, &l_px_controller_pre_filter);
+			m_px_controller.move(l_displacement, m_clock, &l_px_controller_pre_filter);
 			m_position = m_px_controller.get_foot_position();
 		}
 		
 		core::bc_matrix4f l_world_transform;
 		core::bc_matrix3f l_rotation;
 
-		auto l_move_direction_sign = m_state_machine->m_state.m_look_direction.dot(m_state_machine->m_state.m_move_direction) >= -0.01f ? 1 : -1;
+		auto l_move_direction_sign = m_look_direction.dot(m_move_direction) >= -0.01f ? 1 : -1;
 
 		if constexpr (graphic::bc_render_api_info::use_left_handed())
 		{
-			l_rotation.rotation_between_two_vector_lh(get_local_forward(), m_state_machine->m_state.m_move_direction * l_move_direction_sign);
+			l_rotation.rotation_between_two_vector_lh(get_local_forward(), m_move_direction * l_move_direction_sign);
 		}
 		else
 		{
-			l_rotation.rotation_between_two_vector_rh(get_local_forward(), m_state_machine->m_state.m_move_direction * l_move_direction_sign);
+			l_rotation.rotation_between_two_vector_rh(get_local_forward(), m_move_direction * l_move_direction_sign);
 		}
 		
 		l_world_transform.make_identity();
@@ -722,8 +974,8 @@ namespace black_cat
 			return;
 		}
 
-		auto* l_model_job = game::bc_animation_job_helper::find_job<game::bc_local_to_model_animation_job>(static_cast<game::bc_sequence_animation_job&>(m_state_machine->get_active_animation()));
-		auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinned_animation_job>(static_cast<game::bc_sequence_animation_job&>(m_state_machine->get_active_animation()));
+		auto* l_model_job = game::bc_animation_job_helper::find_job<game::bc_local_to_model_animation_job>(static_cast<game::bc_sequence_animation_job&>(*m_active_job));
+		auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinned_animation_job>(static_cast<game::bc_sequence_animation_job&>(*m_active_job));
 		auto l_main_hand_transform = l_model_job->get_transforms()[m_main_hand_chain[2].first];
 		l_main_hand_transform.make_neutralize_scale();
 
@@ -733,14 +985,14 @@ namespace black_cat
 
 		if constexpr (graphic::bc_render_api_info::use_left_handed())
 		{
-			l_aim_target_rotation.rotation_between_two_vector_lh(m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_forward_rotation.rotation_between_two_vector_lh(m_weapon->m_local_forward, m_state_machine->m_state.m_look_direction);
+			l_aim_target_rotation.rotation_between_two_vector_lh(m_local_forward, m_look_direction);
+			l_weapon_forward_rotation.rotation_between_two_vector_lh(m_weapon->m_local_forward, m_look_direction);
 			l_weapon_up_rotation.rotation_between_two_vector_lh(m_weapon->m_local_up, core::bc_vector3f::up());
 		}
 		else
 		{
-			l_aim_target_rotation.rotation_between_two_vector_rh(m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_forward_rotation.rotation_between_two_vector_rh(m_weapon->m_local_forward, m_state_machine->m_state.m_look_direction);
+			l_aim_target_rotation.rotation_between_two_vector_rh(m_local_forward, m_look_direction);
+			l_weapon_forward_rotation.rotation_between_two_vector_rh(m_weapon->m_local_forward, m_look_direction);
 			l_weapon_up_rotation.rotation_between_two_vector_rh(m_weapon->m_local_up, core::bc_vector3f::up());
 		}
 

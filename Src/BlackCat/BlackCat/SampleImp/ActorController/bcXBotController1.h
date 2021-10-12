@@ -16,7 +16,6 @@
 #include "Game/Object/Animation/Job/bcBlendingAnimationJob.h"
 #include "Game/Object/Animation/Job/bcTwoBoneIKAnimationJob.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotWeapon.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotStateMachine.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -78,6 +77,8 @@ namespace black_cat
 		
 		bcFLOAT get_move_speed() const noexcept;
 		
+		void set_active_animation(game::bci_animation_job* p_animation) noexcept;
+
 		void set_look_delta(bcINT32 p_x_change) noexcept;
 
 		void set_move_forward(bool p_value) noexcept;
@@ -118,9 +119,21 @@ namespace black_cat
 			core::bc_shared_ptr<game::bc_sampling_animation_job>* p_running_sample_job,
 			core::bc_shared_ptr<game::bc_sampling_animation_job>* p_running_backward_sample_job);
 
-		void _update_input(const core_platform::bc_clock::update_param& p_clock);
+		void _update_input();
 
-		void _update_world_transform(const core_platform::bc_clock::update_param& p_clock);
+		void _update_direction();
+
+		void _update_active_animation();
+
+		void _blend_idle_animation(game::bci_animation_job& p_idle_animation);
+
+		void _blend_running_animation(game::bci_animation_job& p_running_animation);
+
+		void _blend_weapon_shoot_animation();
+		
+		void _weapon_ik_animation(bc_xbot_weapon* p_weapon, game::bci_animation_job & p_main_animation);
+		
+		void _update_world_transform();
 
 		void _update_weapon_transform();
 
@@ -144,7 +157,14 @@ namespace black_cat
 		core::bc_shared_ptr<game::bci_animation_job> m_running_job;
 		core::bc_shared_ptr<game::bci_animation_job> m_rifle_idle_job;
 		core::bc_shared_ptr<game::bci_animation_job> m_rifle_running_job;
-		
+		game::bci_animation_job* m_active_job;
+
+		bcFLOAT m_look_speed;
+		bcFLOAT m_run_speed;
+		bcFLOAT m_walk_speed;
+		bcFLOAT m_move_speed;
+
+		core_platform::bc_clock::update_param m_clock;
 		bcINT32 m_look_delta_x;
 		bool m_forward_pressed;
 		bool m_backward_pressed;
@@ -159,8 +179,12 @@ namespace black_cat
 		core::bc_velocity<bcFLOAT> m_walk_velocity;
 
 		core::bc_vector3f m_position;
-		core::bc_unique_ptr<bc_xbot_state_machine> m_state_machine;
+		core::bc_vector3f m_look_direction;
+		core::bc_vector3f m_move_direction;
+		bcFLOAT m_move_amount;
+
 		core::bc_nullable<bc_xbot_weapon> m_weapon;
+		bcFLOAT m_weapon_shoot_time;
 	};
 
 	inline game::bc_scene* bc_xbot_controller::get_scene() noexcept
@@ -215,16 +239,21 @@ namespace black_cat
 
 	inline const core::bc_vector3f& bc_xbot_controller::get_look_direction() const noexcept
 	{
-		return m_state_machine->m_state.m_look_direction;
+		return m_look_direction;
 	}
 
 	inline const core::bc_vector3f& bc_xbot_controller::get_move_direction() const noexcept
 	{
-		return m_state_machine->m_state.m_move_direction;
+		return m_move_direction;
 	}
 
 	inline bcFLOAT bc_xbot_controller::get_move_speed() const noexcept
 	{
-		return m_state_machine->m_state.m_move_amount;
+		return m_move_amount;
+	}
+	
+	inline void bc_xbot_controller::set_active_animation(game::bci_animation_job* p_animation) noexcept
+	{
+		m_active_job = p_animation;
 	}
 }

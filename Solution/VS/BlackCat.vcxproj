@@ -264,6 +264,11 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRocketActorController.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotCameraController.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotController.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotController1.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotNetworkActorController.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotStateMachine.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotUpdateAnimationJob.h" />
@@ -316,6 +321,11 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRocketActorController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotCameraController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotController.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotController1.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotNetworkActorController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotUpdateAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotWeaponIKAnimationJob.cpp" />

@@ -186,9 +186,6 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotCameraController.h">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotController.h">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotUpdateAnimationJob.h">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
@@ -220,6 +217,12 @@
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotStateMachine.h">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotController.h">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotController1.h">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
   </ItemGroup>
@@ -326,9 +329,6 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotCameraController.cpp">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotController.cpp">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotUpdateAnimationJob.cpp">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
@@ -348,6 +348,12 @@
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotNetworkActorController.cpp">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotController.cpp">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotController1.cpp">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
   </ItemGroup>
