@@ -109,7 +109,7 @@ namespace black_cat
 				l_lod_path.get_string_frame().c_str(),
 				p_context.m_file_variant,
 				*p_context.m_parameters,
-				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_value(constant::g_param_mesh_is_lod, true)
+				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_or_update(constant::g_param_mesh_is_lod, true)
 			);
 
 			l_builder.with_lod(std::move(l_lod_mesh));
@@ -152,7 +152,7 @@ namespace black_cat
 				l_collider_file_path.get_string_frame().c_str(),
 				p_context.m_file_variant,
 				*p_context.m_parameters,
-				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_value("aiScene", l_collider_ai_scene)
+				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_or_update("aiScene", l_collider_ai_scene)
 			);
 		}
 		else

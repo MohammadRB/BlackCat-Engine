@@ -72,7 +72,7 @@
 #include "BlackCat/SampleImp/ActorController/bcExplosionActorController.h"
 #include "BlackCat/SampleImp/ActorController/bcRocketActorController.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotController.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotCameraController.h"
+#include "BlackCat/SampleImp/ActorController/bcXBotPlayerController.h"
 #include "BlackCat/SampleImp/ActorController/bcRigidDynamicNetworkActorController.h"
 #include "BlackCat/SampleImp/Particle/bcExplosionParticle.h"
 #include "BlackCat/SampleImp/Particle/bcWeaponParticle.h"

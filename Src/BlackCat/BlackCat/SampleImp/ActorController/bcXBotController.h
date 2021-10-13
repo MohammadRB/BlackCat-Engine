@@ -11,10 +11,9 @@
 #include "PhysicsImp/Fundation/bcCController.h"
 #include "PhysicsImp/Fundation/bcCControllerSimulationCallback.h"
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
+#include "Game/Object/Scene/ActorComponent/bcActorNetworkController.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "Game/Object/Animation/Job/bcSamplingAnimationJob.h"
-#include "Game/Object/Animation/Job/bcBlendingAnimationJob.h"
-#include "Game/Object/Animation/Job/bcTwoBoneIKAnimationJob.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotWeapon.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotStateMachine.h"
 #include "BlackCat/bcExport.h"
@@ -28,7 +27,7 @@ namespace black_cat
 		class bc_skinned_mesh_component;
 	}
 	
-	class BC_DLL bc_xbot_controller : public game::bci_actor_controller, protected physics::bci_ccontroller_hit_callback
+	class BC_DLL bc_xbot_controller : public game::bc_actor_network_controller, protected physics::bci_ccontroller_hit_callback
 	{
 		friend class bc_xbot_update_animation_job;
 		
@@ -42,11 +41,21 @@ namespace black_cat
 		bc_xbot_controller& operator=(bc_xbot_controller&&) = default;
 		
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
+
+		void load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
+		
+		void load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
+		
+		void write_origin_network_instance(const game::bc_actor_component_network_write_context& p_context) override;
+		
+		void write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context) override;
 		
 		void added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
 		
-		void update(const game::bc_actor_component_update_content& p_context) override;
+		void update_origin_instance(const game::bc_actor_component_update_content& p_context) override;
 
+		void update_replicated_instance(const game::bc_actor_component_update_content& p_context) override;
+		
 		void removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
 		
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
@@ -123,7 +132,7 @@ namespace black_cat
 		void _update_world_transform(const core_platform::bc_clock::update_param& p_clock);
 
 		void _update_weapon_transform();
-
+		
 		game::bc_physics_system* m_physics_system;
 		game::bc_scene* m_scene;
 		game::bc_actor m_actor;

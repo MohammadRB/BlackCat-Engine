@@ -220,7 +220,7 @@ namespace black_cat
 		m_active_job = m_idle_job.get();
 	}
 
-	void bc_xbot_controller::update(const game::bc_actor_component_update_content& p_context)
+	void bc_xbot_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
 		if (!m_scene) // Has not added to scene yet
 		{

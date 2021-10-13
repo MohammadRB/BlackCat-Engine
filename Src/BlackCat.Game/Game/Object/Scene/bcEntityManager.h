@@ -43,22 +43,22 @@ namespace black_cat
 			const bcCHAR* m_data_driven_name;
 		};
 		
-		template< class ...TCAdapter >
+		template<class ...TCAdapter>
 		void bc_register_component_types(TCAdapter... p_components)
 		{
-			core::bc_get_service< bc_entity_manager >()->register_component_types(p_components...);
+			core::bc_get_service<bc_entity_manager>()->register_component_types(p_components...);
 		}
 
-		template< class ...TCAdapter >
+		template<class ...TCAdapter>
 		void bc_register_abstract_component_types(TCAdapter... p_components)
 		{
-			core::bc_get_service< bc_entity_manager >()->register_abstract_component_types(p_components...);
+			core::bc_get_service<bc_entity_manager>()->register_abstract_component_types(p_components...);
 		}
 
-		template< class ...TCAdapter >
+		template<class ...TCAdapter>
 		void bc_register_actor_controller_types(TCAdapter... p_controllers)
 		{
-			core::bc_get_service< bc_entity_manager >()->register_actor_controller(p_controllers...);
+			core::bc_get_service<bc_entity_manager>()->register_actor_controller(p_controllers...);
 		}
 		
 		/**
@@ -141,7 +141,7 @@ namespace black_cat
 			core::bc_string_program m_entity_name;
 			core::bc_string_program m_controller_name;
 			core::bc_data_driven_parameter m_parameters;
-			core::bc_vector_program< _bc_entity_component_data > m_components;
+			core::bc_vector_program<_bc_entity_component_data> m_components;
 		};
 
 		struct _bc_entity_component_data
@@ -214,8 +214,8 @@ namespace black_cat
 						bc_actor_component_hash l_data_driven_hash = string_hash()(p_controllers.m_data_driven_name);
 						actor_controller_create_delegate l_create_delegate = []()
 						{
-							static_assert(std::is_default_constructible_v< typename TCAdapter::controller_t>, "actor controller must be default constructible");
-							return core::bc_make_unique< typename TCAdapter::controller_t >();
+							static_assert(std::is_default_constructible_v<typename TCAdapter::controller_t>, "actor controller must be default constructible");
+							return core::bc_make_unique<typename TCAdapter::controller_t>();
 						};
 						
 						m_controllers.insert(std::make_pair(l_data_driven_hash, std::move(l_create_delegate)));

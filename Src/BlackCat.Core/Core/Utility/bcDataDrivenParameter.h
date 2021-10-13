@@ -23,13 +23,13 @@ namespace black_cat
 		class bc_data_driven_parameter
 		{
 		private:
-			using key_hash = std::hash< const bcCHAR* >;
+			using key_hash = std::hash<const bcCHAR*>;
 			using map_type = bc_unordered_map_a
 			<
 				key_hash::result_type,
 				bc_any,
-				std::hash< key_hash::result_type >,
-				std::equal_to< key_hash::result_type >,
+				std::hash<key_hash::result_type>,
+				std::equal_to<key_hash::result_type>,
 				bc_runtime_allocator
 			>;
 
@@ -54,41 +54,40 @@ namespace black_cat
 
 			bc_data_driven_parameter& operator=(bc_data_driven_parameter&&) = default;
 
-			template< typename T >
-			bc_data_driven_parameter& add_value(const bcCHAR* p_name, T&& p_value)
+			template<typename T>
+			bc_data_driven_parameter& add_or_update(const bcCHAR* p_name, T&& p_value)
 			{
-				auto l_hash = key_hash()(p_name);
-				bc_any l_parameter;
-				l_parameter.set_value(std::forward<T>(p_value));
+				const auto l_hash = key_hash()(p_name);
+				bc_any l_parameter(std::forward<T>(p_value));
 
-				m_values.insert(map_type::value_type(l_hash, std::move(l_parameter)));
+				m_values.insert_or_assign(l_hash, std::move(l_parameter));
 
 				return *this;
 			}
 
-			bc_data_driven_parameter& add_value(const bcCHAR* p_name, bc_parameter_pack& p_value)
+			bc_data_driven_parameter& add_or_update(const bcCHAR* p_name, bc_parameter_pack& p_value)
 			{
-				auto l_hash = key_hash()(p_name);
+				const auto l_hash = key_hash()(p_name);
 
-				m_values.insert(map_type::value_type(l_hash, bc_any(p_value)));
+				m_values.insert_or_assign(l_hash, bc_any(p_value));
 
 				return *this;
 			}
 
-			bc_data_driven_parameter& add_value(const bcCHAR* p_name, bc_any& p_value)
+			bc_data_driven_parameter& add_or_update(const bcCHAR* p_name, bc_any& p_value)
 			{
-				auto l_hash = key_hash()(p_name);
+				const auto l_hash = key_hash()(p_name);
 
-				m_values.insert(map_type::value_type(l_hash, p_value));
+				m_values.insert_or_assign(l_hash, p_value);
 
 				return *this;
 			}
 
-			bc_data_driven_parameter& add_value(const bcCHAR* p_name, bc_any&& p_value)
+			bc_data_driven_parameter& add_or_update(const bcCHAR* p_name, bc_any&& p_value)
 			{
-				auto l_hash = key_hash()(p_name);
+				const auto l_hash = key_hash()(p_name);
 
-				m_values.insert(map_type::value_type(l_hash, std::move(p_value)));
+				m_values.insert_or_assign(l_hash, std::move(p_value));
 
 				return *this;
 			}
@@ -99,7 +98,7 @@ namespace black_cat
 			 * \param p_name 
 			 * \return 
 			 */
-			template< typename T >
+			template<typename T>
 			const T* get_value(const bcCHAR* p_name) const
 			{
 				const auto l_hash = key_hash()(p_name);
@@ -119,7 +118,7 @@ namespace black_cat
 			 * \param p_name 
 			 * \return 
 			 */
-			template< typename T >
+			template<typename T>
 			const T& get_value_throw(const bcCHAR* p_name) const
 			{
 				const T* l_value = get_value<T>(p_name);

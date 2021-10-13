@@ -23,27 +23,27 @@ namespace black_cat
 			load(p_content_path, l_content_file_name.c_str());
 
 			auto& l_json = *m_json;
-			if (!l_json->m_global_scale.get_had_value())
+			if (!l_json->m_global_scale.has_value())
 			{
 				*l_json->m_global_scale = 1.0f;
 			}
-			if(!l_json->m_lod_global_scale.get_had_value())
+			if(!l_json->m_lod_global_scale.has_value())
 			{
 				*l_json->m_lod_global_scale = 4.0f;
 			}
-			if (!l_json->m_lod_culling_index.get_had_value())
+			if (!l_json->m_lod_culling_index.has_value())
 			{
 				*l_json->m_lod_culling_index = 6;
 			}
-			if(!l_json->m_scene_graph_actors_pool_capacity.get_had_value())
+			if(!l_json->m_scene_graph_actors_pool_capacity.has_value())
 			{
 				*l_json->m_scene_graph_actors_pool_capacity = 2000;
 			}
-			if(!l_json->m_bullet_reference_mass.get_had_value())
+			if(!l_json->m_bullet_reference_mass.has_value())
 			{
 				*l_json->m_bullet_reference_mass = 0.1f;
 			}
-			if(!l_json->m_counter_values.get_had_value())
+			if(!l_json->m_counter_values.has_value())
 			{
 				l_json->m_counter_values.new_entry().set("fps");
 				l_json->m_counter_values.new_entry().set("ping");

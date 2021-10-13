@@ -89,7 +89,7 @@ namespace black_cat
 						std::end(l_content_params),
 						[&l_stream_file](bc_json_key_value::value_type& p_parameter)
 						{
-							l_stream_file.m_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
+							l_stream_file.m_parameters.add_or_update(p_parameter.first.c_str(), std::move(p_parameter.second));
 						}
 					);
 

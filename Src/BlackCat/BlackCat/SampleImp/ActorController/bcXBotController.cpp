@@ -23,6 +23,8 @@
 #include "Game/Object/Animation/bcAnimationJobHelper.h"
 #include "Game/Object/Animation/Job/bcBlendingAnimationJob.h"
 #include "Game/Object/Animation/Job/bcAimAnimationJob.h"
+#include "Game/Object/Animation/Job/bcBlendingAnimationJob.h"
+#include "Game/Object/Animation/Job/bcTwoBoneIKAnimationJob.h"
 #include "Game/Object/Animation/Job/bcAdditiveBlendingAnimationJob.h"
 #include "Game/Object/Animation/Job/bcActorUpdateAnimationJob.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
@@ -58,6 +60,8 @@ namespace black_cat
 
 	void bc_xbot_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
+		bc_actor_network_controller::initialize(p_context);
+		
 		m_physics_system = &p_context.m_game_system.get_physics_system();
 		m_actor = p_context.m_actor;
 		m_skinned_component = p_context.m_actor.get_component<game::bc_skinned_mesh_component>();
@@ -163,6 +167,22 @@ namespace black_cat
 		);
 	}
 
+	void bc_xbot_controller::load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context)
+	{
+	}
+
+	void bc_xbot_controller::load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context)
+	{
+	}
+
+	void bc_xbot_controller::write_origin_network_instance(const game::bc_actor_component_network_write_context& p_context)
+	{
+	}
+
+	void bc_xbot_controller::write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context)
+	{
+	}
+	
 	void bc_xbot_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		m_scene = &p_scene;
@@ -214,7 +234,7 @@ namespace black_cat
 		));
 	}
 
-	void bc_xbot_controller::update(const game::bc_actor_component_update_content& p_context)
+	void bc_xbot_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
 		if (!m_scene) // Has not added to scene yet
 		{
@@ -240,6 +260,10 @@ namespace black_cat
 		_update_world_transform(p_context.m_clock);
 
 		m_skinned_component->add_animation_job(&m_state_machine->get_active_animation());
+	}
+
+	void bc_xbot_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
+	{
 	}
 
 	void bc_xbot_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)

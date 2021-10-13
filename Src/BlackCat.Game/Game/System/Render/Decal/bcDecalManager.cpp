@@ -104,9 +104,9 @@ namespace black_cat
 					*l_decal->m_width,
 					*l_decal->m_height,
 					*l_decal->m_depth,
-					l_decal->m_lod_scale.get_had_value() ? *l_decal->m_lod_scale : 1,
-					l_decal->m_group.get_had_value() ? static_cast<bc_render_group>(*l_decal->m_group) : bc_render_group::all,
-					l_decal->m_auto_remove.get_had_value() ? *l_decal->m_auto_remove : false
+					l_decal->m_lod_scale.has_value() ? *l_decal->m_lod_scale : 1,
+					l_decal->m_group.has_value() ? static_cast<bc_render_group>(*l_decal->m_group) : bc_render_group::all,
+					l_decal->m_auto_remove.has_value() ? *l_decal->m_auto_remove : false
 				};
 				m_decal_descriptions.insert(std::make_pair(l_hash, std::move(l_desc)));
 			}

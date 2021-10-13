@@ -48,9 +48,9 @@ namespace black_cat
 		public:
 			virtual ~bci_json_value() = default;
 
-			bool get_is_optional() const noexcept;
+			bool is_optional() const noexcept;
 
-			bool get_had_value() const noexcept;
+			bool has_value() const noexcept;
 
 			virtual void load(bc_json_value_object& p_json_value) = 0;
 
@@ -88,12 +88,12 @@ namespace black_cat
 			m_json_fields.push_back(p_parser);
 		}
 
-		inline bool bci_json_value::get_is_optional() const noexcept
+		inline bool bci_json_value::is_optional() const noexcept
 		{
 			return m_optional;
 		}
 
-		inline bool bci_json_value::get_had_value() const noexcept
+		inline bool bci_json_value::has_value() const noexcept
 		{
 			return m_had_value;
 		}

@@ -11,7 +11,7 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotCameraController.h"
+#include "BlackCat/SampleImp/ActorController/bcXBotPlayerController.h"
 
 namespace black_cat
 {
@@ -79,6 +79,22 @@ namespace black_cat
 		m_detached_rifle_name = p_context.m_parameters.get_value_throw<core::bc_string>("detached_rifle_name").c_str();
 	}
 
+	void bc_xbot_camera_controller::load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context)
+	{
+	}
+
+	void bc_xbot_camera_controller::load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context)
+	{
+	}
+
+	void bc_xbot_camera_controller::write_origin_network_instance(const game::bc_actor_component_network_write_context& p_context)
+	{
+	}
+
+	void bc_xbot_camera_controller::write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context)
+	{
+	}
+
 	void bc_xbot_camera_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		bc_xbot_controller::added_to_scene(p_context, p_scene);
@@ -102,13 +118,17 @@ namespace black_cat
 		m_camera_look_at_offset = l_max_side_length * 1.75f;
 	}
 
-	void bc_xbot_camera_controller::update(const game::bc_actor_component_update_content& p_context)
+	void bc_xbot_camera_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
-		bc_xbot_controller::update(p_context);
+		bc_xbot_controller::update_origin_instance(p_context);
 
 		// Zero previous delta
 		m_pointing_delta_x = 0;
 		set_look_delta(m_pointing_delta_x);
+	}
+
+	void bc_xbot_camera_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
+	{
 	}
 
 	void bc_xbot_camera_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)

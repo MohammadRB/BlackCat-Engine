@@ -27,6 +27,7 @@ namespace black_cat
 
 		BC_JSON_STRUCTURE(_bc_json_entity)
 		{
+			BC_JSON_VALUE_OP(core::bc_string_frame, inherit);
 			BC_JSON_VALUE(core::bc_string_frame, name);
 			BC_JSON_VALUE_OP(core::bc_string_frame, controller);
 			BC_JSON_VALUE_OP(core::bc_json_key_value, parameters);
@@ -38,6 +39,84 @@ namespace black_cat
 			BC_JSON_ARRAY(_bc_json_entity, entities);
 		};
 
+		template<typename THash>
+		static void _read_entity_data(const _bc_json_entity& p_json, _bc_entity_data& p_entity, const _bc_entity_data* p_inherit)
+		{
+			auto l_hasher = THash();
+			
+			p_entity.m_entity_name = *p_json.m_name;
+			if(p_json.m_controller.has_value())
+			{
+				p_entity.m_controller_name = *p_json.m_controller;
+			}
+			else if(p_inherit)
+			{
+				p_entity.m_controller_name = p_inherit->m_controller_name;
+			}
+
+			if(p_inherit)
+			{
+				p_entity.m_parameters = p_inherit->m_parameters;
+			}
+			std::for_each
+			(
+				std::begin(*p_json.m_parameters),
+				std::end(*p_json.m_parameters),
+				[&](core::bc_json_key_value::value_type& p_parameter)
+				{
+					p_entity.m_parameters.add_or_update(p_parameter.first.c_str(), std::move(p_parameter.second));
+				}
+			);
+
+			// Because we have used program heap we must reserve needed memory
+			const auto l_components_count = (p_inherit ? p_inherit->m_components.size() : 0) + p_json.m_components.size();
+			p_entity.m_components.reserve(l_components_count);
+
+			if(p_inherit)
+			{
+				std::copy_if
+				(
+					std::begin(p_inherit->m_components), 
+					std::end(p_inherit->m_components),
+					std::back_inserter(p_entity.m_components),
+					[&](const _bc_entity_component_data& p_component_data)
+					{
+						const auto l_component_exist = std::find_if
+						(
+							std::begin(p_json.m_components),
+							std::end(p_json.m_components),
+							[&](const core::bc_json_object<_bc_json_entity_components>& p_json_component_data)
+							{
+								return p_component_data.m_component_hash == l_hasher(p_json_component_data->m_name->c_str());
+							}
+						);
+						return l_component_exist == std::end(p_json.m_components);
+					}
+				);
+			}
+			
+			for (auto& l_component : p_json.m_components)
+			{
+				const auto l_component_name_hash = l_hasher(l_component->m_name->c_str());
+				auto& l_component_parameters = *l_component->m_parameters;
+
+				_bc_entity_component_data l_component_data;
+				l_component_data.m_component_hash = l_component_name_hash;
+
+				std::for_each
+				(
+					std::begin(l_component_parameters),
+					std::end(l_component_parameters),
+					[&](core::bc_json_key_value::value_type& p_parameter)
+					{
+						l_component_data.m_component_parameters.add_or_update(p_parameter.first.c_str(), std::move(p_parameter.second));
+					}
+				);
+
+				p_entity.m_components.push_back(std::move(l_component_data));
+			}
+		}
+		
 		bc_entity_manager::bc_entity_manager(core::bc_content_stream_manager& p_content_stream_manager, bc_actor_component_manager& p_actor_manager, bc_game_system& p_game_system)
 			: m_content_stream_manager(p_content_stream_manager),
 			m_actor_component_manager(p_actor_manager),
@@ -62,49 +141,24 @@ namespace black_cat
 
 			for (auto& l_entity : l_json->m_entities)
 			{
-				const auto& l_entity_name = *l_entity->m_name;
-				const auto& l_controller_name = *l_entity->m_controller;
-				auto l_entity_name_hash = string_hash()(l_entity_name.c_str());
-				entity_map_type::value_type::second_type l_entity_components;
-
-				// Because we have used program heap we must reserve needed memory
-				l_entity_components.m_entity_name = l_entity_name.c_str();
-				l_entity_components.m_controller_name = l_controller_name.c_str();
-
-				std::for_each
-				(
-					std::begin(*l_entity->m_parameters),
-					std::end(*l_entity->m_parameters),
-					[&](core::bc_json_key_value::value_type& p_parameter)
-					{
-						l_entity_components.m_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
-					}
-				);
+				auto l_entity_name_hash = string_hash()(l_entity->m_name->c_str());
 				
-				l_entity_components.m_components.reserve(l_entity->m_components.size());
-				for (auto& l_component : l_entity->m_components)
+				_bc_entity_data l_entity_data;
+				_bc_entity_data* p_inherit = nullptr;
+
+				if(l_entity->m_inherit.has_value())
 				{
-					const auto& l_component_name = *l_component->m_name;
-					const auto l_component_name_hash = string_hash()(l_component_name.c_str());
-					auto& l_component_parameters = *l_component->m_parameters;
-
-					_bc_entity_component_data l_component_data;
-					l_component_data.m_component_hash = l_component_name_hash;
-
-					std::for_each
-					(
-						std::begin(l_component_parameters),
-						std::end(l_component_parameters),
-						[&](core::bc_json_key_value::value_type& p_parameter)
-						{
-							l_component_data.m_component_parameters.add_value(p_parameter.first.c_str(), std::move(p_parameter.second));
-						}
-					);
-
-					l_entity_components.m_components.push_back(std::move(l_component_data));
+					auto l_inherit_entity_name_hash = string_hash()(l_entity->m_name->c_str());
+					const auto l_inherit_ite = m_entities.find(l_inherit_entity_name_hash);
+					if(l_inherit_ite != std::end(m_entities))
+					{
+						p_inherit = &l_inherit_ite->second;
+					}
 				}
 
-				entity_map_type::value_type l_entity_value(l_entity_name_hash, std::move(l_entity_components));
+				_read_entity_data<string_hash>(*l_entity, l_entity_data, p_inherit);
+				
+				entity_map_type::value_type l_entity_value(l_entity_name_hash, std::move(l_entity_data));
 				m_entities.insert(std::move(l_entity_value));
 			}
 		}

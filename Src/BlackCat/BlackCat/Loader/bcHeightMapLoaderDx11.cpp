@@ -307,7 +307,7 @@ namespace black_cat
 			*p_context.m_parameters,
 			std::move
 			(
-				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_value(constant::g_param_texture_config, l_texture_map_texture_config)
+				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_or_update(constant::g_param_texture_config, l_texture_map_texture_config)
 			)
 		);
 
