@@ -10,6 +10,7 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Render/Light/bcLightManager.h"
+#include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/bcUtility.h"
 #include "Game/bcConstant.h"
 
@@ -38,9 +39,6 @@ namespace black_cat
 
 		bc_bullet bc_weapon_component::shoot(const core::bc_vector3f& p_aim_direction_ws)
 		{
-			//core::bc_matrix3f l_aim_direction_rotation;
-			//bc_matrix3f_rotation_between_two_vector(l_aim_direction_rotation, m_forward_ls, p_aim_direction_ws);
-
 			const auto& l_transform = get_actor().get_component<bc_mediate_component>()->get_world_transform();
 			const auto l_position = (l_transform * core::bc_vector4f(m_fire_offset_ls, 1)).xyz();
 			const auto l_direction = core::bc_vector3f::normalize(l_transform.get_rotation() * m_forward_ls);
@@ -51,7 +49,8 @@ namespace black_cat
 				l_position,
 				m_fire_light_radius,
 				m_fire_light_color,
-				m_fire_light_intensity
+				m_fire_light_intensity,
+				m_fire_light_flare.get()
 			));
 			m_light_age = 0;
 
@@ -60,6 +59,7 @@ namespace black_cat
 		
 		void bc_weapon_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
+			auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();
 			const auto& l_class_value = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_weapon_class);
 
 			if (l_class_value == "rifle")
@@ -83,6 +83,26 @@ namespace black_cat
 			m_rate_of_fire_seconds = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_rate_of_fire_seconds);
 			m_bullet_speed = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_speed);
 			m_bullet_mass = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_mass);
+
+			const auto l_flare_surface = p_context.m_parameters.get_value_vector3f(constant::g_param_weapon_fire_light_flare_surface);
+			const auto* l_flare_mask_material = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_weapon_fire_light_flare_mask_material);
+			
+			if (l_flare_surface != nullptr && l_flare_mask_material)
+			{
+				const auto l_material = l_material_manager.load_mesh_material_throw(l_flare_mask_material->c_str());
+				m_fire_light_flare.reset(bc_light_flare
+				(
+					l_flare_surface->x,
+					l_flare_surface->y,
+					l_flare_surface->z,
+					bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_weapon_fire_light_flare_intensity), m_fire_light_intensity),
+					l_material,
+					0,
+					0,
+					l_material->get_diffuse_map().get_width(),
+					l_material->get_diffuse_map().get_height()
+				));
+			}
 		}
 
 		void bc_weapon_component::update(const bc_actor_component_update_content& p_context)

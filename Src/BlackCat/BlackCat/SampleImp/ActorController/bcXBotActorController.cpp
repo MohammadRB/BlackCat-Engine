@@ -29,25 +29,20 @@
 #include "Game/Object/Animation/Job/bcActorUpdateAnimationJob.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/bcGameSystem.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotController.h"
+#include "BlackCat/SampleImp/ActorController/bcXBotActorController.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotUpdateAnimationJob.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotWeaponIKAnimationJob.h"
 
 namespace black_cat
 {
-	bc_xbot_controller::bc_xbot_controller() noexcept
+	bc_xbot_actor_controller::bc_xbot_actor_controller() noexcept
 		: m_physics_system(nullptr),
 		m_scene(nullptr),
 		m_skinned_component(nullptr),
 		m_bound_box_max_side_length(0),
 		m_look_delta_x(0),
-		m_forward_pressed(false),
-		m_backward_pressed(false),
-		m_right_pressed(false),
-		m_left_pressed(false),
-		m_walk_pressed(false),
-		m_look_velocity(0, 1, 0.25),
-		m_forward_velocity(0, 1, 0.25),
+		m_look_velocity(0, 1, 0.50f),
+		m_forward_velocity(0, 1, 0.35f),
 		m_backward_velocity(m_forward_velocity),
 		m_right_velocity(m_forward_velocity),
 		m_left_velocity(m_forward_velocity),
@@ -58,9 +53,16 @@ namespace black_cat
 	{
 	}
 
-	void bc_xbot_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
+	void bc_xbot_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
-		bc_actor_network_controller::initialize(p_context);
+		try
+		{
+			bc_actor_network_controller::initialize(p_context);
+		}
+		catch (...)
+		{
+			// If no network component is presented network controller throws exception
+		}
 		
 		m_physics_system = &p_context.m_game_system.get_physics_system();
 		m_actor = p_context.m_actor;
@@ -167,23 +169,7 @@ namespace black_cat
 		);
 	}
 
-	void bc_xbot_controller::load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context)
-	{
-	}
-
-	void bc_xbot_controller::load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context)
-	{
-	}
-
-	void bc_xbot_controller::write_origin_network_instance(const game::bc_actor_component_network_write_context& p_context)
-	{
-	}
-
-	void bc_xbot_controller::write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context)
-	{
-	}
-	
-	void bc_xbot_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
+	void bc_xbot_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		m_scene = &p_scene;
 		
@@ -234,14 +220,71 @@ namespace black_cat
 		));
 	}
 
-	void bc_xbot_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
+	void bc_xbot_actor_controller::update(const bc_xbot_input_update_context& p_context)
 	{
 		if (!m_scene) // Has not added to scene yet
 		{
 			return;
 		}
 		
-		_update_input(p_context.m_clock);
+		m_look_delta_x = p_context.m_look_delta_x;
+		if (p_context.m_look_delta_x != 0)
+		{
+			m_look_velocity.push(p_context.m_clock.m_elapsed_second);
+		}
+		else
+		{
+			m_look_velocity.release(p_context.m_clock.m_elapsed_second);
+		}
+
+		if (p_context.m_forward_pressed)
+		{
+			m_forward_velocity.push(p_context.m_clock.m_elapsed_second);
+		}
+		else
+		{
+			m_forward_velocity.release(p_context.m_clock.m_elapsed_second);
+		}
+
+		if (p_context.m_right_pressed)
+		{
+			m_right_velocity.push(p_context.m_clock.m_elapsed_second);
+		}
+		else
+		{
+			m_right_velocity.release(p_context.m_clock.m_elapsed_second);
+		}
+
+		if (p_context.m_left_pressed)
+		{
+			m_left_velocity.push(p_context.m_clock.m_elapsed_second);
+		}
+		else
+		{
+			m_left_velocity.release(p_context.m_clock.m_elapsed_second);
+		}
+
+		const bool l_is_moving_forward = m_forward_velocity.get_value() > 0.f || m_right_velocity.get_value() > 0.f || m_left_velocity.get_value() > 0.f;
+		const bool l_is_moving_backward = m_backward_velocity.get_value() > 0.f;
+
+		if (p_context.m_backward_pressed && (!l_is_moving_forward || l_is_moving_backward))
+		{
+			m_backward_velocity.push(p_context.m_clock.m_elapsed_second);
+		}
+		else
+		{
+			m_backward_velocity.release(p_context.m_clock.m_elapsed_second);
+		}
+
+		if (p_context.m_walk_pressed)
+		{
+			m_walk_velocity.push(p_context.m_clock.m_elapsed_second);
+		}
+		else
+		{
+			m_walk_velocity.release(p_context.m_clock.m_elapsed_second);
+		}
+
 		m_state_machine->update
 		(
 			bc_xbot_state_update_params
@@ -251,22 +294,54 @@ namespace black_cat
 				m_look_delta_x,
 				m_look_velocity.get_value(),
 				m_forward_velocity.get_value(),
+				m_backward_velocity.get_value(),
 				m_right_velocity.get_value(),
 				m_left_velocity.get_value(),
-				m_backward_velocity.get_value(),
 				m_walk_velocity.get_value()
 			}
 		);
-		_update_world_transform(p_context.m_clock);
+
+		_update_world_transform(p_context.m_clock, m_state_machine->m_state.m_move_direction * m_state_machine->m_state.m_move_amount);
 
 		m_skinned_component->add_animation_job(&m_state_machine->get_active_animation());
 	}
 
-	void bc_xbot_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
+	void bc_xbot_actor_controller::update(const bc_xbot_input_update_context1& p_context)
 	{
+		if (!m_scene) // Has not added to scene yet
+		{
+			return;
+		}
+
+		m_look_delta_x = 0;
+		m_look_velocity.set_value(p_context.m_velocity.m_look_velocity);
+		m_forward_velocity.set_value(p_context.m_velocity.m_forward_velocity);
+		m_backward_velocity.set_value(p_context.m_velocity.m_backward_velocity);
+		m_right_velocity.set_value(p_context.m_velocity.m_right_velocity);
+		m_left_velocity.set_value(p_context.m_velocity.m_left_velocity);
+		m_walk_velocity.set_value(p_context.m_velocity.m_walk_velocity);
+
+		m_state_machine->update
+		(
+			bc_xbot_state_update_params1
+			{
+				p_context.m_clock,
+				m_position,
+				p_context.m_look_direction,
+				m_state_machine->m_state.m_look_side,
+				m_look_velocity.get_value(),
+				m_forward_velocity.get_value(),
+				m_backward_velocity.get_value(),
+				m_right_velocity.get_value(),
+				m_left_velocity.get_value(),
+				m_walk_velocity.get_value()
+			}
+		);
+
+		_update_world_transform(p_context.m_clock, p_context.m_position - m_position);
 	}
 
-	void bc_xbot_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
+	void bc_xbot_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		{
 			physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
@@ -284,7 +359,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_xbot_controller::handle_event(const game::bc_actor_component_event_context& p_context)
+	void bc_xbot_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
 	{
 		const auto* l_world_transform_event = core::bci_message::as<game::bc_world_transform_actor_event>(p_context.m_event);
 		if(l_world_transform_event && l_world_transform_event->get_transform_type() != game::bc_transform_event_type::physics)
@@ -303,43 +378,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_xbot_controller::set_look_delta(bcINT32 p_x_change) noexcept
-	{
-		m_look_delta_x = p_x_change;
-		core_platform::atomic_thread_fence(core_platform::bc_memory_order::release);
-	}
-
-	void bc_xbot_controller::set_move_forward(bool p_value) noexcept
-	{
-		m_forward_pressed = p_value;
-		core_platform::atomic_thread_fence(core_platform::bc_memory_order::release);
-	}
-
-	void bc_xbot_controller::set_move_backward(bool p_value) noexcept
-	{
-		m_backward_pressed = p_value;
-		core_platform::atomic_thread_fence(core_platform::bc_memory_order::release);
-	}
-
-	void bc_xbot_controller::set_move_right(bool p_value) noexcept
-	{
-		m_right_pressed = p_value;
-		core_platform::atomic_thread_fence(core_platform::bc_memory_order::release);
-	}
-
-	void bc_xbot_controller::set_move_left(bool p_value) noexcept
-	{
-		m_left_pressed = p_value;
-		core_platform::atomic_thread_fence(core_platform::bc_memory_order::release);
-	}
-
-	void bc_xbot_controller::set_walk(bool p_value) noexcept
-	{
-		m_walk_pressed = p_value;
-		core_platform::atomic_thread_fence(core_platform::bc_memory_order::release);
-	}
-
-	void bc_xbot_controller::attach_weapon(game::bc_actor& p_weapon) noexcept
+	void bc_xbot_actor_controller::attach_weapon(game::bc_actor& p_weapon) noexcept
 	{
 		auto* l_weapon_component = p_weapon.get_component<game::bc_weapon_component>();
 		if(!l_weapon_component)
@@ -362,24 +401,30 @@ namespace black_cat
 		m_state_machine->attach_weapon(*m_weapon, m_rifle_joint.second, m_rifle_joint_offset);
 	}
 
-	void bc_xbot_controller::detach_weapon() noexcept
+	void bc_xbot_actor_controller::detach_weapon() noexcept
 	{
 		m_state_machine->detach_weapon();
 		m_weapon.reset();
 	}
 
-	void bc_xbot_controller::shoot_weapon() noexcept
+	void bc_xbot_actor_controller::shoot_weapon() noexcept
 	{
 		if(!m_weapon.has_value())
 		{
 			return;
 		}
 
-		m_state_machine->shoot_weapon();
-		m_scene->add_bullet(m_weapon->m_component->shoot(m_state_machine->m_state.m_look_direction));
+		const bool l_shooted = m_state_machine->shoot_weapon();
+		if(!l_shooted)
+		{
+			return;
+		}
+
+		const auto l_bullet = m_weapon->m_component->shoot(m_state_machine->m_state.m_look_direction);
+		m_scene->add_bullet(l_bullet);
 	}
 
-	void bc_xbot_controller::on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit)
+	void bc_xbot_actor_controller::on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit)
 	{
 		const auto l_rigid_actor = p_hit.get_actor();
 		const auto l_is_rigid_dynamic = l_rigid_actor.get_type() == physics::bc_actor_type::rigid_dynamic;
@@ -400,11 +445,11 @@ namespace black_cat
 		l_rigid_dynamic.add_force(m_state_machine->m_state.m_move_direction * l_multiplier * l_ccontroller_actor.get_mass());
 	}
 
-	void bc_xbot_controller::on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit)
+	void bc_xbot_actor_controller::on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit)
 	{
 	}
 
-	core::bc_shared_ptr<game::bci_animation_job> bc_xbot_controller::_create_idle_animation(const bcCHAR* p_idle_animation,
+	core::bc_shared_ptr<game::bci_animation_job> bc_xbot_actor_controller::_create_idle_animation(const bcCHAR* p_idle_animation,
 		const bcCHAR* p_left_turn_animation,
 		const bcCHAR* p_right_turn_animation,
 		const bcCHAR* p_weapon_shoot_animation,
@@ -501,7 +546,7 @@ namespace black_cat
 			.build();
 	}
 
-	core::bc_shared_ptr<game::bci_animation_job> bc_xbot_controller::_create_running_animation(core::bc_shared_ptr<game::bc_sampling_animation_job> p_idle_sample_job,
+	core::bc_shared_ptr<game::bci_animation_job> bc_xbot_actor_controller::_create_running_animation(core::bc_shared_ptr<game::bc_sampling_animation_job> p_idle_sample_job,
 		const bcCHAR* p_walking_animation,
 		const bcCHAR* p_walking_backward_animation,
 		const bcCHAR* p_running_animation,
@@ -625,69 +670,7 @@ namespace black_cat
 			.build();
 	}
 
-	void bc_xbot_controller::_update_input(const core_platform::bc_clock::update_param& p_clock)
-	{
-		core_platform::atomic_thread_fence(core_platform::bc_memory_order::acquire);
-
-		if (m_look_delta_x != 0)
-		{
-			m_look_velocity.push(p_clock.m_elapsed_second);
-		}
-		else
-		{
-			m_look_velocity.release(p_clock.m_elapsed_second);
-		}
-
-		if (m_forward_pressed)
-		{
-			m_forward_velocity.push(p_clock.m_elapsed_second);
-		}
-		else
-		{
-			m_forward_velocity.release(p_clock.m_elapsed_second);
-		}
-
-		if (m_right_pressed)
-		{
-			m_right_velocity.push(p_clock.m_elapsed_second);
-		}
-		else
-		{
-			m_right_velocity.release(p_clock.m_elapsed_second);
-		}
-
-		if (m_left_pressed)
-		{
-			m_left_velocity.push(p_clock.m_elapsed_second);
-		}
-		else
-		{
-			m_left_velocity.release(p_clock.m_elapsed_second);
-		}
-
-		const bool l_is_moving_forward = m_forward_velocity.get_value() || m_right_velocity.get_value() || m_left_velocity.get_value();
-		const bool l_is_moving_backward = m_backward_velocity.get_value();
-
-		if (m_backward_pressed && (!l_is_moving_forward || l_is_moving_backward))
-		{
-			m_backward_velocity.push(p_clock.m_elapsed_second);
-		}
-		else
-		{
-			m_backward_velocity.release(p_clock.m_elapsed_second);
-		}
-
-		if (m_walk_pressed)
-		{
-			m_walk_velocity.push(p_clock.m_elapsed_second);
-		}
-		else
-		{
-			m_walk_velocity.release(p_clock.m_elapsed_second);
-		}
-	}
-
-	void bc_xbot_controller::_update_world_transform(const core_platform::bc_clock::update_param& p_clock)
+	void bc_xbot_actor_controller::_update_world_transform(const core_platform::bc_clock::update_param& p_clock, const core::bc_vector3f& p_move_vector)
 	{
 		auto l_px_controller_pre_filter = physics::bc_scene_query_pre_filter_callback
 		(
@@ -707,8 +690,8 @@ namespace black_cat
 		
 		{
 			physics::bc_scene_lock l_lock(&l_px_scene);
-			const auto l_displacement = (m_state_machine->m_state.m_move_direction * m_state_machine->m_state.m_move_amount + l_px_scene.get_gravity() * m_bound_box_max_side_length) * p_clock.m_elapsed_second;
-			
+
+			const auto l_displacement = (p_move_vector + (l_px_scene.get_gravity() * m_bound_box_max_side_length)) * p_clock.m_elapsed_second;
 			m_px_controller.move(l_displacement, p_clock, &l_px_controller_pre_filter);
 			m_position = m_px_controller.get_foot_position();
 		}
@@ -716,8 +699,7 @@ namespace black_cat
 		core::bc_matrix4f l_world_transform;
 		core::bc_matrix3f l_rotation;
 
-		auto l_move_direction_sign = m_state_machine->m_state.m_look_direction.dot(m_state_machine->m_state.m_move_direction) >= -0.01f ? 1 : -1;
-
+		auto l_move_direction_sign = m_state_machine->m_state.m_look_direction.dot(m_state_machine->m_state.m_move_direction) >= -0.01f ? 1.f : -1.f;
 		if constexpr (graphic::bc_render_api_info::use_left_handed())
 		{
 			l_rotation.rotation_between_two_vector_lh(get_local_forward(), m_state_machine->m_state.m_move_direction * l_move_direction_sign);
@@ -739,7 +721,7 @@ namespace black_cat
 		m_actor.add_event(game::bc_world_transform_actor_event(l_world_transform, game::bc_transform_event_type::physics));
 	}
 
-	void bc_xbot_controller::_update_weapon_transform()
+	void bc_xbot_actor_controller::_update_weapon_transform()
 	{
 		if(!m_weapon.has_value())
 		{

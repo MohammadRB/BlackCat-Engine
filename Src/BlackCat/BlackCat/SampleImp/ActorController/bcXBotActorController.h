@@ -26,35 +26,57 @@ namespace black_cat
 		class bc_skeleton_animation;
 		class bc_skinned_mesh_component;
 	}
+
+	struct bc_xbot_velocity
+	{
+		bcINT32 m_look_side;
+		bcFLOAT m_look_velocity;
+		bcFLOAT m_forward_velocity;
+		bcFLOAT m_backward_velocity;
+		bcFLOAT m_right_velocity;
+		bcFLOAT m_left_velocity;
+		bcFLOAT m_walk_velocity;
+	};
 	
-	class BC_DLL bc_xbot_controller : public game::bc_actor_network_controller, protected physics::bci_ccontroller_hit_callback
+	struct bc_xbot_input_update_context
+	{
+		const core_platform::bc_clock::update_param& m_clock;
+		bcINT32 m_look_delta_x;
+		bool m_forward_pressed;
+		bool m_backward_pressed;
+		bool m_right_pressed;
+		bool m_left_pressed;
+		bool m_walk_pressed;
+	};
+
+	struct bc_xbot_input_update_context1
+	{
+		const core_platform::bc_clock::update_param& m_clock;
+		core::bc_vector3f m_position;
+		core::bc_vector3f m_look_direction;
+		bc_xbot_velocity m_velocity;
+	};
+	
+	class BC_DLL bc_xbot_actor_controller : public game::bc_actor_network_controller, protected physics::bci_ccontroller_hit_callback
 	{
 		friend class bc_xbot_update_animation_job;
 		
 	public:
-		bc_xbot_controller() noexcept;
+		bc_xbot_actor_controller() noexcept;
 
-		bc_xbot_controller(bc_xbot_controller&&) = default;
+		bc_xbot_actor_controller(bc_xbot_actor_controller&&) noexcept = default;
 		
-		~bc_xbot_controller() override = default;
+		~bc_xbot_actor_controller() override = default;
 
-		bc_xbot_controller& operator=(bc_xbot_controller&&) = default;
+		bc_xbot_actor_controller& operator=(bc_xbot_actor_controller&&) noexcept = default;
 		
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
 
-		void load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
-		
-		void load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
-		
-		void write_origin_network_instance(const game::bc_actor_component_network_write_context& p_context) override;
-		
-		void write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context) override;
-		
 		void added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
-		
-		void update_origin_instance(const game::bc_actor_component_update_content& p_context) override;
 
-		void update_replicated_instance(const game::bc_actor_component_update_content& p_context) override;
+		void update(const bc_xbot_input_update_context& p_context);
+		
+		void update(const bc_xbot_input_update_context1& p_context);
 		
 		void removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
 		
@@ -84,21 +106,11 @@ namespace black_cat
 		const core::bc_vector3f& get_look_direction() const noexcept;
 		
 		const core::bc_vector3f& get_move_direction() const noexcept;
+
+		bc_xbot_velocity get_velocity() const noexcept;
 		
 		bcFLOAT get_move_speed() const noexcept;
 		
-		void set_look_delta(bcINT32 p_x_change) noexcept;
-
-		void set_move_forward(bool p_value) noexcept;
-
-		void set_move_backward(bool p_value) noexcept;
-
-		void set_move_right(bool p_value) noexcept;
-		
-		void set_move_left(bool p_value) noexcept;
-
-		void set_walk(bool p_value) noexcept;
-
 		void attach_weapon(game::bc_actor& p_weapon) noexcept;
 
 		void detach_weapon() noexcept;
@@ -127,12 +139,10 @@ namespace black_cat
 			core::bc_shared_ptr<game::bc_sampling_animation_job>* p_running_sample_job,
 			core::bc_shared_ptr<game::bc_sampling_animation_job>* p_running_backward_sample_job);
 
-		void _update_input(const core_platform::bc_clock::update_param& p_clock);
-
-		void _update_world_transform(const core_platform::bc_clock::update_param& p_clock);
+		void _update_world_transform(const core_platform::bc_clock::update_param& p_clock, const core::bc_vector3f& p_move_vector);
 
 		void _update_weapon_transform();
-		
+
 		game::bc_physics_system* m_physics_system;
 		game::bc_scene* m_scene;
 		game::bc_actor m_actor;
@@ -153,13 +163,8 @@ namespace black_cat
 		core::bc_shared_ptr<game::bci_animation_job> m_running_job;
 		core::bc_shared_ptr<game::bci_animation_job> m_rifle_idle_job;
 		core::bc_shared_ptr<game::bci_animation_job> m_rifle_running_job;
-		
+
 		bcINT32 m_look_delta_x;
-		bool m_forward_pressed;
-		bool m_backward_pressed;
-		bool m_right_pressed;
-		bool m_left_pressed;
-		bool m_walk_pressed;
 		core::bc_velocity<bcFLOAT> m_look_velocity;
 		core::bc_velocity<bcFLOAT> m_forward_velocity;
 		core::bc_velocity<bcFLOAT> m_backward_velocity;
@@ -172,67 +177,81 @@ namespace black_cat
 		core::bc_nullable<bc_xbot_weapon> m_weapon;
 	};
 
-	inline game::bc_scene* bc_xbot_controller::get_scene() noexcept
+	inline game::bc_scene* bc_xbot_actor_controller::get_scene() noexcept
 	{
 		return m_scene;
 	}
 	
-	inline game::bc_actor& bc_xbot_controller::get_actor() noexcept
+	inline game::bc_actor& bc_xbot_actor_controller::get_actor() noexcept
 	{
 		return m_actor;
 	}
 
-	inline bcFLOAT bc_xbot_controller::get_bound_box_max_side_length() const noexcept
+	inline bcFLOAT bc_xbot_actor_controller::get_bound_box_max_side_length() const noexcept
 	{
 		return m_bound_box_max_side_length;
 	}
 	
-	inline const core::bc_vector3f& bc_xbot_controller::get_local_origin() const noexcept
+	inline const core::bc_vector3f& bc_xbot_actor_controller::get_local_origin() const noexcept
 	{
 		return m_local_origin;
 	}
 	
-	inline const core::bc_vector3f& bc_xbot_controller::get_local_forward() const noexcept
+	inline const core::bc_vector3f& bc_xbot_actor_controller::get_local_forward() const noexcept
 	{
 		return m_local_forward;
 	}
 
-	inline game::bci_animation_job* bc_xbot_controller::get_idle_animation() const noexcept
+	inline game::bci_animation_job* bc_xbot_actor_controller::get_idle_animation() const noexcept
 	{
 		return m_idle_job.get();
 	}
 
-	inline game::bci_animation_job* bc_xbot_controller::get_running_animation() const noexcept
+	inline game::bci_animation_job* bc_xbot_actor_controller::get_running_animation() const noexcept
 	{
 		return m_running_job.get();
 	}
 
-	inline game::bci_animation_job* bc_xbot_controller::get_rifle_idle_animation() const noexcept
+	inline game::bci_animation_job* bc_xbot_actor_controller::get_rifle_idle_animation() const noexcept
 	{
 		return m_rifle_idle_job.get();
 	}
 
-	inline game::bci_animation_job* bc_xbot_controller::get_rifle_running_animation() const noexcept
+	inline game::bci_animation_job* bc_xbot_actor_controller::get_rifle_running_animation() const noexcept
 	{
 		return m_rifle_running_job.get();
 	}
 	
-	inline const core::bc_vector3f& bc_xbot_controller::get_position() const noexcept
+	inline const core::bc_vector3f& bc_xbot_actor_controller::get_position() const noexcept
 	{
 		return m_position;
 	}
 
-	inline const core::bc_vector3f& bc_xbot_controller::get_look_direction() const noexcept
+	inline const core::bc_vector3f& bc_xbot_actor_controller::get_look_direction() const noexcept
 	{
 		return m_state_machine->m_state.m_look_direction;
 	}
 
-	inline const core::bc_vector3f& bc_xbot_controller::get_move_direction() const noexcept
+	inline const core::bc_vector3f& bc_xbot_actor_controller::get_move_direction() const noexcept
 	{
 		return m_state_machine->m_state.m_move_direction;
 	}
 
-	inline bcFLOAT bc_xbot_controller::get_move_speed() const noexcept
+	inline bc_xbot_velocity bc_xbot_actor_controller::get_velocity() const noexcept
+	{
+		return bc_xbot_velocity
+		{
+			m_state_machine->m_state.m_look_side,
+			m_look_velocity.get_value(),
+			m_forward_velocity.get_value(),
+			m_backward_velocity.get_value(),
+			m_right_velocity.get_value(),
+			m_left_velocity.get_value(),
+			m_walk_velocity.get_value()
+		};
+	}
+
+	inline bcFLOAT bc_xbot_actor_controller::get_move_speed() const noexcept
 	{
 		return m_state_machine->m_state.m_move_amount;
 	}

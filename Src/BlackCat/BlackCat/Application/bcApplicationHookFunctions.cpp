@@ -71,8 +71,9 @@
 #include "BlackCat/SampleImp/ActorController/bcFireActorController.h"
 #include "BlackCat/SampleImp/ActorController/bcExplosionActorController.h"
 #include "BlackCat/SampleImp/ActorController/bcRocketActorController.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotController.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotPlayerController.h"
+#include "BlackCat/SampleImp/ActorController/bcXBotIdleActorController.h"
+#include "BlackCat/SampleImp/ActorController/bcXBotPlayerActorController.h"
+#include "BlackCat/SampleImp/ActorController/bcXBotNetworkPlayerActorController.h"
 #include "BlackCat/SampleImp/ActorController/bcRigidDynamicNetworkActorController.h"
 #include "BlackCat/SampleImp/Particle/bcExplosionParticle.h"
 #include "BlackCat/SampleImp/Particle/bcWeaponParticle.h"
@@ -207,8 +208,9 @@ namespace black_cat
 			game::bc_actor_controller_register<bc_fire_actor_controller>("fire"),
 			game::bc_actor_controller_register<bc_explosion_actor_controller>("explosion"),
 			game::bc_actor_controller_register<bc_rocket_controller>("rocket"),
-			game::bc_actor_controller_register<bc_xbot_controller>("xbot"),
-			game::bc_actor_controller_register<bc_xbot_camera_controller>("xbot_player"),
+			game::bc_actor_controller_register<bc_xbot_idle_actor_controller>("xbot_idle"),
+			game::bc_actor_controller_register<bc_xbot_player_actor_controller>("xbot_player"),
+			game::bc_actor_controller_register<bc_xbot_network_player_actor_controller>("xbot_network_player"),
 			game::bc_actor_controller_register<bc_rigid_dynamic_network_actor_controller>("rigid_dynamic_network")
 		);
 	}
@@ -293,7 +295,6 @@ namespace black_cat
 			BC_ASSERT(false);
 		}
 #endif
-
 		core::bc_memory_manager::close();
 #endif
 	}

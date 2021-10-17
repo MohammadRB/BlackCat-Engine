@@ -22,7 +22,7 @@
       ]
     },
     {
-      "name": "box-server",
+      "name": "box_server",
       "controller": "rigid_dynamic_network",
       "components": [
         {
@@ -53,7 +53,7 @@
       ]
     },
     {
-      "name": "box-client",
+      "name": "box_client",
       "controller": "rigid_dynamic_network",
       "components": [
         {
@@ -79,7 +79,7 @@
           "name": "network",
           "parameters": {
             "data_dir": "replicate_sync_from_client",
-            "entity_name": "box-server"
+            "entity_name": "box_server"
           }
         }
       ]
@@ -148,8 +148,8 @@
       ]
     },
     {
-      "name": "xbot-red",
-      "controller": "xbot",
+      "name": "xbot_idle",
+      "controller": "xbot_idle",
       "parameters": {
         "upper_body_chain": [ "Spine1", "Spine2", "Neck", "Head" ],
         "main_hand_chain": [ "RightArm", "RightForeArm", "RightHand" ],
@@ -162,11 +162,8 @@
           "name": "skinned_mesh",
           "parameters": {
             "mesh": "xbot",
-            "materials": {
-              "Beta_Surface": "red"
-            },
             "animations": [
-              "xbot-neutral-idle"
+              "xbot_neutral_idle"
             ]
           }
         },
@@ -194,15 +191,26 @@
       ]
     },
     {
-      "name": "xbot-blue",
-      "controller": "xbot",
-      "parameters": {
-        "upper_body_chain": [ "Spine1", "Spine2", "Neck", "Head" ],
-        "main_hand_chain": [ "RightArm", "RightForeArm", "RightHand" ],
-        "second_hand_chain": [ "LeftArm", "LeftForeArm", "LeftHand" ],
-        "rifle_joint": "Head",
-        "rifle_joint_offset": [ -1.0, -2.0, -2.0 ]
-      },
+      "name": "xbot_idle_red",
+      "inherit": "xbot_idle",
+      "components": [
+        {
+          "name": "skinned_mesh",
+          "parameters": {
+            "mesh": "xbot",
+            "materials": {
+              "Beta_Surface": "red"
+            },
+            "animations": [
+              "xbot_neutral_idle"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbot_idle_blue",
+      "inherit": "xbot_idle",
       "components": [
         {
           "name": "skinned_mesh",
@@ -212,44 +220,18 @@
               "Beta_Surface": "blue"
             },
             "animations": [
-              "xbot-neutral-idle"
+              "xbot_neutral_idle"
             ]
-          }
-        },
-        {
-          "name": "rigid_controller",
-          "parameters": {
-            "collider_materials": {
-              "mixamorig:Head": "iron",
-              "mixamorig:LeftArm": "iron",
-              "mixamorig:LeftFoot": "iron",
-              "mixamorig:LeftForeArm": "iron",
-              "mixamorig:LeftHand": "iron",
-              "mixamorig:LeftLeg": "iron",
-              "mixamorig:LeftUpLeg": "iron",
-              "mixamorig:RightArm": "iron",
-              "mixamorig:RightFoot": "iron",
-              "mixamorig:RightForeArm": "iron",
-              "mixamorig:RightHand": "iron",
-              "mixamorig:RightLeg": "iron",
-              "mixamorig:RightUpLeg": "iron",
-              "mixamorig:Spine1": "iron"
-            }
           }
         }
       ]
     },
     {
-      "name": "xbot-player",
+      "name": "xbot_player",
+      "inherit": "xbot_idle",
       "controller": "xbot_player",
       "parameters": {
-        "upper_body_chain": [ "Spine1", "Spine2", "Neck", "Head" ],
-        "main_hand_chain": [ "RightArm", "RightForeArm", "RightHand" ],
-        "second_hand_chain": [ "LeftArm", "LeftForeArm", "LeftHand" ],
-        "rifle_joint": "Head",
-        "rifle_joint_offset": [ -1.0, -2.0, -2.0 ],
-        "rifle_name": "xbot-rifle",
-        "detached_rifle_name": "xbot-rifle-detached"
+        "rifle_name": "xbot_rifle"
       },
       "components": [
         {
@@ -260,55 +242,56 @@
               "Beta_Surface": "red"
             },
             "animations": [
-              "xbot-neutral-idle",
-              "xbot-left-turn",
-              "xbot-right-turn",
-              "xbot-walking",
-              "xbot-walking-backwards",
-              "xbot-running",
-              "xbot-running-backwards",
-              "xbot-rifle-aiming-idle",
-              "xbot-rifle-left-turn",
-              "xbot-rifle-right-turn",
-              "xbot-rifle-firing",
-              "xbot-rifle-walking",
-              "xbot-rifle-walking-backwards",
-              "xbot-rifle-running",
-              "xbot-rifle-running-backwards",
-              "xbot-rifle-firing"
+              "xbot_neutral_idle",
+              "xbot_left_turn",
+              "xbot_right_turn",
+              "xbot_walking",
+              "xbot_walking_backwards",
+              "xbot_running",
+              "xbot_running_backwards",
+              "xbot_rifle_aiming_idle",
+              "xbot_rifle_left_turn",
+              "xbot_rifle_right_turn",
+              "xbot_rifle_firing",
+              "xbot_rifle_walking",
+              "xbot_rifle_walking_backwards",
+              "xbot_rifle_running",
+              "xbot_rifle_running_backwards",
+              "xbot_rifle_firing"
             ]
           }
         },
         {
-          "name": "rigid_controller",
+          "name": "network",
           "parameters": {
-            "collider_materials": {
-              "mixamorig:Head": "iron",
-              "mixamorig:LeftArm": "iron",
-              "mixamorig:LeftFoot": "iron",
-              "mixamorig:LeftForeArm": "iron",
-              "mixamorig:LeftHand": "iron",
-              "mixamorig:LeftLeg": "iron",
-              "mixamorig:LeftUpLeg": "iron",
-              "mixamorig:RightArm": "iron",
-              "mixamorig:RightFoot": "iron",
-              "mixamorig:RightForeArm": "iron",
-              "mixamorig:RightHand": "iron",
-              "mixamorig:RightLeg": "iron",
-              "mixamorig:RightUpLeg": "iron",
-              "mixamorig:Spine1": "iron"
-            }
+            "data_dir": "replicate_sync_from_client",
+            "entity_name": "xbot_network_player"
           }
         }
       ]
     },
     {
-      "name": "xbot-rifle",
+      "name": "xbot_network_player",
+      "inherit": "xbot_player",
+      "controller": "xbot_network_player",
+      "parameters": {
+      },
+      "components": [
+        {
+          "name": "network",
+          "parameters": {
+            "data_dir": "replicate_sync"
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbot_rifle",
       "components": [
         {
           "name": "simple_mesh",
           "parameters": {
-            "mesh": "scifi-rifle",
+            "mesh": "scifi_rifle",
             "lod_scale": 1.0
           }
         },
@@ -325,6 +308,9 @@
             "fire_light_color": [ 0.9, 0.4, 0.01 ],
             "fire_light_radius": 12.0,
             "fire_light_intensity": 3.0,
+            "fire_light_flare_surface": [ 0.5, 0.5, 0.5 ],
+            "fire_light_flare_intensity": 0.4,
+            "fire_light_flare_mask_material": "flare2",
             "rate_of_fire": 0.30,
             "bullet_speed": 250.0,
             "bullet_mass": 0.2

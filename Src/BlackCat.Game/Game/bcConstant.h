@@ -39,6 +39,9 @@ namespace black_cat
 		BC_PARAMETER(weapon_fire_light_color, "fire_light_color");
 		BC_PARAMETER(weapon_fire_light_radius, "fire_light_radius");
 		BC_PARAMETER(weapon_fire_light_intensity, "fire_light_intensity");
+		BC_PARAMETER(weapon_fire_light_flare_surface, "fire_light_flare_surface");
+		BC_PARAMETER(weapon_fire_light_flare_intensity, "fire_light_flare_intensity");
+		BC_PARAMETER(weapon_fire_light_flare_mask_material, "fire_light_flare_mask_material");
 		BC_PARAMETER(weapon_rate_of_fire_seconds, "rate_of_fire");
 		BC_PARAMETER(weapon_bullet_speed, "bullet_speed");
 		BC_PARAMETER(weapon_bullet_mass, "bullet_mass");

@@ -138,7 +138,7 @@ namespace black_cat
 					m_changed_actors_lock, core_platform::bc_lock_operation::light
 				);
 
-				const auto l_to_remove_list_ite = std::find_if
+				/*const auto l_to_remove_ite = std::find_if
 				(
 					std::begin(m_to_remove_actors),
 					std::end(m_to_remove_actors),
@@ -148,10 +148,12 @@ namespace black_cat
 					}
 				);
 				
-				if (l_to_remove_list_ite == std::end(m_to_remove_actors))
+				if (l_to_remove_ite == std::end(m_to_remove_actors))
 				{
 					m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::update, p_actor));
-				}
+				}*/
+
+				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::update, p_actor));
 			}
 		}
 
@@ -252,7 +254,7 @@ namespace black_cat
 				
 				for(auto& l_to_removed_actor : m_to_remove_actors)
 				{
-					auto l_changed_list_ite = std::find_if
+					auto l_changed_ite = std::find_if
 					(
 						std::begin(m_changed_actors),
 						std::end(m_changed_actors),
@@ -261,9 +263,9 @@ namespace black_cat
 							return std::get<bc_actor>(p_entry) == std::get<bc_actor>(l_to_removed_actor);
 						}
 					);
-					if(l_changed_list_ite != std::end(m_changed_actors))
+					if(l_changed_ite != std::end(m_changed_actors))
 					{
-						m_changed_actors.erase(l_changed_list_ite);
+						m_changed_actors.erase(l_changed_ite);
 					}
 					
 					_remove_actor(std::get<_bc_scene_actor_remove_state>(l_to_removed_actor), std::get<bc_actor>(l_to_removed_actor));
@@ -278,8 +280,7 @@ namespace black_cat
 					l_num_thread,
 					std::begin(m_changed_actors),
 					std::end(m_changed_actors),
-					[]() { return true; },
-					[&](bool, decltype(m_changed_actors)::reference p_actor)
+					[&](decltype(m_changed_actors)::reference p_actor)
 					{
 						switch (std::get<_bc_scene_actor_operation>(p_actor))
 						{
@@ -295,8 +296,7 @@ namespace black_cat
 						default:
 							BC_ASSERT(false);
 						}
-					},
-					[](bool) {}
+					}
 				);
 				
 				m_changed_actors.clear();
@@ -346,7 +346,11 @@ namespace black_cat
 		void bc_scene::_remove_actor_event(_bc_scene_actor_remove_state p_state, bc_actor& p_actor)
 		{
 			p_actor.add_event(bc_removed_from_scene_actor_event(*this));
-			m_to_remove_actors.push_back(std::make_tuple(p_state, p_actor));
+			
+			{
+				core_platform::bc_spin_mutex_guard l_lock(m_to_remove_actors_lock);
+				m_to_remove_actors.push_back(std::make_tuple(p_state, p_actor));
+			}
 		}
 
 		void bc_scene::_remove_actor(_bc_scene_actor_remove_state p_state, bc_actor& p_actor)

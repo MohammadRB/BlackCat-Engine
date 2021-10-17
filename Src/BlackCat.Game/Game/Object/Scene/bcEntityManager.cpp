@@ -148,7 +148,7 @@ namespace black_cat
 
 				if(l_entity->m_inherit.has_value())
 				{
-					auto l_inherit_entity_name_hash = string_hash()(l_entity->m_name->c_str());
+					auto l_inherit_entity_name_hash = string_hash()(l_entity->m_inherit->c_str());
 					const auto l_inherit_ite = m_entities.find(l_inherit_entity_name_hash);
 					if(l_inherit_ite != std::end(m_entities))
 					{

@@ -166,6 +166,7 @@ namespace black_cat
 			core::bc_unique_ptr<bc_decal_manager> m_decal_manager;
 
 			core_platform::bc_hybrid_mutex m_changed_actors_lock;
+			core_platform::bc_spin_mutex m_to_remove_actors_lock;
 			core::bc_vector_movable<std::tuple<_bc_scene_actor_operation, bc_actor>> m_changed_actors;
 			core::bc_vector_movable<std::tuple<_bc_scene_actor_remove_state, bc_actor>> m_to_remove_actors;
 		};

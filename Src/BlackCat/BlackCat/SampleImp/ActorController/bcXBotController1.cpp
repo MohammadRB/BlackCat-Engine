@@ -27,13 +27,13 @@
 #include "Game/Object/Animation/Job/bcActorUpdateAnimationJob.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/bcGameSystem.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotController.h"
+#include "BlackCat/SampleImp/ActorController/bcXBotActorController.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotUpdateAnimationJob.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotWeaponIKAnimationJob.h"
 
 namespace black_cat
 {
-	bc_xbot_controller::bc_xbot_controller() noexcept
+	bc_xbot_actor_controller::bc_xbot_actor_controller() noexcept
 		: m_physics_system(nullptr),
 		m_scene(nullptr),
 		m_skinned_component(nullptr),
@@ -65,7 +65,7 @@ namespace black_cat
 	{
 	}
 
-	void bc_xbot_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
+	void bc_xbot_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		m_physics_system = &p_context.m_game_system.get_physics_system();
 		m_actor = p_context.m_actor;
@@ -174,7 +174,7 @@ namespace black_cat
 		);
 	}
 
-	void bc_xbot_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
+	void bc_xbot_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		m_scene = &p_scene;
 		
@@ -220,7 +220,7 @@ namespace black_cat
 		m_active_job = m_idle_job.get();
 	}
 
-	void bc_xbot_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
+	void bc_xbot_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
 		if (!m_scene) // Has not added to scene yet
 		{
@@ -239,7 +239,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_xbot_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
+	void bc_xbot_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		{
 			physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
@@ -257,7 +257,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_xbot_controller::handle_event(const game::bc_actor_component_event_context& p_context)
+	void bc_xbot_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
 	{
 		const auto* l_world_transform_event = core::bci_message::as<game::bc_world_transform_actor_event>(p_context.m_event);
 		if(l_world_transform_event && l_world_transform_event->get_transform_type() != game::bc_transform_event_type::physics)
@@ -276,43 +276,43 @@ namespace black_cat
 		}
 	}
 
-	void bc_xbot_controller::set_look_delta(bcINT32 p_x_change) noexcept
+	void bc_xbot_actor_controller::set_look_delta(bcINT32 p_x_change) noexcept
 	{
 		m_look_delta_x = p_x_change;
 		core_platform::atomic_thread_fence(core_platform::bc_memory_order::release);
 	}
 
-	void bc_xbot_controller::set_move_forward(bool p_value) noexcept
+	void bc_xbot_actor_controller::set_move_forward(bool p_value) noexcept
 	{
 		m_forward_pressed = p_value;
 		core_platform::atomic_thread_fence(core_platform::bc_memory_order::release);
 	}
 
-	void bc_xbot_controller::set_move_backward(bool p_value) noexcept
+	void bc_xbot_actor_controller::set_move_backward(bool p_value) noexcept
 	{
 		m_backward_pressed = p_value;
 		core_platform::atomic_thread_fence(core_platform::bc_memory_order::release);
 	}
 
-	void bc_xbot_controller::set_move_right(bool p_value) noexcept
+	void bc_xbot_actor_controller::set_move_right(bool p_value) noexcept
 	{
 		m_right_pressed = p_value;
 		core_platform::atomic_thread_fence(core_platform::bc_memory_order::release);
 	}
 
-	void bc_xbot_controller::set_move_left(bool p_value) noexcept
+	void bc_xbot_actor_controller::set_move_left(bool p_value) noexcept
 	{
 		m_left_pressed = p_value;
 		core_platform::atomic_thread_fence(core_platform::bc_memory_order::release);
 	}
 
-	void bc_xbot_controller::set_walk(bool p_value) noexcept
+	void bc_xbot_actor_controller::set_walk(bool p_value) noexcept
 	{
 		m_walk_pressed = p_value;
 		core_platform::atomic_thread_fence(core_platform::bc_memory_order::release);
 	}
 
-	void bc_xbot_controller::attach_weapon(game::bc_actor& p_weapon) noexcept
+	void bc_xbot_actor_controller::attach_weapon(game::bc_actor& p_weapon) noexcept
 	{
 		auto* l_weapon_component = p_weapon.get_component<game::bc_weapon_component>();
 		if(!l_weapon_component)
@@ -343,7 +343,7 @@ namespace black_cat
 		l_rifle_running_ik_job->set_offset(m_rifle_joint_offset);
 	}
 
-	void bc_xbot_controller::detach_weapon() noexcept
+	void bc_xbot_actor_controller::detach_weapon() noexcept
 	{
 		m_weapon.reset();
 
@@ -351,7 +351,7 @@ namespace black_cat
 		bc_animation_job_helper::find_job<bc_partial_blending_animation_job>(static_cast<bc_sequence_animation_job&>(*m_running_job))->set_enabled(false);*/
 	}
 
-	void bc_xbot_controller::shoot_weapon() noexcept
+	void bc_xbot_actor_controller::shoot_weapon() noexcept
 	{
 		if(!m_weapon.has_value())
 		{
@@ -377,7 +377,7 @@ namespace black_cat
 		m_scene->add_bullet(m_weapon->m_component->shoot(m_look_direction));
 	}
 
-	void bc_xbot_controller::on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit)
+	void bc_xbot_actor_controller::on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit)
 	{
 		const auto l_rigid_actor = p_hit.get_actor();
 		const auto l_is_rigid_dynamic = l_rigid_actor.get_type() == physics::bc_actor_type::rigid_dynamic;
@@ -398,11 +398,11 @@ namespace black_cat
 		l_rigid_dynamic.add_force(m_move_direction * l_multiplier * l_ccontroller_actor.get_mass());
 	}
 
-	void bc_xbot_controller::on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit)
+	void bc_xbot_actor_controller::on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit)
 	{
 	}
 
-	core::bc_shared_ptr<game::bci_animation_job> bc_xbot_controller::_create_idle_animation(const bcCHAR* p_idle_animation,
+	core::bc_shared_ptr<game::bci_animation_job> bc_xbot_actor_controller::_create_idle_animation(const bcCHAR* p_idle_animation,
 		const bcCHAR* p_left_turn_animation,
 		const bcCHAR* p_right_turn_animation,
 		const bcCHAR* p_weapon_shoot_animation,
@@ -499,7 +499,7 @@ namespace black_cat
 			.build();
 	}
 
-	core::bc_shared_ptr<game::bci_animation_job> bc_xbot_controller::_create_running_animation(core::bc_shared_ptr<game::bc_sampling_animation_job> p_idle_sample_job,
+	core::bc_shared_ptr<game::bci_animation_job> bc_xbot_actor_controller::_create_running_animation(core::bc_shared_ptr<game::bc_sampling_animation_job> p_idle_sample_job,
 		const bcCHAR* p_walking_animation,
 		const bcCHAR* p_walking_backward_animation,
 		const bcCHAR* p_running_animation,
@@ -623,7 +623,7 @@ namespace black_cat
 			.build();
 	}
 
-	void bc_xbot_controller::_update_input()
+	void bc_xbot_actor_controller::_update_input()
 	{
 		core_platform::atomic_thread_fence(core_platform::bc_memory_order::acquire);
 
@@ -685,7 +685,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_xbot_controller::_update_direction()
+	void bc_xbot_actor_controller::_update_direction()
 	{
 		const auto l_look_velocity = m_look_velocity.get_value();
 		const auto l_forward_velocity = m_forward_velocity.get_value();
@@ -757,7 +757,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_xbot_controller::_update_active_animation()
+	void bc_xbot_actor_controller::_update_active_animation()
 	{
 		m_active_job = nullptr;
 
@@ -809,7 +809,7 @@ namespace black_cat
 		_blend_weapon_shoot_animation();
 	}
 
-	void bc_xbot_controller::_blend_idle_animation(game::bci_animation_job& p_idle_animation)
+	void bc_xbot_actor_controller::_blend_idle_animation(game::bci_animation_job& p_idle_animation)
 	{
 		const auto l_look_velocity = m_look_velocity.get_value();
 		bcFLOAT l_weights[3] = { l_look_velocity, 1 - l_look_velocity, l_look_velocity };
@@ -832,7 +832,7 @@ namespace black_cat
 		l_aim_job->set_world_target(m_position + m_look_direction * 1000);
 	}
 
-	void bc_xbot_controller::_blend_running_animation(game::bci_animation_job& p_running_animation)
+	void bc_xbot_actor_controller::_blend_running_animation(game::bci_animation_job& p_running_animation)
 	{
 		const auto l_run_weight = (m_move_speed - m_walk_speed) / (m_run_speed - m_walk_speed);
 		const auto l_walk_weight = 1 - l_run_weight;
@@ -865,7 +865,7 @@ namespace black_cat
 		l_aim_job->set_world_target(m_position + m_look_direction * 1000);
 	}
 
-	void bc_xbot_controller::_blend_weapon_shoot_animation()
+	void bc_xbot_actor_controller::_blend_weapon_shoot_animation()
 	{
 		if (!m_weapon.has_value())
 		{
@@ -904,7 +904,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_xbot_controller::_weapon_ik_animation(bc_xbot_weapon* p_weapon, game::bci_animation_job& p_main_animation)
+	void bc_xbot_actor_controller::_weapon_ik_animation(bc_xbot_weapon* p_weapon, game::bci_animation_job& p_main_animation)
 	{
 		auto* l_weapon_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(static_cast<game::bc_sequence_animation_job&>(p_main_animation));
 		if(!l_weapon_ik_job)
@@ -915,7 +915,7 @@ namespace black_cat
 		l_weapon_ik_job->set_weapon(p_weapon);
 	}
 
-	void bc_xbot_controller::_update_world_transform()
+	void bc_xbot_actor_controller::_update_world_transform()
 	{
 		auto l_px_controller_pre_filter = physics::bc_scene_query_pre_filter_callback
 		(
@@ -967,7 +967,7 @@ namespace black_cat
 		m_actor.add_event(game::bc_world_transform_actor_event(l_world_transform, game::bc_transform_event_type::physics));
 	}
 
-	void bc_xbot_controller::_update_weapon_transform()
+	void bc_xbot_actor_controller::_update_weapon_transform()
 	{
 		if(!m_weapon.has_value())
 		{

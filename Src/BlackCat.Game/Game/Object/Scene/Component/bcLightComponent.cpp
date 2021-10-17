@@ -87,7 +87,7 @@ namespace black_cat
 						l_flare_surface->y,
 						l_flare_surface->z,
 						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_intensity), l_color.w),
-						l_material_manager.load_mesh_material_throw(l_flare_mask_material->c_str()),
+						l_material,
 						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_u0), 0),
 						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_v0), 0),
 						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_u1), l_material->get_diffuse_map().get_width()),

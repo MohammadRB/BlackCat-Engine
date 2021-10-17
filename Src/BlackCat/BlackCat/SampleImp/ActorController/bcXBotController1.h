@@ -27,18 +27,18 @@ namespace black_cat
 		class bc_skinned_mesh_component;
 	}
 	
-	class BC_DLL bc_xbot_controller : public game::bci_actor_controller, protected physics::bci_ccontroller_hit_callback
+	class BC_DLL bc_xbot_actor_controller : public game::bci_actor_controller, protected physics::bci_ccontroller_hit_callback
 	{
 		friend class bc_xbot_update_animation_job;
 		
 	public:
-		bc_xbot_controller() noexcept;
+		bc_xbot_actor_controller() noexcept;
 
-		bc_xbot_controller(bc_xbot_controller&&) = default;
+		bc_xbot_actor_controller(bc_xbot_actor_controller&&) = default;
 		
-		~bc_xbot_controller() override = default;
+		~bc_xbot_actor_controller() override = default;
 
-		bc_xbot_controller& operator=(bc_xbot_controller&&) = default;
+		bc_xbot_actor_controller& operator=(bc_xbot_actor_controller&&) = default;
 		
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
 		
@@ -187,72 +187,72 @@ namespace black_cat
 		bcFLOAT m_weapon_shoot_time;
 	};
 
-	inline game::bc_scene* bc_xbot_controller::get_scene() noexcept
+	inline game::bc_scene* bc_xbot_actor_controller::get_scene() noexcept
 	{
 		return m_scene;
 	}
 	
-	inline game::bc_actor& bc_xbot_controller::get_actor() noexcept
+	inline game::bc_actor& bc_xbot_actor_controller::get_actor() noexcept
 	{
 		return m_actor;
 	}
 
-	inline bcFLOAT bc_xbot_controller::get_bound_box_max_side_length() const noexcept
+	inline bcFLOAT bc_xbot_actor_controller::get_bound_box_max_side_length() const noexcept
 	{
 		return m_bound_box_max_side_length;
 	}
 	
-	inline const core::bc_vector3f& bc_xbot_controller::get_local_origin() const noexcept
+	inline const core::bc_vector3f& bc_xbot_actor_controller::get_local_origin() const noexcept
 	{
 		return m_local_origin;
 	}
 	
-	inline const core::bc_vector3f& bc_xbot_controller::get_local_forward() const noexcept
+	inline const core::bc_vector3f& bc_xbot_actor_controller::get_local_forward() const noexcept
 	{
 		return m_local_forward;
 	}
 
-	inline game::bci_animation_job* bc_xbot_controller::get_idle_animation() const noexcept
+	inline game::bci_animation_job* bc_xbot_actor_controller::get_idle_animation() const noexcept
 	{
 		return m_idle_job.get();
 	}
 
-	inline game::bci_animation_job* bc_xbot_controller::get_running_animation() const noexcept
+	inline game::bci_animation_job* bc_xbot_actor_controller::get_running_animation() const noexcept
 	{
 		return m_running_job.get();
 	}
 
-	inline game::bci_animation_job* bc_xbot_controller::get_rifle_idle_animation() const noexcept
+	inline game::bci_animation_job* bc_xbot_actor_controller::get_rifle_idle_animation() const noexcept
 	{
 		return m_rifle_idle_job.get();
 	}
 
-	inline game::bci_animation_job* bc_xbot_controller::get_rifle_running_animation() const noexcept
+	inline game::bci_animation_job* bc_xbot_actor_controller::get_rifle_running_animation() const noexcept
 	{
 		return m_rifle_running_job.get();
 	}
 	
-	inline const core::bc_vector3f& bc_xbot_controller::get_position() const noexcept
+	inline const core::bc_vector3f& bc_xbot_actor_controller::get_position() const noexcept
 	{
 		return m_position;
 	}
 
-	inline const core::bc_vector3f& bc_xbot_controller::get_look_direction() const noexcept
+	inline const core::bc_vector3f& bc_xbot_actor_controller::get_look_direction() const noexcept
 	{
 		return m_look_direction;
 	}
 
-	inline const core::bc_vector3f& bc_xbot_controller::get_move_direction() const noexcept
+	inline const core::bc_vector3f& bc_xbot_actor_controller::get_move_direction() const noexcept
 	{
 		return m_move_direction;
 	}
 
-	inline bcFLOAT bc_xbot_controller::get_move_speed() const noexcept
+	inline bcFLOAT bc_xbot_actor_controller::get_move_speed() const noexcept
 	{
 		return m_move_amount;
 	}
 	
-	inline void bc_xbot_controller::set_active_animation(game::bci_animation_job* p_animation) noexcept
+	inline void bc_xbot_actor_controller::set_active_animation(game::bci_animation_job* p_animation) noexcept
 	{
 		m_active_job = p_animation;
 	}

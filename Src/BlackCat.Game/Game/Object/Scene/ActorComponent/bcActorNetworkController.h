@@ -44,8 +44,7 @@ namespace black_cat
 			m_network_component = p_context.m_actor.get_component<bc_network_component>();
 			if (!m_network_component)
 			{
-				return;
-				//throw bc_invalid_operation_exception("network controller must have network component");
+				throw bc_invalid_operation_exception("network controller must have network component");
 			}
 
 			const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();

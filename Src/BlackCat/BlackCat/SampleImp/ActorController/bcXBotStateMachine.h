@@ -28,6 +28,7 @@ namespace black_cat
 		bcFLOAT m_look_speed;
 		bcFLOAT m_run_speed;
 		bcFLOAT m_walk_speed;
+		bcINT32 m_look_side;
 		core::bc_vector3f m_look_direction;
 		core::bc_vector3f m_move_direction;
 		bcFLOAT m_move_speed;
@@ -43,9 +44,23 @@ namespace black_cat
 		bcINT32 m_look_delta_x;
 		bcFLOAT m_look_velocity;
 		bcFLOAT m_forward_velocity;
+		bcFLOAT m_backward_velocity;
 		bcFLOAT m_right_velocity;
 		bcFLOAT m_left_velocity;
+		bcFLOAT m_walk_velocity;
+	};
+
+	struct bc_xbot_state_update_params1
+	{
+		const core_platform::bc_clock::update_param& m_clock;
+		const core::bc_vector3f& m_position;
+		const core::bc_vector3f& m_look_direction;
+		bcINT32 m_look_side;
+		bcFLOAT m_look_velocity;
+		bcFLOAT m_forward_velocity;
 		bcFLOAT m_backward_velocity;
+		bcFLOAT m_right_velocity;
+		bcFLOAT m_left_velocity;
 		bcFLOAT m_walk_velocity;
 	};
 	
@@ -175,12 +190,14 @@ namespace black_cat
 		bc_xbot_state_machine& operator=(bc_xbot_state_machine&&) noexcept;
 
 		void update(const bc_xbot_state_update_params& p_update);
+		
+		void update(const bc_xbot_state_update_params1& p_update);
 
-		void attach_weapon(bc_xbot_weapon& p_weapon, const bcCHAR* p_offset_joint, const core::bc_vector3f& p_offset);
+		void attach_weapon(bc_xbot_weapon& p_weapon, const bcCHAR* p_offset_joint, const core::bc_vector3f& p_offset) noexcept;
 
-		void detach_weapon();
+		void detach_weapon() noexcept;
 
-		void shoot_weapon();
+		bool shoot_weapon() noexcept;
 
 		game::bci_animation_job& get_active_animation() const noexcept;
 
@@ -405,7 +422,7 @@ namespace black_cat
 			bc_xbot_rifle_idle_state(p_rifle_idle_animation),
 			bc_xbot_rifle_running_state(p_rifle_running_animation)
 		),
-		m_state{p_look_speed, p_run_speed, p_walk_speed, p_local_forward, p_local_forward, 0, 0, -1, nullptr},
+		m_state{p_look_speed, p_run_speed, p_walk_speed, 0, p_local_forward, p_local_forward, 0, 0, -1, nullptr},
 		m_new_active_animation(nullptr)
 	{
 		transfer_state<bc_xbot_idle_state>();
@@ -424,27 +441,61 @@ namespace black_cat
 			m_state.m_active_animation = m_new_active_animation;
 			m_new_active_animation = nullptr;
 		}
+
+		if(p_update.m_look_delta_x > 0)
+		{
+			m_state.m_look_side = 1;
+		}
+		else if(p_update.m_look_delta_x < 0)
+		{
+			m_state.m_look_side = -1;
+		}
 		
 		bc_xbot_update_event l_event{ p_update };
 		process_event(l_event);
 	}
 
-	inline void bc_xbot_state_machine::attach_weapon(bc_xbot_weapon& p_weapon, const bcCHAR* p_offset_joint, const core::bc_vector3f& p_offset)
+	inline void bc_xbot_state_machine::update(const bc_xbot_state_update_params1& p_update)
+	{
+		m_state.m_look_direction = p_update.m_look_direction;
+		m_state.m_look_side = p_update.m_look_side;
+		update(bc_xbot_state_update_params
+		{
+			p_update.m_clock,
+			p_update.m_position,
+			0,
+			p_update.m_look_velocity,
+			p_update.m_forward_velocity,
+			p_update.m_backward_velocity,
+			p_update.m_right_velocity,
+			p_update.m_left_velocity,
+			p_update.m_walk_velocity
+		});
+	}
+
+	inline void bc_xbot_state_machine::attach_weapon(bc_xbot_weapon& p_weapon, const bcCHAR* p_offset_joint, const core::bc_vector3f& p_offset) noexcept
 	{
 		bc_xbot_weapon_attach_event l_event{ p_weapon, p_offset_joint, p_offset };
 		process_event(l_event);
 	}
 
-	inline void bc_xbot_state_machine::detach_weapon()
+	inline void bc_xbot_state_machine::detach_weapon() noexcept
 	{
 		bc_xbot_weapon_detach_event l_event{};
 		process_event(l_event);
 	}
 
-	inline void bc_xbot_state_machine::shoot_weapon()
+	inline bool bc_xbot_state_machine::shoot_weapon() noexcept
 	{
+		if(m_state.m_weapon_shoot_time != -1)
+		{
+			return false;
+		}
+		
 		bc_xbot_weapon_shoot_event l_event{ m_state };
 		process_event(l_event);
+
+		return true;
 	}
 
 	inline game::bci_animation_job& bc_xbot_state_machine::get_active_animation() const noexcept
@@ -464,7 +515,7 @@ namespace black_cat
 			(
 				core::bc_to_radian
 				(
-					p_update_params.m_look_delta_x *
+					static_cast<bcFLOAT>(p_update_params.m_look_delta_x) *
 					p_update_params.m_look_velocity *
 					m_state.m_look_speed *
 					p_update_params.m_clock.m_elapsed_second
@@ -477,7 +528,7 @@ namespace black_cat
 			(
 				core::bc_to_radian
 				(
-					p_update_params.m_look_delta_x *
+					static_cast<bcFLOAT>(p_update_params.m_look_delta_x) *
 					p_update_params.m_look_velocity *
 					m_state.m_look_speed *
 					p_update_params.m_clock.m_elapsed_second
@@ -546,7 +597,12 @@ namespace black_cat
 	inline void bc_xbot_state_machine::blend_idle_animation(const bc_xbot_state_update_params& p_update_params, game::bci_animation_job& p_idle_animation) noexcept
 	{
 		const auto l_look_velocity = p_update_params.m_look_velocity;
-		bcFLOAT l_weights[3] = { l_look_velocity, 1 - l_look_velocity, l_look_velocity };
+		bcFLOAT l_weights[3] = 
+		{
+			m_state.m_look_side < 0 ? l_look_velocity : 0.f,
+			1 - l_look_velocity,
+			m_state.m_look_side > 0 ? l_look_velocity : 0.f
+		};
 
 		auto* l_blending_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(static_cast<game::bc_sequence_animation_job&>(p_idle_animation));
 		l_blending_job->set_weights(&l_weights[0]);
@@ -635,7 +691,7 @@ namespace black_cat
 		}
 
 		// Increase weapon shoot impact in running mode
-		l_additive_blend_job->set_weights(1, m_state.m_move_amount ? std::max((m_state.m_move_amount / m_state.m_run_speed) * 2, 1.4f) : 1);
+		l_additive_blend_job->set_weights(1, m_state.m_move_amount > 0.f ? std::max((m_state.m_move_amount / m_state.m_run_speed) * 1.8f, 1.2f) : 1);
 
 		// Once weapon shoot animation stopped disable additive blend
 		if (!l_additive_layer->get_enabled())

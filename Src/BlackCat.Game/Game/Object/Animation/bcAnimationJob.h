@@ -24,7 +24,7 @@ namespace black_cat
 
 			const bc_animation_skeleton& get_skeleton() const noexcept;
 
-			bcFLOAT get_enabled() const noexcept;
+			bool get_enabled() const noexcept;
 
 			void set_enabled(bool p_enabled) noexcept;
 
@@ -110,7 +110,7 @@ namespace black_cat
 			return *m_skeleton;
 		}
 
-		inline bcFLOAT bci_animation_job::get_enabled() const noexcept
+		inline bool bci_animation_job::get_enabled() const noexcept
 		{
 			return m_enabled;
 		}

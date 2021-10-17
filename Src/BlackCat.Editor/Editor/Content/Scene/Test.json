@@ -30,7 +30,7 @@
     },
     "actors": [
         {
-            "entity_name": "xbot-red",
+            "entity_name": "xbot_idle_red",
             "position": [
                 42.0,
                 0.0,
@@ -72,7 +72,7 @@
             "parameters": {}
         },
         {
-            "entity_name": "box-server",
+            "entity_name": "box_server",
             "position": [
                 65.0,
                 120.0,
@@ -86,7 +86,7 @@
             "parameters": {}
         },
         {
-            "entity_name": "xbot-blue",
+            "entity_name": "xbot_idle_blue",
             "position": [
                 55.0,
                 0.0,

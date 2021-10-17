@@ -5,7 +5,7 @@
 #include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "Platform/bcEvent.h"
 #include "Game/System/Input/bcChasingCamera.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotController.h"
+#include "BlackCat/SampleImp/ActorController/bcXBotActorController.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -15,16 +15,16 @@ namespace black_cat
 		class bc_input_system;
 	}
 	
-	class BC_DLL bc_xbot_camera_controller : public bc_xbot_controller
+	class BC_DLL bc_xbot_player_actor_controller : public bc_xbot_actor_controller
 	{
 	public:
-		bc_xbot_camera_controller() noexcept;
+		bc_xbot_player_actor_controller() noexcept;
 
-		bc_xbot_camera_controller(bc_xbot_camera_controller&&) noexcept;
+		bc_xbot_player_actor_controller(bc_xbot_player_actor_controller&&) noexcept;
 		
-		~bc_xbot_camera_controller() override;
+		~bc_xbot_player_actor_controller() override;
 
-		bc_xbot_camera_controller& operator=(bc_xbot_camera_controller&&) noexcept;
+		bc_xbot_player_actor_controller& operator=(bc_xbot_player_actor_controller&&) noexcept;
 		
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
 
@@ -67,9 +67,13 @@ namespace black_cat
 		bcFLOAT m_camera_look_at_offset;
 		bcINT32 m_pointing_delta_x;
 		bcINT32 m_pointing_last_x;
+		bool m_forward_pressed;
+		bool m_backward_pressed;
+		bool m_right_pressed;
+		bool m_left_pressed;
+		bool m_walk_pressed;
 
 		const bcCHAR* m_rifle_name;
-		const bcCHAR* m_detached_rifle_name;
 		game::bc_actor m_current_weapon;
 	};
 }

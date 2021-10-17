@@ -55,7 +55,7 @@ namespace black_cat
 		json_parse::bc_write(p_context.m_parameters, "pos", l_world_transform.get_translation());
 		json_parse::bc_write(p_context.m_parameters, "rot", bc_matrix4f_decompose_to_euler_angles(l_world_transform));
 
-		const auto l_world_translation = l_world_transform.get_translation();
+		//const auto l_world_translation = l_world_transform.get_translation();
 		//core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "write origin: " << l_world_translation << core::bc_lend;
 	}
 
@@ -96,8 +96,8 @@ namespace black_cat
 		l_transform.set_translation(m_network_position);
 		l_transform.set_rotation(bc_matrix3f_rotation_zyx(m_network_euler_rotation));
 
-		p_context.m_actor.add_event(game::bc_world_transform_actor_event(l_transform, game::bc_transform_event_type::network));
-		p_context.m_actor.mark_for_double_update();
+		//p_context.m_actor.add_event(game::bc_world_transform_actor_event(l_transform, game::bc_transform_event_type::network));
+		//p_context.m_actor.mark_for_double_update();
 	}
 
 	void bc_rigid_dynamic_network_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
