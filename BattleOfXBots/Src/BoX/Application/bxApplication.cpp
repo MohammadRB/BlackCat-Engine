@@ -146,7 +146,7 @@ namespace box
 				auto& l_camera = *l_input_system.get_camera();
 				auto* l_scene = m_game_system->get_scene();
 
-				game::bc_actor l_actor = l_scene->create_actor("box-client", core::bc_matrix4f::translation_matrix(l_camera.get_position()));
+				game::bc_actor l_actor = l_scene->create_actor("box_client", core::bc_matrix4f::translation_matrix(l_camera.get_position()));
 
 				auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
 				auto l_rigid = l_rigid_component->get_body();

@@ -17,9 +17,10 @@ namespace black_cat
 
 		enum class bc_actor_network_data_dir
 		{
-			replicate,
-			replicate_sync,
-			replicate_sync_from_client
+			replicate,						// Replicate actor from server
+			replicate_sync,					// Replicate actor from server
+			replicate_sync_from_client,		// Replicate actor from client
+			replicate_sync_to_server_client	// Convert to 'replicate_sync' or 'replicate_sync_from_client'
 		};
 
 		enum class bc_actor_replication_side

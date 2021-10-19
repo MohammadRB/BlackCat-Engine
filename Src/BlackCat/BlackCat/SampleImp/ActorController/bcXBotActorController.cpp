@@ -301,7 +301,8 @@ namespace black_cat
 			}
 		);
 
-		_update_world_transform(p_context.m_clock, m_state_machine->m_state.m_move_direction * m_state_machine->m_state.m_move_amount);
+		_update_px_move(p_context.m_clock, m_state_machine->m_state.m_move_direction * m_state_machine->m_state.m_move_amount);
+		_update_world_transform();
 
 		m_skinned_component->add_animation_job(&m_state_machine->get_active_animation());
 	}
@@ -313,13 +314,53 @@ namespace black_cat
 			return;
 		}
 
+		m_position = p_context.m_position;
 		m_look_delta_x = 0;
-		m_look_velocity.set_value(p_context.m_velocity.m_look_velocity);
-		m_forward_velocity.set_value(p_context.m_velocity.m_forward_velocity);
-		m_backward_velocity.set_value(p_context.m_velocity.m_backward_velocity);
-		m_right_velocity.set_value(p_context.m_velocity.m_right_velocity);
-		m_left_velocity.set_value(p_context.m_velocity.m_left_velocity);
-		m_walk_velocity.set_value(p_context.m_velocity.m_walk_velocity);
+
+		if (p_context.m_forward_pressed)
+		{
+			m_forward_velocity.push(p_context.m_clock.m_elapsed_second);
+		}
+		else
+		{
+			m_forward_velocity.release(p_context.m_clock.m_elapsed_second);
+		}
+		
+		if (p_context.m_backward_pressed)
+		{
+			m_backward_velocity.push(p_context.m_clock.m_elapsed_second);
+		}
+		else
+		{
+			m_backward_velocity.release(p_context.m_clock.m_elapsed_second);
+		}
+
+		if (p_context.m_right_pressed)
+		{
+			m_right_velocity.push(p_context.m_clock.m_elapsed_second);
+		}
+		else
+		{
+			m_right_velocity.release(p_context.m_clock.m_elapsed_second);
+		}
+
+		if (p_context.m_left_pressed)
+		{
+			m_left_velocity.push(p_context.m_clock.m_elapsed_second);
+		}
+		else
+		{
+			m_left_velocity.release(p_context.m_clock.m_elapsed_second);
+		}
+
+		if (p_context.m_walk_pressed)
+		{
+			m_walk_velocity.push(p_context.m_clock.m_elapsed_second);
+		}
+		else
+		{
+			m_walk_velocity.release(p_context.m_clock.m_elapsed_second);
+		}
 
 		m_state_machine->update
 		(
@@ -328,8 +369,8 @@ namespace black_cat
 				p_context.m_clock,
 				m_position,
 				p_context.m_look_direction,
-				m_state_machine->m_state.m_look_side,
-				m_look_velocity.get_value(),
+				p_context.m_look_side,
+				p_context.m_look_velocity,
 				m_forward_velocity.get_value(),
 				m_backward_velocity.get_value(),
 				m_right_velocity.get_value(),
@@ -338,7 +379,10 @@ namespace black_cat
 			}
 		);
 
-		_update_world_transform(p_context.m_clock, p_context.m_position - m_position);
+		_update_px_position(m_position);
+		_update_world_transform();
+
+		m_skinned_component->add_animation_job(&m_state_machine->get_active_animation());
 	}
 
 	void bc_xbot_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
@@ -670,24 +714,24 @@ namespace black_cat
 			.build();
 	}
 
-	void bc_xbot_actor_controller::_update_world_transform(const core_platform::bc_clock::update_param& p_clock, const core::bc_vector3f& p_move_vector)
+	void bc_xbot_actor_controller::_update_px_move(const core_platform::bc_clock::update_param& p_clock, const core::bc_vector3f& p_move_vector)
 	{
 		auto l_px_controller_pre_filter = physics::bc_scene_query_pre_filter_callback
 		(
 			[this](const physics::bc_scene_query_pre_filter_data& p_filter_data)
 			{
 				const auto l_actor = m_physics_system->get_game_actor(p_filter_data.m_actor);
-				if(l_actor == m_actor)
+				if (l_actor == m_actor)
 				{
 					return physics::bc_query_hit_type::none;
 				}
-				
+
 				return physics::bc_query_hit_type::block;
 			}
 		);
 
 		auto& l_px_scene = m_scene->get_px_scene();
-		
+
 		{
 			physics::bc_scene_lock l_lock(&l_px_scene);
 
@@ -695,7 +739,21 @@ namespace black_cat
 			m_px_controller.move(l_displacement, p_clock, &l_px_controller_pre_filter);
 			m_position = m_px_controller.get_foot_position();
 		}
+	}
+
+	void bc_xbot_actor_controller::_update_px_position(const core::bc_vector3f& p_position)
+	{
+		auto& l_px_scene = m_scene->get_px_scene();
 		
+		{
+			physics::bc_scene_lock l_lock(&l_px_scene);
+
+			m_px_controller.set_foot_position(p_position - m_local_origin);
+		}
+	}
+	
+	void bc_xbot_actor_controller::_update_world_transform()
+	{
 		core::bc_matrix4f l_world_transform;
 		core::bc_matrix3f l_rotation;
 

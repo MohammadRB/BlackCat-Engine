@@ -41,6 +41,7 @@ namespace black_cat
 
 		void bc_network_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
+			const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();
 			const auto& l_data_dir_param = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_network_data_dir);
 			const auto* l_network_entity_name_param = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_network_entity_name);
 			
@@ -55,6 +56,17 @@ namespace black_cat
 			else if(l_data_dir_param == "replicate_sync_from_client")
 			{
 				m_data_dir = bc_actor_network_data_dir::replicate_sync_from_client;
+			}
+			else if(l_data_dir_param == "replicate_sync_to_server_client")
+			{
+				if(l_network_type == bc_network_type::server)
+				{
+					m_data_dir = bc_actor_network_data_dir::replicate_sync_from_client;
+				}
+				else
+				{
+					m_data_dir = bc_actor_network_data_dir::replicate_sync;
+				}
 			}
 			else
 			{
@@ -126,6 +138,11 @@ namespace black_cat
 					{
 						p_context.m_game_system.get_network_system().send_message(bc_actor_replicate_network_message(p_context.m_actor));
 					}
+					else if (m_id == invalid_id && (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client))
+					{
+						// we should remove network actors if they are not loaded through network, because they will be replicated by the remote host
+						l_scene_add_event->get_scene().remove_actor(p_context.m_actor);
+					}
 					else if (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
 					{
 						p_context.m_actor.add_event(bc_network_replicate_actor_event(m_data_dir));
@@ -139,7 +156,7 @@ namespace black_cat
 					}
 					else if (m_id == invalid_id && (m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate))
 					{
-						// we should remove network actors if they are not loaded through network, because they will be replicated by the server
+						// we should remove network actors if they are not loaded through network, because they will be replicated by the remote host
 						l_scene_add_event->get_scene().remove_actor(p_context.m_actor);
 					}
 					else if (m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate)

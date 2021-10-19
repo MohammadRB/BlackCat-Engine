@@ -452,5 +452,14 @@
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcLoggerOutputStream.cpp">
       <Filter>Core\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector2f.cpp">
+      <Filter>Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector3f.cpp">
+      <Filter>Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector4f.cpp">
+      <Filter>Core\Math</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

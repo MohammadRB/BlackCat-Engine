@@ -35,6 +35,11 @@ namespace black_cat
 			virtual void update_replicated_instance(const bc_actor_component_update_content& p_context) = 0;
 
 		protected:
+			bc_network_component& get_network_component() const noexcept;
+
+			bc_actor_replication_side get_replication_side() const noexcept;
+		
+		private:
 			bc_network_component* m_network_component {nullptr};
 			bc_actor_replication_side m_replication_side {bc_actor_replication_side::origin};
 		};
@@ -103,6 +108,16 @@ namespace black_cat
 			{
 				update_replicated_instance(p_context);
 			}
+		}
+
+		inline bc_network_component& bc_actor_network_controller::get_network_component() const noexcept
+		{
+			return *m_network_component;
+		}
+
+		inline bc_actor_replication_side bc_actor_network_controller::get_replication_side() const noexcept
+		{
+			return m_replication_side;
 		}
 	}	
 }

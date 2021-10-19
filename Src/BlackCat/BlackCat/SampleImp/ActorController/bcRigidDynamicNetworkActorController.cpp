@@ -12,11 +12,6 @@
 
 namespace black_cat
 {
-	core::bc_logger_output_stream& operator<<(core::bc_logger_output_stream& p_stream, const core::bc_vector3f& p_vector)
-	{
-		return p_stream << p_vector.x << " " << p_vector.y << " " << p_vector.z;
-	}
-	
 	void bc_rigid_dynamic_network_actor_controller::load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context)
 	{
 		//core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "load origin: " << core::bc_lend;
@@ -27,14 +22,8 @@ namespace black_cat
 		json_parse::bc_load(p_context.m_parameters, "pos", m_network_position);
 		json_parse::bc_load(p_context.m_parameters, "rot", m_network_euler_rotation);
 
-		m_network_component->add_extrapolating_value("pos", m_network_position);
-		m_network_component->add_extrapolating_value("rot", m_network_euler_rotation);
-
-		// Advance properties based on extrapolated values
-		/*const auto l_extrapolated_pos = m_network_component->get_extrapolated_value("pos").second;
-		const auto l_extrapolated_rot = m_network_component->get_extrapolated_value("rot").second;
-		m_network_position += l_extrapolated_pos;
-		m_network_euler_rotation += l_extrapolated_rot;*/
+		get_network_component().add_extrapolating_value("pos", m_network_position);
+		get_network_component().add_extrapolating_value("rot", m_network_euler_rotation);
 
 		//core::bc_log(core::bc_log_type::debug) << "load pos: " << m_network_position.x << " " << m_network_position.y << " " << m_network_position.z << core::bc_lend;
 
@@ -82,19 +71,19 @@ namespace black_cat
 			return;
 		}
 
-		const auto l_extrapolated_pos = m_network_component->get_extrapolated_value("pos", p_context.m_clock).second;
-		//const auto l_extrapolated_rot = m_network_component->get_extrapolated_value("rot", p_context.m_clock).second;
-		m_network_position += l_extrapolated_pos;
+		//const auto l_extrapolated_pos = get_network_component().get_extrapolated_value("pos", p_context.m_clock).second;
+		//const auto l_extrapolated_rot = get_network_component().get_extrapolated_value("rot", p_context.m_clock).second;
+		//m_network_position += l_extrapolated_pos;
 		//m_network_euler_rotation += l_extrapolated_rot;
 
-		/*if(l_extrapolated_pos.magnitude() > 0.0)
-		{
-			core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "update extrapolated position: " << l_extrapolated_pos << core::bc_lend;
-		}*/
-		
-		auto l_transform = core::bc_matrix4f::identity();
-		l_transform.set_translation(m_network_position);
-		l_transform.set_rotation(bc_matrix3f_rotation_zyx(m_network_euler_rotation));
+		///*if(l_extrapolated_pos.magnitude() > 0.0)
+		//{
+		//	core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "update extrapolated position: " << l_extrapolated_pos << core::bc_lend;
+		//}*/
+		//
+		//auto l_transform = core::bc_matrix4f::identity();
+		//l_transform.set_translation(m_network_position);
+		//l_transform.set_rotation(bc_matrix3f_rotation_zyx(m_network_euler_rotation));
 
 		//p_context.m_actor.add_event(game::bc_world_transform_actor_event(l_transform, game::bc_transform_event_type::network));
 		//p_context.m_actor.mark_for_double_update();

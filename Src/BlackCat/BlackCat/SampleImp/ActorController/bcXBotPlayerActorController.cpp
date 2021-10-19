@@ -32,15 +32,6 @@ namespace black_cat
 		m_walk_pressed(false),
 		m_rifle_name(nullptr)
 	{
-		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
-		m_key_listener_handle = l_event_manager->register_event_listener<platform::bc_app_event_key>
-		(
-			core::bc_event_manager::delegate_type(*this, &bc_xbot_player_actor_controller::_on_event)
-		);
-		m_pointing_listener_handle = l_event_manager->register_event_listener<platform::bc_app_event_pointing>
-		(
-			core::bc_event_manager::delegate_type(*this, &bc_xbot_player_actor_controller::_on_event)
-		);
 	}
 
 	bc_xbot_player_actor_controller::bc_xbot_player_actor_controller(bc_xbot_player_actor_controller&& p_other) noexcept
@@ -79,8 +70,22 @@ namespace black_cat
 	{
 		bc_xbot_actor_controller::initialize(p_context);
 		m_input_system = &p_context.m_game_system.get_input_system();
-
 		m_rifle_name = p_context.m_parameters.get_value_throw<core::bc_string>("rifle_name").c_str();
+
+		if(get_replication_side() == game::bc_actor_replication_side::replicated)
+		{
+			return;
+		}
+
+		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
+		m_key_listener_handle = l_event_manager->register_event_listener<platform::bc_app_event_key>
+		(
+			core::bc_event_manager::delegate_type(*this, &bc_xbot_player_actor_controller::_on_event)
+		);
+		m_pointing_listener_handle = l_event_manager->register_event_listener<platform::bc_app_event_pointing>
+		(
+			core::bc_event_manager::delegate_type(*this, &bc_xbot_player_actor_controller::_on_event)
+		);
 	}
 
 	void bc_xbot_player_actor_controller::load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context)
@@ -95,9 +100,20 @@ namespace black_cat
 	{
 		const auto l_velocity = get_velocity();
 		json_parse::bc_write(p_context.m_parameters, "pos", get_position());
-		json_parse::bc_write(p_context.m_parameters, "lk_dir", core::bc_vector4f(get_look_direction(), l_velocity.m_look_side));
-		json_parse::bc_write(p_context.m_parameters, "vlc", core::bc_vector4f(l_velocity.m_forward_velocity, l_velocity.m_backward_velocity, l_velocity.m_right_velocity, l_velocity.m_left_velocity));
-		json_parse::bc_write(p_context.m_parameters, "vlc1", core::bc_vector2f(l_velocity.m_look_velocity, l_velocity.m_walk_velocity));
+		json_parse::bc_write(p_context.m_parameters, "lk_dir", get_look_direction());
+		p_context.m_parameters.add("lk_sd", core::bc_any(l_velocity.m_look_side));
+		p_context.m_parameters.add
+		(
+			"keys", 
+			core::bc_any(core::bc_vector<core::bc_any>
+			({
+				core::bc_any(l_velocity.m_forward_velocity > 0.f),
+				core::bc_any(l_velocity.m_backward_velocity > 0.f),
+				core::bc_any(l_velocity.m_right_velocity > 0.f),
+				core::bc_any(l_velocity.m_left_velocity > 0.f),
+				core::bc_any(l_velocity.m_walk_velocity > 0.f),
+			}))
+		);
 	}
 	
 	void bc_xbot_player_actor_controller::write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context)
@@ -108,6 +124,11 @@ namespace black_cat
 	{
 		bc_xbot_actor_controller::added_to_scene(p_context, p_scene);
 
+		if(get_replication_side() == game::bc_actor_replication_side::replicated)
+		{
+			return;
+		}
+		
 		auto* l_current_camera = m_input_system->get_camera();
 		auto l_camera = core::bc_make_unique<game::bc_chasing_camera>(game::bc_chasing_camera
 		(
@@ -150,6 +171,11 @@ namespace black_cat
 	void bc_xbot_player_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		bc_xbot_actor_controller::removed_from_scene(p_context, p_scene);
+
+		if (get_replication_side() == game::bc_actor_replication_side::replicated)
+		{
+			return;
+		}
 		
 		m_input_system->remove_camera(m_camera);
 		m_camera = nullptr;

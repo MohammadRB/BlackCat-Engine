@@ -54,7 +54,13 @@ namespace black_cat
 		const core_platform::bc_clock::update_param& m_clock;
 		core::bc_vector3f m_position;
 		core::bc_vector3f m_look_direction;
-		bc_xbot_velocity m_velocity;
+		bcINT32 m_look_side;
+		bcFLOAT m_look_velocity;
+		bool m_forward_pressed;
+		bool m_backward_pressed;
+		bool m_right_pressed;
+		bool m_left_pressed;
+		bool m_walk_pressed;
 	};
 	
 	class BC_DLL bc_xbot_actor_controller : public game::bc_actor_network_controller, protected physics::bci_ccontroller_hit_callback
@@ -139,7 +145,11 @@ namespace black_cat
 			core::bc_shared_ptr<game::bc_sampling_animation_job>* p_running_sample_job,
 			core::bc_shared_ptr<game::bc_sampling_animation_job>* p_running_backward_sample_job);
 
-		void _update_world_transform(const core_platform::bc_clock::update_param& p_clock, const core::bc_vector3f& p_move_vector);
+		void _update_px_move(const core_platform::bc_clock::update_param& p_clock, const core::bc_vector3f& p_move_vector);
+		
+		void _update_px_position(const core::bc_vector3f& p_position);
+		
+		void _update_world_transform();
 
 		void _update_weapon_transform();
 

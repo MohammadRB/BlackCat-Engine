@@ -36,5 +36,5 @@ namespace black_cat
 			str(bcL(""));
 			seekp(0, std::ios_base::beg);
 		}
-	}	
+	}
 }

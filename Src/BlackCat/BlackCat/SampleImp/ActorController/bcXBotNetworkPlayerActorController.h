@@ -11,11 +11,11 @@ namespace black_cat
 	class BC_DLL bc_xbot_network_player_actor_controller : public bc_xbot_actor_controller
 	{
 	public:
-		bc_xbot_network_player_actor_controller() noexcept = default;
+		bc_xbot_network_player_actor_controller() noexcept;
 
 		bc_xbot_network_player_actor_controller(bc_xbot_network_player_actor_controller&&) noexcept = default;
 
-		~bc_xbot_network_player_actor_controller() = default;
+		~bc_xbot_network_player_actor_controller() override = default;
 
 		bc_xbot_network_player_actor_controller& operator=(bc_xbot_network_player_actor_controller&&) noexcept = default;
 		
@@ -40,14 +40,15 @@ namespace black_cat
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 
 	private:
+		core::bc_velocity<bcFLOAT> m_look_velocity;
+		
 		core::bc_vector3f m_network_position;
 		core::bc_vector3f m_network_look_direction;
-		bcINT32 m_network_look_side{ 0 };
-		bcFLOAT m_network_look_velocity{ 0 };
-		bcFLOAT m_network_forward_velocity{ 0 };
-		bcFLOAT m_network_backward_velocity{ 0 };
-		bcFLOAT m_network_right_velocity{ 0 };
-		bcFLOAT m_network_left_velocity{ 0 };
-		bcFLOAT m_network_walk_velocity{ 0 };
+		bcINT32 m_network_look_side;
+		bool m_network_forward_pressed;
+		bool m_network_backward_pressed;
+		bool m_network_right_pressed;
+		bool m_network_left_pressed;
+		bool m_network_walk_pressed;
 	};
 }

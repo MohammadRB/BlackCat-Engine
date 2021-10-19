@@ -7,7 +7,9 @@ namespace black_cat
 {
 	namespace core
 	{
-		template< typename T >
+		class bc_logger_output_stream;
+		
+		template<typename T>
 		class bc_vector2
 		{
 		public:
@@ -62,39 +64,43 @@ namespace black_cat
 			T y;
 		};
 
-		using bc_vector2f = bc_vector2< bcFLOAT >;
-		using bc_vector2i = bc_vector2< bcINT32 >;
+		using bc_vector2f = bc_vector2<bcFLOAT>;
+		using bc_vector2i = bc_vector2<bcINT32>;
 
-		template< typename T >
-		bc_vector2< T >::bc_vector2() noexcept
+		BC_CORE_DLL bc_logger_output_stream& operator<<(bc_logger_output_stream& p_stream, const bc_vector2f& p_vector);
+		
+		BC_CORE_DLL bc_logger_output_stream& operator<<(bc_logger_output_stream& p_stream, const bc_vector2i& p_vector);
+		
+		template<typename T>
+		bc_vector2<T>::bc_vector2() noexcept
 			: x(0),
 			y(0)
 		{
 		}
 
-		template< typename T >
+		template<typename T>
 		bc_vector2<T>::bc_vector2(T p_number) noexcept
 			: x(p_number),
 			y(p_number)
 		{
 		}
 
-		template< typename T >
-		bc_vector2< T >::bc_vector2(T p_x, T p_y) noexcept
+		template<typename T>
+		bc_vector2<T>::bc_vector2(T p_x, T p_y) noexcept
 		{
 			x = p_x;
 			y = p_y;
 		}
 
-		template< typename T >
-		bc_vector2< T >::bc_vector2(const bc_vector2< T >& p_other) noexcept
+		template<typename T>
+		bc_vector2<T>::bc_vector2(const bc_vector2<T>& p_other) noexcept
 		{
 			x = p_other.x;
 			y = p_other.y;
 		}
 
-		template< typename T >
-		bc_vector2< T >& bc_vector2< T >::operator=(const bc_vector2& p_other) noexcept
+		template<typename T>
+		bc_vector2<T>& bc_vector2<T>::operator=(const bc_vector2& p_other) noexcept
 		{
 			x = p_other.x;
 			y = p_other.y;
@@ -102,18 +108,18 @@ namespace black_cat
 			return (*this);
 		}
 
-		template< typename T >
-		void bc_vector2< T >::clamp() noexcept
+		template<typename T>
+		void bc_vector2<T>::clamp() noexcept
 		{
-			if (x > 1.0f) x = 1.0f;
-			if (x < 0.0f) x = 0.0f;
+			if (x> 1.0f) x = 1.0f;
+			if (x <0.0f) x = 0.0f;
 
-			if (y > 1.0f) y = 1.0f;
-			if (y < 0.0f) y = 0.0f;
+			if (y> 1.0f) y = 1.0f;
+			if (y <0.0f) y = 0.0f;
 		}
 
-		template< typename T >
-		void bc_vector2< T >::normalize() noexcept
+		template<typename T>
+		void bc_vector2<T>::normalize() noexcept
 		{
 			T l_inv_mag = (1.0f / magnitude());
 
@@ -121,8 +127,8 @@ namespace black_cat
 			y *= l_inv_mag;
 		}
 
-		template< typename T >
-		bcFLOAT bc_vector2< T >::magnitude() const noexcept
+		template<typename T>
+		bcFLOAT bc_vector2<T>::magnitude() const noexcept
 		{
 			bcFLOAT l_length = 0.0f;
 
@@ -132,15 +138,15 @@ namespace black_cat
 			return std::sqrtf(l_length);
 		}
 
-		template< typename T >
-		void bc_vector2< T >::make_zero() noexcept
+		template<typename T>
+		void bc_vector2<T>::make_zero() noexcept
 		{
 			x = 0.0f;
 			y = 0.0f;
 		}
 
-		template< typename T >
-		T bc_vector2< T >::operator[](int p_pos) const noexcept
+		template<typename T>
+		T bc_vector2<T>::operator[](int p_pos) const noexcept
 		{
 			if (p_pos == 0)
 			{
@@ -150,8 +156,8 @@ namespace black_cat
 			return y;
 		}
 
-		template< typename T >
-		T& bc_vector2< T >::operator[](int p_pos) noexcept
+		template<typename T>
+		T& bc_vector2<T>::operator[](int p_pos) noexcept
 		{
 			if (p_pos == 0)
 			{
@@ -161,14 +167,14 @@ namespace black_cat
 			return y;
 		}
 
-		template< typename T >
-		bool bc_vector2< T >::operator==(const bc_vector2< T >& p_other) const noexcept
+		template<typename T>
+		bool bc_vector2<T>::operator==(const bc_vector2<T>& p_other) const noexcept
 		{
-			if ((x - p_other.x) * (x - p_other.x) > 0.01f)
+			if ((x - p_other.x) * (x - p_other.x)> 0.01f)
 			{
 				return false;
 			}
-			if ((y - p_other.y) * (y - p_other.y) > 0.01f)
+			if ((y - p_other.y) * (y - p_other.y)> 0.01f)
 			{
 				return false;
 			}
@@ -176,16 +182,16 @@ namespace black_cat
 			return true;
 		}
 
-		template< typename T >
-		bool bc_vector2< T >::operator!=(const bc_vector2< T >& p_other) const noexcept
+		template<typename T>
+		bool bc_vector2<T>::operator!=(const bc_vector2<T>& p_other) const noexcept
 		{
 			return !(*this == p_other);
 		}
 
-		template< typename T >
-		bc_vector2< T > bc_vector2< T >::operator+(const bc_vector2< T >& p_other) const noexcept
+		template<typename T>
+		bc_vector2<T> bc_vector2<T>::operator+(const bc_vector2<T>& p_other) const noexcept
 		{
-			bc_vector2< T > l_sum;
+			bc_vector2<T> l_sum;
 
 			l_sum.x = x + p_other.x;
 			l_sum.y = y + p_other.y;
@@ -193,10 +199,10 @@ namespace black_cat
 			return l_sum;
 		}
 
-		template< typename T >
-		bc_vector2< T > bc_vector2< T >::operator-(const bc_vector2< T >& p_other) const noexcept
+		template<typename T>
+		bc_vector2<T> bc_vector2<T>::operator-(const bc_vector2<T>& p_other) const noexcept
 		{
-			bc_vector2< T > l_diff;
+			bc_vector2<T> l_diff;
 
 			l_diff.x = x - p_other.x;
 			l_diff.y = y - p_other.y;
@@ -204,10 +210,10 @@ namespace black_cat
 			return l_diff;
 		}
 
-		template< typename T >
-		bc_vector2< T > bc_vector2< T >::operator*(const bc_vector2< T >& p_other) const noexcept
+		template<typename T>
+		bc_vector2<T> bc_vector2<T>::operator*(const bc_vector2<T>& p_other) const noexcept
 		{
-			bc_vector2< T > l_prod;
+			bc_vector2<T> l_prod;
 
 			l_prod.x = x * p_other.x;
 			l_prod.y = y * p_other.y;
@@ -215,10 +221,10 @@ namespace black_cat
 			return l_prod;
 		}
 
-		template< typename T >
-		bc_vector2< T > bc_vector2< T >::operator*(T p_scalar) const noexcept
+		template<typename T>
+		bc_vector2<T> bc_vector2<T>::operator*(T p_scalar) const noexcept
 		{
-			bc_vector2< T > l_prod;
+			bc_vector2<T> l_prod;
 
 			l_prod.x = x * p_scalar;
 			l_prod.y = y * p_scalar;
@@ -226,10 +232,10 @@ namespace black_cat
 			return l_prod;
 		}
 
-		template< typename T >
-		bc_vector2< T > bc_vector2< T >::operator/(T p_scalar) const noexcept
+		template<typename T>
+		bc_vector2<T> bc_vector2<T>::operator/(T p_scalar) const noexcept
 		{
-			bc_vector2< T > l_quot;
+			bc_vector2<T> l_quot;
 			if (p_scalar != 0.0f)
 			{
 				bcFLOAT l_inv_scalar = 1.0f / p_scalar;
@@ -244,10 +250,10 @@ namespace black_cat
 			return l_quot;
 		}
 
-		template< typename T >
-		bc_vector2< T > bc_vector2< T >::operator-() const noexcept
+		template<typename T>
+		bc_vector2<T> bc_vector2<T>::operator-() const noexcept
 		{
-			bc_vector2< T > l_neg;
+			bc_vector2<T> l_neg;
 
 			l_neg.x = -x;
 			l_neg.y = -y;
@@ -255,8 +261,8 @@ namespace black_cat
 			return l_neg;
 		}
 
-		template< typename T >
-		bc_vector2< T >& bc_vector2< T >::operator+=(const bc_vector2& p_other) noexcept
+		template<typename T>
+		bc_vector2<T>& bc_vector2<T>::operator+=(const bc_vector2& p_other) noexcept
 		{
 			x += p_other.x;
 			y += p_other.y;
@@ -264,8 +270,8 @@ namespace black_cat
 			return *this;
 		}
 
-		template< typename T >
-		bc_vector2< T >& bc_vector2< T >::operator-=(const bc_vector2& p_other) noexcept
+		template<typename T>
+		bc_vector2<T>& bc_vector2<T>::operator-=(const bc_vector2& p_other) noexcept
 		{
 			x -= p_other.x;
 			y -= p_other.y;
@@ -273,8 +279,8 @@ namespace black_cat
 			return *this;
 		}
 
-		template< typename T >
-		bc_vector2< T >& bc_vector2< T >::operator*=(T p_scalar) noexcept
+		template<typename T>
+		bc_vector2<T>& bc_vector2<T>::operator*=(T p_scalar) noexcept
 		{
 			x *= p_scalar;
 			y *= p_scalar;
@@ -282,8 +288,8 @@ namespace black_cat
 			return *this;
 		}
 
-		template< typename T >
-		bc_vector2< T >& bc_vector2< T >::operator/=(T p_scalar) noexcept
+		template<typename T>
+		bc_vector2<T>& bc_vector2<T>::operator/=(T p_scalar) noexcept
 		{
 			if (p_scalar != 0.0f)
 			{

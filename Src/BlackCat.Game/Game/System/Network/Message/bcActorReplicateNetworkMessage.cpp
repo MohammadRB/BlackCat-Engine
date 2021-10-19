@@ -74,7 +74,7 @@ namespace black_cat
 		{
 			p_context.m_params.reserve(10);
 
-			const bcCHAR* l_entity_name;
+			/*const bcCHAR* l_entity_name;
 
 			if(p_context.m_visitor.get_network_type() == bc_network_type::server)
 			{
@@ -85,8 +85,10 @@ namespace black_cat
 			{
 				const auto* l_mediate_component = m_actor.get_component<bc_mediate_component>();
 				l_entity_name = l_mediate_component->get_entity_name();
-			}
-			
+			}*/
+
+			const auto* l_network_component = m_actor.get_component<bc_network_component>();
+			const bcCHAR* l_entity_name = l_network_component->get_network_entity_name();
 			p_context.m_params.add("ent", core::bc_any(core::bc_string(l_entity_name)));
 
 			core::bc_vector_frame<bci_actor_component*> l_components(10);

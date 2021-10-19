@@ -79,7 +79,20 @@
           "name": "network",
           "parameters": {
             "data_dir": "replicate_sync_from_client",
-            "entity_name": "box_server"
+            "entity_name": "box_client_replicated"
+          }
+        }
+      ]
+    },
+    {
+      "name": "box_client_replicated",
+      "inherit": "box_client",
+      "controller": "rigid_dynamic_network",
+      "components": [
+        {
+          "name": "network",
+          "parameters": {
+            "data_dir": "replicate_sync_to_server_client"
           }
         }
       ]
@@ -280,7 +293,7 @@
         {
           "name": "network",
           "parameters": {
-            "data_dir": "replicate_sync"
+            "data_dir": "replicate_sync_to_server_client"
           }
         }
       ]
