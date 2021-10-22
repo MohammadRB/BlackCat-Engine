@@ -3,8 +3,9 @@
 #pragma once
 
 #include "Core/Messaging/Event/bcEventManager.h"
-#include "Core/Utility/bcValueSampler.h"
 #include "Core/Utility/bcInitializable.h"
+#include "Core/Utility/bcValueSampler.h"
+#include "Core/Utility/bcStopWatch.h"
 #include "PlatformImp/Application/bcApplication.h"
 #include "Game/bcExport.h"
 #include "Game/Application/bcIRenderApplicationOutputWindow.h"
@@ -29,9 +30,9 @@ namespace black_cat
 			
 			const bci_render_application_output_window* get_output_window() const noexcept;
 
-			const core_platform::bc_clock& get_clock() const noexcept;
-
 			bcFLOAT get_fps() const noexcept;
+
+			bcFLOAT get_ft() const noexcept;
 			
 			/**
 			 * \brief Specify an upper range for application fps or use a value lower than 0 for unlimited fps.
@@ -152,10 +153,11 @@ namespace black_cat
 			core::bc_unique_ptr<platform::bc_application> m_app;
 			bci_render_application_output_window* m_output_window;
 			core::bc_unique_ptr<core_platform::bc_clock> m_clock;
-			bcUINT32 m_min_update_rate;
-			bcINT32 m_render_rate;
+			core::bc_stop_watch m_frame_watch;
 			core::bc_value_sampler<core_platform::bc_clock::small_delta_time, 64> m_fps_sampler;
 			core_platform::bc_clock::small_delta_time m_fps;
+			bcUINT32 m_min_update_rate;
+			bcINT32 m_render_rate;
 
 			bool m_is_terminated;
 			bool m_paused;

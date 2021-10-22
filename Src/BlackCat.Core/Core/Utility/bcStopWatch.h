@@ -28,7 +28,7 @@ namespace black_cat
 
 			void stop() noexcept;
 
-			void restart() noexcept;
+			core_platform::bc_clock::small_delta_time restart() noexcept;
 
 			core_platform::bc_clock::small_delta_time total_elapsed() const noexcept;
 			
@@ -65,12 +65,15 @@ namespace black_cat
 			m_elapsed_milliseconds += l_elapsed_clocks / m_clock_per_milliseconds;
 		}
 
-		inline void bc_stop_watch::restart() noexcept
+		inline core_platform::bc_clock::small_delta_time bc_stop_watch::restart() noexcept
 		{
-			m_sampler.add_sample(m_elapsed_milliseconds);
+			const auto l_elapsed_milliseconds = m_elapsed_milliseconds;
 			
+			m_sampler.add_sample(m_elapsed_milliseconds);
 			m_start_clock = 0;
 			m_elapsed_milliseconds = 0;
+
+			return l_elapsed_milliseconds;
 		}
 
 		inline core_platform::bc_clock::small_delta_time bc_stop_watch::total_elapsed() const noexcept

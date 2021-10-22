@@ -20,11 +20,12 @@ namespace black_cat
 		bc_network_component::bc_network_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
 			: bci_actor_component(p_actor_index, p_index),
 			m_id(bc_actor::invalid_id),
+			m_network_type(bc_network_type::not_started),
 			m_data_dir(bc_actor_network_data_dir::replicate),
+			m_sync_enabled(true),
 			m_network_entity_name(nullptr),
 			m_out_ping(std::numeric_limits<bc_network_rtt>::max()),
-			m_in_ping(std::numeric_limits<bc_network_rtt>::max()),
-			m_sync_enabled(true)
+			m_in_ping(std::numeric_limits<bc_network_rtt>::max())
 		{
 		}
 
@@ -41,7 +42,7 @@ namespace black_cat
 
 		void bc_network_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();
+			m_network_type = p_context.m_game_system.get_network_system().get_network_type();
 			const auto& l_data_dir_param = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_network_data_dir);
 			const auto* l_network_entity_name_param = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_network_entity_name);
 			
@@ -59,7 +60,7 @@ namespace black_cat
 			}
 			else if(l_data_dir_param == "replicate_sync_to_server_client")
 			{
-				if(l_network_type == bc_network_type::server)
+				if(m_network_type == bc_network_type::server)
 				{
 					m_data_dir = bc_actor_network_data_dir::replicate_sync_from_client;
 				}

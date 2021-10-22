@@ -179,7 +179,7 @@ namespace black_cat
 
 		inline bc_logger_output_stream& bc_logger_output_stream::operator<<(const bc_string& p_str)
 		{
-			output_stream::operator<<(p_str.c_str());
+			std::operator<<(*this, p_str.c_str());
 			return *this;
 		}
 

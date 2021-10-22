@@ -9,18 +9,18 @@ namespace black_cat
 	
 	namespace game
 	{
-		bc_global_config::bc_global_config(const bcECHAR* p_content_path, const bcECHAR* p_content_file_name)
+		bc_global_config::bc_global_config(const bcECHAR* p_content_path, const bcECHAR* p_config_file_name)
 			: bc_config_file()
 		{
-			const bcECHAR* l_content_file_extension = bcL(".json");
-			core::bc_estring_frame l_content_file_name(p_content_file_name);
-			if(!core::bc_string_ends_with(l_content_file_name.c_str(), l_content_file_name.size(), l_content_file_extension, 5))
+			const bcECHAR* l_config_file_extension = bcL(".json");
+			core::bc_estring_frame l_config_file_name(p_config_file_name);
+			if(!core::bc_string_ends_with(l_config_file_name.c_str(), l_config_file_name.size(), l_config_file_extension, 5))
 			{
-				l_content_file_name.append(l_content_file_extension);
+				l_config_file_name.append(l_config_file_extension);
 			}
 			
 			m_json = core::bc_make_unique<core::bc_json_document<bc_config_layout>>();
-			load(p_content_path, l_content_file_name.c_str());
+			load(p_content_path, l_config_file_name.c_str());
 
 			auto& l_json = *m_json;
 			if (!l_json->m_global_scale.has_value())
@@ -47,6 +47,7 @@ namespace black_cat
 			{
 				l_json->m_counter_values.new_entry().set("fps");
 				l_json->m_counter_values.new_entry().set("ping");
+				l_json->m_counter_values.new_entry().set("frame_time");
 				l_json->m_counter_values.new_entry().set("update_time");
 				l_json->m_counter_values.new_entry().set("render_time");
 				l_json->m_counter_values.new_entry().set("swap_time");

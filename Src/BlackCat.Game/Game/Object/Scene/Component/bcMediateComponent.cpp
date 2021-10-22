@@ -35,11 +35,6 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		void bc_mediate_component::set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller)
-		{
-			m_controller = std::move(p_controller);
-		}
-
 		void bc_mediate_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			m_scene = &p_context.m_scene;

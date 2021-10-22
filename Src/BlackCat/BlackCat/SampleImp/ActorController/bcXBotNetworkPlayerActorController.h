@@ -8,6 +8,11 @@
 
 namespace black_cat
 {
+	namespace game
+	{
+		class bc_network_system;
+	}
+	
 	class BC_DLL bc_xbot_network_player_actor_controller : public bc_xbot_actor_controller
 	{
 	public:
@@ -39,7 +44,14 @@ namespace black_cat
 		
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 
+		void attach_weapon(const bcCHAR* p_entity) noexcept;
+
+		void detach_weapon() noexcept;
+
+		void shoot_weapon() noexcept;
+		
 	private:
+		game::bc_network_system* m_network_system;
 		core::bc_velocity<bcFLOAT> m_look_velocity;
 		
 		core::bc_vector3f m_network_position;

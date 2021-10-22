@@ -36,9 +36,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\_bcLockFreeMemMng.h">
-      <Filter>Core\Concurrency</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.h">
       <Filter>Core\Concurrency</Filter>
     </ClInclude>

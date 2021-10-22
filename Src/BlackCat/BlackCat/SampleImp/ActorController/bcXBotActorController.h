@@ -116,12 +116,14 @@ namespace black_cat
 		bc_xbot_velocity get_velocity() const noexcept;
 		
 		bcFLOAT get_move_speed() const noexcept;
+
+		bc_xbot_weapon* get_weapon() noexcept;
 		
 		void attach_weapon(game::bc_actor& p_weapon) noexcept;
 
 		void detach_weapon() noexcept;
 
-		void shoot_weapon() noexcept;
+		bool shoot_weapon() noexcept;
 		
 		void on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit) override;
 
@@ -264,5 +266,10 @@ namespace black_cat
 	inline bcFLOAT bc_xbot_actor_controller::get_move_speed() const noexcept
 	{
 		return m_state_machine->m_state.m_move_amount;
+	}
+
+	inline bc_xbot_weapon* bc_xbot_actor_controller::get_weapon() noexcept
+	{
+		return m_weapon.get();
 	}
 }

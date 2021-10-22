@@ -161,6 +161,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\CoreTestPCH.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Container\bcConcurrentQueue.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Container\bcStateMachine.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\CoreTestPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

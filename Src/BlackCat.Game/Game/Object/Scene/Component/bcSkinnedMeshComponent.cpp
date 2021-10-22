@@ -16,6 +16,7 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/Object/Animation/bcAnimationManager.h"
+#include "Game/bcException.h"
 #include "Game/bcConstant.h"
 #include "Game/bcUtility.h"
 
@@ -65,6 +66,18 @@ namespace black_cat
 			}
 
 			return nullptr;
+		}
+
+		bc_skeleton_animation& bc_skinned_mesh_component::find_animation_throw(const bcCHAR* p_name) const
+		{
+			auto* l_animation = find_animation(p_name);
+			if(!l_animation)
+			{
+				const auto l_msg = core::bc_string_frame("animation not found: ") + p_name;
+				throw bc_key_not_found_exception(l_msg.c_str());
+			}
+
+			return *l_animation;
 		}
 
 		void bc_skinned_mesh_component::add_animation_job(bci_animation_job* p_animation_job) noexcept

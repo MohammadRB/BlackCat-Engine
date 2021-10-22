@@ -107,12 +107,16 @@ namespace black_cat
 				{
 					l_scene_task = l_scene->update_graph_async(p_clock);
 					l_scene_task1 = l_scene->update_bullets_async(p_clock);
-
-					l_particle_manager->update(p_clock);
-					l_decal_manager->update_decal_lifespans(p_clock);
 				}
 
 				l_network_task = l_network_system.update_async(p_clock);
+
+				if (l_scene)
+				{
+					l_particle_manager->update(p_clock);
+					l_decal_manager->update_decal_lifespans(p_clock);
+				}
+				
 				l_script_system.update(p_clock);
 				l_console->update(p_clock);
 

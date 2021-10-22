@@ -33,7 +33,7 @@ namespace black_cat
 				l_memblocks.push_back(std::make_pair(l_result, l_block));
 			}
 
-			for (auto i = l_alloc_count - 1; i >= 0; --i)
+			for (bcINT32 i = l_alloc_count - 1; i >= 0; --i)
 			{
 				auto& l_block = l_memblocks[i];
 				auto* l_pointer = static_cast<bcINT32*>(l_block.first);

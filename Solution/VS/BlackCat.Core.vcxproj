@@ -274,10 +274,6 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcStopWatch.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcTemplateMetaType.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryFixedSize.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\_bcLockFreeMemMng.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcConcurrentHashMap.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

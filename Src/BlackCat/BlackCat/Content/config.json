@@ -4,6 +4,7 @@
   "counter_values": [
     "fps",
     "ping",
+    "frame_time",
     "update_time",
     "render_time",
     "swap_time",

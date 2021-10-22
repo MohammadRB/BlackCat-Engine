@@ -189,6 +189,7 @@ namespace black_cat
 		m_render_watch.restart();
 
 		l_counter_value_manager->add_counter("fps", get_fps());
+		l_counter_value_manager->add_counter("frame_time", get_ft());
 		l_counter_value_manager->add_counter("update_time", m_update_watch.average_total_elapsed());
 		l_counter_value_manager->add_counter("render_time", m_render_watch.average_total_elapsed());
 

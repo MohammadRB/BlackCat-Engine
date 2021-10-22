@@ -58,10 +58,10 @@ namespace black_cat
 			m_app(nullptr),
 			m_output_window(nullptr),
 			m_clock(nullptr),
-			m_min_update_rate(0),
-			m_render_rate(0),
 			m_fps_sampler(0),
 			m_fps(0),
+			m_min_update_rate(0),
+			m_render_rate(0),
 			m_is_terminated(false),
 			m_paused(false),
 			m_termination_code(0)
@@ -79,16 +79,16 @@ namespace black_cat
 			return m_output_window;
 		}
 
-		const core_platform::bc_clock& bc_render_application::get_clock() const noexcept
-		{
-			return *m_clock;
-		}
-		
 		bcFLOAT bc_render_application::get_fps() const noexcept
 		{
 			return m_fps;
 		}
-		
+
+		bcFLOAT bc_render_application::get_ft() const noexcept
+		{
+			return m_frame_watch.average_total_elapsed();
+		}
+
 		void bc_render_application::set_fps(bcUINT32 p_fps)
 		{
 			if (p_fps > 0)
@@ -141,6 +141,11 @@ namespace black_cat
 						
 						while (p_state->m_signal.load(core_platform::bc_memory_order::acquire) != bc_render_loop_state::signal::swap)
 						{
+							if(p_state->m_terminate.load(core_platform::bc_memory_order::relaxed))
+							{
+								break;
+							}
+							
 							core_platform::bc_thread::current_thread_yield();
 						}
 						
@@ -156,40 +161,25 @@ namespace black_cat
 			
 			try
 			{
-				const core_platform::bc_clock::small_delta_time l_min_update_elapsed = 1000.0f / m_min_update_rate;
-				core_platform::bc_clock::small_delta_time l_sleep_time = 0;
-				core_platform::bc_clock::small_delta_time l_elapsed = 0;
-				core_platform::bc_clock::small_delta_time l_local_elapsed = 0;
-				core_platform::bc_clock::small_delta_time l_average_elapsed = 0;
+				const core_platform::bc_clock::small_delta_time l_min_update_elapsed = 1000.0f / static_cast<bcFLOAT>(m_min_update_rate);
 				core_platform::bc_clock::big_delta_time l_total_elapsed = 0;
-
+				core_platform::bc_clock::small_delta_time l_elapsed = 0;
+				core_platform::bc_clock::small_delta_time l_average_elapsed = 0;
+				core_platform::bc_clock::small_delta_time l_local_elapsed = 0;
+				core_platform::bc_clock::small_delta_time l_sleep_time_error = 0;
+				core::bc_stop_watch l_sleep_watch;
+				core::bc_stop_watch l_sleep_watch1;
+				
 				core::bc_log(core::bc_log_type::info) << "update loop started" << core::bc_lend;
 				
 				while (!m_is_terminated)
 				{
-					m_app->update();
-					if(m_output_window)
-					{
-						m_output_window->update();
-					}
-
-					if (m_paused)
-					{
-						const auto l_clock = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed, l_average_elapsed);
-						l_render_thread_state.m_clock = l_clock;
-						l_render_thread_state.m_signal.store(bc_render_loop_state::signal::pause, core_platform::bc_memory_order::release);
-
-						app_pause_idle(l_clock);
-
-						core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(l_pause_sleep_ms));
-						continue;
-					}
-
+					m_frame_watch.start();
 					m_clock->update();
-
+					
+					l_total_elapsed = m_clock->get_total_elapsed();
 					l_elapsed = m_clock->get_elapsed();
 					l_average_elapsed = m_fps_sampler.average_value();
-					l_total_elapsed = m_clock->get_total_elapsed();
 					const auto l_clock = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed, l_average_elapsed);
 
 #ifdef BC_DEBUG
@@ -198,6 +188,23 @@ namespace black_cat
 						l_elapsed = l_min_update_elapsed;
 					}
 #endif
+					
+					m_app->update();
+					if(m_output_window)
+					{
+						m_output_window->update();
+					}
+
+					if (m_paused)
+					{
+						l_render_thread_state.m_clock = l_clock;
+						l_render_thread_state.m_signal.store(bc_render_loop_state::signal::pause, core_platform::bc_memory_order::release);
+
+						app_pause_idle(l_clock);
+
+						core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(l_pause_sleep_ms));
+						continue;
+					}
 
 					l_render_thread_state.m_clock = l_clock;
 					l_render_thread_state.m_signal.store(bc_render_loop_state::signal::render, core_platform::bc_memory_order::release);
@@ -221,8 +228,6 @@ namespace black_cat
 
 					l_render_thread_state.m_signal.store(bc_render_loop_state::signal::swap, core_platform::bc_memory_order::release);
 
-					m_fps_sampler.add_sample(l_elapsed);
-					m_fps = 1000.0f / m_fps_sampler.average_value();
 					app_swap_frame(l_clock);
 
 					while (l_render_thread_state.m_signal.load(core_platform::bc_memory_order::acquire) != bc_render_loop_state::signal::ready)
@@ -233,19 +238,44 @@ namespace black_cat
 #ifdef BC_MEMORY_ENABLE
 					core::bc_memory_manager::get().end_of_frame();
 #endif
-					
+
+					m_frame_watch.stop();
+					const auto l_frame_elapsed = m_frame_watch.restart();
+					m_fps_sampler.add_sample(l_elapsed);
+					m_fps = 1000.0f / m_fps_sampler.average_value();
+
 					if (m_render_rate != -1) // Fixed render rate
 					{
-						const core_platform::bc_clock::small_delta_time l_render_rate_fixed_elapsed = 1000.0f / m_render_rate;
+						const core_platform::bc_clock::small_delta_time l_render_rate_fixed_elapsed = 1000.0f / static_cast<bcFLOAT>(m_render_rate);
 
-						if(l_elapsed - l_sleep_time < l_render_rate_fixed_elapsed)
+						const auto l_sleep_time = (l_render_rate_fixed_elapsed - l_frame_elapsed) - l_sleep_time_error;
+						if (l_sleep_time <= 0)
 						{
-							l_sleep_time = l_render_rate_fixed_elapsed - (l_elapsed - l_sleep_time);
-							core_platform::bc_thread::current_thread_sleep_for
-							(
-								std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(l_sleep_time))
-							);
+							continue;
 						}
+						
+						l_sleep_watch.start();
+						l_sleep_watch1.start();
+							
+						while(true)
+						{
+							core_platform::bc_thread::current_thread_yield_switch();
+							l_sleep_watch.stop();
+
+							const auto l_sleep_elapsed = l_sleep_watch.total_elapsed();
+							if(l_sleep_elapsed >= l_sleep_time)
+							{
+								break;
+							}
+
+							l_sleep_watch.start();
+						}
+						
+						l_sleep_watch1.stop();
+						
+						const auto l_sleep_elapsed = l_sleep_watch.restart();
+						const auto l_sleep_total_elapsed = l_sleep_watch1.restart();
+						l_sleep_time_error = l_sleep_total_elapsed - l_sleep_elapsed;
 					}
 				}
 			}

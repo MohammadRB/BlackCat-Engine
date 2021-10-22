@@ -58,8 +58,8 @@ namespace black_cat
 			m_port(p_other.m_port),
 			m_socket_is_listening(p_other.m_socket_is_listening),
 			m_socket(std::move(p_other.m_socket)),
-			m_clients(std::move(p_other.m_clients)),
 			m_hook(p_other.m_hook),
+			m_clients(std::move(p_other.m_clients)),
 			m_actor_network_id_counter(p_other.m_actor_network_id_counter.load()),
 			m_network_actors(std::move(p_other.m_network_actors)),
 			m_memory_buffer(std::move(p_other.m_memory_buffer)),
@@ -79,8 +79,8 @@ namespace black_cat
 			m_port = p_other.m_port;
 			m_socket_is_listening = p_other.m_socket_is_listening;
 			m_socket = std::move(p_other.m_socket);
-			m_clients = std::move(p_other.m_clients);
 			m_hook = p_other.m_hook;
+			m_clients = std::move(p_other.m_clients);
 			m_actor_network_id_counter.store(p_other.m_actor_network_id_counter.load());
 			m_network_actors = std::move(p_other.m_network_actors);
 			m_memory_buffer = std::move(p_other.m_memory_buffer);
@@ -148,7 +148,7 @@ namespace black_cat
 		void bc_network_server_manager::send_message(bc_network_message_ptr p_message)
 		{
 			{
-				core::bc_mutex_test_guard l_lock(m_clients_lock);
+				core_platform::bc_shared_mutex_shared_guard l_lock(m_clients_lock);
 
 				_add_message_to_clients(std::move(p_message));
 			}
@@ -163,35 +163,31 @@ namespace black_cat
 				return;
 			}
 
+			// Because during message execution new clients might be added we must not use range for loop
+			for (auto l_ite = 0U; l_ite < m_clients.size(); ++l_ite)
 			{
-				core::bc_mutex_test_guard l_lock(m_clients_lock);
+				auto& l_client = m_clients[l_ite];
 
-				// Because during message execution new clients might be added we must not use range for loop
-				for (auto l_ite = 0U; l_ite < m_clients.size(); ++l_ite)
+				if (p_context.m_send_rtt_message)
 				{
-					auto& l_client = m_clients[l_ite];
-
-					if (p_context.m_send_rtt_message)
 					{
-						{
-							core_platform::bc_lock_guard<bc_network_server_manager_client> l_client_lock(l_client);
-							l_client.add_message(bc_make_network_message(bc_ping_network_message()));
-						}
-					}
-
-					const auto l_elapsed_since_last_sync = bc_current_packet_time() - l_client.get_last_sync_time();
-					const auto l_rtt_time = l_client.get_rtt_time() / 2;
-					if (l_elapsed_since_last_sync > l_rtt_time)
-					{
-						_send_to_client(p_context.m_clock, l_client);
-						bc_server_socket_state_machine::update(p_context.m_clock);
+						core_platform::bc_lock_guard<bc_network_server_manager_client> l_client_lock(l_client);
+						l_client.add_message(bc_make_network_message(bc_ping_network_message()));
 					}
 				}
 
-				while(_receive_from_clients())
+				const auto l_elapsed_since_last_sync = bc_current_packet_time() - l_client.get_last_sync_time();
+				const auto l_rtt_time = l_client.get_rtt_time() / 2;
+				if (l_elapsed_since_last_sync > l_rtt_time)
 				{
+					_send_to_client(p_context.m_clock, l_client);
 					bc_server_socket_state_machine::update(p_context.m_clock);
 				}
+			}
+
+			while(_receive_from_clients())
+			{
+				bc_server_socket_state_machine::update(p_context.m_clock);
 			}
 		}
 
@@ -229,37 +225,42 @@ namespace black_cat
 
 		bc_network_rtt bc_network_server_manager::get_rtt_time(const platform::bc_network_address& p_address) noexcept
 		{
-			// Clients lock is already acquired in the receive function 
 			auto* l_client = _find_client(p_address);
 			return l_client->get_rtt_time();
 		}
 
 		void bc_network_server_manager::add_rtt_sample(const platform::bc_network_address& p_address, bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept
 		{
-			// Clients lock is already acquired in the receive function 
 			auto* l_client = _find_client(p_address);
-			l_client->add_rtt_time(p_rtt);
-			l_client->set_remote_rtt_time(p_remote_rtt);
 
-			const auto l_rtt = l_client->get_rtt_time() / 2;
-			const auto l_remote_rtt = l_client->get_remote_rtt_time() / 2;
-			for (auto& l_actor : l_client->get_replicated_actors())
 			{
-				auto* l_network_component = l_actor.get_component<bc_network_component>();
-				l_network_component->set_ping(l_rtt, l_remote_rtt);
+				core_platform::bc_lock_guard l_client_lock(*l_client);
+
+				l_client->add_rtt_time(p_rtt);
+				l_client->set_remote_rtt_time(p_remote_rtt);
+
+				const auto l_rtt = l_client->get_rtt_time() / 2;
+				const auto l_remote_rtt = l_client->get_remote_rtt_time() / 2;
+				for (auto& l_actor : l_client->get_replicated_actors())
+				{
+					auto* l_network_component = l_actor.get_component<bc_network_component>();
+					l_network_component->set_ping(l_rtt, l_remote_rtt);
+				}
 			}
 		}
 
 		void bc_network_server_manager::client_connected(const platform::bc_network_address& p_address)
 		{
-			// Clients lock is acquired during update function
-			m_clients.push_back(bc_network_server_manager_client(p_address));
-			
-			if(!m_scene_name.empty())
 			{
-				auto& l_client = m_clients.back();
-				l_client.add_message(bc_make_network_message(bc_scene_change_network_message(m_scene_name)));
-				l_client.set_ready_for_sync(false);
+				core_platform::bc_shared_mutex_guard l_clients_lock(m_clients_lock);
+				m_clients.push_back(bc_network_server_manager_client(p_address));
+
+				if (!m_scene_name.empty())
+				{
+					auto& l_client = m_clients.back();
+					l_client.add_message(bc_make_network_message(bc_scene_change_network_message(m_scene_name)));
+					l_client.set_ready_for_sync(false);
+				}
 			}
 
 			core::bc_log(core::bc_log_type::info) << "new client connected " << p_address << core::bc_lend;
@@ -268,34 +269,48 @@ namespace black_cat
 
 		void bc_network_server_manager::client_disconnected(const platform::bc_network_address& p_address)
 		{
-			// Clients lock is already acquired in the receive function
-			const auto l_client_ite = std::find_if
-			(
-				std::begin(m_clients),
-				std::end(m_clients),
-				[&](const bc_network_server_manager_client& p_client)
-				{
-					return p_client.get_address() == p_address;
-				}
-			);
-			if (l_client_ite == std::end(m_clients))
+			auto l_client_ite = std::end(m_clients);
+			
 			{
-				core::bc_log(core::bc_log_type::error) << "unable to find disconnected client" << core::bc_lend;
-				return;
+				core_platform::bc_shared_mutex_shared_guard l_lock(m_clients_lock);
+
+				l_client_ite = std::find_if
+				(
+					std::begin(m_clients),
+					std::end(m_clients),
+					[&](const bc_network_server_manager_client& p_client)
+					{
+						return p_client.get_address() == p_address;
+					}
+				);
+				if (l_client_ite == std::end(m_clients))
+				{
+					core::bc_log(core::bc_log_type::error) << "unable to find disconnected client" << core::bc_lend;
+					return;
+				}
 			}
 
-			// Make a copy of actors because internal array will be modified in 'remove_actor'
-			core::bc_vector_frame<bc_actor> l_client_replicated_actors
-			(
-				std::begin(l_client_ite->get_replicated_actors()), 
-				std::end(l_client_ite->get_replicated_actors())
-			);
+			core::bc_vector_frame<bc_actor> l_client_replicated_actors;
+			{
+				core_platform::bc_lock_guard l_client_lock(*l_client_ite);
+
+				// Make a copy of actors because internal array will be modified in 'remove_actor'
+				l_client_replicated_actors.assign
+				(
+					std::begin(l_client_ite->get_replicated_actors()),
+					std::end(l_client_ite->get_replicated_actors())
+				);
+			}
+			
 			for (auto& l_actor : l_client_replicated_actors)
 			{
 				remove_actor(p_address, l_actor);
 			}
-			
-			m_clients.erase(l_client_ite);
+
+			{
+				core_platform::bc_shared_mutex_guard l_lock(m_clients_lock);
+				m_clients.erase(l_client_ite);
+			}
 
 			core::bc_log(core::bc_log_type::info) << "client disconnected " << p_address << core::bc_lend;
 			m_hook->client_disconnected();
@@ -305,40 +320,46 @@ namespace black_cat
 		{
 			// Clients lock is already acquired in the receive function 
 			auto* l_client = _find_client(p_address);
-			auto l_messages = l_client->get_messages_waiting_acknowledgment();
-			const auto l_msg_ite = std::find_if
-			(
-				std::begin(l_messages),
-				std::end(l_messages),
-				[&](const bc_retry_message& p_msg)
-				{
-					return p_msg.m_message->get_id() == p_ack_id;
-				}
-			);
-
-			if (l_msg_ite == std::end(l_messages))
+			bc_network_message_ptr l_message;
+			
 			{
-				// It is possible multiple ack message arrive but only one of them will see original message
-				core::bc_log(core::bc_log_type::warning) << "no message was found with id " << p_ack_id << " to acknowledge" << core::bc_lend;
-				return;
+				core_platform::bc_lock_guard l_client_lock(*l_client);
+
+				auto l_messages = l_client->get_messages_waiting_acknowledgment();
+				const auto l_msg_ite = std::find_if
+				(
+					std::begin(l_messages),
+					std::end(l_messages),
+					[&](const bc_retry_message& p_msg)
+					{
+						return p_msg.m_message->get_id() == p_ack_id;
+					}
+				);
+
+				if (l_msg_ite == std::end(l_messages))
+				{
+					// It is possible multiple ack message arrive but only one of them will see original message
+					core::bc_log(core::bc_log_type::warning) << "no message was found with id " << p_ack_id << " to acknowledge" << core::bc_lend;
+					return;
+				}
+
+				l_message = l_msg_ite->m_message;
+				l_client->erase_message_waiting_acknowledgment(p_ack_id);
 			}
 
-			auto& l_message = *(*l_msg_ite).m_message;
-			l_message.acknowledge
+			l_message->acknowledge
 			(
-				bc_network_message_server_acknowledge_context{ *this, p_address, std::move(p_ack_data)}
+				bc_network_message_server_acknowledge_context{ *this, p_address, std::move(p_ack_data) }
 			);
-
-			l_client->erase_message_waiting_acknowledgment(p_ack_id);
 		}
 
 		void bc_network_server_manager::replicate_scene(const platform::bc_network_address& p_address)
 		{
-			// Clients lock is acquired during update function
 			auto* l_client = _find_client(p_address);
 
 			{
-				core_platform::bc_mutex_guard l_lock(m_actors_lock);
+				core_platform::bc_mutex_guard l_actors_lock(m_actors_lock);
+				core_platform::bc_lock_guard l_client_lock(*l_client);
 
 				l_client->set_ready_for_sync(true);
 				
@@ -368,18 +389,20 @@ namespace black_cat
 
 			l_network_component->set_network_id(l_actor_network_id);
 
-			// Clients lock is acquired during update function
 			auto* l_client = _find_client(p_address);
-			// Client lock is acquired in receive function
-			l_client->add_replicated_actor(p_actor);
+			{
+				core_platform::bc_lock_guard l_lock(*l_client);
+				l_client->add_replicated_actor(p_actor);
+			}
 
-			_add_message_to_clients(bc_make_network_message(bc_actor_replicate_network_message(p_actor)), &p_address);
+			{
+				core_platform::bc_shared_mutex_shared_guard l_clients_lock(m_clients_lock);
+				_add_message_to_clients(bc_make_network_message(bc_actor_replicate_network_message(p_actor)), &p_address);
+			}
 		}
 
 		void bc_network_server_manager::remove_actor(const platform::bc_network_address& p_address, bc_actor& p_actor)
 		{
-			// Clients lock is already acquired in the receive function
-			auto* l_client = _find_client(p_address);
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
 			const auto l_actor_network_id = l_network_component->get_network_id();
 
@@ -396,9 +419,16 @@ namespace black_cat
 				m_network_actors.erase(l_ite);
 			}
 
-			// Client lock is acquired in receive function
-			l_client->erase_replicated_actor(p_actor);
-			_add_message_to_clients(bc_make_network_message(bc_actor_remove_network_message(l_actor_network_id)), &p_address);
+			auto* l_client = _find_client(p_address);
+			{
+				core_platform::bc_lock_guard l_lock(*l_client);
+				l_client->erase_replicated_actor(p_actor);
+			}
+
+			{
+				core_platform::bc_shared_mutex_shared_guard l_clients_lock(m_clients_lock);
+				_add_message_to_clients(bc_make_network_message(bc_actor_remove_network_message(l_actor_network_id)), &p_address);
+			}
 
 			m_game_system->get_scene()->remove_actor(p_actor);
 		}
@@ -427,7 +457,7 @@ namespace black_cat
 
 		void bc_network_server_manager::_add_message_to_clients(bc_network_message_ptr p_message, const platform::bc_network_address* p_exclude_client)
 		{
-			// Clients lock is acquired during update function or by the caller
+			// Clients lock should be acquired by the caller
 			for (auto& l_client : m_clients)
 			{
 				if (p_exclude_client && *p_exclude_client == l_client.get_address())
@@ -471,8 +501,10 @@ namespace black_cat
 
 		void bc_network_server_manager::_send_to_client(const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client)
 		{
+			core::bc_const_span<bc_network_message_ptr> l_client_messages;
+			
 			{
-				core_platform::bc_lock_guard<bc_network_server_manager_client> l_client_lock(p_client);
+				core_platform::bc_lock_guard l_client_lock(p_client);
 
 				if(p_client.get_ready_for_sync())
 				{
@@ -494,26 +526,31 @@ namespace black_cat
 
 				_retry_messages_waiting_acknowledgment(p_clock, p_client);
 				
-				auto l_client_messages = p_client.get_messages();
-				if(l_client_messages.empty())
-				{
-					return;
-				}
-				
-				const auto [l_stream_size, l_stream] = m_messages_buffer.serialize(*this, l_client_messages);
-				bc_server_socket_send_event l_send_event{p_client.get_address(), *l_stream, l_stream_size, 0};
-				bc_server_socket_state_machine::process_event(l_send_event);
+				l_client_messages = p_client.get_messages();
+			}
 
-				if(l_send_event.m_bytes_sent != l_send_event.m_bytes_to_send)
-				{
-					return;
-				}
-				
+			if (l_client_messages.empty())
+			{
+				return;
+			}
+
+			const auto [l_stream_size, l_stream] = m_messages_buffer.serialize(*this, l_client_messages);
+			bc_server_socket_send_event l_send_event{ p_client.get_address(), *l_stream, l_stream_size, 0 };
+			bc_server_socket_state_machine::process_event(l_send_event);
+
+			if (l_send_event.m_bytes_sent != l_send_event.m_bytes_to_send)
+			{
+				return;
+			}
+
+			{
+				core_platform::bc_lock_guard l_client_lock(p_client);
+
 				for (const auto& l_message : l_client_messages)
 				{
 					if (l_message->need_acknowledgment())
 					{
-						p_client.add_message_waiting_acknowledgment_if_not_exist(bc_retry_message 
+						p_client.add_message_waiting_acknowledgment_if_not_exist(bc_retry_message
 						{
 							0,
 							l_message
@@ -523,10 +560,10 @@ namespace black_cat
 
 				p_client.clear_messages();
 				p_client.set_last_sync_time(bc_current_packet_time());
-
-				l_stream->set_position(core::bc_stream_seek::start, 0);
-				m_hook->message_packet_sent(p_client.get_address(), *l_stream, l_stream_size, core::bc_make_cspan(l_client_messages));
 			}
+
+			l_stream->set_position(core::bc_stream_seek::start, 0);
+			m_hook->message_packet_sent(p_client.get_address(), *l_stream, l_stream_size, l_client_messages);
 		}
 
 		bcSIZE bc_network_server_manager::_receive_from_clients()
@@ -568,8 +605,6 @@ namespace black_cat
 			bc_network_message_id l_max_message_id = 0;
 
 			{
-				core_platform::bc_lock_guard<bc_network_server_manager_client> l_client_lock(*l_client);
-
 				for (const auto& l_message : l_messages)
 				{
 					const auto l_message_id = l_message->get_id();
@@ -581,11 +616,18 @@ namespace black_cat
 					}
 
 					core::bc_string* l_ack_data;
-					if (l_message->get_is_retry() && (l_ack_data = l_client->find_acknowledge_data(l_message_id)) != nullptr)
+					if (l_message->get_is_retry())
 					{
-						// discard duplicate message
-						l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message_id, *l_ack_data)));
-						continue;
+						{
+							core_platform::bc_lock_guard l_client_lock(*l_client);
+
+							if((l_ack_data = l_client->find_acknowledge_data(l_message_id)) != nullptr)
+							{
+								// discard duplicate message
+								l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message_id, *l_ack_data)));
+								continue;
+							}
+						}
 					}
 
 					l_message->execute(bc_network_message_server_context
@@ -597,8 +639,13 @@ namespace black_cat
 					if (l_message->need_acknowledgment())
 					{
 						auto l_ack_data = l_message->get_acknowledgment_data();
-						l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message_id, l_ack_data)));
-						l_client->add_acknowledged_message(l_message_id, std::move(l_ack_data));
+						
+						{
+							core_platform::bc_lock_guard l_client_lock(*l_client);
+							
+							l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message_id, l_ack_data)));
+							l_client->add_acknowledged_message(l_message_id, std::move(l_ack_data));
+						}
 					}
 
 					l_max_message_id = std::max(l_max_message_id, l_message_id);
@@ -634,8 +681,13 @@ namespace black_cat
 				// after message execution client should have added
 				auto* l_client = _find_client(p_address);
 				auto l_ack_data = l_message->get_acknowledgment_data();
-				l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message->get_id(), l_ack_data)));
-				l_client->add_acknowledged_message(l_message->get_id(), std::move(l_ack_data));
+
+				{
+					core_platform::bc_lock_guard l_client_lock(*l_client);
+					
+					l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message->get_id(), l_ack_data)));
+					l_client->add_acknowledged_message(l_message->get_id(), std::move(l_ack_data));
+				}
 
 				return l_client;
 			}
@@ -645,21 +697,25 @@ namespace black_cat
 
 		bc_network_server_manager_client* bc_network_server_manager::_find_client(const platform::bc_network_address& p_address)
 		{
-			const auto l_ite = std::find_if
-			(
-				std::begin(m_clients),
-				std::end(m_clients),
-				[&](auto& p_client)
-				{
-					return p_address == p_client.get_address();
-				}
-			);
-			if (l_ite == std::end(m_clients))
 			{
-				return nullptr;
-			}
+				core_platform::bc_shared_mutex_shared_guard l_client_lock(m_clients_lock);
 
-			return &*l_ite;
+				const auto l_ite = std::find_if
+				(
+					std::begin(m_clients),
+					std::end(m_clients),
+					[&](auto& p_client)
+					{
+						return p_address == p_client.get_address();
+					}
+				);
+				if (l_ite == std::end(m_clients))
+				{
+					return nullptr;
+				}
+
+				return &*l_ite;
+			}
 		}
 
 		bool bc_network_server_manager::_event_handler(core::bci_event& p_event)
@@ -671,11 +727,11 @@ namespace black_cat
 				send_message(bc_scene_change_network_message(m_scene_name));
 
 				{
-					core::bc_mutex_test_guard l_lock(m_clients_lock);
+					core_platform::bc_shared_mutex_shared_guard l_clients_lock(m_clients_lock);
 
 					for (auto& l_client : m_clients)
 					{
-						core_platform::bc_lock_guard<bc_network_server_manager_client> l_client_lock(l_client);
+						core_platform::bc_lock_guard l_client_lock(l_client);
 
 						l_client.set_ready_for_sync(false);
 					}

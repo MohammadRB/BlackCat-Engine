@@ -41,6 +41,12 @@ namespace black_cat
 			 * \return Found animation otherwise null.
 			 */
 			bc_skeleton_animation* find_animation(const bcCHAR* p_name) const noexcept;
+
+			/**
+			 * \brief Find animation which its name contains passed string
+			 * \param p_name
+			 */
+			bc_skeleton_animation& find_animation_throw(const bcCHAR* p_name) const;
 			
 			core::bc_const_span<bc_skeleton_animation*> get_animations() const noexcept;
 			

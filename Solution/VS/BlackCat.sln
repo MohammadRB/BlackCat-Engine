@@ -31,8 +31,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BlackCat.Physics.PhysX", "B
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BlackCat.Game.Test", "BlackCat.Game.Test.vcxproj", "{E2C07F04-177E-4763-B475-4E566736A0DF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BattleOfXbots", "BattleOfXbots", "{61BC95E9-2686-4FCC-8529-60954B1ACE4B}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BattleOfXbots", "..\..\BattleOfXBots\Solution\BattleOfXbots.vcxproj", "{3200478F-5D9B-4C94-81AA-25B6CBA29946}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BattleOfXbots.Server", "..\..\BattleOfXBots\Solution\BattleOfXbots.Server.vcxproj", "{D65DD291-9A3F-4EB4-8721-8B98B6561E2C}"

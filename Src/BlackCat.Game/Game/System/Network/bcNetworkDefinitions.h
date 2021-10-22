@@ -15,7 +15,7 @@ namespace black_cat
 			not_started, server, client
 		};
 
-		enum class bc_actor_network_data_dir
+		enum class bc_actor_network_data_dir : bcUBYTE
 		{
 			replicate,						// Replicate actor from server
 			replicate_sync,					// Replicate actor from server
@@ -23,7 +23,7 @@ namespace black_cat
 			replicate_sync_to_server_client	// Convert to 'replicate_sync' or 'replicate_sync_from_client'
 		};
 
-		enum class bc_actor_replication_side
+		enum class bc_actor_replication_side : bcUBYTE
 		{
 			origin,
 			replicated

@@ -15,6 +15,7 @@
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidControllerComponent.h"
+#include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/Component/bcWeaponComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Animation/bcAnimationSkeleton.h"
@@ -394,13 +395,14 @@ namespace black_cat
 			l_rigid_controller_component->reset_controller();
 		}
 		
-		m_scene = nullptr;
-		m_state_machine = nullptr;
-		
 		if(m_weapon.has_value())
 		{
+			m_scene->remove_actor(m_weapon->m_actor);
 			m_weapon.reset();
 		}
+
+		m_scene = nullptr;
+		m_state_machine = nullptr;
 	}
 
 	void bc_xbot_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
@@ -431,6 +433,12 @@ namespace black_cat
 			return;
 		}
 
+		auto* l_rigid_dynamic_component = p_weapon.get_component<game::bc_rigid_dynamic_component>();
+		if (l_rigid_dynamic_component)
+		{
+			l_rigid_dynamic_component->set_enable(false);
+		}
+		
 		bc_xbot_weapon l_weapon;
 		l_weapon.m_actor = p_weapon;
 		l_weapon.m_component = l_weapon_component;
@@ -448,24 +456,42 @@ namespace black_cat
 	void bc_xbot_actor_controller::detach_weapon() noexcept
 	{
 		m_state_machine->detach_weapon();
+
+		auto* l_rigid_dynamic_component = m_weapon->m_actor.get_component<game::bc_rigid_dynamic_component>();
+		if (l_rigid_dynamic_component)
+		{
+			l_rigid_dynamic_component->set_enable(true);
+
+			{
+				physics::bc_scene_lock l_lock(&get_scene()->get_px_scene());
+
+				auto l_rigid_dynamic = l_rigid_dynamic_component->get_dynamic_body();
+				const auto l_rigid_dynamic_pose = l_rigid_dynamic.get_global_pose();
+				l_rigid_dynamic.set_global_pose(physics::bc_transform(l_rigid_dynamic_pose.get_position() + get_look_direction(), l_rigid_dynamic_pose.get_matrix3()));
+				l_rigid_dynamic.set_linear_velocity(get_look_direction() * 2);
+			}
+		}
+		
 		m_weapon.reset();
 	}
 
-	void bc_xbot_actor_controller::shoot_weapon() noexcept
+	bool bc_xbot_actor_controller::shoot_weapon() noexcept
 	{
 		if(!m_weapon.has_value())
 		{
-			return;
+			return false;
 		}
 
 		const bool l_shooted = m_state_machine->shoot_weapon();
 		if(!l_shooted)
 		{
-			return;
+			return false;
 		}
 
 		const auto l_bullet = m_weapon->m_component->shoot(m_state_machine->m_state.m_look_direction);
 		m_scene->add_bullet(l_bullet);
+
+		return true;
 	}
 
 	void bc_xbot_actor_controller::on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit)
@@ -500,12 +526,12 @@ namespace black_cat
 		core::bc_shared_ptr<game::bc_sampling_animation_job>* p_idle_sample_job)
 	{
 		auto& l_skeleton = *m_skinned_component->get_skeleton();
-		auto& l_idle_animation = *m_skinned_component->find_animation(p_idle_animation);
-		auto& l_left_turn_animation = *m_skinned_component->find_animation(p_left_turn_animation);
-		auto& l_right_turn_animation = *m_skinned_component->find_animation(p_right_turn_animation);
+		auto& l_idle_animation = m_skinned_component->find_animation_throw(p_idle_animation);
+		auto& l_left_turn_animation = m_skinned_component->find_animation_throw(p_left_turn_animation);
+		auto& l_right_turn_animation = m_skinned_component->find_animation_throw(p_right_turn_animation);
 		auto* l_weapon_shoot_animation = m_skinned_component->find_animation(p_weapon_shoot_animation);
 		core::bc_vector<const bcCHAR*> l_aim_bone_chain(m_upper_body_chain.size());
-
+		
 		std::transform
 		(
 			std::begin(m_upper_body_chain),
@@ -602,10 +628,10 @@ namespace black_cat
 		core::bc_shared_ptr<game::bc_sampling_animation_job>* p_running_backward_sample_job)
 	{
 		auto& l_skeleton = *m_skinned_component->get_skeleton();
-		auto& l_walking_animation = *m_skinned_component->find_animation(p_walking_animation);
-		auto& l_walking_backward_animation = *m_skinned_component->find_animation(p_walking_backward_animation);
-		auto& l_running_animation = *m_skinned_component->find_animation(p_running_animation);
-		auto& l_running_backward_animation = *m_skinned_component->find_animation(p_running_backward_animation);
+		auto& l_walking_animation = m_skinned_component->find_animation_throw(p_walking_animation);
+		auto& l_walking_backward_animation = m_skinned_component->find_animation_throw(p_walking_backward_animation);
+		auto& l_running_animation = m_skinned_component->find_animation_throw(p_running_animation);
+		auto& l_running_backward_animation = m_skinned_component->find_animation_throw(p_running_backward_animation);
 		auto* l_weapon_shoot_animation = m_skinned_component->find_animation(p_weapon_shoot_animation);
 		core::bc_vector<const bcCHAR*> l_aim_bone_chain(m_upper_body_chain.size());
 

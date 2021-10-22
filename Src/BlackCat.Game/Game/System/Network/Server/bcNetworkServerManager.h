@@ -116,9 +116,10 @@ namespace black_cat
 			bcUINT16 m_port;
 			bool m_socket_is_listening;
 			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;
-			core::bc_mutex_test m_clients_lock;
-			core::bc_vector<bc_network_server_manager_client> m_clients;
 			bci_network_server_manager_hook* m_hook;
+
+			core_platform::bc_shared_mutex m_clients_lock;
+			core::bc_vector<bc_network_server_manager_client> m_clients;
 
 			core_platform::bc_mutex m_actors_lock;
 			core_platform::bc_atomic<bc_actor_network_id> m_actor_network_id_counter;

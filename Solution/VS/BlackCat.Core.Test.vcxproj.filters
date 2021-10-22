@@ -30,6 +30,9 @@
     <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\CoreTestPCH.cpp">
       <Filter>CoreTest</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Container\bcConcurrentQueue.cpp">
+      <Filter>CoreTest\Container</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\CoreTestPCH.h">

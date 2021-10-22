@@ -55,14 +55,14 @@ namespace black_cat
 				return;
 			}
 
-			auto [l_actor, l_is_self_replicated] = p_context.m_visitor.get_actor(*l_actor_network_id);
-			if(!l_actor.is_valid())
+			bool l_is_self_replicated;
+			std::tie(m_actor, l_is_self_replicated) = p_context.m_visitor.get_actor(*l_actor_network_id);
+
+			if(!m_actor.is_valid())
 			{
 				core::bc_log(core::bc_log_type::warning) << "Failed to find actor with network id " << *l_actor_network_id << " in sync network message" << core::bc_lend;
 				return;
 			}
-
-			m_actor = l_actor;
 			
 			core::bc_vector_frame<bci_actor_component*> l_components(10);
 			const bc_actor_component_network_load_context l_context(p_context.m_params, m_actor, l_is_self_replicated);

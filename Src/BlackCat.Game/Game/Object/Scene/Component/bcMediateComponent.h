@@ -42,7 +42,9 @@ namespace black_cat
 
 			void set_entity_name(const bcCHAR* p_entity_name) noexcept;
 
-			void set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller);
+			bci_actor_controller* get_controller() const noexcept;
+			
+			void set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller) noexcept;
 
 			bc_scene* get_scene() const noexcept;
 			
@@ -99,6 +101,16 @@ namespace black_cat
 			m_entity_name = p_entity_name;
 		}
 
+		inline bci_actor_controller* bc_mediate_component::get_controller() const noexcept
+		{
+			return m_controller.get();
+		}
+
+		inline void bc_mediate_component::set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller) noexcept
+		{
+			m_controller = std::move(p_controller);
+		}
+		
 		inline bc_scene* bc_mediate_component::get_scene() const noexcept
 		{
 			return m_scene;

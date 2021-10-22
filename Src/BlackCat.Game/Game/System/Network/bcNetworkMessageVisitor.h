@@ -28,6 +28,11 @@ namespace black_cat
 			{
 				bc_actor m_actor;
 				bool m_is_self_replicated;
+
+				operator std::tuple<bc_actor&, bool&>() noexcept
+				{
+					return std::tie(m_actor, m_is_self_replicated);
+				}
 			};
 		
 		public:

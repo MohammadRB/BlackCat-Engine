@@ -21,22 +21,20 @@ namespace black_cat
 		template< >
 		inline bc_platform_clock<bc_platform::win32>::big_clock bc_platform_clock<bc_platform::win32>::query_clock_per_millisecond()
 		{
-			big_clock l_clock_per_millisecond;
+			LARGE_INTEGER l_query;
+			QueryPerformanceFrequency(&l_query);
 
-			QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&l_clock_per_millisecond));
-			l_clock_per_millisecond /= 1000;
-
+			const big_clock l_clock_per_millisecond = l_query.QuadPart / 1000;
 			return l_clock_per_millisecond;
 		}
 
 		template< >
 		inline bc_platform_clock<bc_platform::win32>::big_clock bc_platform_clock<bc_platform::win32>::query_elapsed_clocks()
 		{
-			big_clock l_clocks;
+			LARGE_INTEGER l_query;
+			QueryPerformanceCounter(&l_query);
 
-			QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&l_clocks));
-
-			return l_clocks;
+			return l_query.QuadPart;
 		}
 	}
 }

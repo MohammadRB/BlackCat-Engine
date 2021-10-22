@@ -4,12 +4,16 @@
 
 #include "Core/Utility/bcJsonParse.h"
 #include "Core/Utility/bcLogger.h"
+#include "Game/System/Input/bcInputSystem.h"
+#include "Game/System/Network/bcNetworkSystem.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotNetworkPlayerActorController.h"
+#include "BlackCat/SampleImp/ActorController/bcXBotNetworkMessage.h"
 
 namespace black_cat
 {
 	bc_xbot_network_player_actor_controller::bc_xbot_network_player_actor_controller() noexcept
-		: m_look_velocity(0, 1, 0.50f),
+		: m_network_system(nullptr),
+		m_look_velocity(0, 1, 0.50f),
 		m_network_look_side(0),
 		m_network_forward_pressed(false),
 		m_network_backward_pressed(false),
@@ -22,6 +26,7 @@ namespace black_cat
 	void bc_xbot_network_player_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		bc_xbot_actor_controller::initialize(p_context);
+		m_network_system = &p_context.m_game_system.get_network_system();
 	}
 
 	void bc_xbot_network_player_actor_controller::load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context)
@@ -111,5 +116,48 @@ namespace black_cat
 	void bc_xbot_network_player_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
 	{
 		bc_xbot_actor_controller::handle_event(p_context);
+	}
+
+	void bc_xbot_network_player_actor_controller::attach_weapon(const bcCHAR* p_entity) noexcept
+	{
+		auto* l_weapon = get_weapon();
+		if (l_weapon)
+		{
+			bc_xbot_actor_controller::detach_weapon();
+		}
+
+		auto l_weapon_actor = get_scene()->create_actor(p_entity, core::bc_matrix4f::translation_matrix(get_position()));
+		bc_xbot_actor_controller::attach_weapon(l_weapon_actor);
+
+		if(get_network_component().get_network_type() == game::bc_network_type::server)
+		{
+			m_network_system->send_message(bc_xbot_weapon_attach_network_message(get_actor(), l_weapon_actor));
+		}
+	}
+
+	void bc_xbot_network_player_actor_controller::detach_weapon() noexcept
+	{
+		auto* l_weapon = get_weapon();
+		if (!l_weapon)
+		{
+			return;
+		}
+
+		bc_xbot_actor_controller::detach_weapon();
+
+		if (get_network_component().get_network_type() == game::bc_network_type::server)
+		{
+			m_network_system->send_message(bc_xbot_weapon_detach_network_message(get_actor()));
+		}
+	}
+
+	void bc_xbot_network_player_actor_controller::shoot_weapon() noexcept
+	{
+		bc_xbot_actor_controller::shoot_weapon();
+
+		if (get_network_component().get_network_type() == game::bc_network_type::server)
+		{
+			m_network_system->send_message(bc_xbot_weapon_shoot_network_message(get_actor()));
+		}
 	}
 }

@@ -88,7 +88,7 @@ namespace black_cat
 
 			core::bc_read_all_lines(l_json_file, l_json_file_buffer);
 
-			core::bc_json_document< _bc_decal_json > l_decal_json;
+			core::bc_json_document<_bc_decal_json> l_decal_json;
 			l_decal_json.load(l_json_file_buffer.c_str());
 
 			for (core::bc_json_object<_bc_decal_desc>& l_decal : l_decal_json->m_decals)

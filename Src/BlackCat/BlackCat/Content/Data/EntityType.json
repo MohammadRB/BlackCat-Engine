@@ -176,7 +176,22 @@
           "parameters": {
             "mesh": "xbot",
             "animations": [
-              "xbot_neutral_idle"
+              "xbot_neutral_idle",
+              "xbot_left_turn",
+              "xbot_right_turn",
+              "xbot_walking",
+              "xbot_walking_backwards",
+              "xbot_running",
+              "xbot_running_backwards",
+              "xbot_rifle_aiming_idle",
+              "xbot_rifle_left_turn",
+              "xbot_rifle_right_turn",
+              "xbot_rifle_firing",
+              "xbot_rifle_walking",
+              "xbot_rifle_walking_backwards",
+              "xbot_rifle_running",
+              "xbot_rifle_running_backwards",
+              "xbot_rifle_firing"
             ]
           }
         },
@@ -215,7 +230,22 @@
               "Beta_Surface": "red"
             },
             "animations": [
-              "xbot_neutral_idle"
+              "xbot_neutral_idle",
+              "xbot_left_turn",
+              "xbot_right_turn",
+              "xbot_walking",
+              "xbot_walking_backwards",
+              "xbot_running",
+              "xbot_running_backwards",
+              "xbot_rifle_aiming_idle",
+              "xbot_rifle_left_turn",
+              "xbot_rifle_right_turn",
+              "xbot_rifle_firing",
+              "xbot_rifle_walking",
+              "xbot_rifle_walking_backwards",
+              "xbot_rifle_running",
+              "xbot_rifle_running_backwards",
+              "xbot_rifle_firing"
             ]
           }
         }
@@ -233,7 +263,22 @@
               "Beta_Surface": "blue"
             },
             "animations": [
-              "xbot_neutral_idle"
+              "xbot_neutral_idle",
+              "xbot_left_turn",
+              "xbot_right_turn",
+              "xbot_walking",
+              "xbot_walking_backwards",
+              "xbot_running",
+              "xbot_running_backwards",
+              "xbot_rifle_aiming_idle",
+              "xbot_rifle_left_turn",
+              "xbot_rifle_right_turn",
+              "xbot_rifle_firing",
+              "xbot_rifle_walking",
+              "xbot_rifle_walking_backwards",
+              "xbot_rifle_running",
+              "xbot_rifle_running_backwards",
+              "xbot_rifle_firing"
             ]
           }
         }

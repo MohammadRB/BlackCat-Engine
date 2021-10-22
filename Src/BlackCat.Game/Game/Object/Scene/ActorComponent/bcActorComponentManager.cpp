@@ -151,7 +151,8 @@ namespace black_cat
 			const auto l_write_event_pool = m_write_event_pool;
 			
 			bc_actor l_actor;
-			core::bc_vector<bci_actor_component*> l_components;
+			core::bc_vector_frame<bci_actor_component*> l_components;
+			l_components.reserve(10);
 
 			while (m_double_update_actors.pop(l_actor))
 			{

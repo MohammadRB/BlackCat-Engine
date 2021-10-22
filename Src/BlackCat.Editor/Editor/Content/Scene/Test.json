@@ -1,187 +1,202 @@
 {
-    "name": "Test",
-    "stream_files": [
-        "Scene\\Test_ContentStream.json"
+  "name": "Test",
+  "stream_files": [
+    "Scene\\Test_ContentStream.json"
+  ],
+  "material_files": [
+    "Scene\\Test_Material.json"
+  ],
+  "decal_files": [
+    "Data\\Decal.json",
+    "Scene\\Test_Decal.json"
+  ],
+  "entity_files": [
+    "Scene\\Test_EntityType.json"
+  ],
+  "streams": [
+    "terrain_textures",
+    "models"
+  ],
+  "scene_graph": {
+    "center": [
+      0.0,
+      -1.0,
+      -0.0
     ],
-    "material_files": [
-        "Scene\\Test_Material.json"
-    ],
-    "decal_files": [
-        "Data\\Decal.json"
-    ],
-    "entity_files": [
-        "Scene\\Test_EntityType.json"
-    ],
-    "streams": [
-        "terrain_textures",
-        "models"
-    ],
-    "scene_graph": {
-        "center": [
-            0.0,
-            -1.0,
-            -0.0
-        ],
-        "half_extends": [
-            1024.0,
-            1024.0,
-            1024.0
-        ]
-    },
-    "actors": [
-        {
-            "entity_name": "xbot_idle_red",
-            "position": [
-                42.0,
-                0.0,
-                -800.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "box",
-            "position": [
-                60.0,
-                20.0,
-                -800.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "box",
-            "position": [
-                40.0,
-                20.0,
-                -800.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "box_server",
-            "position": [
-                65.0,
-                120.0,
-                -800.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "xbot_idle_blue",
-            "position": [
-                55.0,
-                0.0,
-                -800.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "box",
-            "position": [
-                45.0,
-                20.0,
-                -800.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "box",
-            "position": [
-                55.0,
-                20.0,
-                -800.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "box",
-            "position": [
-                50.0,
-                20.0,
-                -800.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "sun_light",
-            "position": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "wind",
-            "position": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "flat_height_map",
-            "position": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "parameters": {}
-        }
+    "half_extends": [
+      1024.0,
+      1024.0,
+      1024.0
     ]
+  },
+  "actors": [
+    {
+      "entity_name": "xbot_idle_red",
+      "position": [
+        42.0,
+        0.0,
+        -800.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "box",
+      "position": [
+        60.0,
+        20.0,
+        -800.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "box",
+      "position": [
+        55.0,
+        20.0,
+        -800.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "box",
+      "position": [
+        40.0,
+        20.0,
+        -800.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "box_server",
+      "position": [
+        65.0,
+        120.0,
+        -800.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "box",
+      "position": [
+        50.0,
+        20.0,
+        -800.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "xbot_idle_blue",
+      "position": [
+        55.0,
+        0.0,
+        -800.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "box",
+      "position": [
+        45.0,
+        20.0,
+        -800.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "xbot_player",
+      "position": [
+        48.1654052,
+        0.0,
+        -803.7573242
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "sun_light",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "wind",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "flat_height_map",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "parameters": {}
+    }
+  ]
 }

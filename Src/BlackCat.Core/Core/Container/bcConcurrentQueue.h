@@ -75,55 +75,61 @@ namespace black_cat
 
 		protected:
 			template<typename ...TArgs>
-			node_type* _enqueue(TArgs&&... p_args)
+			node_type* enqueue(TArgs&&... p_args)
 			{
 				node_pointer l_node = bc_allocator_traits<internal_allocator_type>::allocate(m_allocator, 1);
 				bc_allocator_traits<internal_allocator_type>::construct(m_allocator, l_node, std::forward<TArgs>(p_args)...);
 
-				node_pointer l_tail_copy = m_tail.load(core_platform::bc_memory_order::seqcst);
-				node_pointer l_tail = l_tail_copy;
-				node_pointer l_expected;
+				node_pointer l_tail = m_tail.load(core_platform::bc_memory_order::seqcst);
+				node_pointer l_next = l_tail->m_next.load(core_platform::bc_memory_order::seqcst);
+				node_pointer l_expected_next = l_next;
 
 				do
 				{
-					node_pointer l_prev = l_tail->m_next.load(core_platform::bc_memory_order::seqcst);
-					while (l_prev != nullptr)
+					l_next = l_expected_next;
+					while (l_next != nullptr)
 					{
-						l_tail = l_prev;
-						l_prev = l_tail->m_next.load(core_platform::bc_memory_order::seqcst);
+						l_tail = l_next;
+						l_next = l_tail->m_next.load(core_platform::bc_memory_order::seqcst);
 					}
 
-					l_expected = nullptr;
-				} while (!l_tail->m_next.compare_exchange_weak(&l_expected, l_node, core_platform::bc_memory_order::seqcst));
+					l_expected_next = nullptr;
+				}
+				while (!l_tail->m_next.compare_exchange_weak(&l_expected_next, l_node, core_platform::bc_memory_order::seqcst));
 
-				m_tail.compare_exchange_strong(&l_tail_copy, l_node, core_platform::bc_memory_order::seqcst);
+				node_pointer l_hint_tail = l_node;
+				do
+				{
+					m_tail.store(l_hint_tail, core_platform::bc_memory_order::seqcst);
+				}
+				while ((l_hint_tail = l_hint_tail->m_next.load(core_platform::bc_memory_order::seqcst)) != nullptr);
 
 				return l_node;
 			}
 
-			node_type* _dequeue(pointer p_result)
+			node_type* dequeue(reference p_result)
 			{
-				node_pointer l_local_head = nullptr;
-				node_pointer l_next = nullptr;
+				node_pointer l_head = m_head.load(core_platform::bc_memory_order::seqcst);
+				node_pointer l_next;
 
 				while (true)
 				{
-					l_local_head = m_head.load(core_platform::bc_memory_order::seqcst);
-					l_next = l_local_head->m_next.load(core_platform::bc_memory_order::seqcst);
+					l_next = l_head->m_next.load(core_platform::bc_memory_order::seqcst);
 
 					if (l_next == nullptr)
 					{
 						return nullptr;
 					}
 
-					if (m_head.compare_exchange_strong(&l_local_head, l_next))
+					if (m_head.compare_exchange_strong(&l_head, l_next))
+					{
 						break;
+					}
 				}
 
-				if (p_result)
-					*p_result = std::move(l_next->m_value);
+				p_result = std::move(l_next->m_value);
 				
-				return l_local_head;
+				return l_head;
 			}
 
 			core_platform::bc_atomic<node_pointer> m_tail;
@@ -231,7 +237,7 @@ namespace black_cat
 
 			bc_concurrent_queue(const this_type&) = delete;
 
-			bc_concurrent_queue(this_type&& p_other) noexcept(true)
+			bc_concurrent_queue(this_type&& p_other) noexcept
 				: base_type(std::move(p_other)),
 				m_memmng(std::move(p_other.m_memmng))
 			{
@@ -245,8 +251,9 @@ namespace black_cat
 					return;
 				}
 
+				value_type l_value;
 				node_type* l_node = nullptr;
-				while ((l_node = base_type::_dequeue(nullptr)))
+				while ((l_node = base_type::dequeue(l_value)))
 				{
 					m_memmng.try_reclaim(*this, l_node);
 				}
@@ -254,7 +261,7 @@ namespace black_cat
 
 			this_type& operator =(const this_type&) = delete;
 
-			this_type& operator =(this_type&& p_other) noexcept(true)
+			this_type& operator =(this_type&& p_other) noexcept
 			{
 				base_type::operator=(std::move(p_other));
 				m_memmng = std::move(p_other.m_memmng);
@@ -269,25 +276,25 @@ namespace black_cat
 
 			void push(const value_type& p_value)
 			{
-				base_type::_enqueue(p_value);
+				base_type::enqueue(p_value);
 			}
 
 			void push(value_type&& p_value)
 			{
-				base_type::_enqueue(std::move(p_value));
+				base_type::enqueue(std::move(p_value));
 			}
 
 			template<typename ...TArgs>
 			void emplace(TArgs&&... p_args)
 			{
-				base_type::_enqueue(std::forward<TArgs>(p_args)...);
+				base_type::enqueue(std::forward<TArgs>(p_args)...);
 			}
 
-			bool pop(reference p_result) noexcept(true)
+			bool pop(reference p_result) noexcept
 			{
 				m_memmng.enter_pop();
 
-				node_type* l_node = base_type::_dequeue(&p_result);
+				node_type* l_node = base_type::dequeue(p_result);
 				if (!l_node)
 				{
 					m_memmng.exist_pop_without_reclaim();
@@ -299,7 +306,7 @@ namespace black_cat
 				return true;
 			}
 
-			void swap(this_type& p_other) noexcept(true)
+			void swap(this_type& p_other) noexcept
 			{
 				using std::swap;
 
@@ -325,12 +332,12 @@ namespace black_cat
 				bc_allocator_traits<internal_allocator_type>::deallocate(base_type::m_allocator, p_node);
 			}
 
-			node_type* next(node_type* p_node) const noexcept(true)
+			node_type* next(node_type* p_node) const noexcept
 			{
 				return p_node->m_next.load(core_platform::bc_memory_order::seqcst);
 			}
 
-			void next(node_type* p_node, node_type* p_next) const noexcept(true)
+			void next(node_type* p_node, node_type* p_next) const noexcept
 			{
 				p_node->m_next.store(p_next, core_platform::bc_memory_order::seqcst);
 			}

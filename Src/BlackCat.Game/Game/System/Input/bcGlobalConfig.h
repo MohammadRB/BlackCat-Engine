@@ -26,7 +26,7 @@ namespace black_cat
 		class bc_global_config final : public bc_config_file
 		{
 		public:
-			bc_global_config(const bcECHAR* p_content_path, const bcECHAR* p_content_file_name = bcL("config"));
+			bc_global_config(const bcECHAR* p_content_path, const bcECHAR* p_config_file_name = bcL("config"));
 
 			bc_global_config(bc_global_config&&) noexcept;
 
