@@ -317,8 +317,7 @@ namespace black_cat
 		}
 
 		void bc_network_server_manager::acknowledge_message(const platform::bc_network_address& p_address, bc_network_message_id p_ack_id, core::bc_string p_ack_data)
-		{
-			// Clients lock is already acquired in the receive function 
+		{ 
 			auto* l_client = _find_client(p_address);
 			bc_network_message_ptr l_message;
 			
@@ -361,13 +360,18 @@ namespace black_cat
 				core_platform::bc_mutex_guard l_actors_lock(m_actors_lock);
 				core_platform::bc_lock_guard l_client_lock(*l_client);
 
-				l_client->set_ready_for_sync(true);
+				auto l_client_actors = l_client->get_replicated_actors();
 				
 				for (auto [l_id, l_actor] : m_network_actors)
 				{
-					// Client lock is already acquired in the receive function
-					l_client->add_message(bc_make_network_message(bc_actor_replicate_network_message(l_actor)));
+					const auto l_client_actor_ite = std::find(std::begin(l_client_actors), std::end(l_client_actors), l_actor);
+					if(l_client_actor_ite == std::end(l_client_actors))
+					{
+						l_client->add_message(bc_make_network_message(bc_actor_replicate_network_message(l_actor)));
+					}
 				}
+
+				l_client->set_ready_for_sync(true);
 			}
 		}
 
@@ -381,13 +385,12 @@ namespace black_cat
 			}
 
 			auto l_actor_network_id = m_actor_network_id_counter.fetch_add(1);
-
+			
 			{
 				core_platform::bc_mutex_guard l_lock(m_actors_lock);
 				m_network_actors.insert(std::make_pair(l_actor_network_id, p_actor));
+				l_network_component->set_network_id(l_actor_network_id);
 			}
-
-			l_network_component->set_network_id(l_actor_network_id);
 
 			auto* l_client = _find_client(p_address);
 			{
@@ -480,17 +483,28 @@ namespace black_cat
 
 		void bc_network_server_manager::_retry_messages_waiting_acknowledgment(const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client)
 		{
-			for (auto& l_msg : p_client.get_messages_waiting_acknowledgment())
-			{
-				const auto l_rtt_time = p_client.get_rtt_time() / 2;
-				auto l_rtt_multiplier = 4;
+			auto l_messages = p_client.get_messages_waiting_acknowledgment();
+			const auto l_rtt_time = p_client.get_rtt_time();
+			auto l_rtt_multiplier = 2;
 #ifdef BC_DEBUG
-				l_rtt_multiplier *= 3;
+			l_rtt_multiplier *= 3;
 #endif
-				
+			
+			for (auto l_ite = 0U; l_ite < l_messages.size(); ++l_ite)
+			{
+				auto& l_msg = l_messages[l_ite];
 				l_msg.m_elapsed += p_clock.m_elapsed;
-				if (l_msg.m_elapsed > l_rtt_time* l_rtt_multiplier)
+				
+				if (l_msg.m_elapsed > l_rtt_time * l_rtt_multiplier)
 				{
+					const bool l_is_ping_message = core::bci_message::is<bc_ping_network_message>(*l_msg.m_message);
+					if (l_is_ping_message)
+					{
+						// No need to retry ping messages
+						p_client.erase_message_waiting_acknowledgment(l_msg.m_message->get_id());
+						continue;
+					}
+					
 					l_msg.m_elapsed = 0;
 					l_msg.m_message->set_is_retry();
 					
@@ -644,7 +658,13 @@ namespace black_cat
 							core_platform::bc_lock_guard l_client_lock(*l_client);
 							
 							l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message_id, l_ack_data)));
-							l_client->add_acknowledged_message(l_message_id, std::move(l_ack_data));
+
+							// ping messages are not retried, so there is no need to keep track of them
+							const bool l_is_ping_message = core::bci_message::is<bc_ping_network_message>(*l_message);
+							if(!l_is_ping_message)
+							{
+								l_client->add_acknowledged_message(l_message_id, std::move(l_ack_data));
+							}
 						}
 					}
 
@@ -723,6 +743,7 @@ namespace black_cat
 			auto* l_scene_change_event = core::bci_event::as<bc_event_scene_change>(p_event);
 			if(l_scene_change_event)
 			{
+				// TODO remove network actors
 				m_scene_name = l_scene_change_event->get_scene_name();
 				send_message(bc_scene_change_network_message(m_scene_name));
 

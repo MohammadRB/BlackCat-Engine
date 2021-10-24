@@ -100,7 +100,7 @@ namespace black_cat
 			m_rtt_sampler(100),
 			m_remote_rtt(100),
 			m_last_executed_message_id(0),
-			m_executed_messages(25)
+			m_executed_messages(50)
 		{
 		}
 

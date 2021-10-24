@@ -41,6 +41,9 @@ namespace black_cat
 		
 		l_json_document.load(l_json_str.c_str());
 
+		game::bc_scene_check_point l_check_point(*l_scene);
+		l_check_point.remove_dynamic_actors();
+
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;
 		core::bc_vector_frame<game::bc_actor> l_actors;
 		l_actors.reserve(l_json_document->m_actors.size());
@@ -63,8 +66,6 @@ namespace black_cat
 			l_actor_components.clear();
 		}
 
-		game::bc_scene_check_point l_check_point(*l_scene);
-		l_check_point.import_dynamic_actors(l_actors);
 		p_context.set_result(std::move(l_check_point));
 	}
 

@@ -123,7 +123,7 @@ namespace black_cat
 				(
 					m_changed_actors_lock, core_platform::bc_lock_operation::light
 				);
-				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::add, l_actor));
+				m_added_actors.push_back(l_actor);
 			}
 
 			l_actor.add_event(bc_world_transform_actor_event(p_world_transform));
@@ -164,7 +164,7 @@ namespace black_cat
 				(
 					m_changed_actors_lock, core_platform::bc_lock_operation::light
 				);
-				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::remove, p_actor));
+				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::remove_event, p_actor));
 			}
 		}
 
@@ -252,7 +252,7 @@ namespace black_cat
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock(m_changed_actors_lock, core_platform::bc_lock_operation::heavy);
 				
-				for(auto& l_to_removed_actor : m_to_remove_actors)
+				/*for(auto& l_to_removed_actor : m_to_remove_actors)
 				{
 					auto l_changed_ite = std::find_if
 					(
@@ -271,10 +271,41 @@ namespace black_cat
 					_remove_actor(std::get<_bc_scene_actor_remove_state>(l_to_removed_actor), std::get<bc_actor>(l_to_removed_actor));
 				}
 				
+				m_to_remove_actors.clear();*/
+
+				for(auto& l_added_actor : m_added_actors)
+				{
+					auto l_changed_ite = std::find_if
+					(
+						std::begin(m_changed_actors),
+						std::end(m_changed_actors),
+						[&](decltype(m_changed_actors)::reference p_entry)
+						{
+							return std::get<bc_actor>(p_entry) == l_added_actor;
+						}
+					);
+					
+					if (l_changed_ite == std::end(m_changed_actors))
+					{
+						m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::add, l_added_actor));
+					}
+					else
+					{
+						*l_changed_ite = std::make_tuple(_bc_scene_actor_operation::add, l_added_actor);
+					}
+				}
+
+				m_added_actors.clear();
+				m_added_actors.shrink_to_fit();
+
+				for (auto& l_to_removed_actor : m_to_remove_actors)
+				{
+					m_changed_actors.push_back(l_to_removed_actor);
+				}
+
 				m_to_remove_actors.clear();
 				
 				const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), m_changed_actors.size() / 10U + 1);
-				
 				core::bc_concurrency::concurrent_for_each
 				(
 					l_num_thread,
@@ -290,19 +321,30 @@ namespace black_cat
 						case _bc_scene_actor_operation::update:
 							_update_actor(std::get<bc_actor>(p_actor));
 							break;
-						case _bc_scene_actor_operation::remove:
-							_remove_actor_event(_bc_scene_actor_remove_state::to_remove_from_graph, std::get<bc_actor>(p_actor));
+						case _bc_scene_actor_operation::remove_event:
+							_send_actor_remove_event(_bc_scene_actor_operation::remove_from_graph, std::get<bc_actor>(p_actor));
+							break;
+						case _bc_scene_actor_operation::remove_from_graph:
+							_remove_actor(_bc_scene_actor_operation::remove_from_graph, std::get<bc_actor>(p_actor));
+							break;
+						case _bc_scene_actor_operation::removed_from_graph:
+							_remove_actor(_bc_scene_actor_operation::removed_from_graph, std::get<bc_actor>(p_actor));
 							break;
 						default:
 							BC_ASSERT(false);
 						}
 					}
 				);
-				
-				m_changed_actors.clear();
-				m_changed_actors.shrink_to_fit();
-			}
 
+				m_changed_actors.clear();
+				
+				/*for (auto& l_to_removed_actor : m_to_remove_actors)
+				{
+					_remove_actor(std::get<_bc_scene_actor_remove_state>(l_to_removed_actor), std::get<bc_actor>(l_to_removed_actor));
+				}
+				m_to_remove_actors.clear();*/
+			}
+			
 			m_scene_graph.update(p_clock);
 		}
 
@@ -327,7 +369,7 @@ namespace black_cat
 			const bool l_added = m_scene_graph.add_actor(p_actor);
 			if (!l_added)
 			{
-				_remove_actor_event(_bc_scene_actor_remove_state::removed_from_graph, p_actor);
+				_send_actor_remove_event(_bc_scene_actor_operation::removed_from_graph, p_actor);
 				return;
 			}
 
@@ -339,11 +381,11 @@ namespace black_cat
 			const bool l_updated = m_scene_graph.update_actor(p_actor);
 			if (!l_updated)
 			{
-				_remove_actor_event(_bc_scene_actor_remove_state::removed_from_graph, p_actor);
+				_send_actor_remove_event(_bc_scene_actor_operation::removed_from_graph, p_actor);
 			}
 		}
 
-		void bc_scene::_remove_actor_event(_bc_scene_actor_remove_state p_state, bc_actor& p_actor)
+		void bc_scene::_send_actor_remove_event(_bc_scene_actor_operation p_state, bc_actor& p_actor)
 		{
 			p_actor.add_event(bc_removed_from_scene_actor_event(*this));
 			
@@ -353,9 +395,9 @@ namespace black_cat
 			}
 		}
 
-		void bc_scene::_remove_actor(_bc_scene_actor_remove_state p_state, bc_actor& p_actor)
+		void bc_scene::_remove_actor(_bc_scene_actor_operation p_state, bc_actor& p_actor)
 		{
-			if(p_state != _bc_scene_actor_remove_state::removed_from_graph)
+			if(p_state != _bc_scene_actor_operation::removed_from_graph)
 			{
 				const bool l_removed = m_scene_graph.remove_actor(p_actor);
 				BC_ASSERT(l_removed);

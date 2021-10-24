@@ -60,7 +60,7 @@ namespace black_cat
 			}
 
 			platform::bc_app_event_key l_event(l_key, platform::bc_key_state::pressing);
-			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
+			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
 
 			emit mousePressed(p_event);
 		}
@@ -85,7 +85,7 @@ namespace black_cat
 			}
 
 			platform::bc_app_event_key l_event(l_key, platform::bc_key_state::releasing);
-			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
+			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
 
 			emit mouseReleased(p_event);
 		}
@@ -99,7 +99,7 @@ namespace black_cat
 			l_pointing_state.m_dy = p_event->globalY() - m_last_mouse_y;
 
 			platform::bc_app_event_pointing l_event(l_pointing_state);
-			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
+			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
 
 			m_last_mouse_x = p_event->globalX();
 			m_last_mouse_y = p_event->globalY();
@@ -111,10 +111,10 @@ namespace black_cat
 		{
 			platform::bc_app_event_key l_event = platform::bc_app_event_key
 			(
-				static_cast< platform::bc_key >(p_event->nativeVirtualKey()),
+				static_cast<platform::bc_key>(p_event->nativeVirtualKey()),
 				platform::bc_key_state::pressing
 			);
-			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
+			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
 		}
 
 		void bc_widget_d3d_output::keyReleaseEvent(QKeyEvent* p_event)
@@ -129,7 +129,7 @@ namespace black_cat
 				static_cast<platform::bc_key>(p_event->nativeVirtualKey()),
 				platform::bc_key_state::releasing
 			);
-			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
+			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
 		}
 
 		void bc_widget_d3d_output::resizeEvent(QResizeEvent* p_resize)
@@ -141,17 +141,17 @@ namespace black_cat
 				p_resize->size().height(),
 				false
 			);
-			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
+			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
 		}
 
 		void bc_widget_d3d_output::focus_event(QFocusEvent* p_event)
 		{
 			platform::bc_app_event_window_focus l_event
 			(
-				reinterpret_cast< platform::bc_window_id >(m_win_id),
+				reinterpret_cast<platform::bc_window_id>(m_win_id),
 				p_event->gotFocus()
 			);
-			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
+			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
 		}
 
 		void bc_widget_d3d_output::window_state_change_event(QWindowStateChangeEvent* p_event, Qt::WindowStates p_window_state)
@@ -170,16 +170,16 @@ namespace black_cat
 
 			platform::bc_app_event_window_state l_event = platform::bc_app_event_window_state
 			(
-				reinterpret_cast< platform::bc_window_id >(m_win_id),
+				reinterpret_cast<platform::bc_window_id>(m_win_id),
 				l_state
 			);
-			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
+			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
 		}
 
-		void bc_widget_d3d_output::close_event(QCloseEvent* event)
+		void bc_widget_d3d_output::close_event(QCloseEvent* p_event)
 		{
 			platform::bc_app_event_window_close l_event(reinterpret_cast<platform::bc_window_id>(m_win_id));
-			core::bc_get_service< core::bc_event_manager >()->queue_event(l_event, 0);
+			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
 		}
 	}
 }

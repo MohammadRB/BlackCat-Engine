@@ -48,7 +48,7 @@ namespace black_cat
 
 		void bc_counter_value_manager::add_counter(const bcCHAR* p_name, bc_wstring p_value)
 		{
-			m_container[m_write_container].insert(std::make_pair(p_name, std::move(p_value)));
+			m_container[m_write_container].insert_or_assign(p_name, std::move(p_value));
 		}
 
 		void bc_counter_value_manager::add_counter(const bcCHAR* p_name, bcFLOAT p_value)
@@ -58,14 +58,28 @@ namespace black_cat
 
 		bc_counter_value_manager::const_iterator bc_counter_value_manager::find(const bcCHAR* p_name) const noexcept
 		{
-			return m_container[m_read_container].find(p_name);
+			const auto l_ite = m_container[m_read_container].find(p_name);
+			if(l_ite == std::cend(m_container[m_read_container]))
+			{
+				return l_ite;
+			}
+
+			if(l_ite->second.empty())
+			{
+				return std::cend(m_container[m_read_container]);
+			}
+
+			return l_ite;
 		}
 
 		bool bc_counter_value_manager::_event_handler(bci_event& p_event)
 		{
 			if (bci_message::is<bc_event_frame_swap>(p_event))
 			{
-				m_container[m_read_container].clear();
+				for(auto& [l_key, l_value] : m_container[m_read_container])
+				{
+					l_value.clear();
+				}
 
 				m_read_container = m_write_container;
 				m_write_container = (m_read_container + 1) % 2;

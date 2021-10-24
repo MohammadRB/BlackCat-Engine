@@ -52,7 +52,7 @@ namespace black_cat
 
 			void window_state_change_event(QWindowStateChangeEvent* p_event, Qt::WindowStates p_window_state);
 
-			void close_event(QCloseEvent* event);
+			void close_event(QCloseEvent* p_event);
 
 		private:
 			HWND m_win_id;

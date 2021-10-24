@@ -209,12 +209,13 @@ namespace black_cat
 		l_xbot_controller->shoot_weapon();
 	}
 
-	void bc_xbot_weapon_shoot_network_message::serialize_message(const game::bc_network_message_serialization_context & p_context)
+	void bc_xbot_weapon_shoot_network_message::serialize_message(const game::bc_network_message_serialization_context& p_context)
 	{
 		p_context.m_params.add("net_id", core::bc_any(m_actor_net_id));
+		core::bc_log(core::bc_log_type::debug) << "shoot sent" << core::bc_lend;
 	}
 
-	void bc_xbot_weapon_shoot_network_message::deserialize_message(const game::bc_network_message_deserialization_context & p_context)
+	void bc_xbot_weapon_shoot_network_message::deserialize_message(const game::bc_network_message_deserialization_context& p_context)
 	{
 		const auto* l_net_id = p_context.m_params.find("net_id")->second.as<game::bc_actor_network_id>();
 		if (!l_net_id)

@@ -67,7 +67,10 @@ namespace black_cat
 
 		void bc_editor_app::closeEvent(QCloseEvent* p_event)
 		{
-			m_d3d_widget->close_event(p_event);
+			if(m_render_app_thread.is_still_running())
+			{
+				m_d3d_widget->close_event(p_event);
+			}
 		}
 
 		void bc_editor_app::changeEvent(QEvent* p_event)
@@ -212,8 +215,8 @@ namespace black_cat
 		{
 			if(!m_render_app_thread.is_still_running())
 			{
-				auto l_exit_code = m_render_app_thread.get_result_code();
-				QMessageBox::information(this, "Exit Code", QString("Engine has exited with code %1").arg(QString::number(l_exit_code)));
+				const auto l_exit_code = m_render_app_thread.get_result_code();
+				QMessageBox::information(this, "Engine exited", QString("Engine exited with code %1").arg(QString::number(l_exit_code)));
 
 				close();
 				return;

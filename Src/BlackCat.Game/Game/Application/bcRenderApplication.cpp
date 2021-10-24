@@ -251,6 +251,8 @@ namespace black_cat
 						const auto l_sleep_time = (l_render_rate_fixed_elapsed - l_frame_elapsed) - l_sleep_time_error;
 						if (l_sleep_time <= 0)
 						{
+							// If sleep error become a large number once, it will zero sleep time forever
+							l_sleep_time_error = 0;
 							continue;
 						}
 						

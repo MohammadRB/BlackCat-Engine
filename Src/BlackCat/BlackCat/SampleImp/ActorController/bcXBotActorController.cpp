@@ -173,7 +173,6 @@ namespace black_cat
 	void bc_xbot_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		m_scene = &p_scene;
-		
 		const auto* l_mediate_component = p_context.m_actor.get_component<game::bc_mediate_component>();
 		auto* l_rigid_controller_component = p_context.m_actor.get_component<game::bc_rigid_controller_component>();
 		const auto l_bound_box_extends = l_mediate_component->get_bound_box().get_half_extends();
@@ -196,7 +195,7 @@ namespace black_cat
 			auto l_px_controller = m_scene->get_px_scene().create_ccontroller(l_px_controller_desc);
 			l_px_controller->set_foot_position(m_position - m_local_origin);
 
-			physics::bc_rigid_dynamic l_px_controller_actor = l_px_controller->get_actor();
+			auto l_px_controller_actor = l_px_controller->get_actor();
 			physics::bc_shape l_px_controller_shape;
 
 			l_px_controller_actor.get_shapes(&l_px_controller_shape, 1);

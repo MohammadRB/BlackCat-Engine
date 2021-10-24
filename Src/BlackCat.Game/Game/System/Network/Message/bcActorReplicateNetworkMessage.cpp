@@ -74,25 +74,12 @@ namespace black_cat
 		{
 			p_context.m_params.reserve(10);
 
-			/*const bcCHAR* l_entity_name;
-
-			if(p_context.m_visitor.get_network_type() == bc_network_type::server)
-			{
-				const auto* l_network_component = m_actor.get_component<bc_network_component>();
-				l_entity_name = l_network_component->get_network_entity_name();
-			}
-			else
-			{
-				const auto* l_mediate_component = m_actor.get_component<bc_mediate_component>();
-				l_entity_name = l_mediate_component->get_entity_name();
-			}*/
-
 			const auto* l_network_component = m_actor.get_component<bc_network_component>();
 			const bcCHAR* l_entity_name = l_network_component->get_network_entity_name();
 			p_context.m_params.add("ent", core::bc_any(core::bc_string(l_entity_name)));
 
 			core::bc_vector_frame<bci_actor_component*> l_components(10);
-			const bc_actor_component_network_write_context l_context(p_context.m_params, m_actor);
+			const bc_actor_component_network_write_context l_context(p_context.m_params, m_actor, true);
 			
 			bc_actor_write_network_instance(l_components, l_context);
 		}
@@ -115,7 +102,7 @@ namespace black_cat
 			m_actor = m_deserialization_visitor->create_actor(l_entity_name->c_str());
 
 			core::bc_vector_frame<bci_actor_component*> l_components(10);
-			bc_actor_load_network_instance(l_components, bc_actor_component_network_load_context(m_deserialization_values, m_actor));
+			bc_actor_load_network_instance(l_components, bc_actor_component_network_load_context(m_deserialization_values, m_actor, true, false));
 
 			return true;
 		}

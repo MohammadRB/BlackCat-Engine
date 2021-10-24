@@ -99,28 +99,32 @@ namespace black_cat
 
 		struct bc_actor_component_network_load_context
 		{
-			bc_actor_component_network_load_context(const core::bc_json_key_value& p_parameters, bc_actor& p_actor, bool p_is_self_replicated = false)
+			bc_actor_component_network_load_context(const core::bc_json_key_value& p_parameters, bc_actor& p_actor, bool p_is_replication_load, bool p_is_self_replicated)
 				: m_parameters(p_parameters),
+				m_actor(p_actor),
 				m_is_self_replicated(p_is_self_replicated),
-				m_actor(p_actor)
+				m_is_replication_load(p_is_replication_load)
 			{
 			}
 
 			const core::bc_json_key_value& m_parameters;
-			bool m_is_self_replicated;
 			bc_actor& m_actor;
+			bool m_is_self_replicated;
+			bool m_is_replication_load;
 		};
 
 		struct bc_actor_component_network_write_context
 		{
-			bc_actor_component_network_write_context(core::bc_json_key_value& p_parameters, bc_actor& p_actor)
+			bc_actor_component_network_write_context(core::bc_json_key_value& p_parameters, bc_actor& p_actor, bool p_is_replication_write)
 				: m_parameters(p_parameters),
-				m_actor(p_actor)
+				m_actor(p_actor),
+				m_is_replication_write(p_is_replication_write)
 			{
 			}
 
 			core::bc_json_key_value& m_parameters;
 			bc_actor& m_actor;
+			bool m_is_replication_write;
 		};
 
 		struct bc_actor_component_update_content

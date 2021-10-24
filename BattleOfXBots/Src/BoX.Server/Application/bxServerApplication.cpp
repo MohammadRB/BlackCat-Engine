@@ -63,31 +63,13 @@ namespace box
 
 	void bx_server_application::application_load_content(core::bc_content_stream_manager& p_stream_manager)
 	{
+		auto& l_script_system = m_game_system->get_script_system();
+		l_script_system.run_script_throw(game::bc_script_context::app, L"server.start(6699);");
+		l_script_system.run_script_throw(game::bc_script_context::app, L"server.load_scene(\"test\");");
 	}
 
-	bcFLOAT g_elapsed_since_last = 0;
 	void bx_server_application::application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update)
 	{
-		if(!m_server_started)
-		{
-			auto& l_script_system = m_game_system->get_script_system();
-			l_script_system.run_script_throw(game::bc_script_context::app, L"server.start(6699);");
-			l_script_system.run_script_throw(game::bc_script_context::app, L"server.load_scene(\"test\");");
-
-			m_server_started = true;
-		}
-		
-		/*g_elapsed_since_last += p_clock.m_elapsed_second;
-		if(g_elapsed_since_last > 20)
-		{
-			g_elapsed_since_last = 0;
-			
-			auto* l_scene = m_game_system->get_scene();
-			auto l_actor = l_scene->create_actor("box-server", core::bc_matrix4f::translation_matrix({ 44,33,-870 }));
-			auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
-			auto l_rigid = l_rigid_component->get_body();
-			l_rigid.set_linear_velocity(core::bc_vector3f{ .17, .05, .87 } * 40);
-		}*/
 	}
 
 	void bx_server_application::application_render(core_platform::bc_clock::update_param p_clock)

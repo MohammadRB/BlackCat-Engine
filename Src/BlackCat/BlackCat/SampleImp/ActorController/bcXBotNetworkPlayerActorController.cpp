@@ -47,6 +47,15 @@ namespace black_cat
 		m_network_walk_pressed = (*l_keys)[4].as_throw<bool>();
 		
 		get_network_component().add_extrapolating_value("lk_dir", m_network_look_direction);
+
+		if(p_context.m_is_replication_load)
+		{
+			const auto l_weapon = p_context.m_parameters.find("wpn");
+			if(l_weapon != std::end(p_context.m_parameters))
+			{
+				m_initial_attached_weapon = core::bc_make_unique<core::bc_string>(std::move(l_weapon->second.as_throw<core::bc_string>()));
+			}
+		}
 	}
 
 	void bc_xbot_network_player_actor_controller::write_origin_network_instance(const game::bc_actor_component_network_write_context& p_context)
@@ -70,11 +79,30 @@ namespace black_cat
 				core::bc_any(m_network_walk_pressed),
 			}))
 		);
+
+		if (p_context.m_is_replication_write)
+		{
+			const auto* l_weapon = get_weapon();
+			if (l_weapon)
+			{
+				const auto* l_mediate_component = l_weapon->m_actor.get_component<game::bc_mediate_component>();
+				core::bc_string l_weapon_entity_name = l_mediate_component->get_entity_name();
+				p_context.m_parameters.add("wpn", core::bc_any(l_weapon_entity_name));
+			}
+		}
 	}
 
 	void bc_xbot_network_player_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context,game::bc_scene& p_scene)
 	{
 		bc_xbot_actor_controller::added_to_scene(p_context, p_scene);
+
+		if(m_initial_attached_weapon)
+		{
+			auto l_weapon_actor = get_scene()->create_actor(m_initial_attached_weapon->c_str(), core::bc_matrix4f::translation_matrix(get_position()));
+			bc_xbot_actor_controller::attach_weapon(l_weapon_actor);
+			
+			m_initial_attached_weapon.reset();
+		}
 	}
 
 	void bc_xbot_network_player_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)

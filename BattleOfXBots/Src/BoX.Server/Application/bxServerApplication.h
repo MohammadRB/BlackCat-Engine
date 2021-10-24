@@ -58,11 +58,9 @@ namespace box
 		
 		void error_occurred(const platform::bc_network_address* p_client, const bc_network_exception* p_exception) override;
 
+		const bcECHAR* m_app_name{ nullptr };
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
 		platform::bc_script_context* m_server_script_context = nullptr;
 		platform::bc_script_object_ref m_server_script_object;
-
-		bool m_server_started{ false };
-		const bcECHAR* m_app_name{ nullptr };
 	};
 }

@@ -41,7 +41,7 @@ namespace black_cat
 			m_rtt_sampler(100),
 			m_remote_rtt(100),
 			m_last_executed_message_id(0),
-			m_executed_messages(25),
+			m_executed_messages(50),
 			m_messages_buffer(p_network_system)
 		{
 			m_socket.reset(&bc_client_socket_state_machine::get_socket());
@@ -366,20 +366,31 @@ namespace black_cat
 
 		void bc_network_client_manager::_retry_messages_waiting_acknowledgment(const core_platform::bc_clock::update_param& p_clock)
 		{
-			const auto l_rtt_time = m_rtt_sampler.average_value() / 2;
-			for(auto& l_msg : m_messages_waiting_acknowledgment)
-			{
-				auto l_rtt_multiplier = 4;
+			const auto l_rtt_time = m_rtt_sampler.average_value();
+			auto l_rtt_multiplier = 2;
 #ifdef BC_DEBUG
-				l_rtt_multiplier *= 3;
+			l_rtt_multiplier *= 3;
 #endif
-				
+			
+			for(auto l_ite = 0U; l_ite < m_messages_waiting_acknowledgment.size(); ++l_ite)
+			{
+				auto& l_msg = m_messages_waiting_acknowledgment[l_ite];
 				l_msg.m_elapsed += p_clock.m_elapsed;
-				if (l_msg.m_elapsed > l_rtt_time* l_rtt_multiplier)
+				
+				if (l_msg.m_elapsed > l_rtt_time * l_rtt_multiplier)
 				{
+					const bool l_is_ping_message = core::bci_message::is<bc_ping_network_message>(*l_msg.m_message);
+					if(l_is_ping_message)
+					{
+						// No need to retry ping messages
+						const auto l_ite1 = std::begin(m_messages_waiting_acknowledgment) + l_ite;
+						m_messages_waiting_acknowledgment.erase(l_ite1);
+						continue;
+					}
+
 					l_msg.m_elapsed = 0;
 					l_msg.m_message->set_is_retry();
-					
+
 					m_messages.push_back(l_msg.m_message);
 				}
 			}
@@ -511,7 +522,13 @@ namespace black_cat
 				{
 					auto l_ack_data = l_message->get_acknowledgment_data();
 					send_message(bc_acknowledge_network_message(l_message_id, l_ack_data));
-					m_executed_messages.add_acknowledged_message(l_message_id, std::move(l_ack_data));
+
+					// ping messages are not retried, so there is no need to keep track of them
+					const bool l_is_ping_message = core::bci_message::is<bc_ping_network_message>(*l_message);
+					if(!l_is_ping_message)
+					{
+						m_executed_messages.add_acknowledged_message(l_message_id, std::move(l_ack_data));
+					}
 				}
 				
 				l_max_message_id = std::max(l_max_message_id, l_message_id);

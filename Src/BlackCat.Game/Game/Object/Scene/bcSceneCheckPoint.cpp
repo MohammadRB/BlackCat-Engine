@@ -37,13 +37,14 @@ namespace black_cat
 			return l_result;
 		}
 
-		void bc_scene_check_point::import_dynamic_actors(core::bc_vector_frame<bc_actor>& p_actors)
+		void bc_scene_check_point::remove_dynamic_actors()
 		{
 			for (bc_actor& l_actor : m_scene->get_scene_graph())
 			{
 				auto* l_rigid_body_component = l_actor.get_component<bc_rigid_body_component>();
 				if (l_rigid_body_component && l_rigid_body_component->get_body_type() == physics::bc_actor_type::rigid_dynamic)
 				{
+					// TODO What if actor is controlled by another actor and will be removed by that actor?
 					m_scene->remove_actor(l_actor);
 				}
 			}

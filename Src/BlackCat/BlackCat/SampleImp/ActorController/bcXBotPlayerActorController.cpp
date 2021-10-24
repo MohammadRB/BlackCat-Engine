@@ -117,6 +117,17 @@ namespace black_cat
 				core::bc_any(l_velocity.m_walk_velocity > 0.f),
 			}))
 		);
+
+		if(p_context.m_is_replication_write)
+		{
+			const auto* l_weapon = get_weapon();
+			if(l_weapon)
+			{
+				const auto* l_mediate_component = l_weapon->m_actor.get_component<game::bc_mediate_component>();
+				core::bc_string l_weapon_entity_name = l_mediate_component->get_entity_name();
+				p_context.m_parameters.add("wpn", core::bc_any(l_weapon_entity_name));
+			}
+		}
 	}
 	
 	void bc_xbot_player_actor_controller::write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context)
@@ -177,12 +188,6 @@ namespace black_cat
 		{
 			m_input_system->remove_camera(m_camera);
 			m_camera = nullptr;
-
-			auto* l_weapon = get_weapon();
-			if (l_weapon)
-			{
-				p_scene.remove_actor(l_weapon->m_actor);
-			}
 		}
 	}
 

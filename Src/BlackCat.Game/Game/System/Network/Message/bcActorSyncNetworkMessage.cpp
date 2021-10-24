@@ -41,7 +41,7 @@ namespace black_cat
 			p_context.m_params.reserve(10);
 
 			core::bc_vector_frame<bci_actor_component*> l_components(10);
-			const bc_actor_component_network_write_context l_context(p_context.m_params, m_actor);
+			const bc_actor_component_network_write_context l_context(p_context.m_params, m_actor, false);
 
 			bc_actor_write_network_instance(l_components, l_context);
 		}
@@ -65,7 +65,7 @@ namespace black_cat
 			}
 			
 			core::bc_vector_frame<bci_actor_component*> l_components(10);
-			const bc_actor_component_network_load_context l_context(p_context.m_params, m_actor, l_is_self_replicated);
+			const bc_actor_component_network_load_context l_context(p_context.m_params, m_actor, false, l_is_self_replicated);
 			
 			bc_actor_load_network_instance(l_components, l_context);
 		}

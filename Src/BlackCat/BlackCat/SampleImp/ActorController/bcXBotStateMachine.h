@@ -508,17 +508,14 @@ namespace black_cat
 		core::bc_matrix3f l_look_rotation;
 		core::bc_vector3f l_right_vector;
 		core::bc_vector3f l_left_vector;
-
+		
 		if constexpr (graphic::bc_render_api_info::use_left_handed())
 		{
 			l_look_rotation.rotation_y_lh
 			(
 				core::bc_to_radian
 				(
-					static_cast<bcFLOAT>(p_update_params.m_look_delta_x) *
-					p_update_params.m_look_velocity *
-					m_state.m_look_speed *
-					p_update_params.m_clock.m_elapsed_second
+					static_cast<bcFLOAT>(p_update_params.m_look_delta_x) * p_update_params.m_look_velocity * m_state.m_look_speed * p_update_params.m_clock.m_elapsed_second
 				)
 			);
 		}
@@ -528,10 +525,7 @@ namespace black_cat
 			(
 				core::bc_to_radian
 				(
-					static_cast<bcFLOAT>(p_update_params.m_look_delta_x) *
-					p_update_params.m_look_velocity *
-					m_state.m_look_speed *
-					p_update_params.m_clock.m_elapsed_second
+					static_cast<bcFLOAT>(p_update_params.m_look_delta_x) * p_update_params.m_look_velocity * m_state.m_look_speed * p_update_params.m_clock.m_elapsed_second
 				)
 			);
 		}
