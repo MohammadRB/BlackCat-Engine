@@ -17,7 +17,7 @@ namespace black_cat
 			template<typename T>
 			void operator()(T* p_pointer) const noexcept
 			{
-				static_assert(sizeof(T) > 0, "Can not delete an incomplete type");
+				static_assert(sizeof(T)> 0, "Can not delete an incomplete type");
 				BC_DELETE(p_pointer);
 			}
 		};
@@ -43,7 +43,7 @@ namespace black_cat
 		template <typename T, typename TDeleter = bc_default_deleter>
 		class bc_unique_ptr : TDeleter
 		{
-			template< typename T1, typename TDeleter1 >
+			template<typename T1, typename TDeleter1>
 			friend class bc_unique_ptr;
 
 		public:
@@ -51,10 +51,10 @@ namespace black_cat
 			using pointer = T*;
 			using element_type = T;
 			using deleter_type = TDeleter;
-			template< typename TOther >
+			template<typename TOther>
 			struct rebind
 			{
-				using other = bc_unique_ptr< TOther, deleter_type >;
+				using other = bc_unique_ptr<TOther, deleter_type>;
 			};
 
 		public:
@@ -91,7 +91,7 @@ namespace black_cat
 				_assign(std::move(p_other));
 			}
 
-			template< typename T1, typename TDeleter1 >
+			template<typename T1, typename TDeleter1>
 			bc_unique_ptr(bc_unique_ptr<T1, TDeleter1>&& p_other) noexcept
 				: TDeleter(),
 				m_pointer(nullptr)
@@ -113,7 +113,7 @@ namespace black_cat
 				return *this;
 			}
 
-			template< typename T1, typename TDeleter1 >
+			template<typename T1, typename TDeleter1>
 			this_type& operator =(bc_unique_ptr<T1, TDeleter1>&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
@@ -132,7 +132,7 @@ namespace black_cat
 			T* release() noexcept
 			{
 				T* lPointer = get();
-				_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
+				_unregister_pointer(reinterpret_cast<void**>(&m_pointer));
 				m_pointer = nullptr;
 
 				return lPointer;
@@ -153,14 +153,14 @@ namespace black_cat
 			{
 				using std::swap;
 
-				_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
-				_unregister_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
+				_unregister_pointer(reinterpret_cast<void**>(&m_pointer));
+				_unregister_pointer(reinterpret_cast<void**>(&p_other.m_pointer));
 
 				std::swap(m_pointer, p_other.m_pointer);
 				swap(static_cast<TDeleter&>(*this), static_cast<TDeleter&>(p_other));
 
-				_register_pointer(reinterpret_cast< void** >(&m_pointer));
-				_register_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
+				_register_pointer(reinterpret_cast<void**>(&m_pointer));
+				_register_pointer(reinterpret_cast<void**>(&p_other.m_pointer));
 			}
 
 			T* get() const noexcept
@@ -170,7 +170,7 @@ namespace black_cat
 
 			deleter_type get_deleter() const noexcept
 			{
-				return static_cast< TDeleter >(*this);
+				return static_cast<TDeleter>(*this);
 			}
 
 			explicit operator bool() const noexcept
@@ -192,12 +192,12 @@ namespace black_cat
 			void _construct(T* p_pointer)
 			{
 				m_pointer = p_pointer;
-				_register_pointer(reinterpret_cast< void** >(&m_pointer));
+				_register_pointer(reinterpret_cast<void**>(&m_pointer));
 			}
 
 			void _destruct()
 			{
-				_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
+				_unregister_pointer(reinterpret_cast<void**>(&m_pointer));
 
 				static_cast<TDeleter&>(*this)(m_pointer);
 				m_pointer = nullptr;
@@ -209,7 +209,7 @@ namespace black_cat
 				if (this != reinterpret_cast<bc_unique_ptr<T, TDeleter>*>(&p_other))
 				{
 					reset(static_cast<T*>(p_other.release()));
-					static_cast<TDeleter&>(*this) = static_cast< deleter_type >(p_other.get_deleter());
+					static_cast<TDeleter&>(*this) = static_cast<deleter_type>(p_other.get_deleter());
 
 					p_other.m_pointer = nullptr;
 				}
@@ -233,7 +233,7 @@ namespace black_cat
 		template<class T1, class D1, class T2, class D2>
 		bool operator <(const bc_unique_ptr<T1, D1>& p_first, const bc_unique_ptr<T2, D2>& p_second)
 		{
-			return p_first.get() < p_second.get();
+			return p_first.get() <p_second.get();
 		}
 
 		template<class T1, class D1, class T2, class D2>
@@ -243,15 +243,15 @@ namespace black_cat
 		}
 		
 		template<class T1, class D1, class T2, class D2>
-		bool operator >(const bc_unique_ptr<T1, D1>& p_first, const bc_unique_ptr<T2, D2>& p_second)
+		bool operator>(const bc_unique_ptr<T1, D1>& p_first, const bc_unique_ptr<T2, D2>& p_second)
 		{
-			return p_first.get() > p_second.get();
+			return p_first.get()> p_second.get();
 		}
 		
 		template<class T1, class D1, class T2, class D2>
-		bool operator >=(const bc_unique_ptr<T1, D1>& p_first, const bc_unique_ptr<T2, D2>& p_second)
+		bool operator>=(const bc_unique_ptr<T1, D1>& p_first, const bc_unique_ptr<T2, D2>& p_second)
 		{
-			return p_first.get() >= p_second.get();
+			return p_first.get()>= p_second.get();
 		}
 
 		template <class T, class D>
@@ -281,13 +281,13 @@ namespace black_cat
 		template <class T, class D>
 		bool operator <(const bc_unique_ptr<T, D>& p_first, std::nullptr_t)
 		{
-			return p_first.get() < nullptr;
+			return p_first.get() <nullptr;
 		}
 
 		template <class T, class D>
 		bool operator <(std::nullptr_t, const bc_unique_ptr<T, D>& p_first)
 		{
-			return p_first.get() < nullptr;
+			return p_first.get() <nullptr;
 		}
 
 		template <class T, class D>
@@ -303,27 +303,27 @@ namespace black_cat
 		}
 
 		template <class T, class D>
-		bool operator >(const bc_unique_ptr<T, D>& p_first, std::nullptr_t)
+		bool operator>(const bc_unique_ptr<T, D>& p_first, std::nullptr_t)
 		{
-			return p_first.get() > nullptr;
+			return p_first.get()> nullptr;
 		}
 
 		template <class T, class D>
-		bool operator >(std::nullptr_t, const bc_unique_ptr<T, D>& p_first)
+		bool operator>(std::nullptr_t, const bc_unique_ptr<T, D>& p_first)
 		{
-			return p_first.get() > nullptr;
+			return p_first.get()> nullptr;
 		}
 
 		template <class T, class D>
-		bool operator >=(const bc_unique_ptr<T, D>& p_first, std::nullptr_t)
+		bool operator>=(const bc_unique_ptr<T, D>& p_first, std::nullptr_t)
 		{
-			return p_first.get() >= nullptr;
+			return p_first.get()>= nullptr;
 		}
 
 		template <class T, class D>
-		bool operator >=(std::nullptr_t, const bc_unique_ptr<T, D>& p_first)
+		bool operator>=(std::nullptr_t, const bc_unique_ptr<T, D>& p_first)
 		{
-			return p_first.get() >= nullptr;
+			return p_first.get()>= nullptr;
 		}
 
 #pragma endregion
@@ -333,7 +333,7 @@ namespace black_cat
 		template <typename T>
 		class bc_shared_ptr
 		{
-			template< typename T1 >
+			template<typename T1>
 			friend class bc_shared_ptr;
 
 		public:
@@ -341,12 +341,12 @@ namespace black_cat
 			using pointer = T*;
 			using element_type = T;
 			class meta_data;
-			template< typename TDeleter > 
+			template<typename TDeleter> 
 			class meta_data_imp;
-			template< typename TOther >
+			template<typename TOther>
 			struct rebind
 			{
-				using other = bc_shared_ptr< TOther >;
+				using other = bc_shared_ptr<TOther>;
 			};
 
 		public:
@@ -362,7 +362,7 @@ namespace black_cat
 			{
 			}
 
-			template< typename TDeleter >
+			template<typename TDeleter>
 			bc_shared_ptr(std::nullptr_t, TDeleter p_deleter)
 			{
 				_construct(nullptr, p_deleter);
@@ -373,19 +373,19 @@ namespace black_cat
 				_construct(p_pointer, bc_default_deleter());
 			}
 
-			template< typename TDeleter >
+			template<typename TDeleter>
 			explicit bc_shared_ptr(pointer p_pointer, TDeleter p_deleter)
 			{
 				_construct(p_pointer, p_deleter);
 			}
 
-			template< typename T1 >
+			template<typename T1>
 			explicit bc_shared_ptr(T1* p_pointer)
 			{
 				_construct(static_cast<T*>(p_pointer), bc_default_deleter());
 			}
 
-			template< typename T1, typename TDeleter >
+			template<typename T1, typename TDeleter>
 			explicit bc_shared_ptr(T1* p_pointer, TDeleter p_deleter)
 			{
 				_construct(static_cast<T*>(p_pointer), p_deleter);
@@ -479,14 +479,14 @@ namespace black_cat
 				_destruct();
 			}
 
-			template< typename T1 >
+			template<typename T1>
 			void reset(T1* p_pointer)
 			{
 				_destruct();
 				_construct(p_pointer, bc_default_deleter());
 			}
 
-			template< typename T1, typename TDeleter >
+			template<typename T1, typename TDeleter>
 			void reset(T1* p_pointer, TDeleter p_deleter)
 			{
 				_destruct();
@@ -495,14 +495,14 @@ namespace black_cat
 
 			void swap(this_type& p_other) noexcept
 			{
-				_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
-				_unregister_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
+				_unregister_pointer(reinterpret_cast<void**>(&m_pointer));
+				_unregister_pointer(reinterpret_cast<void**>(&p_other.m_pointer));
 
 				std::swap(m_pointer, p_other.m_pointer);
 				std::swap(m_meta, p_other.m_meta);
 
-				_register_pointer(reinterpret_cast< void** >(&m_pointer));
-				_register_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
+				_register_pointer(reinterpret_cast<void**>(&m_pointer));
+				_register_pointer(reinterpret_cast<void**>(&p_other.m_pointer));
 			}
 
 			pointer get() const noexcept
@@ -566,7 +566,7 @@ namespace black_cat
 				}
 			}
 
-			template< typename TDeleter >
+			template<typename TDeleter>
 			void _construct(pointer p_pointer, TDeleter p_deleter)
 			{
 				try
@@ -582,7 +582,7 @@ namespace black_cat
 
 				if (m_pointer)
 				{
-					_register_pointer(reinterpret_cast< void** >(&m_pointer));
+					_register_pointer(reinterpret_cast<void**>(&m_pointer));
 					_inc_reference_count();
 				}
 			}
@@ -594,14 +594,14 @@ namespace black_cat
 
 				if (m_pointer)
 				{
-					_register_pointer(reinterpret_cast< void** >(&m_pointer));
+					_register_pointer(reinterpret_cast<void**>(&m_pointer));
 					_inc_reference_count();
 				}
 			}
 
 			void _destruct()
 			{
-				_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
+				_unregister_pointer(reinterpret_cast<void**>(&m_pointer));
 				_dec_reference_count();
 			}
 
@@ -613,8 +613,8 @@ namespace black_cat
 					_destruct();
 					_construct
 					(
-						static_cast< T* >(const_cast< T1* >(p_other.m_pointer)),
-						reinterpret_cast<meta_data*>(const_cast< typename bc_shared_ptr< T1 >::meta_data* >(p_other.m_meta))
+						static_cast<T*>(const_cast<T1*>(p_other.m_pointer)),
+						reinterpret_cast<meta_data*>(const_cast<typename bc_shared_ptr<T1>::meta_data*>(p_other.m_meta))
 					);
 				}
 			}
@@ -683,8 +683,8 @@ namespace black_cat
 			bool m_is_shared;
 		};
 
-		template< typename T >
-		template< typename TDeleter >
+		template<typename T>
+		template<typename TDeleter>
 		class bc_shared_ptr<T>::meta_data_imp : public meta_data
 		{
 		public:
@@ -727,7 +727,7 @@ namespace black_cat
 		template<class T1, class T2>
 		bool operator <(const bc_shared_ptr<T1>& p_first, const bc_shared_ptr<T2>& p_second)
 		{
-			return p_first.get() < p_second.get();
+			return p_first.get() <p_second.get();
 		}
 
 		template<class T1, class T2>
@@ -737,15 +737,15 @@ namespace black_cat
 		}
 
 		template<class T1, class T2>
-		bool operator >(const bc_shared_ptr<T1>& p_first, const bc_shared_ptr<T2>& p_second)
+		bool operator>(const bc_shared_ptr<T1>& p_first, const bc_shared_ptr<T2>& p_second)
 		{
-			return p_first.get() > p_second.get();
+			return p_first.get()> p_second.get();
 		}
 
 		template<class T1, class T2>
-		bool operator >=(const bc_shared_ptr<T1>& p_first, const bc_shared_ptr<T2>& p_second)
+		bool operator>=(const bc_shared_ptr<T1>& p_first, const bc_shared_ptr<T2>& p_second)
 		{
-			return p_first.get() >= p_second.get();
+			return p_first.get()>= p_second.get();
 		}
 
 		template <class T>
@@ -775,13 +775,13 @@ namespace black_cat
 		template <class T>
 		bool operator <(const bc_shared_ptr<T>& p_first, std::nullptr_t)
 		{
-			return p_first.get() < nullptr;
+			return p_first.get() <nullptr;
 		}
 
 		template <class T>
 		bool operator <(std::nullptr_t, const bc_shared_ptr<T>& p_first)
 		{
-			return p_first.get() < nullptr;
+			return p_first.get() <nullptr;
 		}
 
 		template <class T>
@@ -797,27 +797,27 @@ namespace black_cat
 		}
 
 		template <class T>
-		bool operator >(const bc_shared_ptr<T>& p_first, std::nullptr_t)
+		bool operator>(const bc_shared_ptr<T>& p_first, std::nullptr_t)
 		{
-			return p_first.get() > nullptr;
+			return p_first.get()> nullptr;
 		}
 
 		template <class T>
-		bool operator >(std::nullptr_t, const bc_shared_ptr<T>& p_first)
+		bool operator>(std::nullptr_t, const bc_shared_ptr<T>& p_first)
 		{
-			return p_first.get() > nullptr;
+			return p_first.get()> nullptr;
 		}
 
 		template <class T>
-		bool operator >=(const bc_shared_ptr<T>& p_first, std::nullptr_t)
+		bool operator>=(const bc_shared_ptr<T>& p_first, std::nullptr_t)
 		{
-			return p_first.get() >= nullptr;
+			return p_first.get()>= nullptr;
 		}
 
 		template <class T>
-		bool operator >=(std::nullptr_t, const bc_shared_ptr<T>& p_first)
+		bool operator>=(std::nullptr_t, const bc_shared_ptr<T>& p_first)
 		{
-			return p_first.get() >= nullptr;
+			return p_first.get()>= nullptr;
 		}
 
 #pragma endregion
@@ -829,17 +829,17 @@ namespace black_cat
 		 * <b> Does not </b> provide auto clean-up after destruction
 		 * \tparam T 
 		 */
-		template < typename T >
+		template <typename T>
 		class bc_handle_ptr
 		{
-			template< typename T1 >
+			template<typename T1>
 			friend class bc_handle_ptr;
 
 		public:
-			template< typename TOther >
+			template<typename TOther>
 			struct rebind
 			{
-				using other = bc_handle_ptr< TOther >;
+				using other = bc_handle_ptr<TOther>;
 			};
 
 		public:
@@ -858,7 +858,7 @@ namespace black_cat
 				_construct(p_pointer);
 			}
 
-			template< typename T1 >
+			template<typename T1>
 			bc_handle_ptr(T1* p_pointer) noexcept
 				: bc_handle_ptr(static_cast<T*>(p_pointer))
 			{
@@ -937,7 +937,7 @@ namespace black_cat
 				return l_pointer;
 			}
 
-			template< typename T1 >
+			template<typename T1>
 			void reset(T1* p_pointer) noexcept
 			{
 				_destruct();
@@ -946,13 +946,13 @@ namespace black_cat
 
 			void swap(bc_handle_ptr<T>& p_other) noexcept
 			{
-				_unregister_pointer(reinterpret_cast< void** >(&m_pointer));
-				_unregister_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
+				_unregister_pointer(reinterpret_cast<void**>(&m_pointer));
+				_unregister_pointer(reinterpret_cast<void**>(&p_other.m_pointer));
 
 				std::swap(m_pointer, p_other.m_pointer);
 
-				_register_pointer(reinterpret_cast< void** >(&m_pointer));
-				_register_pointer(reinterpret_cast< void** >(&p_other.m_pointer));
+				_register_pointer(reinterpret_cast<void**>(&m_pointer));
+				_register_pointer(reinterpret_cast<void**>(&p_other.m_pointer));
 			}
 
 			T* get() const noexcept
@@ -996,7 +996,7 @@ namespace black_cat
 			template<typename T1>
 			void _assign(const bc_handle_ptr<T1>& p_other)
 			{
-				if (static_cast< const void* >(this) != static_cast< const void* >(&p_other)) // avoid self assignment
+				if (static_cast<const void*>(this) != static_cast<const void*>(&p_other)) // avoid self assignment
 				{
 					reset(p_other.get());
 				}
@@ -1005,7 +1005,7 @@ namespace black_cat
 			template<typename T1>
 			void _assign(bc_handle_ptr<T1>&& p_other)
 			{
-				if (static_cast< const void* >(this) != static_cast< const void* >(&p_other)) // avoid self assignment
+				if (static_cast<const void*>(this) != static_cast<const void*>(&p_other)) // avoid self assignment
 				{
 					reset(p_other.release());
 				}
@@ -1039,15 +1039,15 @@ namespace black_cat
 		}
 
 		template<class T1, class T2>
-		bool operator >(const bc_handle_ptr<T1>& p_first, const bc_handle_ptr<T2>& p_second)
+		bool operator>(const bc_handle_ptr<T1>& p_first, const bc_handle_ptr<T2>& p_second)
 		{
 			return p_first.get() > p_second.get();
 		}
 
 		template<class T1, class T2>
-		bool operator >=(const bc_handle_ptr<T1>& p_first, const bc_handle_ptr<T2>& p_second)
+		bool operator>=(const bc_handle_ptr<T1>& p_first, const bc_handle_ptr<T2>& p_second)
 		{
-			return p_first.get() >= p_second.get();
+			return p_first.get()>= p_second.get();
 		}
 
 		template <class T>
@@ -1099,71 +1099,119 @@ namespace black_cat
 		}
 
 		template <class T>
-		bool operator >(const bc_handle_ptr<T>& p_first, std::nullptr_t)
+		bool operator>(const bc_handle_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() > nullptr;
 		}
 
 		template <class T>
-		bool operator >(std::nullptr_t, const bc_handle_ptr<T>& p_first)
+		bool operator>(std::nullptr_t, const bc_handle_ptr<T>& p_first)
 		{
 			return p_first.get() > nullptr;
 		}
 
 		template <class T>
-		bool operator >=(const bc_handle_ptr<T>& p_first, std::nullptr_t)
+		bool operator>=(const bc_handle_ptr<T>& p_first, std::nullptr_t)
 		{
 			return p_first.get() >= nullptr;
 		}
 
 		template <class T>
-		bool operator >=(std::nullptr_t, const bc_handle_ptr<T>& p_first)
+		bool operator>=(std::nullptr_t, const bc_handle_ptr<T>& p_first)
 		{
 			return p_first.get() >= nullptr;
+		}
+
+		template <class T>
+		T* operator+(const bc_handle_ptr<T>& p_first, bcINT p_offset)
+		{
+			return p_first.get() + p_offset;
+		}
+
+		template <class T>
+		T* operator+(bcINT p_offset, const bc_handle_ptr<T>& p_first)
+		{
+			return p_first.get() + p_offset;
+		}
+
+		template <class T>
+		T* operator+(const bc_handle_ptr<T>& p_first, bcUINT p_offset)
+		{
+			return p_first.get() + p_offset;
+		}
+
+		template <class T>
+		T* operator+(bcUINT p_offset, const bc_handle_ptr<T>& p_first)
+		{
+			return p_first.get() + p_offset;
+		}
+
+		template <class T>
+		T* operator-(const bc_handle_ptr<T>& p_first, bcINT p_offset)
+		{
+			return p_first.get() - p_offset;
+		}
+
+		template <class T>
+		T* operator-(bcINT p_offset, const bc_handle_ptr<T>& p_first)
+		{
+			return p_first.get() - p_offset;
+		}
+
+		template <class T>
+		T* operator-(const bc_handle_ptr<T>& p_first, bcUINT p_offset)
+		{
+			return p_first.get() - p_offset;
+		}
+
+		template <class T>
+		T* operator-(bcUINT p_offset, const bc_handle_ptr<T>& p_first)
+		{
+			return p_first.get() - p_offset;
 		}
 
 #pragma endregion
 
 #ifdef BC_MEMORY_DEFRAG
 
-		template< typename T >
-		using bc_ptr = bc_handle_ptr< T >;
+		template<typename T>
+		using bc_ptr = bc_handle_ptr<T>;
 
 #else
 
-		template< typename T >
+		template<typename T>
 		using bc_ptr = T*;
 
 #endif
 
-		template< typename T, typename ...TArgs >
-		bc_unique_ptr< T > bc_make_unique(TArgs&&... p_args)
+		template<typename T, typename ...TArgs>
+		bc_unique_ptr<T> bc_make_unique(TArgs&&... p_args)
 		{
-			return bc_make_unique< T >(bc_alloc_type::unknown, std::forward< TArgs >(p_args)...);
+			return bc_make_unique<T>(bc_alloc_type::unknown, std::forward<TArgs>(p_args)...);
 		}
 
-		template< typename T, typename ...TArgs >
-		bc_unique_ptr< T > bc_make_unique(bc_alloc_type p_alloc_type, TArgs&&... p_args)
+		template<typename T, typename ...TArgs>
+		bc_unique_ptr<T> bc_make_unique(bc_alloc_type p_alloc_type, TArgs&&... p_args)
 		{
-			return bc_unique_ptr< T >(BC_NEW(T(std::forward< TArgs >(p_args)...), p_alloc_type));
+			return bc_unique_ptr<T>(BC_NEW(T(std::forward<TArgs>(p_args)...), p_alloc_type));
 		}
 
-		template< typename T, typename ...TArgs >
-		bc_unique_ptr< T > bc_make_unique(bc_alloc_type p_alloc_type, bcUINT16 p_alignment, TArgs&&... p_args)
+		template<typename T, typename ...TArgs>
+		bc_unique_ptr<T> bc_make_unique(bc_alloc_type p_alloc_type, bcUINT16 p_alignment, TArgs&&... p_args)
 		{
-			return bc_unique_ptr< T >(BC_ALIGNED_NEW(T(std::forward< TArgs >(p_args)...), p_alignment, p_alloc_type));
+			return bc_unique_ptr<T>(BC_ALIGNED_NEW(T(std::forward<TArgs>(p_args)...), p_alignment, p_alloc_type));
 		}
 
-		template< typename T, typename ...TArgs >
-		bc_shared_ptr< T > bc_make_shared(TArgs&&... p_args)
+		template<typename T, typename ...TArgs>
+		bc_shared_ptr<T> bc_make_shared(TArgs&&... p_args)
 		{
-			return bc_make_shared< T >(bc_alloc_type::unknown, std::forward< TArgs >(p_args)...);
+			return bc_make_shared<T>(bc_alloc_type::unknown, std::forward<TArgs>(p_args)...);
 		}
 
-		template< typename T, typename ...TArgs >
-		bc_shared_ptr< T > bc_make_shared(bc_alloc_type p_alloc_type, TArgs&&... p_args)
+		template<typename T, typename ...TArgs>
+		bc_shared_ptr<T> bc_make_shared(bc_alloc_type p_alloc_type, TArgs&&... p_args)
 		{
-			using meta_type = typename bc_shared_ptr< T >::template meta_data_imp<bc_default_deleter>;
+			using meta_type = typename bc_shared_ptr<T>::template meta_data_imp<bc_default_deleter>;
 
 			const bcSIZE l_required_size = sizeof(T) + sizeof(meta_type);
 			void* l_alloc = BC_ALLOC(l_required_size, p_alloc_type);
@@ -1175,64 +1223,64 @@ namespace black_cat
 			T* l_pointer = reinterpret_cast<T*>(l_alloc);
 			meta_type* l_meta_pointer = reinterpret_cast<meta_type*>(l_pointer + 1);
 
-			new(l_pointer)T(std::forward< TArgs >(p_args)...);
+			new(l_pointer)T(std::forward<TArgs>(p_args)...);
 			new(l_meta_pointer)meta_type(bc_default_deleter(), true);
 
-			bc_shared_ptr< T > l_result;
+			bc_shared_ptr<T> l_result;
 			l_result._make(l_pointer, l_meta_pointer);
 
 			return l_result;
 		}
 
-		template< typename T, typename TDeleter >
-		void swap(bc_unique_ptr< T, TDeleter >& p_first, bc_unique_ptr< T, TDeleter >& p_second) noexcept
+		template<typename T, typename TDeleter>
+		void swap(bc_unique_ptr<T, TDeleter>& p_first, bc_unique_ptr<T, TDeleter>& p_second) noexcept
 		{
 			p_first.swap(p_second);
 		}
 
-		template< typename T >
-		void swap(bc_shared_ptr< T >& p_first, bc_shared_ptr< T >& p_second) noexcept
+		template<typename T>
+		void swap(bc_shared_ptr<T>& p_first, bc_shared_ptr<T>& p_second) noexcept
 		{
 			p_first.swap(p_second);
 		}
 
-		template< typename T >
-		void swap(bc_handle_ptr< T >& p_first, bc_handle_ptr< T >& p_second) noexcept
+		template<typename T>
+		void swap(bc_handle_ptr<T>& p_first, bc_handle_ptr<T>& p_second) noexcept
 		{
 			p_first.swap(p_second);
 		}
 
-		template< class T, class U >
+		template<class T, class U>
 		bc_shared_ptr<T> static_pointer_cast(const bc_shared_ptr<U>& r)
 		{
 			return bc_shared_ptr<T>(static_cast<T*>(r.get()));
 		}
 
-		template< class T, class U, class TDeleter >
+		template<class T, class U, class TDeleter>
 		bc_unique_ptr<T, TDeleter> static_pointer_cast(bc_unique_ptr<U, TDeleter>& r)
 		{
 			return bc_unique_ptr<T, TDeleter>(static_cast<T*>(r.release()));
 		}
 
-		template< class T, class U >
+		template<class T, class U>
 		bc_shared_ptr<T> dynamic_pointer_cast(const bc_shared_ptr<U>& r)
 		{
 			return bc_shared_ptr<T>(dynamic_cast<T*>(r.get()));
 		}
 
-		template< class T, class U, class TDeleter >
+		template<class T, class U, class TDeleter>
 		bc_unique_ptr<T, TDeleter> dynamic_pointer_cast(bc_unique_ptr<U, TDeleter>& r)
 		{
 			return bc_unique_ptr<T, TDeleter>(dynamic_cast<T*>(r.release()));
 		}
 
-		template< class T, class U >
+		template<class T, class U>
 		bc_shared_ptr<T> const_pointer_cast(const bc_shared_ptr<U>& r)
 		{
 			return bc_shared_ptr<T>(const_cast<T*>(r.get()));
 		}
 
-		template< class T, class U, class TDeleter >
+		template<class T, class U, class TDeleter>
 		bc_unique_ptr<T, TDeleter> const_pointer_cast(bc_unique_ptr<U, TDeleter>& r)
 		{
 			return bc_unique_ptr<T, TDeleter>(const_cast<T*>(r.release()));
@@ -1243,7 +1291,7 @@ namespace black_cat
 namespace std
 {
 	template<class T>
-	struct std::hash< black_cat::core::bc_unique_ptr<T> >
+	struct std::hash<black_cat::core::bc_unique_ptr<T>>
 	{
 		std::size_t operator ()(const black_cat::core::bc_unique_ptr<T>& p_pointer)
 		{
@@ -1252,7 +1300,7 @@ namespace std
 	};
 
 	template<class T>
-	struct std::hash< black_cat::core::bc_shared_ptr<T> >
+	struct std::hash<black_cat::core::bc_shared_ptr<T>>
 	{
 		std::size_t operator ()(const black_cat::core::bc_shared_ptr<T>& p_pointer)
 		{
@@ -1261,7 +1309,7 @@ namespace std
 	};
 
 	template<class T>
-	struct std::hash< black_cat::core::bc_handle_ptr<T> >
+	struct std::hash<black_cat::core::bc_handle_ptr<T>>
 	{
 		std::size_t operator ()(const black_cat::core::bc_handle_ptr<T>& p_pointer)
 		{

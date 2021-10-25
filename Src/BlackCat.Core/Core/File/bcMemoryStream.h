@@ -18,27 +18,35 @@ namespace black_cat
 
 			bc_memory_stream(bc_memory_stream&&) noexcept;
 
-			~bc_memory_stream();
+			~bc_memory_stream() override;
 
 			bc_memory_stream& operator=(bc_memory_stream&&) noexcept;
 
-			void* get_data() noexcept;
+			/**
+			 * \brief Return pointer to internal buffer
+			 * \return 
+			 */
+			bcBYTE* get_data() noexcept;
 
-			const void* get_data() const noexcept;
+			/**
+			 * \brief Return pointer to internal buffer
+			 * \return 
+			 */
+			const bcBYTE* get_data() const noexcept;
 
 			/**
 			 * \brief Return pointer within internal buffer which is pointed by current stream position.
 			 * \n Undefined behavior if position is outside of buffer boundary
 			 * \return 
 			 */
-			void* get_position_data() noexcept;
+			bcBYTE* get_position_data() noexcept;
 
 			/**
 			 * \brief Return pointer within internal buffer which is pointed by current stream position.
 			 * \n Undefined behavior if position is outside of buffer boundary
 			 * \return
 			 */
-			const void* get_position_data() const noexcept;
+			const bcBYTE* get_position_data() const noexcept;
 			
 			bc_stream_status get_status() const noexcept override;
 			
@@ -78,7 +86,7 @@ namespace black_cat
 			void _increase_capacity(bcSIZE p_required_size);
 
 			bc_alloc_type m_alloc_type;
-			bcBYTE* m_buffer;
+			bc_ptr<bcBYTE> m_buffer;
 			bcSIZE m_position;
 			bcSIZE m_buffer_size;
 		};
@@ -124,23 +132,23 @@ namespace black_cat
 			return *this;
 		}
 
-		inline void* bc_memory_stream::get_data() noexcept
+		inline bcBYTE* bc_memory_stream::get_data() noexcept
 		{
 			return m_buffer;
 		}
 
-		inline const void* bc_memory_stream::get_data() const noexcept
+		inline const bcBYTE* bc_memory_stream::get_data() const noexcept
 		{
 			return m_buffer;
 		}
 
-		inline void* bc_memory_stream::get_position_data() noexcept
+		inline bcBYTE* bc_memory_stream::get_position_data() noexcept
 		{
 			BC_ASSERT(m_position <= m_buffer_size);
 			return m_buffer + m_position;
 		}
 
-		inline const void* bc_memory_stream::get_position_data() const noexcept
+		inline const bcBYTE* bc_memory_stream::get_position_data() const noexcept
 		{
 			return const_cast<bc_memory_stream&>(*this).get_position_data();
 		}
@@ -224,8 +232,8 @@ namespace black_cat
 		}
 
 		inline bcSIZE bc_memory_stream::read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) const
-		{
-			const auto l_bytes_can_read = static_cast<bcSIZE>(std::max(static_cast < bcINT64>(0), m_buffer_size - static_cast<bcINT64>(m_position)));
+		{			
+			const auto l_bytes_can_read = static_cast<bcSIZE>(std::max(static_cast<bcINT64>(0), m_buffer_size - static_cast<bcINT64>(m_position)));
 			const auto l_bytes_to_read = std::min(l_bytes_can_read, p_bytes_to_read);
 			std::memcpy(p_buffer, m_buffer + m_position, l_bytes_to_read);
 

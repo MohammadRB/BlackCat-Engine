@@ -47,7 +47,7 @@ namespace black_cat
 		class bc_server_socket_error_state : public core::bc_state<bc_server_socket_state_machine, bc_server_socket_bind_event>
 		{
 		public:
-			bc_server_socket_error_state(platform::bc_non_block_socket& p_socket)
+			explicit bc_server_socket_error_state(platform::bc_non_block_socket& p_socket)
 				: m_socket(&p_socket)
 			{
 			}
@@ -104,8 +104,9 @@ namespace black_cat
 		class bc_server_socket_listening_state : public core::bc_state<bc_server_socket_state_machine, bc_server_socket_send_event, bc_server_socket_receive_event>
 		{
 		public:
-			bc_server_socket_listening_state(platform::bc_non_block_socket& p_socket)
-				: m_socket(&p_socket)
+			explicit bc_server_socket_listening_state(platform::bc_non_block_socket& p_socket)
+				: m_socket(&p_socket),
+				m_buffer(core::bc_alloc_type::unknown_movable, s_buffer_size)
 			{
 			}
 
@@ -145,19 +146,10 @@ namespace black_cat
 						return state_transition::empty();
 					}
 
-					constexpr auto l_local_buffer_size = 64000;
-					bcBYTE l_buffer[l_local_buffer_size];
-
-					while (true)
+					p_event.m_bytes_received = m_socket->receive_from(p_event.m_address, m_buffer.get_data(), s_buffer_size);
+					if (p_event.m_bytes_received)
 					{
-						const auto l_bytes_received = m_socket->receive_from(p_event.m_address, l_buffer, l_local_buffer_size);
-						if (!l_bytes_received)
-						{
-							break;
-						}
-
-						p_event.m_stream.write(l_buffer, l_bytes_received);
-						p_event.m_bytes_received += l_bytes_received;
+						p_event.m_stream.write(m_buffer.get_data(), p_event.m_bytes_received);
 					}
 
 					return state_transition::transfer_to<bc_server_socket_receiving_state>();
@@ -174,14 +166,17 @@ namespace black_cat
 					);
 				}
 			}
+
+			static constexpr bcUINT32 s_buffer_size = 64000;
 			
 			platform::bc_non_block_socket* m_socket;
+			core::bc_memory_stream m_buffer;
 		};
 
 		class bc_server_socket_sending_state : public core::bc_state<bc_server_socket_state_machine, bc_server_socket_update_event>
 		{
 		public:
-			bc_server_socket_sending_state(platform::bc_non_block_socket& p_socket)
+			explicit bc_server_socket_sending_state(platform::bc_non_block_socket& p_socket)
 				: m_socket(&p_socket)
 			{
 			}
@@ -217,7 +212,7 @@ namespace black_cat
 		class bc_server_socket_receiving_state : public core::bc_state<bc_server_socket_state_machine, bc_server_socket_update_event>
 		{
 		public:
-			bc_server_socket_receiving_state(platform::bc_non_block_socket& p_socket)
+			explicit bc_server_socket_receiving_state(platform::bc_non_block_socket& p_socket)
 				: m_socket(&p_socket)
 			{
 			}
@@ -227,13 +222,9 @@ namespace black_cat
 			{
 				try
 				{
-					//const bool l_is_available = m_socket->is_receive_available();
-					//if (l_is_available)
-					{
-						return state_transition::transfer_to<bc_server_socket_listening_state>();
-					}
+					return state_transition::transfer_to<bc_server_socket_listening_state>();
 				}
-				catch (const bc_network_exception &p_exception)
+				catch (const bc_network_exception& p_exception)
 				{
 					return state_transition::transfer_to<bc_server_socket_error_state>
 					(
@@ -243,8 +234,6 @@ namespace black_cat
 						}
 					);
 				}
-
-				//return state_transition::empty();
 			}
 
 			platform::bc_non_block_socket* m_socket;

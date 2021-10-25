@@ -42,6 +42,7 @@ namespace black_cat
 			m_remote_rtt(100),
 			m_last_executed_message_id(0),
 			m_executed_messages(50),
+			m_memory_buffer(core::bc_alloc_type::unknown_movable),
 			m_messages_buffer(p_network_system)
 		{
 			m_socket.reset(&bc_client_socket_state_machine::get_socket());
@@ -371,28 +372,28 @@ namespace black_cat
 #ifdef BC_DEBUG
 			l_rtt_multiplier *= 3;
 #endif
-			
-			for(auto l_ite = 0U; l_ite < m_messages_waiting_acknowledgment.size(); ++l_ite)
+
+			for(auto l_ite = std::begin(m_messages_waiting_acknowledgment); l_ite != std::end(m_messages_waiting_acknowledgment);)
 			{
-				auto& l_msg = m_messages_waiting_acknowledgment[l_ite];
-				l_msg.m_elapsed += p_clock.m_elapsed;
+				l_ite->m_elapsed += p_clock.m_elapsed;
 				
-				if (l_msg.m_elapsed > l_rtt_time * l_rtt_multiplier)
+				if (l_ite->m_elapsed > l_rtt_time * l_rtt_multiplier)
 				{
-					const bool l_is_ping_message = core::bci_message::is<bc_ping_network_message>(*l_msg.m_message);
+					const bool l_is_ping_message = core::bci_message::is<bc_ping_network_message>(*l_ite->m_message);
 					if(l_is_ping_message)
 					{
 						// No need to retry ping messages
-						const auto l_ite1 = std::begin(m_messages_waiting_acknowledgment) + l_ite;
-						m_messages_waiting_acknowledgment.erase(l_ite1);
+						l_ite = m_messages_waiting_acknowledgment.erase(l_ite);
 						continue;
 					}
 
-					l_msg.m_elapsed = 0;
-					l_msg.m_message->set_is_retry();
+					l_ite->m_elapsed = 0;
+					l_ite->m_message->set_is_retry();
 
-					m_messages.push_back(l_msg.m_message);
+					m_messages.push_back(l_ite->m_message);
 				}
+
+				++l_ite;
 			}
 		}
 
@@ -537,7 +538,7 @@ namespace black_cat
 			m_last_executed_message_id = l_max_message_id;
 
 			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
-			m_hook->message_packet_received(m_memory_buffer, l_receive_event.m_bytes_received, core::bc_make_cspan(l_messages));
+			m_hook->message_packet_received(m_memory_buffer, l_receive_event.m_bytes_received, l_messages);
 		}
 	}
 }

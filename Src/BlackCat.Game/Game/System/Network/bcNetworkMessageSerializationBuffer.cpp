@@ -56,7 +56,8 @@ namespace black_cat
 		}
 
 		bc_network_message_serialization_buffer::bc_network_message_serialization_buffer(bc_network_system& p_network_system)
-			: m_network_system(&p_network_system)
+			: m_network_system(&p_network_system),
+			m_memory_buffer(core::bc_alloc_type::unknown_movable)
 		{
 		}
 
@@ -74,11 +75,11 @@ namespace black_cat
 			}
 
 			const auto l_packet_str = l_json_packet.write();
-			m_serialize_buffer.set_position(core::bc_stream_seek::start, 0);
-			m_serialize_buffer.write(l_packet_str.c_str(), l_packet_str.size());
-			m_serialize_buffer.set_position(core::bc_stream_seek::start, 0);
+			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
+			m_memory_buffer.write(l_packet_str.c_str(), l_packet_str.size());
+			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
 
-			return std::make_pair<bcUINT32, core::bc_memory_stream*>(l_packet_str.size() , &m_serialize_buffer);
+			return std::make_pair<bcUINT32, core::bc_memory_stream*>(l_packet_str.size() , &m_memory_buffer);
 		}
 
 		core::bc_span<bc_network_message_ptr> bc_network_message_serialization_buffer::deserialize(bci_network_message_deserialization_visitor& p_visitor, 

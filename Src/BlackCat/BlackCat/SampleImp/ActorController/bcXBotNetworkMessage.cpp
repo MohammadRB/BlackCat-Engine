@@ -190,8 +190,6 @@ namespace black_cat
 
 		auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
 		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
-
-		core::bc_log(core::bc_log_type::debug) << "shoot on server" << core::bc_lend;
 		l_xbot_controller->shoot_weapon();
 	}
 
@@ -201,18 +199,15 @@ namespace black_cat
 		{
 			return;
 		}
-
+		
 		auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
 		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
-
-		core::bc_log(core::bc_log_type::debug) << "shoot on client" << core::bc_lend;
 		l_xbot_controller->shoot_weapon();
 	}
 
 	void bc_xbot_weapon_shoot_network_message::serialize_message(const game::bc_network_message_serialization_context& p_context)
 	{
 		p_context.m_params.add("net_id", core::bc_any(m_actor_net_id));
-		core::bc_log(core::bc_log_type::debug) << "shoot sent" << core::bc_lend;
 	}
 
 	void bc_xbot_weapon_shoot_network_message::deserialize_message(const game::bc_network_message_deserialization_context& p_context)

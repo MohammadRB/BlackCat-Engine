@@ -39,6 +39,7 @@ namespace black_cat
 			m_socket_is_listening(false),
 			m_hook(&p_hook),
 			m_actor_network_id_counter(0),
+			m_memory_buffer(core::bc_alloc_type::unknown_movable),
 			m_messages_buffer(p_network_system)
 		{
 			m_socket.reset(&bc_server_socket_state_machine::get_socket());
@@ -484,13 +485,14 @@ namespace black_cat
 		void bc_network_server_manager::_retry_messages_waiting_acknowledgment(const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client)
 		{
 			auto l_messages = p_client.get_messages_waiting_acknowledgment();
+			auto l_messages_size = l_messages.size();
 			const auto l_rtt_time = p_client.get_rtt_time();
 			auto l_rtt_multiplier = 2;
 #ifdef BC_DEBUG
 			l_rtt_multiplier *= 3;
 #endif
 			
-			for (auto l_ite = 0U; l_ite < l_messages.size(); ++l_ite)
+			for (auto l_ite = 0U; l_ite < l_messages_size;)
 			{
 				auto& l_msg = l_messages[l_ite];
 				l_msg.m_elapsed += p_clock.m_elapsed;
@@ -502,6 +504,7 @@ namespace black_cat
 					{
 						// No need to retry ping messages
 						p_client.erase_message_waiting_acknowledgment(l_msg.m_message->get_id());
+						--l_messages_size;
 						continue;
 					}
 					
@@ -510,6 +513,8 @@ namespace black_cat
 					
 					p_client.add_message(l_msg.m_message);
 				}
+
+				++l_ite;
 			}
 		}
 
@@ -602,7 +607,7 @@ namespace black_cat
 				m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
 				l_messages = m_messages_buffer.deserialize(*this, m_memory_buffer, l_bytes_received);
 			}
-			catch (const std::exception & l_exception)
+			catch (const std::exception& l_exception)
 			{
 				core::bc_log(core::bc_log_type::error) << "Deserialization of network packet encountered error: '" << l_exception.what() << "'" << core::bc_lend;
 				return l_bytes_received;
@@ -618,64 +623,62 @@ namespace black_cat
 			const bc_network_message_id l_last_executed_message_id = l_client->get_last_executed_message_id();
 			bc_network_message_id l_max_message_id = 0;
 
+			for (const auto& l_message : l_messages)
 			{
-				for (const auto& l_message : l_messages)
+				const auto l_message_id = l_message->get_id();
+
+				if (l_message_id < l_last_executed_message_id && !l_message->get_is_retry())
 				{
-					const auto l_message_id = l_message->get_id();
-
-					if (l_message_id < l_last_executed_message_id && !l_message->get_is_retry())
-					{
-						// discard out of order message
-						continue;
-					}
-
-					core::bc_string* l_ack_data;
-					if (l_message->get_is_retry())
-					{
-						{
-							core_platform::bc_lock_guard l_client_lock(*l_client);
-
-							if((l_ack_data = l_client->find_acknowledge_data(l_message_id)) != nullptr)
-							{
-								// discard duplicate message
-								l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message_id, *l_ack_data)));
-								continue;
-							}
-						}
-					}
-
-					l_message->execute(bc_network_message_server_context
-					{
-						*this,
-						l_address
-					});
-
-					if (l_message->need_acknowledgment())
-					{
-						auto l_ack_data = l_message->get_acknowledgment_data();
-						
-						{
-							core_platform::bc_lock_guard l_client_lock(*l_client);
-							
-							l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message_id, l_ack_data)));
-
-							// ping messages are not retried, so there is no need to keep track of them
-							const bool l_is_ping_message = core::bci_message::is<bc_ping_network_message>(*l_message);
-							if(!l_is_ping_message)
-							{
-								l_client->add_acknowledged_message(l_message_id, std::move(l_ack_data));
-							}
-						}
-					}
-
-					l_max_message_id = std::max(l_max_message_id, l_message_id);
+					// discard out of order message
+					continue;
 				}
 
-				l_client->set_last_executed_message_id(l_max_message_id);
+				core::bc_string* l_ack_data;
+				if (l_message->get_is_retry())
+				{
+					{
+						core_platform::bc_lock_guard l_client_lock(*l_client);
+
+						if((l_ack_data = l_client->find_acknowledge_data(l_message_id)) != nullptr)
+						{
+							// discard duplicate message
+							l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message_id, *l_ack_data)));
+							continue;
+						}
+					}
+				}
+
+				l_message->execute(bc_network_message_server_context
+				{
+					*this,
+					l_address
+				});
+
+				if (l_message->need_acknowledgment())
+				{
+					auto l_ack_data = l_message->get_acknowledgment_data();
+						
+					{
+						core_platform::bc_lock_guard l_client_lock(*l_client);
+							
+						l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message_id, l_ack_data)));
+
+						// ping messages are not retried, so there is no need to keep track of them
+						const bool l_is_ping_message = core::bci_message::is<bc_ping_network_message>(*l_message);
+						if(!l_is_ping_message)
+						{
+							l_client->add_acknowledged_message(l_message_id, std::move(l_ack_data));
+						}
+					}
+				}
+
+				l_max_message_id = std::max(l_max_message_id, l_message_id);
 			}
 
+			l_client->set_last_executed_message_id(l_max_message_id);
+
 			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
-			m_hook->message_packet_received(l_client->get_address(), m_memory_buffer, l_bytes_received, core::bc_make_cspan(l_messages));
+			m_hook->message_packet_received(l_address, m_memory_buffer, l_bytes_received, l_messages);
 
 			return l_bytes_received;
 		}

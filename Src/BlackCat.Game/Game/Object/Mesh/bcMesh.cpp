@@ -122,6 +122,9 @@ namespace black_cat
 			}
 
 			_calculate_collider_initial_transforms();
+
+			// For unknown error in mesh builder deconstruction
+			p_builder.m_nodes.clear();
 		}
 
 		bc_mesh::bc_mesh(bc_mesh&& p_other) noexcept

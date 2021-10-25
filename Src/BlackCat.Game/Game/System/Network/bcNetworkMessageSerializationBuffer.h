@@ -48,7 +48,7 @@ namespace black_cat
 
 		private:
 			bc_network_system* m_network_system;
-			core::bc_memory_stream m_serialize_buffer;
+			core::bc_memory_stream m_memory_buffer;
 			core::bc_vector<bc_network_message_ptr> m_deserialize_buffer;
 		};
 	}	
