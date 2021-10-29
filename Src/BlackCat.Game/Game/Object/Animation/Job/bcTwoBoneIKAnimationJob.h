@@ -23,7 +23,7 @@ namespace black_cat
 				const bcCHAR* p_last_joint,
 				const core::bc_vector3f& p_middle_joint_rotation_ls,
 				const core::bc_vector3f& p_pole_vector_ms,
-				bcFLOAT p_aim_weight = 1.f);
+				bcFLOAT p_weight = 1.f);
 
 			bc_two_bone_ik_animation_job(bc_two_bone_ik_animation_job&&) noexcept;
 
@@ -31,9 +31,11 @@ namespace black_cat
 
 			bc_two_bone_ik_animation_job& operator=(bc_two_bone_ik_animation_job&&) noexcept;
 
-			void set_target_ms(const core::bc_vector3f& p_target) noexcept;
-
+			bcFLOAT get_weight() const noexcept;
+			
 			void set_weight(bcFLOAT p_weight) noexcept;
+			
+			void set_target_ms(const core::bc_vector3f& p_target) noexcept;
 
 			void set_twist_angle(bcINT32 p_angle) noexcept;
 			
@@ -47,19 +49,24 @@ namespace black_cat
 			bcUINT32 m_last_joint_index;
 			core::bc_vector3f m_middle_joint_rotation_ls;
 			core::bc_vector3f m_pole_vector_ms;
-			bcFLOAT m_aim_weight;
+			bcFLOAT m_weight;
 			bcFLOAT m_twist_angle;
 			core::bc_vector3f m_target_ms;
 		};
 
+		inline bcFLOAT bc_two_bone_ik_animation_job::get_weight() const noexcept
+		{
+			return m_weight;
+		}
+		
+		inline void bc_two_bone_ik_animation_job::set_weight(bcFLOAT p_weight) noexcept
+		{
+			m_weight = p_weight;
+		}
+		
 		inline void bc_two_bone_ik_animation_job::set_target_ms(const core::bc_vector3f& p_target) noexcept
 		{
 			m_target_ms = p_target;
-		}
-
-		inline void bc_two_bone_ik_animation_job::set_weight(bcFLOAT p_weight) noexcept
-		{
-			m_aim_weight = p_weight;
 		}
 
 		inline void bc_two_bone_ik_animation_job::set_twist_angle(bcINT32 p_angle) noexcept

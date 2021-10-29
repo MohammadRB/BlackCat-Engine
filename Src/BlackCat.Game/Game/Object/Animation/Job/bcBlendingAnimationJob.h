@@ -18,7 +18,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_blending_animation_job : public bci_local_transform_animation_job
 		{
 		public:
-			bc_blending_animation_job(bc_animation_skeleton& p_skeleton, std::initializer_list<core::bc_shared_ptr<bc_sampling_animation_job>> p_layers);
+			bc_blending_animation_job(bc_animation_skeleton& p_skeleton, std::initializer_list<core::bc_shared_ptr<bci_local_transform_animation_job>> p_layers);
 
 			bc_blending_animation_job(bc_blending_animation_job&&) noexcept = default;
 
@@ -26,6 +26,10 @@ namespace black_cat
 
 			bc_blending_animation_job& operator=(bc_blending_animation_job&&) noexcept = default;
 
+			bcUINT32 get_layers_count() const noexcept;
+
+			bci_local_transform_animation_job& get_layer(bcUINT32 p_index);
+			
 			bc_animation_local_transform& get_local_transforms() noexcept override;
 			
 			const bc_animation_local_transform& get_local_transforms() const noexcept override;
@@ -45,10 +49,20 @@ namespace black_cat
 			bool run(const core_platform::bc_clock::update_param& p_clock) override;
 
 		private:
-			core::bc_vector< std::pair< core::bc_shared_ptr<bc_sampling_animation_job>, bcFLOAT > > m_layers;
+			core::bc_vector<std::pair<core::bc_shared_ptr<bci_local_transform_animation_job>, bcFLOAT>> m_layers;
 			bc_animation_local_transform m_locals;
 		};
 
+		inline bcUINT32 bc_blending_animation_job::get_layers_count() const noexcept
+		{
+			return m_layers.size();
+		}
+
+		inline bci_local_transform_animation_job& bc_blending_animation_job::get_layer(bcUINT32 p_index)
+		{
+			return *m_layers[p_index].first;
+		}
+		
 		inline bc_animation_local_transform& bc_blending_animation_job::get_local_transforms() noexcept
 		{
 			return m_locals;

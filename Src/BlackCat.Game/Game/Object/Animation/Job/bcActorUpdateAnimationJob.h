@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/Memory/bcPtr.h"
-#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
+#include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "Game/Object/Animation/Job/bcModelToSkinnedAnimationJob.h"
 #include "Game/bcExport.h"

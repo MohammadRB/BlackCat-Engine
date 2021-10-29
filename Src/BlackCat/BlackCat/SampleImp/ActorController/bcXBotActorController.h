@@ -65,8 +65,6 @@ namespace black_cat
 	
 	class BC_DLL bc_xbot_actor_controller : public game::bc_actor_network_controller, protected physics::bci_ccontroller_hit_callback
 	{
-		friend class bc_xbot_update_animation_job;
-		
 	public:
 		bc_xbot_actor_controller() noexcept;
 
@@ -88,6 +86,8 @@ namespace black_cat
 		
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 
+		void update_attachment_transforms();
+		
 	protected:
 		game::bc_scene* get_scene() noexcept;
 
@@ -118,6 +118,8 @@ namespace black_cat
 		bcFLOAT get_move_speed() const noexcept;
 
 		bc_xbot_weapon* get_weapon() noexcept;
+
+		void throw_grenade() noexcept;
 		
 		void attach_weapon(game::bc_actor& p_weapon) noexcept;
 
@@ -133,6 +135,7 @@ namespace black_cat
 		core::bc_shared_ptr<game::bci_animation_job> _create_idle_animation(const bcCHAR* p_idle_animation,
 			const bcCHAR* p_left_turn_animation,
 			const bcCHAR* p_right_turn_animation,
+			const bcCHAR* p_grenade_throw_animation,
 			const bcCHAR* p_weapon_shoot_animation,
 			core::bc_shared_ptr<game::bc_sampling_animation_job>* p_idle_sample_job);
 
@@ -153,21 +156,30 @@ namespace black_cat
 		
 		void _update_world_transform();
 
-		void _update_weapon_transform();
+		core::bc_matrix4f _calculate_weapon_aim_transform();
 
+		core::bc_matrix4f _calculate_weapon_attachment_transform(bcUINT32 p_attached_node_index, 
+			const core::bc_vector3f& p_attached_node_up,
+			const core::bc_vector3f& p_attached_node_forward,
+			const core::bc_vector3f& p_attached_node_offset);
+		
 		game::bc_physics_system* m_physics_system;
 		game::bc_scene* m_scene;
 		game::bc_actor m_actor;
-		game::bc_skinned_mesh_component* m_skinned_component;
+		game::bc_skinned_mesh_component* m_skinned_mesh_component;
 		physics::bc_ccontroller m_px_controller;
 		bcFLOAT m_bound_box_max_side_length;
-		core::bc_vector<core::bc_string> m_upper_body_chain;
-		core::bc_array<std::pair<bcUINT32, const bcCHAR*>, 3> m_main_hand_chain;
-		core::bc_array<std::pair<bcUINT32, const bcCHAR*>, 3> m_second_hand_chain;
-		std::pair<bcUINT32, const bcCHAR*> m_rifle_joint;
-		core::bc_vector3f m_rifle_joint_offset;
 		core::bc_vector3f m_local_origin;
 		core::bc_vector3f m_local_forward;
+		core::bc_vector<core::bc_string> m_upper_body_chain;
+		core::bc_array<std::pair<bcUINT32, const bcCHAR*>, 3> m_right_hand_chain;
+		core::bc_array<std::pair<bcUINT32, const bcCHAR*>, 3> m_left_hand_chain;
+		core::bc_vector3f m_right_hand_weapon_up;
+		core::bc_vector3f m_right_hand_weapon_forward;
+		core::bc_vector3f m_left_hand_weapon_up;
+		core::bc_vector3f m_left_hand_weapon_forward;
+		std::pair<bcUINT32, const bcCHAR*> m_rifle_joint;
+		core::bc_vector3f m_rifle_joint_offset;
 
 		core::bc_shared_ptr<game::bc_sampling_animation_job> m_idle_sample_job;
 		core::bc_shared_ptr<game::bc_sampling_animation_job> m_rifle_aiming_idle_sample_job;

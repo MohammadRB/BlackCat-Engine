@@ -1,7 +1,7 @@
 // [03/15/2021 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
 #include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"

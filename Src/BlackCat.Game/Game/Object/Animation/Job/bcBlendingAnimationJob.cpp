@@ -8,7 +8,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_blending_animation_job::bc_blending_animation_job(bc_animation_skeleton& p_skeleton, std::initializer_list<core::bc_shared_ptr<bc_sampling_animation_job>> p_layers)
+		bc_blending_animation_job::bc_blending_animation_job(bc_animation_skeleton& p_skeleton, std::initializer_list<core::bc_shared_ptr<bci_local_transform_animation_job>> p_layers)
 			: bci_local_transform_animation_job(p_skeleton),
 			m_layers(p_layers.size()),
 			m_locals(m_skeleton->get_native_handle().num_soa_joints())
@@ -58,14 +58,15 @@ namespace black_cat
 			
 			for(bcUINT32 l_i = 0; l_i < m_layers.size(); ++l_i)
 			{
-				auto& l_layer_job = m_layers[l_i];
+				auto& [l_job, l_weight] = m_layers[l_i];
 				auto& l_layer = l_layers[l_i];
-				l_layer.transform = ozz::make_span(l_layer_job.first->get_local_transforms());
-				l_layer.weight = l_layer_job.second;
+				l_layer.transform = ozz::make_span(l_job->get_local_transforms());
+				l_layer.weight = l_weight;
 
-				if(l_layer.weight > 0.f)
+				// Animation must be executed to advance its local time in case if its play mode is once_disable
+				//if(l_layer.weight > 0.f)
 				{
-					l_is_valid = l_is_valid && l_layer_job.first->run(p_clock);
+					l_is_valid = l_is_valid && l_job->run(p_clock);
 					
 					if(!l_is_valid)
 					{

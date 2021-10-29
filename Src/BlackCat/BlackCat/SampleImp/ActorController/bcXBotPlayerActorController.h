@@ -54,6 +54,8 @@ namespace black_cat
 
 		bool _on_key(platform::bc_app_event_key& p_key_event) noexcept;
 
+		void _throw_grenade();
+		
 		void _attach_weapon(const bcCHAR* p_entity);
 
 		void _detach_weapon();

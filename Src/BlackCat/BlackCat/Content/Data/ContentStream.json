@@ -448,6 +448,13 @@
           }
         },
         {
+          "content_title": "xbot_grenade_throw",
+          "content_loader": "animation",
+          "content_file": "content\\model\\xbot\\xbot-grenade-throw.fbx",
+          "content_parameter": {
+          }
+        },
+        {
           "content_title": "scifi_rifle",
           "content_loader": "mesh",
           "content_file": "content\\model\\xbot\\scifi-rifle.fbx",

@@ -31,13 +31,15 @@ namespace black_cat
 
 		bc_xbot_weapon_ik_animation_job& operator=(bc_xbot_weapon_ik_animation_job&&) noexcept;
 
-		void set_enable(bool p_enabled) noexcept;
+		void set_enabled(bool p_enabled) noexcept override;
 
-		void set_offset_joint(const bcCHAR* p_offset_joint) noexcept;
+		void set_offset_joint(const bcCHAR* p_offset_joint);
 
 		void set_offset(const core::bc_vector3f& p_offset) noexcept;
 		
 		void set_weight(bcFLOAT p_weight) noexcept;
+
+		bcFLOAT get_weight() const noexcept;
 		
 		/**
 		 * \brief Pass null to disable job
@@ -48,7 +50,6 @@ namespace black_cat
 		bool run(const core_platform::bc_clock::update_param& p_clock) override;
 		
 	private:
-		bool m_enabled;
 		core::bc_vector3f m_local_forward;
 		core::bc_shared_ptr<game::bc_local_to_model_animation_job> m_model_job;
 		game::bc_two_bone_ik_animation_job m_main_hand_job;
@@ -58,14 +59,14 @@ namespace black_cat
 		bc_xbot_weapon* m_weapon;
 	};
 
-	inline void bc_xbot_weapon_ik_animation_job::set_enable(bool p_enabled) noexcept
+	inline void bc_xbot_weapon_ik_animation_job::set_enabled(bool p_enabled) noexcept
 	{
-		m_enabled = p_enabled;
+		bci_animation_job::set_enabled(p_enabled);
 		m_main_hand_job.set_enabled(p_enabled);
 		m_second_hand_job.set_enabled(p_enabled);
 	}
 
-	inline void bc_xbot_weapon_ik_animation_job::set_offset_joint(const bcCHAR* p_offset_joint) noexcept
+	inline void bc_xbot_weapon_ik_animation_job::set_offset_joint(const bcCHAR* p_offset_joint)
 	{
 		const auto l_offset_joint = get_skeleton().find_joint_by_name(p_offset_joint);
 		if (!l_offset_joint.second)
@@ -85,6 +86,11 @@ namespace black_cat
 	{
 		m_main_hand_job.set_weight(p_weight);
 		m_second_hand_job.set_weight(p_weight);
+	}
+
+	inline bcFLOAT bc_xbot_weapon_ik_animation_job::get_weight() const noexcept
+	{
+		return m_main_hand_job.get_weight();
 	}
 	
 	inline void bc_xbot_weapon_ik_animation_job::set_weapon(bc_xbot_weapon* p_weapon) noexcept

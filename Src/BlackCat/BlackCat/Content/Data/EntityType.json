@@ -164,9 +164,15 @@
       "name": "xbot_idle",
       "controller": "xbot_idle",
       "parameters": {
+        "origin_ls": [ 0.0, 0.0, 0.0 ],
+        "forward_ls": [ 0.0, 0.0, -1.0 ],
+        "right_hand_weapon_up": [ 0.0, 0.0, -1.0 ],
+        "right_hand_weapon_forward": [ -1.0, 0.0, 0.0 ],
+        "left_hand_weapon_up": [ 0.0, -1.0, 0.0 ],
+        "left_hand_weapon_forward": [ 0.0, 0.0, -1.0 ],
         "upper_body_chain": [ "Spine1", "Spine2", "Neck", "Head" ],
-        "main_hand_chain": [ "RightArm", "RightForeArm", "RightHand" ],
-        "second_hand_chain": [ "LeftArm", "LeftForeArm", "LeftHand" ],
+        "right_hand_chain": [ "RightArm", "RightForeArm", "RightHand" ],
+        "left_hand_chain": [ "LeftArm", "LeftForeArm", "LeftHand" ],
         "rifle_joint": "Head",
         "rifle_joint_offset": [ -1.0, -2.0, -2.0 ]
       },
@@ -191,7 +197,8 @@
               "xbot_rifle_walking_backwards",
               "xbot_rifle_running",
               "xbot_rifle_running_backwards",
-              "xbot_rifle_firing"
+              "xbot_rifle_firing",
+              "xbot_grenade_throw"
             ]
           }
         },
@@ -245,7 +252,8 @@
               "xbot_rifle_walking_backwards",
               "xbot_rifle_running",
               "xbot_rifle_running_backwards",
-              "xbot_rifle_firing"
+              "xbot_rifle_firing",
+              "xbot_grenade_throw"
             ]
           }
         }
@@ -278,7 +286,8 @@
               "xbot_rifle_walking_backwards",
               "xbot_rifle_running",
               "xbot_rifle_running_backwards",
-              "xbot_rifle_firing"
+              "xbot_rifle_firing",
+              "xbot_grenade_throw"
             ]
           }
         }
@@ -315,7 +324,8 @@
               "xbot_rifle_walking_backwards",
               "xbot_rifle_running",
               "xbot_rifle_running_backwards",
-              "xbot_rifle_firing"
+              "xbot_rifle_firing",
+              "xbot_grenade_throw"
             ]
           }
         },
@@ -358,9 +368,9 @@
           "parameters": {
             "class": "rifle",
             "up_ls": [ 0.0, 0.0, -1.0 ],
-            "forward_ls": [ -1.0, 0.0, -0.0 ],
+            "forward_ls": [ -1.0, 0.0, 0.0 ],
             "main_hand_offset_ls": [ 0.2, 0.1, -0.3 ],
-            "second_hand_offset_ls": [ 0.3, -0.8, 0.3 ],
+            "second_hand_offset_ls": [ 0.3, -0.6, 0.5 ],
             "fire_offset_ls": [ -4.5, -0.1, -0.3 ],
             "fire_particle": "rifle_fire",
             "fire_light_color": [ 0.9, 0.4, 0.01 ],

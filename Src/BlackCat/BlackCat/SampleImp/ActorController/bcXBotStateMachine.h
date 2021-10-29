@@ -8,10 +8,12 @@
 #include "Core/Math/bcMatrix4f.h"
 #include "Core/Math/bcCoordinate.h"
 #include "Core/Container/bcStateMachine.h"
+#include "Core/Utility/bcVelocity.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "Game/Object/Animation/bcAnimationJobHelper.h"
 #include "Game/Object/Animation/Job/bcBlendingAnimationJob.h"
+#include "Game/Object/Animation/Job/bcPartialBlendingAnimationJob.h"
 #include "Game/Object/Animation/Job/bcAdditiveBlendingAnimationJob.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotWeaponIKAnimationJob.h"
 
@@ -33,7 +35,7 @@ namespace black_cat
 		core::bc_vector3f m_move_direction;
 		bcFLOAT m_move_speed;
 		bcFLOAT m_move_amount;
-		bcFLOAT m_weapon_shoot_time;
+		core::bc_velocity<bcFLOAT> m_grenade_throw_weight;
 		game::bci_animation_job* m_active_animation;
 	};
 
@@ -69,6 +71,10 @@ namespace black_cat
 		const bc_xbot_state_update_params& m_update_params;
 	};
 
+	struct bc_xbot_grenade_throw_event
+	{
+	};
+	
 	struct bc_xbot_weapon_attach_event
 	{
 		bc_xbot_weapon& m_weapon;
@@ -85,7 +91,7 @@ namespace black_cat
 		bc_xbot_state& m_state;
 	};
 
-	class bc_xbot_idle_state : public core::bc_state<bc_xbot_state_machine, bc_xbot_update_event, bc_xbot_weapon_attach_event>
+	class bc_xbot_idle_state : public core::bc_state<bc_xbot_state_machine, bc_xbot_update_event, bc_xbot_grenade_throw_event, bc_xbot_weapon_attach_event>
 	{
 	public:
 		explicit bc_xbot_idle_state(game::bci_animation_job& p_animation);
@@ -93,10 +99,12 @@ namespace black_cat
 	private:
 		state_transition handle(bc_xbot_update_event& p_event) override;
 
+		state_transition handle(bc_xbot_grenade_throw_event& p_event) override;
+		
 		state_transition handle(bc_xbot_weapon_attach_event& p_event) override;
 
 		void on_enter() override;
-		
+
 		game::bci_animation_job* m_animation;
 	};
 
@@ -115,7 +123,7 @@ namespace black_cat
 		game::bci_animation_job* m_animation;
 	};
 
-	class bc_xbot_rifle_idle_state : public core::bc_state<bc_xbot_state_machine, bc_xbot_update_event, bc_xbot_weapon_shoot_event, bc_xbot_weapon_detach_event>
+	class bc_xbot_rifle_idle_state : public core::bc_state<bc_xbot_state_machine, bc_xbot_update_event, bc_xbot_grenade_throw_event, bc_xbot_weapon_shoot_event, bc_xbot_weapon_detach_event>
 	{
 	public:
 		explicit bc_xbot_rifle_idle_state(game::bci_animation_job& p_animation);
@@ -125,12 +133,14 @@ namespace black_cat
 	private:
 		state_transition handle(bc_xbot_update_event& p_event) override;
 
+		state_transition handle(bc_xbot_grenade_throw_event& p_event) override;
+
 		state_transition handle(bc_xbot_weapon_shoot_event& p_event) override;
 
 		state_transition handle(bc_xbot_weapon_detach_event& p_event) override;
 
 		void on_enter() override;
-		
+
 		game::bci_animation_job* m_animation;
 		bc_xbot_weapon* m_weapon;
 		const bcCHAR* m_offset_joint;
@@ -193,6 +203,8 @@ namespace black_cat
 		
 		void update(const bc_xbot_state_update_params1& p_update);
 
+		bool throw_grenade() noexcept;
+		
 		void attach_weapon(bc_xbot_weapon& p_weapon, const bcCHAR* p_offset_joint, const core::bc_vector3f& p_offset) noexcept;
 
 		void detach_weapon() noexcept;
@@ -210,14 +222,20 @@ namespace black_cat
 
 		void blend_running_animation(const bc_xbot_state_update_params& p_update_params, game::bci_animation_job& p_running_animation) noexcept;
 
-		void place_weapon_ik(bc_xbot_weapon& p_weapon, game::bci_animation_job& p_active_animation) noexcept;
+		void start_blend_grenade_throw(game::bci_animation_job& p_active_animation);
+		
+		void blend_grenade_throw_animation(const bc_xbot_state_update_params& p_update_params, game::bci_animation_job& p_active_animation) noexcept;
+
+		void start_blend_weapon_shoot(game::bci_animation_job& p_active_animation) noexcept;
 
 		void blend_weapon_shoot_animation(const bc_xbot_state_update_params& p_update_params, bc_xbot_weapon& p_weapon, game::bci_animation_job& p_active_animation) noexcept;
 
-		void blend_weapon_shoot(game::bci_animation_job& p_active_animation) noexcept;
+		void place_weapon_ik(bc_xbot_weapon& p_weapon, game::bci_animation_job& p_active_animation) noexcept;
 
 		void change_animation(game::bci_animation_job* p_new_animation) noexcept;
 
+		bcFLOAT m_grenade_throw_time;
+		bcFLOAT m_weapon_shoot_time;
 		game::bci_animation_job* m_new_active_animation;
 	};
 
@@ -232,12 +250,19 @@ namespace black_cat
 
 		l_machine.update_directions(p_event.m_update_params);
 		l_machine.blend_idle_animation(p_event.m_update_params, *m_animation);
+		l_machine.blend_grenade_throw_animation(p_event.m_update_params, *m_animation);
 		
 		if (l_machine.m_state.m_move_amount > 0)
 		{
 			return state_transition::transfer_to<bc_xbot_running_state>();
 		}
 
+		return state_transition::empty();
+	}
+
+	inline bc_xbot_idle_state::state_transition bc_xbot_idle_state::handle(bc_xbot_grenade_throw_event& p_event)
+	{
+		get_machine().start_blend_grenade_throw(*m_animation);
 		return state_transition::empty();
 	}
 
@@ -306,7 +331,7 @@ namespace black_cat
 		m_offset_joint = p_offset_joint;
 		m_offset = p_offset;
 		
-		auto* l_rifle_idle_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(static_cast<game::bc_sequence_animation_job&>(*m_animation));
+		auto* l_rifle_idle_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(*m_animation);
 		l_rifle_idle_ik_job->set_offset_joint(m_offset_joint);
 		l_rifle_idle_ik_job->set_offset(m_offset);
 	}
@@ -317,6 +342,7 @@ namespace black_cat
 		
 		l_machine.update_directions(p_event.m_update_params);
 		l_machine.blend_idle_animation(p_event.m_update_params, *m_animation);
+		l_machine.blend_grenade_throw_animation(p_event.m_update_params, *m_animation);
 		l_machine.place_weapon_ik(*m_weapon, *m_animation);
 		l_machine.blend_weapon_shoot_animation(p_event.m_update_params, *m_weapon, *m_animation);
 		
@@ -334,9 +360,15 @@ namespace black_cat
 		return state_transition::empty();
 	}
 
+	inline bc_xbot_rifle_idle_state::state_transition bc_xbot_rifle_idle_state::handle(bc_xbot_grenade_throw_event& p_event)
+	{
+		get_machine().start_blend_grenade_throw(*m_animation);
+		return state_transition::empty();
+	}
+
 	inline bc_xbot_rifle_idle_state::state_transition bc_xbot_rifle_idle_state::handle(bc_xbot_weapon_shoot_event& p_event)
 	{
-		get_machine().blend_weapon_shoot(*m_animation);
+		get_machine().start_blend_weapon_shoot(*m_animation);
 		return state_transition::empty();
 	}
 
@@ -363,7 +395,7 @@ namespace black_cat
 		m_offset_joint = p_offset_joint;
 		m_offset = p_offset;
 		
-		auto* l_rifle_running_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(static_cast<game::bc_sequence_animation_job&>(*m_animation));
+		auto* l_rifle_running_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(*m_animation);
 		l_rifle_running_ik_job->set_offset_joint(p_offset_joint);
 		l_rifle_running_ik_job->set_offset(p_offset);
 	}
@@ -393,7 +425,7 @@ namespace black_cat
 
 	inline bc_xbot_rifle_running_state::state_transition bc_xbot_rifle_running_state::handle(bc_xbot_weapon_shoot_event& p_event)
 	{
-		get_machine().blend_weapon_shoot(*m_animation);
+		get_machine().start_blend_weapon_shoot(*m_animation);
 		return state_transition::empty();
 	}
 
@@ -422,7 +454,9 @@ namespace black_cat
 			bc_xbot_rifle_idle_state(p_rifle_idle_animation),
 			bc_xbot_rifle_running_state(p_rifle_running_animation)
 		),
-		m_state{p_look_speed, p_run_speed, p_walk_speed, 0, p_local_forward, p_local_forward, 0, 0, -1, nullptr},
+		m_state{p_look_speed, p_run_speed, p_walk_speed, 0, p_local_forward, p_local_forward, 0, 0, core::bc_velocity<bcFLOAT>(0, 1, 0.3f), nullptr},
+		m_grenade_throw_time(-1),
+		m_weapon_shoot_time(-1),
 		m_new_active_animation(nullptr)
 	{
 		transfer_state<bc_xbot_idle_state>();
@@ -473,6 +507,19 @@ namespace black_cat
 		});
 	}
 
+	inline bool bc_xbot_state_machine::throw_grenade() noexcept
+	{
+		if (m_weapon_shoot_time >= 0 || m_grenade_throw_time >= 0)
+		{
+			return false;
+		}
+		
+		bc_xbot_grenade_throw_event l_event{};
+		process_event(l_event);
+
+		return true;
+	}
+
 	inline void bc_xbot_state_machine::attach_weapon(bc_xbot_weapon& p_weapon, const bcCHAR* p_offset_joint, const core::bc_vector3f& p_offset) noexcept
 	{
 		bc_xbot_weapon_attach_event l_event{ p_weapon, p_offset_joint, p_offset };
@@ -487,7 +534,7 @@ namespace black_cat
 
 	inline bool bc_xbot_state_machine::shoot_weapon() noexcept
 	{
-		if(m_state.m_weapon_shoot_time != -1)
+		if(m_weapon_shoot_time >= 0 || m_grenade_throw_time >= 0)
 		{
 			return false;
 		}
@@ -598,7 +645,7 @@ namespace black_cat
 			m_state.m_look_side > 0 ? l_look_velocity : 0.f
 		};
 
-		auto* l_blending_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(static_cast<game::bc_sequence_animation_job&>(p_idle_animation));
+		auto* l_blending_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(p_idle_animation, "idle_blending");
 		l_blending_job->set_weights(&l_weights[0]);
 
 		if (l_look_velocity == 0.f)
@@ -612,7 +659,7 @@ namespace black_cat
 			l_blending_job->set_local_times(&l_times[0]);
 		}
 
-		auto* l_aim_job = game::bc_animation_job_helper::find_job<game::bc_aim_animation_job>(static_cast<game::bc_sequence_animation_job&>(p_idle_animation));
+		auto* l_aim_job = game::bc_animation_job_helper::find_job<game::bc_aim_animation_job>(p_idle_animation);
 		l_aim_job->set_world_target(p_update_params.m_position + m_state.m_look_direction * 1000);
 	}
 
@@ -642,27 +689,101 @@ namespace black_cat
 			l_weights[3] = 0;
 		}
 
-		auto* l_blending_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(static_cast<game::bc_sequence_animation_job&>(p_running_animation));
+		auto* l_blending_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(p_running_animation);
 		l_blending_job->set_weights(&l_weights[0]);
 
-		auto* l_aim_job = game::bc_animation_job_helper::find_job<game::bc_aim_animation_job>(static_cast<game::bc_sequence_animation_job&>(p_running_animation));
+		auto* l_aim_job = game::bc_animation_job_helper::find_job<game::bc_aim_animation_job>(p_running_animation);
 		l_aim_job->set_world_target(p_update_params.m_position + m_state.m_look_direction * 1000);
 	}
 
-	inline void bc_xbot_state_machine::place_weapon_ik(bc_xbot_weapon& p_weapon, game::bci_animation_job& p_active_animation) noexcept
+	inline void bc_xbot_state_machine::start_blend_grenade_throw(game::bci_animation_job& p_active_animation)
 	{
-		auto* l_weapon_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(static_cast<game::bc_sequence_animation_job&>(p_active_animation));
-		if (!l_weapon_ik_job)
+		if (m_grenade_throw_time >= 0)
+		{
+			return;
+		}
+		
+		auto* l_grenade_throw_blend_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(p_active_animation, "grenade_throw_blending");
+		if(!l_grenade_throw_blend_job)
 		{
 			return;
 		}
 
-		l_weapon_ik_job->set_weapon(&p_weapon);
+		bcFLOAT l_grenade_throw_blend_weights[] = { 1,0 };
+		l_grenade_throw_blend_job->set_weights(&l_grenade_throw_blend_weights[0]);
+		
+		auto& l_grenade_throw_partial_blending = static_cast<game::bc_partial_blending_animation_job&>(l_grenade_throw_blend_job->get_layer(1));
+		auto& l_grenade_throw_partial_layer = *l_grenade_throw_partial_blending.get_layer2();
+
+		m_grenade_throw_time = 0;
+		l_grenade_throw_partial_layer.set_local_time(0);
+		l_grenade_throw_partial_layer.set_enabled(true);
+		l_grenade_throw_partial_blending.set_enabled(true);
 	}
 
+	inline void bc_xbot_state_machine::blend_grenade_throw_animation(const bc_xbot_state_update_params& p_update_params, game::bci_animation_job& p_active_animation) noexcept
+	{
+		if (m_grenade_throw_time < 0)
+		{
+			return;
+		}
+		
+		auto* l_grenade_throw_blend_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(p_active_animation, "grenade_throw_blending");
+		if(!l_grenade_throw_blend_job)
+		{
+			return;
+		}
+		
+		auto& l_grenade_throw_partial_blending = static_cast<game::bc_partial_blending_animation_job&>(l_grenade_throw_blend_job->get_layer(1));
+		auto& l_grenade_throw_partial_layer = *l_grenade_throw_partial_blending.get_layer2();
+		
+		m_grenade_throw_time += p_update_params.m_clock.m_elapsed_second;
+
+		const auto l_is_not_ending = l_grenade_throw_partial_layer.get_animation()->get_duration() - m_grenade_throw_time > m_state.m_grenade_throw_weight.get_drag_time();
+		if (l_is_not_ending)
+		{
+			m_state.m_grenade_throw_weight.push(p_update_params.m_clock.m_elapsed_second);
+		}
+		else
+		{
+			m_state.m_grenade_throw_weight.release(p_update_params.m_clock.m_elapsed_second);
+		}
+		
+		const auto l_grenade_throw_weight = m_state.m_grenade_throw_weight.get_value();
+		bcFLOAT l_grenade_throw_blend_weights[] = { 1 - l_grenade_throw_weight, l_grenade_throw_weight };
+		l_grenade_throw_blend_job->set_weights(&l_grenade_throw_blend_weights[0]);
+		
+		if(!l_grenade_throw_partial_layer.get_enabled())
+		{
+			m_grenade_throw_time = -1;
+			l_grenade_throw_partial_layer.set_local_time(0);
+			l_grenade_throw_partial_layer.set_enabled(false);
+			l_grenade_throw_partial_blending.set_enabled(false);
+		}
+	}
+
+	inline void bc_xbot_state_machine::start_blend_weapon_shoot(game::bci_animation_job& p_active_animation) noexcept
+	{
+		auto* l_additive_blend_job = game::bc_animation_job_helper::find_job<game::bc_additive_blending_animation_job>(p_active_animation);
+		if (!l_additive_blend_job || !l_additive_blend_job->get_additive_layer())
+		{
+			return;
+		}
+
+		if (m_weapon_shoot_time >= 0)
+		{
+			return;
+		}
+
+		m_weapon_shoot_time = 0;
+		l_additive_blend_job->get_additive_layer()->set_local_time(0);
+		l_additive_blend_job->get_additive_layer()->set_enabled(true);
+		l_additive_blend_job->set_enabled(true);
+	}
+	
 	inline void bc_xbot_state_machine::blend_weapon_shoot_animation(const bc_xbot_state_update_params& p_update_params, bc_xbot_weapon& p_weapon, game::bci_animation_job& p_active_animation) noexcept
 	{
-		auto* l_additive_blend_job = game::bc_animation_job_helper::find_job<game::bc_additive_blending_animation_job>(static_cast<game::bc_sequence_animation_job&>(p_active_animation));
+		auto* l_additive_blend_job = game::bc_animation_job_helper::find_job<game::bc_additive_blending_animation_job>(p_active_animation);
 		if (!l_additive_blend_job)
 		{
 			return;
@@ -674,13 +795,12 @@ namespace black_cat
 			return;
 		}
 
-		if (m_state.m_weapon_shoot_time >= 0)
+		if (m_weapon_shoot_time >= 0)
 		{
-			m_state.m_weapon_shoot_time += p_update_params.m_clock.m_elapsed_second;
-
-			if (m_state.m_weapon_shoot_time >= p_weapon.m_rate_of_fire_seconds)
+			m_weapon_shoot_time += p_update_params.m_clock.m_elapsed_second;
+			if (m_weapon_shoot_time >= p_weapon.m_rate_of_fire_seconds)
 			{
-				m_state.m_weapon_shoot_time = -1;
+				m_weapon_shoot_time = -1;
 			}
 		}
 
@@ -695,23 +815,17 @@ namespace black_cat
 		}
 	}
 
-	inline void bc_xbot_state_machine::blend_weapon_shoot(game::bci_animation_job& p_active_animation) noexcept
+	inline void bc_xbot_state_machine::place_weapon_ik(bc_xbot_weapon& p_weapon, game::bci_animation_job& p_active_animation) noexcept
 	{
-		auto* l_additive_blend_job = game::bc_animation_job_helper::find_job<game::bc_additive_blending_animation_job>(static_cast<game::bc_sequence_animation_job&>(p_active_animation));
-		if (!l_additive_blend_job || !l_additive_blend_job->get_additive_layer())
+		auto* l_weapon_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(p_active_animation);
+		if (!l_weapon_ik_job)
 		{
 			return;
 		}
 
-		if (m_state.m_weapon_shoot_time >= 0)
-		{
-			return;
-		}
-
-		m_state.m_weapon_shoot_time = 0;
-		l_additive_blend_job->get_additive_layer()->set_local_time(0);
-		l_additive_blend_job->get_additive_layer()->set_enabled(true);
-		l_additive_blend_job->set_enabled(true);
+		const auto l_grenade_throw_weight = m_state.m_grenade_throw_weight.get_value();
+		l_weapon_ik_job->set_weight(1 - l_grenade_throw_weight);
+		l_weapon_ik_job->set_weapon(&p_weapon);
 	}
 
 	inline void bc_xbot_state_machine::change_animation(game::bci_animation_job* p_new_animation) noexcept

@@ -20,13 +20,13 @@ namespace black_cat
 			const bcCHAR* p_last_joint,
 			const core::bc_vector3f& p_middle_joint_rotation_ls,
 			const core::bc_vector3f& p_pole_vector_ms,
-			bcFLOAT p_aim_weight)
+			bcFLOAT p_weight)
 			: bci_animation_job(p_local_job->get_skeleton()),
 			m_local_job(std::move(p_local_job)),
 			m_model_job(std::move(p_model_job)),
 			m_middle_joint_rotation_ls(core::bc_vector3f::normalize(p_middle_joint_rotation_ls)),
 			m_pole_vector_ms(core::bc_vector3f::normalize(p_pole_vector_ms)),
-			m_aim_weight(p_aim_weight),
+			m_weight(p_weight),
 			m_twist_angle(0)
 		{
 			const auto l_first_joint = get_skeleton().find_joint_by_name(p_first_joint);
@@ -60,7 +60,7 @@ namespace black_cat
 			l_ik_job.target = ozz::math::simd_float4::Load3PtrU(&m_target_ms.x);
 			l_ik_job.pole_vector = ozz::math::simd_float4::Load3PtrU(&m_pole_vector_ms.x);
 			l_ik_job.mid_axis = ozz::math::simd_float4::Load3PtrU(&m_middle_joint_rotation_ls.x);
-			l_ik_job.weight = m_aim_weight;
+			l_ik_job.weight = m_weight;
 			l_ik_job.soften = 0.95f;
 			l_ik_job.twist_angle = m_twist_angle;
 			l_ik_job.start_joint = &m_model_job->get_native_transforms()[m_first_joint_index];

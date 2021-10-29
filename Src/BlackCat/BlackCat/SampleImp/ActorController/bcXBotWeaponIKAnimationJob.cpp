@@ -20,7 +20,6 @@ namespace black_cat
 		const bcCHAR* p_offset_joint,
 		const core::bc_vector3f& p_offset)
 		: bci_animation_job(p_local_job->get_skeleton()),
-		m_enabled(true),
 		m_local_forward(p_local_forward),
 		m_model_job(p_model_job),
 		m_main_hand_job

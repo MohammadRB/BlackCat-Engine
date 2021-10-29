@@ -26,7 +26,7 @@ namespace black_cat
 
 			bool get_enabled() const noexcept;
 
-			void set_enabled(bool p_enabled) noexcept;
+			virtual void set_enabled(bool p_enabled) noexcept;
 
 			bc_animation_play_mode get_play_mode() const noexcept;
 

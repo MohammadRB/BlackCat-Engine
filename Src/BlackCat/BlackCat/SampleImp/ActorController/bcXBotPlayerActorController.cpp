@@ -2,6 +2,7 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Utility/bcJsonParse.h"
 #include "Core/Utility/bcLogger.h"
@@ -154,7 +155,7 @@ namespace black_cat
 			const auto* l_mediate_component = p_context.m_actor.get_component<game::bc_mediate_component>();
 			const auto l_bound_box_extends = l_mediate_component->get_bound_box().get_half_extends();
 			const auto l_max_side_length = std::max(std::max(l_bound_box_extends.x, l_bound_box_extends.y), l_bound_box_extends.z) * 2;
-			m_camera_y_offset = l_max_side_length * 3.f;
+			m_camera_y_offset = l_max_side_length * 2.8f;
 			m_camera_z_offset = l_max_side_length * -1.5f;
 			m_camera_look_at_offset = l_max_side_length * 1.5f;
 		}
@@ -216,19 +217,21 @@ namespace black_cat
 
 	bool bc_xbot_player_actor_controller::_on_event(core::bci_event& p_event) noexcept
 	{
+		bool l_handled = false;
+		
 		auto* l_pointing_event = core::bci_message::as<platform::bc_app_event_pointing>(p_event);
 		if (l_pointing_event)
 		{
-			return _on_pointing(*l_pointing_event);
+			l_handled = _on_pointing(*l_pointing_event);
 		}
 
 		auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
 		if (l_key_event)
 		{
-			return _on_key(*l_key_event);
+			l_handled = _on_key(*l_key_event);
 		}
 
-		return false;
+		return l_handled;
 	}
 
 	bool bc_xbot_player_actor_controller::_on_pointing(platform::bc_app_event_pointing& p_pointing_event) noexcept
@@ -297,6 +300,14 @@ namespace black_cat
 			}
 		}
 
+		if (p_key_event.get_key() == platform::bc_key::kb_G)
+		{
+			if (p_key_event.get_key_state() == platform::bc_key_state::releasing)
+			{
+				_throw_grenade();
+			}
+		}
+		
 		if (p_key_event.get_key() == platform::bc_key::kb_d1)
 		{
 			if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
@@ -321,6 +332,11 @@ namespace black_cat
 		}
 		
 		return true;
+	}
+
+	void bc_xbot_player_actor_controller::_throw_grenade()
+	{
+		bc_xbot_actor_controller::throw_grenade();
 	}
 
 	void bc_xbot_player_actor_controller::_attach_weapon(const bcCHAR* p_entity)

@@ -20,6 +20,8 @@ namespace black_cat
 
 			bc_velocity& operator=(const bc_velocity&) noexcept;
 
+			bcFLOAT get_drag_time() const noexcept;
+			
 			void push(core_platform::bc_clock::small_delta_time p_elapsed_seconds) noexcept;
 			
 			void release(core_platform::bc_clock::small_delta_time p_elapsed_seconds) noexcept;
@@ -51,6 +53,12 @@ namespace black_cat
 
 		template<typename T>
 		bc_velocity<T>& bc_velocity<T>::operator=(const bc_velocity&) noexcept = default;
+
+		template<typename T>
+		bcFLOAT bc_velocity<T>::get_drag_time() const noexcept
+		{
+			return m_drag_time;
+		}
 
 		template<typename T>
 		void bc_velocity<T>::push(core_platform::bc_clock::small_delta_time p_elapsed_seconds) noexcept

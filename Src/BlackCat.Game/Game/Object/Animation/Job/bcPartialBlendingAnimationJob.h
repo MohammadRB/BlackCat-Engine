@@ -51,7 +51,6 @@ namespace black_cat
 			bool run(const core_platform::bc_clock::update_param& p_clock) override;
 
 		private:
-			bool m_enabled;
 			bcFLOAT m_layer1_weight;
 			bcFLOAT m_layer2_weight;
 			core::bc_shared_ptr<bci_local_transform_animation_job> m_layer1;

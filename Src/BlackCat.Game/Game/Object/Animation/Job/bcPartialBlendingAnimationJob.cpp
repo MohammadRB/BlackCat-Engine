@@ -18,7 +18,6 @@ namespace black_cat
 			core::bc_shared_ptr<bc_sampling_animation_job> p_layer2,
 			const bcCHAR* p_layer_2_root_joint)
 			: bci_local_transform_animation_job(p_skeleton),
-			m_enabled(true),
 			m_layer1_weight(1),
 			m_layer2_weight(1),
 			m_layer1(std::move(p_layer1)),
@@ -47,10 +46,8 @@ namespace black_cat
 				};
 			};
 
-			ozz::animation::IterateJointsDF
-					(m_skeleton->get_native_handle(), l_weight_setter(m_layer1_weights, 0.f), l_joint.first);
-			ozz::animation::IterateJointsDF
-					(m_skeleton->get_native_handle(), l_weight_setter(m_layer2_weights, 1.f), l_joint.first);
+			ozz::animation::IterateJointsDF(m_skeleton->get_native_handle(), l_weight_setter(m_layer1_weights, 0.f), l_joint.first);
+			ozz::animation::IterateJointsDF(m_skeleton->get_native_handle(), l_weight_setter(m_layer2_weights, 1.f), l_joint.first);
 		}
 
 		bool bc_partial_blending_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
