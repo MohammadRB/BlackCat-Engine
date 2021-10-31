@@ -33,9 +33,7 @@ namespace black_cat
 
 		void set_enabled(bool p_enabled) noexcept override;
 
-		void set_offset_joint(const bcCHAR* p_offset_joint);
-
-		void set_offset(const core::bc_vector3f& p_offset) noexcept;
+		void set_offset_joint(const bcCHAR* p_offset_joint, const core::bc_vector3f& p_offset);
 		
 		void set_weight(bcFLOAT p_weight) noexcept;
 
@@ -66,7 +64,7 @@ namespace black_cat
 		m_second_hand_job.set_enabled(p_enabled);
 	}
 
-	inline void bc_xbot_weapon_ik_animation_job::set_offset_joint(const bcCHAR* p_offset_joint)
+	inline void bc_xbot_weapon_ik_animation_job::set_offset_joint(const bcCHAR* p_offset_joint, const core::bc_vector3f& p_offset)
 	{
 		const auto l_offset_joint = get_skeleton().find_joint_by_name(p_offset_joint);
 		if (!l_offset_joint.second)
@@ -75,10 +73,6 @@ namespace black_cat
 		}
 
 		m_offset_joint_index = l_offset_joint.first;
-	}
-
-	inline void bc_xbot_weapon_ik_animation_job::set_offset(const core::bc_vector3f& p_offset) noexcept
-	{
 		m_offset = p_offset;
 	}
 

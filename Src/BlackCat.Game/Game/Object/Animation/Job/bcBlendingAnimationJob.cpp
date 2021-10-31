@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 #include "Game/Object/Animation/Job/bcBlendingAnimationJob.h"
+#include "Game/Object/Animation/Job/bcSamplingAnimationJob.h"
 #include "3rdParty/Ozz/Include/ozz/animation/runtime/blending_job.h"
 
 namespace black_cat
@@ -41,8 +42,14 @@ namespace black_cat
 				{
 					continue;
 				}
+
+				auto* l_sampling_job = dynamic_cast<bc_sampling_animation_job*>(m_layers[l_i].first.get());
+				if(!l_sampling_job)
+				{
+					continue;
+				}
 				
-				m_layers[l_i].first->set_local_time(p_time[l_i]);
+				l_sampling_job->set_local_time(p_time[l_i]);
 			}
 		}
 
@@ -63,14 +70,22 @@ namespace black_cat
 				l_layer.transform = ozz::make_span(l_job->get_local_transforms());
 				l_layer.weight = l_weight;
 
-				// Animation must be executed to advance its local time in case if its play mode is once_disable
-				//if(l_layer.weight > 0.f)
+				if(l_layer.weight > 0.f)
 				{
 					l_is_valid = l_is_valid && l_job->run(p_clock);
 					
 					if(!l_is_valid)
 					{
 						return false;
+					}
+				}
+				else
+				{
+					// Animation must advance its local time in case if its play mode is once_disable
+					auto* l_sampling_job = dynamic_cast<bc_sampling_animation_job*>(l_job.get());
+					if(l_sampling_job)
+					{
+						l_sampling_job->advance_time(p_clock);
 					}
 				}
 			}

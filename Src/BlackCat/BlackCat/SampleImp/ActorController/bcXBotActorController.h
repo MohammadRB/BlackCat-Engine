@@ -99,14 +99,6 @@ namespace black_cat
 		
 		const core::bc_vector3f& get_local_forward() const noexcept;
 
-		game::bci_animation_job* get_idle_animation() const noexcept;
-		
-		game::bci_animation_job* get_running_animation() const noexcept;
-
-		game::bci_animation_job* get_rifle_idle_animation() const noexcept;
-
-		game::bci_animation_job* get_rifle_running_animation() const noexcept;
-
 		const core::bc_vector3f& get_position() const noexcept;
 		
 		const core::bc_vector3f& get_look_direction() const noexcept;
@@ -132,24 +124,23 @@ namespace black_cat
 		void on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit) override;
 		
 	private:
-		core::bc_shared_ptr<game::bci_animation_job> _create_idle_animation(const bcCHAR* p_idle_animation,
-			const bcCHAR* p_left_turn_animation,
-			const bcCHAR* p_right_turn_animation,
-			const bcCHAR* p_grenade_throw_animation,
-			const bcCHAR* p_weapon_shoot_animation,
-			core::bc_shared_ptr<game::bc_sampling_animation_job>* p_idle_sample_job);
-
-		core::bc_shared_ptr<game::bci_animation_job> _create_running_animation(core::bc_shared_ptr<game::bc_sampling_animation_job> p_idle_sample_job,
+		core::bc_shared_ptr<game::bci_animation_job> _create_animation_pipeline(const bcCHAR* p_idle_animation,
+			const bcCHAR* p_idle_left_turn_animation,
+			const bcCHAR* p_idle_right_turn_animation,
+			const bcCHAR* p_weapon_idle_animation,
+			const bcCHAR* p_weapon_idle_left_turn_animation,
+			const bcCHAR* p_weapon_idle_right_turn_animation,
 			const bcCHAR* p_walking_animation,
 			const bcCHAR* p_walking_backward_animation,
 			const bcCHAR* p_running_animation,
 			const bcCHAR* p_running_backward_animation,
-			const bcCHAR* p_weapon_shoot_animation,
-			core::bc_shared_ptr<game::bc_sampling_animation_job>* p_walking_sample_job,
-			core::bc_shared_ptr<game::bc_sampling_animation_job>* p_walking_backward_sample_job,
-			core::bc_shared_ptr<game::bc_sampling_animation_job>* p_running_sample_job,
-			core::bc_shared_ptr<game::bc_sampling_animation_job>* p_running_backward_sample_job);
-
+			const bcCHAR* p_weapon_walking_animation,
+			const bcCHAR* p_weapon_walking_backward_animation,
+			const bcCHAR* p_weapon_running_animation,
+			const bcCHAR* p_weapon_running_backward_animation,
+			const bcCHAR* p_grenade_throw_animation,
+			const bcCHAR* p_weapon_shoot_animation);
+		
 		void _update_px_move(const core_platform::bc_clock::update_param& p_clock, const core::bc_vector3f& p_move_vector);
 		
 		void _update_px_position(const core::bc_vector3f& p_position);
@@ -181,13 +172,8 @@ namespace black_cat
 		std::pair<bcUINT32, const bcCHAR*> m_rifle_joint;
 		core::bc_vector3f m_rifle_joint_offset;
 
-		core::bc_shared_ptr<game::bc_sampling_animation_job> m_idle_sample_job;
-		core::bc_shared_ptr<game::bc_sampling_animation_job> m_rifle_aiming_idle_sample_job;
-		core::bc_shared_ptr<game::bci_animation_job> m_idle_job;
-		core::bc_shared_ptr<game::bci_animation_job> m_running_job;
-		core::bc_shared_ptr<game::bci_animation_job> m_rifle_idle_job;
-		core::bc_shared_ptr<game::bci_animation_job> m_rifle_running_job;
-
+		core::bc_shared_ptr<game::bci_animation_job> m_animation_pipeline;
+		
 		bcINT32 m_look_delta_x;
 		core::bc_velocity<bcFLOAT> m_look_velocity;
 		core::bc_velocity<bcFLOAT> m_forward_velocity;
@@ -226,26 +212,6 @@ namespace black_cat
 		return m_local_forward;
 	}
 
-	inline game::bci_animation_job* bc_xbot_actor_controller::get_idle_animation() const noexcept
-	{
-		return m_idle_job.get();
-	}
-
-	inline game::bci_animation_job* bc_xbot_actor_controller::get_running_animation() const noexcept
-	{
-		return m_running_job.get();
-	}
-
-	inline game::bci_animation_job* bc_xbot_actor_controller::get_rifle_idle_animation() const noexcept
-	{
-		return m_rifle_idle_job.get();
-	}
-
-	inline game::bci_animation_job* bc_xbot_actor_controller::get_rifle_running_animation() const noexcept
-	{
-		return m_rifle_running_job.get();
-	}
-	
 	inline const core::bc_vector3f& bc_xbot_actor_controller::get_position() const noexcept
 	{
 		return m_position;

@@ -9,7 +9,7 @@ namespace black_cat
 	namespace game
 	{
 		template<typename TJob>
-		class bc_execute_once_animation_job final : public TJob
+		class bc_execute_once_animation_job : public TJob
 		{
 		public:
 			bc_execute_once_animation_job(TJob&& p_job)
@@ -19,7 +19,7 @@ namespace black_cat
 				static_assert(std::is_base_of_v<bci_animation_job, TJob>, "TJob must inherit from bci_animation_job");
 			}
 
-			explicit bc_execute_once_animation_job(bc_execute_once_animation_job&&) noexcept = default;
+			bc_execute_once_animation_job(bc_execute_once_animation_job&&) noexcept = default;
 
 			~bc_execute_once_animation_job() = default;
 

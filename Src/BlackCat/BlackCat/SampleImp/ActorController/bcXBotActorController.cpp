@@ -28,7 +28,9 @@
 #include "Game/Object/Animation/Job/bcTwoBoneIKAnimationJob.h"
 #include "Game/Object/Animation/Job/bcAdditiveBlendingAnimationJob.h"
 #include "Game/Object/Animation/Job/bcActorUpdateAnimationJob.h"
+#include "Game/Object/Animation/Job/bcExecuteOneAnimationJob.h"
 #include "Game/Object/Animation/Job/bcExecuteOnceAnimationJob.h"
+#include "Game/Object/Animation/Job/bcExecuteOneAnimationJob.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/bcGameSystem.h"
 #include "BlackCat/SampleImp/ActorController/bcXBotActorController.h"
@@ -131,49 +133,24 @@ namespace black_cat
 		);
 		m_rifle_joint = m_skinned_mesh_component->get_skeleton()->find_joint_by_name(l_rifle_joint_value.c_str());
 
-		m_idle_job = _create_idle_animation
+		m_animation_pipeline = _create_animation_pipeline
 		(
-			"NeutralIdle", 
-			"LeftTurn", 
+			"NeutralIdle",
+			"LeftTurn",
 			"RightTurn",
-			"GrenadeThrow",
-			nullptr,
-			&m_idle_sample_job
-		);
-		m_running_job = _create_running_animation
-		(
-			m_idle_sample_job,
+			"RifleAimingIdle",
+			"RifleLeftTurn",
+			"RifleRightTurn",
 			"Walking",
 			"WalkingBackward",
 			"Running",
 			"RunningBackward",
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr
-		);
-		m_rifle_idle_job = _create_idle_animation
-		(
-			"RifleAimingIdle",
-			"RifleLeftTurn",
-			"RifleRightTurn",
-			"GrenadeThrow",
-			"FiringRifle",
-			&m_rifle_aiming_idle_sample_job
-		);
-		m_rifle_running_job = _create_running_animation
-		(
-			m_rifle_aiming_idle_sample_job,
 			"RifleWalking",
 			"RifleWalkingBackward",
 			"RifleRunning",
 			"RifleRunningBackward",
-			"FiringRifle",
-			nullptr,
-			nullptr,
-			nullptr,
-			nullptr
+			"GrenadeThrow",
+			"FiringRifle"
 		);
 	}
 
@@ -219,11 +196,8 @@ namespace black_cat
 			m_local_forward, 
 			7.f, 
 			m_bound_box_max_side_length * 1.3f, 
-			m_bound_box_max_side_length * 0.6f, 
-			*m_idle_job, 
-			*m_running_job, 
-			*m_rifle_idle_job, 
-			*m_rifle_running_job
+			m_bound_box_max_side_length * 0.6f,
+			*m_animation_pipeline
 		));
 	}
 
@@ -556,21 +530,42 @@ namespace black_cat
 	{
 	}
 
-	core::bc_shared_ptr<game::bci_animation_job> bc_xbot_actor_controller::_create_idle_animation(const bcCHAR* p_idle_animation,
-		const bcCHAR* p_left_turn_animation,
-		const bcCHAR* p_right_turn_animation,
+	core::bc_shared_ptr<game::bci_animation_job> bc_xbot_actor_controller::_create_animation_pipeline(const bcCHAR* p_idle_animation,
+		const bcCHAR* p_idle_left_turn_animation,
+		const bcCHAR* p_idle_right_turn_animation,
+		const bcCHAR* p_weapon_idle_animation,
+		const bcCHAR* p_weapon_idle_left_turn_animation,
+		const bcCHAR* p_weapon_idle_right_turn_animation,
+		const bcCHAR* p_walking_animation,
+		const bcCHAR* p_walking_backward_animation,
+		const bcCHAR* p_running_animation,
+		const bcCHAR* p_running_backward_animation,
+		const bcCHAR* p_weapon_walking_animation,
+		const bcCHAR* p_weapon_walking_backward_animation,
+		const bcCHAR* p_weapon_running_animation,
+		const bcCHAR* p_weapon_running_backward_animation,
 		const bcCHAR* p_grenade_throw_animation,
-		const bcCHAR* p_weapon_shoot_animation,
-		core::bc_shared_ptr<game::bc_sampling_animation_job>* p_idle_sample_job)
+		const bcCHAR* p_weapon_shoot_animation)
 	{
 		auto& l_skeleton = *m_skinned_mesh_component->get_skeleton();
 		auto& l_idle_animation = m_skinned_mesh_component->find_animation_throw(p_idle_animation);
-		auto& l_left_turn_animation = m_skinned_mesh_component->find_animation_throw(p_left_turn_animation);
-		auto& l_right_turn_animation = m_skinned_mesh_component->find_animation_throw(p_right_turn_animation);
+		auto& l_idle_left_turn_animation = m_skinned_mesh_component->find_animation_throw(p_idle_left_turn_animation);
+		auto& l_idle_right_turn_animation = m_skinned_mesh_component->find_animation_throw(p_idle_right_turn_animation);
+		auto& l_weapon_idle_animation = m_skinned_mesh_component->find_animation_throw(p_weapon_idle_animation);
+		auto& l_weapon_idle_left_turn_animation = m_skinned_mesh_component->find_animation_throw(p_weapon_idle_left_turn_animation);
+		auto& l_weapon_idle_right_turn_animation = m_skinned_mesh_component->find_animation_throw(p_weapon_idle_right_turn_animation);
+		auto& l_walking_animation = m_skinned_mesh_component->find_animation_throw(p_walking_animation);
+		auto& l_walking_backward_animation = m_skinned_mesh_component->find_animation_throw(p_walking_backward_animation);
+		auto& l_running_animation = m_skinned_mesh_component->find_animation_throw(p_running_animation);
+		auto& l_running_backward_animation = m_skinned_mesh_component->find_animation_throw(p_running_backward_animation);
+		auto& l_weapon_walking_animation = m_skinned_mesh_component->find_animation_throw(p_weapon_walking_animation);
+		auto& l_weapon_walking_backward_animation = m_skinned_mesh_component->find_animation_throw(p_weapon_walking_backward_animation);
+		auto& l_weapon_running_animation = m_skinned_mesh_component->find_animation_throw(p_weapon_running_animation);
+		auto& l_weapon_running_backward_animation = m_skinned_mesh_component->find_animation_throw(p_weapon_running_backward_animation);
 		auto& l_grenade_throw_animation = m_skinned_mesh_component->find_animation_throw(p_grenade_throw_animation);
-		auto* l_weapon_shoot_animation = m_skinned_mesh_component->find_animation(p_weapon_shoot_animation);
+		auto& l_weapon_shoot_animation = m_skinned_mesh_component->find_animation_throw(p_weapon_shoot_animation);
+
 		core::bc_vector<const bcCHAR*> l_aim_bone_chain(m_upper_body_chain.size());
-		
 		std::transform
 		(
 			std::begin(m_upper_body_chain),
@@ -581,33 +576,99 @@ namespace black_cat
 				return p_bone_name.c_str();
 			}
 		);
-		
-		auto l_idle_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_idle_animation));
-		auto l_left_turn_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_left_turn_animation));
-		auto l_right_turn_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_right_turn_animation));
-		auto l_grenade_throw_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_grenade_throw_animation));
-		core::bc_shared_ptr<game::bc_sampling_animation_job> l_weapon_shoot_sample_job;
 
-		if(l_weapon_shoot_animation)
-		{
-			l_weapon_shoot_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, *l_weapon_shoot_animation));
-			l_weapon_shoot_sample_job->set_play_mode(game::bc_animation_play_mode::once_disable);
-		}
+		auto l_idle_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_idle_animation));
+		auto l_idle_left_turn_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_idle_left_turn_animation));
+		auto l_idle_right_turn_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_idle_right_turn_animation));
+		auto l_weapon_idle_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_weapon_idle_animation));
+		auto l_weapon_idle_left_turn_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_weapon_idle_left_turn_animation));
+		auto l_weapon_idle_right_turn_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_weapon_idle_right_turn_animation));
+		auto l_walking_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_walking_animation));
+		auto l_walking_backward_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_walking_backward_animation));
+		auto l_running_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_running_animation));
+		auto l_running_backward_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_running_backward_animation));
+		auto l_weapon_walking_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_weapon_walking_animation));
+		auto l_weapon_walking_backward_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_weapon_walking_backward_animation));
+		auto l_weapon_running_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_weapon_running_animation));
+		auto l_weapon_running_backward_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_weapon_running_backward_animation));
+		auto l_grenade_throw_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_grenade_throw_animation));
+		auto l_weapon_shoot_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_weapon_shoot_animation));
 		
-		auto l_idle_blending_job = core::bc_make_shared<game::bc_execute_once_animation_job<game::bc_blending_animation_job>>
+		auto l_idle_blending_job = core::bc_make_shared<game::bc_blending_animation_job>
 		(
 			game::bc_blending_animation_job
 			(
-				game::bc_blending_animation_job(l_skeleton, { std::move(l_left_turn_sample_job), l_idle_sample_job, std::move(l_right_turn_sample_job) })
+				game::bc_blending_animation_job
+				(
+					l_skeleton, 
+					{ 
+						std::move(l_idle_left_turn_sample_job),
+						std::move(l_idle_sample_job),
+						std::move(l_idle_right_turn_sample_job)
+					}
+				)
 			)
+		);
+		auto l_running_blending_job = core::bc_make_shared<game::bc_blending_animation_job>
+		(
+			game::bc_blending_animation_job
+			(
+				l_skeleton,
+				{
+					std::move(l_walking_sample_job),
+					std::move(l_walking_backward_sample_job),
+					std::move(l_running_sample_job),
+					std::move(l_running_backward_sample_job)
+				}
+			)
+		);
+		auto l_weapon_idle_blending_job = core::bc_make_shared<game::bc_blending_animation_job>
+		(
+			game::bc_blending_animation_job
+			(
+				game::bc_blending_animation_job
+				(
+					l_skeleton, 
+					{
+						std::move(l_weapon_idle_left_turn_sample_job),
+						std::move(l_weapon_idle_sample_job),
+						std::move(l_weapon_idle_right_turn_sample_job)
+					}
+				)
+			)
+		);
+		auto l_weapon_running_blending_job = core::bc_make_shared<game::bc_blending_animation_job>
+		(
+			game::bc_blending_animation_job
+			(
+				l_skeleton,
+				{
+					std::move(l_weapon_walking_sample_job),
+					std::move(l_weapon_walking_backward_sample_job),
+					std::move(l_weapon_running_sample_job),
+					std::move(l_weapon_running_backward_sample_job)
+				}
+			)
+		);
+		auto l_without_weapon_blending_job = core::bc_make_shared<game::bc_blending_animation_job>
+		(
+			game::bc_blending_animation_job(l_skeleton, { l_idle_blending_job, l_running_blending_job })
+		);
+		auto l_with_weapon_blending_job = core::bc_make_shared<game::bc_blending_animation_job>
+		(
+			game::bc_blending_animation_job(l_skeleton, { l_weapon_idle_blending_job, l_weapon_running_blending_job })
+		);
+		auto l_main_local_job = core::bc_make_shared<game::bc_execute_once_animation_job<game::bc_execute_one_animation_job>>
+		(
+			game::bc_execute_once_animation_job(game::bc_execute_one_animation_job(l_skeleton, { l_without_weapon_blending_job, l_with_weapon_blending_job }))
 		);
 		auto l_grenade_throw_partial_blending_job = core::bc_make_shared<game::bc_partial_blending_animation_job>
 		(
-			game::bc_partial_blending_animation_job(l_skeleton, l_idle_blending_job, l_grenade_throw_sample_job, m_upper_body_chain[0].c_str())
+			game::bc_partial_blending_animation_job(l_skeleton, l_main_local_job, std::move(l_grenade_throw_sample_job), m_upper_body_chain[0].c_str())
 		);
 		auto l_grenade_throw_blending_job = core::bc_make_shared<game::bc_blending_animation_job>
 		(
-			game::bc_blending_animation_job(l_skeleton, { l_idle_blending_job, l_grenade_throw_partial_blending_job })
+			game::bc_blending_animation_job(l_skeleton, { l_main_local_job, l_grenade_throw_partial_blending_job })
 		);
 		auto l_weapon_shoot_job = core::bc_make_shared<game::bc_additive_blending_animation_job>
 		(
@@ -646,151 +707,27 @@ namespace black_cat
 		(
 			bc_xbot_update_animation_job(m_actor, *this, *m_skinned_mesh_component, l_model_to_skinning_job)
 		);
-		
-		bcFLOAT l_idle_blending_weights[] = { 0,1,0 };
+
 		bcFLOAT l_grenade_throw_blending_weights[] = { 1,0 };
-		l_idle_blending_job->set_weights(&l_idle_blending_weights[0]);
 		l_grenade_throw_blending_job->set_weights(&l_grenade_throw_blending_weights[0]);
 		l_grenade_throw_partial_blending_job->get_layer2()->set_play_mode(game::bc_animation_play_mode::once_disable);
 		l_grenade_throw_partial_blending_job->set_enabled(false);
+		l_weapon_shoot_sample_job->set_play_mode(game::bc_animation_play_mode::once_disable);
 		l_weapon_shoot_job->set_enabled(false);
-		
-		if(p_idle_sample_job)
-		{
-			*p_idle_sample_job = l_idle_sample_job;
-		}
-		
+
 		return game::bc_animation_job_builder()
-			.start_with(std::move(l_idle_blending_job), "idle_blending")
+			.start_with(game::bc_tag_animation_job(std::move(l_idle_blending_job)), "idle_blending")
+			.then(game::bc_tag_animation_job(std::move(l_running_blending_job)), "running_blending")
+			.then(game::bc_tag_animation_job(std::move(l_weapon_idle_blending_job)), "weapon_idle_blending")
+			.then(game::bc_tag_animation_job(std::move(l_weapon_running_blending_job)), "weapon_running_blending")
+			.then(game::bc_tag_animation_job(std::move(l_without_weapon_blending_job)), "without_weapon_blending")
+			.then(game::bc_tag_animation_job(std::move(l_with_weapon_blending_job)), "with_weapon_blending")
+			.then(std::move(l_main_local_job), "main_local")
 			.then(std::move(l_grenade_throw_blending_job), "grenade_throw_blending")
-			.then(std::move(l_weapon_shoot_job))
+			.then(std::move(l_weapon_shoot_job), "weapon_shot")
 			.then(std::move(l_local_to_model_job))
-			.then(std::move(l_weapon_ik_job))
-			.then(std::move(l_aim_job))
-			.then(std::move(l_model_to_skinning_job))
-			.end_with(std::move(l_actor_update_job))
-			.build();
-	}
-
-	core::bc_shared_ptr<game::bci_animation_job> bc_xbot_actor_controller::_create_running_animation(core::bc_shared_ptr<game::bc_sampling_animation_job> p_idle_sample_job,
-		const bcCHAR* p_walking_animation,
-		const bcCHAR* p_walking_backward_animation,
-		const bcCHAR* p_running_animation,
-		const bcCHAR* p_running_backward_animation,
-		const bcCHAR* p_weapon_shoot_animation,
-		core::bc_shared_ptr<game::bc_sampling_animation_job>* p_walking_sample_job,
-		core::bc_shared_ptr<game::bc_sampling_animation_job>* p_walking_backward_sample_job,
-		core::bc_shared_ptr<game::bc_sampling_animation_job>* p_running_sample_job,
-		core::bc_shared_ptr<game::bc_sampling_animation_job>* p_running_backward_sample_job)
-	{
-		auto& l_skeleton = *m_skinned_mesh_component->get_skeleton();
-		auto& l_walking_animation = m_skinned_mesh_component->find_animation_throw(p_walking_animation);
-		auto& l_walking_backward_animation = m_skinned_mesh_component->find_animation_throw(p_walking_backward_animation);
-		auto& l_running_animation = m_skinned_mesh_component->find_animation_throw(p_running_animation);
-		auto& l_running_backward_animation = m_skinned_mesh_component->find_animation_throw(p_running_backward_animation);
-		auto* l_weapon_shoot_animation = m_skinned_mesh_component->find_animation(p_weapon_shoot_animation);
-		core::bc_vector<const bcCHAR*> l_aim_bone_chain(m_upper_body_chain.size());
-
-		std::transform
-		(
-			std::begin(m_upper_body_chain),
-			std::end(m_upper_body_chain),
-			std::begin(l_aim_bone_chain),
-			[](const core::bc_string& p_bone_name)
-			{
-				return p_bone_name.c_str();
-			}
-		);
-
-		auto l_walking_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_walking_animation));
-		auto l_walking_backward_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_walking_backward_animation));
-		auto l_running_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_running_animation));
-		auto l_running_backward_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, l_running_backward_animation));
-		core::bc_shared_ptr<game::bc_sampling_animation_job> l_weapon_shoot_sample_job;
-
-		if (l_weapon_shoot_animation)
-		{
-			l_weapon_shoot_sample_job = core::bc_make_shared<game::bc_sampling_animation_job>(game::bc_sampling_animation_job(l_skeleton, *l_weapon_shoot_animation));
-			l_weapon_shoot_sample_job->set_play_mode(game::bc_animation_play_mode::once_disable);
-		}
-		
-		auto l_running_blending_job = core::bc_make_shared<game::bc_blending_animation_job>
-		(
-			game::bc_blending_animation_job
-			(
-				l_skeleton,
-				{
-					std::move(p_idle_sample_job),
-					l_walking_sample_job,
-					l_walking_backward_sample_job,
-					l_running_sample_job,
-					l_running_backward_sample_job
-				}
-			)
-		);
-		auto l_weapon_shoot_job = core::bc_make_shared<game::bc_additive_blending_animation_job>
-		(
-			game::bc_additive_blending_animation_job(l_skeleton, l_running_blending_job, l_weapon_shoot_sample_job, nullptr)
-		);
-		auto l_local_to_model_job = core::bc_make_shared<game::bc_local_to_model_animation_job>
-		(
-			game::bc_local_to_model_animation_job(l_weapon_shoot_job, m_skinned_mesh_component->get_mesh(), m_skinned_mesh_component->get_model_transforms())
-		);
-		auto l_model_to_skinning_job = core::bc_make_shared<game::bc_model_to_skinned_animation_job>
-		(
-			game::bc_model_to_skinned_animation_job(l_local_to_model_job, m_skinned_mesh_component->get_world_transforms())
-		);
-		auto l_weapon_ik_job = core::bc_make_shared<bc_xbot_weapon_ik_animation_job>
-		(
-			bc_xbot_weapon_ik_animation_job
-			(
-				m_local_forward,
-				l_weapon_shoot_job,
-				l_local_to_model_job,
-				m_right_hand_chain[0].second,
-				m_right_hand_chain[1].second,
-				m_right_hand_chain[2].second,
-				m_left_hand_chain[0].second,
-				m_left_hand_chain[1].second,
-				m_left_hand_chain[2].second,
-				m_rifle_joint.second,
-				m_rifle_joint_offset
-			)
-		);
-		auto l_aim_job = core::bc_make_shared<game::bc_aim_animation_job>
-		(
-			game::bc_aim_animation_job(l_weapon_shoot_job, l_local_to_model_job, l_model_to_skinning_job, core::bc_make_span(l_aim_bone_chain), m_local_forward)
-		);
-		auto l_actor_update_job = core::bc_make_shared<bc_xbot_update_animation_job>
-		(
-			bc_xbot_update_animation_job(m_actor, *this, *m_skinned_mesh_component, l_model_to_skinning_job)
-		);
-
-		l_weapon_shoot_job->set_enabled(false);
-
-		if(p_walking_sample_job)
-		{
-			*p_walking_sample_job = l_walking_sample_job;
-		}
-		if (p_walking_backward_sample_job)
-		{
-			*p_walking_backward_sample_job = l_walking_backward_sample_job;
-		}
-		if (p_running_sample_job)
-		{
-			*p_running_sample_job = l_running_sample_job;
-		}
-		if (p_running_backward_sample_job)
-		{
-			*p_running_backward_sample_job = l_running_backward_sample_job;
-		}
-		
-		return game::bc_animation_job_builder()
-			.start_with(std::move(l_running_blending_job))
-			.then(l_weapon_shoot_job)
-			.then(std::move(l_local_to_model_job))
-			.then(std::move(l_weapon_ik_job))
-			.then(std::move(l_aim_job))
+			.then(std::move(l_weapon_ik_job), "weapon_ik")
+			.then(std::move(l_aim_job), "aim")
 			.then(std::move(l_model_to_skinning_job))
 			.end_with(std::move(l_actor_update_job))
 			.build();
@@ -853,10 +790,11 @@ namespace black_cat
 		l_world_transform.set_rotation(l_rotation);
 		l_world_transform.set_translation(m_position);
 
-		game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_idle_job), l_world_transform);
+		/*game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_idle_job), l_world_transform);
 		game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_running_job), l_world_transform);
 		game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_rifle_idle_job), l_world_transform);
-		game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_rifle_running_job), l_world_transform);
+		game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_rifle_running_job), l_world_transform);*/
+		game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_animation_pipeline), l_world_transform);
 		
 		m_actor.add_event(game::bc_world_transform_actor_event(l_world_transform, game::bc_transform_event_type::physics));
 	}
@@ -865,36 +803,36 @@ namespace black_cat
 	{
 		auto* l_model_job = game::bc_animation_job_helper::find_job<game::bc_local_to_model_animation_job>(m_state_machine->get_active_animation());
 		auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinned_animation_job>(m_state_machine->get_active_animation());
-		auto l_main_hand_transform = l_model_job->get_transforms()[m_right_hand_chain[2].first];
-		l_main_hand_transform.make_neutralize_scale();
+		auto l_main_hand_transform_ms = l_model_job->get_transforms()[m_right_hand_chain[2].first];
+		l_main_hand_transform_ms.make_neutralize_scale();
 
-		core::bc_matrix3f l_aim_target_rotation;
-		core::bc_matrix3f l_weapon_forward_rotation;
-		core::bc_matrix3f l_weapon_up_rotation;
+		core::bc_matrix3f l_aim_target_rotation_ms;
+		core::bc_matrix3f l_weapon_forward_rotation_ms;
+		core::bc_matrix3f l_weapon_up_rotation_ms;
 
 		if constexpr (graphic::bc_render_api_info::use_left_handed())
 		{
-			l_aim_target_rotation.rotation_between_two_vector_lh(m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_forward_rotation.rotation_between_two_vector_lh(m_weapon->m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_up_rotation.rotation_between_two_vector_lh(m_weapon->m_local_up, core::bc_vector3f::up());
+			l_aim_target_rotation_ms.rotation_between_two_vector_lh(m_local_forward, m_state_machine->m_state.m_look_direction);
+			l_weapon_forward_rotation_ms.rotation_between_two_vector_lh(m_weapon->m_local_forward, m_state_machine->m_state.m_look_direction);
+			l_weapon_up_rotation_ms.rotation_between_two_vector_lh(m_weapon->m_local_up, core::bc_vector3f::up());
 		}
 		else
 		{
-			l_aim_target_rotation.rotation_between_two_vector_rh(m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_forward_rotation.rotation_between_two_vector_rh(m_weapon->m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_up_rotation.rotation_between_two_vector_rh(m_weapon->m_local_up, core::bc_vector3f::up());
+			l_aim_target_rotation_ms.rotation_between_two_vector_rh(m_local_forward, m_state_machine->m_state.m_look_direction);
+			l_weapon_forward_rotation_ms.rotation_between_two_vector_rh(m_weapon->m_local_forward, m_state_machine->m_state.m_look_direction);
+			l_weapon_up_rotation_ms.rotation_between_two_vector_rh(m_weapon->m_local_up, core::bc_vector3f::up());
 		}
 
-		const auto l_main_hand_offset = l_aim_target_rotation * m_weapon->m_main_hand_offset;
-		auto l_main_hand_world_transform = l_main_hand_transform * l_skinning_job->get_world();
-		l_main_hand_world_transform.set_translation(l_main_hand_world_transform.get_translation() + l_main_hand_offset);
+		const auto l_main_hand_offset_ms = l_aim_target_rotation_ms * m_weapon->m_main_hand_offset;
+		auto l_main_hand_transform_ws = l_main_hand_transform_ms * l_skinning_job->get_world();
+		l_main_hand_transform_ws.set_translation(l_main_hand_transform_ws.get_translation() + l_main_hand_offset_ms);
 
 		const auto l_aim_lock = .7f;
-		const auto l_main_hand_final_rotation = l_main_hand_world_transform.get_rotation() * (1 - l_aim_lock) + (l_weapon_up_rotation * l_weapon_forward_rotation) * l_aim_lock;
+		const auto l_main_hand_final_rotation = l_main_hand_transform_ws.get_rotation() * (1 - l_aim_lock) + (l_weapon_up_rotation_ms * l_weapon_forward_rotation_ms) * l_aim_lock;
 
-		l_main_hand_world_transform.set_rotation(l_main_hand_final_rotation);
+		l_main_hand_transform_ws.set_rotation(l_main_hand_final_rotation);
 
-		return l_main_hand_world_transform;
+		return l_main_hand_transform_ws;
 	}
 
 	core::bc_matrix4f bc_xbot_actor_controller::_calculate_weapon_attachment_transform(bcUINT32 p_attached_node_index,
@@ -905,34 +843,32 @@ namespace black_cat
 		auto* l_model_job = game::bc_animation_job_helper::find_job<game::bc_local_to_model_animation_job>(m_state_machine->get_active_animation());
 		auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinned_animation_job>(m_state_machine->get_active_animation());
 
-		core::bc_matrix3f l_aim_target_rotation;
-		core::bc_matrix3f l_weapon_forward_rotation;
-		core::bc_matrix3f l_weapon_up_rotation;
+		core::bc_matrix3f l_aim_target_rotation_ms;
+		core::bc_matrix3f l_weapon_forward_rotation_ms;
+		core::bc_matrix3f l_weapon_up_rotation_ms;
 		
 		if constexpr (graphic::bc_render_api_info::use_left_handed())
 		{
-			l_aim_target_rotation.rotation_between_two_vector_lh(m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_forward_rotation.rotation_between_two_vector_checked_lh(m_weapon->m_local_forward, p_attached_node_forward);
-			l_weapon_up_rotation.rotation_between_two_vector_lh(m_weapon->m_local_up, p_attached_node_up);
+			l_aim_target_rotation_ms.rotation_between_two_vector_lh(m_local_forward, m_state_machine->m_state.m_look_direction);
+			l_weapon_forward_rotation_ms.rotation_between_two_vector_checked_lh(m_weapon->m_local_forward, p_attached_node_forward);
+			l_weapon_up_rotation_ms.rotation_between_two_vector_lh(m_weapon->m_local_up, p_attached_node_up);
 		}
 		else
 		{
-			l_aim_target_rotation.rotation_between_two_vector_rh(m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_forward_rotation.rotation_between_two_vector_checked_rh(m_weapon->m_local_forward, p_attached_node_forward);
-			l_weapon_up_rotation.rotation_between_two_vector_rh(m_weapon->m_local_up, p_attached_node_up);
+			l_aim_target_rotation_ms.rotation_between_two_vector_rh(m_local_forward, m_state_machine->m_state.m_look_direction);
+			l_weapon_forward_rotation_ms.rotation_between_two_vector_checked_rh(m_weapon->m_local_forward, p_attached_node_forward);
+			l_weapon_up_rotation_ms.rotation_between_two_vector_rh(m_weapon->m_local_up, p_attached_node_up);
 		}
 
-		auto l_attached_node_transform = l_model_job->get_transforms()[p_attached_node_index];
-		l_attached_node_transform.make_neutralize_scale();
-		const auto l_weapon_local_rotation = l_weapon_up_rotation * l_weapon_forward_rotation;
-		const auto l_weapon_local_position = l_weapon_local_rotation * p_attached_node_offset;
-		const auto l_weapon_world_rotation = l_weapon_local_rotation * l_attached_node_transform.get_rotation() * l_skinning_job->get_world().get_rotation();
-		const auto l_weapon_world_position = (l_aim_target_rotation * (l_weapon_local_position + l_attached_node_transform.get_translation())) + l_skinning_job->get_world().get_translation();
+		auto l_attached_node_transform_ms = l_model_job->get_transforms()[p_attached_node_index];
+		l_attached_node_transform_ms.make_neutralize_scale();
+		auto l_weapon_transform_ms = core::bc_matrix4f::identity();
+		l_weapon_transform_ms.set_rotation(l_weapon_up_rotation_ms * l_weapon_forward_rotation_ms);
 		
-		auto l_attached_node_world_transform = core::bc_matrix4f::identity();
-		l_attached_node_world_transform.set_rotation(l_weapon_world_rotation);
-		l_attached_node_world_transform.set_translation(l_weapon_world_position);
-
-		return l_attached_node_world_transform;
+		const auto l_attached_node_offset_ms = l_aim_target_rotation_ms * (l_weapon_up_rotation_ms * l_weapon_forward_rotation_ms * p_attached_node_offset);
+		auto l_attached_node_transform_ws = l_weapon_transform_ms * l_attached_node_transform_ms * l_skinning_job->get_world();
+		l_attached_node_transform_ws.set_translation(l_attached_node_transform_ws.get_translation() + l_attached_node_offset_ms);
+		
+		return l_attached_node_transform_ws;
 	}
 }

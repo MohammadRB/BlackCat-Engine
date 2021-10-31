@@ -11,6 +11,7 @@
 #include "Game/Object/Animation/Job/bcLocalToModelAnimationJob.h"
 #include "Game/Object/Animation/Job/bcModelToSkinnedAnimationJob.h"
 #include "Game/Object/Animation/Job/bcSequenceAnimationJob.h"
+#include "Game/Object/Animation/Job/bcTagAnimationJob.h"
 #include "Game/bcException.h"
 
 namespace black_cat
@@ -48,6 +49,8 @@ namespace black_cat
 			bc_animation_job_builder1& operator=(bc_animation_job_builder1&&) noexcept;
 
 			bc_animation_job_builder1& then(core::bc_shared_ptr<bci_animation_job> p_job, const bcCHAR* p_name = nullptr);
+			
+			bc_animation_job_builder1& then(bc_tag_animation_job p_job, const bcCHAR* p_name = nullptr);
 
 			/**
 			 * \brief Add local_to_model and model_to_skinned animation jobs and use last job as local transform provider
@@ -65,6 +68,8 @@ namespace black_cat
 				core::bc_shared_ptr<bc_model_to_skinned_animation_job>* p_out_to_skinning_job = nullptr);
 			
 			bc_animation_job_builder2 end_with(core::bc_shared_ptr<bci_animation_job> p_job, const bcCHAR* p_name = nullptr);
+			
+			bc_animation_job_builder2 end_with(bc_tag_animation_job p_job, const bcCHAR* p_name = nullptr);
 
 			bc_animation_job_builder2 end();
 
@@ -84,6 +89,8 @@ namespace black_cat
 			bc_animation_job_builder& operator=(bc_animation_job_builder&&) noexcept;
 
 			bc_animation_job_builder1 start_with(core::bc_shared_ptr<bci_animation_job> p_job, const bcCHAR* p_name = nullptr);
+			
+			bc_animation_job_builder1 start_with(bc_tag_animation_job p_job, const bcCHAR* p_name = nullptr);
 		
 		private:
 			core::bc_vector<bc_sequence_animation> m_animations;
@@ -119,7 +126,14 @@ namespace black_cat
 
 		inline bc_animation_job_builder1& bc_animation_job_builder1::then(core::bc_shared_ptr<bci_animation_job> p_job, const bcCHAR* p_name)
 		{
-			m_animations.push_back(bc_sequence_animation{ p_name, std::move(p_job) });
+			m_animations.push_back(bc_sequence_animation{ p_name, false, std::move(p_job) });
+
+			return *this;
+		}
+
+		inline bc_animation_job_builder1& bc_animation_job_builder1::then(bc_tag_animation_job p_job, const bcCHAR* p_name)
+		{
+			m_animations.push_back(bc_sequence_animation{ p_name, true, std::move(p_job.m_job) });
 
 			return *this;
 		}
@@ -157,15 +171,22 @@ namespace black_cat
 				*p_out_to_skinning_job = l_model_to_skinned_job;
 			}
 			
-			m_animations.push_back(bc_sequence_animation{ nullptr, std::move(l_local_to_model_job) });
-			m_animations.push_back(bc_sequence_animation{ nullptr, std::move(l_model_to_skinned_job) });
+			m_animations.push_back(bc_sequence_animation{ nullptr, false, std::move(l_local_to_model_job) });
+			m_animations.push_back(bc_sequence_animation{ nullptr, false, std::move(l_model_to_skinned_job) });
 
 			return *this;
 		}
 		
 		inline bc_animation_job_builder2 bc_animation_job_builder1::end_with(core::bc_shared_ptr<bci_animation_job> p_job, const bcCHAR* p_name)
 		{
-			m_animations.push_back(bc_sequence_animation{ p_name, std::move(p_job) });
+			m_animations.push_back(bc_sequence_animation{ p_name, false, std::move(p_job) });
+
+			return bc_animation_job_builder2(std::move(m_animations));
+		}
+
+		inline bc_animation_job_builder2 bc_animation_job_builder1::end_with(bc_tag_animation_job p_job, const bcCHAR* p_name)
+		{
+			m_animations.push_back(bc_sequence_animation{ p_name, true, std::move(p_job.m_job) });
 
 			return bc_animation_job_builder2(std::move(m_animations));
 		}
@@ -185,8 +206,16 @@ namespace black_cat
 
 		inline bc_animation_job_builder1 bc_animation_job_builder::start_with(core::bc_shared_ptr<bci_animation_job> p_job, const bcCHAR* p_name)
 		{
-			m_animations.reserve(8);
-			m_animations.push_back(bc_sequence_animation{ p_name, std::move(p_job) });
+			m_animations.reserve(10);
+			m_animations.push_back(bc_sequence_animation{ p_name, false, std::move(p_job) });
+
+			return bc_animation_job_builder1(std::move(m_animations));
+		}
+
+		inline bc_animation_job_builder1 bc_animation_job_builder::start_with(bc_tag_animation_job p_job, const bcCHAR* p_name)
+		{
+			m_animations.reserve(10);
+			m_animations.push_back(bc_sequence_animation{ p_name, true, std::move(p_job.m_job) });
 
 			return bc_animation_job_builder1(std::move(m_animations));
 		}

@@ -14,6 +14,7 @@ namespace black_cat
 		struct bc_sequence_animation
 		{
 			const bcCHAR* m_name;
+			bool m_is_tag;
 			core::bc_shared_ptr<bci_animation_job> m_animation;
 		};
 				
@@ -78,6 +79,11 @@ namespace black_cat
 			
 			for(auto& l_job : m_jobs)
 			{
+				if(l_job.m_is_tag)
+				{
+					continue;
+				}
+				
 				if(!l_job.m_animation->run(p_clock))
 				{
 					break;

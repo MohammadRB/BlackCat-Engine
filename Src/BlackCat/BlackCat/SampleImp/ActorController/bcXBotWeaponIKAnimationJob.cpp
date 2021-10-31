@@ -43,10 +43,9 @@ namespace black_cat
 			core::bc_vector3f(0, 1, 0)
 		),
 		m_offset_joint_index(0),
-		m_offset(p_offset),
 		m_weapon(nullptr)
 	{
-		set_offset_joint(p_offset_joint);
+		set_offset_joint(p_offset_joint, p_offset);
 		
 		m_main_hand_job.set_twist_angle(-30);
 		m_second_hand_job.set_twist_angle(30);

@@ -15,7 +15,7 @@ namespace black_cat
 		class bc_animation_job_helper
 		{
 		public:
-			template< typename TJob >
+			template<typename TJob>
 			static TJob* find_job(bci_animation_job& p_job, const bcCHAR* p_name = nullptr);
 
 			static void set_aim_world_target(bci_animation_job& p_job, const core::bc_vector3f& p_target);
@@ -28,12 +28,12 @@ namespace black_cat
 			static void set_skinning_world_transform(bci_animation_job& p_job, const core::bc_matrix4f& p_world);
 		};
 
-		template< typename TJob >
+		template<typename TJob>
 		TJob* bc_animation_job_helper::find_job(bci_animation_job& p_job, const bcCHAR* p_name)
 		{
 			auto& l_sequence_job = static_cast<bc_sequence_animation_job&>(p_job);
 			
-			for (auto l_job_ite = 0U; l_job_ite < l_sequence_job.size(); ++l_job_ite)
+			for (auto l_job_ite = 0U; l_job_ite <l_sequence_job.size(); ++l_job_ite)
 			{
 				auto [l_job_name, l_job] = l_sequence_job.at(l_job_ite);
 				if(p_name)
@@ -71,7 +71,7 @@ namespace black_cat
 		{
 			auto& l_sequence_job = static_cast<bc_sequence_animation_job&>(p_job);
 			
-			for (bcINT32 l_job_ite = l_sequence_job.size() - 1; l_job_ite >= 0; --l_job_ite)
+			for (bcINT32 l_job_ite = l_sequence_job.size() - 1; l_job_ite>= 0; --l_job_ite)
 			{
 				auto [l_name, l_job] = l_sequence_job.at(l_job_ite);
 				auto* l_concrete_job = dynamic_cast<bc_model_to_skinned_animation_job*>(l_job);

@@ -370,7 +370,7 @@
             "up_ls": [ 0.0, 0.0, -1.0 ],
             "forward_ls": [ -1.0, 0.0, 0.0 ],
             "main_hand_offset_ls": [ 0.2, 0.1, -0.3 ],
-            "second_hand_offset_ls": [ 0.3, -0.6, 0.5 ],
+            "second_hand_offset_ls": [ 0.3, -0.8, 0.3 ],
             "fire_offset_ls": [ -4.5, -0.1, -0.3 ],
             "fire_particle": "rifle_fire",
             "fire_light_color": [ 0.9, 0.4, 0.01 ],
