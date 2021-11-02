@@ -20,4 +20,12 @@ namespace black_cat
 		core::bc_vector3f m_fire_offset;
 		bcFLOAT m_rate_of_fire_seconds;
 	};
+
+	struct bc_xbot_grenade
+	{
+		const bcCHAR* m_entity_name;
+		game::bc_actor m_actor;
+		core::bc_vector3f m_local_up = core::bc_vector3f::up();
+		core::bc_vector3f m_local_forward = core::bc_vector3f::forward();
+	};
 }

@@ -487,34 +487,19 @@
     <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap.json">
       <Filter>Editor\Content\Scene</Filter>
     </None>
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_ContentStream.json">
-      <Filter>Editor\Content\Scene</Filter>
-    </None>
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_EntityType.json">
-      <Filter>Editor\Content\Scene</Filter>
-    </None>
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_Material.json">
-      <Filter>Editor\Content\Scene</Filter>
-    </None>
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_Decal.json">
-      <Filter>Editor\Content\Scene</Filter>
-    </None>
     <None Include="..\..\Src\BlackCat.Editor\FormFiles\bcBlackCatEditor.qrc">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test.json">
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMapContentStream.json">
       <Filter>Editor\Content\Scene</Filter>
     </None>
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test_ContentStream.json">
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMapDecal.json">
       <Filter>Editor\Content\Scene</Filter>
     </None>
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test_Decal.json">
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMapEntityType.json">
       <Filter>Editor\Content\Scene</Filter>
     </None>
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test_EntityType.json">
-      <Filter>Editor\Content\Scene</Filter>
-    </None>
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test_Material.json">
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMapMaterial.json">
       <Filter>Editor\Content\Scene</Filter>
     </None>
   </ItemGroup>

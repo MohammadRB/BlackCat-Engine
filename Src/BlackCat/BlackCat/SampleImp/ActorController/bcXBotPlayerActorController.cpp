@@ -35,7 +35,8 @@ namespace black_cat
 		m_right_pressed(false),
 		m_left_pressed(false),
 		m_walk_pressed(false),
-		m_rifle_name(nullptr)
+		m_rifle_name(nullptr),
+		m_grenade_name(nullptr)
 	{
 	}
 
@@ -77,6 +78,7 @@ namespace black_cat
 		m_input_system = &p_context.m_game_system.get_input_system();
 		m_network_system = &p_context.m_game_system.get_network_system();
 		m_rifle_name = p_context.m_parameters.get_value_throw<core::bc_string>("rifle_name").c_str();
+		m_grenade_name = p_context.m_parameters.get_value_throw<core::bc_string>("grenade_name").c_str();
 
 		if(get_replication_side() == game::bc_actor_replication_side::origin)
 		{
@@ -336,7 +338,7 @@ namespace black_cat
 
 	void bc_xbot_player_actor_controller::_throw_grenade()
 	{
-		bc_xbot_actor_controller::throw_grenade();
+		bc_xbot_actor_controller::throw_grenade(m_grenade_name);
 	}
 
 	void bc_xbot_player_actor_controller::_attach_weapon(const bcCHAR* p_entity)

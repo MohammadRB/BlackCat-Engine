@@ -137,6 +137,16 @@ namespace black_cat
 			return m_index != p_other.m_index;
 		}
 
+		inline bool bc_actor::operator==(std::nullptr_t) const noexcept
+		{
+			return m_index == invalid_id;
+		}
+
+		inline bool bc_actor::operator!=(std::nullptr_t) const noexcept
+		{
+			return m_index != invalid_id;
+		}
+
 		inline bc_actor_component_manager& bc_actor::_get_manager() noexcept
 		{
 			static auto* s_manager = core::bc_get_service<bc_actor_component_manager>();

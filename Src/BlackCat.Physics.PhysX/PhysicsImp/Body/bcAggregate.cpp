@@ -86,7 +86,7 @@ namespace black_cat
 			auto* l_px_aggregate = static_cast<physx::PxAggregate*>(m_pack.m_px_object);
 			const bcUINT32 l_written_count = l_px_aggregate->getActors(reinterpret_cast<physx::PxActor**>(p_buffer), p_buffer_size, p_start_index);
 
-			bc_overwrite_output_array<bc_actor, physx::PxActor*>(p_buffer, l_written_count, [](bc_actor& p_actor, physx::PxActor*& p_px_actor)
+			bc_overwrite_output_array<bc_actor, physx::PxActor*>(p_buffer, l_written_count, [](physx::PxActor*& p_px_actor)
 			{
 				bc_actor::platform_pack l_pack;
 				l_pack.m_px_object = p_px_actor;

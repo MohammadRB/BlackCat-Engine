@@ -224,12 +224,12 @@ namespace black_cat
 
 			const bcUINT32 l_written_count = l_px_shape->getMaterials(reinterpret_cast< physx::PxMaterial** >(p_buffer), p_buffer_size);
 
-			bc_overwrite_output_array< bc_material, physx::PxMaterial* >(p_buffer, l_written_count, [](bc_material& p_material, physx::PxMaterial*& p_px_material)
+			bc_overwrite_output_array< bc_material, physx::PxMaterial* >(p_buffer, l_written_count, [](physx::PxMaterial*& p_px_material)
 			{
 				bc_material::platform_pack l_pack;
 				l_pack.m_px_object = p_px_material;
 
-				p_material = bc_material(l_pack);
+				return bc_material(l_pack);
 			});
 
 			return l_written_count;

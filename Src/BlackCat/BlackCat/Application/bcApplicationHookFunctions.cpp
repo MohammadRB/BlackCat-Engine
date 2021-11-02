@@ -271,7 +271,7 @@ namespace black_cat
 	{
 		auto& l_material_manager = p_game_system.get_render_system().get_material_manager();
 		auto* l_entity_manager = core::bc_get_service<game::bc_entity_manager>();
-				
+		
 		l_material_manager.read_material_file(p_game_system.get_file_system().get_content_data_path(bcL("Material.json")).c_str());
 		l_entity_manager->read_entity_file(p_game_system.get_file_system().get_content_data_path(bcL("EntityType.json")).c_str());
 

@@ -259,12 +259,12 @@ namespace black_cat
 				&p_hits->get_platform_pack().m_px_hit
 			);
 
-			bc_overwrite_output_array<bc_ray_hit, physx::PxRaycastHit>(p_hits, l_written_count, [](bc_ray_hit& p_hit, physx::PxRaycastHit& p_px_hit)
+			bc_overwrite_output_array<bc_ray_hit, physx::PxRaycastHit>(p_hits, l_written_count, [](physx::PxRaycastHit& p_px_hit)
 			{
 				bc_ray_hit::platform_pack l_pack;
 				l_pack.m_px_hit = p_px_hit;
-			
-				p_hit = bc_ray_hit(l_pack);
+				
+				return bc_ray_hit(l_pack);
 			});
 
 			return l_written_count;

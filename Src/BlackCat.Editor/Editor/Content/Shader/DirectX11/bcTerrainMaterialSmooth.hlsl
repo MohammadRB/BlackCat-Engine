@@ -17,8 +17,10 @@ cbuffer g_cb_parameter						: register(BC_COMPUTE_STATE_CB0)
     uint g_xz_multiplier					: packoffset(c0.w);
     float g_y_multiplier					: packoffset(c1.x);
 	float g_physics_y_scale					: packoffset(c1.y);
-    uint g_distance_detail					: packoffset(c1.z); // Distance from camera that render will happen with full detail
-    uint g_height_detail					: packoffset(c1.w); // Lower values result in higher details
+    uint g_distance_detail					: packoffset(c1.z);
+    uint g_height_detail					: packoffset(c1.w);
+	uint g_texturemap_width					: packoffset(c2.x);
+	uint g_texturemap_height				: packoffset(c2.y);
 };
 
 cbuffer g_cb_parameter1						: register(BC_COMPUTE_STATE_CB1)

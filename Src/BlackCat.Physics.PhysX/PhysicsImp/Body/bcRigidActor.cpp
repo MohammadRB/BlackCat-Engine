@@ -150,11 +150,12 @@ namespace black_cat
 			auto* l_px_actor = static_cast<physx::PxRigidActor*>(get_platform_pack().m_px_object);
 			const bcUINT32 l_written_count = l_px_actor->getShapes(reinterpret_cast< physx::PxShape** >(p_buffer), p_buffer_size, p_start_index);
 
-			bc_overwrite_output_array< bc_shape, physx::PxShape* >(p_buffer, l_written_count, [](bc_shape& p_shape, physx::PxShape*& p_px_shape)
+			bc_overwrite_output_array< bc_shape, physx::PxShape* >(p_buffer, l_written_count, [](physx::PxShape* p_px_shape)
 			{
 				bc_shape::platform_pack l_pack;
 				l_pack.m_px_object = p_px_shape;
-				p_shape = bc_shape(l_pack);
+				
+				return bc_shape(l_pack);
 			});
 
 			return l_written_count;

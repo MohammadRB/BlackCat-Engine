@@ -149,17 +149,22 @@ namespace black_cat
 			const physics::bc_bounded_strided_typed_data<physics::bc_material_index> l_px_sample_materials(&std::get<1>(*l_samples), sizeof(height_map_sample_t), l_sample_count);
 			const physics::bc_height_field_desc l_px_height_map_desc(l_diameter, l_diameter, l_px_samples, l_px_sample_materials);
 
-			physics::bc_shape l_terrain_shape;
-			l_rigid_component->get_static_body().get_shapes(&l_terrain_shape, 1);
+			{
+				auto& l_px_scene = p_context.m_game_system.get_scene()->get_px_scene();
+				physics::bc_scene_lock l_lock(&l_px_scene);
 
-			l_px_height_map.modify_samples
-			(
-				l_cbuffer_parameters.m_tool_center_z - m_radius,
-				l_cbuffer_parameters.m_tool_center_x - m_radius,
-				l_px_height_map_desc,
-				&l_terrain_shape,
-				1
-			);
+				physics::bc_shape l_terrain_shape;
+				l_rigid_component->get_static_body().get_shapes(&l_terrain_shape, 1);
+
+				l_px_height_map.modify_samples
+				(
+					l_cbuffer_parameters.m_tool_center_z - m_radius,
+					l_cbuffer_parameters.m_tool_center_x - m_radius,
+					l_px_height_map_desc,
+					&l_terrain_shape,
+					1
+				);
+			}
 
 			l_render_task.wait();
 

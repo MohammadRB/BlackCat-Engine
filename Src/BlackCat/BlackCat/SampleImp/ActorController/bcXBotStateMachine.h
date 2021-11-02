@@ -28,16 +28,15 @@ namespace black_cat
 
 	struct bc_xbot_state
 	{
-		bcFLOAT m_look_speed;
-		bcFLOAT m_run_speed;
-		bcFLOAT m_walk_speed;
-		bcINT32 m_look_side;
+		bcINT32 m_look_side{0};
 		core::bc_vector3f m_look_direction;
 		core::bc_vector3f m_move_direction;
-		bcFLOAT m_move_speed;
-		bcFLOAT m_move_amount;
-		core::bc_velocity<bcFLOAT> m_grenade_throw_weight;
-		game::bci_animation_job* m_active_animation;
+		bcFLOAT m_move_speed{0};
+		bcFLOAT m_move_amount{0};
+		bcFLOAT m_grenade_throw_time{-1};
+		bcFLOAT m_weapon_shoot_time{-1};
+		core::bc_velocity<bcFLOAT> m_grenade_throw_weight{0,1,1};
+		game::bci_animation_job* m_active_animation{nullptr};
 	};
 
 	struct bc_xbot_state_update_params
@@ -242,8 +241,9 @@ namespace black_cat
 
 		void change_animation(game::bci_animation_job* p_new_animation) noexcept;
 
-		bcFLOAT m_grenade_throw_time;
-		bcFLOAT m_weapon_shoot_time;
+		bcFLOAT m_look_speed;
+		bcFLOAT m_run_speed;
+		bcFLOAT m_walk_speed;
 		game::bci_animation_job* m_new_active_animation;
 	};
 
@@ -519,11 +519,21 @@ namespace black_cat
 			bc_xbot_rifle_idle_state(p_animation_pipeline),
 			bc_xbot_rifle_running_state(p_animation_pipeline)
 		),
-		m_state{p_look_speed, p_run_speed, p_walk_speed, 0, p_local_forward, p_local_forward, 0, 0, core::bc_velocity<bcFLOAT>(0, 1, 0.3f), nullptr},
-		m_grenade_throw_time(-1),
-		m_weapon_shoot_time(-1),
 		m_new_active_animation(nullptr)
 	{
+		m_look_speed = p_look_speed;
+		m_run_speed = p_run_speed;
+		m_walk_speed = p_walk_speed;
+		m_state.m_look_side = 0;
+		m_state.m_look_direction = p_local_forward;
+		m_state.m_move_direction = p_local_forward;
+		m_state.m_move_speed = 0;
+		m_state.m_move_amount = 0;
+		m_state.m_grenade_throw_time = -1;
+		m_state.m_weapon_shoot_time = -1;
+		m_state.m_grenade_throw_weight = core::bc_velocity<bcFLOAT>(0, 1, 0.3f);
+		m_state.m_active_animation = nullptr;
+		
 		transfer_state<bc_xbot_idle_state>();
 	}
 
@@ -574,7 +584,7 @@ namespace black_cat
 
 	inline bool bc_xbot_state_machine::throw_grenade() noexcept
 	{
-		if (m_weapon_shoot_time >= 0 || m_grenade_throw_time >= 0)
+		if (m_state.m_weapon_shoot_time >= 0 || m_state.m_grenade_throw_time >= 0)
 		{
 			return false;
 		}
@@ -599,7 +609,7 @@ namespace black_cat
 
 	inline bool bc_xbot_state_machine::shoot_weapon() noexcept
 	{
-		if(m_weapon_shoot_time >= 0 || m_grenade_throw_time >= 0)
+		if(m_state.m_weapon_shoot_time >= 0 || m_state.m_grenade_throw_time >= 0)
 		{
 			return false;
 		}
@@ -627,7 +637,7 @@ namespace black_cat
 			(
 				core::bc_to_radian
 				(
-					static_cast<bcFLOAT>(p_update_params.m_look_delta_x) * p_update_params.m_look_velocity * m_state.m_look_speed * p_update_params.m_clock.m_elapsed_second
+					static_cast<bcFLOAT>(p_update_params.m_look_delta_x) * p_update_params.m_look_velocity * m_look_speed * p_update_params.m_clock.m_elapsed_second
 				)
 			);
 		}
@@ -637,7 +647,7 @@ namespace black_cat
 			(
 				core::bc_to_radian
 				(
-					static_cast<bcFLOAT>(p_update_params.m_look_delta_x) * p_update_params.m_look_velocity * m_state.m_look_speed * p_update_params.m_clock.m_elapsed_second
+					static_cast<bcFLOAT>(p_update_params.m_look_delta_x) * p_update_params.m_look_velocity * m_look_speed * p_update_params.m_clock.m_elapsed_second
 				)
 			);
 		}
@@ -665,7 +675,7 @@ namespace black_cat
 			l_left_vector = core::bc_vector3f::normalize(l_right_left_direction * m_state.m_look_direction);
 		}
 
-		m_state.m_move_speed = (1 - p_update_params.m_walk_velocity) * m_state.m_run_speed + p_update_params.m_walk_velocity * m_state.m_walk_speed;
+		m_state.m_move_speed = (1 - p_update_params.m_walk_velocity) * m_run_speed + p_update_params.m_walk_velocity * m_walk_speed;
 		m_state.m_move_direction = m_state.m_look_direction * p_update_params.m_forward_velocity +
 				m_state.m_look_direction * -p_update_params.m_backward_velocity +
 				l_right_vector * p_update_params.m_right_velocity +
@@ -744,7 +754,7 @@ namespace black_cat
 
 	inline void bc_xbot_state_machine::blend_running_animation(const bc_xbot_state_update_params& p_update_params, game::bc_blending_animation_job& p_running_blending) noexcept
 	{
-		const auto l_run_weight = (m_state.m_move_speed - m_state.m_walk_speed) / (m_state.m_run_speed - m_state.m_walk_speed);
+		const auto l_run_weight = (m_state.m_move_speed - m_walk_speed) / (m_run_speed - m_walk_speed);
 		const auto l_walk_weight = 1 - l_run_weight;
 		bcFLOAT l_weights[] =
 		{
@@ -777,7 +787,7 @@ namespace black_cat
 
 	inline void bc_xbot_state_machine::start_blend_grenade_throw(game::bci_animation_job& p_active_animation)
 	{
-		if (m_grenade_throw_time >= 0)
+		if (m_state.m_grenade_throw_time >= 0)
 		{
 			return;
 		}
@@ -794,7 +804,7 @@ namespace black_cat
 		auto& l_grenade_throw_partial_blending = static_cast<game::bc_partial_blending_animation_job&>(l_grenade_throw_blend_job->get_layer(1));
 		auto& l_grenade_throw_partial_layer = *l_grenade_throw_partial_blending.get_layer2();
 
-		m_grenade_throw_time = 0;
+		m_state.m_grenade_throw_time = 0;
 		l_grenade_throw_partial_layer.set_local_time(0);
 		l_grenade_throw_partial_layer.set_enabled(true);
 		l_grenade_throw_partial_blending.set_enabled(true);
@@ -802,7 +812,7 @@ namespace black_cat
 
 	inline void bc_xbot_state_machine::blend_grenade_throw_animation(const bc_xbot_state_update_params& p_update_params, game::bci_animation_job& p_active_animation) noexcept
 	{
-		if (m_grenade_throw_time < 0)
+		if (m_state.m_grenade_throw_time < 0)
 		{
 			return;
 		}
@@ -816,9 +826,9 @@ namespace black_cat
 		auto& l_grenade_throw_partial_blending = static_cast<game::bc_partial_blending_animation_job&>(l_grenade_throw_blend_job->get_layer(1));
 		auto& l_grenade_throw_partial_layer = *l_grenade_throw_partial_blending.get_layer2();
 		
-		m_grenade_throw_time += p_update_params.m_clock.m_elapsed_second;
+		m_state.m_grenade_throw_time += p_update_params.m_clock.m_elapsed_second;
 
-		const auto l_is_not_ending = l_grenade_throw_partial_layer.get_animation()->get_duration() - m_grenade_throw_time > m_state.m_grenade_throw_weight.get_drag_time();
+		const auto l_is_not_ending = l_grenade_throw_partial_layer.get_animation()->get_duration() - m_state.m_grenade_throw_time > m_state.m_grenade_throw_weight.get_drag_time();
 		if (l_is_not_ending)
 		{
 			m_state.m_grenade_throw_weight.push(p_update_params.m_clock.m_elapsed_second);
@@ -835,7 +845,7 @@ namespace black_cat
 		
 		if(!l_grenade_throw_partial_layer.get_enabled())
 		{
-			m_grenade_throw_time = -1;
+			m_state.m_grenade_throw_time = -1;
 			l_grenade_throw_partial_layer.set_local_time(0);
 			l_grenade_throw_partial_layer.set_enabled(false);
 			l_grenade_throw_partial_blending.set_enabled(false);
@@ -850,12 +860,12 @@ namespace black_cat
 			return;
 		}
 
-		if (m_weapon_shoot_time >= 0)
+		if (m_state.m_weapon_shoot_time >= 0)
 		{
 			return;
 		}
 
-		m_weapon_shoot_time = 0;
+		m_state.m_weapon_shoot_time = 0;
 		l_additive_blend_job->get_additive_layer()->set_local_time(0);
 		l_additive_blend_job->get_additive_layer()->set_enabled(true);
 		l_additive_blend_job->set_enabled(true);
@@ -875,17 +885,17 @@ namespace black_cat
 			return;
 		}
 
-		if (m_weapon_shoot_time >= 0)
+		if (m_state.m_weapon_shoot_time >= 0)
 		{
-			m_weapon_shoot_time += p_update_params.m_clock.m_elapsed_second;
-			if (m_weapon_shoot_time >= p_weapon.m_rate_of_fire_seconds)
+			m_state.m_weapon_shoot_time += p_update_params.m_clock.m_elapsed_second;
+			if (m_state.m_weapon_shoot_time >= p_weapon.m_rate_of_fire_seconds)
 			{
-				m_weapon_shoot_time = -1;
+				m_state.m_weapon_shoot_time = -1;
 			}
 		}
 
 		// Increase weapon shoot impact in running mode
-		l_additive_blend_job->set_weights(1, m_state.m_move_amount > 0.f ? std::max((m_state.m_move_amount / m_state.m_run_speed) * 1.8f, 1.2f) : 1);
+		l_additive_blend_job->set_weights(1, m_state.m_move_amount > 0.f ? std::max((m_state.m_move_amount / m_run_speed) * 1.8f, 1.2f) : 1);
 
 		// Once weapon shoot animation stopped disable additive blend
 		if (!l_additive_layer->get_enabled())

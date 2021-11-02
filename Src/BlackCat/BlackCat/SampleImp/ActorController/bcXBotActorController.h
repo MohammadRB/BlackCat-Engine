@@ -111,7 +111,7 @@ namespace black_cat
 
 		bc_xbot_weapon* get_weapon() noexcept;
 
-		void throw_grenade() noexcept;
+		void throw_grenade(const bcCHAR* p_entity_name) noexcept;
 		
 		void attach_weapon(game::bc_actor& p_weapon) noexcept;
 
@@ -149,10 +149,12 @@ namespace black_cat
 
 		core::bc_matrix4f _calculate_weapon_aim_transform();
 
-		core::bc_matrix4f _calculate_weapon_attachment_transform(bcUINT32 p_attached_node_index, 
+		core::bc_matrix4f _calculate_attachment_transform(bcUINT32 p_attached_node_index, 
 			const core::bc_vector3f& p_attached_node_up,
 			const core::bc_vector3f& p_attached_node_forward,
-			const core::bc_vector3f& p_attached_node_offset);
+			const core::bc_vector3f& p_attachment_local_up,
+			const core::bc_vector3f& p_attachment_local_forward,
+			const core::bc_vector3f& p_attachment_local_offset);
 		
 		game::bc_physics_system* m_physics_system;
 		game::bc_scene* m_scene;
@@ -171,8 +173,8 @@ namespace black_cat
 		core::bc_vector3f m_left_hand_weapon_forward;
 		std::pair<bcUINT32, const bcCHAR*> m_rifle_joint;
 		core::bc_vector3f m_rifle_joint_offset;
-
-		core::bc_shared_ptr<game::bci_animation_job> m_animation_pipeline;
+		bcFLOAT m_grenade_anim_attach_time;
+		bcFLOAT m_grenade_anim_throw_time;
 		
 		bcINT32 m_look_delta_x;
 		core::bc_velocity<bcFLOAT> m_look_velocity;
@@ -181,10 +183,12 @@ namespace black_cat
 		core::bc_velocity<bcFLOAT> m_right_velocity;
 		core::bc_velocity<bcFLOAT> m_left_velocity;
 		core::bc_velocity<bcFLOAT> m_walk_velocity;
-
 		core::bc_vector3f m_position;
+		
 		core::bc_unique_ptr<bc_xbot_state_machine> m_state_machine;
+		core::bc_shared_ptr<game::bci_animation_job> m_animation_pipeline;
 		core::bc_nullable<bc_xbot_weapon> m_weapon;
+		core::bc_nullable<bc_xbot_grenade> m_grenade;
 	};
 
 	inline game::bc_scene* bc_xbot_actor_controller::get_scene() noexcept

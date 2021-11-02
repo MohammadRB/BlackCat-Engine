@@ -139,6 +139,9 @@
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy ..\Src\BoX\Content\*.* $(SolutionDir)\$(Configuration)\Content\ /E /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
     <ClCompile>
@@ -161,6 +164,9 @@
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy ..\Src\BoX\Content\*.* $(SolutionDir)\$(Configuration)\Content\ /E /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -215,6 +221,9 @@
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy ..\Src\BoX\Content\*.* $(SolutionDir)\$(Configuration)\Content\ /E /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -266,6 +275,17 @@
   <ItemGroup>
     <ClInclude Include="..\Src\BoX\Application\bxClientScript.h" />
     <ClInclude Include="..\Src\BoX\Application\bxApplication.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Src\BoX\Content\Data\BoXContentStream.json" />
+    <None Include="..\Src\BoX\Content\Data\BoXDecal.json" />
+    <None Include="..\Src\BoX\Content\Data\BoXEntityType.json" />
+    <None Include="..\Src\BoX\Content\Data\BoXMaterial.json" />
+    <None Include="..\Src\BoX\Content\Scene\Test.json" />
+    <None Include="..\Src\BoX\Content\Scene\TestContentStream.json" />
+    <None Include="..\Src\BoX\Content\Scene\TestDecal.json" />
+    <None Include="..\Src\BoX\Content\Scene\TestEntityType.json" />
+    <None Include="..\Src\BoX\Content\Scene\TestMaterial.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

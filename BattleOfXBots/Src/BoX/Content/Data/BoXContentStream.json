@@ -1,0 +1,29 @@
+{
+  "streams": [
+    {
+      "stream_name": "game_assets",
+      "stream_content": [
+        {
+          "content_title": "scifi_rifle",
+          "content_loader": "mesh",
+          "content_file": "content\\model\\scifi-rifle.fbx",
+          "content_parameter": {
+            "auto_scale": 6.0,
+            "collider": "scifi-rifle.collider.fbx",
+            "high_detail_query_shape": true
+          }
+        },
+        {
+          "content_title": "grenade",
+          "content_loader": "mesh",
+          "content_file": "content\\model\\grenade.fbx",
+          "content_parameter": {
+            "auto_scale": 0.5,
+            "collider": "grenade.fbx",
+            "high_detail_query_shape": false
+          }
+        }
+      ]
+    }
+  ]
+}

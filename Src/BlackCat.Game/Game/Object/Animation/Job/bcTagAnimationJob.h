@@ -8,6 +8,9 @@ namespace black_cat
 {
 	namespace game
 	{
+		/**
+		 * \brief Tag animations will be stored in animation pipeline to be accessible but wont be executed.
+		 */
 		class bc_tag_animation_job
 		{
 		public:

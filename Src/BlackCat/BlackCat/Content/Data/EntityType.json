@@ -174,7 +174,9 @@
         "right_hand_chain": [ "RightArm", "RightForeArm", "RightHand" ],
         "left_hand_chain": [ "LeftArm", "LeftForeArm", "LeftHand" ],
         "rifle_joint": "Head",
-        "rifle_joint_offset": [ -1.0, -2.0, -2.0 ]
+        "rifle_joint_offset": [ -1.0, -2.0, -2.0 ],
+        "grenade_anim_attach_time": 0.64,
+        "grenade_anim_throw_time": 2.0
       },
       "components": [
         {
@@ -298,7 +300,8 @@
       "inherit": "xbot_idle",
       "controller": "xbot_player",
       "parameters": {
-        "rifle_name": "xbot_rifle"
+        "rifle_name": "xbot_rifle",
+        "grenade_name": "xbot_grenade"
       },
       "components": [
         {
@@ -349,46 +352,6 @@
           "name": "network",
           "parameters": {
             "data_dir": "replicate_sync_to_server_client"
-          }
-        }
-      ]
-    },
-    {
-      "name": "xbot_rifle",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "scifi_rifle",
-            "lod_scale": 1.0
-          }
-        },
-        {
-          "name": "weapon",
-          "parameters": {
-            "class": "rifle",
-            "up_ls": [ 0.0, 0.0, -1.0 ],
-            "forward_ls": [ -1.0, 0.0, 0.0 ],
-            "main_hand_offset_ls": [ 0.2, 0.1, -0.3 ],
-            "second_hand_offset_ls": [ 0.3, -0.8, 0.3 ],
-            "fire_offset_ls": [ -4.5, -0.1, -0.3 ],
-            "fire_particle": "rifle_fire",
-            "fire_light_color": [ 0.9, 0.4, 0.01 ],
-            "fire_light_radius": 12.0,
-            "fire_light_intensity": 3.0,
-            "fire_light_flare_surface": [ 0.5, 0.5, 0.5 ],
-            "fire_light_flare_intensity": 0.4,
-            "fire_light_flare_mask_material": "flare2",
-            "rate_of_fire": 0.30,
-            "bullet_speed": 250.0,
-            "bullet_mass": 0.2
-          }
-        },
-        {
-          "name": "rigid_dynamic",
-          "parameters": {
-            "mass": 100.0,
-            "cmass": [ -1.0, 0.0, 0.0 ]
           }
         }
       ]

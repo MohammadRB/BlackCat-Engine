@@ -8,6 +8,7 @@
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcJsonParse.h"
 #include "Core/Utility/bcLogger.h"
+#include "Core/bcUtility.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "PhysicsImp/Shape/bcShape.h"
 #include "PhysicsImp/Body/bcRigidDynamic.h"
@@ -44,6 +45,8 @@ namespace black_cat
 		m_scene(nullptr),
 		m_skinned_mesh_component(nullptr),
 		m_bound_box_max_side_length(0),
+		m_grenade_anim_attach_time(0),
+		m_grenade_anim_throw_time(0),
 		m_look_delta_x(0),
 		m_look_velocity(0, 1, 0.50f),
 		m_forward_velocity(0, 1, 0.35f),
@@ -51,8 +54,6 @@ namespace black_cat
 		m_right_velocity(m_forward_velocity),
 		m_left_velocity(m_forward_velocity),
 		m_walk_velocity(m_forward_velocity),
-		m_position(),
-		m_state_machine(),
 		m_weapon(nullptr)
 	{
 	}
@@ -88,6 +89,8 @@ namespace black_cat
 		const auto& l_left_hand_chain_value = p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>("left_hand_chain");
 		const auto& l_rifle_joint_value = p_context.m_parameters.get_value_throw<core::bc_string>("rifle_joint");
 		m_rifle_joint_offset = p_context.m_parameters.get_value_vector3f_throw("rifle_joint_offset");
+		m_grenade_anim_attach_time = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>("grenade_anim_attach_time"), 0);
+		m_grenade_anim_throw_time = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>("grenade_anim_throw_time"), 0);
 		
 		std::transform
 		(
@@ -406,33 +409,75 @@ namespace black_cat
 
 	void bc_xbot_actor_controller::update_attachment_transforms()
 	{
-		if (!m_weapon.has_value())
+		if(m_grenade.has_value())
+		{
+			if (m_state_machine->m_state.m_grenade_throw_time >= m_grenade_anim_attach_time &&
+				m_state_machine->m_state.m_grenade_throw_time <= m_grenade_anim_throw_time)
+			{
+				if (m_grenade->m_actor == nullptr)
+				{
+					m_grenade->m_actor = get_scene()->create_actor(m_grenade->m_entity_name, core::bc_matrix4f::translation_matrix(m_position));
+				}
+
+				const auto l_grenade_transform = _calculate_attachment_transform
+				(
+					m_right_hand_chain[2].first,
+					m_right_hand_weapon_up,
+					m_right_hand_weapon_forward,
+					m_grenade->m_local_up,
+					m_grenade->m_local_forward,
+					core::bc_vector3f(0)
+				);
+
+				m_grenade->m_actor.add_event(game::bc_world_transform_actor_event(l_grenade_transform));
+				m_grenade->m_actor.mark_for_double_update();
+			}
+			else if(m_grenade->m_actor != nullptr)
+			{
+				get_scene()->remove_actor(m_grenade->m_actor);
+				m_grenade.reset();
+			}
+		}
+		
+		if (m_weapon.has_value())
+		{
+			auto* l_weapon_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(m_state_machine->get_active_animation());
+			const auto l_weapon_ik_weight = l_weapon_ik_job->get_weight();
+			core::bc_matrix4f l_weapon_transform;
+
+			if (l_weapon_ik_weight >= 1)
+			{
+				l_weapon_transform = _calculate_weapon_aim_transform();
+			}
+			else
+			{
+				const auto l_weapon_aim_transform = _calculate_weapon_aim_transform();
+				const auto l_weapon_attached_transform = _calculate_attachment_transform
+				(
+					m_left_hand_chain[2].first, 
+					m_left_hand_weapon_up, 
+					m_left_hand_weapon_forward,
+					m_weapon->m_local_up,
+					m_weapon->m_local_forward,
+					m_weapon->m_second_hand_offset
+				);
+				l_weapon_transform = (l_weapon_aim_transform * l_weapon_ik_weight) + (l_weapon_attached_transform * (1 - l_weapon_ik_weight));
+			}
+
+			m_weapon->m_actor.add_event(game::bc_world_transform_actor_event(l_weapon_transform));
+			m_weapon->m_actor.mark_for_double_update();
+		}
+	}
+	
+	void bc_xbot_actor_controller::throw_grenade(const bcCHAR* p_entity_name) noexcept
+	{
+		const bool l_threw = m_state_machine->throw_grenade();
+		if(!l_threw)
 		{
 			return;
 		}
 
-		auto* l_weapon_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(m_state_machine->get_active_animation());
-		const auto l_weapon_ik_weight = l_weapon_ik_job->get_weight();
-		core::bc_matrix4f l_weapon_transform;
-
-		if (l_weapon_ik_weight >= 1)
-		{
-			l_weapon_transform = _calculate_weapon_aim_transform();
-		}
-		else
-		{
-			const auto l_weapon_aim_transform = _calculate_weapon_aim_transform();
-			const auto l_weapon_attachment_transform = _calculate_weapon_attachment_transform(m_left_hand_chain[2].first, m_left_hand_weapon_up, m_left_hand_weapon_forward, m_weapon->m_second_hand_offset);
-			l_weapon_transform = (l_weapon_aim_transform * l_weapon_ik_weight) + (l_weapon_attachment_transform * (1 - l_weapon_ik_weight));
-		}
-
-		m_weapon->m_actor.add_event(game::bc_world_transform_actor_event(l_weapon_transform));
-		m_weapon->m_actor.mark_for_double_update();
-	}
-	
-	void bc_xbot_actor_controller::throw_grenade() noexcept
-	{
-		m_state_machine->throw_grenade();
+		m_grenade.reset(bc_xbot_grenade{p_entity_name});
 	}
 
 	void bc_xbot_actor_controller::attach_weapon(game::bc_actor& p_weapon) noexcept
@@ -493,8 +538,8 @@ namespace black_cat
 			return false;
 		}
 
-		const bool l_shooted = m_state_machine->shoot_weapon();
-		if(!l_shooted)
+		const bool l_shoot = m_state_machine->shoot_weapon();
+		if(!l_shoot)
 		{
 			return false;
 		}
@@ -522,7 +567,7 @@ namespace black_cat
 		}
 		
 		const auto l_ccontroller_actor = p_hit.get_ccontroller().get_actor().is_rigid_body();
-		const auto l_multiplier = (m_state_machine->m_state.m_move_amount / m_state_machine->m_state.m_run_speed);
+		const auto l_multiplier = m_state_machine->m_state.m_move_amount / m_state_machine->m_state.m_move_speed;
 		l_rigid_dynamic.add_force(m_state_machine->m_state.m_move_direction * l_multiplier * l_ccontroller_actor.get_mass());
 	}
 
@@ -835,38 +880,40 @@ namespace black_cat
 		return l_main_hand_transform_ws;
 	}
 
-	core::bc_matrix4f bc_xbot_actor_controller::_calculate_weapon_attachment_transform(bcUINT32 p_attached_node_index,
+	core::bc_matrix4f bc_xbot_actor_controller::_calculate_attachment_transform(bcUINT32 p_attached_node_index,
 		const core::bc_vector3f& p_attached_node_up,
 		const core::bc_vector3f& p_attached_node_forward,
-		const core::bc_vector3f& p_attached_node_offset)
+		const core::bc_vector3f& p_attachment_local_up,
+		const core::bc_vector3f& p_attachment_local_forward,
+		const core::bc_vector3f& p_attachment_local_offset)
 	{
 		auto* l_model_job = game::bc_animation_job_helper::find_job<game::bc_local_to_model_animation_job>(m_state_machine->get_active_animation());
 		auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinned_animation_job>(m_state_machine->get_active_animation());
 
 		core::bc_matrix3f l_aim_target_rotation_ms;
-		core::bc_matrix3f l_weapon_forward_rotation_ms;
-		core::bc_matrix3f l_weapon_up_rotation_ms;
+		core::bc_matrix3f l_attachment_up_rotation_ms;
+		core::bc_matrix3f l_attachment_forward_rotation_ms;
 		
 		if constexpr (graphic::bc_render_api_info::use_left_handed())
 		{
 			l_aim_target_rotation_ms.rotation_between_two_vector_lh(m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_forward_rotation_ms.rotation_between_two_vector_checked_lh(m_weapon->m_local_forward, p_attached_node_forward);
-			l_weapon_up_rotation_ms.rotation_between_two_vector_lh(m_weapon->m_local_up, p_attached_node_up);
+			l_attachment_up_rotation_ms.rotation_between_two_vector_lh(p_attachment_local_up, p_attached_node_up);
+			l_attachment_forward_rotation_ms.rotation_between_two_vector_checked_lh(p_attachment_local_forward, p_attached_node_forward);
 		}
 		else
 		{
 			l_aim_target_rotation_ms.rotation_between_two_vector_rh(m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_forward_rotation_ms.rotation_between_two_vector_checked_rh(m_weapon->m_local_forward, p_attached_node_forward);
-			l_weapon_up_rotation_ms.rotation_between_two_vector_rh(m_weapon->m_local_up, p_attached_node_up);
+			l_attachment_up_rotation_ms.rotation_between_two_vector_rh(p_attachment_local_up, p_attached_node_up);
+			l_attachment_forward_rotation_ms.rotation_between_two_vector_checked_rh(p_attachment_local_forward, p_attached_node_forward);
 		}
 
 		auto l_attached_node_transform_ms = l_model_job->get_transforms()[p_attached_node_index];
 		l_attached_node_transform_ms.make_neutralize_scale();
-		auto l_weapon_transform_ms = core::bc_matrix4f::identity();
-		l_weapon_transform_ms.set_rotation(l_weapon_up_rotation_ms * l_weapon_forward_rotation_ms);
+		auto l_attachment_transform_ms = core::bc_matrix4f::identity();
+		l_attachment_transform_ms.set_rotation(l_attachment_up_rotation_ms * l_attachment_forward_rotation_ms);
 		
-		const auto l_attached_node_offset_ms = l_aim_target_rotation_ms * (l_weapon_up_rotation_ms * l_weapon_forward_rotation_ms * p_attached_node_offset);
-		auto l_attached_node_transform_ws = l_weapon_transform_ms * l_attached_node_transform_ms * l_skinning_job->get_world();
+		const auto l_attached_node_offset_ms = l_aim_target_rotation_ms * (l_attachment_up_rotation_ms * l_attachment_forward_rotation_ms * p_attachment_local_offset);
+		auto l_attached_node_transform_ws = l_attachment_transform_ms * l_attached_node_transform_ms * l_skinning_job->get_world();
 		l_attached_node_transform_ws.set_translation(l_attached_node_transform_ws.get_translation() + l_attached_node_offset_ms);
 		
 		return l_attached_node_transform_ws;

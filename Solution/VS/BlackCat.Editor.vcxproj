@@ -769,15 +769,10 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
   <ItemGroup>
     <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Data\EditorContentStream.json" />
     <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap.json" />
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_ContentStream.json" />
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_Decal.json" />
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_EntityType.json" />
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap_Material.json" />
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test.json" />
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test_ContentStream.json" />
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test_Decal.json" />
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test_EntityType.json" />
-    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\Test_Material.json" />
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMapContentStream.json" />
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMapDecal.json" />
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMapEntityType.json" />
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMapMaterial.json" />
     <None Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qss">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>

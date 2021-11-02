@@ -80,5 +80,6 @@ namespace black_cat
 		bool m_walk_pressed;
 
 		const bcCHAR* m_rifle_name;
+		const bcCHAR* m_grenade_name;
 	};
 }

@@ -139,8 +139,8 @@ namespace box
 		bcSIZE p_packet_size,
 		core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
-		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet sent to client: " << p_client << " " << l_packet << core::bc_lend;
+		/*const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
+		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet sent to client: " << p_client << " " << l_packet << core::bc_lend;*/
 	}
 
 	void bx_server_application::message_packet_received(const platform::bc_network_address& p_client,
@@ -148,8 +148,8 @@ namespace box
 		bcSIZE p_packet_size,
 		core::bc_const_span<game::bc_network_message_ptr> p_messages)
 	{
-		const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
-		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet received from client: " << p_client << " " << l_packet << core::bc_lend;
+		/*const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
+		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet received from client: " << p_client << " " << l_packet << core::bc_lend;*/
 	}
 
 	void bx_server_application::error_occurred(const platform::bc_network_address* p_client, const bc_network_exception* p_exception)

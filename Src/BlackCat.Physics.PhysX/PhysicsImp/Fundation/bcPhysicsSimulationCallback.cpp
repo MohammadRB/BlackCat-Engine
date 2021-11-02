@@ -323,12 +323,12 @@ namespace black_cat
 		{
 			const bcUINT32 l_written_count = m_pack.m_px_pair->extractContacts(reinterpret_cast<physx::PxContactPairPoint*>(p_buffer), p_buffer_size);
 
-			bc_overwrite_output_array<bc_contact_point, physx::PxContactPairPoint>(p_buffer, l_written_count, [](bc_contact_point& p_bc_point, physx::PxContactPairPoint& p_px_point)
+			bc_overwrite_output_array<bc_contact_point, physx::PxContactPairPoint>(p_buffer, l_written_count, [](physx::PxContactPairPoint& p_px_point)
 			{
 				bc_contact_point::platform_pack l_pack;
 				l_pack.m_px_point = p_px_point;
 
-				p_bc_point = bc_contact_point(l_pack);
+				return bc_contact_point(l_pack);
 			});
 
 			return l_written_count;

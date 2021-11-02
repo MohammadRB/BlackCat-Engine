@@ -99,6 +99,15 @@ namespace black_cat
 
 		void bc_ui_terrain_material_smooth_command_render_task::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_render_thread)
 		{
+			const auto l_height_map_width = static_cast<bcFLOAT>(m_height_map.get_width());
+			const auto l_height_map_height = static_cast<bcFLOAT>(m_height_map.get_height());
+			const auto l_texture_map_width = static_cast<bcFLOAT>(m_height_map.get_texture_map().get_width());
+			const auto l_texture_map_height = static_cast<bcFLOAT>(m_height_map.get_texture_map().get_height());
+
+			m_shader_parameter.m_tool_center_x = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_center_x) / l_height_map_width) * l_texture_map_width;
+			m_shader_parameter.m_tool_center_z = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_center_z) / l_height_map_height) * l_texture_map_height;
+			m_shader_parameter.m_tool_radius = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_radius) / l_height_map_width) * l_texture_map_width;
+			
 			const auto l_tool_diameter = m_shader_parameter.m_tool_radius * 2;
 			const auto l_thread_group_count = (l_tool_diameter / 32) + 1;
 
@@ -121,10 +130,11 @@ namespace black_cat
 				.as_tex2d_shader_view(0, 1)
 				.on_texture2d();
 
+			auto l_texture_map = m_height_map.get_texture_map();
 			auto l_temp_texture = p_render_system.get_device().create_texture2d(l_temp_texture_config, nullptr);
 			auto l_temp_texture_view = p_render_system.get_device().create_resource_view(l_temp_texture.get(), l_temp_texture_view_config);
 
-			p_render_thread.copy_resource(l_temp_texture.get(), m_height_map.get_texture_map());
+			p_render_thread.copy_resource(l_temp_texture.get(), l_texture_map);
 
 			auto l_compute_state = p_render_system.create_compute_state
 			(
@@ -152,9 +162,9 @@ namespace black_cat
 				0,
 				0
 			);
-			p_render_thread.bind_compute_state(*l_compute_state.get());
+			p_render_thread.bind_compute_state(*l_compute_state);
 			p_render_thread.dispatch(l_thread_group_count, l_thread_group_count, 1);
-			p_render_thread.unbind_compute_state(*l_compute_state.get());
+			p_render_thread.unbind_compute_state(*l_compute_state);
 
 			p_render_thread.finish();
 		}

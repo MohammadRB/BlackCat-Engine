@@ -7,6 +7,24 @@
     <Filter Include="BoX\Application">
       <UniqueIdentifier>{69851fb1-1035-46dc-b606-bdb932041282}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BoX\Content">
+      <UniqueIdentifier>{ccb5abfb-d368-4fd2-bdc5-b5c999261099}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX\Content\Data">
+      <UniqueIdentifier>{cfe423c7-a70e-4498-9e92-536a5076396a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX\Content\Model">
+      <UniqueIdentifier>{bae80504-f8ef-4f2b-8ce4-06465ce53699}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX\Content\Scene">
+      <UniqueIdentifier>{1ce177a2-0efa-4325-af3f-f0ef9348a6b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX\Content\Shader">
+      <UniqueIdentifier>{1ba814de-4ab5-4a77-8bbc-927382a879f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX\Content\Texture">
+      <UniqueIdentifier>{ef9af2bd-9ac6-4176-af0d-4d335fdf46cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\BoX\BattleOfXbots.cpp">
@@ -26,5 +44,34 @@
     <ClInclude Include="..\Src\BoX\Application\bxClientScript.h">
       <Filter>BoX\Application</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Src\BoX\Content\Data\BoXMaterial.json">
+      <Filter>BoX\Content\Data</Filter>
+    </None>
+    <None Include="..\Src\BoX\Content\Data\BoXEntityType.json">
+      <Filter>BoX\Content\Data</Filter>
+    </None>
+    <None Include="..\Src\BoX\Content\Data\BoXContentStream.json">
+      <Filter>BoX\Content\Data</Filter>
+    </None>
+    <None Include="..\Src\BoX\Content\Data\BoXDecal.json">
+      <Filter>BoX\Content\Data</Filter>
+    </None>
+    <None Include="..\Src\BoX\Content\Scene\Test.json">
+      <Filter>BoX\Content\Scene</Filter>
+    </None>
+    <None Include="..\Src\BoX\Content\Scene\TestContentStream.json">
+      <Filter>BoX\Content\Scene</Filter>
+    </None>
+    <None Include="..\Src\BoX\Content\Scene\TestDecal.json">
+      <Filter>BoX\Content\Scene</Filter>
+    </None>
+    <None Include="..\Src\BoX\Content\Scene\TestEntityType.json">
+      <Filter>BoX\Content\Scene</Filter>
+    </None>
+    <None Include="..\Src\BoX\Content\Scene\TestMaterial.json">
+      <Filter>BoX\Content\Scene</Filter>
+    </None>
   </ItemGroup>
 </Project>

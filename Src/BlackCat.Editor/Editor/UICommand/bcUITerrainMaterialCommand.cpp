@@ -57,16 +57,16 @@ namespace black_cat
 				.as_constant_buffer();
 
 			bc_ui_terrain_material_command_state l_state;
-			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_material_cs");;
-			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);;
-			l_state.m_device_command_list = l_render_system.get_device().create_command_list();;
+			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_material_cs");
+			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);
+			l_state.m_device_command_list = l_render_system.get_device().create_command_list();
 
-			return core::bc_make_unique< bc_ui_terrain_material_command_state >(std::move(l_state));
+			return core::bc_make_unique<bc_ui_terrain_material_command_state>(std::move(l_state));
 		}
 
 		bool bc_ui_terrain_material_command::update(terrain_update_context& p_context)
 		{
-			using height_map_sample_t = std::tuple< bcINT16, physics::bc_material_index >;
+			using height_map_sample_t = std::tuple<bcINT16, physics::bc_material_index>;
 
 			auto* l_rigid_component = p_context.m_terrain.get_component<game::bc_rigid_static_component>();
 			auto* l_height_map_component = p_context.m_terrain.get_component<game::bc_height_map_component>();
@@ -82,7 +82,7 @@ namespace black_cat
 			bc_ui_terrain_material_command_render_task l_render_task
 			(
 				l_dx11_height_map,
-				*static_cast< bc_ui_terrain_material_command_state* >(p_context.m_state),
+				*static_cast<bc_ui_terrain_material_command_state*>(p_context.m_state),
 				l_cbuffer_parameters
 			);
 			p_context.m_game_system.get_render_system().add_render_task(l_render_task);
@@ -92,7 +92,7 @@ namespace black_cat
 			const bcINT32 l_diameter = l_cbuffer_parameters.m_tool_radius * 2;
 			const core::bc_vector2i l_tool_center(p_context.m_tool_center_x, p_context.m_tool_center_z);
 			const bcUINT32 l_sample_count = l_diameter * l_diameter;
-			const core::bc_unique_ptr< height_map_sample_t > l_sample_buffer
+			const core::bc_unique_ptr<height_map_sample_t> l_sample_buffer
 			(
 				static_cast<height_map_sample_t*>(BC_ALLOC(l_sample_count * sizeof(height_map_sample_t), core::bc_alloc_type::frame))
 			);
@@ -108,7 +108,7 @@ namespace black_cat
 					const bcFLOAT l_center_distance = (l_tool_center - l_global_coords).magnitude();
 					auto l_height_map_sample = l_height_map_array.get_sample_from_top_left(l_global_coords.x, l_global_coords.y);
 
-					if (l_center_distance > m_radius)
+					if (l_center_distance> m_radius)
 					{
 						l_samples[l_sample_index] = l_height_map_sample;
 						continue;
@@ -123,17 +123,22 @@ namespace black_cat
 			const physics::bc_bounded_strided_typed_data<physics::bc_material_index> l_px_sample_materials(&std::get<1>(*l_samples), sizeof(height_map_sample_t), l_sample_count);
 			const physics::bc_height_field_desc l_px_height_map_desc(l_diameter, l_diameter, l_px_samples, l_px_sample_materials);
 
-			physics::bc_shape l_terrain_shape;
-			l_rigid_component->get_static_body().get_shapes(&l_terrain_shape, 1);
+			{
+				auto& l_px_scene = p_context.m_game_system.get_scene()->get_px_scene();
+				physics::bc_scene_lock l_lock(&l_px_scene);
 
-			l_px_height_map.modify_samples
-			(
-				l_cbuffer_parameters.m_tool_center_z - m_radius,
-				l_cbuffer_parameters.m_tool_center_x - m_radius,
-				l_px_height_map_desc,
-				&l_terrain_shape,
-				1
-			);
+				physics::bc_shape l_terrain_shape;
+				l_rigid_component->get_static_body().get_shapes(&l_terrain_shape, 1);
+
+				l_px_height_map.modify_samples
+				(
+					l_cbuffer_parameters.m_tool_center_z - m_radius,
+					l_cbuffer_parameters.m_tool_center_x - m_radius,
+					l_px_height_map_desc,
+					&l_terrain_shape,
+					1
+				);
+			}
 
 			l_render_task.wait();
 
@@ -151,6 +156,15 @@ namespace black_cat
 
 		void bc_ui_terrain_material_command_render_task::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_render_thread)
 		{
+			const auto l_height_map_width = static_cast<bcFLOAT>(m_height_map.get_width());
+			const auto l_height_map_height = static_cast<bcFLOAT>(m_height_map.get_height());
+			const auto l_texture_map_width = static_cast<bcFLOAT>(m_height_map.get_texture_map().get_width());
+			const auto l_texture_map_height = static_cast<bcFLOAT>(m_height_map.get_texture_map().get_height());
+			
+			m_shader_parameter.m_tool_center_x = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_center_x) / l_height_map_width) * l_texture_map_width;
+			m_shader_parameter.m_tool_center_z = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_center_z) / l_height_map_height) * l_texture_map_height;
+			m_shader_parameter.m_tool_radius = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_radius) / l_height_map_width) * l_texture_map_width;
+			
 			const auto l_tool_diameter = m_shader_parameter.m_tool_radius * 2;
 			const auto l_thread_group_count = (l_tool_diameter / 32) + 1;
 

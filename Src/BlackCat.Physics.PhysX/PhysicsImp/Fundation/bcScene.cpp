@@ -128,11 +128,12 @@ namespace black_cat
 				p_start_index
 			);
 
-			bc_overwrite_output_array<bc_actor, physx::PxActor*>(p_buffer, l_written_count, [](bc_actor& p_actor, physx::PxActor*& p_px_actor)
+			bc_overwrite_output_array<bc_actor, physx::PxActor*>(p_buffer, l_written_count, [](physx::PxActor*& p_px_actor)
 			{
 				bc_actor::platform_pack l_pack;
 				l_pack.m_px_object = p_px_actor;
-				p_actor = bc_actor(l_pack);
+				
+				return  bc_actor(l_pack);
 			});
 
 			return l_written_count;
@@ -174,12 +175,12 @@ namespace black_cat
 				p_start_index
 			);
 
-			bc_overwrite_output_array<bc_aggregate, physx::PxAggregate*>(p_buffer, l_written_count, [](bc_aggregate& p_aggregate, physx::PxAggregate*& p_px_aggregate)
+			bc_overwrite_output_array<bc_aggregate, physx::PxAggregate*>(p_buffer, l_written_count, [](physx::PxAggregate*& p_px_aggregate)
 			{
 				bc_aggregate::platform_pack l_pack;
 				l_pack.m_px_object = p_px_aggregate;
 
-				p_aggregate = bc_aggregate(l_pack);
+				return bc_aggregate(l_pack);
 			});
 
 			return l_written_count;
@@ -203,12 +204,12 @@ namespace black_cat
 				p_start_index
 			);
 
-			bc_overwrite_output_array<bc_joint, physx::PxConstraint*>(p_buffer, l_written_count, [](bc_joint& p_joint, physx::PxConstraint*& p_px_constraint)
+			bc_overwrite_output_array<bc_joint, physx::PxConstraint*>(p_buffer, l_written_count, [](physx::PxConstraint*& p_px_constraint)
 			{
 				bc_joint::platform_pack l_pack;
 				l_pack.m_px_object = p_px_constraint;
 
-				p_joint = bc_joint(l_pack);
+				return bc_joint(l_pack);
 			});
 
 			return l_written_count;

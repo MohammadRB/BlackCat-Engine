@@ -31,9 +31,9 @@ namespace black_cat
 				bcUINT32 p_tool_center_z);
 
 			game::bc_actor m_terrain;
-			core::bc_vector3f m_hit_position;
-			bcUINT32 m_tool_center_x;
-			bcUINT32 m_tool_center_z;
+			core::bc_vector3f m_hit_position;	// pointed position in terrain local space
+			bcUINT32 m_tool_center_x;			// pointed position in terrain local space converted to [0, width] range
+			bcUINT32 m_tool_center_z;			// pointed position in terrain local space converted to [0, height] range
 		};
 
 		class bc_ui_terrain_command : public bc_iui_command

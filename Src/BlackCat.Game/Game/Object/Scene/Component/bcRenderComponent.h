@@ -54,7 +54,7 @@ namespace black_cat
 
 			bc_render_component(bc_render_component&&) noexcept;
 
-			virtual ~bc_render_component();
+			~bc_render_component() override;
 
 			bc_render_component& operator=(bc_render_component&&) noexcept;
 		};
