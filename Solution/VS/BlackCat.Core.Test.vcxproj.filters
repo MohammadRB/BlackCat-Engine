@@ -13,6 +13,9 @@
     <Filter Include="CoreTest\File">
       <UniqueIdentifier>{482cc5c3-b809-462d-b556-17221c507db9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CoreTest\Utility">
+      <UniqueIdentifier>{88a4df01-546e-4d55-9acd-b4a25b957f78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Memory\bcMemoryHeap.cpp">
@@ -32,6 +35,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Container\bcConcurrentQueue.cpp">
       <Filter>CoreTest\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Utility\bcParameterPack.cpp">
+      <Filter>CoreTest\Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

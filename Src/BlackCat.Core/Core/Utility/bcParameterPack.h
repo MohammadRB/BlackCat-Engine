@@ -21,9 +21,9 @@ namespace black_cat
 
 			virtual bcSIZE size() const = 0;
 
-			virtual _bc_parameter_pack_object* copy(void* p_memory) = 0;
+			virtual _bc_parameter_pack_object* copy(void* p_buffer) = 0;
 
-			virtual _bc_parameter_pack_object* move(void* p_memory) = 0;
+			virtual _bc_parameter_pack_object* move(void* p_buffer) = 0;
 		};
 
 		template<typename T>
@@ -43,20 +43,20 @@ namespace black_cat
 				return sizeof(_bc_parameter_pack_concrete_object<T>);
 			}
 
-			_bc_parameter_pack_object* copy(void* p_memory) override
+			_bc_parameter_pack_object* copy(void* p_buffer) override
 			{
-				auto* l_pointer = static_cast<_bc_parameter_pack_concrete_object*>(p_memory);
-				new (l_pointer) _bc_parameter_pack_concrete_object(m_value);
+				auto* l_buffer = static_cast<_bc_parameter_pack_concrete_object*>(p_buffer);
+				new (l_buffer) _bc_parameter_pack_concrete_object(m_value);
 
-				return l_pointer;
+				return l_buffer;
 			}
 
-			_bc_parameter_pack_object* move(void* p_memory) override
+			_bc_parameter_pack_object* move(void* p_buffer) override
 			{
-				auto* l_pointer = static_cast<_bc_parameter_pack_concrete_object*>(p_memory);
-				new (l_pointer) _bc_parameter_pack_concrete_object(std::move(m_value));
-
-				return l_pointer;
+				auto* l_buffer = static_cast<_bc_parameter_pack_concrete_object*>(p_buffer);
+				new (l_buffer) _bc_parameter_pack_concrete_object(std::move(m_value));
+				
+				return l_buffer;
 			}
 
 			T m_value;
@@ -68,7 +68,7 @@ namespace black_cat
 		 * \n You can use both copy and movable objects but if you use movable only object and try to copy this object
 		 * a logic exception will be thrown
 		 */
-		class bc_parameter_pack : public bc_object_allocator
+		class bc_parameter_pack
 		{
 			template<typename T>
 			using decay_t = std::remove_cv_t<std::remove_reference_t<T>>;
@@ -129,10 +129,14 @@ namespace black_cat
 
 			bool used_internal_buffer() const;
 
+		protected:
+			bc_parameter_pack(bc_alloc_type p_alloc_type);
+		
 		private:
 			static constexpr bcUINT s_buffer_size = sizeof(_bc_parameter_pack_concrete_object<bc_string>);
 
 			bcBYTE m_buffer[s_buffer_size];
+			bc_alloc_type m_alloc_type;
 			_bc_parameter_pack_object* m_object;
 		};
 
@@ -172,9 +176,16 @@ namespace black_cat
 
 		inline bc_parameter_pack::bc_parameter_pack()
 			: m_buffer(),
+			m_alloc_type(bc_alloc_type::frame),
 			m_object(nullptr)
 		{
-			set_allocator_alloc_type(bc_alloc_type::frame);
+		}
+
+		inline bc_parameter_pack::bc_parameter_pack(bc_alloc_type p_alloc_type)
+			: m_buffer(),
+			m_alloc_type(p_alloc_type),
+			m_object(nullptr)
+		{
 		}
 
 		inline bc_parameter_pack::bc_parameter_pack(const bc_parameter_pack& p_other)
@@ -216,7 +227,7 @@ namespace black_cat
 			}
 			else
 			{
-				bcBYTE* l_buffer = allocate_raw(p_other.m_object->size()).release();
+				void* l_buffer = BC_ALLOC(p_other.m_object->size(), m_alloc_type);
 				m_object = p_other.m_object->copy(l_buffer);
 			}
 
@@ -235,6 +246,7 @@ namespace black_cat
 			if (p_other.used_internal_buffer())
 			{
 				m_object = p_other.m_object->move(&m_buffer);
+				p_other.m_object->~_bc_parameter_pack_object();
 			}
 			else
 			{
@@ -261,7 +273,7 @@ namespace black_cat
 			}
 			else
 			{
-				m_object = allocate<_bc_parameter_pack_concrete_object<T1>>(std::forward<T>(p_data)).release();
+				m_object = BC_NEW(_bc_parameter_pack_concrete_object<T1>(std::forward<T>(p_data)), m_alloc_type);
 			}
 		}
 
@@ -337,7 +349,7 @@ namespace black_cat
 			// Free allocated memory
 			if (m_object && !used_internal_buffer())
 			{
-				deallocate(m_object);
+				BC_DELETE(m_object);
 			}
 			// Only destruct constructed object in internal buffer
 			else if (m_object && used_internal_buffer())
@@ -359,9 +371,8 @@ namespace black_cat
 		}
 
 		inline bc_any::bc_any()
-			: bc_parameter_pack()
+			: bc_parameter_pack(bc_alloc_type::unknown)
 		{
-			set_allocator_alloc_type(bc_alloc_type::unknown);
 		}
 
 		inline bc_any::bc_any(const bc_parameter_pack& p_parameter)

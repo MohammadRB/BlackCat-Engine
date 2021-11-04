@@ -40,9 +40,7 @@ namespace black_cat
 		{
 		}
 
-		bc_content_stream_manager::~bc_content_stream_manager()
-		{
-		}
+		bc_content_stream_manager::~bc_content_stream_manager() = default;
 
 		void bc_content_stream_manager::read_stream_file(const bcECHAR* p_json_file_path)
 		{
@@ -52,32 +50,32 @@ namespace black_cat
 			if(!l_json_file.open_read(p_json_file_path))
 			{
 				bc_string_frame l_msg = "Error in reading content stream file: ";
-				l_msg += bc_to_exclusive_string(p_json_file_path).c_str();
+				l_msg += bc_to_exclusive_string(p_json_file_path);
 
 				throw bc_io_exception(l_msg.c_str());
 			}
 
 			core::bc_read_all_lines(l_json_file, l_json_file_content);
 
-			bc_json_document< _bc_content_stream_json > l_content_stream;
+			bc_json_document<_bc_content_stream_json> l_content_stream;
 			l_content_stream.load(l_json_file_content.c_str());
 
-			for (bc_json_object< _bc_content_stream >& l_stream : l_content_stream->m_streams)
+			for (bc_json_object<_bc_content_stream>& l_stream : l_content_stream->m_streams)
 			{
 				string_hash::result_type l_stream_hash = string_hash()(l_stream->m_stream_name->c_str());
-				bc_vector_program< _bc_content_stream_file > l_stream_files;
+				bc_vector_program<_bc_content_stream_file> l_stream_files;
 
 				l_stream_files.reserve(l_stream->m_stream_content.size());
 
-				for (bc_json_object< _bc_content_stream_content >& l_stream_content : l_stream->m_stream_content)
+				for (bc_json_object<_bc_content_stream_content>& l_stream_content : l_stream->m_stream_content)
 				{
 					auto l_file_path = bc_path::get_absolute_path(bc_to_estring_frame(*l_stream_content->m_content_file).c_str());
 
 					_bc_content_stream_file l_stream_file
 					{
-						bc_string_program(l_stream_content->m_content_title->c_str()),
-						bc_string_program(l_stream_content->m_content_loader->c_str()),
-						bc_estring_program(l_file_path.c_str()),
+						bc_string_program(*l_stream_content->m_content_title),
+						bc_string_program(*l_stream_content->m_content_loader),
+						bc_estring_program(l_file_path),
 						bc_data_driven_parameter()
 					};
 
@@ -182,12 +180,12 @@ namespace black_cat
 			);
 		}
 
-		bc_task< void > bc_content_stream_manager::load_content_stream_async(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name)
+		bc_task<void> bc_content_stream_manager::load_content_stream_async(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name)
 		{
-			return bc_concurrency::start_task< void >([this, p_alloc_type, p_stream_name]()
-				{
-					this->load_content_stream(p_alloc_type, p_stream_name);
-				});
+			return bc_concurrency::start_task<void>([this, p_alloc_type, p_stream_name]()
+			{
+				this->load_content_stream(p_alloc_type, p_stream_name);
+			});
 		}
 
 		void bc_content_stream_manager::unload_content_stream(const bcCHAR* p_stream_name)

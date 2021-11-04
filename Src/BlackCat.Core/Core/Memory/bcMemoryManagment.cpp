@@ -48,7 +48,7 @@ namespace black_cat
 				std::strcpy
 				(
 					m_file_name,
-					&p_file_name[std::max< bcINT32 >(static_cast<bcINT32>(std::strlen(p_file_name)) - (s_filename_length - 1), 0)]
+					&p_file_name[std::max<bcINT32>(static_cast<bcINT32>(std::strlen(p_file_name)) - (s_filename_length - 1), 0)]
 				);
 			}
 		};
@@ -93,9 +93,9 @@ namespace black_cat
 			{
 				m_fsa_allocators = new bc_memory_extender<bc_memory_fixed_size>[m_fsa_num_allocators];
 
-				for (bcUINT32 i = 0; i < m_fsa_num_allocators; i++)
+				for (bcUINT32 i = 0; i <m_fsa_num_allocators; i++)
 				{
-					auto l_initialize_delegate = bc_delegate< bc_memory_fixed_size*() >
+					auto l_initialize_delegate = bc_delegate<bc_memory_fixed_size*()>
 					(
 						[=]()
 						{
@@ -108,7 +108,7 @@ namespace black_cat
 							return l_result;
 						}
 					);
-					auto l_destroy_delegate = bc_delegate< void(bc_memory_fixed_size*) >
+					auto l_destroy_delegate = bc_delegate<void(bc_memory_fixed_size*)>
 					(
 						[=](bc_memory_fixed_size* p_pointer)
 						{
@@ -234,22 +234,21 @@ namespace black_cat
 				return l_result;
 			}
 
-			bc_memblock::initialize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
-
 #ifdef BC_MEMORY_LEAK_DETECTION
+			const auto l_alloc_number = m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1;
+
 			{
 				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
-
 				m_leak_allocator->insert
 				(
 					std::make_pair
 					(
-						reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(l_result) - l_block.offset()),
+						l_result,
 						bc_mem_block_leak_information
 						(
 							l_result,
 							p_alloc_type,
-							m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1,
+							l_alloc_number,
 							p_size,
 							p_line,
 							p_file
@@ -259,9 +258,11 @@ namespace black_cat
 			}
 #endif
 
+			bc_memblock::initialize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
+			
 			return l_result;
 		}
-		
+
 		void bc_memory_manager::free(void* p_pointer) noexcept
 		{
 			if (!p_pointer)
@@ -270,7 +271,7 @@ namespace black_cat
 			}
 
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
-			void* l_pointer = reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer) - l_block->offset());
+			void* l_pointer = reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(p_pointer) - l_block->offset());
 
 			BC_ASSERT(l_block);
 
@@ -283,7 +284,7 @@ namespace black_cat
 			{
 				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
 
-				m_leak_allocator->erase(l_pointer);
+				const auto l_num_erased = m_leak_allocator->erase(l_pointer);
 			}
 #endif
 		}
@@ -303,8 +304,8 @@ namespace black_cat
 
 			std::memcpy
 			(
-				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(l_new_pointer)),
-				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer)),
+				reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(l_new_pointer)),
+				reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(p_pointer)),
 				l_min_size
 			);
 
@@ -363,9 +364,9 @@ namespace black_cat
 				return l_result;
 			}
 
-			bc_memblock::initialize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
-
 #ifdef BC_MEMORY_LEAK_DETECTION
+			const auto l_alloc_number = m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1;
+
 			{
 				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
 
@@ -373,12 +374,12 @@ namespace black_cat
 				(
 					std::make_pair
 					(
-						reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(l_result) - l_block.offset()),
+						l_result,
 						bc_mem_block_leak_information
 						(
 							l_result,
 							p_alloc_type,
-							m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1,
+							l_alloc_number,
 							p_size,
 							p_line,
 							p_file
@@ -387,6 +388,7 @@ namespace black_cat
 				);
 			}
 #endif
+			bc_memblock::initialize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
 
 			return l_result;
 		}
@@ -399,7 +401,7 @@ namespace black_cat
 			}
 
 			bc_memblock* l_block = bc_memblock::retrieve_mem_block(p_pointer);
-			void* l_pointer = reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer) - l_block->offset());
+			void* l_pointer = reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(p_pointer) - l_block->offset());
 
 			BC_ASSERT(l_block);
 
@@ -412,7 +414,7 @@ namespace black_cat
 			{
 				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
 
-				m_leak_allocator->erase(l_pointer);
+				const auto l_num_erased = m_leak_allocator->erase(l_pointer);
 			}
 #endif
 		}
@@ -432,8 +434,8 @@ namespace black_cat
 
 			std::memcpy
 			(
-				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(l_new_pointer)),
-				reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(p_pointer)),
+				reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(l_new_pointer)),
+				reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(p_pointer)),
 				l_min_size
 			);
 
@@ -477,7 +479,7 @@ namespace black_cat
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_total_size = 0;
 
-			for(bcUINT32 i = 0; i < m_fsa_num_allocators; i++)
+			for(bcUINT32 i = 0; i <m_fsa_num_allocators; i++)
 			{
 				l_total_size += m_fsa_allocators[i].tracer().total_size();
 			}
@@ -496,7 +498,7 @@ namespace black_cat
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_used_size = 0;
 
-			for(bcUINT32 i = 0; i < m_fsa_num_allocators; i++)
+			for(bcUINT32 i = 0; i <m_fsa_num_allocators; i++)
 				l_used_size += m_fsa_allocators[i].tracer().used_size();
 
 			l_used_size += m_per_program_stack->tracer().used_size();
@@ -513,7 +515,7 @@ namespace black_cat
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_wasted_size = 0;
 
-			for(bcUINT32 i = 0; i < m_fsa_num_allocators; i++)
+			for(bcUINT32 i = 0; i <m_fsa_num_allocators; i++)
 				l_wasted_size += m_fsa_allocators[i].tracer().overhead_size();
 
 			l_wasted_size += m_per_program_stack->tracer().overhead_size();
@@ -530,7 +532,7 @@ namespace black_cat
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_max_used_size = 0;
 
-			for(bcUINT32 i = 0; i < m_fsa_num_allocators; i++)
+			for(bcUINT32 i = 0; i <m_fsa_num_allocators; i++)
 				l_max_used_size += m_fsa_allocators[i].tracer().max_used_size();
 
 			l_max_used_size += m_per_program_stack->tracer().max_used_size();
@@ -549,16 +551,20 @@ namespace black_cat
 				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
 
 				const bcSIZE l_leak_count = m_leak_allocator->size();
-
+				auto l_leak_array = std::vector<bc_mem_block_leak_information*>(l_leak_count);
+				auto l_leak_ite = 0U;
+				
 				for (auto& l_leak : *m_leak_allocator)
 				{
-					bc_memblock* l_memblock = bc_memblock::retrieve_mem_block(l_leak.first);
-					/*if(l_leak.second.m_type == bc_alloc_type::frame)
-					{
-						BC_DEBUG_BREAK();
-					}*/
+					l_leak_array[l_leak_ite] = &l_leak.second;
+					++l_leak_ite;
 				}
 
+				std::sort(std::begin(l_leak_array), std::end(l_leak_array), [](bc_mem_block_leak_information* p_leak1, bc_mem_block_leak_information* p_leak2)
+				{
+					return p_leak1->m_number < p_leak2->m_number;
+				});
+				
 				return l_leak_count;
 			}
 		}

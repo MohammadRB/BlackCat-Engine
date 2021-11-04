@@ -171,6 +171,7 @@
     <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\File\bcMemoryStream.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Memory\bcMemoryHeap.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Memory\bcMemoryStack.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Utility\bcParameterPack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="BlackCat.Core.Platform.Win32.vcxproj">

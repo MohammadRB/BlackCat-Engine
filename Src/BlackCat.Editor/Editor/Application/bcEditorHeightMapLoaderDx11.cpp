@@ -37,7 +37,7 @@ namespace black_cat
 
 			p_context.set_result(bc_editor_height_map_dx11
 			(
-				std::move(*l_loaded_height_map.release()),
+				std::move(*l_loaded_height_map),
 				l_height_map_unordered_view,
 				l_texture_map_unordered_view
 			));

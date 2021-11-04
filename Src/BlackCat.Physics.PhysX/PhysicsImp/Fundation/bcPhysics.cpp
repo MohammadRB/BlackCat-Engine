@@ -37,21 +37,21 @@ namespace black_cat
 	{
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_physics< g_api_physx >::bc_platform_physics()
+		bc_platform_physics<g_api_physx>::bc_platform_physics()
 		{
 			m_pack.m_px_physics = nullptr;
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_physics< g_api_physx >::bc_platform_physics(bc_platform_physics&& p_other) noexcept
+		bc_platform_physics<g_api_physx>::bc_platform_physics(bc_platform_physics&& p_other) noexcept
 		{
 			operator=(std::move(p_other));
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_physics< g_api_physx >::~bc_platform_physics()
+		bc_platform_physics<g_api_physx>::~bc_platform_physics()
 		{
 			if (is_initialized())
 			{
@@ -61,7 +61,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_physics< g_api_physx >& bc_platform_physics< g_api_physx >::operator=(bc_platform_physics&& p_other) noexcept
+		bc_platform_physics<g_api_physx>& bc_platform_physics<g_api_physx>::operator=(bc_platform_physics&& p_other) noexcept
 		{
 			m_pack.m_px_foundation = p_other.m_pack.m_px_foundation;
 #ifdef BC_DEBUG
@@ -84,7 +84,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_scene_ref bc_platform_physics< g_api_physx >::create_scene(bc_scene_builder p_desc)
+		bc_scene_ref bc_platform_physics<g_api_physx>::create_scene(bc_scene_builder p_desc)
 		{
 			p_desc.get_platform_pack().m_px_desc.cpuDispatcher = m_pack.m_task_dispatcher.get();
 
@@ -109,14 +109,14 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bcUINT32 bc_platform_physics< g_api_physx >::get_scene_count() const noexcept
+		bcUINT32 bc_platform_physics<g_api_physx>::get_scene_count() const noexcept
 		{
 			return m_pack.m_px_physics->getNbScenes();
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_rigid_static_ref bc_platform_physics< g_api_physx >::create_rigid_static(const bc_transform& p_pose)
+		bc_rigid_static_ref bc_platform_physics<g_api_physx>::create_rigid_static(const bc_transform& p_pose)
 		{
 			bc_rigid_static::platform_pack l_pack;
 			l_pack.m_px_object = m_pack.m_px_physics->createRigidStatic(p_pose.get_platform_pack().m_px_transform);
@@ -126,7 +126,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_rigid_dynamic_ref bc_platform_physics< g_api_physx >::create_rigid_dynamic(const bc_transform& p_pose)
+		bc_rigid_dynamic_ref bc_platform_physics<g_api_physx>::create_rigid_dynamic(const bc_transform& p_pose)
 		{
 			bc_rigid_dynamic::platform_pack l_pack;
 			l_pack.m_px_object = m_pack.m_px_physics->createRigidDynamic(p_pose.get_platform_pack().m_px_transform);
@@ -136,7 +136,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_shape_ref bc_platform_physics< g_api_physx >::create_shape(const bc_shape_geometry& p_geometry,
+		bc_shape_ref bc_platform_physics<g_api_physx>::create_shape(const bc_shape_geometry& p_geometry,
 			const bc_material& p_material,
 			bool p_is_exclusive)
 		{
@@ -151,7 +151,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_shape_ref bc_platform_physics< g_api_physx >::create_shape(const bc_shape_geometry& p_geometry,
+		bc_shape_ref bc_platform_physics<g_api_physx>::create_shape(const bc_shape_geometry& p_geometry,
 			const bc_material& p_material,
 			bc_shape_flag p_shape_flags,
 			bool p_is_exclusive)
@@ -170,7 +170,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_shape_ref bc_platform_physics< g_api_physx >::create_shape(const bc_shape_geometry& p_geometry,
+		bc_shape_ref bc_platform_physics<g_api_physx>::create_shape(const bc_shape_geometry& p_geometry,
 			bc_material* const* p_materials,
 			bcUINT16 p_material_count,
 			bool p_is_exclusive)
@@ -187,15 +187,15 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_shape_ref bc_platform_physics< g_api_physx >::create_shape(const bc_shape_geometry& p_geometry,
+		bc_shape_ref bc_platform_physics<g_api_physx>::create_shape(const bc_shape_geometry& p_geometry,
 			bc_material* const* p_materials,
 			bcUINT16 p_material_count,
 			bc_shape_flag p_shape_flags,
 			bool p_is_exclusive)
 		{
-			auto** l_px_material_buffer = static_cast< physx::PxMaterial** >(BC_ALLOC(sizeof(physx::PxMaterial*) * p_material_count, core::bc_alloc_type::frame));
+			auto** l_px_material_buffer = static_cast<physx::PxMaterial**>(BC_ALLOC(sizeof(physx::PxMaterial*) * p_material_count, core::bc_alloc_type::frame));
 
-			for (bcUINT32 i = 0; i < p_material_count; ++i)
+			for (bcUINT32 i = 0; i <p_material_count; ++i)
 			{
 				l_px_material_buffer[i] = static_cast<physx::PxMaterial*>(p_materials[i]->get_platform_pack().m_px_object);
 			}
@@ -217,14 +217,14 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bcUINT32 bc_platform_physics< g_api_physx >::get_shape_count() const noexcept
+		bcUINT32 bc_platform_physics<g_api_physx>::get_shape_count() const noexcept
 		{
 			return m_pack.m_px_physics->getNbShapes();
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_material_ref bc_platform_physics< g_api_physx >::create_material(bcFLOAT p_static_friction,
+		bc_material_ref bc_platform_physics<g_api_physx>::create_material(bcFLOAT p_static_friction,
 			bcFLOAT p_dynamic_friction,
 			bcFLOAT p_restitution)
 		{
@@ -236,14 +236,14 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bcUINT32 bc_platform_physics< g_api_physx >::get_material_count() const noexcept
+		bcUINT32 bc_platform_physics<g_api_physx>::get_material_count() const noexcept
 		{
 			return m_pack.m_px_physics->getNbMaterials();
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_aggregate_ref bc_platform_physics< g_api_physx >::create_aggregate(bcUINT32 p_max_size, bool p_enable_self_collision)
+		bc_aggregate_ref bc_platform_physics<g_api_physx>::create_aggregate(bcUINT32 p_max_size, bool p_enable_self_collision)
 		{
 			bc_aggregate::platform_pack l_pack;
 			l_pack.m_px_object = m_pack.m_px_physics->createAggregate(p_max_size, p_enable_self_collision);
@@ -253,9 +253,9 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_memory_buffer bc_platform_physics< g_api_physx >::create_convex_mesh(const bc_convex_mesh_desc& p_desc)
+		bc_memory_buffer bc_platform_physics<g_api_physx>::create_convex_mesh(const bc_convex_mesh_desc& p_desc)
 		{
-			core::bc_unique_ptr< physx::PxVec3 > l_vertex_buffer(static_cast< physx::PxVec3* >
+			core::bc_unique_ptr<physx::PxVec3> l_vertex_buffer(static_cast<physx::PxVec3*>
 			(
 				BC_ALLOC(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
 			));
@@ -285,7 +285,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_convex_mesh_ref bc_platform_physics< g_api_physx >::create_convex_mesh(bc_memory_buffer& p_buffer)
+		bc_convex_mesh_ref bc_platform_physics<g_api_physx>::create_convex_mesh(bc_memory_buffer& p_buffer)
 		{
 			BC_ASSERT(p_buffer.is_valid());
 
@@ -293,7 +293,7 @@ namespace black_cat
 
 			physx::PxDefaultMemoryInputData input
 			(
-				static_cast< physx::PxU8* >(p_buffer.get_buffer_pointer()),
+				static_cast<physx::PxU8*>(p_buffer.get_buffer_pointer()),
 				p_buffer.get_buffer_size()
 			);
 			l_pack.m_px_object = m_pack.m_px_physics->createConvexMesh(input);
@@ -303,26 +303,26 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bcUINT32 bc_platform_physics< g_api_physx >::get_convex_mesh_count() const noexcept
+		bcUINT32 bc_platform_physics<g_api_physx>::get_convex_mesh_count() const noexcept
 		{
 			return m_pack.m_px_physics->getNbConvexMeshes();
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_memory_buffer bc_platform_physics< g_api_physx >::create_triangle_mesh(const bc_triangle_mesh_desc& p_desc)
+		bc_memory_buffer bc_platform_physics<g_api_physx>::create_triangle_mesh(const bc_triangle_mesh_desc& p_desc)
 		{
 			const bool l_16_bit_index = core::bc_enum::has(p_desc.m_flag, bc_triangle_mesh_flag::use_16bit_index);
-			const core::bc_unique_ptr< physx::PxVec3 > l_vertex_buffer
+			const core::bc_unique_ptr<physx::PxVec3> l_vertex_buffer
 			(
-				static_cast< physx::PxVec3* >
+				static_cast<physx::PxVec3*>
 				(
 					BC_ALLOC(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
 				)
 			);
-			const core::bc_unique_ptr< bcBYTE > l_index_buffer
+			const core::bc_unique_ptr<bcBYTE> l_index_buffer
 			(
-				static_cast< bcBYTE* >
+				static_cast<bcBYTE*>
 				(
 					BC_ALLOC(p_desc.m_indices.m_count * (l_16_bit_index ? sizeof(bcUINT16) : sizeof(bcUINT32)), core::bc_alloc_type::frame)
 				)
@@ -341,13 +341,13 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_triangle_mesh_ref bc_platform_physics< g_api_physx >::create_triangle_mesh(bc_memory_buffer& p_buffer)
+		bc_triangle_mesh_ref bc_platform_physics<g_api_physx>::create_triangle_mesh(bc_memory_buffer& p_buffer)
 		{
 			BC_ASSERT(p_buffer.is_valid());
 
 			physx::PxDefaultMemoryInputData l_input
 			(
-				static_cast< physx::PxU8* >(p_buffer.get_buffer_pointer()),
+				static_cast<physx::PxU8*>(p_buffer.get_buffer_pointer()),
 				p_buffer.get_buffer_size()
 			);
 			bc_triangle_mesh::platform_pack l_pack;
@@ -358,7 +358,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_triangle_mesh_ref bc_platform_physics< g_api_physx >::create_runtime_triangle_mesh(const bc_triangle_mesh_desc& p_desc)
+		bc_triangle_mesh_ref bc_platform_physics<g_api_physx>::create_runtime_triangle_mesh(const bc_triangle_mesh_desc& p_desc)
 		{
 			const physx::PxTolerancesScale l_scale;
 			physx::PxCookingParams l_params(l_scale);
@@ -372,14 +372,14 @@ namespace black_cat
 			m_pack.m_px_cooking->setParams(l_params);
 
 			const bool l_is_16_bit_index = core::bc_enum::has(p_desc.m_flag, bc_triangle_mesh_flag::use_16bit_index);
-			const core::bc_unique_ptr< physx::PxVec3 > l_vertex_buffer
+			const core::bc_unique_ptr<physx::PxVec3> l_vertex_buffer
 			(
 				static_cast<physx::PxVec3*>
 				(
 					BC_ALLOC(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
 				)
 			);
-			const core::bc_unique_ptr< bcBYTE > l_index_buffer
+			const core::bc_unique_ptr<bcBYTE> l_index_buffer
 			(
 				static_cast<bcBYTE*>
 				(
@@ -408,16 +408,16 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bcUINT32 bc_platform_physics< g_api_physx >::get_triangle_mesh_count() const noexcept
+		bcUINT32 bc_platform_physics<g_api_physx>::get_triangle_mesh_count() const noexcept
 		{
 			return m_pack.m_px_physics->getNbTriangleMeshes();
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_memory_buffer bc_platform_physics< g_api_physx >::create_height_field(const bc_height_field_desc& p_desc)
+		bc_memory_buffer bc_platform_physics<g_api_physx>::create_height_field(const bc_height_field_desc& p_desc)
 		{
-			const core::bc_unique_ptr< physx::PxHeightFieldSample > l_sample_buffer(static_cast< physx::PxHeightFieldSample* >
+			const core::bc_unique_ptr<physx::PxHeightFieldSample> l_sample_buffer(static_cast<physx::PxHeightFieldSample*>
 			(
 				BC_ALLOC(sizeof(physx::PxHeightFieldSample) * (p_desc.m_num_row * p_desc.m_num_column), core::bc_alloc_type::frame)
 			));
@@ -435,13 +435,13 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_height_field_ref bc_platform_physics< g_api_physx >::create_height_field(bc_memory_buffer& p_buffer)
+		bc_height_field_ref bc_platform_physics<g_api_physx>::create_height_field(bc_memory_buffer& p_buffer)
 		{
 			BC_ASSERT(p_buffer.is_valid());
 
 			physx::PxDefaultMemoryInputData input
 			(
-				static_cast< physx::PxU8* >(p_buffer.get_buffer_pointer()),
+				static_cast<physx::PxU8*>(p_buffer.get_buffer_pointer()),
 				p_buffer.get_buffer_size()
 			);
 			bc_height_field::platform_pack l_pack;
@@ -452,14 +452,14 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bcUINT32 bc_platform_physics< g_api_physx >::get_height_field_count() const noexcept
+		bcUINT32 bc_platform_physics<g_api_physx>::get_height_field_count() const noexcept
 		{
 			return m_pack.m_px_physics->getNbHeightFields();
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_fixed_joint_ref bc_platform_physics< g_api_physx >::create_fixed_joint(bc_rigid_actor* p_actor0,
+		bc_fixed_joint_ref bc_platform_physics<g_api_physx>::create_fixed_joint(bc_rigid_actor* p_actor0,
 			const bc_transform& p_local_frame0,
 			bc_rigid_actor* p_actor1,
 			const bc_transform& p_local_frame1)
@@ -468,9 +468,9 @@ namespace black_cat
 			l_pack.m_px_object = physx::PxFixedJointCreate
 			(
 				*m_pack.m_px_physics,
-				static_cast< physx::PxRigidActor* >(p_actor0->get_platform_pack().m_px_object),
+				static_cast<physx::PxRigidActor*>(p_actor0->get_platform_pack().m_px_object),
 				p_local_frame0.get_platform_pack().m_px_transform,
-				static_cast< physx::PxRigidActor* >(p_actor1->get_platform_pack().m_px_object),
+				static_cast<physx::PxRigidActor*>(p_actor1->get_platform_pack().m_px_object),
 				p_local_frame1.get_platform_pack().m_px_transform
 			);
 
@@ -479,7 +479,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_distance_joint_ref bc_platform_physics< g_api_physx >::create_distance_joint(bc_rigid_actor* p_actor0,
+		bc_distance_joint_ref bc_platform_physics<g_api_physx>::create_distance_joint(bc_rigid_actor* p_actor0,
 			const bc_transform& p_local_frame0,
 			bc_rigid_actor* p_actor1,
 			const bc_transform& p_local_frame1)
@@ -488,9 +488,9 @@ namespace black_cat
 			l_pack.m_px_object = physx::PxDistanceJointCreate
 			(
 				*m_pack.m_px_physics,
-				static_cast< physx::PxRigidActor* >(p_actor0->get_platform_pack().m_px_object),
+				static_cast<physx::PxRigidActor*>(p_actor0->get_platform_pack().m_px_object),
 				p_local_frame0.get_platform_pack().m_px_transform,
-				static_cast< physx::PxRigidActor* >(p_actor1->get_platform_pack().m_px_object),
+				static_cast<physx::PxRigidActor*>(p_actor1->get_platform_pack().m_px_object),
 				p_local_frame1.get_platform_pack().m_px_transform
 			);
 
@@ -499,7 +499,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_prismatic_joint_ref bc_platform_physics< g_api_physx >::create_prismatic_joint(bc_rigid_actor* p_actor0,
+		bc_prismatic_joint_ref bc_platform_physics<g_api_physx>::create_prismatic_joint(bc_rigid_actor* p_actor0,
 			const bc_transform& p_local_frame0,
 			bc_rigid_actor* p_actor1,
 			const bc_transform& p_local_frame1)
@@ -520,7 +520,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_revolute_joint_ref bc_platform_physics< g_api_physx >::create_revolute_joint(bc_rigid_actor* p_actor0,
+		bc_revolute_joint_ref bc_platform_physics<g_api_physx>::create_revolute_joint(bc_rigid_actor* p_actor0,
 			const bc_transform& p_local_frame0,
 			bc_rigid_actor* p_actor1,
 			const bc_transform& p_local_frame1)
@@ -541,7 +541,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_spherical_joint_ref bc_platform_physics< g_api_physx >::create_spherical_joint(bc_rigid_actor* p_actor0,
+		bc_spherical_joint_ref bc_platform_physics<g_api_physx>::create_spherical_joint(bc_rigid_actor* p_actor0,
 			const bc_transform& p_local_frame0,
 			bc_rigid_actor* p_actor1,
 			const bc_transform& p_local_frame1)
@@ -561,7 +561,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_d6_joint_ref bc_platform_physics< g_api_physx >::create_d6_joint(bc_rigid_actor* p_actor0,
+		bc_d6_joint_ref bc_platform_physics<g_api_physx>::create_d6_joint(bc_rigid_actor* p_actor0,
 			const bc_transform& p_local_frame0,
 			bc_rigid_actor* p_actor1,
 			const bc_transform& p_local_frame1)
@@ -581,7 +581,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_memory_buffer bc_platform_physics< g_api_physx >::read_to_memory_buffer(void* p_data, bcUINT32 p_size)
+		bc_memory_buffer bc_platform_physics<g_api_physx>::read_to_memory_buffer(void* p_data, bcUINT32 p_size)
 		{
 			bc_memory_buffer l_buffer;
 			l_buffer.get_platform_pack().m_px_stream->write(p_data, p_size);
@@ -592,7 +592,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_serialize_buffer bc_platform_physics< g_api_physx >::create_serialize_buffer()
+		bc_serialize_buffer bc_platform_physics<g_api_physx>::create_serialize_buffer()
 		{
 			bc_serialize_buffer::platform_pack l_pack;
 			l_pack.m_registry = physx::PxSerialization::createSerializationRegistry(*m_pack.m_px_physics);
@@ -603,7 +603,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_memory_buffer bc_platform_physics< g_api_physx >::serialize(bc_serialize_buffer& p_buffer)
+		bc_memory_buffer bc_platform_physics<g_api_physx>::serialize(bc_serialize_buffer& p_buffer)
 		{
 			auto l_output_stream = core::bc_make_unique<physx::PxDefaultMemoryOutputStream>();
 
@@ -628,7 +628,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_serialize_buffer bc_platform_physics< g_api_physx >::deserialize(bc_memory_buffer& p_buffer)
+		bc_serialize_buffer bc_platform_physics<g_api_physx>::deserialize(bc_memory_buffer& p_buffer)
 		{
 			void* l_aligned_buffer = BC_ALIGNED_ALLOC_THROW(p_buffer.get_buffer_size(), 128, core::bc_alloc_type::unknown);
 			
@@ -644,15 +644,15 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_physics< g_api_physx >::_initialize(core::bc_unique_ptr< bci_allocator > p_allocator,
-			core::bc_unique_ptr< bci_task_dispatcher > p_task_dispatcher,
-			core::bc_unique_ptr< bci_logger > p_logger)
+		void bc_platform_physics<g_api_physx>::_initialize(core::bc_unique_ptr<bci_allocator> p_allocator,
+			core::bc_unique_ptr<bci_task_dispatcher> p_task_dispatcher,
+			core::bc_unique_ptr<bci_logger> p_logger)
 		{
 			const physx::PxTolerancesScale l_px_scale;
 
-			m_pack.m_allocator = core::bc_make_unique< bc_px_allocator >(std::move(p_allocator));
-			m_pack.m_task_dispatcher = core::bc_make_unique< bc_px_task_dispatcher >(std::move(p_task_dispatcher));
-			m_pack.m_logger = core::bc_make_unique< bc_px_logger >(std::move(p_logger));
+			m_pack.m_allocator = core::bc_make_unique<bc_px_allocator>(std::move(p_allocator));
+			m_pack.m_task_dispatcher = core::bc_make_unique<bc_px_task_dispatcher>(std::move(p_task_dispatcher));
+			m_pack.m_logger = core::bc_make_unique<bc_px_logger>(std::move(p_logger));
 
 			m_pack.m_px_foundation = PxCreateFoundation(PX_FOUNDATION_VERSION, *m_pack.m_allocator, *m_pack.m_logger);
 
@@ -702,8 +702,12 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_physics< g_api_physx >::_destroy()
+		void bc_platform_physics<g_api_physx>::_destroy()
 		{
+#ifdef BC_DEBUG
+			PxCloseExtensions();
+#endif
+			
 			m_pack.m_px_cooking->release();
 			m_pack.m_px_physics->release();
 #ifdef BC_DEBUG
