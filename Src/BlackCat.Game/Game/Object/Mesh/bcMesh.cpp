@@ -254,15 +254,7 @@ namespace black_cat
 			physics::bc_bound_box l_bound_box;
 			bc_mesh_utility::calculate_absolute_transforms(*this, core::bc_matrix4f::identity(), l_transformations, l_bound_box);
 
-			const bcFLOAT l_largest_side = std::max
-			(
-				l_bound_box.get_half_extends().x,
-				std::max
-				(
-					l_bound_box.get_half_extends().y,
-					l_bound_box.get_half_extends().z
-				)
-			) * 2;
+			const bcFLOAT l_largest_side = std::max({ l_bound_box.get_half_extends().x, l_bound_box.get_half_extends().y, l_bound_box.get_half_extends().z }) * 2;
 
 			m_auto_scale = p_auto_scale;
 			m_scale = p_auto_scale / l_largest_side;

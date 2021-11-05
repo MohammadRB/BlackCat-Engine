@@ -18,7 +18,7 @@
           "content_loader": "mesh",
           "content_file": "content\\model\\grenade.fbx",
           "content_parameter": {
-            "auto_scale": 0.5,
+            "auto_scale": 0.8,
             "collider": "grenade.fbx",
             "high_detail_query_shape": false
           }

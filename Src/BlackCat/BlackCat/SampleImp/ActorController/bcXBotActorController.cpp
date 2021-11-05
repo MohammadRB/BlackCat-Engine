@@ -80,10 +80,12 @@ namespace black_cat
 
 		m_local_origin = p_context.m_parameters.get_value_vector3f_throw("origin_ls");
 		m_local_forward = p_context.m_parameters.get_value_vector3f_throw("forward_ls");
-		m_right_hand_weapon_up = p_context.m_parameters.get_value_vector3f_throw("right_hand_weapon_up");;
+		m_right_hand_weapon_up = p_context.m_parameters.get_value_vector3f_throw("right_hand_weapon_up");
 		m_right_hand_weapon_forward = p_context.m_parameters.get_value_vector3f_throw("right_hand_weapon_forward");
+		m_right_hand_attachment_offset = p_context.m_parameters.get_value_vector3f_throw("right_hand_attachment_offset");
 		m_left_hand_weapon_up = p_context.m_parameters.get_value_vector3f_throw("left_hand_weapon_up");
 		m_left_hand_weapon_forward = p_context.m_parameters.get_value_vector3f_throw("left_hand_weapon_forward");
+		m_left_hand_attachment_offset = p_context.m_parameters.get_value_vector3f_throw("left_hand_attachment_offset");
 		const auto& l_upper_body_chain_value = p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>("upper_body_chain");
 		const auto& l_right_hand_chain_value = p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>("right_hand_chain");
 		const auto& l_left_hand_chain_value = p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>("left_hand_chain");
@@ -417,6 +419,12 @@ namespace black_cat
 				if (m_grenade->m_actor == nullptr)
 				{
 					m_grenade->m_actor = get_scene()->create_actor(m_grenade->m_entity_name, core::bc_matrix4f::translation_matrix(m_position));
+
+					auto* l_rigid_dynamic_component = m_grenade->m_actor.get_component<game::bc_rigid_dynamic_component>();
+					if(l_rigid_dynamic_component)
+					{
+						l_rigid_dynamic_component->set_enable(false);
+					}
 				}
 
 				const auto l_grenade_transform = _calculate_attachment_transform
@@ -424,6 +432,7 @@ namespace black_cat
 					m_right_hand_chain[2].first,
 					m_right_hand_weapon_up,
 					m_right_hand_weapon_forward,
+					m_right_hand_attachment_offset,
 					m_grenade->m_local_up,
 					m_grenade->m_local_forward,
 					core::bc_vector3f(0)
@@ -457,6 +466,7 @@ namespace black_cat
 					m_left_hand_chain[2].first, 
 					m_left_hand_weapon_up, 
 					m_left_hand_weapon_forward,
+					m_left_hand_attachment_offset,
 					m_weapon->m_local_up,
 					m_weapon->m_local_forward,
 					m_weapon->m_second_hand_offset
@@ -848,32 +858,42 @@ namespace black_cat
 	{
 		auto* l_model_job = game::bc_animation_job_helper::find_job<game::bc_local_to_model_animation_job>(m_state_machine->get_active_animation());
 		auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinned_animation_job>(m_state_machine->get_active_animation());
-		auto l_main_hand_transform_ms = l_model_job->get_transforms()[m_right_hand_chain[2].first];
-		l_main_hand_transform_ms.make_neutralize_scale();
-
-		core::bc_matrix3f l_aim_target_rotation_ms;
+		
 		core::bc_matrix3f l_weapon_forward_rotation_ms;
 		core::bc_matrix3f l_weapon_up_rotation_ms;
+		core::bc_matrix3f l_weapon_look_dir_forward_rotation_ms;
+		core::bc_matrix3f l_weapon_look_dir_up_rotation_ms;
 
 		if constexpr (graphic::bc_render_api_info::use_left_handed())
 		{
-			l_aim_target_rotation_ms.rotation_between_two_vector_lh(m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_forward_rotation_ms.rotation_between_two_vector_lh(m_weapon->m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_up_rotation_ms.rotation_between_two_vector_lh(m_weapon->m_local_up, core::bc_vector3f::up());
+			l_weapon_forward_rotation_ms.rotation_between_two_vector_lh(m_weapon->m_local_forward, m_right_hand_weapon_forward);
+			l_weapon_up_rotation_ms.rotation_between_two_vector_lh(m_weapon->m_local_up, m_right_hand_weapon_up);
+			l_weapon_look_dir_forward_rotation_ms.rotation_between_two_vector_lh(m_weapon->m_local_forward, m_state_machine->m_state.m_look_direction);
+			l_weapon_look_dir_up_rotation_ms.rotation_between_two_vector_lh(m_weapon->m_local_up, core::bc_vector3f::up());
 		}
 		else
 		{
-			l_aim_target_rotation_ms.rotation_between_two_vector_rh(m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_forward_rotation_ms.rotation_between_two_vector_rh(m_weapon->m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_weapon_up_rotation_ms.rotation_between_two_vector_rh(m_weapon->m_local_up, core::bc_vector3f::up());
+			l_weapon_forward_rotation_ms.rotation_between_two_vector_rh(m_weapon->m_local_forward, m_right_hand_weapon_forward);
+			l_weapon_up_rotation_ms.rotation_between_two_vector_rh(m_weapon->m_local_up, m_right_hand_weapon_up);
+			l_weapon_look_dir_forward_rotation_ms.rotation_between_two_vector_rh(m_weapon->m_local_forward, m_state_machine->m_state.m_look_direction);
+			l_weapon_look_dir_up_rotation_ms.rotation_between_two_vector_rh(m_weapon->m_local_up, core::bc_vector3f::up());
 		}
 
-		const auto l_main_hand_offset_ms = l_aim_target_rotation_ms * m_weapon->m_main_hand_offset;
-		auto l_main_hand_transform_ws = l_main_hand_transform_ms * l_skinning_job->get_world();
-		l_main_hand_transform_ws.set_translation(l_main_hand_transform_ws.get_translation() + l_main_hand_offset_ms);
+		auto l_weapon_transform_ms = core::bc_matrix4f::identity();
+		l_weapon_transform_ms.set_rotation(l_weapon_up_rotation_ms * l_weapon_forward_rotation_ms);
+		const auto l_weapon_main_hand_offset_ms = l_weapon_transform_ms.get_rotation() * m_weapon->m_main_hand_offset;
+		l_weapon_transform_ms.set_translation(l_weapon_transform_ms.get_translation() + l_weapon_main_hand_offset_ms);
+		
+		auto l_main_hand_transform_ms = l_model_job->get_transforms()[m_right_hand_chain[2].first];
+		l_main_hand_transform_ms.make_neutralize_scale();
+		const auto l_main_hand_offset_ms = l_main_hand_transform_ms.get_rotation() * m_right_hand_attachment_offset;
+		l_main_hand_transform_ms.set_translation(l_main_hand_transform_ms.get_translation() + l_main_hand_offset_ms);
+		
+		auto l_main_hand_transform_ws = l_weapon_transform_ms * l_main_hand_transform_ms * l_skinning_job->get_world();
 
 		const auto l_aim_lock = .7f;
-		const auto l_main_hand_final_rotation = l_main_hand_transform_ws.get_rotation() * (1 - l_aim_lock) + (l_weapon_up_rotation_ms * l_weapon_forward_rotation_ms) * l_aim_lock;
+		const auto l_weapon_aim_rotation = l_weapon_look_dir_up_rotation_ms * l_weapon_look_dir_forward_rotation_ms;
+		const auto l_main_hand_final_rotation = l_main_hand_transform_ws.get_rotation() * (1 - l_aim_lock) + l_weapon_aim_rotation * l_aim_lock;
 
 		l_main_hand_transform_ws.set_rotation(l_main_hand_final_rotation);
 
@@ -881,8 +901,9 @@ namespace black_cat
 	}
 
 	core::bc_matrix4f bc_xbot_actor_controller::_calculate_attachment_transform(bcUINT32 p_attached_node_index,
-		const core::bc_vector3f& p_attached_node_up,
-		const core::bc_vector3f& p_attached_node_forward,
+		const core::bc_vector3f& p_attached_node_local_up,
+		const core::bc_vector3f& p_attached_node_local_forward,
+		const core::bc_vector3f& p_attached_node_local_offset,
 		const core::bc_vector3f& p_attachment_local_up,
 		const core::bc_vector3f& p_attachment_local_forward,
 		const core::bc_vector3f& p_attachment_local_offset)
@@ -890,32 +911,31 @@ namespace black_cat
 		auto* l_model_job = game::bc_animation_job_helper::find_job<game::bc_local_to_model_animation_job>(m_state_machine->get_active_animation());
 		auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinned_animation_job>(m_state_machine->get_active_animation());
 
-		core::bc_matrix3f l_aim_target_rotation_ms;
 		core::bc_matrix3f l_attachment_up_rotation_ms;
 		core::bc_matrix3f l_attachment_forward_rotation_ms;
 		
 		if constexpr (graphic::bc_render_api_info::use_left_handed())
 		{
-			l_aim_target_rotation_ms.rotation_between_two_vector_lh(m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_attachment_up_rotation_ms.rotation_between_two_vector_lh(p_attachment_local_up, p_attached_node_up);
-			l_attachment_forward_rotation_ms.rotation_between_two_vector_checked_lh(p_attachment_local_forward, p_attached_node_forward);
+			l_attachment_up_rotation_ms.rotation_between_two_vector_lh(p_attachment_local_up, p_attached_node_local_up);
+			l_attachment_forward_rotation_ms.rotation_between_two_vector_checked_lh(p_attachment_local_forward, p_attached_node_local_forward);
 		}
 		else
 		{
-			l_aim_target_rotation_ms.rotation_between_two_vector_rh(m_local_forward, m_state_machine->m_state.m_look_direction);
-			l_attachment_up_rotation_ms.rotation_between_two_vector_rh(p_attachment_local_up, p_attached_node_up);
-			l_attachment_forward_rotation_ms.rotation_between_two_vector_checked_rh(p_attachment_local_forward, p_attached_node_forward);
+			l_attachment_up_rotation_ms.rotation_between_two_vector_rh(p_attachment_local_up, p_attached_node_local_up);
+			l_attachment_forward_rotation_ms.rotation_between_two_vector_checked_rh(p_attachment_local_forward, p_attached_node_local_forward);
 		}
 
 		auto l_attached_node_transform_ms = l_model_job->get_transforms()[p_attached_node_index];
 		l_attached_node_transform_ms.make_neutralize_scale();
+		const auto l_attached_node_offset_ms = l_attached_node_transform_ms.get_rotation() * p_attached_node_local_offset;
+		l_attached_node_transform_ms.set_translation(l_attached_node_transform_ms.get_translation() + l_attached_node_offset_ms);
+
 		auto l_attachment_transform_ms = core::bc_matrix4f::identity();
 		l_attachment_transform_ms.set_rotation(l_attachment_up_rotation_ms * l_attachment_forward_rotation_ms);
+		l_attachment_transform_ms.set_translation(l_attachment_up_rotation_ms * l_attachment_forward_rotation_ms * p_attachment_local_offset);
 		
-		const auto l_attached_node_offset_ms = l_aim_target_rotation_ms * (l_attachment_up_rotation_ms * l_attachment_forward_rotation_ms * p_attachment_local_offset);
-		auto l_attached_node_transform_ws = l_attachment_transform_ms * l_attached_node_transform_ms * l_skinning_job->get_world();
-		l_attached_node_transform_ws.set_translation(l_attached_node_transform_ws.get_translation() + l_attached_node_offset_ms);
+		auto l_attachment_transform_ws = l_attachment_transform_ms * l_attached_node_transform_ms * l_skinning_job->get_world();
 		
-		return l_attached_node_transform_ws;
+		return l_attachment_transform_ws;
 	}
 }

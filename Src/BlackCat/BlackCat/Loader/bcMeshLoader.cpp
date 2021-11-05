@@ -62,7 +62,7 @@ namespace black_cat
 			const auto l_error_msg =
 				core::bc_string_frame("Content file loading error: ")
 				+
-				core::bc_to_string_frame(p_context.m_file_path).c_str()
+				core::bc_to_string_frame(p_context.m_file_path)
 				+
 				", "
 				+

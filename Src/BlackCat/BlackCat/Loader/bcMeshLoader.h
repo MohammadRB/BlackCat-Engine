@@ -21,6 +21,9 @@ namespace black_cat
 		class bc_render_system;
 	}
 	
+	/**
+	 * \brief Input mesh must have scale 1
+	 */
 	class BC_DLL bc_mesh_loader : public core::bc_base_content_loader
 	{
 	public:

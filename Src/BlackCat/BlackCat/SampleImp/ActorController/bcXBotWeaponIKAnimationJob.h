@@ -23,7 +23,7 @@ namespace black_cat
 			const bcCHAR* p_second_hand_middle_joint,
 			const bcCHAR* p_second_hand_last_joint,
 			const bcCHAR* p_offset_joint,
-			const core::bc_vector3f& p_offset);
+			const core::bc_vector3f& p_offset_join_offset);
 
 		bc_xbot_weapon_ik_animation_job(bc_xbot_weapon_ik_animation_job&&) noexcept;
 
@@ -53,7 +53,7 @@ namespace black_cat
 		game::bc_two_bone_ik_animation_job m_main_hand_job;
 		game::bc_two_bone_ik_animation_job m_second_hand_job;
 		bcUINT32 m_offset_joint_index;
-		core::bc_vector3f m_offset;
+		core::bc_vector3f m_offset_joint_offset;
 		bc_xbot_weapon* m_weapon;
 	};
 
@@ -73,7 +73,7 @@ namespace black_cat
 		}
 
 		m_offset_joint_index = l_offset_joint.first;
-		m_offset = p_offset;
+		m_offset_joint_offset = p_offset;
 	}
 
 	inline void bc_xbot_weapon_ik_animation_job::set_weight(bcFLOAT p_weight) noexcept

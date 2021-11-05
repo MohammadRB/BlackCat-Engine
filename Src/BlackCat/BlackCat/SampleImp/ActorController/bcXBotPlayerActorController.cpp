@@ -210,7 +210,7 @@ namespace black_cat
 				);
 				/*m_camera->update
 				(
-					get_position() + core::bc_vector3f(1,0,0) * m_camera_z_offset + core::bc_vector3f(0, m_camera_y_offset, 0),
+					get_position() + core::bc_vector3f(1,0,0) * m_camera_z_offset + core::bc_vector3f(0, get_bound_box_max_side_length() * 2.5f, 0),
 					get_position()
 				);*/
 			}

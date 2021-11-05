@@ -150,8 +150,9 @@ namespace black_cat
 		core::bc_matrix4f _calculate_weapon_aim_transform();
 
 		core::bc_matrix4f _calculate_attachment_transform(bcUINT32 p_attached_node_index, 
-			const core::bc_vector3f& p_attached_node_up,
-			const core::bc_vector3f& p_attached_node_forward,
+			const core::bc_vector3f& p_attached_node_local_up,
+			const core::bc_vector3f& p_attached_node_local_forward,
+			const core::bc_vector3f& p_attached_node_local_offset,
 			const core::bc_vector3f& p_attachment_local_up,
 			const core::bc_vector3f& p_attachment_local_forward,
 			const core::bc_vector3f& p_attachment_local_offset);
@@ -169,8 +170,10 @@ namespace black_cat
 		core::bc_array<std::pair<bcUINT32, const bcCHAR*>, 3> m_left_hand_chain;
 		core::bc_vector3f m_right_hand_weapon_up;
 		core::bc_vector3f m_right_hand_weapon_forward;
+		core::bc_vector3f m_right_hand_attachment_offset;
 		core::bc_vector3f m_left_hand_weapon_up;
 		core::bc_vector3f m_left_hand_weapon_forward;
+		core::bc_vector3f m_left_hand_attachment_offset;
 		std::pair<bcUINT32, const bcCHAR*> m_rifle_joint;
 		core::bc_vector3f m_rifle_joint_offset;
 		bcFLOAT m_grenade_anim_attach_time;

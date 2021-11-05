@@ -16,8 +16,8 @@
             "class": "rifle",
             "up_ls": [ 0.0, 0.0, -1.0 ],
             "forward_ls": [ -1.0, 0.0, 0.0 ],
-            "main_hand_offset_ls": [ 0.2, 0.1, -0.3 ],
-            "second_hand_offset_ls": [ 0.3, -0.8, 0.3 ],
+            "main_hand_offset_ls": [ 0.0, 0.05, 0.0 ],
+            "second_hand_offset_ls": [ 0.7, 0.0, -1.0 ],
             "fire_offset_ls": [ -4.5, -0.1, -0.3 ],
             "fire_particle": "rifle_fire",
             "fire_light_color": [ 0.9, 0.4, 0.01 ],
@@ -47,13 +47,16 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "grenade",
-            "lod_scale": 1.0
+            "lod_scale": 2.5,
+            "materials": {
+              "bodyMesh": "grenade"
+            }
           }
         },
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 1.0
+            "mass": 25.0
           }
         }
       ]
