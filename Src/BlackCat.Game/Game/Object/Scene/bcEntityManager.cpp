@@ -58,6 +58,7 @@ namespace black_cat
 			{
 				p_entity.m_parameters = p_inherit->m_parameters;
 			}
+			
 			std::for_each
 			(
 				std::begin(*p_json.m_parameters),
@@ -74,46 +75,47 @@ namespace black_cat
 
 			if(p_inherit)
 			{
-				std::copy_if
+				std::copy
 				(
 					std::begin(p_inherit->m_components), 
 					std::end(p_inherit->m_components),
-					std::back_inserter(p_entity.m_components),
-					[&](const _bc_entity_component_data& p_component_data)
-					{
-						const auto l_component_exist = std::find_if
-						(
-							std::begin(p_json.m_components),
-							std::end(p_json.m_components),
-							[&](const core::bc_json_object<_bc_json_entity_components>& p_json_component_data)
-							{
-								return p_component_data.m_component_hash == l_hasher(p_json_component_data->m_name->c_str());
-							}
-						);
-						return l_component_exist == std::end(p_json.m_components);
-					}
+					std::back_inserter(p_entity.m_components)
 				);
 			}
 			
-			for (auto& l_component : p_json.m_components)
+			for (auto& l_json_component : p_json.m_components)
 			{
-				const auto l_component_name_hash = l_hasher(l_component->m_name->c_str());
-				auto& l_component_parameters = *l_component->m_parameters;
-
-				_bc_entity_component_data l_component_data;
-				l_component_data.m_component_hash = l_component_name_hash;
-
-				std::for_each
+				const auto l_component_name_hash = l_hasher(l_json_component->m_name->c_str());
+				auto l_component_ite = std::find_if
 				(
-					std::begin(l_component_parameters),
-					std::end(l_component_parameters),
-					[&](core::bc_json_key_value::value_type& p_parameter)
+					std::begin(p_entity.m_components),
+					std::end(p_entity.m_components),
+					[=](const _bc_entity_component_data& p_data)
 					{
-						l_component_data.m_component_parameters.add_or_update(p_parameter.first.c_str(), std::move(p_parameter.second));
+						return p_data.m_component_hash == l_component_name_hash;
 					}
 				);
+				if(l_component_ite == std::end(p_entity.m_components))
+				{
+					_bc_entity_component_data l_component_data;
+					l_component_data.m_component_hash = l_component_name_hash;
+					
+					p_entity.m_components.push_back(l_component_data);
+					l_component_ite = std::rbegin(p_entity.m_components).base();
+				}
 
-				p_entity.m_components.push_back(std::move(l_component_data));
+				auto& l_component_parameters = l_component_ite->m_component_parameters;
+				auto& l_json_component_parameters = *l_json_component->m_parameters;
+				
+				std::for_each
+				(
+					std::begin(l_json_component_parameters),
+					std::end(l_json_component_parameters),
+					[&](core::bc_json_key_value::value_type& p_parameter)
+					{
+						l_component_parameters.add_or_update(p_parameter.first.c_str(), std::move(p_parameter.second));
+					}
+				);
 			}
 		}
 		

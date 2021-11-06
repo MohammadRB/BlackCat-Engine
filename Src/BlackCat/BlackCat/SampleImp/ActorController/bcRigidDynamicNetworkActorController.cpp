@@ -22,8 +22,8 @@ namespace black_cat
 		json_parse::bc_load(p_context.m_parameters, "pos", m_network_position);
 		json_parse::bc_load(p_context.m_parameters, "rot", m_network_euler_rotation);
 
-		get_network_component().add_extrapolating_value("pos", m_network_position);
-		get_network_component().add_extrapolating_value("rot", m_network_euler_rotation);
+		/*get_network_component().add_extrapolating_value("pos", m_network_position);
+		get_network_component().add_extrapolating_value("rot", m_network_euler_rotation);*/
 
 		//core::bc_log(core::bc_log_type::debug) << "load pos: " << m_network_position.x << " " << m_network_position.y << " " << m_network_position.z << core::bc_lend;
 
@@ -56,20 +56,16 @@ namespace black_cat
 		//core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "write replicated: " << m_network_position << core::bc_lend;
 	}
 
-	void bc_rigid_dynamic_network_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
-	{
-	}
-
 	void bc_rigid_dynamic_network_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
 	}
 
 	void bc_rigid_dynamic_network_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
 	{
-		if (!m_added_to_scene || p_context.m_is_double_update)
+		/*if (!m_added_to_scene || p_context.m_is_double_update)
 		{
 			return;
-		}
+		}*/
 
 		//const auto l_extrapolated_pos = get_network_component().get_extrapolated_value("pos", p_context.m_clock).second;
 		//const auto l_extrapolated_rot = get_network_component().get_extrapolated_value("rot", p_context.m_clock).second;
@@ -89,11 +85,6 @@ namespace black_cat
 		//p_context.m_actor.mark_for_double_update();
 	}
 
-	void bc_rigid_dynamic_network_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
-	{
-		m_added_to_scene = false;
-	}
-	
 	void bc_rigid_dynamic_network_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
 	{
 	}

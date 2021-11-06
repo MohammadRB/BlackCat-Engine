@@ -10,6 +10,10 @@
 #include "BoX.Server/Application/bxServerApplication.h"
 #include "BoX.Server/Application/bxServerScript.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 
 using namespace black_cat;
 
@@ -68,11 +72,11 @@ namespace box
 		l_script_system.run_script_throw(game::bc_script_context::app, L"server.load_scene(\"test\");");
 	}
 
-	void bx_server_application::application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update)
+	void bx_server_application::application_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
 	{
 	}
 
-	void bx_server_application::application_render(core_platform::bc_clock::update_param p_clock)
+	void bx_server_application::application_render(const core_platform::bc_clock::update_param& p_clock)
 	{
 	}
 

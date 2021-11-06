@@ -7,6 +7,10 @@
 #include "Game/System/Script/bcDefaultGameConsole.h"
 #include "Game/System/Network/Server/bcNetworkServerManagerHook.h"
 #include "BlackCat/Application/bcRenderApplication.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 
 using namespace black_cat;
 
@@ -26,9 +30,9 @@ namespace box
 		
 		void application_load_content(core::bc_content_stream_manager& p_stream_manager) override;
 		
-		void application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update) override;
+		void application_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update) override;
 		
-		void application_render(core_platform::bc_clock::update_param p_clock) override;
+		void application_render(const core_platform::bc_clock::update_param& p_clock) override;
 
 		void application_swap_frame(const core_platform::bc_clock::update_param& p_clock) override;
 		

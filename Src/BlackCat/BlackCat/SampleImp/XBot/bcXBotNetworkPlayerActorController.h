@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/Math/bcVector3f.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotActorController.h"
+#include "BlackCat/SampleImp/XBot/bcXBotActorController.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -44,13 +44,17 @@ namespace black_cat
 		
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 
+		void start_grenade_throw(const bcCHAR* p_entity_name) noexcept;
+		
 		void attach_weapon(const bcCHAR* p_entity) noexcept;
 
 		void detach_weapon() noexcept;
 
 		void shoot_weapon() noexcept;
-		
+
 	private:
+		void throw_grenade(game::bc_actor& p_grenade) noexcept override;
+		
 		game::bc_network_system* m_network_system;
 		core::bc_velocity<bcFLOAT> m_look_velocity;
 

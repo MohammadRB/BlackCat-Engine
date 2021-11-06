@@ -93,8 +93,10 @@ namespace black_cat
 				for (bc_mesh_part_collider_entry& l_collider_entry : l_mesh_part_collider.second)
 				{
 					auto l_px_shape = p_px_actor.create_shape(*l_collider_entry.m_shape, l_material.m_px_material, l_collider_entry.m_shape_flags);
-
-					BC_ASSERT(l_px_shape.is_valid());
+					if(!l_px_shape.is_valid())
+					{
+						throw bc_invalid_argument_exception("Invalid mesh px-shape");
+					}
 
 					l_px_shape.set_local_pose(l_collider_entry.m_initial_transform);
 					l_px_shape.set_high_detail_query_shape(l_collider_entry.m_high_detail_query_shape);

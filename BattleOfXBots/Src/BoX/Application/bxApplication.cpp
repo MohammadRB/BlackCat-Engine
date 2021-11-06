@@ -33,6 +33,10 @@
 #include "BlackCat/bcConstant.h"
 #include "BoX/Application/bxApplication.h"
 #include "BoX/Application/bxClientScript.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 
 namespace box
 {
@@ -118,7 +122,7 @@ namespace box
 	{
 	}
 
-	void bx_application::application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update)
+	void bx_application::application_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
 	{
 		constexpr auto l_client_start_delay = 1.0f;
 		if(m_client_start_time <= l_client_start_delay && !p_is_partial_update)
@@ -132,7 +136,7 @@ namespace box
 		}
 	}
 
-	void bx_application::application_render(core_platform::bc_clock::update_param p_clock)
+	void bx_application::application_render(const core_platform::bc_clock::update_param& p_clock)
 	{
 	}
 

@@ -29,7 +29,7 @@ namespace black_cat
 			}
 			if(!l_json->m_lod_global_scale.has_value())
 			{
-				*l_json->m_lod_global_scale = 4.0f;
+				*l_json->m_lod_global_scale = 10.0f;
 			}
 			if (!l_json->m_lod_culling_index.has_value())
 			{

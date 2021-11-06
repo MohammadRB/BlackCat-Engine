@@ -10,12 +10,10 @@
 #include "Core/Utility/bcNullable.h"
 #include "PhysicsImp/Fundation/bcCController.h"
 #include "PhysicsImp/Fundation/bcCControllerSimulationCallback.h"
-#include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Scene/ActorComponent/bcActorNetworkController.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
-#include "Game/Object/Animation/Job/bcSamplingAnimationJob.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotWeapon.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotStateMachine.h"
+#include "BlackCat/SampleImp/XBot/bcXBotWeapon.h"
+#include "BlackCat/SampleImp/XBot/bcXBotStateMachine.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -111,7 +109,7 @@ namespace black_cat
 
 		bc_xbot_weapon* get_weapon() noexcept;
 
-		void throw_grenade(const bcCHAR* p_entity_name) noexcept;
+		void start_grenade_throw(const bcCHAR* p_entity_name) noexcept;
 		
 		void attach_weapon(game::bc_actor& p_weapon) noexcept;
 
@@ -124,6 +122,8 @@ namespace black_cat
 		void on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit) override;
 		
 	private:
+		virtual void throw_grenade(game::bc_actor& p_grenade) noexcept = 0;
+		
 		core::bc_shared_ptr<game::bci_animation_job> _create_animation_pipeline(const bcCHAR* p_idle_animation,
 			const bcCHAR* p_idle_left_turn_animation,
 			const bcCHAR* p_idle_right_turn_animation,

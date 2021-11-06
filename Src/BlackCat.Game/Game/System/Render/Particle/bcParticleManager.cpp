@@ -114,7 +114,6 @@ namespace black_cat
 					
 					l_ite->m_lifetime = -1;
 					l_ite->m_prev_position = l_ite->m_position;
-					l_ite->m_lifetime += .001f; // to avoid division by zero
 
 					bc_randomize_direction(m_random, l_ite->m_direction, l_ite->m_direction_deviation, &l_ite->m_direction, &l_ite->m_direction + 1);
 					

@@ -23,7 +23,7 @@
       "width": 0.4,
       "height": 0.4,
       "depth": 0.2,
-      "lod_scale": 4.0,
+      "lod_scale": 3.0,
       "auto_remove": true
     },
     {
@@ -36,7 +36,7 @@
       "width": 0.4,
       "height": 0.4,
       "depth": 0.2,
-      "lod_scale": 4.0,
+      "lod_scale": 3.0,
       "auto_remove": true
     }
   ]

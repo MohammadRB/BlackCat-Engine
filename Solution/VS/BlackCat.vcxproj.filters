@@ -67,6 +67,9 @@
     <Filter Include="BlackCat\Content\Shader\DirectX11\PostProcess">
       <UniqueIdentifier>{2071d54a-0059-4402-b697-5d7d1d33d141}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BlackCat\SampleImp\XBot">
+      <UniqueIdentifier>{28d7f02c-c0c3-44d8-a43f-170bb40867f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.h">
@@ -183,15 +186,6 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcFireActorController.h">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotUpdateAnimationJob.h">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotWeapon.h">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotWeaponIKAnimationJob.h">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\Particle\bcExplosionParticle.h">
       <Filter>BlackCat\SampleImp\Particle</Filter>
     </ClInclude>
@@ -210,22 +204,37 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRigidDynamicNetworkActorController.h">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotStateMachine.h">
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotActorController.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotIdleActorController.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotNetworkPlayerActorController.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotPlayerActorController.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotStateMachine.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotUpdateAnimationJob.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotWeapon.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotWeaponIKAnimationJob.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcGrenadeActorController.h">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotActorController.h">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotWeaponNetworkMessage.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotPlayerActorController.h">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotNetworkPlayerActorController.h">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotIdleActorController.h">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotNetworkMessage.h">
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcSmokeGrenadeActorController.h">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
   </ItemGroup>
@@ -329,12 +338,6 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcFireActorController.cpp">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotUpdateAnimationJob.cpp">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotWeaponIKAnimationJob.cpp">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcSceneCheckPointLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
     </ClCompile>
@@ -347,16 +350,28 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRigidDynamicNetworkActorController.cpp">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotActorController.cpp">
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotActorController.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotNetworkPlayerActorController.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotPlayerActorController.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotUpdateAnimationJob.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotWeaponIKAnimationJob.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcGrenadeActorController.cpp">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotPlayerActorController.cpp">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotWeaponNetworkMessage.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotNetworkPlayerActorController.cpp">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcXBotNetworkMessage.cpp">
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcSmokeGrenadeActorController.cpp">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
   </ItemGroup>

@@ -16,7 +16,7 @@
 #include "Game/Object/Animation/Job/bcPartialBlendingAnimationJob.h"
 #include "Game/Object/Animation/Job/bcAdditiveBlendingAnimationJob.h"
 #include "Game/Object/Animation/Job/bcExecuteOneAnimationJob.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotWeaponIKAnimationJob.h"
+#include "BlackCat/SampleImp/XBot/bcXBotWeaponIKAnimationJob.h"
 
 namespace black_cat
 {

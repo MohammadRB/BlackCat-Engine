@@ -4,7 +4,7 @@
 
 #include "Game/bcException.h"
 #include "Game/bcUtility.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotWeaponIKAnimationJob.h"
+#include "BlackCat/SampleImp/XBot/bcXBotWeaponIKAnimationJob.h"
 
 namespace black_cat
 {

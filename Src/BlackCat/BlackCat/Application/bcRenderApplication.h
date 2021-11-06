@@ -35,9 +35,9 @@ namespace black_cat
 
 		virtual void application_load_content(core::bc_content_stream_manager& p_stream_manager) = 0;
 
-		virtual void application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update) = 0;
+		virtual void application_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update) = 0;
 
-		virtual void application_render(core_platform::bc_clock::update_param p_clock) = 0;
+		virtual void application_render(const core_platform::bc_clock::update_param& p_clock) = 0;
 
 		virtual void application_pause_idle(const core_platform::bc_clock::update_param& p_clock);
 

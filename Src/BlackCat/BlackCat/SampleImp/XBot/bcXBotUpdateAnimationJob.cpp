@@ -1,8 +1,8 @@
 // [03/29/2021 MRB]
 
 #include "BlackCat/BlackCatPCH.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotActorController.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotUpdateAnimationJob.h"
+#include "BlackCat/SampleImp/XBot/bcXBotActorController.h"
+#include "BlackCat/SampleImp/XBot/bcXBotUpdateAnimationJob.h"
 
 namespace black_cat
 {

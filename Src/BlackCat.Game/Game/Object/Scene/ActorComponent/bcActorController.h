@@ -45,6 +45,12 @@ namespace black_cat
 			virtual void handle_event(const bc_actor_component_event_context& p_context);
 			
 			virtual void debug_draw(const bc_actor_component_debug_draw_context& p_context);
+
+		protected:
+			bc_scene* get_scene() const noexcept;
+		
+		private:
+			bc_scene* m_scene{ nullptr };
 		};
 
 		inline bci_actor_controller::~bci_actor_controller() = default;
@@ -71,6 +77,7 @@ namespace black_cat
 
 		inline void bci_actor_controller::added_to_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene)
 		{
+			m_scene = &p_scene;
 		}
 
 		inline void bci_actor_controller::update(const bc_actor_component_update_content& p_context)
@@ -79,6 +86,7 @@ namespace black_cat
 
 		inline void bci_actor_controller::removed_from_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene)
 		{
+			m_scene = nullptr;
 		}
 		
 		inline void bci_actor_controller::handle_event(const bc_actor_component_event_context& p_context)
@@ -87,6 +95,11 @@ namespace black_cat
 
 		inline void bci_actor_controller::debug_draw(const bc_actor_component_debug_draw_context& p_context)
 		{
+		}
+
+		inline bc_scene* bci_actor_controller::get_scene() const noexcept
+		{
+			return m_scene;
 		}
 	}
 }

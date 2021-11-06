@@ -15,8 +15,8 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotPlayerActorController.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotNetworkMessage.h"
+#include "BlackCat/SampleImp/XBot/bcXBotPlayerActorController.h"
+#include "BlackCat/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
 
 namespace black_cat
 {
@@ -39,6 +39,9 @@ namespace black_cat
 		m_grenade_throw_passed_time(0),
 		m_rifle_name(nullptr),
 		m_grenade_name(nullptr),
+		m_threw_grenade_name(nullptr),
+		m_smoke_grenade_name(nullptr),
+		m_threw_smoke_grenade_name(nullptr),
 		m_grenade_throw_time(0),
 		m_grenade_throw_power(0)
 	{
@@ -83,6 +86,9 @@ namespace black_cat
 		m_network_system = &p_context.m_game_system.get_network_system();
 		m_rifle_name = p_context.m_parameters.get_value_throw<core::bc_string>("rifle_name").c_str();
 		m_grenade_name = p_context.m_parameters.get_value_throw<core::bc_string>("grenade_name").c_str();
+		m_threw_grenade_name = p_context.m_parameters.get_value_throw<core::bc_string>("threw_grenade_name").c_str();
+		m_smoke_grenade_name = p_context.m_parameters.get_value_throw<core::bc_string>("smoke_grenade_name").c_str();
+		m_threw_smoke_grenade_name = p_context.m_parameters.get_value_throw<core::bc_string>("threw_smoke_grenade_name").c_str();
 		m_grenade_throw_time = p_context.m_parameters.get_value_throw<bcFLOAT>("grenade_throw_time");
 		m_grenade_throw_power = p_context.m_parameters.get_value_throw<bcFLOAT>("grenade_throw_power");
 
@@ -322,7 +328,20 @@ namespace black_cat
 			else if (p_key_event.get_key_state() == platform::bc_key_state::releasing)
 			{
 				m_grenade_pressed = false;
-				_start_grenade_throw();
+				_start_grenade_throw(m_grenade_name);
+			}
+		}
+
+		if (p_key_event.get_key() == platform::bc_key::kb_H)
+		{
+			if (p_key_event.get_key_state() == platform::bc_key_state::pressing && m_grenade_throw_passed_time <= 0)
+			{
+				m_grenade_pressed = true;
+			}
+			else if (p_key_event.get_key_state() == platform::bc_key_state::releasing)
+			{
+				m_grenade_pressed = false;
+				_start_grenade_throw(m_smoke_grenade_name);
 			}
 		}
 		
@@ -352,25 +371,36 @@ namespace black_cat
 		return true;
 	}
 
-	void bc_xbot_player_actor_controller::_start_grenade_throw()
+	void bc_xbot_player_actor_controller::_start_grenade_throw(const bcCHAR* p_entity)
 	{
-		bc_xbot_actor_controller::start_grenade_throw(m_grenade_name);
+		bc_xbot_actor_controller::start_grenade_throw(p_entity);
 	}
 
 	void bc_xbot_player_actor_controller::throw_grenade(game::bc_actor& p_grenade) noexcept
 	{
-		const auto l_grenade_throw_power = std::max(0.2f, std::min(1.0f, m_grenade_throw_passed_time / m_grenade_throw_time)) * m_grenade_throw_power * get_bound_box_max_side_length();
-		m_grenade_throw_passed_time = 0;
-		get_scene()->remove_actor(p_grenade);
+		auto* l_scene = get_scene();
+		const auto l_grenade_throw_power = std::max(0.4f, std::min(1.0f, m_grenade_throw_passed_time / m_grenade_throw_time)) *
+			m_grenade_throw_power *
+			get_bound_box_max_side_length();
 
-		if (m_network_system->get_network_type() != game::bc_network_type::not_started)
+		const auto* l_grenade_mediate_component = p_grenade.get_component<game::bc_mediate_component>();
+		const bcCHAR* l_threw_grenade_name = std::strcmp(l_grenade_mediate_component->get_entity_name(), m_grenade_name) == 0 ? m_threw_grenade_name : m_threw_smoke_grenade_name;
+		
+		auto l_threw_grenade = l_scene->create_actor(l_threw_grenade_name, l_grenade_mediate_component->get_world_transform());
+		l_threw_grenade.mark_for_double_update();
+
+		auto* l_rigid_dynamic_component = l_threw_grenade.get_component<game::bc_rigid_dynamic_component>();
+		auto l_rigid_body = l_rigid_dynamic_component->get_dynamic_body();
+		const auto l_throw_direction = core::bc_vector3f::normalize(get_look_direction() + core::bc_vector3f(0, 0.3f, 0));
+		
 		{
+			game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
 			
+			l_rigid_body.set_linear_velocity(l_throw_direction * l_grenade_throw_power);
 		}
-		else
-		{
-			
-		}
+
+		l_scene->remove_actor(p_grenade);
+		m_grenade_throw_passed_time = 0;
 	}
 
 	void bc_xbot_player_actor_controller::_attach_weapon(const bcCHAR* p_entity)

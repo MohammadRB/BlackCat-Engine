@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "BlackCat/SampleImp/ActorController/bcXBotActorController.h"
+#include "BlackCat/SampleImp/XBot/bcXBotActorController.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -21,6 +21,9 @@ namespace black_cat
 		void update_origin_instance(const game::bc_actor_component_update_content& p_context) override;
 		
 		void update_replicated_instance(const game::bc_actor_component_update_content& p_context) override;
+		
+	private:
+		void throw_grenade(game::bc_actor& p_grenade) noexcept override;
 	};
 
 	inline void bc_xbot_idle_actor_controller::load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context)
@@ -54,6 +57,10 @@ namespace black_cat
 	}
 
 	inline void bc_xbot_idle_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
+	{
+	}
+
+	inline void bc_xbot_idle_actor_controller::throw_grenade(game::bc_actor& p_grenade) noexcept
 	{
 	}
 }

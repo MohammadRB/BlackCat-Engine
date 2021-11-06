@@ -6,8 +6,8 @@
 #include "Core/Utility/bcLogger.h"
 #include "Game/System/Input/bcInputSystem.h"
 #include "Game/System/Network/bcNetworkSystem.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotNetworkPlayerActorController.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotNetworkMessage.h"
+#include "BlackCat/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
+#include "BlackCat/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
 
 namespace black_cat
 {
@@ -146,6 +146,11 @@ namespace black_cat
 		bc_xbot_actor_controller::handle_event(p_context);
 	}
 
+	void bc_xbot_network_player_actor_controller::start_grenade_throw(const bcCHAR* p_entity_name) noexcept
+	{
+		bc_xbot_actor_controller::start_grenade_throw(p_entity_name);
+	}
+
 	void bc_xbot_network_player_actor_controller::attach_weapon(const bcCHAR* p_entity) noexcept
 	{
 		auto* l_weapon = get_weapon();
@@ -187,5 +192,9 @@ namespace black_cat
 		{
 			m_network_system->send_message(bc_xbot_weapon_shoot_network_message(get_actor()));
 		}
+	}
+
+	void bc_xbot_network_player_actor_controller::throw_grenade(game::bc_actor& p_grenade) noexcept
+	{
 	}
 }

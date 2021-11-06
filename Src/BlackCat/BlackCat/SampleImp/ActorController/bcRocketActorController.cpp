@@ -53,20 +53,33 @@ namespace black_cat
 			return;
 		}
 		
-		core::bc_nullable<game::bc_ray_hit> l_query_result;
-		
 		if(m_scene_query.is_executed())
 		{
-			l_query_result = m_scene_query.get().get_result().as_throw<core::bc_nullable<game::bc_ray_hit>>();
+			auto l_query_result = m_scene_query.get().get_result().as_throw<core::bc_nullable<game::bc_ray_hit>>();
+
+			if(l_query_result.has_value())
+			{
+				auto l_explosion = m_scene->create_actor
+				(
+					m_explosion_entity,
+					bc_matrix4f_from_position_and_direction(l_query_result->get_position(), l_query_result->get_normal())
+				);
+				l_explosion.mark_for_double_update();
+
+				m_scene->remove_actor(p_context.m_actor);
+				m_scene = nullptr;
+
+				return;
+			}
 		}
-		
+
 		m_scene_query = p_context.m_query_manager.queue_query
 		(
 			game::bc_scene_query().with_callable([this, l_elapsed = p_context.m_clock.m_elapsed_second](const game::bc_scene_query_context& p_query_context)
 			{
 				auto& l_px_scene = m_scene->get_px_scene();
 
-				const physics::bc_ray l_ray(m_deviated_position, m_direction, (m_direction * l_elapsed * m_speed).magnitude());
+				const physics::bc_ray l_ray(m_deviated_position, m_direction, (m_direction* l_elapsed* m_speed).magnitude());
 				physics::bc_scene_ray_query_buffer l_query_buffer;
 				bool l_has_collided;
 
@@ -82,10 +95,10 @@ namespace black_cat
 						static_cast<physics::bc_query_group>(game::bc_actor_group::terrain)
 					);
 				}
-				
+
 				core::bc_nullable<game::bc_ray_hit> l_result;
-				
-				if(l_has_collided)
+
+				if (l_has_collided)
 				{
 					l_result = l_query_buffer.get_block();
 				}
@@ -93,20 +106,6 @@ namespace black_cat
 				return core::bc_any(l_result);
 			})
 		);
-
-		if(l_query_result.has_value())
-		{
-			m_scene->remove_actor(p_context.m_actor);
-
-			auto l_explosion = m_scene->create_actor
-			(
-				m_explosion_entity, 
-				bc_matrix4f_from_position_and_direction(l_query_result->get_position(), l_query_result->get_normal())
-			);
-			l_explosion.mark_for_double_update();
-
-			return;
-		}
 
 		const auto l_deviation = 2.5f * m_scene->get_global_scale();
 		const auto l_deviation_cycle = 5 * m_scene->get_global_scale();

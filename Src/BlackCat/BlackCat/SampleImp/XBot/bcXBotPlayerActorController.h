@@ -5,7 +5,7 @@
 #include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "Platform/bcEvent.h"
 #include "Game/System/Input/bcChasingCamera.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotActorController.h"
+#include "BlackCat/SampleImp/XBot/bcXBotActorController.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat
@@ -54,7 +54,9 @@ namespace black_cat
 
 		bool _on_key(platform::bc_app_event_key& p_key_event) noexcept;
 
-		void _throw_grenade();
+		void _start_grenade_throw(const bcCHAR* p_entity);
+
+		void throw_grenade(game::bc_actor& p_grenade) noexcept override;
 		
 		void _attach_weapon(const bcCHAR* p_entity);
 
@@ -78,8 +80,15 @@ namespace black_cat
 		bool m_right_pressed;
 		bool m_left_pressed;
 		bool m_walk_pressed;
+		bool m_grenade_pressed;
+		bcFLOAT m_grenade_throw_passed_time;
 
 		const bcCHAR* m_rifle_name;
 		const bcCHAR* m_grenade_name;
+		const bcCHAR* m_threw_grenade_name;
+		const bcCHAR* m_smoke_grenade_name;
+		const bcCHAR* m_threw_smoke_grenade_name;
+		bcFLOAT m_grenade_throw_time;
+		bcFLOAT m_grenade_throw_power;
 	};
 }

@@ -5,7 +5,7 @@
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "Game/Object/Animation/Job/bcTwoBoneIKAnimationJob.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotWeapon.h"
+#include "BlackCat/SampleImp/XBot/bcXBotWeapon.h"
 #include "BlackCat/bcExport.h"
 
 namespace black_cat

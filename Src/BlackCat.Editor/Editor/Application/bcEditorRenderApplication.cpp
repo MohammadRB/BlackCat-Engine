@@ -121,11 +121,11 @@ namespace black_cat
 			m_game_system->set_scene(l_scene);
 		}
 
-		void bc_editor_render_app::application_update(core_platform::bc_clock::update_param p_clock_update_param, bool p_is_partial_update)
+		void bc_editor_render_app::application_update(const core_platform::bc_clock::update_param& p_clock_update_param, bool p_is_partial_update)
 		{
 		}
 
-		void bc_editor_render_app::application_render(core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_editor_render_app::application_render(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 
@@ -141,9 +141,9 @@ namespace black_cat
 
 				if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
 				{
-					/*auto& l_input_system = m_game_system->get_input_system();
+					auto& l_input_system = m_game_system->get_input_system();
 					auto& l_camera = *l_input_system.get_camera();
-					auto* l_scene = m_game_system->get_scene();*/
+					auto* l_scene = m_game_system->get_scene();
 
 					/*game::bc_actor l_actor;
 

@@ -23,6 +23,7 @@
 #include "Game/Object/Animation/bcSkeletonAnimation.h"
 #include "Game/Object/Animation/bcAnimationJobBuilder.h"
 #include "Game/Object/Animation/bcAnimationJobHelper.h"
+#include "Game/Object/Animation/Job/bcSamplingAnimationJob.h"
 #include "Game/Object/Animation/Job/bcBlendingAnimationJob.h"
 #include "Game/Object/Animation/Job/bcAimAnimationJob.h"
 #include "Game/Object/Animation/Job/bcPartialBlendingAnimationJob.h"
@@ -34,9 +35,9 @@
 #include "Game/Object/Animation/Job/bcExecuteOneAnimationJob.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/bcGameSystem.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotActorController.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotUpdateAnimationJob.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotWeaponIKAnimationJob.h"
+#include "BlackCat/SampleImp/XBot/bcXBotActorController.h"
+#include "BlackCat/SampleImp/XBot/bcXBotUpdateAnimationJob.h"
+#include "BlackCat/SampleImp/XBot/bcXBotWeaponIKAnimationJob.h"
 
 namespace black_cat
 {
@@ -443,7 +444,7 @@ namespace black_cat
 			}
 			else if(m_grenade->m_actor != nullptr)
 			{
-				get_scene()->remove_actor(m_grenade->m_actor);
+				throw_grenade(m_grenade->m_actor);
 				m_grenade.reset();
 			}
 		}
@@ -479,7 +480,7 @@ namespace black_cat
 		}
 	}
 	
-	void bc_xbot_actor_controller::throw_grenade(const bcCHAR* p_entity_name) noexcept
+	void bc_xbot_actor_controller::start_grenade_throw(const bcCHAR* p_entity_name) noexcept
 	{
 		const bool l_threw = m_state_machine->throw_grenade();
 		if(!l_threw)

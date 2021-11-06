@@ -22,9 +22,9 @@ namespace box
 
 		void application_load_content(core::bc_content_stream_manager& p_stream_manager) override;
 
-		void application_update(core_platform::bc_clock::update_param p_clock, bool p_is_partial_update) override;
+		void application_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update) override;
 
-		void application_render(core_platform::bc_clock::update_param p_clock) override;
+		void application_render(const core_platform::bc_clock::update_param& p_clock) override;
 
 		bool application_event(core::bci_event& p_event) override;
 

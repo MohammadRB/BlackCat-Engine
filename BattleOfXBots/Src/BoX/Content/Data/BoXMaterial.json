@@ -8,6 +8,15 @@
       "diffuse_map": null,
       "normal_map": null,
       "specular_map": null
+    },
+    {
+      "name": "smoke_grenade",
+      "diffuse_color": [ 0.6, 0.6, 0.6, 1.0 ],
+      "specular_intensity": 0.6,
+      "specular_power": 0.3,
+      "diffuse_map": null,
+      "normal_map": null,
+      "specular_map": null
     }
   ],
   "collider_materials": [

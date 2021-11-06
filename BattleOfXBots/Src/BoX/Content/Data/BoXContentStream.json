@@ -22,6 +22,16 @@
             "collider": "grenade.fbx",
             "high_detail_query_shape": false
           }
+        },
+        {
+          "content_title": "smoke_grenade",
+          "content_loader": "mesh",
+          "content_file": "content\\model\\smoke-grenade.fbx",
+          "content_parameter": {
+            "auto_scale": 1.0,
+            "collider": "smoke-grenade.fbx",
+            "high_detail_query_shape": false
+          }
         }
       ]
     }

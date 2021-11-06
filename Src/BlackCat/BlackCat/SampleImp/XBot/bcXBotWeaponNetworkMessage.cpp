@@ -5,8 +5,8 @@
 #include "Core/Utility/bcLogger.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotNetworkMessage.h"
-#include "BlackCat/SampleImp/ActorController/bcXBotNetworkPlayerActorController.h"
+#include "BlackCat/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
+#include "BlackCat/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
 
 namespace black_cat
 {

@@ -89,7 +89,7 @@ namespace black_cat
 			auto& l_particle_manager = m_scene->get_particle_manager();
 			auto& l_mediate_component = *p_context.m_actor.get_component<game::bc_mediate_component>();
 			m_direction = l_mediate_component.get_world_transform().get_basis_z();
-
+			
 			if(l_hit_result.has_value())
 			{
 				auto* l_height_map_component = l_hit_result->get_actor().get_component<game::bc_height_map_component>();
@@ -108,7 +108,7 @@ namespace black_cat
 				}
 			}
 			else
-			{
+			{			
 				if (m_emitter_name)
 				{
 					l_particle_manager.spawn_emitter(m_emitter_name, l_mediate_component.get_position(), m_direction);
@@ -140,6 +140,7 @@ namespace black_cat
 		if (m_age > m_light_lifetime_second)
 		{
 			m_scene->remove_actor(p_context.m_actor);
+			m_has_started = false;
 		}
 	}
 }

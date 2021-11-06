@@ -76,9 +76,10 @@ namespace black_cat
 
 				const auto l_mass_value = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_mass), 1);
 				const auto l_cmass_value = p_context.m_parameters.get_value_vector3f(constant::g_param_rigid_cmass);
-
 				m_px_actor_ref->update_mass_inertia(l_mass_value, l_cmass_value.get());
-
+				
+				added_to_scene(p_context.m_scene.get_px_scene(), m_px_actor_ref.get());
+				
 				return;
 			}
 
@@ -126,12 +127,12 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
+			/*const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
 			if (l_scene_add_event)
 			{
 				added_to_scene(l_scene_add_event->get_scene().get_px_scene(), m_px_actor_ref.get());
 				return;
-			}
+			}*/
 
 			const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event);
 			if (l_scene_remove_event)

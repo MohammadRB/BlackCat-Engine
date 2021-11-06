@@ -90,8 +90,12 @@ namespace black_cat
 			auto* l_rigid_dynamic_component = p_context.m_actor.get_component<bc_rigid_dynamic_component>();
 			if(l_rigid_dynamic_component)
 			{
-				auto l_rigid_dynamic = l_rigid_dynamic_component->get_dynamic_body();
-				l_rigid_dynamic.set_actor_flag(physics::bc_actor_flag::send_sleep_wake, true);
+				{
+					bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
+
+					auto l_rigid_dynamic = l_rigid_dynamic_component->get_dynamic_body();
+					l_rigid_dynamic.set_actor_flag(physics::bc_actor_flag::send_sleep_wake, true);
+				}
 			}
 		}
 

@@ -26,7 +26,7 @@
             "fire_light_flare_surface": [ 0.5, 0.5, 0.5 ],
             "fire_light_flare_intensity": 0.4,
             "fire_light_flare_mask_material": "flare2",
-            "rate_of_fire": 0.30,
+            "rate_of_fire": 0.20,
             "bullet_speed": 250.0,
             "bullet_mass": 0.2
           }
@@ -47,7 +47,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "grenade",
-            "lod_scale": 2.5,
+            "lod_scale": 2.0,
             "materials": {
               "bodyMesh": "grenade"
             }
@@ -56,7 +56,62 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 25.0
+            "mass": 30.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbot_threw_grenade",
+      "inherit": "xbot_grenade",
+      "controller": "grenade",
+      "parameters": {
+        "explosion_entity": "sample_explosion",
+        "lifetime": 4.0
+      },
+      "components": [
+        {
+          "name": "network",
+          "parameters": {
+            "data_dir": "replicate_sync"
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbot_smoke_grenade",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "smoke_grenade",
+            "lod_scale": 2.0,
+            "materials": {
+              "bodyMesh": "smoke_grenade"
+            }
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {
+            "mass": 30.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbot_threw_smoke_grenade",
+      "inherit": "xbot_smoke_grenade",
+      "controller": "smoke_grenade",
+      "parameters": {
+        "lifetime": 4.0,
+        "smoke_time": 30.0 
+      },
+      "components": [
+        {
+          "name": "network",
+          "parameters": {
+            "data_dir": "replicate_sync"
           }
         }
       ]
