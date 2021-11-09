@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Utility/bcLogger.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/System/Network/Message/bcActorRemoveNetworkMessage.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 
@@ -12,13 +13,13 @@ namespace black_cat
 	{
 		bc_actor_remove_network_message::bc_actor_remove_network_message()
 			: bci_network_message(message_name()),
-			m_id(bc_actor::invalid_id)
+			m_net_id(bc_actor::invalid_id)
 		{
 		}
 
-		bc_actor_remove_network_message::bc_actor_remove_network_message(bc_actor_network_id p_id)
+		bc_actor_remove_network_message::bc_actor_remove_network_message(bc_actor_network_id p_net_id)
 			: bci_network_message(message_name()),
-			m_id(p_id)
+			m_net_id(p_net_id)
 		{
 		}
 
@@ -30,17 +31,31 @@ namespace black_cat
 
 		void bc_actor_remove_network_message::execute(const bc_network_message_client_context& p_context) noexcept
 		{
+			if(m_actor == nullptr)
+			{
+				return;
+			}
+			
 			p_context.m_visitor.remove_actor(m_actor);
 		}
 
 		void bc_actor_remove_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
+			if(m_actor == nullptr)
+			{
+				return;
+			}
+			
 			p_context.m_visitor.remove_actor(p_context.m_address, m_actor);
+		}
+
+		void bc_actor_remove_network_message::acknowledge(const bc_network_message_client_acknowledge_context& p_context) noexcept
+		{
 		}
 
 		void bc_actor_remove_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
-			p_context.m_params.add("net_id", core::bc_any(m_id));
+			p_context.m_params.add("net_id", core::bc_any(m_net_id));
 		}
 
 		void bc_actor_remove_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)

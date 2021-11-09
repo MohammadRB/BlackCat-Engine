@@ -128,21 +128,31 @@ namespace black_cat
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
 			const auto l_network_id = l_network_component->get_network_id();
+
 			if(l_network_id == bc_actor::invalid_id)
 			{
 				return;
 			}
-				
+			
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
 
+				const auto l_net_actors_ite = m_network_actors.find(l_network_component->get_network_id());
+				if (l_net_actors_ite == std::cend(m_network_actors))
+				{
+					core::bc_log(core::bc_log_type::error, bcL("actor was not found in network list to remove"));
+					return;
+				}
+
+				m_network_actors.erase(l_net_actors_ite);
+				
 				const auto l_ite = std::find_if(std::cbegin(m_sync_actors), std::cend(m_sync_actors), [&](const bc_actor& p_entry)
 				{
 					return p_entry.get_component<bc_network_component>()->get_network_id() == l_network_id;
 				});
 				if (l_ite == std::cend(m_sync_actors))
 				{
-					core::bc_log(core::bc_log_type::error, bcL("actor was not found in sync list"));
+					core::bc_log(core::bc_log_type::error, bcL("actor was not found in sync list to remove"));
 					return;
 				}
 
@@ -150,6 +160,41 @@ namespace black_cat
 			}
 
 			send_message(bc_actor_remove_network_message(l_network_id));
+		}
+
+		void bc_network_client_manager::actor_removed(bc_actor& p_actor)
+		{
+			auto* l_network_component = p_actor.get_component<bc_network_component>();
+			const auto l_network_id = l_network_component->get_network_id();
+			if (l_network_id == bc_actor::invalid_id)
+			{
+				return;
+			}
+
+			{
+				core::bc_mutex_test_guard l_lock(m_actors_lock);
+
+				const auto l_net_actors_ite = m_network_actors.find(l_network_component->get_network_id());
+				if (l_net_actors_ite == std::cend(m_network_actors))
+				{
+					core::bc_log(core::bc_log_type::error, bcL("actor was not found in network list to remove"));
+					return;
+				}
+
+				m_network_actors.erase(l_net_actors_ite);
+				
+				const auto l_ite = std::find_if(std::cbegin(m_sync_actors), std::cend(m_sync_actors), [&](const bc_actor& p_entry)
+				{
+					return p_entry.get_component<bc_network_component>()->get_network_id() == l_network_id;
+				});
+				if (l_ite == std::cend(m_sync_actors))
+				{
+					core::bc_log(core::bc_log_type::error, bcL("actor was not found in sync list to remove"));
+					return;
+				}
+
+				m_sync_actors.erase(l_ite);
+			}
 		}
 
 		void bc_network_client_manager::send_message(bc_network_message_ptr p_message)
@@ -221,9 +266,10 @@ namespace black_cat
 			m_socket_is_ready = false;
 		}
 
-		bc_network_rtt bc_network_client_manager::get_rtt_time() noexcept
+		void bc_network_client_manager::get_rtt_time(bc_network_rtt* p_rtt, bc_network_rtt* p_remote_rtt) noexcept
 		{
-			return m_rtt_sampler.average_value();
+			*p_rtt = m_rtt_sampler.average_value();
+			*p_remote_rtt = m_remote_rtt;
 		}
 
 		void bc_network_client_manager::add_rtt_sample(bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept
@@ -328,22 +374,42 @@ namespace black_cat
 				return;
 			}
 
+			bool l_is_self_replicate = false;
+			
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
 
-				const auto l_ite = m_network_actors.find(l_network_component->get_network_id());
-				if(l_ite != std::cend(m_network_actors))
+				const auto l_net_actors_ite = m_network_actors.find(l_network_component->get_network_id());
+				if(l_net_actors_ite == std::cend(m_network_actors))
 				{
-					m_network_actors.erase(l_ite);
+					core::bc_log(core::bc_log_type::warning, bcL("actor was not found in network actor list to remove"));
+					return;
+				}
+
+				m_network_actors.erase(l_net_actors_ite);
+
+				const auto l_sync_actors_ite = std::find_if(std::cbegin(m_sync_actors), std::cend(m_sync_actors), [&](const bc_actor& p_entry)
+				{
+					return p_entry.get_component<bc_network_component>()->get_network_id() == l_network_component->get_network_id();
+				});
+				if (l_sync_actors_ite != std::cend(m_sync_actors))
+				{
+					m_sync_actors.erase(l_sync_actors_ite);
+					l_is_self_replicate = true;
 				}
 			}
 
+			l_network_component->set_network_id(bc_actor::invalid_id); // Mark as invalid to prevent double removal via network component
 			m_game_system->get_scene()->remove_actor(p_actor);
+			//if(!l_is_self_replicate) // actors which are spawned by the current client must be removed by caller code
+			//{
+			//	m_game_system->get_scene()->remove_actor(p_actor);
+			//}
 		}
 
-		bc_actor bc_network_client_manager::create_actor(const bcCHAR* p_entity_name)
+		bc_actor bc_network_client_manager::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_transform)
 		{
-			auto l_actor = m_game_system->get_scene()->create_actor(p_entity_name, core::bc_matrix4f::identity());
+			auto l_actor = m_game_system->get_scene()->create_actor(p_entity_name, p_transform);
 			
 			return l_actor;
 		}

@@ -61,12 +61,20 @@ namespace black_cat
 
 		void bc_ping_network_message::execute(const bc_network_message_client_context& p_context) noexcept
 		{
-			m_remote_host_rtt = p_context.m_visitor.get_rtt_time();
+			bc_network_rtt l_rtt;
+			bc_network_rtt l_remote_rtt;
+			p_context.m_visitor.get_rtt_time(&l_rtt, &l_remote_rtt);
+
+			m_remote_host_rtt = l_rtt;
 		}
 
 		void bc_ping_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
-			m_remote_host_rtt = p_context.m_visitor.get_rtt_time(p_context.m_address);
+			bc_network_rtt l_rtt;
+			bc_network_rtt l_remote_rtt;
+			p_context.m_visitor.get_rtt_time(p_context.m_address, &l_rtt, &l_remote_rtt);
+
+			m_remote_host_rtt = l_rtt;
 		}
 
 		void bc_ping_network_message::serialize_message(const bc_network_message_serialization_context& p_context)

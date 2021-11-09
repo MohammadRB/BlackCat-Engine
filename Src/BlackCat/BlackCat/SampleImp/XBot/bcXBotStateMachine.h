@@ -895,7 +895,8 @@ namespace black_cat
 		}
 
 		// Increase weapon shoot impact in running mode
-		l_additive_blend_job->set_weights(1, m_state.m_move_amount > 0.f ? std::max((m_state.m_move_amount / m_run_speed) * 1.8f, 1.2f) : 1);
+		//const auto l_additive_layer_weight = m_state.m_move_amount > 0.f ? std::max((m_state.m_move_amount / m_run_speed) * 1.8f, 1.2f) : 1;
+		l_additive_blend_job->set_weights(1, 1);
 
 		// Once weapon shoot animation stopped disable additive blend
 		if (!l_additive_layer->get_enabled())

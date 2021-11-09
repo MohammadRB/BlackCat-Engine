@@ -78,7 +78,7 @@ bool is_edge(float2 p_texcoord)
 	const float4 l_depth_quad1 = g_tex2d_depth.GatherRed(g_sam_point, p_texcoord, int2(-1, -1));
 	const float l_center_depth = l_depth_quad0.w;
 	const float4 l_four_around_center = float4(l_depth_quad0.x, l_depth_quad0.z, l_depth_quad1.x, l_depth_quad1.z);
-	return any(abs(l_center_depth - l_four_around_center) > 0.005);
+	return any(abs(l_center_depth - l_four_around_center) > 0.005f / g_global_scale);
 }
 
 bc_vs_output vs(bc_vs_input p_input, uint p_instance_index : SV_InstanceID)

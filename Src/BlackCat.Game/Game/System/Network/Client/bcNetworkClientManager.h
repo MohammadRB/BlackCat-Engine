@@ -52,6 +52,8 @@ namespace black_cat
 			void add_actor_to_sync(bc_actor& p_actor) override;
 			
 			void remove_actor_from_sync(bc_actor& p_actor) override;
+
+			void actor_removed(bc_actor& p_actor) override;
 			
 			void send_message(bc_network_message_ptr p_message) override;
 			
@@ -70,7 +72,7 @@ namespace black_cat
 
 			// Client visitor methods
 
-			bc_network_rtt get_rtt_time() noexcept override;
+			void get_rtt_time(bc_network_rtt* p_rtt, bc_network_rtt* p_remote_rtt) noexcept override;
 			
 			void add_rtt_sample(bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept override;
 			
@@ -83,10 +85,14 @@ namespace black_cat
 			void replicate_actor(bc_actor& p_actor) override;
 
 			void remove_actor(bc_actor& p_actor) override;
+
+			// Deserialization visitor methods
 			
-			bc_actor create_actor(const bcCHAR* p_entity_name) override;
+			bc_actor create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_transform) override;
 
 			bc_replicated_actor get_actor(bc_actor_network_id p_actor_network_id) override;
+
+			// Private methods
 			
 			void _retry_messages_waiting_acknowledgment(const core_platform::bc_clock::update_param& p_clock);
 			

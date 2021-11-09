@@ -30,6 +30,8 @@ namespace black_cat
 
 			virtual void remove_actor_from_sync(bc_actor& p_actor) = 0;
 			
+			virtual void actor_removed(bc_actor& p_actor) = 0;
+			
 			virtual void send_message(bc_network_message_ptr p_message) = 0;
 
 			virtual void update(const bc_network_manager_update_context& p_context) = 0;

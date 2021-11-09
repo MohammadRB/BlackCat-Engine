@@ -48,7 +48,7 @@ namespace black_cat
 				auto& l_px_scene = l_scene->get_px_scene();
 				const auto l_position = l_actor.get_component<game::bc_mediate_component>()->get_position();
 
-				const physics::bc_ray l_ray(l_position + core::bc_vector3f(0,1,0), core::bc_vector3f(0, -1, 0), 5 * l_scene->get_global_scale());
+				const physics::bc_ray l_ray(l_position + core::bc_vector3f(0,1,0), core::bc_vector3f(0, -1, 0), 2 * l_scene->get_global_scale());
 				physics::bc_scene_ray_query_buffer l_query_buffer;
 				bool l_has_collided;
 

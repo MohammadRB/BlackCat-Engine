@@ -8,6 +8,7 @@
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "BlackCat/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
 #include "BlackCat/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
+#include "BlackCat/SampleImp/XBot/bcXBotGrenadeNetworkMessage.h"
 
 namespace black_cat
 {
@@ -53,7 +54,7 @@ namespace black_cat
 			const auto l_weapon = p_context.m_parameters.find("wpn");
 			if(l_weapon != std::end(p_context.m_parameters))
 			{
-				m_initial_attached_weapon = core::bc_make_unique<core::bc_string>(std::move(l_weapon->second.as_throw<core::bc_string>()));
+				m_string = std::move(l_weapon->second.as_throw<core::bc_string>());
 			}
 		}
 	}
@@ -96,12 +97,12 @@ namespace black_cat
 	{
 		bc_xbot_actor_controller::added_to_scene(p_context, p_scene);
 
-		if(m_initial_attached_weapon)
+		if(!m_string.empty())
 		{
-			auto l_weapon_actor = get_scene()->create_actor(m_initial_attached_weapon->c_str(), core::bc_matrix4f::translation_matrix(get_position()));
+			auto l_weapon_actor = get_scene()->create_actor(m_string.c_str(), core::bc_matrix4f::translation_matrix(get_position()));
 			bc_xbot_actor_controller::attach_weapon(l_weapon_actor);
 			
-			m_initial_attached_weapon.reset();
+			m_string.clear();
 		}
 	}
 
@@ -148,7 +149,14 @@ namespace black_cat
 
 	void bc_xbot_network_player_actor_controller::start_grenade_throw(const bcCHAR* p_entity_name) noexcept
 	{
-		bc_xbot_actor_controller::start_grenade_throw(p_entity_name);
+		// Entity name parameter will be passed form network messages. To prevent endangled reference we must make a copy of it  
+		m_string = p_entity_name;
+		bc_xbot_actor_controller::start_grenade_throw(m_string.c_str());
+
+		if (get_network_component().get_network_type() == game::bc_network_type::server)
+		{
+			m_network_system->send_message(bc_xbot_start_grenade_throw_network_message(get_actor(), m_string.c_str()));
+		}
 	}
 
 	void bc_xbot_network_player_actor_controller::attach_weapon(const bcCHAR* p_entity) noexcept
@@ -196,5 +204,6 @@ namespace black_cat
 
 	void bc_xbot_network_player_actor_controller::throw_grenade(game::bc_actor& p_grenade) noexcept
 	{
+		// Grenade will be thrown by a separate network message
 	}
 }

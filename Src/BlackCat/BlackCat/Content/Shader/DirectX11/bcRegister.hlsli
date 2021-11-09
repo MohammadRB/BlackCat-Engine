@@ -127,7 +127,8 @@ cbuffer g_cb_global_state					: register(BC_RENDER_PASS_STATE_CB0)
     double g_total_elapsed_second			: packoffset(c22.z);
     float g_elapsed							: packoffset(c23.x);
     float g_elapsed_second					: packoffset(c23.y);
-	float3 g_global_light_direction			: packoffset(c24);
+	float g_global_scale					: packoffset(c24.x);
+	float3 g_global_light_direction			: packoffset(c24.y);
 	float3 g_global_light_color				: packoffset(c25.x);
 	float g_global_light_intensity			: packoffset(c25.w);
 	float3 g_global_light_ambient_color		: packoffset(c26.x);

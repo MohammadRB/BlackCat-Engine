@@ -54,9 +54,11 @@ namespace black_cat
 
 			void start_client(bci_network_client_manager_hook& p_hook, const platform::bc_network_address& p_address);
 			
-			void add_actor(bc_actor& p_actor);
+			void add_actor_to_sync(bc_actor& p_actor);
 			
-			void remove_actor(bc_actor& p_actor);
+			void remove_actor_from_sync(bc_actor& p_actor);
+			
+			void actor_removed(bc_actor& p_actor);
 			
 			template<class TMessage>
 			void send_message(TMessage p_command);

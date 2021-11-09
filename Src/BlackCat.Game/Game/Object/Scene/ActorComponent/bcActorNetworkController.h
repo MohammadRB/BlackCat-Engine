@@ -37,7 +37,15 @@ namespace black_cat
 		protected:
 			bc_network_component& get_network_component() const noexcept;
 
+			bc_network_type get_network_type() const noexcept;
+
+			bc_actor_network_data_dir get_network_data_dir() const noexcept;
+
 			bc_actor_replication_side get_replication_side() const noexcept;
+
+			bc_network_rtt get_out_ping() const noexcept;
+
+			bc_network_rtt get_in_ping() const noexcept;
 		
 		private:
 			bc_network_component* m_network_component {nullptr};
@@ -115,9 +123,29 @@ namespace black_cat
 			return *m_network_component;
 		}
 
+		inline bc_network_type bc_actor_network_controller::get_network_type() const noexcept
+		{
+			return m_network_component->get_network_type();
+		}
+
+		inline bc_actor_network_data_dir bc_actor_network_controller::get_network_data_dir() const noexcept
+		{
+			return m_network_component->get_network_data_dir();
+		}
+
 		inline bc_actor_replication_side bc_actor_network_controller::get_replication_side() const noexcept
 		{
 			return m_replication_side;
+		}
+
+		inline bc_network_rtt bc_actor_network_controller::get_out_ping() const noexcept
+		{
+			return m_network_component->get_out_ping();
+		}
+
+		inline bc_network_rtt bc_actor_network_controller::get_in_ping() const noexcept
+		{
+			return m_network_component->get_in_ping();
 		}
 	}	
 }

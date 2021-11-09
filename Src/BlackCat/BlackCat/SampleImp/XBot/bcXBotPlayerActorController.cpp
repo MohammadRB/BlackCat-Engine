@@ -17,6 +17,7 @@
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "BlackCat/SampleImp/XBot/bcXBotPlayerActorController.h"
 #include "BlackCat/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
+#include "BlackCat/SampleImp/XBot/bcXBotGrenadeNetworkMessage.h"
 
 namespace black_cat
 {
@@ -169,9 +170,9 @@ namespace black_cat
 			const auto* l_mediate_component = p_context.m_actor.get_component<game::bc_mediate_component>();
 			const auto l_bound_box_extends = l_mediate_component->get_bound_box().get_half_extends();
 			const auto l_max_side_length = std::max(std::max(l_bound_box_extends.x, l_bound_box_extends.y), l_bound_box_extends.z) * 2;
-			m_camera_y_offset = l_max_side_length * 2.8f;
+			m_camera_y_offset = l_max_side_length * 3.0f;
 			m_camera_z_offset = l_max_side_length * -1.5f;
-			m_camera_look_at_offset = l_max_side_length * 1.5f;
+			m_camera_look_at_offset = l_max_side_length * 1.25f;
 		}
 	}
 
@@ -374,31 +375,44 @@ namespace black_cat
 	void bc_xbot_player_actor_controller::_start_grenade_throw(const bcCHAR* p_entity)
 	{
 		bc_xbot_actor_controller::start_grenade_throw(p_entity);
+
+		if (m_network_system->get_network_type() != game::bc_network_type::not_started)
+		{
+			m_network_system->send_message(bc_xbot_start_grenade_throw_network_message(get_actor(), p_entity));
+		}
 	}
 
 	void bc_xbot_player_actor_controller::throw_grenade(game::bc_actor& p_grenade) noexcept
 	{
 		auto* l_scene = get_scene();
-		const auto l_grenade_throw_power = std::max(0.4f, std::min(1.0f, m_grenade_throw_passed_time / m_grenade_throw_time)) *
+		const auto* l_grenade_mediate_component = p_grenade.get_component<game::bc_mediate_component>();
+		const auto l_grenade_throw_power = std::max(0.3f, std::min(1.0f, m_grenade_throw_passed_time / m_grenade_throw_time)) *
 			m_grenade_throw_power *
 			get_bound_box_max_side_length();
-
-		const auto* l_grenade_mediate_component = p_grenade.get_component<game::bc_mediate_component>();
+		const auto l_throw_direction = core::bc_vector3f::normalize(get_look_direction() + core::bc_vector3f(0, 0.3f, 0)) * l_grenade_throw_power;
+		const auto l_throw_position = l_grenade_mediate_component->get_position() + l_throw_direction / 4;
+		
 		const bcCHAR* l_threw_grenade_name = std::strcmp(l_grenade_mediate_component->get_entity_name(), m_grenade_name) == 0 ? m_threw_grenade_name : m_threw_smoke_grenade_name;
-		
-		auto l_threw_grenade = l_scene->create_actor(l_threw_grenade_name, l_grenade_mediate_component->get_world_transform());
-		l_threw_grenade.mark_for_double_update();
 
-		auto* l_rigid_dynamic_component = l_threw_grenade.get_component<game::bc_rigid_dynamic_component>();
-		auto l_rigid_body = l_rigid_dynamic_component->get_dynamic_body();
-		const auto l_throw_direction = core::bc_vector3f::normalize(get_look_direction() + core::bc_vector3f(0, 0.3f, 0));
-		
+		if (m_network_system->get_network_type() != game::bc_network_type::not_started)
 		{
-			game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
-			
-			l_rigid_body.set_linear_velocity(l_throw_direction * l_grenade_throw_power);
+			m_network_system->send_message(bc_xbot_grenade_throw_network_message(l_threw_grenade_name, l_throw_position, l_throw_direction));
 		}
+		else
+		{
+			auto l_threw_grenade = l_scene->create_actor(l_threw_grenade_name, l_grenade_mediate_component->get_world_transform());
+			l_threw_grenade.mark_for_double_update();
 
+			auto* l_rigid_dynamic_component = l_threw_grenade.get_component<game::bc_rigid_dynamic_component>();
+			auto l_rigid_body = l_rigid_dynamic_component->get_dynamic_body();
+
+			{
+				game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
+
+				l_rigid_body.set_linear_velocity(l_throw_direction);
+			}
+		}
+		
 		l_scene->remove_actor(p_grenade);
 		m_grenade_throw_passed_time = 0;
 	}

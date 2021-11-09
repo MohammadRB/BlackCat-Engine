@@ -237,6 +237,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcSmokeGrenadeActorController.h">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotGrenadeNetworkMessage.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -373,6 +376,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcSmokeGrenadeActorController.cpp">
       <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotGrenadeNetworkMessage.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

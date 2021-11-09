@@ -4,12 +4,15 @@
 
 #include "Core/Utility/bcJsonParse.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
+#include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "BlackCat/SampleImp/ActorController/bcSmokeGrenadeActorController.h"
 
 namespace black_cat
 {
 	void bc_smoke_grenade_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
+		bc_rigid_dynamic_network_actor_controller::initialize(p_context);
+		
 		m_lifetime = p_context.m_parameters.get_value_throw<bcFLOAT>("lifetime");
 		m_smoke_time = p_context.m_parameters.get_value_throw<bcFLOAT>("smoke_time");
 		m_num_particles_per_second = 20;
@@ -17,12 +20,42 @@ namespace black_cat
 
 	void bc_smoke_grenade_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
+		if (get_network_type() == game::bc_network_type::not_started)
+		{
+			update_replicated_instance(p_context);
+			return;
+		}
+		
 		if (!get_scene())
 		{
 			return;
 		}
 
 		if(m_lifetime > 0)
+		{
+			m_lifetime -= p_context.m_clock.m_elapsed_second;
+			return;
+		}
+
+		if(m_smoke_time > 0)
+		{
+			m_smoke_time -= p_context.m_clock.m_elapsed_second;
+			if(m_smoke_time <= 0)
+			{
+				get_scene()->remove_actor(p_context.m_actor);
+				return;
+			}
+		}
+	}
+
+	void bc_smoke_grenade_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
+	{
+		if (!get_scene())
+		{
+			return;
+		}
+
+		if (m_lifetime > 0)
 		{
 			m_lifetime -= p_context.m_clock.m_elapsed_second;
 			return;
@@ -51,16 +84,19 @@ namespace black_cat
 			m_particles_added = true;
 		}
 
-		if(m_smoke_time > 0)
+		if (m_smoke_time > 0)
 		{
 			m_smoke_time -= p_context.m_clock.m_elapsed_second;
-			if(m_smoke_time <= 0)
+			if (m_smoke_time <= 0)
 			{
-				get_scene()->remove_actor(p_context.m_actor);
+				if (get_network_type() == game::bc_network_type::not_started)
+				{
+					get_scene()->remove_actor(p_context.m_actor);
+				}
 				return;
 			}
 		}
-		
+
 		const bcUINT32 l_total_particles_in_current_second = (p_context.m_clock.m_total_elapsed_second - std::floor(p_context.m_clock.m_total_elapsed_second)) * m_num_particles_per_second;
 		if (l_total_particles_in_current_second < m_num_spawned_particles_in_current_second)
 		{
@@ -69,17 +105,12 @@ namespace black_cat
 
 		const bcUINT32 l_num_particles_in_current_second = l_total_particles_in_current_second - m_num_spawned_particles_in_current_second;
 		const auto l_actor_position = p_context.m_actor.get_component<game::bc_mediate_component>()->get_position();
-		
+
 		auto* l_emitter = p_context.m_actor.get_component<game::bc_particle_emitter_component>()->get_emitter();
 		l_emitter->set_positions(l_actor_position);
 		l_emitter->set_particle_counts(l_num_particles_in_current_second);
 
 		m_num_spawned_particles_in_current_second += l_num_particles_in_current_second;
-	}
-
-	void bc_smoke_grenade_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
-	{
-		update_origin_instance(p_context);
 	}
 
 	void bc_smoke_grenade_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)

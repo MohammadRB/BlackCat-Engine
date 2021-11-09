@@ -24,8 +24,8 @@ namespace black_cat
 			m_data_dir(bc_actor_network_data_dir::replicate),
 			m_sync_enabled(true),
 			m_network_entity_name(nullptr),
-			m_out_ping(std::numeric_limits<bc_network_rtt>::max()),
-			m_in_ping(std::numeric_limits<bc_network_rtt>::max())
+			m_out_ping(0),
+			m_in_ping(0)
 		{
 		}
 
@@ -132,18 +132,20 @@ namespace black_cat
 			const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
 			if (l_scene_add_event)
 			{
-				const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();
+				auto& l_network_system = p_context.m_game_system.get_network_system();
+				const auto l_network_type = l_network_system.get_network_type();
+
 				if (l_network_type == bc_network_type::server)
 				{
 					if (m_data_dir == bc_actor_network_data_dir::replicate_sync)
 					{
-						p_context.m_game_system.get_network_system().add_actor(p_context.m_actor);
+						l_network_system.add_actor_to_sync(p_context.m_actor);
 					}
 					else if (m_data_dir == bc_actor_network_data_dir::replicate)
 					{
-						p_context.m_game_system.get_network_system().send_message(bc_actor_replicate_network_message(p_context.m_actor));
+						l_network_system.send_message(bc_actor_replicate_network_message(p_context.m_actor));
 					}
-					else if (m_id == invalid_id && (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client))
+					else if (m_id == bc_actor::invalid_id && (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client))
 					{
 						// we should remove network actors if they are not loaded through network, because they will be replicated by the remote host
 						l_scene_add_event->get_scene().remove_actor(p_context.m_actor);
@@ -157,9 +159,9 @@ namespace black_cat
 				{
 					if (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
 					{
-						p_context.m_game_system.get_network_system().add_actor(p_context.m_actor);
+						l_network_system.add_actor_to_sync(p_context.m_actor);
 					}
-					else if (m_id == invalid_id && (m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate))
+					else if (m_id == bc_actor::invalid_id && (m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate))
 					{
 						// we should remove network actors if they are not loaded through network, because they will be replicated by the remote host
 						l_scene_add_event->get_scene().remove_actor(p_context.m_actor);
@@ -176,23 +178,32 @@ namespace black_cat
 			const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event);
 			if (l_scene_remove_event)
 			{
-				const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();
+				auto& l_network_system = p_context.m_game_system.get_network_system();
+				const auto l_network_type = l_network_system.get_network_type();
+
 				if (l_network_type == bc_network_type::server)
 				{
 					if (m_data_dir == bc_actor_network_data_dir::replicate_sync)
 					{
-						p_context.m_game_system.get_network_system().remove_actor(p_context.m_actor);
+						l_network_system.remove_actor_from_sync(p_context.m_actor);
+					}
+					else if(m_id != bc_actor::invalid_id)
+					{
+						l_network_system.actor_removed(p_context.m_actor);
 					}
 				}
 				else if (l_network_type == bc_network_type::client)
 				{
 					if (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
 					{
-						p_context.m_game_system.get_network_system().remove_actor(p_context.m_actor);
+						l_network_system.remove_actor_from_sync(p_context.m_actor);
+					}
+					else if (m_id != bc_actor::invalid_id)
+					{
+						l_network_system.actor_removed(p_context.m_actor);
 					}
 				}
-				// TODO check for other cases when actor is replicated but is removed from remote host
-
+				
 				return;
 			}
 		}

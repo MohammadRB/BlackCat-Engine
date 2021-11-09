@@ -123,6 +123,33 @@ namespace black_cat
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
 			const auto l_network_id = l_network_component->get_network_id();
+
+			if (l_network_id == bc_actor::invalid_id)
+			{
+				return;
+			}
+			
+			{
+				core_platform::bc_mutex_guard l_lock(m_actors_lock);
+
+				const auto l_ite = m_network_actors.find(l_network_component->get_network_id());
+				if (l_ite == std::cend(m_network_actors))
+				{
+					core::bc_log(core::bc_log_type::error, bcL("actor was not found in network list to remove"));
+					return;
+				}
+
+				m_network_actors.erase(l_ite);
+			}
+			
+			send_message(bc_actor_remove_network_message(l_network_id));
+		}
+
+		void bc_network_server_manager::actor_removed(bc_actor& p_actor)
+		{
+			auto* l_network_component = p_actor.get_component<bc_network_component>();
+			const auto l_network_id = l_network_component->get_network_id();
+
 			if (l_network_id == bc_actor::invalid_id)
 			{
 				return;
@@ -134,7 +161,7 @@ namespace black_cat
 				const auto l_ite = m_network_actors.find(l_network_component->get_network_id());
 				if (l_ite == std::cend(m_network_actors))
 				{
-					core::bc_log(core::bc_log_type::error, bcL("actor network id was not found in remove process"));
+					core::bc_log(core::bc_log_type::error, bcL("actor was not found in network list to remove"));
 					return;
 				}
 
@@ -142,8 +169,6 @@ namespace black_cat
 			}
 
 			l_network_component->set_network_id(bc_actor::invalid_id);
-			
-			send_message(bc_actor_remove_network_message(l_network_id));
 		}
 
 		void bc_network_server_manager::send_message(bc_network_message_ptr p_message)
@@ -224,10 +249,11 @@ namespace black_cat
 			m_hook->started_listening(m_port);
 		}
 
-		bc_network_rtt bc_network_server_manager::get_rtt_time(const platform::bc_network_address& p_address) noexcept
+		void bc_network_server_manager::get_rtt_time(const platform::bc_network_address& p_address, bc_network_rtt* p_rtt, bc_network_rtt* p_remote_rtt) noexcept
 		{
 			auto* l_client = _find_client(p_address);
-			return l_client->get_rtt_time();
+			*p_rtt = l_client->get_rtt_time();
+			*p_remote_rtt = l_client->get_remote_rtt_time();
 		}
 
 		void bc_network_server_manager::add_rtt_sample(const platform::bc_network_address& p_address, bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept
@@ -416,7 +442,7 @@ namespace black_cat
 				const auto l_ite = m_network_actors.find(l_actor_network_id);
 				if (l_ite == std::cend(m_network_actors))
 				{
-					core::bc_log(core::bc_log_type::error, bcL("actor was not found in client replicated actor list"));
+					core::bc_log(core::bc_log_type::warning, bcL("actor was not found in replicated actor list to remove"));
 					return;
 				}
 
@@ -434,12 +460,13 @@ namespace black_cat
 				_add_message_to_clients(bc_make_network_message(bc_actor_remove_network_message(l_actor_network_id)), &p_address);
 			}
 
+			l_network_component->set_network_id(bc_actor::invalid_id); // Mark as invalid to prevent double removal via network component
 			m_game_system->get_scene()->remove_actor(p_actor);
 		}
 
-		bc_actor bc_network_server_manager::create_actor(const bcCHAR* p_entity_name)
+		bc_actor bc_network_server_manager::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_transform)
 		{
-			auto l_actor = m_game_system->get_scene()->create_actor(p_entity_name, core::bc_matrix4f::identity());
+			auto l_actor = m_game_system->get_scene()->create_actor(p_entity_name, p_transform);
 
 			return l_actor;
 		}

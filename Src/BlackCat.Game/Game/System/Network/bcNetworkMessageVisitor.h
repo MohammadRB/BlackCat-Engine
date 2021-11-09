@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcString.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/System/Network/bcNetworkDefinitions.h"
 
@@ -38,7 +39,7 @@ namespace black_cat
 		public:
 			virtual bc_network_type get_network_type() const noexcept = 0;
 			
-			virtual bc_actor create_actor(const bcCHAR* p_entity_name) = 0;
+			virtual bc_actor create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_transform) = 0;
 
 			virtual bc_replicated_actor get_actor(bc_actor_network_id p_actor_network_id) = 0;
 
@@ -51,7 +52,7 @@ namespace black_cat
 		class bci_network_message_server_visitor
 		{
 		public:
-			virtual bc_network_rtt get_rtt_time(const platform::bc_network_address& p_address) noexcept = 0;
+			virtual void get_rtt_time(const platform::bc_network_address& p_address, bc_network_rtt* p_rtt, bc_network_rtt* p_remote_rtt) noexcept = 0;
 			
 			virtual void add_rtt_sample(const platform::bc_network_address& p_address, bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept = 0;
 			
@@ -76,7 +77,7 @@ namespace black_cat
 		class bci_network_message_client_visitor
 		{
 		public:
-			virtual bc_network_rtt get_rtt_time() noexcept = 0;
+			virtual void get_rtt_time(bc_network_rtt* p_rtt, bc_network_rtt* p_remote_rtt) noexcept = 0;
 			
 			virtual void add_rtt_sample(bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept = 0;
 			

@@ -267,6 +267,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\Particle\bcExplosionParticle.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\Particle\bcWeaponParticle.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotActorController.h" />
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotGrenadeNetworkMessage.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotIdleActorController.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotWeaponNetworkMessage.h" />
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotNetworkPlayerActorController.h" />
@@ -321,6 +322,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcRocketActorController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\ActorController\bcSmokeGrenadeActorController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotActorController.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotGrenadeNetworkMessage.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotWeaponNetworkMessage.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotNetworkPlayerActorController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotPlayerActorController.cpp" />

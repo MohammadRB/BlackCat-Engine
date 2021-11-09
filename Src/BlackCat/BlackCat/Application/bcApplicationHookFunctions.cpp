@@ -77,6 +77,7 @@
 #include "BlackCat/SampleImp/XBot/bcXBotPlayerActorController.h"
 #include "BlackCat/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
 #include "BlackCat/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
+#include "BlackCat/SampleImp/XBot/bcXBotGrenadeNetworkMessage.h"
 #include "BlackCat/SampleImp/ActorController/bcRigidDynamicNetworkActorController.h"
 #include "BlackCat/SampleImp/Particle/bcExplosionParticle.h"
 #include "BlackCat/SampleImp/Particle/bcWeaponParticle.h"
@@ -236,7 +237,9 @@ namespace black_cat
 			game::bc_scene_replicate_network_message,
 			bc_xbot_weapon_attach_network_message,
 			bc_xbot_weapon_detach_network_message,
-			bc_xbot_weapon_shoot_network_message
+			bc_xbot_weapon_shoot_network_message,
+			bc_xbot_start_grenade_throw_network_message,
+			bc_xbot_grenade_throw_network_message
 		>();
 	}
 	

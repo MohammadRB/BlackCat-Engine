@@ -58,7 +58,7 @@ namespace black_cat
 		game::bc_network_system* m_network_system;
 		core::bc_velocity<bcFLOAT> m_look_velocity;
 
-		core::bc_unique_ptr<core::bc_string> m_initial_attached_weapon;
+		core::bc_string m_string;
 		core::bc_vector3f m_network_position;
 		core::bc_vector3f m_network_look_direction;
 		bcINT32 m_network_look_side;

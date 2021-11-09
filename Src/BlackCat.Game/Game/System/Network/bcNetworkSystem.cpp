@@ -59,14 +59,19 @@ namespace black_cat
 			m_manager = core::bc_make_unique<bc_network_client_manager>(bc_network_client_manager(*m_game_system, *this, p_hook, p_address));
 		}
 
-		void bc_network_system::add_actor(bc_actor& p_actor)
+		void bc_network_system::add_actor_to_sync(bc_actor& p_actor)
 		{
 			m_manager->add_actor_to_sync(p_actor);
 		}
 
-		void bc_network_system::remove_actor(bc_actor& p_actor)
+		void bc_network_system::remove_actor_from_sync(bc_actor& p_actor)
 		{
 			m_manager->remove_actor_from_sync(p_actor);
+		}
+
+		void bc_network_system::actor_removed(bc_actor& p_actor)
+		{
+			m_manager->actor_removed(p_actor);
 		}
 
 		void bc_network_system::update(const core_platform::bc_clock::update_param& p_clock)
@@ -108,7 +113,7 @@ namespace black_cat
 			const auto l_ite = m_message_factories.find(p_hash);
 			if (l_ite == std::cend(m_message_factories))
 			{
-				core::bc_log(core::bc_log_type::warning) << "cannot find network message with hash " << p_hash << core::bc_lend;
+				core::bc_log(core::bc_log_type::error) << "cannot find network message with hash " << p_hash << core::bc_lend;
 				return nullptr;
 			}
 
