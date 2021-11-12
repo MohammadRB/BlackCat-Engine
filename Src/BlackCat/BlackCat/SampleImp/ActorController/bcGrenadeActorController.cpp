@@ -31,14 +31,6 @@ namespace black_cat
 			return;
 		}
 
-		{
-			auto* l_rigid_dynamic_component = p_context.m_actor.get_component<game::bc_rigid_dynamic_component>();
-			game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
-
-			auto l_velocity = l_rigid_dynamic_component->get_dynamic_body().get_linear_velocity();
-			core::bc_log(core::bc_log_type::debug) << l_velocity << core::bc_lend;
-		}
-		
 		m_lifetime -= p_context.m_clock.m_elapsed_second;
 		if(m_lifetime <= 0)
 		{

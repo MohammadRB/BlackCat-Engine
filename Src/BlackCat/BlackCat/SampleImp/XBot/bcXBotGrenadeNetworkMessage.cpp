@@ -6,6 +6,7 @@
 #include "Core/Utility/bcJsonParse.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
+#include "Game/bcUtility.h"
 #include "BlackCat/SampleImp/XBot/bcXBotGrenadeNetworkMessage.h"
 #include "BlackCat/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
 
@@ -92,11 +93,12 @@ namespace black_cat
 	}
 
 	bc_xbot_grenade_throw_network_message::bc_xbot_grenade_throw_network_message(const bcCHAR* p_grenade_name,
-		const core::bc_vector3f& p_position,
+		const core::bc_matrix4f& p_transform,
 		const core::bc_vector3f& p_direction) noexcept
 		: bci_network_message(message_name()),
 		m_grenade_entity_name(p_grenade_name),
-		m_position(p_position),
+		m_position(p_transform.get_translation()),
+		m_rotation(bc_matrix4f_decompose_to_euler_angles(p_transform)),
 		m_direction(p_direction),
 		m_visitor(nullptr)
 
@@ -116,8 +118,12 @@ namespace black_cat
 
 	void bc_xbot_grenade_throw_network_message::execute(const game::bc_network_message_server_context& p_context) noexcept
 	{
+		game::bc_network_rtt l_rtt;
+		game::bc_network_rtt l_remote_rtt;
+		p_context.m_visitor.get_rtt_time(p_context.m_address, &l_rtt, &l_remote_rtt);
+		
 		// grenade actor will be replicated by its network component
-		auto l_actor = _create_actor();
+		auto l_actor = _create_actor(l_remote_rtt / 2 / 1000);
 	}
 
 	void bc_xbot_grenade_throw_network_message::execute(const game::bc_network_message_client_context& p_context) noexcept
@@ -128,6 +134,7 @@ namespace black_cat
 	{
 		json_parse::bc_write(p_context.m_params, "ent", core::bc_any(m_grenade_entity_name));
 		json_parse::bc_write(p_context.m_params, "pos", m_position);
+		json_parse::bc_write(p_context.m_params, "rot", m_rotation);
 		json_parse::bc_write(p_context.m_params, "dir", m_direction);
 	}
 
@@ -135,14 +142,21 @@ namespace black_cat
 	{
 		m_grenade_entity_name = json_parse::bc_load(p_context.m_params, "ent").second.as_throw<core::bc_string>();
 		json_parse::bc_load(p_context.m_params, "pos", m_position);
+		json_parse::bc_load(p_context.m_params, "pos", m_rotation);
 		json_parse::bc_load(p_context.m_params, "dir", m_direction);
 
 		m_visitor = &p_context.m_visitor;
 	}
 
-	game::bc_actor bc_xbot_grenade_throw_network_message::_create_actor() const
+	game::bc_actor bc_xbot_grenade_throw_network_message::_create_actor(game::bc_network_rtt p_ping) const
 	{
-		auto l_actor = m_visitor->create_actor(m_grenade_entity_name.c_str(), core::bc_matrix4f::translation_matrix(m_position));
+		auto l_transform = core::bc_matrix4f::identity();
+		l_transform.set_translation(m_position + m_direction * p_ping);
+		l_transform.set_rotation(bc_matrix3f_rotation_zyx(m_rotation));
+		
+		auto l_actor = m_visitor->create_actor(m_grenade_entity_name.c_str(), l_transform);
+		l_actor.mark_for_double_update();
+
 		auto* l_network_component = l_actor.get_component<game::bc_network_component>();
 		auto* l_rigid_dynamic_component = l_actor.get_component<game::bc_rigid_dynamic_component>();
 

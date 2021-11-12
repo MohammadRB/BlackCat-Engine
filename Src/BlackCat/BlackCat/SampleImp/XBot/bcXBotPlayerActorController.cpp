@@ -170,7 +170,7 @@ namespace black_cat
 			const auto* l_mediate_component = p_context.m_actor.get_component<game::bc_mediate_component>();
 			const auto l_bound_box_extends = l_mediate_component->get_bound_box().get_half_extends();
 			const auto l_max_side_length = std::max(std::max(l_bound_box_extends.x, l_bound_box_extends.y), l_bound_box_extends.z) * 2;
-			m_camera_y_offset = l_max_side_length * 3.0f;
+			m_camera_y_offset = l_max_side_length * 3.5f;
 			m_camera_z_offset = l_max_side_length * -1.5f;
 			m_camera_look_at_offset = l_max_side_length * 1.25f;
 		}
@@ -389,14 +389,13 @@ namespace black_cat
 		const auto l_grenade_throw_power = std::max(0.3f, std::min(1.0f, m_grenade_throw_passed_time / m_grenade_throw_time)) *
 			m_grenade_throw_power *
 			get_bound_box_max_side_length();
-		const auto l_throw_direction = core::bc_vector3f::normalize(get_look_direction() + core::bc_vector3f(0, 0.3f, 0)) * l_grenade_throw_power;
-		const auto l_throw_position = l_grenade_mediate_component->get_position() + l_throw_direction / 4;
+		const auto l_throw_direction = core::bc_vector3f::normalize(get_look_direction() + core::bc_vector3f(0, 0.2f, 0)) * l_grenade_throw_power;
 		
 		const bcCHAR* l_threw_grenade_name = std::strcmp(l_grenade_mediate_component->get_entity_name(), m_grenade_name) == 0 ? m_threw_grenade_name : m_threw_smoke_grenade_name;
 
 		if (m_network_system->get_network_type() != game::bc_network_type::not_started)
 		{
-			m_network_system->send_message(bc_xbot_grenade_throw_network_message(l_threw_grenade_name, l_throw_position, l_throw_direction));
+			m_network_system->send_message(bc_xbot_grenade_throw_network_message(l_threw_grenade_name, l_grenade_mediate_component->get_world_transform(), l_throw_direction));
 		}
 		else
 		{

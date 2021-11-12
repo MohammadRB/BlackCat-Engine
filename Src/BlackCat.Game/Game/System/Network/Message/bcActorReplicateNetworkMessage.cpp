@@ -100,6 +100,7 @@ namespace black_cat
 			}
 
 			m_actor = m_deserialization_visitor->create_actor(l_entity_name->c_str(), core::bc_matrix4f::identity());
+			m_actor.mark_for_double_update();
 
 			core::bc_vector_frame<bci_actor_component*> l_components(10);
 			bc_actor_load_network_instance(l_components, bc_actor_component_network_load_context(m_deserialization_values, m_actor, true, false));

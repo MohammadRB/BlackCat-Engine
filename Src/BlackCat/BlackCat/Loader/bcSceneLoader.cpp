@@ -62,7 +62,7 @@ namespace black_cat
 
 	void bc_scene_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
-		core::bc_log(core::bc_log_type::info) << "Loading scene " << p_context.m_file_path << core::bc_lend;
+		core::bc_log(core::bc_log_type::info) << "loading scene " << p_context.m_file_path << core::bc_lend;
 		
 		core::bc_json_document<_bc_scene_json> l_json_document;
 		core::bc_string_frame l_json_str(p_context.m_file_buffer_size + 1, '\0');
@@ -224,12 +224,12 @@ namespace black_cat
 			game::bc_actor_load_instance(l_actor_components, game::bc_actor_component_load_context(*l_json_actor->m_parameters, l_actor));
 		}
 
-		core::bc_log(core::bc_log_type::info) << "Scene loaded" << core::bc_lend;
+		core::bc_log(core::bc_log_type::info) << "scene loaded" << core::bc_lend;
 	}
 
 	void bc_scene_loader::content_processing(core::bc_content_saving_context& p_context) const
 	{
-		core::bc_log(core::bc_log_type::info) << "Saving scene " << p_context.m_file_path << core::bc_lend;
+		core::bc_log(core::bc_log_type::info) << "saving scene " << p_context.m_file_path << core::bc_lend;
 
 		auto* l_scene = static_cast<game::bc_scene*>(p_context.m_content);
 
@@ -275,6 +275,6 @@ namespace black_cat
 		const auto l_json = l_json_document.write_pretty();
 		p_context.m_file.write(reinterpret_cast<const bcBYTE*>(l_json.c_str()), sizeof(decltype(l_json)::value_type) * l_json.size());
 
-		core::bc_log(core::bc_log_type::info) << "Scene saved" << core::bc_lend;
+		core::bc_log(core::bc_log_type::info) << "scene saved" << core::bc_lend;
 	}
 }

@@ -85,6 +85,7 @@ namespace black_cat
 				core::bc_task<void> l_scene_task;
 				core::bc_task<void> l_scene_task1;
 				core::bc_task<void> l_network_task;
+				core::bc_task<void> l_animation_task;
 
 				l_input_system.update(p_clock);
 				l_physics_system.update(p_clock);
@@ -100,7 +101,12 @@ namespace black_cat
 
 				l_actor_component_manager.process_actor_events(p_clock);
 				l_actor_component_manager.update_actors(p_clock);
-				l_animation_manager.run_scheduled_jobs(p_clock);
+
+				l_network_task = l_network_system.update_async(p_clock);
+				l_animation_task = l_animation_manager.run_scheduled_jobs_async(p_clock);
+
+				core::bc_concurrency::when_all(l_network_task, l_animation_task);
+				
 				l_actor_component_manager.double_update_actors(p_clock);
 
 				if (l_scene)
@@ -108,8 +114,6 @@ namespace black_cat
 					l_scene_task = l_scene->update_graph_async(p_clock);
 					l_scene_task1 = l_scene->update_bullets_async(p_clock);
 				}
-
-				l_network_task = l_network_system.update_async(p_clock);
 
 				if (l_scene)
 				{
@@ -125,7 +129,7 @@ namespace black_cat
 					l_render_system.update(bc_render_system::update_context(p_clock, *l_camera));
 				}
 
-				core::bc_concurrency::when_all(l_scene_task, l_scene_task1, l_network_task);
+				core::bc_concurrency::when_all(l_scene_task, l_scene_task1);
 			}
 			else
 			{

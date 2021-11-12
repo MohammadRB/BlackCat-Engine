@@ -252,27 +252,6 @@ namespace black_cat
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock(m_changed_actors_lock, core_platform::bc_lock_operation::heavy);
 				
-				/*for(auto& l_to_removed_actor : m_to_remove_actors)
-				{
-					auto l_changed_ite = std::find_if
-					(
-						std::begin(m_changed_actors),
-						std::end(m_changed_actors),
-						[l_to_removed_actor](decltype(m_changed_actors)::reference p_entry)
-						{
-							return std::get<bc_actor>(p_entry) == std::get<bc_actor>(l_to_removed_actor);
-						}
-					);
-					if(l_changed_ite != std::end(m_changed_actors))
-					{
-						m_changed_actors.erase(l_changed_ite);
-					}
-					
-					_remove_actor(std::get<_bc_scene_actor_remove_state>(l_to_removed_actor), std::get<bc_actor>(l_to_removed_actor));
-				}
-				
-				m_to_remove_actors.clear();*/
-
 				for(auto& l_added_actor : m_added_actors)
 				{
 					auto l_changed_ite = std::find_if
@@ -337,12 +316,6 @@ namespace black_cat
 				);
 
 				m_changed_actors.clear();
-				
-				/*for (auto& l_to_removed_actor : m_to_remove_actors)
-				{
-					_remove_actor(std::get<_bc_scene_actor_remove_state>(l_to_removed_actor), std::get<bc_actor>(l_to_removed_actor));
-				}
-				m_to_remove_actors.clear();*/
 			}
 			
 			m_scene_graph.update(p_clock);

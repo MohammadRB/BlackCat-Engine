@@ -55,9 +55,9 @@ namespace box
 			
 			m_game_system->set_scene(std::move(l_scene));
 		}
-		catch (...)
+		catch (const std::exception& p_exception)
 		{
-			core::bc_log(core::bc_log_type::error) << "Error on loading scene '" << l_scene_name << "'" << core::bc_lend;
+			core::bc_log(core::bc_log_type::error) << "Error on loading scene '" << l_scene_name << "'. " << p_exception.what() << core::bc_lend;
 		}
 
 		return platform::bc_script_variable();

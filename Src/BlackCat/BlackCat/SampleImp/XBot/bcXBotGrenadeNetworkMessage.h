@@ -47,7 +47,7 @@ namespace black_cat
 	public:
 		bc_xbot_grenade_throw_network_message() noexcept;
 
-		bc_xbot_grenade_throw_network_message(const bcCHAR* p_grenade_name, const core::bc_vector3f& p_position, const core::bc_vector3f& p_direction) noexcept;
+		bc_xbot_grenade_throw_network_message(const bcCHAR* p_grenade_name, const core::bc_matrix4f& p_transform, const core::bc_vector3f& p_direction) noexcept;
 
 		bc_xbot_grenade_throw_network_message(bc_xbot_grenade_throw_network_message&&) noexcept;
 
@@ -66,10 +66,11 @@ namespace black_cat
 
 		void deserialize_message(const game::bc_network_message_deserialization_context& p_context) override;
 
-		game::bc_actor _create_actor() const;
+		game::bc_actor _create_actor(game::bc_network_rtt p_ping) const;
 		
 		core::bc_string m_grenade_entity_name;
 		core::bc_vector3f m_position;
+		core::bc_vector3f m_rotation;
 		core::bc_vector3f m_direction;
 
 		game::bci_network_message_deserialization_visitor* m_visitor;

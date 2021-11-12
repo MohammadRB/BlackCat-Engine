@@ -24,7 +24,9 @@ namespace black_cat
 				EXPECT_TRUE(l_any2.has_value());
 			}
 
+#ifdef BC_DEBUG
 			EXPECT_EQ(core::bc_memory_manager::get().report_memory_leaks(), 0);
+#endif
 			
 			bc_test_close_memory();
 		}

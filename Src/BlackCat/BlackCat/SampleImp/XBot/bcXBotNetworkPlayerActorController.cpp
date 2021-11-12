@@ -168,6 +168,8 @@ namespace black_cat
 		}
 
 		auto l_weapon_actor = get_scene()->create_actor(p_entity, core::bc_matrix4f::translation_matrix(get_position()));
+		l_weapon_actor.mark_for_double_update();
+		
 		bc_xbot_actor_controller::attach_weapon(l_weapon_actor);
 
 		if(get_network_component().get_network_type() == game::bc_network_type::server)
@@ -205,5 +207,8 @@ namespace black_cat
 	void bc_xbot_network_player_actor_controller::throw_grenade(game::bc_actor& p_grenade) noexcept
 	{
 		// Grenade will be thrown by a separate network message
+
+		auto* l_scene = get_scene();
+		l_scene->remove_actor(p_grenade);
 	}
 }
