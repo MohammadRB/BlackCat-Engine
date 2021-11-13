@@ -36,10 +36,14 @@ namespace black_cat
 			explicit bc_actor(bc_actor_id p_index);
 
 			bc_actor(const bc_actor&) noexcept;
+			
+			bc_actor(bc_actor&&) noexcept;
 
 			~bc_actor();
 
 			bc_actor& operator=(const bc_actor&) noexcept;
+			
+			bc_actor& operator=(bc_actor&&) noexcept;
 
 			bc_actor_id get_id() const noexcept;
 

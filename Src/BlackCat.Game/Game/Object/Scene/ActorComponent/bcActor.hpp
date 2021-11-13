@@ -26,9 +26,13 @@ namespace black_cat
 
 		inline bc_actor::bc_actor(const bc_actor&) noexcept = default;
 
+		inline bc_actor::bc_actor(bc_actor&&) noexcept = default;
+
 		inline bc_actor::~bc_actor() = default;
 
 		inline bc_actor& bc_actor::operator=(const bc_actor&) noexcept = default;
+
+		inline bc_actor& bc_actor::operator=(bc_actor&&) noexcept = default;
 
 		inline bc_actor_id bc_actor::get_id() const noexcept
 		{

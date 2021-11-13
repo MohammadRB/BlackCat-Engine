@@ -367,6 +367,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMeshComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNetworkComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcParticleEmitterComponent.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRagdollComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRenderComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidBodyComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidControllerComponent.h" />
@@ -535,6 +536,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMeshComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNetworkComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcParticleEmitterComponent.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRagdollComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRenderComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidBodyComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidControllerComponent.cpp" />

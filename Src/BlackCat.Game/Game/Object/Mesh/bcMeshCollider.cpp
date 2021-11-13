@@ -13,8 +13,8 @@ namespace black_cat
 		}
 
 		bc_mesh_collider::bc_mesh_collider(bc_mesh_collider&& p_other) noexcept
-			: bci_content(std::move(p_other)),
-			bc_const_iterator_adapter(m_mesh_colliders),
+			: bc_const_iterator_adapter(m_mesh_colliders),
+			bci_content(std::move(p_other)),
 			m_mesh_colliders(std::move(p_other.m_mesh_colliders)),
 			m_skinned_collider(std::move(p_other.m_skinned_collider))
 		{

@@ -11,16 +11,16 @@ namespace black_cat
 {
 	namespace physics
 	{
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		struct bc_platform_distance_joint_pack
 		{
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_distance_joint : public bc_platform_joint<TApi>
 		{
 		public:
-			using platform_pack = bc_platform_distance_joint_pack< TApi >;
+			using platform_pack = bc_platform_distance_joint_pack<TApi>;
 
 		public:
 			bc_platform_distance_joint() noexcept;
@@ -51,7 +51,7 @@ namespace black_cat
 			bc_joint_linear_limit_pair get_limit() const noexcept;
 		};
 
-		using bc_distance_joint = bc_platform_distance_joint< g_current_physics_api >;
+		using bc_distance_joint = bc_platform_distance_joint<g_current_physics_api>;
 		using bc_distance_joint_ref = bc_physics_ref<bc_distance_joint>;
 	}
 }

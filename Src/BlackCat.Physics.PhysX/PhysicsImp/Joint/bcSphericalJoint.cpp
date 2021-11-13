@@ -10,7 +10,7 @@ namespace black_cat
 	{
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_spherical_joint< g_api_physx >::bc_platform_spherical_joint() noexcept
+		bc_platform_spherical_joint<g_api_physx>::bc_platform_spherical_joint() noexcept
 			: bc_platform_joint()
 		{
 		}
@@ -24,20 +24,20 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_spherical_joint< g_api_physx >::bc_platform_spherical_joint(const bc_platform_spherical_joint& p_other) noexcept
+		bc_platform_spherical_joint<g_api_physx>::bc_platform_spherical_joint(const bc_platform_spherical_joint& p_other) noexcept
 			: bc_platform_joint(p_other)
 		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_spherical_joint< g_api_physx >::~bc_platform_spherical_joint()
+		bc_platform_spherical_joint<g_api_physx>::~bc_platform_spherical_joint()
 		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_spherical_joint< g_api_physx >& bc_platform_spherical_joint< g_api_physx >::operator=(const bc_platform_spherical_joint& p_other) noexcept
+		bc_platform_spherical_joint<g_api_physx>& bc_platform_spherical_joint<g_api_physx>::operator=(const bc_platform_spherical_joint& p_other) noexcept
 		{
 			bc_platform_joint::operator=(p_other);
 
@@ -46,17 +46,17 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_spherical_joint< g_api_physx >::enable_limit(bc_joint_cone_limit& p_limit) noexcept
+		void bc_platform_spherical_joint<g_api_physx>::enable_limit(bc_joint_cone_limit& p_limit) noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxSphericalJoint*>(get_platform_pack().m_px_object);
 
 			l_px_joint->setSphericalJointFlag(physx::PxSphericalJointFlag::eLIMIT_ENABLED, true);
-			l_px_joint->setLimitCone(physx::PxJointLimitCone(p_limit.m_y_angle, p_limit.m_z_angle, physx::PxSpring(p_limit.p_stiffness, p_limit.p_damping)));
+			l_px_joint->setLimitCone(physx::PxJointLimitCone(p_limit.m_y_angle, p_limit.m_z_angle, physx::PxSpring(p_limit.m_stiffness, p_limit.m_damping)));
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_spherical_joint< g_api_physx >::disable_limit() noexcept
+		void bc_platform_spherical_joint<g_api_physx>::disable_limit() noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxSphericalJoint*>(get_platform_pack().m_px_object);
 
@@ -65,7 +65,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_joint_cone_limit bc_platform_spherical_joint< g_api_physx >::get_limit() const noexcept
+		bc_joint_cone_limit bc_platform_spherical_joint<g_api_physx>::get_limit() const noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxSphericalJoint*>(get_platform_pack().m_px_object);
 			const auto l_px_limit = l_px_joint->getLimitCone();

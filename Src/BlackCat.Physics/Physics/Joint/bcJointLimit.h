@@ -11,14 +11,14 @@ namespace black_cat
 		struct bc_joint_limit
 		{
 			bc_joint_limit()
-				: p_stiffness(0),
-				p_damping(0)
+				: m_stiffness(0),
+				m_damping(0)
 			{
 			}
 
 			bc_joint_limit(bcFLOAT p_stiffness, bcFLOAT p_damping)
-				: p_stiffness(p_stiffness),
-				p_damping(p_damping)
+				: m_stiffness(p_stiffness),
+				m_damping(p_damping)
 			{
 			}
 
@@ -27,13 +27,13 @@ namespace black_cat
 			* Range: [0, PX_MAX_F32)
 			* Default: 0.0
 			*/
-			const bcFLOAT p_stiffness;
+			const bcFLOAT m_stiffness;
 			/**
 			* \brief the damping of the limit spring
 			* Range: [0, PX_MAX_F32)
 			* Default: 0.0
 			*/
-			const bcFLOAT p_damping;
+			const bcFLOAT m_damping;
 		};
 
 		struct bc_joint_linear_limit : public bc_joint_limit

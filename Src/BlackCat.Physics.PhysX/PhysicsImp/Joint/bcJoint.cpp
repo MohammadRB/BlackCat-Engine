@@ -12,7 +12,7 @@ namespace black_cat
 	{
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_joint< g_api_physx >::bc_platform_joint() noexcept
+		bc_platform_joint<g_api_physx>::bc_platform_joint() noexcept
 			: bc_platform_physics_reference(),
 			m_pack()
 		{
@@ -28,7 +28,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_joint< g_api_physx >::bc_platform_joint(const bc_platform_joint& p_other) noexcept
+		bc_platform_joint<g_api_physx>::bc_platform_joint(const bc_platform_joint& p_other) noexcept
 			: bc_platform_physics_reference(p_other),
 			m_pack(p_other.m_pack)
 		{
@@ -36,13 +36,13 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_joint< g_api_physx >::~bc_platform_joint()
+		bc_platform_joint<g_api_physx>::~bc_platform_joint()
 		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_joint< g_api_physx >& bc_platform_joint< g_api_physx >::operator=(const bc_platform_joint& p_other) noexcept
+		bc_platform_joint<g_api_physx>& bc_platform_joint<g_api_physx>::operator=(const bc_platform_joint& p_other) noexcept
 		{
 			bc_platform_physics_reference::operator=(p_other);
 			m_pack = p_other.m_pack;
@@ -52,7 +52,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		std::pair< bc_rigid_actor, bc_rigid_actor > bc_platform_joint< g_api_physx >::get_actors() const noexcept
+		std::pair<bc_rigid_actor, bc_rigid_actor> bc_platform_joint<g_api_physx>::get_actors() const noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
 
@@ -72,7 +72,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_joint< g_api_physx >::set_local_pose0(const bc_transform& p_local_pose) noexcept
+		void bc_platform_joint<g_api_physx>::set_local_pose0(const bc_transform& p_local_pose) noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
 
@@ -85,7 +85,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_joint< g_api_physx >::set_local_pose1(const bc_transform& p_local_pose) noexcept
+		void bc_platform_joint<g_api_physx>::set_local_pose1(const bc_transform& p_local_pose) noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
 
@@ -98,7 +98,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_transform bc_platform_joint< g_api_physx >::get_local_pose0() const noexcept
+		bc_transform bc_platform_joint<g_api_physx>::get_local_pose0() const noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
 			
@@ -110,7 +110,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_transform bc_platform_joint< g_api_physx >::get_local_pose1() const noexcept
+		bc_transform bc_platform_joint<g_api_physx>::get_local_pose1() const noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
 			
@@ -122,7 +122,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_transform bc_platform_joint< g_api_physx >::get_relative_transform() const noexcept
+		bc_transform bc_platform_joint<g_api_physx>::get_relative_transform() const noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
 
@@ -134,7 +134,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		core::bc_vector3f bc_platform_joint< g_api_physx >::get_relative_linear_velocity() const noexcept
+		core::bc_vector3f bc_platform_joint<g_api_physx>::get_relative_linear_velocity() const noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
 			const auto l_px_vec = l_px_joint->getRelativeLinearVelocity();
@@ -144,7 +144,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		core::bc_vector3f bc_platform_joint< g_api_physx >::get_relative_angular_velocity() const noexcept
+		core::bc_vector3f bc_platform_joint<g_api_physx>::get_relative_angular_velocity() const noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
 			const auto l_px_vec = l_px_joint->getRelativeAngularVelocity();
@@ -154,7 +154,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_joint< g_api_physx >::set_break_force(bcFLOAT p_force, bcFLOAT p_torque) noexcept
+		void bc_platform_joint<g_api_physx>::set_break_force(bcFLOAT p_force, bcFLOAT p_torque) noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
 			l_px_joint->setBreakForce(p_force, p_torque);
@@ -162,7 +162,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		std::pair< bcFLOAT, bcFLOAT > bc_platform_joint< g_api_physx >::get_break_force() const noexcept
+		std::pair<bcFLOAT, bcFLOAT> bc_platform_joint<g_api_physx>::get_break_force() const noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
 
@@ -176,7 +176,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_joint< g_api_physx >::broken() const noexcept
+		bool bc_platform_joint<g_api_physx>::broken() const noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
 
@@ -185,7 +185,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_joint< g_api_physx >::is_valid() const noexcept
+		bool bc_platform_joint<g_api_physx>::is_valid() const noexcept
 		{
 			return m_pack.m_px_object;
 		}

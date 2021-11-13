@@ -8,7 +8,6 @@
 #include "Game/Object/Animation/bcSkinnedAnimation.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
-#include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/bcExport.h"
 
 namespace black_cat

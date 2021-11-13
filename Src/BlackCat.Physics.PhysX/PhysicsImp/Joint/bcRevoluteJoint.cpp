@@ -69,7 +69,7 @@ namespace black_cat
 			auto* l_px_joint = static_cast<physx::PxRevoluteJoint*>(get_platform_pack().m_px_object);
 
 			l_px_joint->setRevoluteJointFlag(physx::PxRevoluteJointFlag::eLIMIT_ENABLED, true);
-			l_px_joint->setLimit(physx::PxJointAngularLimitPair(p_limit.m_lower, p_limit.m_upper, physx::PxSpring(p_limit.p_stiffness, p_limit.p_damping)));
+			l_px_joint->setLimit(physx::PxJointAngularLimitPair(p_limit.m_lower, p_limit.m_upper, physx::PxSpring(p_limit.m_stiffness, p_limit.m_damping)));
 		}
 
 		template<>

@@ -28,16 +28,16 @@ namespace black_cat
 			free
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		struct bc_platform_d6_joint_pack
 		{
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_d6_joint : public bc_platform_joint<TApi>
 		{
 		public:
-			using platform_pack = bc_platform_d6_joint_pack< TApi >;
+			using platform_pack = bc_platform_d6_joint_pack<TApi>;
 
 		public:
 			bc_platform_d6_joint() noexcept;
@@ -110,7 +110,7 @@ namespace black_cat
 			bc_joint_angular_limit get_twist_limit() const noexcept;
 
 			/**
-			 * \brief Enable the the limit cone for the joint along with strength and damping of the joint spring.
+			 * \brief Enable the limit cone for the joint along with strength and damping of the joint spring.
 			 * Default PI/2
 			 * Range (0,PI)
 			 * \param p_limit
@@ -124,7 +124,7 @@ namespace black_cat
 			bc_joint_cone_limit get_swing_limit() const noexcept;
 		};
 
-		using bc_d6_joint = bc_platform_d6_joint< g_current_physics_api >;
+		using bc_d6_joint = bc_platform_d6_joint<g_current_physics_api>;
 		using bc_d6_joint_ref = bc_physics_ref<bc_d6_joint>;
 	}
 }

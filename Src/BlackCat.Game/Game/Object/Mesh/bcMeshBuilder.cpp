@@ -58,8 +58,8 @@ namespace black_cat
 			const bcCHAR* p_name,
 			bc_mesh_material_ptr p_material,
 			core::bc_vector_movable<bc_vertex_pos_tex_nor_tan> p_vertices,
-			core::bc_vector_movable< bcUINT16 > p_16bit_indices,
-			core::bc_vector_movable< bcUINT32 > p_32bit_indices,
+			core::bc_vector_movable<bcUINT16> p_16bit_indices,
+			core::bc_vector_movable<bcUINT32> p_32bit_indices,
 			physics::bc_bound_box& p_bound_box,
 			graphic::bc_buffer_ref p_vertex_buffer,
 			graphic::bc_buffer_ref p_index_buffer,
@@ -93,8 +93,8 @@ namespace black_cat
 			const bcCHAR* p_name,
 			bc_mesh_material_ptr p_material,
 			core::bc_vector_movable<bc_vertex_pos_tex_nor_tan_bon> p_vertices,
-			core::bc_vector_movable< bcUINT16 > p_16bit_indices,
-			core::bc_vector_movable< bcUINT32 > p_32bit_indices,
+			core::bc_vector_movable<bcUINT16> p_16bit_indices,
+			core::bc_vector_movable<bcUINT32> p_32bit_indices,
 			physics::bc_bound_box& p_bound_box,
 			graphic::bc_buffer_ref p_vertex_buffer,
 			graphic::bc_buffer_ref p_index_buffer,
@@ -136,8 +136,7 @@ namespace black_cat
 			m_level_of_details.push_back(std::move(p_mesh));
 			return *this;
 		}
-
-
+		
 		bc_mesh bc_mesh_builder::build(const bcCHAR* p_name, bc_mesh_collider_ptr p_collider)
 		{
 			m_name = p_name;

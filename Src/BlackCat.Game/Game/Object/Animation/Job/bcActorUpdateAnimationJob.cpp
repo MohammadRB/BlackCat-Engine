@@ -15,7 +15,7 @@ namespace black_cat
 			bc_skinned_mesh_component& p_component,
 			core::bc_shared_ptr<bc_model_to_skinned_animation_job> p_model_to_skinned_job)
 			: bci_animation_job(p_model_to_skinned_job->get_skeleton()),
-			m_actor(p_actor),
+			m_actor(std::move(p_actor)),
 			m_skinned_component(&p_component),
 			m_model_to_skinned_job(std::move(p_model_to_skinned_job))
 		{

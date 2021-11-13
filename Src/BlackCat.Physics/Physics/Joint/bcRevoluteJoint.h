@@ -11,12 +11,12 @@ namespace black_cat
 {
 	namespace physics
 	{
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		struct bc_platform_revolute_joint_pack
 		{
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_revolute_joint : public bc_platform_joint<TApi>
 		{
 		public:
@@ -29,7 +29,7 @@ namespace black_cat
 
 			bc_platform_revolute_joint(const bc_platform_revolute_joint&) noexcept;
 
-			~bc_platform_revolute_joint();
+			~bc_platform_revolute_joint() override;
 
 			bc_platform_revolute_joint& operator=(const bc_platform_revolute_joint&) noexcept;
 
@@ -56,7 +56,7 @@ namespace black_cat
 			bc_joint_angular_limit get_limit() const noexcept;
 		};
 
-		using bc_revolute_joint = bc_platform_revolute_joint< g_current_physics_api >;
-		using bc_revolute_joint_ref = bc_physics_ref< bc_revolute_joint >;
+		using bc_revolute_joint = bc_platform_revolute_joint<g_current_physics_api>;
+		using bc_revolute_joint_ref = bc_physics_ref<bc_revolute_joint>;
 	}
 }

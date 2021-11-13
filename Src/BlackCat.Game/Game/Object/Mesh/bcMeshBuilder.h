@@ -23,10 +23,10 @@ namespace black_cat
 		{
 			core::bc_string_frame m_name;
 			bc_mesh_material_ptr m_material;
-			core::bc_vector_movable< bc_vertex_pos_tex_nor_tan > m_vertices;
-			core::bc_vector_movable< bc_vertex_pos_tex_nor_tan_bon > m_skinned_vertices;
-			core::bc_vector_movable< bcUINT16 > m_16bit_indices;
-			core::bc_vector_movable< bcUINT32 > m_32bit_indices;
+			core::bc_vector_movable<bc_vertex_pos_tex_nor_tan> m_vertices;
+			core::bc_vector_movable<bc_vertex_pos_tex_nor_tan_bon> m_skinned_vertices;
+			core::bc_vector_movable<bcUINT16> m_16bit_indices;
+			core::bc_vector_movable<bcUINT32> m_32bit_indices;
 			physics::bc_bound_box m_bound_box;
 
 			graphic::bc_buffer_ref m_vertex_buffer;
@@ -38,7 +38,7 @@ namespace black_cat
 		{
 			core::bc_string_frame m_name;
 			bcINT32 m_parent_index;
-			core::bc_vector_frame< bcINT32 > m_child_indices;
+			core::bc_vector_frame<bcINT32> m_child_indices;
 			core::bc_matrix4f m_transform;
 			core::bc_matrix4f m_bone_offset;
 			core::bc_vector_frame<bc_mesh_builder_mesh_part> m_mesh_parts;
@@ -64,9 +64,9 @@ namespace black_cat
 			bc_mesh_builder& add_mesh_part(const bcCHAR* p_node_name,
 				const bcCHAR* p_name,
 				bc_mesh_material_ptr p_material,
-				core::bc_vector_movable< bc_vertex_pos_tex_nor_tan > p_vertices,
-				core::bc_vector_movable< bcUINT16 > p_16bit_indices,
-				core::bc_vector_movable< bcUINT32 > p_32bit_indices,
+				core::bc_vector_movable<bc_vertex_pos_tex_nor_tan> p_vertices,
+				core::bc_vector_movable<bcUINT16> p_16bit_indices,
+				core::bc_vector_movable<bcUINT32> p_32bit_indices,
 				physics::bc_bound_box& p_bound_box,
 				graphic::bc_buffer_ref p_vertex_buffer,
 				graphic::bc_buffer_ref p_index_buffer,
@@ -75,9 +75,9 @@ namespace black_cat
 			bc_mesh_builder& add_skinned_mesh_part(const bcCHAR* p_node_name,
 				const bcCHAR* p_name,
 				bc_mesh_material_ptr p_material,
-				core::bc_vector_movable< bc_vertex_pos_tex_nor_tan_bon > p_vertices,
-				core::bc_vector_movable< bcUINT16 > p_16bit_indices,
-				core::bc_vector_movable< bcUINT32 > p_32bit_indices,
+				core::bc_vector_movable<bc_vertex_pos_tex_nor_tan_bon> p_vertices,
+				core::bc_vector_movable<bcUINT16> p_16bit_indices,
+				core::bc_vector_movable<bcUINT32> p_32bit_indices,
 				physics::bc_bound_box& p_bound_box,
 				graphic::bc_buffer_ref p_vertex_buffer,
 				graphic::bc_buffer_ref p_index_buffer,
@@ -96,7 +96,7 @@ namespace black_cat
 			bcUINT32 m_node_count = 0;
 			bcUINT32 m_mesh_part_count = 0;
 			core::bc_vector_frame<bc_mesh_builder_mesh_node> m_nodes;
-			core::bc_vector_frame< bc_mesh_ptr > m_level_of_details;
+			core::bc_vector_frame<bc_mesh_ptr> m_level_of_details;
 		};
 	}
 }
