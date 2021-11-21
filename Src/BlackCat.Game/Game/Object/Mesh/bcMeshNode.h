@@ -29,9 +29,9 @@ namespace black_cat
 
 			bc_mesh_node& operator=(bc_mesh_node&&) = default;
 
-			const core::bc_string& get_name() const;
+			std::string_view get_name() const;
 			
-			node_index_t get_transform_index() const;
+			node_index_t get_index() const;
 
 			node_index_t get_mesh_count() const;
 
@@ -43,19 +43,19 @@ namespace black_cat
 			core::bc_string m_name;
 			bc_mesh_node* m_parent;
 			core::bc_vector< bc_mesh_node* > m_children;
-			node_index_t m_transform_index;
+			node_index_t m_index;
 			node_index_t m_first_mesh_index;
 			bcSIZE m_mesh_count;
 		};
 
-		inline const core::bc_string& bc_mesh_node::get_name() const
+		inline std::string_view bc_mesh_node::get_name() const
 		{
-			return m_name;
+			return std::string_view(m_name.c_str(), m_name.size());
 		}
 		
-		inline bc_mesh_node::node_index_t bc_mesh_node::get_transform_index() const
+		inline bc_mesh_node::node_index_t bc_mesh_node::get_index() const
 		{
-			return m_transform_index;
+			return m_index;
 		}
 
 		inline bc_mesh_node::node_index_t bc_mesh_node::get_mesh_count() const

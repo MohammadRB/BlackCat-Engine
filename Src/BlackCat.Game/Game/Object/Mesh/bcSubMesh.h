@@ -24,7 +24,9 @@ namespace black_cat
 
 			explicit bc_sub_mesh(bc_mesh_ptr p_mesh) noexcept;
 
-			bc_sub_mesh(bc_mesh_ptr p_mesh, const bcCHAR* p_node);
+			bc_sub_mesh(bc_mesh_ptr p_mesh, bc_mesh_node::node_index_t p_node_index);
+			
+			bc_sub_mesh(bc_mesh_ptr p_mesh, std::string_view p_node_name);
 
 			bc_sub_mesh(bc_sub_mesh&&) noexcept;
 
@@ -52,7 +54,7 @@ namespace black_cat
 			
 			const bc_mesh_node* get_node_parent(const bc_mesh_node& p_node) const noexcept;
 
-			const core::bc_vector< bc_mesh_node* >& get_node_children(const bc_mesh_node& p_node) const noexcept;
+			const core::bc_vector<bc_mesh_node*>& get_node_children(const bc_mesh_node& p_node) const noexcept;
 
 			const core::bc_matrix4f& get_node_transform(const bc_mesh_node& p_node) const noexcept;
 
@@ -60,7 +62,7 @@ namespace black_cat
 			
 			const core::bc_matrix4f& get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
 			
-			const core::bc_string& get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+			std::string_view get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_mesh_material& get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 			
@@ -72,7 +74,7 @@ namespace black_cat
 
 			const physics::bc_bound_box& get_node_mesh_bound_box(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			const bc_mesh_part_collider& get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+			core::bc_const_span<bc_mesh_part_collider_entry> get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
 			const core::bc_matrix4f& get_node_absolute_transform(const bc_mesh_node& p_node, const bc_sub_mesh_mat4_transform& p_transforms) const noexcept;
 
@@ -87,9 +89,18 @@ namespace black_cat
 			void calculate_mesh_collider_transforms(const bc_sub_mesh_mat4_transform& p_model_transforms, bc_sub_mesh_px_transform& p_transforms) const noexcept;
 			
 			void calculate_skinned_mesh_collider_transforms(const bc_sub_mesh_mat4_transform& p_model_transforms, bc_sub_mesh_px_transform& p_transforms) const noexcept;
-			
-			template< typename TArg, typename TCallable >
-			void iterate_over_nodes(TArg& p_arg, TCallable p_callable) const noexcept;
+
+			/**
+			 * \brief
+			 * \tparam TArg
+			 * \tparam TVisitFunc
+			 * \tparam TUnVisitFunc
+			 * \param p_arg Root argument
+			 * \param p_visit_func Callable object (const bc_mesh_node&, TArg&) -> TArg
+			 * \param p_unvisit_func Callable object (const bc_mesh_node&, const TArg&) -> void
+			 */
+			template<typename TArg, typename TVisitFunc, typename TUnVisitFunc>
+			void iterate_over_nodes(TArg& p_arg, TVisitFunc p_visit_func, TUnVisitFunc p_unvisit_func) const noexcept;
 			
 		private:
 			bc_mesh_ptr m_mesh;
@@ -139,7 +150,7 @@ namespace black_cat
 		inline const bc_mesh_node* bc_sub_mesh::find_node(const bcCHAR* p_name) const noexcept
 		{
 			const auto* l_mesh_node = m_mesh->find_node(p_name);
-			if(!l_mesh_node || l_mesh_node->get_transform_index() < m_root_node->get_transform_index())
+			if(!l_mesh_node || l_mesh_node->get_index() < m_root_node->get_index())
 			{
 				return nullptr;
 			}
@@ -172,7 +183,7 @@ namespace black_cat
 			return m_mesh->get_node_transform(p_node);
 		}
 
-		inline const core::bc_string& bc_sub_mesh::get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
+		inline std::string_view bc_sub_mesh::get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
 			return m_mesh->get_node_mesh_name(p_node, p_mesh_index);
 		}
@@ -202,7 +213,7 @@ namespace black_cat
 			return m_mesh->get_node_mesh_bound_box(p_node, p_mesh_index);
 		}
 
-		inline const bc_mesh_part_collider& bc_sub_mesh::get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
+		inline core::bc_const_span<bc_mesh_part_collider_entry> bc_sub_mesh::get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
 			return m_mesh->get_node_mesh_colliders(p_node, p_mesh_index);
 		}
@@ -244,10 +255,10 @@ namespace black_cat
 			bc_mesh_utility::calculate_skinned_mesh_collider_transforms(*m_mesh, p_model_transforms, p_transforms);
 		}
 		
-		template< typename TArg, typename TCallable >
-		void bc_sub_mesh::iterate_over_nodes(TArg& p_arg, TCallable p_callable) const noexcept
+		template<typename TArg, typename TVisitFunc, typename TUnVisitFunc>
+		void bc_sub_mesh::iterate_over_nodes(TArg& p_arg, TVisitFunc p_visit_func, TUnVisitFunc p_unvisit_func) const noexcept
 		{
-			bc_mesh_utility::iterate_over_nodes(*m_mesh, p_arg, p_callable, m_root_node);
+			bc_mesh_utility::iterate_over_nodes(*m_mesh, p_arg, p_visit_func, p_unvisit_func, m_root_node);
 		}
 	}
 }

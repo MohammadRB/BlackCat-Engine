@@ -53,19 +53,21 @@ namespace black_cat
 			auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
 			if (l_mesh_component)
 			{
-				m_px_body = l_physics.create_rigid_static(physics::bc_transform::identity());
+				m_px_body = l_physics.create_rigid_dynamic(physics::bc_transform::identity());
 				l_physics_system.set_game_actor(*m_px_body, p_context.m_actor);
-
+				
 				const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_collider_materials);
 				l_physics_system.create_px_shapes_from_mesh(l_material_manager, m_px_body.get(), *l_mesh_component, l_materials);
 
 				core::bc_vector_frame<physics::bc_shape> l_rigid_shapes(m_px_body->get_shape_count());
 				m_px_body->get_shapes(l_rigid_shapes.data(), l_rigid_shapes.size());
 
-				for (physics::bc_shape& l_shape : l_rigid_shapes)
+				for (auto& l_shape : l_rigid_shapes)
 				{
 					l_shape.set_flag(physics::bc_shape_flag::simulation, false);
 				}
+
+				set_kinematic(true);
 				
 				return;
 			}

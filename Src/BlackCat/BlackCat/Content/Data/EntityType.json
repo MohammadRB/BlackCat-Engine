@@ -293,6 +293,11 @@
               "mixamorig:Spine1": "iron"
             }
           }
+        },
+        {
+          "name": "ragdoll",
+          "parameters": {
+          } 
         }
       ]
     },

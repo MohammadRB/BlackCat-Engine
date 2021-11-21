@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		template< typename T >
+		template<typename T>
 		class bc_const_span
 		{
 		public:
@@ -67,7 +67,7 @@ namespace black_cat
 			bcUINT32 m_size;
 		};
 		
-		template< typename T >
+		template<typename T>
 		class bc_span : public bc_const_span<T>
 		{
 		public:
@@ -121,197 +121,197 @@ namespace black_cat
 			constexpr value_type* data();
 		};
 
-		template< class TContainer >
-		bc_span< typename TContainer::value_type > bc_make_span(TContainer& p_container)
+		template<class TContainer>
+		bc_span<typename TContainer::value_type> bc_make_span(TContainer& p_container)
 		{
 			return { p_container.data(), p_container.size() };
 		}
 
-		template< class TContainer >
-		bc_const_span< typename TContainer::value_type > bc_make_span(const TContainer& p_container)
+		template<class TContainer>
+		bc_const_span<typename TContainer::value_type> bc_make_span(const TContainer& p_container)
 		{
 			return { p_container.data(), p_container.size() };
 		}
 
-		template< class TContainer >
-		bc_const_span< typename TContainer::value_type > bc_make_cspan(const TContainer& p_container)
+		template<class TContainer>
+		bc_const_span<typename TContainer::value_type> bc_make_cspan(const TContainer& p_container)
 		{
 			return { p_container.data(), p_container.size() };
 		}
 		
-		template< typename T >
+		template<typename T>
 		constexpr bc_const_span<T>::bc_const_span() noexcept
 			: m_data(nullptr),
 			m_size(0)
 		{
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr bc_const_span<T>::bc_const_span(const value_type* p_data, bcUINT32 p_size) noexcept
 			: m_data(const_cast<value_type*>(p_data)),
 			m_size(p_size)
 		{
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr bc_const_span<T>::bc_const_span(const bc_const_span& p_other) noexcept = default;
 
-		template< typename T >
+		template<typename T>
 		bc_const_span<T>::~bc_const_span() = default;
 
-		template< typename T >
+		template<typename T>
 		constexpr bc_const_span<T>& bc_const_span<T>::operator=(const bc_const_span& p_other) noexcept = default;
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_const_span<T>::const_reference bc_const_span<T>::operator[](size_type p_position) const
 		{
-			BC_ASSERT(p_position < m_size);
+			BC_ASSERT(p_position <m_size);
 			return m_data[p_position];
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_const_span<T>::const_reference bc_const_span<T>::front() const
 		{
 			return m_data[0];
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_const_span<T>::const_reference bc_const_span<T>::back() const
 		{
 			return m_data[m_size - 1];
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_const_span<T>::const_iterator bc_const_span<T>::begin() const noexcept
 		{
 			return &front();
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_const_span<T>::const_iterator bc_const_span<T>::cbegin() const noexcept
 		{
 			return &front();
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_const_span<T>::const_iterator bc_const_span<T>::end() const noexcept
 		{
 			return &back() + 1;
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_const_span<T>::const_iterator bc_const_span<T>::cend() const noexcept
 		{
 			return &back() + 1;
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_const_span<T>::const_reverse_iterator bc_const_span<T>::rbegin() const noexcept
 		{
 			return const_reverse_iterator(&back());
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_const_span<T>::const_reverse_iterator bc_const_span<T>::crbegin() const noexcept
 		{
 			return const_reverse_iterator(&back());
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_const_span<T>::const_reverse_iterator bc_const_span<T>::rend() const noexcept
 		{
 			return const_reverse_iterator(&front() - 1);
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_const_span<T>::const_reverse_iterator bc_const_span<T>::crend() const noexcept
 		{
 			return const_reverse_iterator(&front() - 1);
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr const typename bc_const_span<T>::value_type* bc_const_span<T>::data() const
 		{
 			return m_data;
 		}
 		
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_const_span<T>::size_type bc_const_span<T>::size() const noexcept
 		{
 			return m_size;
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr bool bc_const_span<T>::empty() const noexcept
 		{
 			return m_size == 0;
 		}
 		
-		template< typename T >
+		template<typename T>
 		constexpr bc_span<T>::bc_span() noexcept
 			: bc_const_span<T>()
 		{
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr bc_span<T>::bc_span(value_type* p_data, bcUINT32 p_size) noexcept
 			: bc_const_span<T>(p_data, p_size)
 		{
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr bc_span<T>::bc_span(const bc_span& p_other) noexcept = default;
 
-		template< typename T >
+		template<typename T>
 		bc_span<T>::~bc_span() = default;
 
-		template< typename T >
+		template<typename T>
 		constexpr bc_span<T>& bc_span<T>::operator=(const bc_span& p_other) noexcept = default;
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_span<T>::reference bc_span<T>::operator[](size_type p_position)
 		{
-			BC_ASSERT(p_position < base_type::m_size);
+			BC_ASSERT(p_position <base_type::m_size);
 			return base_type::m_data[p_position];
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_span<T>::reference bc_span<T>::front()
 		{
 			return base_type::m_data[0];
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_span<T>::reference bc_span<T>::back()
 		{
 			return base_type::m_data[base_type::m_size - 1];
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_span<T>::iterator bc_span<T>::begin() noexcept
 		{
 			return &front();
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_span<T>::iterator bc_span<T>::end() noexcept
 		{
 			return &back() + 1;
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_span<T>::reverse_iterator bc_span<T>::rbegin() noexcept
 		{
 			return reverse_iterator(&back());
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_span<T>::reverse_iterator bc_span<T>::rend() noexcept
 		{
 			return reverse_iterator(&front() - 1);
 		}
 
-		template< typename T >
+		template<typename T>
 		constexpr typename bc_span<T>::value_type* bc_span<T>::data()
 		{
 			return base_type::m_data;

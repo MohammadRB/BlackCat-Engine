@@ -29,10 +29,10 @@ namespace black_cat
 		{
 			core::bc_string m_name;
 			bc_mesh_material_ptr m_material;
-			core::bc_vector_movable< bc_vertex_pos_tex_nor_tan > m_vertices;
-			core::bc_vector_movable< bc_vertex_pos_tex_nor_tan_bon > m_skinned_vertices;
-			core::bc_vector_movable< bcUINT16 > m_16bit_indices;
-			core::bc_vector_movable< bcUINT32 > m_32bit_indices;
+			core::bc_vector_movable<bc_vertex_pos_tex_nor_tan> m_vertices;
+			core::bc_vector_movable<bc_vertex_pos_tex_nor_tan_bon> m_skinned_vertices;
+			core::bc_vector_movable<bcUINT16> m_16bit_indices;
+			core::bc_vector_movable<bcUINT32> m_32bit_indices;
 			physics::bc_bound_box m_bound_box;
 
 			graphic::bc_buffer_ref m_vertex_buffer;
@@ -45,18 +45,18 @@ namespace black_cat
 
 		private:
 			using node_index_t = bc_mesh_node::node_index_t;
-			using hash_t = std::hash< const bcCHAR* >;
+			using hash_t = std::hash<std::string_view>;
 
 		public:
 			bc_mesh(bc_mesh_builder p_builder, bc_mesh_collider_ptr p_colliders);
 
 			bc_mesh(bc_mesh&& p_other) noexcept;
 
-			~bc_mesh() = default;
+			~bc_mesh() override = default;
 
 			bc_mesh& operator=(bc_mesh&& p_other) noexcept;
 
-			const bcCHAR* get_name() const noexcept;
+			std::string_view get_name() const noexcept;
 
 			bcFLOAT get_auto_scale() const noexcept;
 			
@@ -74,11 +74,11 @@ namespace black_cat
 
 			const bc_mesh_node* find_node(bc_mesh_node::node_index_t p_index) const noexcept;
 			
-			const bc_mesh_node* find_node(const bcCHAR* p_name) const noexcept;
+			const bc_mesh_node* find_node(std::string_view p_name) const noexcept;
 
 			const bc_mesh_node* get_node_parent(const bc_mesh_node& p_node) const noexcept;
 
-			const core::bc_vector< bc_mesh_node* >& get_node_children(const bc_mesh_node& p_node) const noexcept;
+			const core::bc_vector<bc_mesh_node*>& get_node_children(const bc_mesh_node& p_node) const noexcept;
 
 			const core::bc_matrix4f& get_node_transform(const bc_mesh_node& p_node) const noexcept;
 			
@@ -86,7 +86,7 @@ namespace black_cat
 			
 			const core::bc_matrix4f& get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
 			
-			const core::bc_string& get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+			std::string_view get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_mesh_material& get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 			
@@ -98,7 +98,7 @@ namespace black_cat
 
 			const physics::bc_bound_box& get_node_mesh_bound_box(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			const bc_mesh_part_collider& get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+			core::bc_const_span<bc_mesh_part_collider_entry> get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
 			bc_mesh_level_of_detail get_level_of_details() const noexcept;
 			
@@ -122,7 +122,6 @@ namespace black_cat
 			core::bc_vector<bc_mesh_part_data> m_meshes;
 			core::bc_vector<bc_render_state_ptr> m_render_states;
 			bc_mesh_collider_ptr m_collider;
-			core::bc_vector<const bc_mesh_part_collider*> m_collider_map;
 
 			core::bc_vector<core::bc_content_ptr<bc_mesh>> m_level_of_details;
 			core::bc_vector_movable<const bc_mesh*> m_level_of_details_map;
@@ -130,9 +129,9 @@ namespace black_cat
 
 		using bc_mesh_ptr = core::bc_content_ptr< bc_mesh >;
 
-		inline const bcCHAR* bc_mesh::get_name() const noexcept
+		inline std::string_view bc_mesh::get_name() const noexcept
 		{
-			return m_name.c_str();
+			return std::string_view(m_name.c_str(), m_name.size());
 		}
 
 		inline bcFLOAT bc_mesh::get_auto_scale() const noexcept
@@ -182,17 +181,17 @@ namespace black_cat
 
 		inline const core::bc_matrix4f& bc_mesh::get_node_transform(const bc_mesh_node& p_node) const noexcept
 		{
-			return m_transformations[p_node.m_transform_index];
+			return m_transformations[p_node.m_index];
 		}
 
 		inline const core::bc_matrix4f& bc_mesh::get_node_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
 		{
-			return m_bind_poses[p_node.m_transform_index];
+			return m_bind_poses[p_node.m_index];
 		}
 		
 		inline const core::bc_matrix4f& bc_mesh::get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
 		{
-			return m_inverse_bind_poses[p_node.m_transform_index];
+			return m_inverse_bind_poses[p_node.m_index];
 		}
 
 		inline bc_mesh_level_of_detail bc_mesh::get_level_of_details() const noexcept

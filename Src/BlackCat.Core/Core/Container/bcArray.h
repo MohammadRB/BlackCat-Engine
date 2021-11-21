@@ -8,7 +8,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		template < class T, bcSIZE TCount >
+		template<class T, bcSIZE TCount>
 		using bc_array = std::array<T, TCount>;
 	}
 }

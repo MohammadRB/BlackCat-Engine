@@ -78,10 +78,10 @@ namespace black_cat
 			const auto& l_mesh = p_mesh.get_mesh();
 			const auto& l_collider_materials = p_collider_materials ? *p_collider_materials : l_empty_collider_json;
 
-			for (const auto& l_mesh_part_collider : l_mesh.get_mesh_collider())
+			for (const bc_mesh_part_collider_entry& l_mesh_part_collider : l_mesh.get_mesh_collider())
 			{
 				auto l_material = p_material_manager.get_default_collider_material();
-				const auto l_material_ite = l_collider_materials.find(l_mesh_part_collider.first.c_str());
+				const auto l_material_ite = l_collider_materials.find(l_mesh_part_collider.m_attached_mesh_name.c_str());
 				if (l_material_ite != std::end(l_collider_materials))
 				{
 					core::bc_any& l_material_key = l_material_ite->second;
@@ -90,35 +90,32 @@ namespace black_cat
 					l_material = p_material_manager.find_collider_material(l_material_name.c_str());
 				}
 				
-				for (bc_mesh_part_collider_entry& l_collider_entry : l_mesh_part_collider.second)
+				auto l_px_shape = p_px_actor.create_shape(*l_mesh_part_collider.m_shape, l_material.m_px_material, l_mesh_part_collider.m_shape_flags);
+				if(!l_px_shape.is_valid())
 				{
-					auto l_px_shape = p_px_actor.create_shape(*l_collider_entry.m_shape, l_material.m_px_material, l_collider_entry.m_shape_flags);
-					if(!l_px_shape.is_valid())
-					{
-						throw bc_invalid_argument_exception("Invalid mesh px-shape");
-					}
-
-					l_px_shape.set_local_pose(l_collider_entry.m_initial_transform);
-					l_px_shape.set_high_detail_query_shape(l_collider_entry.m_high_detail_query_shape);
-					if(l_mesh.get_skinned())
-					{
-						l_px_shape.set_query_group(static_cast<physics::bc_query_group>(bc_actor_group::skinned_mesh));
-					}
-					
-					auto* l_shape_data = m_shape_data_pool.alloc();
-					l_shape_data->m_collider_entry = &l_collider_entry;
-					l_shape_data->m_material_name = l_material.m_name;
-					l_shape_data->m_collision_particle = l_material.m_collision_particle;
-					l_shape_data->m_collision_decal = l_material.m_collision_decal;
-					
-					l_px_shape.set_data(l_shape_data);
+					throw bc_invalid_argument_exception("Invalid mesh px-shape");
 				}
+
+				l_px_shape.set_local_pose(l_mesh_part_collider.m_initial_transform);
+				l_px_shape.set_high_detail_query_shape(l_mesh_part_collider.m_high_detail_query_shape);
+				if(l_mesh.get_skinned())
+				{
+					l_px_shape.set_query_group(static_cast<physics::bc_query_group>(bc_actor_group::skinned_mesh));
+				}
+				
+				auto* l_shape_data = m_shape_data_pool.alloc();
+				l_shape_data->m_collider_entry = &l_mesh_part_collider;
+				l_shape_data->m_material_name = l_material.m_name;
+				l_shape_data->m_collision_particle = l_material.m_collision_particle;
+				l_shape_data->m_collision_decal = l_material.m_collision_decal;
+				
+				l_px_shape.set_data(l_shape_data);
 			}
 		}
 
 		void bc_physics_system::clear_px_shapes_data(const physics::bc_rigid_body& p_px_actor)
 		{
-			core::bc_vector_frame< physics::bc_shape > l_shapes(p_px_actor.get_shape_count());
+			core::bc_vector_frame<physics::bc_shape> l_shapes(p_px_actor.get_shape_count());
 			p_px_actor.get_shapes(l_shapes.data(), l_shapes.size());
 
 			for(auto& l_shape : l_shapes)

@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 
+#include "Core/Container/bcStringStream.h"
 #include "Core/Utility/bcLogger.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
@@ -52,7 +53,7 @@ namespace black_cat
 					{
 						for (bc_mesh_node::node_index_t l_mesh_ite = 0, l_mesh_count = p_node.get_mesh_count(); l_mesh_ite < l_mesh_count; ++l_mesh_ite)
 						{
-							const auto& l_mesh_part_name = l_lod_mesh.get_node_mesh_name(p_node, l_mesh_ite);
+							const auto l_mesh_part_name = l_lod_mesh.get_node_mesh_name(p_node, l_mesh_ite);
 
 							if (p_mesh_prefix != nullptr)
 							{
@@ -66,13 +67,13 @@ namespace black_cat
 
 							auto l_material = l_lod_mesh.get_node_mesh_material_ptr(p_node, l_mesh_ite);
 							auto l_render_state = l_lod_mesh.get_node_mesh_render_state_ptr(p_node, l_mesh_ite);
-							auto l_material_ite = p_mesh_materials.find(l_mesh_part_name.c_str());
+							auto l_material_ite = p_mesh_materials.find(l_mesh_part_name.data());
 
 							if (l_material_ite != std::cend(p_mesh_materials))
 							{
 								core::bc_any& l_material_key = l_material_ite->second;
-								const auto& l_material_name = l_material_key.as_throw< core::bc_string >();
-								auto l_cache_name = l_lod_mesh.get_name() + l_mesh_part_name + l_material_name;
+								const auto& l_material_name = l_material_key.as_throw<core::bc_string>();
+								auto l_cache_name = (core::bc_string_stream() << l_lod_mesh.get_name() << l_mesh_part_name << l_material_name).str();
 								auto l_cache_entry = m_mesh_render_states->find(l_cache_name);
 
 								if(l_cache_entry == std::end(*m_mesh_render_states))
@@ -81,12 +82,12 @@ namespace black_cat
 
 									if (l_new_material == nullptr)
 									{
-										auto l_msg = core::bc_estring_frame(bcL("No material was found with key '")) +
-											core::bc_to_estring_frame(l_material_name.c_str()) +
-											bcL("' to associate with mesh '") +
-											core::bc_to_estring_frame(l_lod_mesh.get_name()) +
-											bcL("'");
-										core::bc_get_service<core::bc_logger>()->log_info(l_msg.c_str());
+										auto l_msg = core::bc_estring_stream() << bcL("No material was found with key '")
+											<< l_material_name
+											<< bcL("' to associate with mesh '")
+											<< l_lod_mesh.get_name()
+											<< bcL("'");
+										core::bc_get_service<core::bc_logger>()->log_info(l_msg.str().c_str());
 									}
 									else
 									{
@@ -131,10 +132,13 @@ namespace black_cat
 								l_material = l_cache_entry->second.second;
 							}
 
-							p_result->push_back(bc_mesh_render_state_entry(p_node.get_transform_index(), std::move(l_render_state), std::move(l_material)));
+							p_result->push_back(bc_mesh_render_state_entry(p_node.get_index(), std::move(l_render_state), std::move(l_material)));
 						}
 
 						return p_result;
+					},
+					[](const bc_mesh_node&, decltype(l_render_states_ptr))
+					{
 					},
 					&p_root_node
 				);
@@ -213,6 +217,9 @@ namespace black_cat
 				}
 
 				return 0;
+			}, 
+			[](const bc_mesh_node&, int)
+			{
 			});
 		}
 
@@ -249,6 +256,9 @@ namespace black_cat
 				}
 
 				return l_node_absolute_transformation;
+			},
+			[](const bc_mesh_node&, const core::bc_matrix4f&)
+			{
 			});
 		}
 
@@ -256,18 +266,15 @@ namespace black_cat
 			const bc_sub_mesh_mat4_transform& p_model_transforms, 
 			bc_sub_mesh_px_transform& p_transforms)
 		{
-			for (const auto& l_mesh_part_collider : p_mesh.get_collider())
+			for (const bc_mesh_part_collider_entry& l_mesh_collider : p_mesh.get_collider())
 			{
-				for (const bc_mesh_part_collider_entry& l_entry : l_mesh_part_collider.second)
-				{
-					const auto* l_collider_attached_node = p_mesh.find_node(l_entry.m_attached_node_transform_index);
-					BC_ASSERT(l_collider_attached_node);
+				const auto* l_collider_attached_node = p_mesh.find_node(l_mesh_collider.m_attached_node_index);
+				BC_ASSERT(l_collider_attached_node);
 
-					const auto& l_model_transform = p_model_transforms.get_node_transform(*l_collider_attached_node);
-					auto& l_output_transform = p_transforms.get_node_transform(*l_collider_attached_node);
-					
-					l_output_transform = physics::bc_transform(l_model_transform) * l_entry.m_local_transform;
-				}
+				const auto& l_model_transform = p_model_transforms.get_node_transform(*l_collider_attached_node);
+				auto& l_output_transform = p_transforms.get_node_transform(*l_collider_attached_node);
+				
+				l_output_transform = physics::bc_transform(l_model_transform) * l_mesh_collider.m_local_transform;
 			}
 		}
 
@@ -275,26 +282,23 @@ namespace black_cat
 			const bc_sub_mesh_mat4_transform& p_model_transforms, 
 			bc_sub_mesh_px_transform& p_transforms)
 		{
-			for (const auto& l_mesh_part_collider : p_mesh.get_collider())
+			for (const bc_mesh_part_collider_entry& l_mesh_part_collider : p_mesh.get_collider())
 			{
-				for (bc_mesh_part_collider_entry& l_entry : l_mesh_part_collider.second)
-				{
-					const auto* l_collider_attached_node = p_mesh.find_node(l_entry.m_attached_node_transform_index);
-					BC_ASSERT(l_collider_attached_node);
+				const auto* l_collider_attached_node = p_mesh.find_node(l_mesh_part_collider.m_attached_node_index);
+				BC_ASSERT(l_collider_attached_node);
 
-					const auto& l_inverse_bind_pose_transform = p_mesh.get_node_inverse_bind_pose_transform(*l_collider_attached_node);
-					const auto& l_model_transform = p_model_transforms.get_node_transform(*l_collider_attached_node);
-					auto& l_output_transform = p_transforms.get_node_transform(*l_collider_attached_node);
+				const auto& l_inverse_bind_pose_transform = p_mesh.get_node_inverse_bind_pose_transform(*l_collider_attached_node);
+				const auto& l_model_transform = p_model_transforms.get_node_transform(*l_collider_attached_node);
+				auto& l_output_transform = p_transforms.get_node_transform(*l_collider_attached_node);
 
-					physics::bc_transform l_px_inverse_bind_pose_transform
-					(
-						l_inverse_bind_pose_transform.get_translation() * p_mesh.get_scale(), 
-						l_inverse_bind_pose_transform.get_rotation()
-					);
-					
-					l_output_transform = l_px_inverse_bind_pose_transform * l_entry.m_local_transform;
-					l_output_transform = physics::bc_transform(l_model_transform) * l_output_transform;
-				}
+				physics::bc_transform l_px_inverse_bind_pose_transform
+				(
+					l_inverse_bind_pose_transform.get_translation() * p_mesh.get_scale(), 
+					l_inverse_bind_pose_transform.get_rotation()
+				);
+				
+				l_output_transform = l_px_inverse_bind_pose_transform * l_mesh_part_collider.m_local_transform;
+				l_output_transform = physics::bc_transform(l_model_transform) * l_output_transform;
 			}
 		}
 

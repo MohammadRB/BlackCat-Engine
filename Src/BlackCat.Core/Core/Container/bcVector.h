@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		template <typename T, class TAllocator>
+		template<typename T, class TAllocator>
 		class bc_vector_base : public bc_container<T, TAllocator>
 		{
 		public:

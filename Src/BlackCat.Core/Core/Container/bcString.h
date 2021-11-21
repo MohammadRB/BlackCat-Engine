@@ -8,6 +8,7 @@
 #include "Core/bcExport.h"
 #include <cerrno>
 #include <string>
+#include <string_view>
 
 namespace black_cat
 {

@@ -115,7 +115,7 @@ namespace black_cat
 					p_event.get_hit_position(),
 					p_event.get_hit_normal(),
 					p_store_reference_to_bullet
-						? l_hit_shape_data->m_collider_entry->m_attached_node_transform_index
+						? l_hit_shape_data->m_collider_entry->m_attached_node_index
 						: bc_mesh_node::s_invalid_index
 				);
 			}

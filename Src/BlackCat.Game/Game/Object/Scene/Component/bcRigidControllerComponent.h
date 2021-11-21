@@ -3,7 +3,7 @@
 #pragma once
 
 #include "PhysicsImp/Fundation/bcCController.h"
-#include "PhysicsImp/Body/bcRigidStatic.h"
+#include "PhysicsImp/Body/bcRigidDynamic.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 
 namespace black_cat
@@ -47,7 +47,7 @@ namespace black_cat
 			void debug_draw(const bc_actor_component_debug_draw_context& p_context) override;
 
 		private:
-			physics::bc_rigid_static_ref m_px_body; // TODO convert to rigid dynamic
+			physics::bc_rigid_dynamic_ref m_px_body;
 			physics::bc_ccontroller_ref m_px_controller;
 		};
 

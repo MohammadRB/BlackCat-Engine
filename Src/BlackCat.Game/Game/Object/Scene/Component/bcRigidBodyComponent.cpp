@@ -78,7 +78,7 @@ namespace black_cat
 						continue;
 					}
 
-					const auto& l_transform = p_model_space_transforms[l_shape_data->m_collider_entry->m_attached_node_transform_index];
+					const auto& l_transform = p_model_space_transforms[l_shape_data->m_collider_entry->m_attached_node_index];
 
 					l_shape.set_local_pose(l_transform);
 				}

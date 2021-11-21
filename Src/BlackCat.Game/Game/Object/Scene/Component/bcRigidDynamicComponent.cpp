@@ -65,7 +65,7 @@ namespace black_cat
 			if (l_mesh_component)
 			{
 				auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();
-				auto& l_physics_system = core::bc_get_service< bc_game_system >()->get_physics_system();
+				auto& l_physics_system = core::bc_get_service<bc_game_system>()->get_physics_system();
 				auto& l_physics = l_physics_system.get_physics();
 
 				m_px_actor_ref = l_physics.create_rigid_dynamic(physics::bc_transform::identity());

@@ -274,6 +274,9 @@ namespace black_cat
 				p_buffer.add_index(l_start_index + 1);
 
 				return l_node_transform;
+			},
+			[](const bc_mesh_node&, const core::bc_matrix4f&)
+			{
 			});
 		}
 	}

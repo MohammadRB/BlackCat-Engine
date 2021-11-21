@@ -44,6 +44,8 @@ namespace black_cat
 
 			bc_logger_output_stream& add_only_file_modifier() noexcept;
 
+			void flush_log();
+			
 			bc_logger_output_stream& operator<<(bool p_bool);
 			
 			bc_logger_output_stream& operator<<(bcINT8 p_number);
@@ -70,6 +72,10 @@ namespace black_cat
 			
 			bc_logger_output_stream& operator<<(const bcWCHAR* p_str);
 
+			bc_logger_output_stream& operator<<(std::string_view p_str);
+			
+			bc_logger_output_stream& operator<<(std::wstring_view p_str);
+			
 			bc_logger_output_stream& operator<<(const bc_string& p_str);
 			
 			bc_logger_output_stream& operator<<(const bc_string_frame& p_str);
@@ -91,8 +97,6 @@ namespace black_cat
 			bc_logger_output_stream& operator<<(std::basic_ostream<bcECHAR, std::char_traits<bcECHAR>>& (*p_func)(std::basic_ostream<bcECHAR, std::char_traits<bcECHAR>>&));
 			
 			bc_logger_output_stream& operator<<(bc_logger_output_stream& (*p_func)(bc_logger_output_stream&));
-
-			void flush_log();
 		
 		private:
 			bc_logger* m_logger;
@@ -177,6 +181,18 @@ namespace black_cat
 			return *this;
 		}
 
+		inline bc_logger_output_stream& bc_logger_output_stream::operator<<(std::string_view p_str)
+		{
+			std::operator<<(*this, p_str.data());
+			return *this;
+		}
+
+		inline bc_logger_output_stream& bc_logger_output_stream::operator<<(std::wstring_view p_str)
+		{
+			std::operator<<(*this, p_str);
+			return *this;
+		}
+		
 		inline bc_logger_output_stream& bc_logger_output_stream::operator<<(const bc_string& p_str)
 		{
 			std::operator<<(*this, p_str.c_str());

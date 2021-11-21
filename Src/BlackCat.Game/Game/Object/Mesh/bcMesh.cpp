@@ -6,7 +6,6 @@
 #include "Game/Object/Mesh/bcSubMesh.h"
 #include "Game/Object/Mesh/bcMeshBuilder.h"
 #include "Game/Object/Mesh/bcMeshCollider.h"
-#include "Game/Object/Mesh/bcMeshPartCollider.h"
 #include "Game/Object/Mesh/bcMeshLevelOfDetail.h"
 #include "Game/Object/Mesh/bcMeshUtility.h"
 #include "Game/Object/Mesh/bcSubMeshTransform.h"
@@ -52,7 +51,7 @@ namespace black_cat
 
 				l_node.m_name = l_builder_node.m_name.c_str();
 				l_node.m_parent = l_mesh_node_parent_ite != std::end(m_nodes) ? &*l_mesh_node_parent_ite : nullptr;
-				l_node.m_transform_index = l_node_index;
+				l_node.m_index = l_node_index;
 				l_node.m_first_mesh_index = l_mesh_count;
 				l_node.m_mesh_count = l_builder_node.m_mesh_parts.size();
 
@@ -65,7 +64,7 @@ namespace black_cat
 					bc_mesh_builder_mesh_part& l_builder_mesh = l_builder_node.m_mesh_parts[l_builder_node_mesh_ite];
 					bc_mesh_part_data& l_mesh = m_meshes[l_mesh_index];
 					
-					l_mesh.m_name = l_builder_mesh.m_name.c_str();
+					l_mesh.m_name = l_builder_mesh.m_name;
 					l_mesh.m_material = std::move(l_builder_mesh.m_material);
 					l_mesh.m_vertices = std::move(l_builder_mesh.m_vertices);
 					l_mesh.m_skinned_vertices = std::move(l_builder_mesh.m_skinned_vertices);
@@ -76,9 +75,6 @@ namespace black_cat
 					l_mesh.m_index_buffer = std::move(l_builder_mesh.m_index_buffer);
 					
 					m_render_states[l_mesh_index] = std::move(l_builder_mesh.m_render_state);
-
-					const auto* l_mesh_colliders = m_collider->find_mesh_collider(m_meshes[l_mesh_index].m_name);
-					m_collider_map.push_back(l_mesh_colliders);
 				}
 				
 				m_nodes_map.insert(std::make_pair(hash_t()(l_node.m_name.c_str()), &l_node));
@@ -147,7 +143,6 @@ namespace black_cat
 			m_meshes = std::move(p_other.m_meshes);
 			m_render_states = std::move(p_other.m_render_states);
 			m_collider = std::move(p_other.m_collider);
-			m_collider_map = std::move(p_other.m_collider_map);
 			m_level_of_details = std::move(p_other.m_level_of_details);
 			m_level_of_details_map = std::move(p_other.m_level_of_details_map);
 			m_level_of_details_map[0] = this;
@@ -165,7 +160,7 @@ namespace black_cat
 			return &m_nodes[p_index];
 		}
 		
-		const bc_mesh_node* bc_mesh::find_node(const bcCHAR* p_name) const noexcept
+		const bc_mesh_node* bc_mesh::find_node(std::string_view p_name) const noexcept
 		{
 			const auto l_hash = hash_t()(p_name);
 			const auto l_entry = m_nodes_map.find(l_hash);
@@ -178,14 +173,15 @@ namespace black_cat
 			return l_entry->second;
 		}
 
-		const core::bc_string& bc_mesh::get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
+		std::string_view bc_mesh::get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
 			if (p_mesh_index >= p_node.m_mesh_count)
 			{
 				throw bc_out_of_range_exception("Invalid mesh index");
 			}
 
-			return m_meshes[p_node.m_first_mesh_index + p_mesh_index].m_name;
+			const auto& l_mesh_name = m_meshes[p_node.m_first_mesh_index + p_mesh_index].m_name;
+			return std::string_view(l_mesh_name.c_str(), l_mesh_name.size());
 		}
 
 		const bc_mesh_material& bc_mesh::get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
@@ -238,14 +234,14 @@ namespace black_cat
 			return m_meshes[p_node.m_first_mesh_index + p_mesh_index].m_bound_box;
 		}
 
-		const bc_mesh_part_collider& bc_mesh::get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
+		core::bc_const_span<bc_mesh_part_collider_entry> bc_mesh::get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
 			if (p_mesh_index >= p_node.m_mesh_count)
 			{
 				throw bc_out_of_range_exception("Invalid mesh index");
 			}
 
-			return *m_collider_map[p_node.m_first_mesh_index + p_mesh_index];
+			return m_collider->find_mesh_collider(get_node_mesh_name(p_node, p_mesh_index));
 		}
 
 		void bc_mesh::_apply_auto_scale(bcFLOAT p_auto_scale)
@@ -258,85 +254,90 @@ namespace black_cat
 
 			m_auto_scale = p_auto_scale;
 			m_scale = p_auto_scale / l_largest_side;
-			m_transformations[m_root->get_transform_index()] *= core::bc_matrix4f::scale_matrix(m_scale);
+			m_transformations[m_root->get_index()] *= core::bc_matrix4f::scale_matrix(m_scale);
 
 			for(auto& l_mesh_part_data : m_meshes)
 			{
 				l_mesh_part_data.m_bound_box.scale(m_scale);
 			}
 
-			for(const auto& l_mesh_part_collider : *m_collider)
+			for(bc_mesh_part_collider_entry& l_mesh_part_collider : *m_collider)
 			{
-				for(bc_mesh_part_collider_entry& l_entry : l_mesh_part_collider.second)
+				switch (l_mesh_part_collider.m_shape->get_type())
 				{
-					switch (l_entry.m_shape->get_type())
+				case physics::bc_shape_type::sphere:
 					{
-					case physics::bc_shape_type::sphere:
-						{
-							auto& l_sphere = static_cast< physics::bc_shape_sphere& >(*l_entry.m_shape);
-							l_sphere = physics::bc_shape_sphere(l_sphere.get_radius() * m_scale);
-							break;
-						}
-					case physics::bc_shape_type::plane:
-						{
-							auto& l_plane = static_cast< physics::bc_shape_plane& >(*l_entry.m_shape);
-							l_plane = physics::bc_shape_plane(l_plane.get_normal(), l_plane.get_distance() * m_scale);
-							break;
-						}
-					case physics::bc_shape_type::capsule:
-						{
-							auto& l_capsule = static_cast< physics::bc_shape_capsule& >(*l_entry.m_shape);
-							l_capsule = physics::bc_shape_capsule(l_capsule.get_half_height() * m_scale, l_capsule.get_radius() * m_scale);
-							break;
-						}
-					case physics::bc_shape_type::box:
-						{
-							auto& l_box = static_cast< physics::bc_shape_box& >(*l_entry.m_shape);
-							l_box = physics::bc_shape_box(l_box.get_half_extends() * m_scale);
-							break;
-						}
-					case physics::bc_shape_type::convex_mesh:
-						{
-							auto& l_convex = static_cast< physics::bc_shape_convex_mesh& >(*l_entry.m_shape);
-							l_convex = physics::bc_shape_convex_mesh(physics::bc_geometry_scale(m_scale), l_convex.get_convex());
-							break;
-						}
-					case physics::bc_shape_type::triangle_mesh:
-						{
-							auto& l_triangle = static_cast< physics::bc_shape_triangle_mesh& >(*l_entry.m_shape);
-							l_triangle = physics::bc_shape_triangle_mesh(physics::bc_geometry_scale(m_scale), l_triangle.get_mesh());
-							break;
-						}
-					case physics::bc_shape_type::height_field:
-						{
-							BC_ASSERT(false);
-							break;
-						}
-					default:
-						{
-							BC_ASSERT(false);
-						}
+						auto& l_sphere = static_cast< physics::bc_shape_sphere& >(*l_mesh_part_collider.m_shape);
+						l_sphere = physics::bc_shape_sphere(l_sphere.get_radius() * m_scale);
+						break;
 					}
-
-					l_entry.m_local_transform = physics::bc_transform
-					(
-						l_entry.m_local_transform.get_position() * m_scale,
-						l_entry.m_local_transform.get_matrix3()
-					);
+				case physics::bc_shape_type::plane:
+					{
+						auto& l_plane = static_cast< physics::bc_shape_plane& >(*l_mesh_part_collider.m_shape);
+						l_plane = physics::bc_shape_plane(l_plane.get_normal(), l_plane.get_distance() * m_scale);
+						break;
+					}
+				case physics::bc_shape_type::capsule:
+					{
+						auto& l_capsule = static_cast< physics::bc_shape_capsule& >(*l_mesh_part_collider.m_shape);
+						l_capsule = physics::bc_shape_capsule(l_capsule.get_half_height() * m_scale, l_capsule.get_radius() * m_scale);
+						break;
+					}
+				case physics::bc_shape_type::box:
+					{
+						auto& l_box = static_cast< physics::bc_shape_box& >(*l_mesh_part_collider.m_shape);
+						l_box = physics::bc_shape_box(l_box.get_half_extends() * m_scale);
+						break;
+					}
+				case physics::bc_shape_type::convex_mesh:
+					{
+						auto& l_convex = static_cast< physics::bc_shape_convex_mesh& >(*l_mesh_part_collider.m_shape);
+						l_convex = physics::bc_shape_convex_mesh(physics::bc_geometry_scale(m_scale), l_convex.get_convex());
+						break;
+					}
+				case physics::bc_shape_type::triangle_mesh:
+					{
+						auto& l_triangle = static_cast< physics::bc_shape_triangle_mesh& >(*l_mesh_part_collider.m_shape);
+						l_triangle = physics::bc_shape_triangle_mesh(physics::bc_geometry_scale(m_scale), l_triangle.get_mesh());
+						break;
+					}
+				case physics::bc_shape_type::height_field:
+					{
+						BC_ASSERT(false);
+						break;
+					}
+				default:
+					{
+						BC_ASSERT(false);
+					}
 				}
+
+				l_mesh_part_collider.m_local_transform = physics::bc_transform
+				(
+					l_mesh_part_collider.m_local_transform.get_position() * m_scale,
+					l_mesh_part_collider.m_local_transform.get_matrix3()
+				);
 			}
 		}
 
 		void bc_mesh::_calculate_inverse_bind_pose()
 		{
 			auto l_identity = core::bc_matrix4f::identity();
-			bc_mesh_utility::iterate_over_nodes(*this, l_identity, [this](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)
-			{
-				m_bind_poses[p_node.m_transform_index] = get_node_transform(p_node) * p_parent_transform;
-				m_inverse_bind_poses[p_node.m_transform_index] = m_bind_poses[p_node.m_transform_index].inverse();
+			bc_mesh_utility::iterate_over_nodes
+			(
+				*this,
+				l_identity, 
+				[this](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)
+				{
+					m_bind_poses[p_node.m_index] = get_node_transform(p_node) * p_parent_transform;
+					m_inverse_bind_poses[p_node.m_index] = m_bind_poses[p_node.m_index].inverse();
 
-				return m_bind_poses[p_node.m_transform_index];
-			});
+					return m_bind_poses[p_node.m_index];
+				},
+				[](const bc_mesh_node&, const core::bc_matrix4f&)
+				{
+				}
+			);
 		}
 
 		void bc_mesh::_calculate_collider_initial_transforms()
@@ -345,19 +346,16 @@ namespace black_cat
 			bc_sub_mesh_mat4_transform l_transforms(*get_root());
 			bc_mesh_utility::calculate_absolute_transforms(*this, core::bc_matrix4f::identity(), l_transforms, l_bound_box);
 
-			for (const auto& l_mesh_part_collider : *m_collider)
-			{
-				for (bc_mesh_part_collider_entry& l_entry : l_mesh_part_collider.second)
-				{					
-					if(m_skinned)
-					{
-						l_entry.m_initial_transform = l_entry.m_local_transform;
-					}
-					else
-					{
-						auto& l_attached_node_transform = l_transforms[l_entry.m_attached_node_transform_index];
-						l_entry.m_initial_transform = physics::bc_transform(l_attached_node_transform) * l_entry.m_local_transform;
-					}
+			for (bc_mesh_part_collider_entry& l_collider : *m_collider)
+			{			
+				if(m_skinned)
+				{
+					l_collider.m_initial_transform = l_collider.m_local_transform;
+				}
+				else
+				{
+					auto& l_attached_node_transform = l_transforms[l_collider.m_attached_node_index];
+					l_collider.m_initial_transform = physics::bc_transform(l_attached_node_transform) * l_collider.m_local_transform;
 				}
 			}
 		}

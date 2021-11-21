@@ -12,31 +12,31 @@ namespace black_cat
 {
 	namespace core
 	{
-		template< typename T >
+		template<typename T>
 		struct bc_allocator_traits
 		{
 		public:
 			using this_type = bc_allocator_traits;
 			using allocator_type = T;
 			using value_type = typename allocator_type::value_type;
-			using pointer = typename bc_get_pointer_type< allocator_type >::type;
-			using const_pointer = typename bc_get_const_pointer_type< allocator_type >::type;
+			using pointer = typename bc_get_pointer_type<allocator_type>::type;
+			using const_pointer = typename bc_get_const_pointer_type<allocator_type>::type;
 			using reference = typename bc_get_reference_type<allocator_type>::type;
 			using const_reference = typename bc_get_const_reference_type<allocator_type>::type;
-			using difference_type = typename bc_get_difference_type< allocator_type >::type;
-			using size_type = typename bc_get_size_type< allocator_type >::type;
+			using difference_type = typename bc_get_difference_type<allocator_type>::type;
+			using size_type = typename bc_get_size_type<allocator_type>::type;
 			using is_movable_type = typename allocator_type::is_movable_type;
 
-			template< typename TOther >
+			template<typename TOther>
 			struct rebind_alloc
 			{
 				using other = typename allocator_type::template rebind<TOther>::other;
 			};
 
-			template< typename TOther >
+			template<typename TOther>
 			struct rebind
 			{
-				using other = bc_allocator_traits< typename rebind_alloc< TOther >::other >;
+				using other = bc_allocator_traits<typename rebind_alloc<TOther>::other>;
 			};
 
 		public:
@@ -50,11 +50,11 @@ namespace black_cat
 				p_allocator.deallocate(p_pointer);
 			}
 
-			template< typename ...TArgs >
+			template<typename ...TArgs>
 			static void construct(allocator_type& p_allocator, value_type* p_pointer, TArgs&&... p_args)
 				noexcept(std::is_nothrow_constructible<value_type, TArgs...>::value)
 			{
-				p_allocator.construct(p_pointer, std::forward< TArgs >(p_args)...);
+				p_allocator.construct(p_pointer, std::forward<TArgs>(p_args)...);
 			}
 
 			static void destroy(allocator_type& p_allocator, value_type* p_pointer)
@@ -72,14 +72,14 @@ namespace black_cat
 				_unregister_pointer(p_allocator, p_pointer, is_movable_type());
 			}
 
-			template< typename TOther >
-			static bool equal(const this_type& p_first, const typename rebind_alloc< TOther >::other& p_second)
+			template<typename TOther>
+			static bool equal(const this_type& p_first, const typename rebind_alloc<TOther>::other& p_second)
 			{
 				return p_first == p_second;
 			}
 
-			template< typename TOther >
-			static bool not_equal(const this_type& p_first, const typename rebind_alloc< TOther >::other& p_second)
+			template<typename TOther>
+			static bool not_equal(const this_type& p_first, const typename rebind_alloc<TOther>::other& p_second)
 			{
 				return p_first != p_second;
 			}
@@ -105,11 +105,11 @@ namespace black_cat
 
 		};
 
-		template< typename T, bcUINT32 TAlignment, bc_alloc_type TAllocType >
+		template<typename T, bcUINT32 TAlignment, bc_alloc_type TAllocType>
 		class bc_allocator_base
 		{
 		public:
-			using this_type = bc_allocator_base< T, TAlignment, TAllocType >;
+			using this_type = bc_allocator_base<T, TAlignment, TAllocType>;
 			using value_type = T;
 			using pointer = value_type*;
 			using const_pointer = const value_type*;
@@ -120,12 +120,12 @@ namespace black_cat
 			using propagate_on_container_copy_assignment = std::false_type;
 			using propagate_on_container_move_assignment = std::false_type;
 			using propagate_on_container_swap = std::false_type;
-			using is_movable_type = typename std::conditional< TAllocType == bc_alloc_type::unknown_movable, std::true_type, std::false_type >::type;
+			using is_movable_type = typename std::conditional<TAllocType == bc_alloc_type::unknown_movable, std::true_type, std::false_type>::type;
 
-			template< typename TOther >
+			template<typename TOther>
 			struct rebind
 			{
-				using other = bc_allocator_base< TOther, TAlignment, TAllocType >;
+				using other = bc_allocator_base<TOther, TAlignment, TAllocType>;
 			};
 
 		public:
@@ -133,8 +133,8 @@ namespace black_cat
 
 			bc_allocator_base(const this_type&) noexcept = default;
 
-			template< typename TOther >
-			bc_allocator_base(const bc_allocator_base< TOther, TAlignment, TAllocType >&) noexcept
+			template<typename TOther>
+			bc_allocator_base(const bc_allocator_base<TOther, TAlignment, TAllocType>&) noexcept
 			{
 			}
 
@@ -144,8 +144,8 @@ namespace black_cat
 
 			this_type& operator =(const this_type&) noexcept = default;
 
-			template< typename TOther >
-			this_type& operator =(const bc_allocator_base< TOther, TAlignment, TAllocType >&) noexcept
+			template<typename TOther>
+			this_type& operator =(const bc_allocator_base<TOther, TAlignment, TAllocType>&) noexcept
 			{
 				return *this;
 			}
@@ -181,13 +181,13 @@ namespace black_cat
 				return BC_ALIGNED_FREE(p_pointer);
 			}
 
-			template< class TU, class... TArgs >
+			template<class TU, class... TArgs>
 			void construct(TU* p_pointer, TArgs&&... p_args)
 			{
-				new(p_pointer)TU(std::forward< TArgs >(p_args)...);
+				new(p_pointer)TU(std::forward<TArgs>(p_args)...);
 			}
 
-			template< class TU >
+			template<class TU>
 			void destroy(TU* p_pointer)
 			{
 				p_pointer->~TU();
@@ -229,7 +229,7 @@ namespace black_cat
 		};
 
 		template
-		< 
+		<
 			typename T1,
 			bcUINT32 TAlignment1,
 			bc_alloc_type TAllocType1,
@@ -237,13 +237,13 @@ namespace black_cat
 			bcUINT32 TAlignment2,
 			bc_alloc_type TAllocType2 
 		>
-		bool operator ==(const bc_allocator_base< T1, TAlignment1, TAllocType1 >&, const bc_allocator_base< T2, TAlignment2, TAllocType2 >&)
+		bool operator ==(const bc_allocator_base<T1, TAlignment1, TAllocType1>&, const bc_allocator_base<T2, TAlignment2, TAllocType2>&)
 		{
 			return true;
 		}
 
 		template
-		< 
+		<
 			typename T1,
 			bcUINT32 TAlignment1,
 			bc_alloc_type TAllocType1,
@@ -251,41 +251,41 @@ namespace black_cat
 			bcUINT32 TAlignment2,
 			bc_alloc_type TAllocType2 
 		>
-		bool operator !=(const bc_allocator_base< T1, TAlignment1, TAllocType1 >&, const bc_allocator_base< T2, TAlignment2, TAllocType2 >&)
+		bool operator !=(const bc_allocator_base<T1, TAlignment1, TAllocType1>&, const bc_allocator_base<T2, TAlignment2, TAllocType2>&)
 		{
 			return false;
 		}
 
-		template< typename T >
-		using bc_allocator_program = bc_allocator_base< T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::program >;
+		template<typename T>
+		using bc_allocator_program = bc_allocator_base<T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::program>;
 
-		template< typename T >
-		using bc_allocator_frame = bc_allocator_base< T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::frame >;
+		template<typename T>
+		using bc_allocator_frame = bc_allocator_base<T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::frame>;
 
-		template< typename T >
-		using bc_allocator = bc_allocator_base< T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::unknown >;
+		template<typename T>
+		using bc_allocator = bc_allocator_base<T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::unknown>;
 
-		template< typename T >
-		using bc_allocator_movable = bc_allocator_base< T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::unknown_movable >;
+		template<typename T>
+		using bc_allocator_movable = bc_allocator_base<T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::unknown_movable>;
 
-		template< typename T, bcUINT32 TAlign >
-		using bc_aligned_allocator_program = bc_allocator_base< T, TAlign, bc_alloc_type::program >;
+		template<typename T, bcUINT32 TAlign>
+		using bc_aligned_allocator_program = bc_allocator_base<T, TAlign, bc_alloc_type::program>;
 
-		template< typename T, bcUINT32 TAlign >
-		using bc_aligned_allocator_frame = bc_allocator_base< T, TAlign, bc_alloc_type::frame >;
+		template<typename T, bcUINT32 TAlign>
+		using bc_aligned_allocator_frame = bc_allocator_base<T, TAlign, bc_alloc_type::frame>;
 
-		template< typename T, bcUINT32 TAlign >
-		using bc_aligned_allocator = bc_allocator_base< T, TAlign, bc_alloc_type::unknown >;
+		template<typename T, bcUINT32 TAlign>
+		using bc_aligned_allocator = bc_allocator_base<T, TAlign, bc_alloc_type::unknown>;
 
-		template< typename T, bcUINT32 TAlign >
-		using bc_aligned_allocator_movable = bc_allocator_base< T, TAlign, bc_alloc_type::unknown_movable >;
+		template<typename T, bcUINT32 TAlign>
+		using bc_aligned_allocator_movable = bc_allocator_base<T, TAlign, bc_alloc_type::unknown_movable>;
 
-		template< typename T >
+		template<typename T>
 		class bc_runtime_allocator
 		{
 		private:
-			using allocator_type = bc_allocator_base< T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::unknown >;
-			template< typename >
+			using allocator_type = bc_allocator_base<T, BC_MEMORY_MIN_ALIGN, bc_alloc_type::unknown>;
+			template<typename>
 			friend class bc_runtime_allocator;
 
 		public:
@@ -301,10 +301,10 @@ namespace black_cat
 			using propagate_on_container_swap = std::true_type;
 			using is_movable_type = typename allocator_type::is_movable_type;
 			
-			template< typename TOther >
+			template<typename TOther>
 			struct rebind
 			{
-				using other = bc_runtime_allocator< TOther >;
+				using other = bc_runtime_allocator<TOther>;
 			};
 
 		public:
@@ -316,8 +316,8 @@ namespace black_cat
 
 			bc_runtime_allocator(const bc_runtime_allocator&) noexcept = default;
 
-			template< typename TOther >
-			bc_runtime_allocator(const bc_runtime_allocator< TOther >& p_other) noexcept
+			template<typename TOther>
+			bc_runtime_allocator(const bc_runtime_allocator<TOther>& p_other) noexcept
 				: m_alloc_type(p_other.m_alloc_type),
 				m_alignment(p_other.m_alignment)
 			{
@@ -327,8 +327,8 @@ namespace black_cat
 
 			bc_runtime_allocator& operator =(const bc_runtime_allocator&) noexcept = default;
 
-			template< typename TOther >
-			bc_runtime_allocator& operator =(const bc_runtime_allocator< TOther >& p_other) noexcept
+			template<typename TOther>
+			bc_runtime_allocator& operator =(const bc_runtime_allocator<TOther>& p_other) noexcept
 			{
 				m_alloc_type = p_other.m_alloc_type;
 				m_alignment = p_other.m_alignment;
@@ -384,13 +384,13 @@ namespace black_cat
 				return BC_ALIGNED_FREE(p_pointer);
 			}
 
-			template< class TU, class... TArgs >
+			template<class TU, class... TArgs>
 			void construct(TU* p_pointer, TArgs&&... p_args)
 			{
-				new(p_pointer)TU(std::forward< TArgs >(p_args)...);
+				new(p_pointer)TU(std::forward<TArgs>(p_args)...);
 			}
 
-			template< class TU >
+			template<class TU>
 			void destroy(TU* p_pointer)
 			{
 				p_pointer->~TU();
@@ -423,13 +423,13 @@ namespace black_cat
 		};
 
 		template<typename T1, typename T2>
-		bool operator ==(const bc_runtime_allocator< T1 >& p_1, const bc_runtime_allocator< T2 >& p_2)
+		bool operator ==(const bc_runtime_allocator<T1>& p_1, const bc_runtime_allocator<T2>& p_2)
 		{
 			return p_1.get_alignment() == p_2.get_alignment() && p_1.get_alloc_type() == p_2.get_alloc_type();
 		}
 
 		template<typename T1, typename T2>
-		bool operator !=(const bc_runtime_allocator< T1 >& p_1, const bc_runtime_allocator< T2 >& p_2)
+		bool operator !=(const bc_runtime_allocator<T1>& p_1, const bc_runtime_allocator<T2>& p_2)
 		{
 			return !(p_1 == p_2);
 		}
@@ -487,7 +487,7 @@ namespace black_cat
 			{
 				const bc_alloc_type l_alloc_type = get_allocator_alloc_type();
 				const bcUINT16 l_alignment = get_allocator_alignment();
-				const bcUINT32 l_value_to_store = static_cast<bcUINT32>((l_alignment << 8) | static_cast<bcUINT32>(p_alloc_type));
+				const bcUINT32 l_value_to_store = static_cast<bcUINT32>((l_alignment <<8) | static_cast<bcUINT32>(p_alloc_type));
 
 				m_flags.store(l_value_to_store, core_platform::bc_memory_order::relaxed);
 				
@@ -496,14 +496,14 @@ namespace black_cat
 
 			bcUINT16 get_allocator_alignment() const
 			{
-				return static_cast<bcUINT16>((m_flags.load(core_platform::bc_memory_order::relaxed) & s_alignment_mask) >> 8);
+				return static_cast<bcUINT16>((m_flags.load(core_platform::bc_memory_order::relaxed) & s_alignment_mask)>> 8);
 			}
 
 			bcUINT16 set_allocator_alignment(bcUINT16 p_alignment)
 			{
 				const bc_alloc_type l_alloc_type = get_allocator_alloc_type();
 				const bcUINT16 l_alignment = get_allocator_alignment();
-				const bcUINT32 l_value_to_store = static_cast<bcUINT32>((p_alignment << 8) | static_cast<bcUINT32>(l_alloc_type));
+				const bcUINT32 l_value_to_store = static_cast<bcUINT32>((p_alignment <<8) | static_cast<bcUINT32>(l_alloc_type));
 
 				m_flags.store(l_value_to_store, core_platform::bc_memory_order::relaxed);
 
@@ -528,7 +528,7 @@ namespace black_cat
 				bcUINT16 l_alignment = get_allocator_alignment();
 				void* l_memory;
 
-				if(get_allocator_alignment() > BC_MEMORY_MIN_ALIGN)
+				if(get_allocator_alignment()> BC_MEMORY_MIN_ALIGN)
 				{
 					l_memory = BC_ALIGNED_ALLOC(p_num, l_alignment, l_alloc_type);
 				}

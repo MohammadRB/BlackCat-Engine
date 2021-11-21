@@ -269,6 +269,9 @@ namespace black_cat
 					l_model_transforms.set_node_transform(p_node, l_mesh.get_node_bind_pose_transform(p_node) * l_scale_transform);
 
 					return 0;
+				},
+				[](const bc_mesh_node&, bcINT32)
+				{
 				});
 			}
 		}

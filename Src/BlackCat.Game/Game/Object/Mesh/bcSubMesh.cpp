@@ -21,17 +21,22 @@ namespace black_cat
 			m_root_node = m_mesh->get_root();
 		}
 
-		bc_sub_mesh::bc_sub_mesh(bc_mesh_ptr p_mesh, const bcCHAR* p_node)
+		bc_sub_mesh::bc_sub_mesh(bc_mesh_ptr p_mesh, bc_mesh_node::node_index_t p_node_index)
 		{
 			BC_ASSERT(p_mesh != nullptr);
-			
+
 			m_mesh = std::move(p_mesh);
-			m_root_node = m_mesh->find_node(p_node);
+			m_root_node = m_mesh->find_node(p_node_index);
 
 			if (m_root_node == nullptr)
 			{
-				throw bc_invalid_argument_exception("null argument");
+				throw bc_invalid_argument_exception("invalid node index argument");
 			}
+		}
+
+		bc_sub_mesh::bc_sub_mesh(bc_mesh_ptr p_mesh, std::string_view p_node_name)
+			: bc_sub_mesh(std::move(p_mesh), p_mesh->find_node(p_node_name.data())->get_index())
+		{
 		}
 
 		bc_sub_mesh::bc_sub_mesh(bc_sub_mesh&& p_other) noexcept

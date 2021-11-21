@@ -20,6 +20,8 @@ namespace black_cat
 
 		class BC_GAME_DLL bc_skinned_mesh_collider
 		{
+			friend class bc_mesh_collider_builder;
+			
 		public:
 			bc_skinned_mesh_collider();
 
@@ -38,12 +40,6 @@ namespace black_cat
 			const bcUINT16* get_16bit_indices() const noexcept;
 			
 			const bcUINT32* get_32bit_indices() const noexcept;
-			
-			void add_mesh_collider(bc_skinned_mesh_collider_vertex* p_vertices, bcUINT16* p_indices, bcSIZE p_vertices_count, bcSIZE p_faces_count);
-			
-			void add_mesh_collider(bc_skinned_mesh_collider_vertex* p_vertices, bcUINT32* p_indices, bcSIZE p_vertices_count, bcSIZE p_faces_count);
-
-			void shrink_to_fit();
 			
 		private:
 			bcSIZE m_faces_count;

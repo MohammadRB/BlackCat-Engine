@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Game/Object/Mesh/bcMeshPartCollider.h"
+#include "Game/Object/Mesh/bcMeshCollider.h"
 
 namespace black_cat
 {
@@ -10,8 +10,8 @@ namespace black_cat
 	{
 		struct bc_px_shape_data
 		{
+			const bc_mesh_part_collider_entry* m_collider_entry;
 			const bcCHAR* m_material_name;
-			bc_mesh_part_collider_entry* m_collider_entry;
 			const bcCHAR* m_collision_particle;
 			const bcCHAR* m_collision_decal;
 		};

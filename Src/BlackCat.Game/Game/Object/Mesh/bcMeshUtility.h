@@ -106,53 +106,59 @@ namespace black_cat
 			/**
 			 * \brief
 			 * \tparam TArg
-			 * \tparam TCallable
+			 * \tparam TVisitFunc
+			 * \tparam TUnVisitFunc
 			 * \param p_mesh
 			 * \param p_arg Root argument
-			 * \param p_callable Callable object (const bc_mesh_node&, TArg&) -> TArg
-			 * \param p_node
+			 * \param p_visit_func Callable object (const bc_mesh_node&, TArg&) -> TArg
+			 * \param p_unvisit_func Callable object (const bc_mesh_node&, const TArg&) -> void
+			 * \param p_start_node
 			 */
-			template< typename TArg, typename TCallable >
-			static void iterate_over_nodes(const bc_mesh& p_mesh, 
+			template<typename TArg, typename TVisitFunc, typename TUnVisitFunc>
+			static void iterate_over_nodes(const bc_mesh& p_mesh,
 				TArg& p_arg,
-				TCallable p_callable, 
-				const bc_mesh_node* p_node = nullptr) noexcept;
+				TVisitFunc p_visit_func,
+				TUnVisitFunc p_unvisit_func,
+				const bc_mesh_node* p_start_node = nullptr) noexcept;
 
 			static void clear_mesh_render_states_cache();
 			
 		private:
-			template< typename TArg, typename TCallable >
+			template<typename TArg, typename TVisitFunc, typename TUnVisitFunc>
 			static void _iterate_over_nodes(const bc_mesh& p_mesh, 
 				TArg& p_arg, 
-				TCallable& p_callable, 
+				TVisitFunc& p_visit_func,
+				TUnVisitFunc p_unvisit_func,
 				const bc_mesh_node* const* p_begin, 
 				const bc_mesh_node* const* p_end) noexcept;
 
 			static core::bc_concurrent_lazy<mesh_render_state_container> m_mesh_render_states;
 		};
 
-		template< typename TArg, typename TCallable >
+		template<typename TArg, typename TVisitFunc, typename TUnVisitFunc>
 		void bc_mesh_utility::iterate_over_nodes(const bc_mesh& p_mesh, 
 			TArg& p_arg, 
-			TCallable p_callable, 
-			const bc_mesh_node* p_node) noexcept
+			TVisitFunc p_visit_func,
+			TUnVisitFunc p_unvisit_func, 
+			const bc_mesh_node* p_start_node) noexcept
 		{
-			const bc_mesh_node* l_root_pointer = p_node ? p_node : p_mesh.get_root();
-			bc_mesh_utility::_iterate_over_nodes(p_mesh, p_arg, p_callable, &l_root_pointer, &l_root_pointer + 1);
+			const bc_mesh_node* l_root_pointer = p_start_node ? p_start_node : p_mesh.get_root();
+			bc_mesh_utility::_iterate_over_nodes(p_mesh, p_arg, p_visit_func, p_unvisit_func, &l_root_pointer, &l_root_pointer + 1);
 		}
 
-		template< typename TArg, typename TCallable >
+		template<typename TArg, typename TVisitFunc, typename TUnVisitFunc>
 		void bc_mesh_utility::_iterate_over_nodes(const bc_mesh& p_mesh,
-			TArg& p_arg, 
-			TCallable& p_callable, 
-			const bc_mesh_node* const* p_begin, 
+			TArg& p_arg,
+			TVisitFunc& p_visit_func,
+			TUnVisitFunc p_unvisit_func, 
+			const bc_mesh_node* const* p_begin,
 			const bc_mesh_node* const* p_end)  noexcept
 		{
 			// TODO use non-recursive version if possible
 			for (; p_begin != p_end; ++p_begin)
 			{
 				const bc_mesh_node* l_node = *p_begin;
-				TArg l_arg = p_callable(*l_node, p_arg);
+				TArg l_arg = p_visit_func(*l_node, p_arg);
 
 				const auto& l_node_children = p_mesh.get_node_children(*l_node);
 				if (!l_node_children.empty())
@@ -164,12 +170,15 @@ namespace black_cat
 					(
 						p_mesh,
 						l_arg,
-						p_callable,
+						p_visit_func,
+						p_unvisit_func,
 						l_begin,
 						l_end
 					);
 				}
+
+				p_unvisit_func(*l_node, p_arg);
 			}
 		}
-	}	
+	}
 }

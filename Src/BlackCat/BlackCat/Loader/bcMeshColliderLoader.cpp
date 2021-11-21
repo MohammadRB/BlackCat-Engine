@@ -20,10 +20,9 @@ namespace black_cat
 {
 	std::tuple<core::bc_unique_ptr<bcBYTE>, physics::bc_triangle_mesh_desc> _bc_extract_triangle_mesh(const aiMesh& p_ai_mesh);
 
-	void _bc_extract_skinned_mesh_collider(core::bc_content_loading_context& p_context,
-		const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
+	void _bc_extract_skinned_mesh_collider(const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
 		const aiMesh& p_ai_mesh,
-		game::bc_skinned_mesh_collider& p_skinned_collider);
+		game::bc_mesh_collider_builder& p_builder);
 
 	bool bc_mesh_collider_loader::support_offline_processing() const
 	{
@@ -34,8 +33,8 @@ namespace black_cat
 	{
 		Assimp::Importer l_importer;
 
-		const aiScene* const * l_scene_value = p_context.m_instance_parameters.get_value<const aiScene*>("aiScene");
-		const aiScene* l_scene = l_scene_value ? *l_scene_value : nullptr;
+		const auto* const * l_scene_value = p_context.m_instance_parameters.get_value<const aiScene*>("aiScene");
+		const auto* l_scene = l_scene_value ? *l_scene_value : nullptr;
 		if (!l_scene)
 		{
 			l_scene = l_importer.ReadFileFromMemory
@@ -78,8 +77,8 @@ namespace black_cat
 		}
 		
 		const bool l_generate_high_detail_query_shape = bc_null_default(p_context.m_parameters->get_value<bool>(constant::g_param_high_detail_query_shape), true);
-		game::bc_game_system& l_game_system = *core::bc_get_service<game::bc_game_system>();
-		game::bc_mesh_collider l_collider;
+		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
+		game::bc_mesh_collider_builder l_builder;
 
 		convert_nodes
 		(
@@ -91,11 +90,10 @@ namespace black_cat
 			*l_scene->mRootNode,
 			l_generate_high_detail_query_shape,
 			l_is_skinned,
-			l_collider,
-			l_collider.get_skinned_collider()
+			l_builder
 		);
 
-		p_context.set_result(std::move(l_collider));
+		p_context.set_result(std::move(l_builder.build()));
 	}
 
 	aiNode* bc_mesh_collider_loader::find_px_node(const aiNode& p_ai_node, const aiMesh& p_ai_node_mesh) const
@@ -123,11 +121,12 @@ namespace black_cat
 	void bc_mesh_collider_loader::convert_px_node(physics::bc_physics& p_physics,
 		const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
 		const aiScene& p_ai_scene,
+		const bcCHAR* p_attached_mesh_name,
 		const aiNode& p_attached_node,
 		const aiNode& p_px_node,
 		bool p_high_detail_query_shape,
 		bool p_skinned,
-		game::bc_mesh_part_collider& p_collider) const
+		game::bc_mesh_collider_builder& p_builder) const
 	{
 		core::bc_string_frame l_mesh_name;
 		core::bc_matrix4f l_node_transformation;
@@ -152,7 +151,7 @@ namespace black_cat
 					l_ai_mesh->mNumVertices
 				));
 
-				p_collider.add_px_shape(l_px_sphere, l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
+				p_builder.add_px_shape(p_attached_mesh_name, l_attached_node_index, l_px_sphere, physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
 			else if (l_mesh_name.compare(0, sizeof("px.box") - 1, "px.box") == 0)
 			{
@@ -163,7 +162,7 @@ namespace black_cat
 					l_ai_mesh->mNumVertices
 				));
 
-				p_collider.add_px_shape(l_px_box, l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
+				p_builder.add_px_shape(p_attached_mesh_name, l_attached_node_index, l_px_box, physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
 			else if (l_mesh_name.compare(0, sizeof("px.capsule") - 1, "px.capsule") == 0)
 			{
@@ -174,7 +173,7 @@ namespace black_cat
 					l_ai_mesh->mNumVertices
 				));
 
-				p_collider.add_px_shape(l_px_capsule, l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
+				p_builder.add_px_shape(p_attached_mesh_name, l_attached_node_index, l_px_capsule, physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
 			else if (l_mesh_name.compare(0, sizeof("px.convex") - 1, "px.convex") == 0)
 			{
@@ -188,7 +187,7 @@ namespace black_cat
 				physics::bc_memory_buffer l_convex_buffer = p_physics.create_convex_mesh(l_px_convex_desc);
 				physics::bc_convex_mesh_ref l_convex = p_physics.create_convex_mesh(l_convex_buffer);
 
-				p_collider.add_px_shape(std::move(l_convex), l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
+				p_builder.add_px_shape(p_attached_mesh_name, l_attached_node_index, std::move(l_convex), physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
 			else if (l_mesh_name.compare(0, sizeof("px.mesh") - 1, "px.mesh") == 0)
 			{
@@ -196,7 +195,7 @@ namespace black_cat
 				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(std::get<physics::bc_triangle_mesh_desc>(l_triangle_mesh_data));
 				physics::bc_triangle_mesh_ref l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
 
-				p_collider.add_px_shape(std::move(l_triangle_mesh), l_attached_node_index, physics::bc_transform(l_node_transformation), l_shape_flag);
+				p_builder.add_px_shape(p_attached_mesh_name, l_attached_node_index, std::move(l_triangle_mesh), physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
 		}
 	}
@@ -209,8 +208,7 @@ namespace black_cat
 		const aiNode& p_ai_node,
 		bool p_high_detail_query_shape,
 		bool p_skinned,
-		game::bc_mesh_collider& p_collider,
-		game::bc_skinned_mesh_collider& p_skinned_collider) const
+		game::bc_mesh_collider_builder& p_builder) const
 	{
 		if (bc_mesh_loader_utility::is_px_node(p_ai_node))
 		{
@@ -223,8 +221,6 @@ namespace black_cat
 			auto l_px_nodes = p_px_node_mapping.find(l_ai_node_name);
 			if (l_px_nodes != std::end(p_px_node_mapping))
 			{
-				game::bc_mesh_part_collider l_mesh_part_colliders;
-				
 				for (const aiNode* l_px_node : l_px_nodes->second)
 				{
 					convert_px_node
@@ -232,27 +228,23 @@ namespace black_cat
 						p_physics,
 						p_node_mapping,
 						p_ai_scene,
+						l_ai_node_name,
 						p_ai_node,
 						*l_px_node,
 						p_high_detail_query_shape,
 						p_skinned,
-						l_mesh_part_colliders
+						p_builder
 					);
 				}
-
-				l_mesh_part_colliders.shrink_to_fit();
-				p_collider.add_mesh_collider(l_ai_node_name, std::move(l_mesh_part_colliders));
 			}
 
 			if (p_high_detail_query_shape)
 			{
-				for (bcUINT32 l_i = 0; l_i <p_ai_node.mNumMeshes; ++l_i)
+				for (bcUINT32 l_i = 0; l_i < p_ai_node.mNumMeshes; ++l_i)
 				{
 					const auto* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_i]];
-					_bc_extract_skinned_mesh_collider(p_context, p_node_mapping, *l_ai_mesh, p_skinned_collider);
+					_bc_extract_skinned_mesh_collider(p_node_mapping, *l_ai_mesh, p_builder);
 				}
-
-				p_skinned_collider.shrink_to_fit();
 			}
 		}
 		else
@@ -261,7 +253,6 @@ namespace black_cat
 			{
 				const auto* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_i]];
 				const auto* l_ai_mesh_name = l_ai_mesh->mName.C_Str();
-				game::bc_mesh_part_collider l_mesh_part_colliders;
 
 				auto l_px_nodes = p_px_node_mapping.find(l_ai_mesh_name);
 				if (l_px_nodes != std::end(p_px_node_mapping))
@@ -273,11 +264,12 @@ namespace black_cat
 							p_physics,
 							p_node_mapping,
 							p_ai_scene,
+							l_ai_mesh_name,
 							*l_px_node->mParent,
 							*l_px_node,
 							p_high_detail_query_shape,
 							p_skinned,
-							l_mesh_part_colliders
+							p_builder
 						);
 					}
 				}
@@ -290,18 +282,16 @@ namespace black_cat
 					auto l_triangle_mesh = p_physics.create_triangle_mesh(l_triangle_buffer);
 
 					// Avoid double transform by parent node by passing identity transform
-					l_mesh_part_colliders.add_px_shape
+					p_builder.add_px_shape
 					(
-						std::move(l_triangle_mesh),
+						l_ai_mesh_name,
 						l_node_index,
+						std::move(l_triangle_mesh),
 						physics::bc_transform::identity(),
 						physics::bc_shape_flag::query,
 						true
 					);
 				}
-
-				l_mesh_part_colliders.shrink_to_fit();
-				p_collider.add_mesh_collider(l_ai_mesh_name, std::move(l_mesh_part_colliders));
 			}
 		}
 
@@ -319,8 +309,7 @@ namespace black_cat
 				*l_child,
 				p_high_detail_query_shape,
 				p_skinned,
-				p_collider,
-				p_skinned_collider
+				p_builder
 			);
 		}
 	}
@@ -373,10 +362,9 @@ namespace black_cat
 		return std::make_tuple(std::move(l_indices_buffer), std::move(l_px_triangle_desc));
 	}
 
-	void _bc_extract_skinned_mesh_collider(core::bc_content_loading_context& p_context,
-		const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
+	void _bc_extract_skinned_mesh_collider(const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
 		const aiMesh& p_ai_mesh,
-		game::bc_skinned_mesh_collider& p_skinned_collider)
+		game::bc_mesh_collider_builder& p_builder)
 	{
 		const bool l_need_32bit_indices = p_ai_mesh.mNumFaces * 3> std::numeric_limits<bcUINT16>::max();
 
@@ -444,11 +432,11 @@ namespace black_cat
 
 		if (l_need_32bit_indices)
 		{
-			p_skinned_collider.add_mesh_collider(l_vertices.data(), l_32bit_indices.data(), l_vertices.size(), p_ai_mesh.mNumFaces);
+			p_builder.add_skinned_mesh_collider(l_vertices.data(), l_32bit_indices.data(), l_vertices.size(), p_ai_mesh.mNumFaces);
 		}
 		else
 		{
-			p_skinned_collider.add_mesh_collider(l_vertices.data(), l_16bit_indices.data(), l_vertices.size(), p_ai_mesh.mNumFaces);
+			p_builder.add_skinned_mesh_collider(l_vertices.data(), l_16bit_indices.data(), l_vertices.size(), p_ai_mesh.mNumFaces);
 		}
 	}
 }

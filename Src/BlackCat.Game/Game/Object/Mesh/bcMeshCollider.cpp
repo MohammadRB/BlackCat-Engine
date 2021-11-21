@@ -8,14 +8,18 @@ namespace black_cat
 	namespace game
 	{
 		bc_mesh_collider::bc_mesh_collider()
-			: bc_const_iterator_adapter(m_mesh_colliders)
+			: bci_content(),
+			bc_const_iterator_adapter(m_colliders)
 		{
 		}
 
 		bc_mesh_collider::bc_mesh_collider(bc_mesh_collider&& p_other) noexcept
-			: bc_const_iterator_adapter(m_mesh_colliders),
-			bci_content(std::move(p_other)),
+			: bci_content(std::move(p_other)),
+			bc_const_iterator_adapter(m_colliders),
 			m_mesh_colliders(std::move(p_other.m_mesh_colliders)),
+			m_colliders(std::move(p_other.m_colliders)),
+			m_convex_shapes(std::move(p_other.m_convex_shapes)),
+			m_triangle_shapes(std::move(p_other.m_triangle_shapes)),
 			m_skinned_collider(std::move(p_other.m_skinned_collider))
 		{
 		}
@@ -24,33 +28,34 @@ namespace black_cat
 		{
 			bci_content::operator=(std::move(p_other));
 			m_mesh_colliders = std::move(p_other.m_mesh_colliders);
+			m_colliders = std::move(p_other.m_colliders);
+			m_convex_shapes = std::move(p_other.m_convex_shapes);
+			m_triangle_shapes = std::move(p_other.m_triangle_shapes);
 			m_skinned_collider = std::move(p_other.m_skinned_collider);
 			return *this;
 		}
 
-		const bc_mesh_part_collider* bc_mesh_collider::find_mesh_collider(const bcCHAR* p_mesh_name) const noexcept
+		core::bc_const_span<bc_mesh_part_collider_entry> bc_mesh_collider::find_mesh_collider(std::string_view p_mesh_name) const noexcept
 		{
-			const container_type::key_type l_key(p_mesh_name);
+			const auto l_ite = std::find_if
+			(
+				std::begin(m_mesh_colliders),
+				std::end(m_mesh_colliders),
+				[=](const decltype(m_mesh_colliders)::value_type& p_entry)
+				{
+					auto& l_collider_name = std::get<core::bc_string>(p_entry);
+					return std::string_view(l_collider_name.c_str(), l_collider_name.size()) == p_mesh_name;
+				}
+			);
 
-			return find_mesh_collider(l_key);
-		}
-
-		const bc_mesh_part_collider* bc_mesh_collider::find_mesh_collider(const core::bc_string& p_mesh_name) const noexcept
-		{
-			const auto l_ite = m_mesh_colliders.find(p_mesh_name);
-			const bc_mesh_part_collider* l_result = nullptr;
-
-			if (l_ite != std::cend(m_mesh_colliders))
+			if(l_ite == std::end(m_mesh_colliders))
 			{
-				l_result = &l_ite->second;
+				return {};
 			}
 
-			return l_result;
-		}
-
-		void bc_mesh_collider::add_mesh_collider(const bcCHAR* p_name, bc_mesh_part_collider&& p_collider)
-		{
-			m_mesh_colliders.insert(container_type::value_type(p_name, std::move(p_collider)));
+			const auto l_colliders_start = std::get<1>(*l_ite);
+			const auto l_colliders_length = std::get<2>(*l_ite);
+			return core::bc_const_span<bc_mesh_part_collider_entry>(&m_colliders[l_colliders_start], l_colliders_length);
 		}
 	}
 }

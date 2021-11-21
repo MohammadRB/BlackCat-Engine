@@ -75,7 +75,7 @@ namespace black_cat
 		template<typename T>
 		bc_sub_mesh_transform<T>::bc_sub_mesh_transform(const bc_mesh_node& p_root_node)
 			: iterator_adapter_t(m_transformations),
-			m_root_node_index(p_root_node.get_transform_index()),
+			m_root_node_index(p_root_node.get_index()),
 			m_transformations(p_root_node.get_all_children_count() + 1)
 		{
 		}
@@ -153,10 +153,10 @@ namespace black_cat
 			BC_ASSERT
 			(
 				m_root_node_index != bc_mesh_node::s_invalid_index && 
-				p_node.get_transform_index()>= m_root_node_index
+				p_node.get_index()>= m_root_node_index
 			);
 
-			return m_transformations[p_node.get_transform_index() - m_root_node_index];
+			return m_transformations[p_node.get_index() - m_root_node_index];
 		}
 
 		template<typename T>
@@ -171,10 +171,10 @@ namespace black_cat
 			BC_ASSERT
 			(
 				m_root_node_index != bc_mesh_node::s_invalid_index &&
-				p_node.get_transform_index()>= m_root_node_index
+				p_node.get_index()>= m_root_node_index
 			);
 			
-			m_transformations.at(p_node.get_transform_index() - m_root_node_index) = p_transform;
+			m_transformations.at(p_node.get_index() - m_root_node_index) = p_transform;
 		}
 
 		template<typename T>

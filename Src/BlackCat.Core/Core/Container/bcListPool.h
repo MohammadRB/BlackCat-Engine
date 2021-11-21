@@ -12,11 +12,11 @@ namespace black_cat
 	namespace core
 	{
 		template<typename T>
-		class bc_list_pool : private bc_list< T, bc_memory_pool_allocator< T > >
+		class bc_list_pool : private bc_list<T, bc_memory_pool_allocator<T>>
 		{
 		public:
 			using memory_pool_type = bc_concurrent_memory_pool;
-			using list_type = bc_list< T, bc_memory_pool_allocator< T > >;
+			using list_type = bc_list<T, bc_memory_pool_allocator<T>>;
 			using value_type = typename list_type::value_type;
 			using allocator_type = typename list_type::allocator_type;
 			using pointer = typename list_type::pointer;
@@ -82,7 +82,7 @@ namespace black_cat
 			bc_concurrent_memory_pool m_memory_pool;
 		};
 
-		template< typename T >
+		template<typename T>
 		bc_list_pool<T>::bc_list_pool(size_type p_pool_size, bc_alloc_type p_alloc_type)
 			: list_type(bc_memory_pool_allocator<value_type>(m_memory_pool))
 		{
@@ -90,21 +90,21 @@ namespace black_cat
 			m_memory_pool.initialize(p_pool_size, sizeof(typename list_type::node_type), p_alloc_type);
 		}
 
-		template< typename T >
+		template<typename T>
 		bc_list_pool<T>::bc_list_pool(bc_list_pool&& p_other)
 			: list_type(std::move(p_other), bc_memory_pool_allocator<value_type>(m_memory_pool)),
 			m_memory_pool(std::move(p_other.m_memory_pool))
 		{
 		}
 
-		template< typename T >
+		template<typename T>
 		bc_list_pool<T>::~bc_list_pool()
 		{
 			list_type::~list_type();
 			m_memory_pool.destroy();
 		}
 
-		template< typename T >
+		template<typename T>
 		bc_list_pool<T>& bc_list_pool<T>::operator=(bc_list_pool&& p_other)
 		{
 			list_type::operator=(std::move(p_other));
@@ -112,13 +112,13 @@ namespace black_cat
 			return *this;
 		}
 
-		template< typename T >
+		template<typename T>
 		typename bc_list_pool<T>::list_type& bc_list_pool<T>::get_list() noexcept
 		{
 			return static_cast<list_type>(*this);
 		}
 
-		template< typename T >
+		template<typename T>
 		bc_concurrent_memory_pool& bc_list_pool<T>::get_memory_pool() noexcept
 		{
 			return m_memory_pool;
