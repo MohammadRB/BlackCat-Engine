@@ -277,27 +277,22 @@
           "name": "rigid_controller",
           "parameters": {
             "collider_materials": {
+              "mixamorig:Spine1": "iron",
               "mixamorig:Head": "iron",
               "mixamorig:LeftArm": "iron",
-              "mixamorig:LeftFoot": "iron",
               "mixamorig:LeftForeArm": "iron",
               "mixamorig:LeftHand": "iron",
-              "mixamorig:LeftLeg": "iron",
-              "mixamorig:LeftUpLeg": "iron",
               "mixamorig:RightArm": "iron",
-              "mixamorig:RightFoot": "iron",
               "mixamorig:RightForeArm": "iron",
               "mixamorig:RightHand": "iron",
-              "mixamorig:RightLeg": "iron",
+              "mixamorig:LeftUpLeg": "iron",
+              "mixamorig:LeftLeg": "iron",
+              "mixamorig:LeftFoot": "iron",
               "mixamorig:RightUpLeg": "iron",
-              "mixamorig:Spine1": "iron"
+              "mixamorig:RightLeg": "iron",
+              "mixamorig:RightFoot": "iron"
             }
           }
-        },
-        {
-          "name": "ragdoll",
-          "parameters": {
-          } 
         }
       ]
     },
@@ -310,6 +305,27 @@
           "parameters": {
             "materials": {
               "Beta_Surface": "red"
+            }
+          }
+        },
+        {
+          "name": "human_ragdoll",
+          "parameters": {
+            "joints": {
+              "head": "mixamorig:Head",
+              "body": "mixamorig:Spine1",
+              "left_arm": "mixamorig:LeftArm",
+              "left_fore_arm": "mixamorig:LeftForeArm",
+              "left_hand": "mixamorig:LeftHand",
+              "right_arm": "mixamorig:RightArm",
+              "right_fore_arm": "mixamorig:RightForeArm",
+              "right_hand": "mixamorig:RightHand",
+              "left_up_leg": "mixamorig:LeftUpLeg",
+              "left_leg": "mixamorig:LeftLeg",
+              "left_foot": "mixamorig:LeftFoot",
+              "right_up_leg": "mixamorig:RightUpLeg",
+              "right_leg": "mixamorig:RightLeg",
+              "right_foot": "mixamorig:RightFoot"
             }
           }
         }

@@ -734,9 +734,9 @@ namespace black_cat
 		(
 			game::bc_local_to_model_animation_job(l_weapon_shoot_job, m_skinned_mesh_component->get_mesh(), m_skinned_mesh_component->get_model_transforms())
 		);
-		auto l_model_to_skinning_job = core::bc_make_shared<game::bc_model_to_skinned_animation_job>
+		auto l_model_to_skinning_job = core::bc_make_shared<game::bc_model_to_skinning_animation_job>
 		(
-			game::bc_model_to_skinned_animation_job(l_local_to_model_job, m_skinned_mesh_component->get_world_transforms())
+			game::bc_model_to_skinning_animation_job(l_local_to_model_job, m_skinned_mesh_component->get_world_transforms())
 		);
 		auto l_weapon_ik_job = core::bc_make_shared<bc_xbot_weapon_ik_animation_job>
 		(
@@ -858,7 +858,7 @@ namespace black_cat
 	core::bc_matrix4f bc_xbot_actor_controller::_calculate_weapon_aim_transform()
 	{
 		auto* l_model_job = game::bc_animation_job_helper::find_job<game::bc_local_to_model_animation_job>(m_state_machine->get_active_animation());
-		auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinned_animation_job>(m_state_machine->get_active_animation());
+		auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinning_animation_job>(m_state_machine->get_active_animation());
 		
 		core::bc_matrix3f l_weapon_forward_rotation_ms;
 		core::bc_matrix3f l_weapon_up_rotation_ms;
@@ -910,7 +910,7 @@ namespace black_cat
 		const core::bc_vector3f& p_attachment_local_offset)
 	{
 		auto* l_model_job = game::bc_animation_job_helper::find_job<game::bc_local_to_model_animation_job>(m_state_machine->get_active_animation());
-		auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinned_animation_job>(m_state_machine->get_active_animation());
+		auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinning_animation_job>(m_state_machine->get_active_animation());
 
 		core::bc_matrix3f l_attachment_up_rotation_ms;
 		core::bc_matrix3f l_attachment_forward_rotation_ms;

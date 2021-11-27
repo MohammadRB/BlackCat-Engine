@@ -100,6 +100,10 @@ namespace black_cat
 
 			//l_scene_pack_data.m_controller_manager->setOverlapRecoveryModule(true);
 			//l_scene_pack_data.m_controller_manager->setPreciseSweeps(false);
+			l_scene_pack_data.m_px_scene->lockWrite();
+			l_scene_pack_data.m_px_scene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.0f);
+			l_scene_pack_data.m_px_scene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LIMITS, 1.0f);
+			l_scene_pack_data.m_px_scene->unlockWrite();
 			
 			bc_scene::platform_pack l_pack;
 			l_pack.m_data = core::bc_make_shared<_bc_px_scene_pack_data>(std::move(l_scene_pack_data));
@@ -171,7 +175,7 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_shape_ref bc_platform_physics<g_api_physx>::create_shape(const bc_shape_geometry& p_geometry,
-			bc_material* const* p_materials,
+			const bc_material* p_materials,
 			bcUINT16 p_material_count,
 			bool p_is_exclusive)
 		{
@@ -188,7 +192,7 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_shape_ref bc_platform_physics<g_api_physx>::create_shape(const bc_shape_geometry& p_geometry,
-			bc_material* const* p_materials,
+			const bc_material* p_materials,
 			bcUINT16 p_material_count,
 			bc_shape_flag p_shape_flags,
 			bool p_is_exclusive)
@@ -197,7 +201,7 @@ namespace black_cat
 
 			for (bcUINT32 i = 0; i <p_material_count; ++i)
 			{
-				l_px_material_buffer[i] = static_cast<physx::PxMaterial*>(p_materials[i]->get_platform_pack().m_px_object);
+				l_px_material_buffer[i] = static_cast<physx::PxMaterial*>(p_materials[i].get_platform_pack().m_px_object);
 			}
 
 			bc_shape::platform_pack l_shape_pack;

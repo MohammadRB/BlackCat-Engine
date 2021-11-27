@@ -48,7 +48,7 @@ namespace black_cat
 			 * The limit range is [-MAX_F32, MAX_F32], but note that the width of the limit (upper-lower) must also be
 			 * a valid float.
 			 */
-			void enable_limit(bc_joint_linear_limit_pair& p_limit) noexcept;
+			void enable_limit(const bc_joint_linear_limit_pair& p_limit) noexcept;
 			
 			void disable_limit() noexcept;
 

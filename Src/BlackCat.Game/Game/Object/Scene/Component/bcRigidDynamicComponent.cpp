@@ -13,6 +13,7 @@
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcNetworkReplicateActorEvent.h"
+#include "Game/bcConstant.h"
 
 namespace black_cat
 {

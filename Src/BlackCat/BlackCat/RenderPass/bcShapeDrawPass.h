@@ -33,7 +33,7 @@ namespace black_cat
 		BC_RENDER_PASS(shp_drw)
 
 	public:
-		explicit bc_shape_draw_pass(constant::bc_render_pass_variable_t p_render_target_view);
+		explicit bc_shape_draw_pass(game::bc_render_pass_variable_t p_render_target_view);
 
 		void set_selected_actor(const game::bc_actor& p_actor);
 		
@@ -54,7 +54,7 @@ namespace black_cat
 		void destroy(game::bc_render_system& p_render_system) override;
 
 	private:
-		constant::bc_render_pass_variable_t m_render_target_view_variable;
+		game::bc_render_pass_variable_t m_render_target_view_variable;
 
 		graphic::bc_device_pipeline_state_ref m_pipeline_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;

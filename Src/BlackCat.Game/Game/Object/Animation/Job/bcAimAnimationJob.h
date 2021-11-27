@@ -9,7 +9,7 @@
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "Game/Object/Animation/Job/bcLocalTransformAnimationJob.h"
 #include "Game/Object/Animation/Job/bcLocalToModelAnimationJob.h"
-#include "Game/Object/Animation/Job/bcModelToSkinnedAnimationJob.h"
+#include "Game/Object/Animation/Job/bcModelToSkinningAnimationJob.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -43,13 +43,13 @@ namespace black_cat
 		public:
 			bc_aim_animation_job(core::bc_shared_ptr<bci_local_transform_animation_job> p_local_job, 
 				core::bc_shared_ptr<bc_local_to_model_animation_job> p_model_job,
-				core::bc_shared_ptr<bc_model_to_skinned_animation_job> p_skinned_job,
+				core::bc_shared_ptr<bc_model_to_skinning_animation_job> p_skinned_job,
 				core::bc_span<bc_aim_animation_bone> p_joint_chains,
 				bcFLOAT p_aim_weight = 1.f);
 
 			bc_aim_animation_job(core::bc_shared_ptr<bci_local_transform_animation_job> p_local_job,
 				core::bc_shared_ptr<bc_local_to_model_animation_job> p_model_job,
-				core::bc_shared_ptr<bc_model_to_skinned_animation_job> p_skinned_job,
+				core::bc_shared_ptr<bc_model_to_skinning_animation_job> p_skinned_job,
 				const core::bc_span<const bcCHAR*>& p_joint_chains,
 				const core::bc_vector3f& p_local_forward,
 				bcFLOAT p_aim_weight = 1.f);
@@ -71,7 +71,7 @@ namespace black_cat
 
 			core::bc_shared_ptr<bci_local_transform_animation_job> m_local_job;
 			core::bc_shared_ptr<bc_local_to_model_animation_job> m_model_job;
-			core::bc_shared_ptr<bc_model_to_skinned_animation_job> m_skinned_job;
+			core::bc_shared_ptr<bc_model_to_skinning_animation_job> m_skinned_job;
 			core::bc_vector<bc_aim_animation_bone> m_bone_chains;
 			bcFLOAT m_aim_weight;
 			core::bc_vector3f m_model_target;

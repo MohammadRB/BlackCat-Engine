@@ -14,6 +14,7 @@
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/bcException.h"
+#include "Game/bcConstant.h"
 
 namespace black_cat
 {

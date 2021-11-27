@@ -9,7 +9,7 @@
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "Game/Object/Animation/Job/bcSamplingAnimationJob.h"
 #include "Game/Object/Animation/Job/bcLocalToModelAnimationJob.h"
-#include "Game/Object/Animation/Job/bcModelToSkinnedAnimationJob.h"
+#include "Game/Object/Animation/Job/bcModelToSkinningAnimationJob.h"
 #include "Game/Object/Animation/Job/bcSequenceAnimationJob.h"
 #include "Game/Object/Animation/Job/bcTagAnimationJob.h"
 #include "Game/bcException.h"
@@ -65,7 +65,7 @@ namespace black_cat
 				bc_sub_mesh_mat4_transform& p_model_transforms,
 				bc_sub_mesh_mat4_transform& p_world_transforms,
 				core::bc_shared_ptr<bc_local_to_model_animation_job>* p_out_to_model_job = nullptr,
-				core::bc_shared_ptr<bc_model_to_skinned_animation_job>* p_out_to_skinning_job = nullptr);
+				core::bc_shared_ptr<bc_model_to_skinning_animation_job>* p_out_to_skinning_job = nullptr);
 			
 			bc_animation_job_builder2 end_with(core::bc_shared_ptr<bci_animation_job> p_job, const bcCHAR* p_name = nullptr);
 			
@@ -142,7 +142,7 @@ namespace black_cat
 			bc_sub_mesh_mat4_transform& p_model_transforms,
 			bc_sub_mesh_mat4_transform& p_world_transforms,
 			core::bc_shared_ptr<bc_local_to_model_animation_job>* p_out_to_model_job,
-			core::bc_shared_ptr<bc_model_to_skinned_animation_job>* p_out_to_skinning_job)
+			core::bc_shared_ptr<bc_model_to_skinning_animation_job>* p_out_to_skinning_job)
 		{
 			auto* l_local_transform_job = dynamic_cast<bci_local_transform_animation_job*>(m_animations.back().m_animation.get());
 			if (!l_local_transform_job)
@@ -156,7 +156,7 @@ namespace black_cat
 				p_sub_mesh,
 				p_model_transforms
 			));
-			auto l_model_to_skinned_job = core::bc_make_shared<bc_model_to_skinned_animation_job>(bc_model_to_skinned_animation_job
+			auto l_model_to_skinned_job = core::bc_make_shared<bc_model_to_skinning_animation_job>(bc_model_to_skinning_animation_job
 			(
 				m_animations.back().m_animation,
 				p_world_transforms

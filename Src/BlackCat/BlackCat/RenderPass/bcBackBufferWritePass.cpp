@@ -13,7 +13,7 @@
 
 namespace black_cat
 {
-	bc_back_buffer_write_pass::bc_back_buffer_write_pass(constant::bc_render_pass_variable_t p_input_texture)
+	bc_back_buffer_write_pass::bc_back_buffer_write_pass(game::bc_render_pass_variable_t p_input_texture)
 		: m_input_texture(p_input_texture)
 	{
 	}

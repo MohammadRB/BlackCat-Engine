@@ -65,55 +65,7 @@ namespace black_cat
 			auto* l_px_actor = static_cast<physx::PxRigidActor*>(get_platform_pack().m_px_object);
 			l_px_actor->setGlobalPose(p_transform.get_platform_pack().m_px_transform);
 		}
-
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_shape bc_platform_rigid_actor< g_api_physx >::create_shape(const bc_shape_geometry& p_shape, const bc_material& p_material, bc_shape_flag p_flags)
-		{
-			auto* l_px_actor = static_cast<physx::PxRigidActor*>(get_platform_pack().m_px_object);
-			auto* l_px_material = static_cast<physx::PxMaterial*>(p_material.get_platform_pack().m_px_object);
-
-			bc_shape::platform_pack l_shape_pack;
-			l_shape_pack.m_px_object = l_px_actor->createShape
-			(
-				*const_cast<bc_shape_geometry&>(p_shape).get_platform_pack().m_px_geometry,
-				*l_px_material,
-				static_cast<physx::PxShapeFlag::Enum>(static_cast<physx::PxShapeFlags::InternalType>(p_flags))
-			);
-			
-			return bc_shape(l_shape_pack);
-		}
-
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_shape bc_platform_rigid_actor< g_api_physx >::create_shape(const bc_shape_geometry& p_shape, const bc_material* p_materials, bcUINT32 p_material_count, bc_shape_flag p_flags)
-		{
-			auto** l_buffer = static_cast<physx::PxMaterial**>
-			(
-				BC_ALLOC(sizeof(physx::PxMaterial*) * p_material_count, core::bc_alloc_type::frame)
-			);
-
-			for (bcUINT32 i = 0; i < p_material_count; ++i)
-			{
-				l_buffer[i] = static_cast<physx::PxMaterial*>(p_materials[i].get_platform_pack().m_px_object);
-			}
-
-			bc_shape::platform_pack l_shape_pack;
-			auto* l_px_actor = static_cast<physx::PxRigidActor*>(get_platform_pack().m_px_object);
-			
-			l_shape_pack.m_px_object = l_px_actor->createShape
-			(
-				*const_cast<bc_shape_geometry&>(p_shape).get_platform_pack().m_px_geometry,
-				l_buffer,
-				p_material_count,
-				static_cast< physx::PxShapeFlag::Enum >(static_cast< physx::PxShapeFlags::InternalType >(p_flags))
-			);
-
-			BC_FREE(l_buffer);
-
-			return bc_shape(l_shape_pack);
-		}
-
+		
 		template<>
 		BC_PHYSICSIMP_DLL
 		void bc_platform_rigid_actor< g_api_physx >::attach_shape(bc_shape& p_shape) noexcept

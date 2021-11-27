@@ -54,7 +54,7 @@
 #include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
 #include "Game/Object/Scene/Component/bcWeaponComponent.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
-#include "Game/Object/Scene/Component/bcRagdollComponent.h"
+#include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "Game/Object/Animation/bcSkinnedAnimation.h"
 #include "BlackCat/Application/bcApplicationHookFuncations.h"
 #include "BlackCat/Loader/bcTextureLoader.h"
@@ -200,7 +200,7 @@ namespace black_cat
 			game::bc_component_register<game::bc_decal_component>("decal"),
 			game::bc_component_register<game::bc_weapon_component>("weapon"),
 			game::bc_component_register<game::bc_network_component>("network"),
-			game::bc_component_register<game::bc_ragdoll_component>("ragdoll")
+			game::bc_component_register<game::bc_human_ragdoll_component>("human_ragdoll")
 		);
 		game::bc_register_abstract_component_types
 		(

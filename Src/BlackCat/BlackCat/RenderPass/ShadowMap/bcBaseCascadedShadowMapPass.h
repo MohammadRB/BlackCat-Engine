@@ -33,7 +33,7 @@ namespace black_cat
 		const bcFLOAT m_cascade_cameras_distance = 100;
 		bcSIZE m_instance_count;
 		
-		constant::bc_render_pass_variable_t m_output_depth_buffers_share_slot;
+		game::bc_render_pass_variable_t m_output_depth_buffers_share_slot;
 		bcFLOAT m_shadow_map_multiplier;
 		bcUINT32 m_shadow_map_size;
 		core::bc_vector_program<bcSIZE> m_cascade_sizes;
@@ -145,7 +145,7 @@ namespace black_cat
 	protected:
 		bc_base_cascaded_shadow_map_pass(const bc_base_cascaded_shadow_map_pass* p_other_instance);
 
-		bc_base_cascaded_shadow_map_pass(constant::bc_render_pass_variable_t p_output_depth_buffers,
+		bc_base_cascaded_shadow_map_pass(game::bc_render_pass_variable_t p_output_depth_buffers,
 			bcFLOAT p_shadow_map_multiplier,
 			std::initializer_list<std::tuple<bcSIZE, bcUBYTE>> p_cascade_sizes);
 

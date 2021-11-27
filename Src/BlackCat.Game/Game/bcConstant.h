@@ -64,5 +64,6 @@ namespace black_cat
 		BC_PARAMETER(light_flare_mask_v1, "flare_mask_v1");
 		BC_PARAMETER(network_data_dir, "data_dir");
 		BC_PARAMETER(network_entity_name, "entity_name");
+		BC_PARAMETER(ragdoll_joints, "joints");
 	}
 }

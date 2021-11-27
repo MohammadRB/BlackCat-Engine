@@ -40,7 +40,7 @@ namespace black_cat
 		p_context.m_scene->draw_debug_shapes(*m_shape_drawer);
 	}
 	
-	bc_shape_draw_pass::bc_shape_draw_pass(constant::bc_render_pass_variable_t p_render_target_view)
+	bc_shape_draw_pass::bc_shape_draw_pass(game::bc_render_pass_variable_t p_render_target_view)
 		: m_render_target_view_variable(p_render_target_view)
 	{
 	}

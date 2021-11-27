@@ -101,7 +101,7 @@ namespace black_cat
 			 * Range (-2*PI, 2*PI)
 			 * \param p_limit
 			 */
-			void set_twist_limit(bc_joint_angular_limit& p_limit) noexcept;
+			void set_twist_limit(const bc_joint_angular_limit& p_limit) noexcept;
 
 			/**
 			 * \brief
@@ -115,7 +115,7 @@ namespace black_cat
 			 * Range (0,PI)
 			 * \param p_limit
 			 */
-			void set_swing_limit(bc_joint_cone_limit& p_limit) noexcept;
+			void set_swing_limit(const bc_joint_cone_limit& p_limit) noexcept;
 
 			/**
 			 * \brief

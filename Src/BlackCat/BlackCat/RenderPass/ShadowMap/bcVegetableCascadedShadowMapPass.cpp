@@ -18,7 +18,7 @@ namespace black_cat
 	{
 	}
 
-	bc_vegetable_cascaded_shadow_map_pass::bc_vegetable_cascaded_shadow_map_pass(constant::bc_render_pass_variable_t p_output_depth_buffers,
+	bc_vegetable_cascaded_shadow_map_pass::bc_vegetable_cascaded_shadow_map_pass(game::bc_render_pass_variable_t p_output_depth_buffers,
 		bcFLOAT p_shadow_map_multiplier,
 		const std::initializer_list<std::tuple<bcSIZE, bcUBYTE>>& p_cascade_sizes)
 		: bc_base_cascaded_shadow_map_pass(p_output_depth_buffers, p_shadow_map_multiplier, p_cascade_sizes)

@@ -46,7 +46,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_spherical_joint<g_api_physx>::enable_limit(bc_joint_cone_limit& p_limit) noexcept
+		void bc_platform_spherical_joint<g_api_physx>::enable_limit(const bc_joint_cone_limit& p_limit) noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxSphericalJoint*>(get_platform_pack().m_px_object);
 

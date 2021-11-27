@@ -72,7 +72,7 @@ namespace black_cat
 		core::bc_matrix4f m_view_proj_inv;
 	};
 	
-	bc_gbuffer_light_map_pass::bc_gbuffer_light_map_pass(constant::bc_render_pass_variable_t p_csm_buffers_container, constant::bc_render_pass_variable_t p_output_texture)
+	bc_gbuffer_light_map_pass::bc_gbuffer_light_map_pass(game::bc_render_pass_variable_t p_csm_buffers_container, game::bc_render_pass_variable_t p_output_texture)
 		: m_csm_buffers_container_share_slot(p_csm_buffers_container),
 		m_output_texture_share_slot(p_output_texture)
 	{

@@ -19,8 +19,8 @@ namespace black_cat
 
 		public:
 			explicit bc_hierarchy_transform_actor_event(const core::bc_matrix4f& p_world_transform, 
-				const bc_sub_mesh_mat4_transform* p_transforms,
-				const bc_sub_mesh_px_transform* p_px_transforms);
+				const bc_sub_mesh_mat4_transform* p_transforms_ms,
+				const bc_sub_mesh_px_transform* p_px_transforms_ms);
 			
 			bc_hierarchy_transform_actor_event(const bc_hierarchy_transform_actor_event& p_other);
 
@@ -41,12 +41,12 @@ namespace black_cat
 		};
 
 		inline bc_hierarchy_transform_actor_event::bc_hierarchy_transform_actor_event(const core::bc_matrix4f& p_world_transform,
-			const bc_sub_mesh_mat4_transform* p_transforms,
-			const bc_sub_mesh_px_transform* p_px_transforms)
+			const bc_sub_mesh_mat4_transform* p_transforms_ms,
+			const bc_sub_mesh_px_transform* p_px_transforms_ms)
 			: bc_actor_event(message_name()),
 			m_world_transform(p_world_transform),
-			m_mat4_transforms(p_transforms),
-			m_px_transforms(p_px_transforms)
+			m_mat4_transforms(p_transforms_ms),
+			m_px_transforms(p_px_transforms_ms)
 		{
 		}
 

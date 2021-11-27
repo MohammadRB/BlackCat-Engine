@@ -34,6 +34,8 @@ namespace black_cat
 
 			physics::bc_ccontroller get_controller() const noexcept;
 
+			physics::bc_rigid_dynamic get_dynamic_body() const noexcept;
+
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
 			void initialize_entity(const bc_actor_component_initialize_entity_context& p_context) override;
@@ -64,6 +66,11 @@ namespace black_cat
 		inline physics::bc_ccontroller bc_rigid_controller_component::get_controller() const noexcept
 		{
 			return m_px_controller.get();
+		}
+
+		inline physics::bc_rigid_dynamic bc_rigid_controller_component::get_dynamic_body() const noexcept
+		{
+			return *m_px_body;
 		}
 	}
 }

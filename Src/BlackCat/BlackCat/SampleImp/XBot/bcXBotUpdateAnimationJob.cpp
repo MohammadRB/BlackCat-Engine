@@ -9,7 +9,7 @@ namespace black_cat
 	bc_xbot_update_animation_job::bc_xbot_update_animation_job(const game::bc_actor& p_xbot_actor,
 		bc_xbot_actor_controller& p_xbot_controller,
 		game::bc_skinned_mesh_component& p_component,
-		const core::bc_shared_ptr<game::bc_model_to_skinned_animation_job>& p_model_to_skinned_job)
+		const core::bc_shared_ptr<game::bc_model_to_skinning_animation_job>& p_model_to_skinned_job)
 		: bc_actor_update_animation_job(p_xbot_actor, p_component, p_model_to_skinned_job),
 		m_xbot_controller(&p_xbot_controller)
 	{

@@ -200,7 +200,7 @@ namespace black_cat
 			* Shared shapes are not mutable when they are attached to an actor
 			*/
 			bc_shape_ref create_shape(const bc_shape_geometry& p_geometry,
-				bc_material*const* p_materials,
+				const bc_material* p_materials,
 				bcUINT16 p_material_count,
 				bool p_is_exclusive = false);
 
@@ -214,7 +214,7 @@ namespace black_cat
 			* Shared shapes are not mutable when they are attached to an actor
 			*/
 			bc_shape_ref create_shape(const bc_shape_geometry& p_geometry,
-				bc_material*const* p_materials,
+				const bc_material* p_materials,
 				bcUINT16 p_material_count,
 				bc_shape_flag p_shape_flags,
 				bool p_is_exclusive = false);

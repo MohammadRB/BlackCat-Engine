@@ -6,7 +6,6 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcString.h"
 #include "Graphic/bcEvent.h"
-#include "Game/bcConstant.h"
 #include "Game/System/Render/Pass/bcRenderPassResourceShare.h"
 #include "Game/System/Input/bcCameraInstance.h"
 #include "Game/bcException.h"
@@ -25,7 +24,7 @@ namespace black_cat
 		class bc_render_thread;
 		class bc_default_render_thread;
 		class bc_scene;
-
+		
 		template<typename TPass>
 		struct bc_render_pass_trait
 		{
@@ -176,15 +175,15 @@ namespace black_cat
 
 		protected:
 			template< typename T >
-			void share_resource(constant::bc_render_pass_variable_t p_variable, T&& p_value);
+			void share_resource(bc_render_pass_variable_t p_variable, T&& p_value);
 
-			void unshare_resource(constant::bc_render_pass_variable_t p_variable);
-
-			template< typename T >
-			T* get_shared_resource(constant::bc_render_pass_variable_t p_variable) const noexcept;
+			void unshare_resource(bc_render_pass_variable_t p_variable);
 
 			template< typename T >
-			T& get_shared_resource_throw(constant::bc_render_pass_variable_t p_variable) const;
+			T* get_shared_resource(bc_render_pass_variable_t p_variable) const noexcept;
+
+			template< typename T >
+			T& get_shared_resource_throw(bc_render_pass_variable_t p_variable) const;
 
 		private:
 			bc_render_pass_resource_share* m_resource_share;
@@ -200,24 +199,24 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void bci_render_pass::share_resource(constant::bc_render_pass_variable_t p_variable, T&& p_value)
+		void bci_render_pass::share_resource(bc_render_pass_variable_t p_variable, T&& p_value)
 		{
 			m_resource_share->share_resource(p_variable, std::forward<T>(p_value));
 		}
 
-		inline void bci_render_pass::unshare_resource(constant::bc_render_pass_variable_t p_variable)
+		inline void bci_render_pass::unshare_resource(bc_render_pass_variable_t p_variable)
 		{
 			m_resource_share->unshare_resource(p_variable);
 		}
 
 		template< typename T >
-		T* bci_render_pass::get_shared_resource(constant::bc_render_pass_variable_t p_variable) const noexcept
+		T* bci_render_pass::get_shared_resource(bc_render_pass_variable_t p_variable) const noexcept
 		{
 			return m_resource_share->get_resource< T >(p_variable);
 		}
 
 		template< typename T >
-		T& bci_render_pass::get_shared_resource_throw(constant::bc_render_pass_variable_t p_variable) const
+		T& bci_render_pass::get_shared_resource_throw(bc_render_pass_variable_t p_variable) const
 		{
 			auto* l_resource = get_shared_resource<T>(p_variable);
 			if(l_resource)

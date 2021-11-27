@@ -11,7 +11,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_animation_local_transform : public core::bc_iterator_adapter< core::bc_vector_movable< ozz::math::SoaTransform > >
+		class bc_animation_local_transform : public core::bc_iterator_adapter<core::bc_vector_movable<ozz::math::SoaTransform>>
 		{
 		public:
 			bc_animation_local_transform();

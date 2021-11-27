@@ -39,7 +39,7 @@ namespace black_cat
 			* Range (0,PI)
 			* \param p_limit
 			*/
-			void enable_limit(bc_joint_cone_limit& p_limit) noexcept;
+			void enable_limit(const bc_joint_cone_limit& p_limit) noexcept;
 
 			void disable_limit() noexcept;
 

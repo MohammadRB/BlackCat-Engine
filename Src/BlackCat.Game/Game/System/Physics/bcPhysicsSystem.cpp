@@ -29,7 +29,7 @@ namespace black_cat
 		core::bc_unique_ptr<bcINT16> bc_physics_system::convert_height_field_samples(bcUINT32 p_num_row, bcUINT32 p_num_column, bcFLOAT* p_samples)
 		{
 			const bcUINT32 l_num_samples = p_num_row * p_num_column;
-			core::bc_unique_ptr< bcINT16 > l_buffer(static_cast< bcINT16* >(BC_ALLOC(sizeof(bcINT16) * l_num_samples, core::bc_alloc_type::frame)));
+			core::bc_unique_ptr<bcINT16> l_buffer(static_cast<bcINT16*>(BC_ALLOC(sizeof(bcINT16) * l_num_samples, core::bc_alloc_type::frame)));
 			bcINT16* l_buffer_ptr = l_buffer.get();
 
 			for (bcUINT32 l_index = 0; l_index < l_num_samples; ++l_index)
@@ -65,8 +65,9 @@ namespace black_cat
 				}
 			);
 
-			p_rigid_static.create_shape(l_px_height_field_shape, l_px_height_field_materials.data(), l_height_map.get_materials_count())
-			              .set_query_group(static_cast< physics::bc_query_group >(bc_actor_group::terrain));
+			auto l_px_shape = m_physics.create_shape(l_px_height_field_shape, l_px_height_field_materials.data(), l_height_map.get_materials_count(), true);
+			l_px_shape->set_query_group(static_cast<physics::bc_query_group>(bc_actor_group::terrain));
+			p_rigid_static.attach_shape(l_px_shape.get());
 		}
 
 		void bc_physics_system::create_px_shapes_from_mesh(const bc_material_manager& p_material_manager,
@@ -85,31 +86,33 @@ namespace black_cat
 				if (l_material_ite != std::end(l_collider_materials))
 				{
 					core::bc_any& l_material_key = l_material_ite->second;
-					auto& l_material_name = l_material_key.as_throw< core::bc_string >();
+					auto& l_material_name = l_material_key.as_throw<core::bc_string>();
 
 					l_material = p_material_manager.find_collider_material(l_material_name.c_str());
 				}
-				
-				auto l_px_shape = p_px_actor.create_shape(*l_mesh_part_collider.m_shape, l_material.m_px_material, l_mesh_part_collider.m_shape_flags);
-				if(!l_px_shape.is_valid())
+
+				auto l_px_shape = m_physics.create_shape(*l_mesh_part_collider.m_shape, l_material.m_px_material, l_mesh_part_collider.m_shape_flags, true);
+				if (!l_px_shape->is_valid())
 				{
 					throw bc_invalid_argument_exception("Invalid mesh px-shape");
 				}
 
-				l_px_shape.set_local_pose(l_mesh_part_collider.m_initial_transform);
-				l_px_shape.set_high_detail_query_shape(l_mesh_part_collider.m_high_detail_query_shape);
+				l_px_shape->set_local_pose(l_mesh_part_collider.m_initial_transform);
+				l_px_shape->set_high_detail_query_shape(l_mesh_part_collider.m_high_detail_query_shape);
 				if(l_mesh.get_skinned())
 				{
-					l_px_shape.set_query_group(static_cast<physics::bc_query_group>(bc_actor_group::skinned_mesh));
+					l_px_shape->set_query_group(static_cast<physics::bc_query_group>(bc_actor_group::skinned_mesh));
 				}
 				
-				auto* l_shape_data = m_shape_data_pool.alloc();
+				auto* l_shape_data = alloc_shape_data();
 				l_shape_data->m_collider_entry = &l_mesh_part_collider;
 				l_shape_data->m_material_name = l_material.m_name;
 				l_shape_data->m_collision_particle = l_material.m_collision_particle;
 				l_shape_data->m_collision_decal = l_material.m_collision_decal;
-				
-				l_px_shape.set_data(l_shape_data);
+
+				set_game_shape_data(l_px_shape.get(), *l_shape_data);
+
+				p_px_actor.attach_shape(l_px_shape.get());
 			}
 		}
 
@@ -120,13 +123,13 @@ namespace black_cat
 
 			for(auto& l_shape : l_shapes)
 			{
-				auto* l_shape_data = static_cast<bc_px_shape_data*>(l_shape.get_data());
+				auto* l_shape_data = get_game_shape_data(l_shape);
 				if(!l_shape_data)
 				{
 					continue;
 				}
 
-				m_shape_data_pool.free(l_shape_data);
+				dealloc_shape_data(l_shape_data);
 			}
 		}
 
@@ -138,13 +141,13 @@ namespace black_cat
 		{
 			m_physics.initialize
 			(
-				core::bc_make_unique< physics::bc_default_allocator
+				core::bc_make_unique<physics::bc_default_allocator
 				<
-					core::bc_aligned_allocator< bcBYTE, 16 >,
-					core::bc_aligned_allocator_frame< bcBYTE, 16 >
-				> >(),
-				core::bc_make_unique< physics::bc_default_task_dispatcher >(),
-				core::bc_make_unique< physics::bc_default_logger >(core::bc_get_service<core::bc_logger>())
+					core::bc_aligned_allocator<bcBYTE, 16>,
+					core::bc_aligned_allocator_frame<bcBYTE, 16>
+				>>(),
+				core::bc_make_unique<physics::bc_default_task_dispatcher>(),
+				core::bc_make_unique<physics::bc_default_logger>(core::bc_get_service<core::bc_logger>())
 			);
 			m_shape_data_pool.initialize(5000, core::bc_alloc_type::program);
 		}

@@ -30,7 +30,7 @@ namespace black_cat
 
 		bc_aim_animation_job::bc_aim_animation_job(core::bc_shared_ptr<bci_local_transform_animation_job> p_local_job,
 			core::bc_shared_ptr<bc_local_to_model_animation_job> p_model_job,
-			core::bc_shared_ptr<bc_model_to_skinned_animation_job> p_skinned_job,
+			core::bc_shared_ptr<bc_model_to_skinning_animation_job> p_skinned_job,
 			core::bc_span<bc_aim_animation_bone> p_joint_chains,
 			bcFLOAT p_aim_weight)
 			: bci_animation_job(p_local_job->get_skeleton()),
@@ -45,7 +45,7 @@ namespace black_cat
 
 		bc_aim_animation_job::bc_aim_animation_job(core::bc_shared_ptr<bci_local_transform_animation_job> p_local_job,
 			core::bc_shared_ptr<bc_local_to_model_animation_job> p_model_job,
-			core::bc_shared_ptr<bc_model_to_skinned_animation_job> p_skinned_job,
+			core::bc_shared_ptr<bc_model_to_skinning_animation_job> p_skinned_job,
 			const core::bc_span<const bcCHAR*>& p_joint_chains,
 			const core::bc_vector3f& p_local_forward,
 			bcFLOAT p_aim_weight)

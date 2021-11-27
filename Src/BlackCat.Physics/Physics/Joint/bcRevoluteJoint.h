@@ -49,7 +49,7 @@ namespace black_cat
 			 * Range (-2*PI, 2*PI)
 			 * \param p_limit
 			 */
-			void enable_limit(bc_joint_angular_limit& p_limit) noexcept;
+			void enable_limit(const bc_joint_angular_limit& p_limit) noexcept;
 
 			void disable_limit() noexcept;
 

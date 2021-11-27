@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Container/bcArray.h"
+#include "Core/Container/bcVector.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Physics/bcPhysicsShapeUtility.h"
 
@@ -148,6 +149,83 @@ namespace black_cat
 				core::bc_vector3f((l_max_x + l_min_x) / 2, (l_max_y + l_min_y) / 2, (l_max_z + l_min_z) / 2),
 				core::bc_vector3f((l_max_x - l_min_x) / 2, (l_max_y - l_min_y) / 2, (l_max_z - l_min_z) / 2)
 			);
+		}
+
+		physics::bc_shape_ref bc_copy_shape(physics::bc_physics& p_physics, physics::bc_shape p_shape)
+		{
+			physics::bc_shape_ref l_shape;
+
+			const auto l_material_count = p_shape.get_material_count();
+			core::bc_vector_frame<physics::bc_material> l_materials(l_material_count);
+
+			p_shape.get_materials(l_materials.data(), l_material_count);
+			
+			switch (p_shape.get_type())
+			{
+			case physics::bc_shape_type::sphere:
+			{
+				physics::bc_shape_sphere l_sphere(0);
+				p_shape.as_sphere(l_sphere);
+
+				l_shape = p_physics.create_shape(l_sphere, l_materials.data(), l_material_count);
+				break;
+			}
+			case physics::bc_shape_type::plane:
+			{
+				physics::bc_shape_plane l_plane(core::bc_vector3f(), 0);
+				p_shape.as_plane(l_plane);
+
+				l_shape = p_physics.create_shape(l_plane, l_materials.data(), l_material_count);
+				break;
+			}
+			case physics::bc_shape_type::capsule:
+			{
+				physics::bc_shape_capsule l_capsule(0, 0);
+				p_shape.as_capsule(l_capsule);
+
+				l_shape = p_physics.create_shape(l_capsule, l_materials.data(), l_material_count);
+				break;
+			}
+			case physics::bc_shape_type::box:
+			{
+				physics::bc_shape_box l_box(0, 0, 0);
+				p_shape.as_box(l_box);
+
+				l_shape = p_physics.create_shape(l_box, l_materials.data(), l_material_count);
+				break;
+			}
+			case physics::bc_shape_type::convex_mesh:
+			{
+				const physics::bc_convex_mesh l_convex_mesh;
+				physics::bc_shape_convex_mesh _convex_shape(l_convex_mesh);
+				p_shape.as_convex_mesh(_convex_shape);
+
+				l_shape = p_physics.create_shape(_convex_shape, l_materials.data(), l_material_count);
+				break;
+			}
+			case physics::bc_shape_type::triangle_mesh:
+			{
+				const physics::bc_triangle_mesh l_triangle_mesh;
+				physics::bc_shape_triangle_mesh l_triangle_shape(l_triangle_mesh);
+				p_shape.as_triangle_mesh(l_triangle_shape);
+
+				l_shape = p_physics.create_shape(l_triangle_shape, l_materials.data(), l_material_count);
+				break;
+			}
+			case physics::bc_shape_type::height_field:
+			{
+				const physics::bc_height_field l_height_field;
+				physics::bc_shape_height_field l_l_height_field_shape(l_height_field, 0, 0);
+				p_shape.as_height_field(l_l_height_field_shape);
+
+				l_shape = p_physics.create_shape(l_l_height_field_shape, l_materials.data(), l_material_count);
+				break;
+			}
+			default:
+				BC_ASSERT(false);
+			}
+
+			return l_shape;
 		}
 	}
 }

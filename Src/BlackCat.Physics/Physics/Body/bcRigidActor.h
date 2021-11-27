@@ -54,31 +54,6 @@ namespace black_cat
 			void set_global_pose(const bc_transform& p_transform) noexcept;
 
 			/**
-			 * \brief Add a new shape to actor shapes collection
-			 * \param p_shape 
-			 * \param p_material 
-			 * \param p_flags 
-			 * \return 
-			 */
-			bc_shape create_shape(const bc_shape_geometry& p_shape,
-				const bc_material& p_material,
-				bc_shape_flag p_flags = core::bc_enum::mask_or({ bc_shape_flag::simulation, bc_shape_flag::query, bc_shape_flag::visualization }));
-
-			/**
-			 * \brief Add a new shape to actor shapes collection
-			 * Waking: No
-			 * \param p_shape 
-			 * \param p_materials 
-			 * \param p_material_count 
-			 * \param p_flags 
-			 * \return 
-			 */
-			bc_shape create_shape(const bc_shape_geometry& p_shape,
-				const bc_material* p_materials,
-				bcUINT32 p_material_count,
-				bc_shape_flag p_flags = core::bc_enum::mask_or({ bc_shape_flag::simulation, bc_shape_flag::query, bc_shape_flag::visualization }));
-
-			/**
 			 * \brief Attach a shape to actor
 			 * Waking: No
 			 * \param p_shape 

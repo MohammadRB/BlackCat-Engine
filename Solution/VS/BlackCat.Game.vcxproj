@@ -324,8 +324,10 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalTransformAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcMeshColliderSkinningAnimationJob.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcModelToSkinnedAnimationJob.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcModelToSkinningAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcExecuteOnceAnimationJob.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcRagdollSkinningAnimationJob.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcSkinningTransformAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcTagAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcPartialBlendingAnimationJob.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcSamplingAnimationJob.h" />
@@ -367,7 +369,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMeshComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNetworkComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcParticleEmitterComponent.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRagdollComponent.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcHumanRagdollComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRenderComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidBodyComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidControllerComponent.h" />
@@ -512,8 +514,9 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcBlendingAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcLocalToModelAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcMeshColliderSkininingAnimationJob.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcModelToSkinnedAnimationJob.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcModelToSkinningAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcPartialBlendingAnimationJob.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcRagdollSkinningAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcSamplingAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcTwoBoneIKAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshBuilder.cpp" />
@@ -536,7 +539,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcMeshComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcNetworkComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcParticleEmitterComponent.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRagdollComponent.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcHumanRagdollComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRenderComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidBodyComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcRigidControllerComponent.cpp" />

@@ -12,6 +12,7 @@
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
+#include "Game/bcConstant.h"
 #include "BlackCat/RenderPass/ShadowMap/bcBaseCascadedShadowMapPass.h"
 
 namespace black_cat
@@ -31,7 +32,7 @@ namespace black_cat
 		m_state->m_instance_count++;
 	}
 	
-	bc_base_cascaded_shadow_map_pass::bc_base_cascaded_shadow_map_pass(constant::bc_render_pass_variable_t p_output_depth_buffers, 
+	bc_base_cascaded_shadow_map_pass::bc_base_cascaded_shadow_map_pass(game::bc_render_pass_variable_t p_output_depth_buffers, 
 		bcFLOAT p_shadow_map_multiplier,
 		std::initializer_list<std::tuple<bcSIZE, bcUBYTE>> p_cascade_sizes)
 		: m_my_index(0)

@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace physics
 	{
-		template< bc_physics_api TApi, class TObject >
+		template<bc_physics_api TApi, class TObject>
 		struct bc_platform_physics_ref_pack
 		{
 		};
@@ -19,7 +19,7 @@ namespace black_cat
 		 * \tparam TApi 
 		 * \tparam TObject 
 		 */
-		template< bc_physics_api TApi, class TObject >
+		template<bc_physics_api TApi, class TObject>
 		class bc_platform_physics_ref
 		{
 		public:
@@ -33,7 +33,7 @@ namespace black_cat
 			<
 				typename = typename std::enable_if
 				<
-					std::is_base_of_v< bc_platform_physics_reference< TApi >, std::decay_t< type > >
+					std::is_base_of_v<bc_platform_physics_reference<TApi>, std::decay_t<type>>
 				>::type
 			>
 			explicit bc_platform_physics_ref(const type& p_object);
@@ -56,6 +56,8 @@ namespace black_cat
 
 			const type& get() const noexcept;
 
+			type release() noexcept;
+			
 			void reset();
 
 			void reset(const type& p_object);
@@ -69,7 +71,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< typename TObject >
-		using bc_physics_ref = bc_platform_physics_ref< g_current_physics_api, TObject >;
+		template<typename TObject>
+		using bc_physics_ref = bc_platform_physics_ref<g_current_physics_api, TObject>;
 	}
 }

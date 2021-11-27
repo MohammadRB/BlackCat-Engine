@@ -10,7 +10,7 @@
 
 namespace black_cat
 {
-	bc_text_draw_pass::bc_text_draw_pass(constant::bc_render_pass_variable_t p_back_buffer_view_parameter)
+	bc_text_draw_pass::bc_text_draw_pass(game::bc_render_pass_variable_t p_back_buffer_view_parameter)
 		: m_back_buffer_view_parameter(p_back_buffer_view_parameter)
 	{
 	}

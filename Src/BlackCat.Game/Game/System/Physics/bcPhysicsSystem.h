@@ -43,7 +43,7 @@ namespace black_cat
 
 			bcFLOAT get_height_field_y_scale() const noexcept;
 
-			core::bc_unique_ptr< bcINT16 > convert_height_field_samples(bcUINT32 p_num_row, bcUINT32 p_num_column, bcFLOAT* p_samples);
+			core::bc_unique_ptr<bcINT16> convert_height_field_samples(bcUINT32 p_num_row, bcUINT32 p_num_column, bcFLOAT* p_samples);
 
 			/**
 			 * \brief Retrieve stored pointer of game actor
@@ -59,6 +59,24 @@ namespace black_cat
 			 */
 			void set_game_actor(physics::bc_actor& p_px_actor, const bc_actor& p_actor) noexcept;
 
+			/**
+			 * \brief Retrieve stored pointer of shape data
+			 * \param p_px_shape
+			 * \return
+			 */
+			bc_px_shape_data* get_game_shape_data(const physics::bc_shape& p_px_shape) const noexcept;
+
+			/**
+			 * \brief Store a pointer of game shape data inside physics shape so it can be accessible within physics callbacks
+			 * \param p_px_shape
+			 * \param p_shape_data
+			 */
+			void set_game_shape_data(physics::bc_shape& p_px_shape, bc_px_shape_data& p_shape_data) noexcept;
+
+			bc_px_shape_data* alloc_shape_data() noexcept;
+
+			void dealloc_shape_data(bc_px_shape_data* p_data) noexcept;
+			
 			void create_px_shapes_from_height_map(const bc_material_manager& p_material_manager, 
 				physics::bc_rigid_static& p_rigid_static, 
 				const bc_height_map_component& p_height_map);
@@ -116,6 +134,26 @@ namespace black_cat
 		inline void bc_physics_system::set_game_actor(physics::bc_actor& p_px_actor, const bc_actor& p_actor) noexcept
 		{
 			p_px_actor.set_data(reinterpret_cast<void*>(static_cast<bcINTPTR>(p_actor.get_id())));
+		}
+
+		inline bc_px_shape_data* bc_physics_system::get_game_shape_data(const physics::bc_shape& p_px_shape) const noexcept
+		{
+			return static_cast<bc_px_shape_data*>(p_px_shape.get_data());
+		}
+
+		inline void bc_physics_system::set_game_shape_data(physics::bc_shape& p_px_shape, bc_px_shape_data& p_shape_data) noexcept
+		{
+			p_px_shape.set_data(reinterpret_cast<void*>(&p_shape_data));
+		}
+
+		inline bc_px_shape_data* bc_physics_system::alloc_shape_data() noexcept
+		{
+			return m_shape_data_pool.alloc();
+		}
+
+		inline void bc_physics_system::dealloc_shape_data(bc_px_shape_data* p_data) noexcept
+		{
+			m_shape_data_pool.free(p_data);
 		}
 		
 		inline bcFLOAT bc_physics_system::height_to_float(bcINT16 p_physics_height) noexcept

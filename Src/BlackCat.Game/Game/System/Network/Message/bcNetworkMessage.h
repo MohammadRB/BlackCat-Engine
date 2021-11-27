@@ -8,7 +8,6 @@
 #include "Core/File/bcJsonDocument.h"
 #include "PlatformImp/Network/bcNetworkAddress.h"
 #include "Game/System/Network/bcNetworkMessageVisitor.h"
-#include "Game/bcConstant.h"
 #include "Game/bcExport.h"
 
 namespace black_cat

@@ -16,6 +16,7 @@
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
+#include "Game/bcConstant.h"
 #include "BlackCat/SampleImp/ActorController/bcExplosionActorController.h"
 
 namespace black_cat

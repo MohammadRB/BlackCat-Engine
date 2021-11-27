@@ -5,7 +5,7 @@
 #include "Core/Memory/bcPtr.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
-#include "Game/Object/Animation/Job/bcModelToSkinnedAnimationJob.h"
+#include "Game/Object/Animation/Job/bcSkinningTransformAnimationJob.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -19,7 +19,7 @@ namespace black_cat
 		public:
 			bc_actor_update_animation_job(bc_actor p_actor,
 				bc_skinned_mesh_component& p_component,
-				core::bc_shared_ptr<bc_model_to_skinned_animation_job> p_model_to_skinned_job);
+				core::bc_shared_ptr<bci_skinning_transform_animation_job> p_skinning_job);
 
 			bc_actor_update_animation_job(bc_actor_update_animation_job&&) noexcept;
 
@@ -31,8 +31,8 @@ namespace black_cat
 			
 		private:
 			bc_actor m_actor;
-			bc_skinned_mesh_component* m_skinned_component;
-			core::bc_shared_ptr<bc_model_to_skinned_animation_job> m_model_to_skinned_job;
+			bc_skinned_mesh_component* m_component;
+			core::bc_shared_ptr<bci_skinning_transform_animation_job> m_skinning_job;
 		};
 	}	
 }

@@ -6,7 +6,7 @@
 #include "Core/Math/bcMatrix4f.h"
 #include "Game/Object/Animation/Job/bcSequenceAnimationJob.h"
 #include "Game/Object/Animation/Job/bcAimAnimationJob.h"
-#include "Game/Object/Animation/Job/bcModelToSkinnedAnimationJob.h"
+#include "Game/Object/Animation/Job/bcModelToSkinningAnimationJob.h"
 
 namespace black_cat
 {
@@ -74,7 +74,7 @@ namespace black_cat
 			for (bcINT32 l_job_ite = l_sequence_job.size() - 1; l_job_ite>= 0; --l_job_ite)
 			{
 				auto [l_name, l_job] = l_sequence_job.at(l_job_ite);
-				auto* l_concrete_job = dynamic_cast<bc_model_to_skinned_animation_job*>(l_job);
+				auto* l_concrete_job = dynamic_cast<bc_model_to_skinning_animation_job*>(l_job);
 				if (l_concrete_job)
 				{
 					l_concrete_job->set_world(p_world);

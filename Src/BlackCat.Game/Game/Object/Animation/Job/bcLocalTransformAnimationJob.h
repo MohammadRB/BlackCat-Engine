@@ -12,7 +12,7 @@ namespace black_cat
 		class bci_local_transform_animation_job : public bci_animation_job
 		{
 		public:
-			virtual ~bci_local_transform_animation_job() = 0;
+			virtual ~bci_local_transform_animation_job() override = 0;
 			
 			virtual bc_animation_local_transform& get_local_transforms() noexcept = 0;
 			

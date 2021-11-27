@@ -6,7 +6,7 @@
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "Game/Object/Animation/Job/bcLocalTransformAnimationJob.h"
 #include "Game/Object/Animation/Job/bcLocalToModelAnimationJob.h"
-#include "Game/Object/Animation/Job/bcModelToSkinnedAnimationJob.h"
+#include "Game/Object/Animation/Job/bcModelToSkinningAnimationJob.h"
 #include "Game/bcExport.h"
 
 namespace black_cat

@@ -39,8 +39,8 @@ namespace black_cat
 		game::bc_render_pass_state_ptr m_leaf_render_pass_state;
 		game::bc_render_pass_state_ptr m_trunk_render_pass_state;
 
-		core::bc_query_result< game::bc_main_camera_render_state_query > m_leaf_render_states_query;
-		core::bc_query_result< game::bc_main_camera_render_state_query > m_trunk_render_states_query;
+		core::bc_query_result<game::bc_main_camera_render_state_query> m_leaf_render_states_query;
+		core::bc_query_result<game::bc_main_camera_render_state_query> m_trunk_render_states_query;
 		game::bc_render_state_buffer m_leaf_render_states;
 		game::bc_render_state_buffer m_trunk_render_states;
 	};

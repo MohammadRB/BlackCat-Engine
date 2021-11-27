@@ -99,7 +99,11 @@ namespace black_cat
 			 */
 			virtual std::pair<bcFLOAT, bcFLOAT> get_break_force() const noexcept;
 
-			virtual bool broken() const noexcept;
+			bool get_visualization() const noexcept;
+			
+			void set_visualization(bool p_value) noexcept;
+			
+			virtual bool is_broken() const noexcept;
 
 			bool is_valid() const noexcept override;
 

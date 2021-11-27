@@ -9,8 +9,11 @@
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcCounterValueManager.h"
 #include "Core/Utility/bcLogger.h"
+#include "Core/Math/bcCoordinate.h"
 #include "Core/bcEvent.h"
+#include "PhysicsImp/Joint/bcSphericalJoint.h"
 #include "Game/System/Script/bcScriptSystem.h"
+#include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "BlackCat/Application/bcRenderApplication.h"
@@ -214,6 +217,45 @@ namespace black_cat
 
 	bool bc_render_application::app_event(core::bci_event& p_event)
 	{
+		auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
+		if(l_key_event)
+		{
+			if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
+			{
+				auto& l_input_system = m_game_system->get_input_system();
+				auto& l_camera = *l_input_system.get_camera();
+				auto* l_scene = m_game_system->get_scene();
+
+				const auto l_position1 = l_camera.get_position() + l_camera.get_forward() * 3;
+				const auto l_position2 = l_position1;// +core::bc_vector3f::right();
+				auto l_actor1 = l_scene->create_actor("capsule", core::bc_matrix4f::translation_matrix(l_position1));
+				auto l_actor2 = l_scene->create_actor("capsule", core::bc_matrix4f::translation_matrix(l_position2));
+				auto l_rigid_body1 = l_actor1.get_component<game::bc_rigid_dynamic_component>()->get_body();
+				auto l_rigid_body2 = l_actor2.get_component<game::bc_rigid_dynamic_component>()->get_body();
+
+				{
+					physics::bc_scene_lock l_lock(&l_scene->get_px_scene());
+					
+					core::bc_matrix3f l_rot;
+					l_rot.rotation_z_lh(3.14);
+					
+					auto l_px_joint = m_game_system->get_physics_system().get_physics().create_spherical_joint
+					(
+						&l_rigid_body1,
+						physics::bc_transform(core::bc_vector3f(0.75, 0, 0)),
+						&l_rigid_body2,
+						physics::bc_transform(core::bc_vector3f(-0.75, 0, 0))
+					);
+					l_px_joint->set_visualization(true);
+					l_px_joint->enable_limit(physics::bc_joint_cone_limit(core::bc_to_radian(100), core::bc_to_radian(100)));
+					l_px_joint.release();
+
+					const auto l_direction = l_camera.get_forward();
+					l_rigid_body1.set_linear_velocity(l_direction * 40);
+				}
+			}
+		}
+		
 		return application_event(p_event);
 	}
 

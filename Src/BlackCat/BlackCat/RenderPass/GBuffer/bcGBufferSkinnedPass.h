@@ -36,7 +36,7 @@ namespace black_cat
 		graphic::bc_sampler_state_ref m_sampler_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;
 
-		core::bc_query_result< game::bc_main_camera_render_state_query > m_render_states_query;
+		core::bc_query_result<game::bc_main_camera_render_state_query> m_render_states_query;
 		game::bc_render_state_buffer m_render_states;
 	};
 }

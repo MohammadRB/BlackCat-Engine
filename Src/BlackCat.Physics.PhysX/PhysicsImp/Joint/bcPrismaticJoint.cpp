@@ -64,7 +64,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_prismatic_joint<g_api_physx>::enable_limit(bc_joint_linear_limit_pair& p_limit) noexcept
+		void bc_platform_prismatic_joint<g_api_physx>::enable_limit(const bc_joint_linear_limit_pair& p_limit) noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxPrismaticJoint*>(get_platform_pack().m_px_object);
 

@@ -176,7 +176,25 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_joint<g_api_physx>::broken() const noexcept
+		bool bc_platform_joint<g_api_physx>::get_visualization() const noexcept
+		{
+			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
+
+			return l_px_joint->getConstraintFlags().isSet(physx::PxConstraintFlag::eVISUALIZATION);
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		void bc_platform_joint<g_api_physx>::set_visualization(bool p_value) noexcept
+		{
+			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
+
+			l_px_joint->setConstraintFlag(physx::PxConstraintFlag::eVISUALIZATION, p_value);
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bool bc_platform_joint<g_api_physx>::is_broken() const noexcept
 		{
 			auto* l_px_joint = static_cast<physx::PxJoint*>(m_pack.m_px_object);
 

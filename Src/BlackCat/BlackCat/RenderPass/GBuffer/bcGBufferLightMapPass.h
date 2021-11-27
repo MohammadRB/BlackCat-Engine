@@ -20,7 +20,7 @@ namespace black_cat
 		BC_RENDER_PASS(gb_lgt)
 
 	public:
-		bc_gbuffer_light_map_pass(constant::bc_render_pass_variable_t p_csm_buffers_container, constant::bc_render_pass_variable_t p_output_texture);
+		bc_gbuffer_light_map_pass(game::bc_render_pass_variable_t p_csm_buffers_container, game::bc_render_pass_variable_t p_output_texture);
 
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 
@@ -45,8 +45,8 @@ namespace black_cat
 		constexpr static bcSIZE m_num_point_lights = 100;
 		constexpr static bcSIZE m_num_spot_lights = 100;
 
-		constant::bc_render_pass_variable_t m_csm_buffers_container_share_slot;
-		constant::bc_render_pass_variable_t m_output_texture_share_slot;
+		game::bc_render_pass_variable_t m_csm_buffers_container_share_slot;
+		game::bc_render_pass_variable_t m_output_texture_share_slot;
 
 		graphic::bc_resource_view_ref m_depth_stencil_view;
 		graphic::bc_resource_view_ref m_diffuse_map_view;
