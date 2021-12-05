@@ -8,23 +8,16 @@ namespace black_cat
 	namespace editor
 	{
 		bc_editor_game_console::bc_editor_game_console(game::bc_game_console& p_game_console, bc_widget_console& p_widget)
-			: game::bci_game_console_imp(p_game_console)
+			: game::bci_game_console_imp(p_game_console),
+			m_clear_logs(false),
+			m_widget(&p_widget)
 		{
-			qRegisterMetaType<game::bc_console_output_type>("game::bc_console_output_type");
-			
-			QObject::connect
-			(
-				this,
-				SIGNAL(logRecieved(game::bc_console_output_type, const QString&)),
-				&p_widget,
-				SLOT(onLog(game::bc_console_output_type, const QString&)),
-				Qt::QueuedConnection
-			);
-			QObject::connect(this, SIGNAL(clearRecievied()), &p_widget, SLOT(onClear()), Qt::QueuedConnection);
 		}
 
 		bc_editor_game_console::bc_editor_game_console(bc_editor_game_console&& p_other) noexcept
-			: game::bci_game_console_imp(std::move(p_other))
+			: game::bci_game_console_imp(std::move(p_other)),
+			m_clear_logs(false),
+			m_widget(p_other.m_widget)
 		{
 		}
 
@@ -35,18 +28,28 @@ namespace black_cat
 		bc_editor_game_console& bc_editor_game_console::operator=(bc_editor_game_console&& p_other) noexcept
 		{
 			game::bci_game_console_imp::operator=(std::move(p_other));
+			m_widget = p_other.m_widget;
+			p_other.m_widget = nullptr;
 
 			return *this;
 		}
 
 		void bc_editor_game_console::write_output(game::bc_console_output_type p_type, const bcECHAR* p_msg)
 		{
-			emit logRecieved(p_type, QString::fromWCharArray(p_msg));
+			auto l_msg = QString::fromWCharArray(p_msg);
+			
+			{
+				std::lock_guard l_lock(m_logs_lock);
+				m_received_logs.push_back(std::make_pair(p_type, std::move(l_msg)));
+			}
 		}
 
 		void bc_editor_game_console::clear_output()
 		{
-			emit clearRecievied();
+			{
+				std::lock_guard l_lock(m_logs_lock);
+				m_clear_logs = true;
+			}
 		}
 
 		void bc_editor_game_console::show()
@@ -59,6 +62,25 @@ namespace black_cat
 
 		void bc_editor_game_console::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
+		}
+
+		void bc_editor_game_console::update_ui()
+		{
+			decltype(m_received_logs) l_received_logs;
+			
+			{
+				std::lock_guard l_lock(m_logs_lock);
+
+				if (m_clear_logs)
+				{
+					m_widget->clear_logs();
+					m_clear_logs = false;
+				}
+
+				std::swap(m_received_logs, l_received_logs);
+			}
+
+			m_widget->write_logs(l_received_logs.data(), l_received_logs.size());
 		}
 
 		bool bc_editor_game_console::is_visible()

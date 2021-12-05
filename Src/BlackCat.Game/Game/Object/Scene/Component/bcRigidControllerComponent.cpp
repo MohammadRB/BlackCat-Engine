@@ -104,12 +104,6 @@ namespace black_cat
 			const auto* l_hierarchy_transform_event = core::bci_message::as<bc_hierarchy_transform_actor_event>(p_context.m_event);
 			if (l_hierarchy_transform_event && l_hierarchy_transform_event->get_px_transforms())
 			{
-				//core::bc_vector3f l_corrected_position;
-				//l_corrected_position.x = m_px_controller_ref->get_foot_position().y - m_px_controller_ref->get_position().y; // Y rotated 90 degree
-				//core::bc_matrix3f l_corrected_rotation;
-				//l_corrected_rotation.rotation_z_lh(core::bc_to_radian(-90));
-				//const physics::bc_transform l_correction_transform(l_corrected_position, m_corrected_rotation * l_corrected_rotation);
-
 				update_px_shape_transforms(*m_px_body, *l_hierarchy_transform_event->get_px_transforms());
 				return;
 			}

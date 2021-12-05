@@ -266,15 +266,17 @@ namespace black_cat
 			const bc_sub_mesh_mat4_transform& p_model_transforms, 
 			bc_sub_mesh_px_transform& p_transforms)
 		{
-			for (const bc_mesh_part_collider_entry& l_mesh_collider : p_mesh.get_collider())
+			const auto& l_mesh_collider = p_mesh.get_collider();
+			
+			for (const bc_mesh_part_collider_entry& l_collider : l_mesh_collider.get_colliders())
 			{
-				const auto* l_collider_attached_node = p_mesh.find_node(l_mesh_collider.m_attached_node_index);
+				const auto* l_collider_attached_node = p_mesh.find_node(l_collider.m_attached_node_index);
 				BC_ASSERT(l_collider_attached_node);
 
 				const auto& l_model_transform = p_model_transforms.get_node_transform(*l_collider_attached_node);
 				auto& l_output_transform = p_transforms.get_node_transform(*l_collider_attached_node);
 				
-				l_output_transform = physics::bc_transform(l_model_transform) * l_mesh_collider.m_local_transform;
+				l_output_transform = physics::bc_transform(l_model_transform) * l_collider.m_local_transform;
 			}
 		}
 
@@ -282,9 +284,11 @@ namespace black_cat
 			const bc_sub_mesh_mat4_transform& p_model_transforms, 
 			bc_sub_mesh_px_transform& p_transforms)
 		{
-			for (const bc_mesh_part_collider_entry& l_mesh_part_collider : p_mesh.get_collider())
+			const auto& l_mesh_collider = p_mesh.get_collider();
+			
+			for (const bc_mesh_part_collider_entry& l_collider : l_mesh_collider.get_colliders())
 			{
-				const auto* l_collider_attached_node = p_mesh.find_node(l_mesh_part_collider.m_attached_node_index);
+				const auto* l_collider_attached_node = p_mesh.find_node(l_collider.m_attached_node_index);
 				BC_ASSERT(l_collider_attached_node);
 
 				const auto& l_inverse_bind_pose_transform = p_mesh.get_node_inverse_bind_pose_transform(*l_collider_attached_node);
@@ -297,7 +301,7 @@ namespace black_cat
 					l_inverse_bind_pose_transform.get_rotation()
 				);
 				
-				l_output_transform = l_px_inverse_bind_pose_transform * l_mesh_part_collider.m_local_transform;
+				l_output_transform = l_px_inverse_bind_pose_transform * l_collider.m_local_transform;
 				l_output_transform = physics::bc_transform(l_model_transform) * l_output_transform;
 			}
 		}

@@ -58,7 +58,7 @@ namespace black_cat
 
 	inline void bc_xbot_idle_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
-		/*if(m_ragdoll_component)
+		if(m_ragdoll_component)
 		{
 			const auto l_prev_time = m_ragdoll_timer;
 			m_ragdoll_timer += p_context.m_clock.m_elapsed_second;
@@ -67,7 +67,7 @@ namespace black_cat
 				m_ragdoll_component->set_enable(true);
 				m_ragdoll_enabled = true;
 			}
-		}*/
+		}
 
 		if(!m_ragdoll_enabled)
 		{

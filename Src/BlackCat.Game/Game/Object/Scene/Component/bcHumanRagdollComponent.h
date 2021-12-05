@@ -28,9 +28,24 @@ namespace black_cat
 		
 		struct _bc_ragdoll_collider_entry
 		{
+			struct affected_node
+			{
+				bc_mesh_node::node_index_t m_node_index;
+				
+				/**
+				 * \brief Collider affected nodes have an offset in relation to collider transform which must be applied in calculation of node transforms.
+				 */
+				physics::bc_transform m_collider_offset_transform;
+
+				/**
+				 * \brief Collider affected nodes have an offset in relation to collider attached node which must be applied in calculation of node transforms.
+				 */
+				physics::bc_transform m_parent_offset_transform;
+			};
+			
 			std::string_view m_attached_node_name;
 			bc_mesh_node::node_index_t m_attached_node_index;
-			core::bc_vector<bc_mesh_node::node_index_t> m_affected_node_indices;
+			core::bc_vector<affected_node> m_affected_nodes;
 		};
 		
 		class BC_GAME_DLL bc_human_ragdoll_component : public bci_actor_component
@@ -59,7 +74,7 @@ namespace black_cat
 			void set_enable(bool p_enable);
 			
 		private:
-			void _fill_colliders_map(const bc_actor& p_actor);
+			void _fill_colliders_map();
 
 			void _fill_joints_map(const core::bc_json_key_value& p_joint_parameters);
 			
@@ -83,14 +98,14 @@ namespace black_cat
 			constexpr static bcUINT32 s_right_foot_index = 13;
 			
 			bc_physics_system* m_physics_system;
-			physics::bc_scene* m_scene;
+			physics::bc_scene* m_px_scene;
 			bc_skinned_mesh_component* m_mesh_component;
 			bc_rigid_controller_component* m_rigid_controller_component;
 
-			core::bc_unique_ptr<bc_ragdoll_animation_job> m_ragdoll_animation_job;
 			core::bc_array<std::pair<std::string_view, physics::bc_rigid_dynamic_ref>, 14> m_joint_actors;
 			core::bc_vector<_bc_ragdoll_collider_entry> m_colliders_map;
 			core::bc_vector<physics::bc_joint_ref> m_joints;
+			core::bc_unique_ptr<bc_ragdoll_animation_job> m_ragdoll_animation_job;
 		};
 	}	
 }

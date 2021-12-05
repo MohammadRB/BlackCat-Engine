@@ -14,27 +14,27 @@ namespace black_cat
 {
 	namespace physics
 	{
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_rigid_actor;
-		using bc_rigid_actor = bc_platform_rigid_actor< g_current_physics_api >;
+		using bc_rigid_actor = bc_platform_rigid_actor<g_current_physics_api>;
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_shape;
-		using bc_shape = bc_platform_shape< g_current_physics_api >;
+		using bc_shape = bc_platform_shape<g_current_physics_api>;
 
 		enum class bc_hit_flag
 		{
 			position = core::bc_enum::value(0),			// "position" member of #PxQueryHit is valid
 			normal = core::bc_enum::value(1),			// "normal" member of #PxQueryHit is valid
 			distance = core::bc_enum::value(2),			// "distance" member of #PxQueryHit is valid
-			//eASSUME_NO_INITIAL_OVERLAP = (1 << 4),	// Performance hint flag for sweeps when it is known upfront there's no initial overlap.
+			//eASSUME_NO_INITIAL_OVERLAP = (1 <<4),	// Performance hint flag for sweeps when it is known upfront there's no initial overlap.
 														// NOTE: using this flag may cause undefined results if shapes are initially overlapping.
 			mesh_multiple = core::bc_enum::value(5),	// Report all hits for meshes rather than just the first. Not applicable to sweep queries.
 			mesh_any = core::bc_enum::value(6),			// Report any first hit for meshes. If neither eMESH_MULTIPLE nor eMESH_ANY is specified, a single closest hit will be reported for meshes.
 			mesh_both_side = core::bc_enum::value(7),	// Report hits with back faces of mesh triangles.
 			precise_sweep = core::bc_enum::value(8),	// Use more accurate but slower narrow phase sweep tests.
 														// May provide better compatibility with PhysX 3.2 sweep behavior. Ignored on SPU.
-			//eMTD = (1 << 9),							// Report the minimum translation depth, normal and contact point. Ignored on SPU.
+			mtd = core::bc_enum::value(9),				// Report the minimum translation depth, normal and contact point. Ignored on SPU.
 			face_index = core::bc_enum::value(10),		// Member of #PxQueryHit is valid
 			hit_info = position | normal | distance
 		};
@@ -53,16 +53,16 @@ namespace black_cat
 			const bcFLOAT m_length;
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		struct bc_platform_ray_hit_pack
 		{
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_ray_hit
 		{
 		public:
-			using platform_pack = bc_platform_ray_hit_pack< TApi >;
+			using platform_pack = bc_platform_ray_hit_pack<TApi>;
 
 		public:
 			bc_platform_ray_hit() noexcept;
@@ -101,18 +101,18 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_ray_hit = bc_platform_ray_hit< g_current_physics_api >;
+		using bc_ray_hit = bc_platform_ray_hit<g_current_physics_api>;
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		struct bc_platform_overlap_hit_pack
 		{
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_overlap_hit
 		{
 		public:
-			using platform_pack = bc_platform_overlap_hit_pack< TApi >;
+			using platform_pack = bc_platform_overlap_hit_pack<TApi>;
 
 		public:
 			bc_platform_overlap_hit() noexcept;
@@ -145,18 +145,18 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_overlap_hit = bc_platform_overlap_hit< g_current_physics_api >;
+		using bc_overlap_hit = bc_platform_overlap_hit<g_current_physics_api>;
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		struct bc_platform_sweep_hit_pack
 		{
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_sweep_hit
 		{
 		public:
-			using platform_pack = bc_platform_sweep_hit_pack< TApi >;
+			using platform_pack = bc_platform_sweep_hit_pack<TApi>;
 
 		public:
 			bc_platform_sweep_hit() noexcept;
@@ -195,7 +195,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_sweep_hit = bc_platform_sweep_hit< g_current_physics_api >;
+		using bc_sweep_hit = bc_platform_sweep_hit<g_current_physics_api>;
 
 		class bc_shape_query
 		{
@@ -238,10 +238,10 @@ namespace black_cat
 			 */
 			static BC_PHYSICS_DLL bool sweep(const bc_shape_geometry& p_geom0,
 				const bc_transform& p_pose0,
-				const core::bc_vector3f& p_unit_dir,
-				const bcFLOAT p_max_dist,
 				const bc_shape_geometry& p_geom1,
 				const bc_transform& p_pose1,
+				const core::bc_vector3f& p_unit_dir,
+				const bcFLOAT p_max_dist,
 				bc_sweep_hit& p_hit,
 				bc_hit_flag p_flags,
 				const bcFLOAT p_inflation = 0.f);

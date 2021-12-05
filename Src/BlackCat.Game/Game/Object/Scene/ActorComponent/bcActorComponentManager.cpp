@@ -1,6 +1,8 @@
 // [04/02/2021 MRB]
 
 #include "Game/GamePCH.h"
+
+#include "Core/Utility/bcLogger.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.hpp"
 

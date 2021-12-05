@@ -44,7 +44,7 @@ namespace black_cat
 			m_form_terrain = std::make_unique<bc_form_terrain>(*ui.centralWidget);
 			m_form_tools = std::make_unique<bc_form_tools>(*m_ui_command_service, *m_d3d_widget, *ui.toolsDock, *ui.rightToolBox, *m_form_terrain, *m_form_object_insert);
 			m_timer = std::make_unique<QTimer>();
-			m_timer->start(1000.0f / 60);
+			m_timer->start(1000.f / 60.f);
 
 			QObject::connect(m_editor_game_console.get(), SIGNAL(scriptExecuted(const QString&)), this, SLOT(scriptExecuted(const QString&)));
 			QObject::connect(m_timer.get(), SIGNAL(timeout()), this, SLOT(timerTimeout()));
@@ -222,6 +222,8 @@ namespace black_cat
 				return;
 			}
 
+			m_editor_game_console->update_ui();
+			
 			bc_iui_command::update_ui_context l_context(*m_form_object, *m_form_object_insert, *m_form_main_menu);
 			m_ui_command_service->update_ui(l_context);
 		}

@@ -107,7 +107,7 @@ namespace black_cat
 
 			void _calculate_inverse_bind_pose();
 			
-			void _calculate_collider_initial_transforms();
+			void _calculate_collider_absolute_transforms();
 
 			core::bc_string m_name;
 			bcFLOAT m_auto_scale;

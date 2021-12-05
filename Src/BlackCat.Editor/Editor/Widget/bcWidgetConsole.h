@@ -21,11 +21,11 @@ namespace black_cat
 
 			~bc_widget_console();
 
-		private slots:
-			void onLog(game::bc_console_output_type p_log_type, const QString& p_log);
-			
-			void onClear();
+			void write_logs(std::pair<game::bc_console_output_type, QString>* p_logs, bcUINT32 p_log_count);
 
+			void clear_logs();
+		
+		private slots:
 			void _returnPressed();
 
 			void _infoToggled(bool p_toggle);
@@ -46,6 +46,7 @@ namespace black_cat
 		private:
 			void _setup_ui();
 
+			bcUINT32 m_max_row_count;
 			QtAwesome* m_awesome;
 
 			QColor m_info_color;

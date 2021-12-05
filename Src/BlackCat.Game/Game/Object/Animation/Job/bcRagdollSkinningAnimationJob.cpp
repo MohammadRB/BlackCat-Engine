@@ -40,10 +40,10 @@ namespace black_cat
 				const auto& l_animation_model_transform = l_model_transforms.get_node_transform(*l_mesh_node);
 				auto& l_output_transform = m_skinning_transforms_ws->get_node_transform(*l_mesh_node);
 
-				auto l_animation_model_world_transform = l_animation_model_transform * m_world;
-				l_output_transform = l_mesh_node_inverse_transform * l_animation_model_world_transform;
+				auto l_animation_world_transform = l_animation_model_transform * m_world;
+				l_output_transform = l_mesh_node_inverse_transform * l_animation_world_transform;
 
-				auto l_translation = l_animation_model_world_transform.get_translation();
+				auto l_translation = l_animation_world_transform.get_translation();
 				l_min.x = std::min(l_min.x, l_translation.x);
 				l_min.y = std::min(l_min.y, l_translation.y);
 				l_min.z = std::min(l_min.z, l_translation.z);

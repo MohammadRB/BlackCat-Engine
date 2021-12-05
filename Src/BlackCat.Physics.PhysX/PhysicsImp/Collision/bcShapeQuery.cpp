@@ -272,10 +272,10 @@ namespace black_cat
 
 		bool BC_PHYSICSIMP_DLL bc_shape_query::sweep(const bc_shape_geometry& p_geom0,
 			const bc_transform& p_pose0,
-			const core::bc_vector3f& p_unit_dir,
-			const bcFLOAT p_max_dist,
 			const bc_shape_geometry& p_geom1,
 			const bc_transform& p_pose1,
+			const core::bc_vector3f& p_unit_dir,
+			const bcFLOAT p_max_dist,
 			bc_sweep_hit& p_hit,
 			bc_hit_flag p_flags,
 			const bcFLOAT p_inflation)
@@ -289,7 +289,7 @@ namespace black_cat
 				*p_geom1.get_platform_pack().m_px_geometry,
 				p_pose1.get_platform_pack().m_px_transform,
 				p_hit.get_platform_pack().m_px_hit,
-				static_cast< physx::PxHitFlag::Enum >(p_flags),
+				static_cast<physx::PxHitFlag::Enum>(p_flags),
 				p_inflation
 			);
 

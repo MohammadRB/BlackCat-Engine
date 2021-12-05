@@ -26,7 +26,7 @@ namespace black_cat
 				: bc_mesh_part_collider_entry
 				(
 					p_attached_node_index,
-					p_attached_mesh_name,
+					std::move(p_attached_mesh_name),
 					std::move(p_px_shape),
 					p_local_transform,
 					physics::bc_shape_flag::default_v
@@ -42,7 +42,7 @@ namespace black_cat
 				: bc_mesh_part_collider_entry
 				(
 					p_attached_node_transform_index,
-					p_attached_mesh_name,
+					std::move(p_attached_mesh_name),
 					std::move(p_px_shape),
 					p_local_transform,
 					p_flag,
@@ -62,10 +62,9 @@ namespace black_cat
 				m_shape(std::move(p_px_shape)),
 				m_shape_flags(p_flag),
 				m_local_transform(p_local_transform),
-				m_initial_transform(),
+				m_absolute_transform(),
 				m_high_detail_query_shape(p_high_detail_query_shape)
 			{
-
 			}
 
 			bc_mesh_part_collider_entry(bc_mesh_part_collider_entry&&) = default;
@@ -79,11 +78,20 @@ namespace black_cat
 			core::bc_unique_ptr<physics::bc_shape_geometry> m_shape;
 			physics::bc_shape_flag m_shape_flags;
 			physics::bc_transform m_local_transform;
-			physics::bc_transform m_initial_transform;
+			physics::bc_transform m_absolute_transform;
 			bool m_high_detail_query_shape;
 		};
+
+		struct bc_mesh_part_collider_joint_entry
+		{
+			using hash_t = std::hash<std::string_view>;
+
+			hash_t::result_type m_collider1;
+			hash_t::result_type m_collider2;
+			physics::bc_transform m_transform;
+		};
 		
-		class BC_GAME_DLL bc_mesh_collider : public core::bci_content, public core::bc_const_iterator_adapter<core::bc_vector<bc_mesh_part_collider_entry>>
+		class BC_GAME_DLL bc_mesh_collider : public core::bci_content
 		{
 			BC_CONTENT(msh_cld)
 			friend class bc_mesh_collider_builder;
@@ -103,11 +111,22 @@ namespace black_cat
 			
 			core::bc_const_span<bc_mesh_part_collider_entry> find_mesh_collider(std::string_view p_mesh_name) const noexcept;
 
+			const physics::bc_transform* find_joint(std::string_view p_collider1, std::string_view p_collider2) const noexcept;
+
+			core::bc_span<bc_mesh_part_collider_entry> get_colliders() noexcept;
+			
+			core::bc_const_span<bc_mesh_part_collider_entry> get_colliders() const noexcept;
+
+			core::bc_span<bc_mesh_part_collider_joint_entry> get_collider_joints() noexcept;
+
+			core::bc_const_span<bc_mesh_part_collider_joint_entry> get_collider_joints() const noexcept;
+			
 		private:
 			core::bc_vector<std::tuple<core::bc_string, bcSIZE, bcSIZE>> m_mesh_colliders;
 			core::bc_vector<bc_mesh_part_collider_entry> m_colliders;
 			core::bc_vector<physics::bc_convex_mesh_ref> m_convex_shapes;
 			core::bc_vector<physics::bc_triangle_mesh_ref> m_triangle_shapes;
+			core::bc_vector<bc_mesh_part_collider_joint_entry> m_joints;
 			bc_skinned_mesh_collider m_skinned_collider;
 		};
 
@@ -121,6 +140,26 @@ namespace black_cat
 		inline const bc_skinned_mesh_collider& bc_mesh_collider::get_skinned_collider() const noexcept
 		{
 			return m_skinned_collider;
+		}
+
+		inline core::bc_span<bc_mesh_part_collider_entry> bc_mesh_collider::get_colliders() noexcept
+		{
+			return core::bc_make_span(m_colliders);
+		}
+
+		inline core::bc_const_span<bc_mesh_part_collider_entry> bc_mesh_collider::get_colliders() const noexcept
+		{
+			return core::bc_make_span(m_colliders);
+		}
+
+		inline core::bc_span<bc_mesh_part_collider_joint_entry> bc_mesh_collider::get_collider_joints() noexcept
+		{
+			return core::bc_make_span(m_joints);
+		}
+
+		inline core::bc_const_span<bc_mesh_part_collider_joint_entry> bc_mesh_collider::get_collider_joints() const noexcept
+		{
+			return core::bc_make_span(m_joints);
 		}
 	}
 }

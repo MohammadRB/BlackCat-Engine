@@ -8,32 +8,13 @@ namespace black_cat
 	namespace game
 	{
 		bc_mesh_collider::bc_mesh_collider()
-			: bci_content(),
-			bc_const_iterator_adapter(m_colliders)
+			: bci_content()
 		{
 		}
 
-		bc_mesh_collider::bc_mesh_collider(bc_mesh_collider&& p_other) noexcept
-			: bci_content(std::move(p_other)),
-			bc_const_iterator_adapter(m_colliders),
-			m_mesh_colliders(std::move(p_other.m_mesh_colliders)),
-			m_colliders(std::move(p_other.m_colliders)),
-			m_convex_shapes(std::move(p_other.m_convex_shapes)),
-			m_triangle_shapes(std::move(p_other.m_triangle_shapes)),
-			m_skinned_collider(std::move(p_other.m_skinned_collider))
-		{
-		}
+		bc_mesh_collider::bc_mesh_collider(bc_mesh_collider&& p_other) noexcept = default;
 
-		bc_mesh_collider& bc_mesh_collider::operator=(bc_mesh_collider&& p_other) noexcept
-		{
-			bci_content::operator=(std::move(p_other));
-			m_mesh_colliders = std::move(p_other.m_mesh_colliders);
-			m_colliders = std::move(p_other.m_colliders);
-			m_convex_shapes = std::move(p_other.m_convex_shapes);
-			m_triangle_shapes = std::move(p_other.m_triangle_shapes);
-			m_skinned_collider = std::move(p_other.m_skinned_collider);
-			return *this;
-		}
+		bc_mesh_collider& bc_mesh_collider::operator=(bc_mesh_collider&& p_other) noexcept = default;
 
 		core::bc_const_span<bc_mesh_part_collider_entry> bc_mesh_collider::find_mesh_collider(std::string_view p_mesh_name) const noexcept
 		{
@@ -56,6 +37,30 @@ namespace black_cat
 			const auto l_colliders_start = std::get<1>(*l_ite);
 			const auto l_colliders_length = std::get<2>(*l_ite);
 			return core::bc_const_span<bc_mesh_part_collider_entry>(&m_colliders[l_colliders_start], l_colliders_length);
+		}
+
+		const physics::bc_transform* bc_mesh_collider::find_joint(std::string_view p_collider1, std::string_view p_collider2) const noexcept
+		{
+			const auto l_collider1_hash = bc_mesh_part_collider_joint_entry::hash_t()(p_collider1.data());
+			const auto l_collider2_hash = bc_mesh_part_collider_joint_entry::hash_t()(p_collider2.data());
+
+			const auto l_ite = std::find_if
+			(
+				std::begin(m_joints), 
+				std::end(m_joints), 
+				[=](const bc_mesh_part_collider_joint_entry& p_joint)
+				{
+					return	(p_joint.m_collider1 == l_collider1_hash || p_joint.m_collider1 == l_collider2_hash) &&
+							(p_joint.m_collider2 == l_collider1_hash || p_joint.m_collider2 == l_collider2_hash);
+				}
+			);
+
+			if(l_ite == std::end(m_joints))
+			{
+				return nullptr;
+			}
+
+			return &l_ite->m_transform;
 		}
 	}
 }

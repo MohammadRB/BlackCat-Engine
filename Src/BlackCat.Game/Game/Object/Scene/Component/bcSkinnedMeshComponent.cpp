@@ -262,7 +262,7 @@ namespace black_cat
 				auto l_scale_transform = core::bc_matrix4f::scale_matrix(l_mesh.get_mesh_scale());
 
 				bcINT32 l_dummy;
-				l_mesh.iterate_over_nodes(l_dummy, [this, &l_mesh, &p_transform, &l_model_transforms, &l_world_transforms, &l_scale_transform](const bc_mesh_node& p_node, bcINT32)
+				l_mesh.iterate_over_nodes(l_dummy, [&, this](const bc_mesh_node& p_node, bcINT32)
 				{
 					// Reset absolute transforms so skinned mesh will be rendered correctly in T pose
 					l_world_transforms.set_node_transform(p_node, l_scale_transform * p_transform);

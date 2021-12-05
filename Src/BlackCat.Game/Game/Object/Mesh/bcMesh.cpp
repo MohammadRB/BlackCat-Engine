@@ -112,12 +112,12 @@ namespace black_cat
 			// to avoid reversing auto-scale
 			_calculate_inverse_bind_pose();
 			
-			if(p_builder.m_auto_scale.has_value())
+			if (p_builder.m_auto_scale.has_value())
 			{
 				_apply_auto_scale(*p_builder.m_auto_scale);
 			}
 
-			_calculate_collider_initial_transforms();
+			_calculate_collider_absolute_transforms();
 
 			// For unknown error in mesh builder deconstruction
 			p_builder.m_nodes.clear();
@@ -256,48 +256,57 @@ namespace black_cat
 			m_scale = p_auto_scale / l_largest_side;
 			m_transformations[m_root->get_index()] *= core::bc_matrix4f::scale_matrix(m_scale);
 
+			/*for(auto& l_transform : m_transformations)
+			{
+				l_transform.set_translation(l_transform.get_translation() * m_scale);
+			}*/
+			/*for (auto& l_transform : m_bind_poses)
+			{
+				l_transform.set_translation(l_transform.get_translation() * m_scale);
+			}*/
+
 			for(auto& l_mesh_part_data : m_meshes)
 			{
 				l_mesh_part_data.m_bound_box.scale(m_scale);
 			}
 
-			for(bc_mesh_part_collider_entry& l_mesh_part_collider : *m_collider)
+			for(bc_mesh_part_collider_entry& l_collider : m_collider->get_colliders())
 			{
-				switch (l_mesh_part_collider.m_shape->get_type())
+				switch (l_collider.m_shape->get_type())
 				{
 				case physics::bc_shape_type::sphere:
 					{
-						auto& l_sphere = static_cast< physics::bc_shape_sphere& >(*l_mesh_part_collider.m_shape);
+						auto& l_sphere = static_cast<physics::bc_shape_sphere&>(*l_collider.m_shape);
 						l_sphere = physics::bc_shape_sphere(l_sphere.get_radius() * m_scale);
 						break;
 					}
 				case physics::bc_shape_type::plane:
 					{
-						auto& l_plane = static_cast< physics::bc_shape_plane& >(*l_mesh_part_collider.m_shape);
+						auto& l_plane = static_cast<physics::bc_shape_plane&>(*l_collider.m_shape);
 						l_plane = physics::bc_shape_plane(l_plane.get_normal(), l_plane.get_distance() * m_scale);
 						break;
 					}
 				case physics::bc_shape_type::capsule:
 					{
-						auto& l_capsule = static_cast< physics::bc_shape_capsule& >(*l_mesh_part_collider.m_shape);
+						auto& l_capsule = static_cast<physics::bc_shape_capsule&>(*l_collider.m_shape);
 						l_capsule = physics::bc_shape_capsule(l_capsule.get_half_height() * m_scale, l_capsule.get_radius() * m_scale);
 						break;
 					}
 				case physics::bc_shape_type::box:
 					{
-						auto& l_box = static_cast< physics::bc_shape_box& >(*l_mesh_part_collider.m_shape);
+						auto& l_box = static_cast<physics::bc_shape_box&>(*l_collider.m_shape);
 						l_box = physics::bc_shape_box(l_box.get_half_extends() * m_scale);
 						break;
 					}
 				case physics::bc_shape_type::convex_mesh:
 					{
-						auto& l_convex = static_cast< physics::bc_shape_convex_mesh& >(*l_mesh_part_collider.m_shape);
+						auto& l_convex = static_cast<physics::bc_shape_convex_mesh&>(*l_collider.m_shape);
 						l_convex = physics::bc_shape_convex_mesh(physics::bc_geometry_scale(m_scale), l_convex.get_convex());
 						break;
 					}
 				case physics::bc_shape_type::triangle_mesh:
 					{
-						auto& l_triangle = static_cast< physics::bc_shape_triangle_mesh& >(*l_mesh_part_collider.m_shape);
+						auto& l_triangle = static_cast<physics::bc_shape_triangle_mesh&>(*l_collider.m_shape);
 						l_triangle = physics::bc_shape_triangle_mesh(physics::bc_geometry_scale(m_scale), l_triangle.get_mesh());
 						break;
 					}
@@ -312,10 +321,19 @@ namespace black_cat
 					}
 				}
 
-				l_mesh_part_collider.m_local_transform = physics::bc_transform
+				l_collider.m_local_transform = physics::bc_transform
 				(
-					l_mesh_part_collider.m_local_transform.get_position() * m_scale,
-					l_mesh_part_collider.m_local_transform.get_matrix3()
+					l_collider.m_local_transform.get_position() * m_scale,
+					l_collider.m_local_transform.get_matrix3()
+				);
+			}
+
+			for(bc_mesh_part_collider_joint_entry& l_joint : m_collider->get_collider_joints())
+			{
+				l_joint.m_transform = physics::bc_transform
+				(
+					l_joint.m_transform.get_position() * m_scale,
+					l_joint.m_transform.get_matrix3()
 				);
 			}
 		}
@@ -340,22 +358,22 @@ namespace black_cat
 			);
 		}
 
-		void bc_mesh::_calculate_collider_initial_transforms()
+		void bc_mesh::_calculate_collider_absolute_transforms()
 		{
 			physics::bc_bound_box l_bound_box;
 			bc_sub_mesh_mat4_transform l_transforms(*get_root());
 			bc_mesh_utility::calculate_absolute_transforms(*this, core::bc_matrix4f::identity(), l_transforms, l_bound_box);
 
-			for (bc_mesh_part_collider_entry& l_collider : *m_collider)
+			for (bc_mesh_part_collider_entry& l_collider : m_collider->get_colliders())
 			{			
 				if(m_skinned)
 				{
-					l_collider.m_initial_transform = l_collider.m_local_transform;
+					l_collider.m_absolute_transform = l_collider.m_local_transform;
 				}
 				else
 				{
 					auto& l_attached_node_transform = l_transforms[l_collider.m_attached_node_index];
-					l_collider.m_initial_transform = physics::bc_transform(l_attached_node_transform) * l_collider.m_local_transform;
+					l_collider.m_absolute_transform = physics::bc_transform(l_attached_node_transform) * l_collider.m_local_transform;
 				}
 			}
 		}

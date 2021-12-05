@@ -50,7 +50,7 @@ namespace black_cat
 
 			const bc_mesh_node* find_node(bc_mesh_node::node_index_t p_index) const noexcept;
 			
-			const bc_mesh_node* find_node(const bcCHAR* p_name) const noexcept;
+			const bc_mesh_node* find_node(std::string_view p_name) const noexcept;
 			
 			const bc_mesh_node* get_node_parent(const bc_mesh_node& p_node) const noexcept;
 
@@ -147,7 +147,7 @@ namespace black_cat
 			return m_mesh->find_node(p_index);
 		}
 		
-		inline const bc_mesh_node* bc_sub_mesh::find_node(const bcCHAR* p_name) const noexcept
+		inline const bc_mesh_node* bc_sub_mesh::find_node(std::string_view p_name) const noexcept
 		{
 			const auto* l_mesh_node = m_mesh->find_node(p_name);
 			if(!l_mesh_node || l_mesh_node->get_index() < m_root_node->get_index())

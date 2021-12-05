@@ -100,10 +100,10 @@ namespace black_cat
 
 			//l_scene_pack_data.m_controller_manager->setOverlapRecoveryModule(true);
 			//l_scene_pack_data.m_controller_manager->setPreciseSweeps(false);
-			l_scene_pack_data.m_px_scene->lockWrite();
+			/*l_scene_pack_data.m_px_scene->lockWrite();
 			l_scene_pack_data.m_px_scene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LOCAL_FRAMES, 1.0f);
 			l_scene_pack_data.m_px_scene->setVisualizationParameter(physx::PxVisualizationParameter::eJOINT_LIMITS, 1.0f);
-			l_scene_pack_data.m_px_scene->unlockWrite();
+			l_scene_pack_data.m_px_scene->unlockWrite();*/
 			
 			bc_scene::platform_pack l_pack;
 			l_pack.m_data = core::bc_make_shared<_bc_px_scene_pack_data>(std::move(l_scene_pack_data));

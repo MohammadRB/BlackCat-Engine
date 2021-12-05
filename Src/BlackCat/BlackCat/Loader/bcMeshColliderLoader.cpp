@@ -20,7 +20,7 @@ namespace black_cat
 {
 	std::tuple<core::bc_unique_ptr<bcBYTE>, physics::bc_triangle_mesh_desc> _bc_extract_triangle_mesh(const aiMesh& p_ai_mesh);
 
-	void _bc_extract_skinned_mesh_collider(const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
+	void _bc_extract_skinned_mesh_collider(const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
 		const aiMesh& p_ai_mesh,
 		game::bc_mesh_collider_builder& p_builder);
 
@@ -61,18 +61,20 @@ namespace black_cat
 			throw bc_io_exception(l_error_msg.c_str());
 		}
 		
-		core::bc_unordered_map_frame<const bcCHAR*, bcUINT32> l_node_mapping;
-		bc_mesh_loader_utility::calculate_node_mapping(*l_scene->mRootNode, l_node_mapping);
-
+		core::bc_unordered_map_frame<std::string_view, bcUINT32> l_node_mapping;
+		core::bc_unordered_map_frame<std::string_view, core::bc_vector_frame<const aiNode*>> l_px_node_mapping;
+		core::bc_vector<std::tuple<std::string_view, std::string_view, physics::bc_transform>> l_px_joint_mapping;
+		
 		const bool l_is_skinned = bc_null_default(p_context.m_parameters->get_value<bool>(constant::g_param_mesh_skinned), false);
-		core::bc_unordered_map_frame<const bcCHAR*, core::bc_vector_frame<const aiNode*>> l_px_node_mapping;
-
 		if(l_is_skinned)
 		{
+			bc_mesh_loader_utility::calculate_node_mapping(*l_scene->mRootNode, l_node_mapping);
 			bc_mesh_loader_utility::calculate_skinned_px_node_mapping(*l_scene, *l_scene->mRootNode, l_px_node_mapping);
+			bc_mesh_loader_utility::calculate_px_joint_mapping(*l_scene, l_px_joint_mapping);
 		}
 		else
 		{
+			bc_mesh_loader_utility::calculate_node_mapping(*l_scene->mRootNode, l_node_mapping);
 			bc_mesh_loader_utility::calculate_px_node_mapping(*l_scene, *l_scene->mRootNode, l_px_node_mapping);
 		}
 		
@@ -93,6 +95,11 @@ namespace black_cat
 			l_builder
 		);
 
+		for(auto& l_joint : l_px_joint_mapping)
+		{
+			l_builder.add_px_joint(std::get<0>(l_joint), std::get<1>(l_joint), std::get<2>(l_joint));
+		}
+		
 		p_context.set_result(std::move(l_builder.build()));
 	}
 
@@ -105,7 +112,7 @@ namespace black_cat
 		l_px_node_name.append("px.");
 		l_px_node_name.append(p_ai_node_mesh.mName.data);
 
-		for (bcUINT32 l_index = 0; l_index <p_ai_node.mNumChildren; ++l_index)
+		for (bcUINT32 l_index = 0; l_index < p_ai_node.mNumChildren; ++l_index)
 		{
 			auto* l_child = p_ai_node.mChildren[l_index];
 			if (l_px_node_name.compare(0, l_px_node_name.size(), l_child->mName.data) == 0)
@@ -119,7 +126,7 @@ namespace black_cat
 	}
 
 	void bc_mesh_collider_loader::convert_px_node(physics::bc_physics& p_physics,
-		const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
+		const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
 		const aiScene& p_ai_scene,
 		const bcCHAR* p_attached_mesh_name,
 		const aiNode& p_attached_node,
@@ -128,7 +135,6 @@ namespace black_cat
 		bool p_skinned,
 		game::bc_mesh_collider_builder& p_builder) const
 	{
-		core::bc_string_frame l_mesh_name;
 		core::bc_matrix4f l_node_transformation;
 		const auto l_attached_node_index = p_node_mapping.find(p_attached_node.mName.C_Str())->second;
 
@@ -137,6 +143,7 @@ namespace black_cat
 			core::bc_enum::mask_or({ physics::bc_shape_flag::simulation, physics::bc_shape_flag::visualization }) :
 			physics::bc_shape_flag::default_v;
 
+		core::bc_string_frame l_mesh_name;
 		for (bcUINT32 l_mesh_index = 0; l_mesh_index < p_px_node.mNumMeshes; ++l_mesh_index)
 		{
 			const aiMesh* l_ai_mesh = p_ai_scene.mMeshes[p_px_node.mMeshes[l_mesh_index]];
@@ -202,23 +209,24 @@ namespace black_cat
 
 	void bc_mesh_collider_loader::convert_nodes(core::bc_content_loading_context& p_context,
 		physics::bc_physics& p_physics,
-		const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
-		const core::bc_unordered_map_frame<const bcCHAR*, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping,
+		const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
+		const core::bc_unordered_map_frame<std::string_view, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping,
 		const aiScene& p_ai_scene,
 		const aiNode& p_ai_node,
 		bool p_high_detail_query_shape,
 		bool p_skinned,
 		game::bc_mesh_collider_builder& p_builder) const
 	{
-		if (bc_mesh_loader_utility::is_px_node(p_ai_node))
+		if (bc_mesh_loader_utility::is_px_node(p_ai_node) || bc_mesh_loader_utility::is_px_joint_node(p_ai_node))
 		{
 			return;
 		}
-				
+		
 		if(p_skinned)
 		{
-			auto* l_ai_node_name = p_ai_node.mName.C_Str();
+			const auto* l_ai_node_name = p_ai_node.mName.C_Str();
 			auto l_px_nodes = p_px_node_mapping.find(l_ai_node_name);
+
 			if (l_px_nodes != std::end(p_px_node_mapping))
 			{
 				for (const aiNode* l_px_node : l_px_nodes->second)
@@ -253,8 +261,8 @@ namespace black_cat
 			{
 				const auto* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_i]];
 				const auto* l_ai_mesh_name = l_ai_mesh->mName.C_Str();
-
 				auto l_px_nodes = p_px_node_mapping.find(l_ai_mesh_name);
+				
 				if (l_px_nodes != std::end(p_px_node_mapping))
 				{
 					for (const aiNode* l_px_node : l_px_nodes->second)
@@ -362,7 +370,7 @@ namespace black_cat
 		return std::make_tuple(std::move(l_indices_buffer), std::move(l_px_triangle_desc));
 	}
 
-	void _bc_extract_skinned_mesh_collider(const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
+	void _bc_extract_skinned_mesh_collider(const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
 		const aiMesh& p_ai_mesh,
 		game::bc_mesh_collider_builder& p_builder)
 	{

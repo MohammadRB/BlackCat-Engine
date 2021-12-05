@@ -41,8 +41,8 @@ namespace black_cat
 
 	private:
 		static void fill_skinned_vertices(const aiMesh& p_ai_mesh,
-			const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
-			core::bc_vector_movable< game::bc_vertex_pos_tex_nor_tan_bon >& p_vertices,
+			const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
+			core::bc_vector_movable<game::bc_vertex_pos_tex_nor_tan_bon>& p_vertices,
 			game::bc_mesh_builder& p_builder);
 
 		static void convert_ai_material(core::bc_content_loading_context& p_context,
@@ -52,7 +52,7 @@ namespace black_cat
 		static void convert_ai_mesh(game::bc_render_system& p_render_system,
 			core::bc_content_loading_context& p_context,
 			const aiScene& p_ai_scene,
-			const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
+			const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
 			const aiNode& p_ai_node,
 			const aiMesh& p_ai_mesh,
 			game::bc_mesh_builder& p_builder);
@@ -60,7 +60,7 @@ namespace black_cat
 		static void convert_ai_nodes(game::bc_render_system& p_render_system,
 			core::bc_content_loading_context& p_context,
 			const aiScene& p_ai_scene,
-			const core::bc_unordered_map_frame<const bcCHAR*, bcUINT32>& p_node_mapping,
+			const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
 			const aiNode& p_ai_node,
 			game::bc_mesh_builder& p_builder);
 	};

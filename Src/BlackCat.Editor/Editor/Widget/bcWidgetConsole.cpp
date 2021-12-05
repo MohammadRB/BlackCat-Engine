@@ -9,6 +9,7 @@ namespace black_cat
 	{
 		bc_widget_console::bc_widget_console(QtAwesome* p_awesome, QWidget* p_parent)
 			: QWidget(p_parent),
+			m_max_row_count(1000),
 			m_awesome(p_awesome),
 			m_info_color(QColor(26, 189, 242)),
 			m_debug_color(QColor(251, 160, 28)),
@@ -29,47 +30,64 @@ namespace black_cat
 
 		bc_widget_console::~bc_widget_console() = default;
 
-		void bc_widget_console::onLog(game::bc_console_output_type p_log_type, const QString& p_log)
+		void bc_widget_console::write_logs(std::pair<game::bc_console_output_type, QString>* p_logs, bcUINT32 p_log_count)
 		{
 			fa::icon l_icon;
-			QColor l_color;
+			QColor l_icon_color;
+			QVariantMap l_icon_options({ std::make_pair("color", l_icon_color) });
+			auto l_icon_color_option_ite = l_icon_options.find("color");
 
-			switch (p_log_type)
+			for(auto l_ite = 0U; l_ite < p_log_count; ++l_ite)
 			{
-			case game::bc_console_output_type::info:
-				l_icon = fa::infocircle;
-				l_color = m_info_color;
-				break;
-			case game::bc_console_output_type::debug: 
-				l_icon = fa::bug;
-				l_color = m_debug_color;
-				break;
-			case game::bc_console_output_type::warning:
-				l_icon = fa::warning;
-				l_color = m_warning_color;
-				break;
-			case game::bc_console_output_type::error: 
-				l_icon = fa::close;
-				l_color = m_error_color;
-				break;
-			case game::bc_console_output_type::script:
-				l_icon = fa::code;
-				l_color = m_script_color;
-				break;
-			default: 
-				break;
+				switch (p_logs[l_ite].first)
+				{
+				case game::bc_console_output_type::info:
+					l_icon = fa::infocircle;
+					l_icon_color = m_info_color;
+					break;
+				case game::bc_console_output_type::debug:
+					l_icon = fa::bug;
+					l_icon_color = m_debug_color;
+					break;
+				case game::bc_console_output_type::warning:
+					l_icon = fa::warning;
+					l_icon_color = m_warning_color;
+					break;
+				case game::bc_console_output_type::error:
+					l_icon = fa::close;
+					l_icon_color = m_error_color;
+					break;
+				case game::bc_console_output_type::script:
+					l_icon = fa::code;
+					l_icon_color = m_script_color;
+					break;
+				default:
+					l_icon = fa::infocircle;
+					l_icon_color = m_info_color;
+					break;
+				}
+
+				l_icon_color_option_ite->setValue(l_icon_color);
+				
+				auto* l_item = new QListWidgetItem(p_logs[l_ite].second);
+				l_item->setIcon(m_awesome->icon(l_icon, l_icon_options));
+
+				m_console_list->addItem(l_item);
+
+				const auto l_item_count = m_console_list->count();
+				if (l_item_count > m_max_row_count)
+				{
+					delete m_console_list->takeItem(0);
+				}
 			}
 
-			QListWidgetItem* l_item = new QListWidgetItem(p_log);
-			QVariantMap options;
-			options.insert("color", l_color);
-			l_item->setIcon(m_awesome->icon(l_icon, options));
-
-			m_console_list->addItem(l_item);
-			m_console_list->scrollToBottom();
+			if(p_log_count)
+			{
+				m_console_list->scrollToBottom();
+			}
 		}
 
-		void bc_widget_console::onClear()
+		void bc_widget_console::clear_logs()
 		{
 			m_console_list->clear();
 		}
@@ -222,6 +240,7 @@ namespace black_cat
 
 			m_console_list = new QListWidget(nullptr);
 			m_console_list->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+			m_console_list->setUniformItemSizes(true);
 			m_console_input = new QLineEdit(nullptr);
 			m_console_input->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
 

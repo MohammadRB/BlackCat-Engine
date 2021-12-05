@@ -77,9 +77,10 @@ namespace black_cat
 		{
 			const core::bc_json_key_value l_empty_collider_json;
 			const auto& l_mesh = p_mesh.get_mesh();
+			const auto& l_mesh_collider = l_mesh.get_mesh_collider();
 			const auto& l_collider_materials = p_collider_materials ? *p_collider_materials : l_empty_collider_json;
 
-			for (const bc_mesh_part_collider_entry& l_mesh_part_collider : l_mesh.get_mesh_collider())
+			for (const bc_mesh_part_collider_entry& l_mesh_part_collider : l_mesh_collider.get_colliders())
 			{
 				auto l_material = p_material_manager.get_default_collider_material();
 				const auto l_material_ite = l_collider_materials.find(l_mesh_part_collider.m_attached_mesh_name.c_str());
@@ -97,7 +98,7 @@ namespace black_cat
 					throw bc_invalid_argument_exception("Invalid mesh px-shape");
 				}
 
-				l_px_shape->set_local_pose(l_mesh_part_collider.m_initial_transform);
+				l_px_shape->set_local_pose(l_mesh_part_collider.m_absolute_transform);
 				l_px_shape->set_high_detail_query_shape(l_mesh_part_collider.m_high_detail_query_shape);
 				if(l_mesh.get_skinned())
 				{

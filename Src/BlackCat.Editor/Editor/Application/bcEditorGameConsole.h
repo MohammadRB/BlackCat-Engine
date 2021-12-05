@@ -2,11 +2,12 @@
 
 #pragma once
 
+#include <mutex>
+#include <QtCore/QObject>
+#include <QtConcurrent/QtConcurrent>
 #include "Game/System/Script/bcGameConsole.h"
 #include "Game/System/Script/bcIGameConsoleImp.h"
 #include "Editor/Widget/bcWidgetConsole.h"
-#include <QtCore/QObject>
-#include <QtConcurrent/QtConcurrent>
 
 namespace black_cat
 {
@@ -35,6 +36,8 @@ namespace black_cat
 
 			void update(const core_platform::bc_clock::update_param& p_clock_update_param) override;
 
+			void update_ui();
+			
 			bool is_visible() override;
 			
 			/**
@@ -48,11 +51,14 @@ namespace black_cat
 			void executeScript(const QString& p_ui_script, bool p_output_console);
 
 		signals:
-			void logRecieved(game::bc_console_output_type p_log_type, const QString& p_log);
-
-			void clearRecievied();
-
 			void scriptExecuted(const QString& p_string);
+
+		private:
+			std::mutex m_logs_lock;
+			std::vector<std::pair<game::bc_console_output_type, QString>> m_received_logs;
+			bool m_clear_logs;
+			
+			bc_widget_console* m_widget;
 		};
 	}
 }
