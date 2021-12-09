@@ -19,7 +19,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_shape_generator_buffer
 		{
 		public:
-			bc_shape_generator_buffer(core::bc_vector_movable< core::bc_vector3f >& p_vertices, core::bc_vector_movable< bcUINT32 >& p_indices);
+			bc_shape_generator_buffer(core::bc_vector_movable<core::bc_vector3f>& p_vertices, core::bc_vector_movable<bcUINT32>& p_indices);
 
 			bcSIZE vertices_count() const noexcept;
 
@@ -30,8 +30,8 @@ namespace black_cat
 			void add_index(bcUINT32 p_index);
 
 		private:
-			core::bc_vector_movable< core::bc_vector3f >& m_vertices;
-			core::bc_vector_movable< bcUINT32 >& m_indices;
+			core::bc_vector_movable<core::bc_vector3f>& m_vertices;
+			core::bc_vector_movable<bcUINT32>& m_indices;
 		};
 
 		class BC_GAME_DLL bc_shape_generator

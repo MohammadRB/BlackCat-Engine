@@ -23,6 +23,7 @@ namespace black_cat
 		class bc_physics_system;
 		class bc_skeleton_animation;
 		class bc_skinned_mesh_component;
+		class bc_rigid_controller_component;
 	}
 
 	struct bc_xbot_velocity
@@ -109,6 +110,8 @@ namespace black_cat
 
 		bc_xbot_weapon* get_weapon() noexcept;
 
+		physics::bc_ccontroller_ref create_px_controller(physics::bc_material p_material);
+		
 		void start_grenade_throw(const bcCHAR* p_entity_name) noexcept;
 		
 		void attach_weapon(game::bc_actor& p_weapon) noexcept;
@@ -161,7 +164,7 @@ namespace black_cat
 		game::bc_scene* m_scene;
 		game::bc_actor m_actor;
 		game::bc_skinned_mesh_component* m_skinned_mesh_component;
-		physics::bc_ccontroller m_px_controller;
+		game::bc_rigid_controller_component* m_rigid_controller_component;
 		bcFLOAT m_bound_box_max_side_length;
 		core::bc_vector3f m_local_origin;
 		core::bc_vector3f m_local_forward;

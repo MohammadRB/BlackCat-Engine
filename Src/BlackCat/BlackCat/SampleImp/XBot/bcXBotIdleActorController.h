@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
+#include "Game/Object/Scene/Component/bcRigidControllerComponent.h"
 #include "BlackCat/SampleImp/XBot/bcXBotActorController.h"
 #include "BlackCat/bcExport.h"
 
@@ -29,6 +30,7 @@ namespace black_cat
 		void throw_grenade(game::bc_actor& p_grenade) noexcept override;
 		
 		game::bc_human_ragdoll_component* m_ragdoll_component = nullptr;
+		game::bc_rigid_controller_component* m_rigid_controller_component = nullptr;
 		bool m_ragdoll_enabled = false;
 		bcFLOAT m_ragdoll_timer = 0;
 	};
@@ -38,6 +40,7 @@ namespace black_cat
 		bc_xbot_actor_controller::initialize(p_context);
 		
 		m_ragdoll_component = p_context.m_actor.get_component<game::bc_human_ragdoll_component>();
+		m_rigid_controller_component = p_context.m_actor.get_component<game::bc_rigid_controller_component>();
 	}
 
 	inline void bc_xbot_idle_actor_controller::load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context)
@@ -64,7 +67,9 @@ namespace black_cat
 			m_ragdoll_timer += p_context.m_clock.m_elapsed_second;
 			if (m_ragdoll_timer >= 2.f && l_prev_time < 2.f)
 			{
+				m_rigid_controller_component->reset_controller();
 				m_ragdoll_component->set_enable(true);
+				m_ragdoll_component->add_force(game::bc_human_ragdoll_component::s_head_index, core::bc_vector3f(0, .1f, 1) * 10000);
 				m_ragdoll_enabled = true;
 			}
 		}

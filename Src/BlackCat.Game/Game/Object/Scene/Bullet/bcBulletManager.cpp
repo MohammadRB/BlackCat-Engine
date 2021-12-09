@@ -45,7 +45,7 @@ namespace black_cat
 
 		void bc_bullet_manager::update(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock)
 		{
-			auto l_scene_bound_box = p_scene.get_scene_graph().get_bound_box();
+			const auto l_scene_bound_box = p_scene.get_scene_graph().get_bound_box();
 			auto& l_px_scene = p_scene.get_px_scene();
 			
 			{
@@ -55,8 +55,8 @@ namespace black_cat
 				physics::bc_scene_ray_query_buffer l_query_buffer;
 				core::bc_vector_frame<physics::bc_ray_hit> l_skinned_mesh_hits_buffer;
 				l_skinned_mesh_hits_buffer.reserve(4);
-				
-				auto l_gravity = l_px_scene.get_gravity();
+
+				const auto l_gravity = l_px_scene.get_gravity();
 				auto l_ite = std::begin(m_bullets);
 				const auto l_end = std::end(m_bullets);
 				

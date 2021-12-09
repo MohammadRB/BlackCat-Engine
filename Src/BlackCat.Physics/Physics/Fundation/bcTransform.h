@@ -11,16 +11,16 @@ namespace black_cat
 {
 	namespace physics
 	{
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		struct bc_platform_transform_pack
 		{
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_transform
 		{
 		public:
-			using platform_pack = bc_platform_transform_pack< TApi >;
+			using platform_pack = bc_platform_transform_pack<TApi>;
 
 		public:
 			bc_platform_transform() noexcept;
@@ -67,6 +67,10 @@ namespace black_cat
 
 			core::bc_matrix4f get_matrix4() const noexcept;
 
+			bc_platform_transform as_position() const noexcept;
+			
+			bc_platform_transform as_rotation() const noexcept;
+			
 			static bc_platform_transform identity() noexcept;
 
 			platform_pack& get_platform_pack() noexcept
@@ -83,6 +87,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_transform = bc_platform_transform< g_current_physics_api >;
+		using bc_transform = bc_platform_transform<g_current_physics_api>;
 	}
 }

@@ -45,6 +45,7 @@ namespace black_cat
 		: m_physics_system(nullptr),
 		m_scene(nullptr),
 		m_skinned_mesh_component(nullptr),
+		m_rigid_controller_component(nullptr),
 		m_bound_box_max_side_length(0),
 		m_grenade_anim_attach_time(0),
 		m_grenade_anim_throw_time(0),
@@ -73,6 +74,7 @@ namespace black_cat
 		m_physics_system = &p_context.m_game_system.get_physics_system();
 		m_actor = p_context.m_actor;
 		m_skinned_mesh_component = p_context.m_actor.get_component<game::bc_skinned_mesh_component>();
+		m_rigid_controller_component = p_context.m_actor.get_component<game::bc_rigid_controller_component>();
 
 		if (!m_skinned_mesh_component)
 		{
@@ -164,39 +166,12 @@ namespace black_cat
 	{
 		m_scene = &p_scene;
 		const auto* l_mediate_component = p_context.m_actor.get_component<game::bc_mediate_component>();
-		auto* l_rigid_controller_component = p_context.m_actor.get_component<game::bc_rigid_controller_component>();
 		const auto l_bound_box_extends = l_mediate_component->get_bound_box().get_half_extends();
 		m_bound_box_max_side_length = std::max({ l_bound_box_extends.x, l_bound_box_extends.y, l_bound_box_extends.z }) * 2;
-		const auto l_px_material = p_context.m_game_system.get_render_system().get_material_manager().get_default_collider_material().m_px_material;
-		const auto l_px_controller_desc = physics::bc_ccontroller_desc
-		                                  (
-			                                  core::bc_vector3f(m_position + core::bc_vector3f::up() * m_bound_box_max_side_length / 2),
-											  m_bound_box_max_side_length * .65f,
-			                                  m_bound_box_max_side_length * .2f,
-			                                  l_px_material
-		                                  )
-										  .with_contact_offset(m_bound_box_max_side_length * .02f)
-		                                  .with_step_offset(m_bound_box_max_side_length * 0.f)
-		                                  .with_hit_callback(this);
 
-		{
-			physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
-
-			auto l_px_controller = m_scene->get_px_scene().create_ccontroller(l_px_controller_desc);
-			l_px_controller->set_foot_position(m_position - m_local_origin);
-
-			auto l_px_controller_actor = l_px_controller->get_actor();
-			physics::bc_shape l_px_controller_shape;
-
-			l_px_controller_actor.get_shapes(&l_px_controller_shape, 1);
-
-			m_physics_system->set_game_actor(l_px_controller_actor, game::bc_actor());
-			l_px_controller_shape.set_flag(physics::bc_shape_flag::query, false);
-			
-			l_rigid_controller_component->reset_controller(std::move(l_px_controller));
-		}
-
-		m_px_controller = l_rigid_controller_component->get_controller();
+		const auto l_px_controller_material = p_context.m_game_system.get_render_system().get_material_manager().get_default_collider_material().m_px_material;
+		m_rigid_controller_component->reset_controller(create_px_controller(l_px_controller_material));
+		
 		m_state_machine = core::bc_make_unique<bc_xbot_state_machine>(bc_xbot_state_machine
 		(
 			m_local_forward, 
@@ -209,7 +184,7 @@ namespace black_cat
 
 	void bc_xbot_actor_controller::update(const bc_xbot_input_update_context& p_context)
 	{
-		if (!m_scene) // Has not added to scene yet
+		if (!m_scene || !m_rigid_controller_component->get_controller().is_valid()) // Has not added to scene yet
 		{
 			return;
 		}
@@ -296,7 +271,7 @@ namespace black_cat
 
 	void bc_xbot_actor_controller::update(const bc_xbot_input_update_context1& p_context)
 	{
-		if (!m_scene) // Has not added to scene yet
+		if (!m_scene || !m_rigid_controller_component->get_controller().is_valid()) // Has not added to scene yet
 		{
 			return;
 		}
@@ -400,11 +375,12 @@ namespace black_cat
 			m_position = l_world_transform.get_translation() - m_local_origin;
 
 			// In case we have transform event before actor added to scene
-			if(m_px_controller.is_valid())
+			auto l_px_controller = m_rigid_controller_component->get_controller();
+			if(l_px_controller.is_valid())
 			{
 				{
 					physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
-					m_px_controller.set_foot_position(m_position - m_local_origin);
+					l_px_controller.set_foot_position(m_position - m_local_origin);
 				}
 			}
 		}
@@ -477,6 +453,38 @@ namespace black_cat
 
 			m_weapon->m_actor.add_event(game::bc_world_transform_actor_event(l_weapon_transform));
 			m_weapon->m_actor.mark_for_double_update();
+		}
+	}
+
+	physics::bc_ccontroller_ref bc_xbot_actor_controller::create_px_controller(physics::bc_material p_material)
+	{
+		const auto l_px_controller_desc = physics::bc_ccontroller_desc
+		                                  (
+			                                  core::bc_vector3f
+			                                  (m_position + core::bc_vector3f::up() * m_bound_box_max_side_length / 2),
+			                                  m_bound_box_max_side_length * .65f,
+			                                  m_bound_box_max_side_length * .2f,
+			                                  p_material
+		                                  )
+		                                  .with_contact_offset(m_bound_box_max_side_length * .02f)
+		                                  .with_step_offset(m_bound_box_max_side_length * 0.f)
+		                                  .with_hit_callback(this);
+
+		{
+			physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
+
+			auto l_px_controller = m_scene->get_px_scene().create_ccontroller(l_px_controller_desc);
+			l_px_controller->set_foot_position(m_position - m_local_origin);
+
+			auto l_px_controller_actor = l_px_controller->get_actor();
+			physics::bc_shape l_px_controller_shape;
+
+			l_px_controller_actor.get_shapes(&l_px_controller_shape, 1);
+
+			m_physics_system->set_game_actor(l_px_controller_actor, game::bc_actor());
+			l_px_controller_shape.set_flag(physics::bc_shape_flag::query, false);
+
+			return l_px_controller;
 		}
 	}
 	
@@ -806,24 +814,26 @@ namespace black_cat
 		);
 
 		auto& l_px_scene = m_scene->get_px_scene();
+		auto l_px_controller = m_rigid_controller_component->get_controller();
 
 		{
 			physics::bc_scene_lock l_lock(&l_px_scene);
 
 			const auto l_displacement = (p_move_vector + (l_px_scene.get_gravity() * m_bound_box_max_side_length)) * p_clock.m_elapsed_second;
-			m_px_controller.move(l_displacement, p_clock, &l_px_controller_pre_filter);
-			m_position = m_px_controller.get_foot_position();
+			l_px_controller.move(l_displacement, p_clock, &l_px_controller_pre_filter);
+			m_position = l_px_controller.get_foot_position();
 		}
 	}
 
 	void bc_xbot_actor_controller::_update_px_position(const core::bc_vector3f& p_position)
 	{
 		auto& l_px_scene = m_scene->get_px_scene();
+		auto l_px_controller = m_rigid_controller_component->get_controller();
 		
 		{
 			physics::bc_scene_lock l_lock(&l_px_scene);
 
-			m_px_controller.set_foot_position(p_position - m_local_origin);
+			l_px_controller.set_foot_position(p_position - m_local_origin);
 		}
 	}
 	

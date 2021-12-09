@@ -32,7 +32,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_transform< g_api_physx >::bc_platform_transform(const core::bc_matrix4f& p_transform) noexcept
+		bc_platform_transform<g_api_physx>::bc_platform_transform(const core::bc_matrix4f& p_transform) noexcept
 		{
 			auto l_px_matrix = bc_to_right_hand(p_transform);
 
@@ -191,14 +191,14 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		core::bc_vector3f bc_platform_transform< g_api_physx >::get_position() const noexcept
+		core::bc_vector3f bc_platform_transform<g_api_physx>::get_position() const noexcept
 		{
 			return bc_to_game_hand(m_pack.m_px_transform.p);
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		core::bc_matrix3f bc_platform_transform< g_api_physx >::get_matrix3() const noexcept
+		core::bc_matrix3f bc_platform_transform<g_api_physx>::get_matrix3() const noexcept
 		{
 			const physx::PxMat33 l_mat(m_pack.m_px_transform.q);
 
@@ -207,11 +207,33 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		core::bc_matrix4f bc_platform_transform< g_api_physx >::get_matrix4() const noexcept
+		core::bc_matrix4f bc_platform_transform<g_api_physx>::get_matrix4() const noexcept
 		{
 			const physx::PxMat44 l_mat(m_pack.m_px_transform);
 
 			return bc_to_game_hand(l_mat);
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_transform<g_api_physx> bc_platform_transform<g_api_physx>::as_position() const noexcept
+		{
+			platform_pack l_pack;
+			l_pack.m_px_transform.q = physx::PxQuat(physx::PxIdentity);
+			l_pack.m_px_transform.p = m_pack.m_px_transform.p;
+			
+			return bc_platform_transform(l_pack);
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_transform<g_api_physx> bc_platform_transform<g_api_physx>::as_rotation() const noexcept
+		{
+			platform_pack l_pack;
+			l_pack.m_px_transform.q = m_pack.m_px_transform.q;
+			l_pack.m_px_transform.p = physx::PxVec3(physx::PxZero);
+
+			return bc_platform_transform(l_pack);
 		}
 
 		template<>

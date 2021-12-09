@@ -225,6 +225,10 @@ namespace black_cat
 				BC_ASSERT(false);
 			}
 
+			l_shape->set_query_group(p_shape.get_query_group());
+			l_shape->set_collision_group(p_shape.get_collision_group());
+			l_shape->set_data(p_shape.get_data());
+
 			return l_shape;
 		}
 	}

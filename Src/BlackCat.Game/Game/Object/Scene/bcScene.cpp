@@ -197,16 +197,14 @@ namespace black_cat
 				l_num_thread,
 				std::begin(l_px_actors),
 				std::end(l_px_actors),
-				[]() { return true; },
-				[&](bool, physics::bc_updated_actor& p_px_actor)
+				[&](physics::bc_updated_actor& p_px_actor)
 				{
-					bc_actor l_actor = m_physics->get_game_actor(p_px_actor.m_actor);
+					auto l_actor = m_physics->get_game_actor(p_px_actor.m_actor);
 					if(l_actor.is_valid())
 					{
 						l_actor.add_event(bc_world_transform_actor_event(p_px_actor.m_global_pose.get_matrix4(), bc_transform_event_type::physics));
 					}
-				},
-				[](bool) {}
+				}
 			);
 		}
 

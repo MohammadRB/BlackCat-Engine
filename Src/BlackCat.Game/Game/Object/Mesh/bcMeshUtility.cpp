@@ -336,7 +336,7 @@ namespace black_cat
 
 			const physics::bc_triangle_mesh_desc l_triangle_mesh_desc
 			(
-				physics::bc_bounded_strided_typed_data< core::bc_vector3f >
+				physics::bc_bounded_strided_typed_data<core::bc_vector3f>
 				(
 					l_skinning_job.get_vertices(),
 					sizeof(core::bc_vector3f),

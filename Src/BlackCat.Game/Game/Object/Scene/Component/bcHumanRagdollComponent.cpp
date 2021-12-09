@@ -13,7 +13,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
-#include "Game/Object/Scene/Component/bcRigidControllerComponent.h"
+#include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
@@ -30,7 +30,7 @@ namespace black_cat
 			m_physics_system(nullptr),
 			m_px_scene(nullptr),
 			m_mesh_component(nullptr),
-			m_rigid_controller_component(nullptr)
+			m_rigid_body_component(nullptr)
 		{
 		}
 
@@ -53,16 +53,17 @@ namespace black_cat
 		{
 			m_physics_system = &p_context.m_game_system.get_physics_system();
 			m_mesh_component = get_actor().get_component<bc_skinned_mesh_component>();
-			m_rigid_controller_component = get_actor().get_component<bc_rigid_controller_component>();
+			m_rigid_body_component = get_actor().get_component<bc_rigid_body_component>();
 
-			if(!m_mesh_component || !m_rigid_controller_component)
+			if (!m_mesh_component || !m_rigid_body_component)
 			{
 				throw bc_invalid_argument_exception("ragdoll component needs skinned_mesh and rigid_controller components");
 			}
 
 			const auto& l_joints_value = p_context.m_parameters.get_value_throw<core::bc_json_key_value>(constant::g_param_ragdoll_joints);
 			_fill_joints_map(l_joints_value);
-			
+			_validate_mesh_colliders();
+
 			m_ragdoll_animation_job = core::bc_make_unique<bc_ragdoll_animation_job>(bc_ragdoll_animation_job
 			(
 				*m_mesh_component->get_skeleton(),
@@ -71,10 +72,10 @@ namespace black_cat
 				m_mesh_component->get_world_transforms()
 			));
 		}
-		
+
 		void bc_human_ragdoll_component::update(const bc_actor_component_update_content& p_context)
 		{
-			if(m_joints.empty())
+			if (m_joints.empty())
 			{
 				return;
 			}
@@ -84,8 +85,8 @@ namespace black_cat
 
 				const auto l_any_active = std::any_of
 				(
-					std::begin(m_joint_actors), 
-					std::end(m_joint_actors), 
+					std::begin(m_joint_actors),
+					std::end(m_joint_actors),
 					[](const auto& p_entry)
 					{
 						const physics::bc_rigid_dynamic& l_rigid_dynamic = p_entry.second.get();
@@ -97,20 +98,20 @@ namespace black_cat
 					return;
 				}
 			}
-			
+
 			auto& l_model_transforms = m_mesh_component->get_model_transforms();
 			auto& l_collider_model_transforms = m_mesh_component->get_collider_model_transforms();
 			const auto l_mesh_scale_transform = core::bc_matrix4f::scale_matrix(m_mesh_component->get_mesh().get_mesh_scale());
-			//physics::bc_transform l_world_transform;
-			const auto& l_world_transform = p_context.m_actor.get_component<bc_mediate_component>()->get_world_transform();
-			const auto l_inv_world_transform = physics::bc_transform(l_world_transform.inverse());
+			core::bc_matrix4f l_world_transform;
 
 			{
 				physics::bc_scene_shared_lock l_lock(m_px_scene);
 
-				/*l_world_transform = physics::bc_transform(m_joint_actors[s_body_index].second->get_global_pose().get_position());
-				const auto l_inv_world_transform = l_world_transform.get_inverse();*/
-				
+				const auto l_body_transform = m_joint_actors[s_body_index].second->get_global_pose();
+				const auto l_body_rotation = l_body_transform.as_rotation();
+				l_world_transform = core::bc_matrix4f::translation_matrix(l_body_transform.get_position() + l_body_rotation.transform(m_body_to_origin_vector));
+				const auto l_inv_world_transform = physics::bc_transform(l_world_transform).get_inverse();
+
 				for (auto& [l_joint_name, l_joint_actor] : m_joint_actors)
 				{
 					const auto l_colliders_ite = std::find_if
@@ -125,19 +126,20 @@ namespace black_cat
 
 					BC_ASSERT(l_colliders_ite != std::end(m_colliders_map));
 
+					auto& l_collider_model_transform = l_collider_model_transforms[l_colliders_ite->m_attached_node_index];
+					l_collider_model_transform = l_inv_world_transform * l_joint_actor->get_global_pose();
+
 					for (const auto& l_affected_node : l_colliders_ite->m_affected_nodes)
 					{
-						auto& l_collider_model_transform = l_collider_model_transforms[l_affected_node.m_node_index];
-						l_collider_model_transform = l_inv_world_transform * l_joint_actor->get_global_pose();
+						auto l_affected_node_transform = l_collider_model_transform * l_affected_node.m_collider_inv_bind_pose_rotation;
+						l_affected_node_transform = l_affected_node_transform * l_affected_node.m_collider_offset_transform;
 
-						const auto l_affected_node_transform = (l_affected_node.m_parent_offset_transform * l_affected_node.m_collider_offset_transform) * l_collider_model_transform;
 						l_model_transforms[l_affected_node.m_node_index] = l_mesh_scale_transform * l_affected_node_transform.get_matrix4();
 					}
 				}
 			}
 
-			//p_context.m_actor.add_event(bc_world_transform_actor_event(l_world_transform.get_matrix4()));
-
+			p_context.m_actor.add_event(bc_world_transform_actor_event(l_world_transform));
 			m_ragdoll_animation_job->set_world(l_world_transform);
 			m_mesh_component->add_animation_job(m_ragdoll_animation_job.get());
 		}
@@ -145,21 +147,16 @@ namespace black_cat
 		void bc_human_ragdoll_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
 			const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
-			if(l_scene_add_event)
+			if (l_scene_add_event)
 			{
 				m_px_scene = &l_scene_add_event->get_scene().get_px_scene();
 				return;
 			}
 
 			const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event);
-			if(l_scene_remove_event)
+			if (l_scene_remove_event)
 			{
-				{
-					physics::bc_scene_lock l_lock(m_px_scene);
-
-					_destroy_physics_joints();
-				}
-				
+				set_enable(false);
 				m_px_scene = nullptr;
 				return;
 			}
@@ -182,94 +179,42 @@ namespace black_cat
 			}
 		}
 
-		void bc_human_ragdoll_component::_fill_colliders_map()
+		void bc_human_ragdoll_component::add_force(bc_ragdoll_part p_part, const core::bc_vector3f& p_force)
 		{
-			if(!m_colliders_map.empty())
+			BC_ASSERT(p_part < m_joint_actors.size());
+
+			auto l_actor = m_joint_actors[p_part].second.get();
+			if (!l_actor.is_valid())
+			{
+				return;
+			}
+
+			{
+				physics::bc_scene_lock l_lock(m_px_scene);
+
+				l_actor.add_force(p_force);
+			}
+		}
+
+		void bc_human_ragdoll_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)
+		{
+			/*if (m_joints.empty())
 			{
 				return;
 			}
 			
-			const auto& l_mesh = m_mesh_component->get_mesh();
-			const auto& l_mesh_collider = l_mesh.get_mesh_collider();
-
-			core::bc_stack_frame<_bc_ragdoll_collider_entry> l_colliders_stack;
-			m_colliders_map.reserve(l_mesh_collider.get_colliders().size());
-
-			bool l_dummy;
-			l_mesh.iterate_over_nodes(l_dummy, [&](const bc_mesh_node& p_node, bool)
 			{
-				if(l_colliders_stack.empty())
-				{
-					l_colliders_stack.push(_bc_ragdoll_collider_entry());
-					l_colliders_stack.top().m_attached_node_index = bc_mesh_node::s_invalid_index;
-				}
+				physics::bc_scene_shared_lock l_lock(m_px_scene);
+
+				const auto l_body_transform = m_joint_actors[s_body_index].second->get_global_pose();
+				const auto l_body_position = l_body_transform.get_position();
+				const auto l_world_position = l_body_position + l_body_transform.as_rotation().transform(m_body_to_origin_vector);
+
+				core::bc_vector3f l_points[2] = { l_body_position, l_world_position };
+				bcUINT32 l_indices[2] = {0, 1};
 				
-				auto* l_last_collider = &l_colliders_stack.top();
-				const auto l_node_colliders = l_mesh_collider.find_mesh_collider(p_node.get_name());
-
-				if (!l_node_colliders.empty())
-				{
-					if (l_last_collider->m_attached_node_index != bc_mesh_node::s_invalid_index)
-					{
-						l_colliders_stack.push(_bc_ragdoll_collider_entry());
-						l_last_collider = &l_colliders_stack.top();
-					}
-
-					l_last_collider->m_attached_node_index = p_node.get_index();
-					l_last_collider->m_attached_node_name = p_node.get_name();
-				}
-
-				_bc_ragdoll_collider_entry::affected_node l_affected_node;
-				l_affected_node.m_node_index = p_node.get_index();
-				l_affected_node.m_collider_offset_transform = physics::bc_transform::identity();
-				
-				l_last_collider->m_affected_nodes.push_back(l_affected_node);
-
-				return false;
-			},
-			[&](const bc_mesh_node& p_node, const bool)
-			{
-				if(l_colliders_stack.empty())
-				{
-					return;
-				}
-				
-				if(p_node.get_index() == l_colliders_stack.top().m_attached_node_index)
-				{
-					m_colliders_map.push_back(std::move(l_colliders_stack.top()));
-					l_colliders_stack.pop();
-				}
-			});
-
-			for(auto& l_entry : m_colliders_map)
-			{
-				auto l_collider = l_mesh_collider.find_mesh_collider(l_entry.m_attached_node_name);
-				if(l_collider.size() != 1)
-				{
-					throw bc_invalid_operation_exception("nodes with more than one collider is not supported in ragdoll");
-				}
-
-				//const auto& l_collider_attached_mesh_node = *l_mesh.find_node(l_collider.front().m_attached_node_index);
-				//auto l_collider_attached_node_bind_pose_transform = l_mesh.get_node_bind_pose_transform(l_collider_attached_mesh_node);
-				//l_collider_attached_node_bind_pose_transform.set_translation(l_collider_attached_node_bind_pose_transform.get_translation() * l_mesh.get_mesh_scale()); // TODO mesh scale
-
-				// Ignore collider rotation in bind pose transform
-				const auto l_collider_inv_bind_pose_transform = physics::bc_transform(l_collider.front().m_absolute_transform.get_position()).get_inverse();
-				//const auto l_collider_attached_node_inv_bind_post_transform = physics::bc_transform(l_collider_attached_node_bind_pose_transform.get_translation()).get_inverse();
-				const auto l_collider_inv_bind_pose_transform1 = physics::bc_transform(core::bc_vector3f(0), l_collider.front().m_absolute_transform.get_matrix3()).get_inverse();
-				
-				for(auto& l_affected_node : l_entry.m_affected_nodes)
-				{
-					const auto& l_affected_mesh_node = *l_mesh.find_node(l_affected_node.m_node_index);
-					auto l_affected_node_bind_pose = l_mesh.get_node_bind_pose_transform(l_affected_mesh_node);
-					l_affected_node_bind_pose.set_translation(l_affected_node_bind_pose.get_translation() * l_mesh.get_mesh_scale()); // TODO mesh scale
-					const auto l_affected_node_bind_pose_transform = physics::bc_transform(l_affected_node_bind_pose);
-					
-					l_affected_node.m_collider_offset_transform = l_collider_inv_bind_pose_transform * l_affected_node_bind_pose_transform;
-					//l_affected_node.m_parent_offset_transform = l_collider_attached_node_inv_bind_post_transform * l_affected_node_bind_pose_transform;
-					l_affected_node.m_parent_offset_transform = l_collider_inv_bind_pose_transform1;
-				}
-			}
+				p_context.m_shape_drawer.draw_point_list(core::bc_span<core::bc_vector3f>(&l_points[0], 2), core::bc_span<bcUINT32>(&l_indices[0], 2));
+			}*/
 		}
 
 		void bc_human_ragdoll_component::_fill_joints_map(const core::bc_json_key_value& p_joint_parameters)
@@ -290,19 +235,138 @@ namespace black_cat
 			m_joint_actors[s_right_foot_index].first = p_joint_parameters.find("right_foot")->second.as_throw<core::bc_string>();
 		}
 
+		void bc_human_ragdoll_component::_validate_mesh_colliders()
+		{
+			bool l_is_valid = true;
+
+			auto l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_head_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_body_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_left_arm_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_left_fore_arm_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_left_hand_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_right_arm_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_right_fore_arm_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_right_hand_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_left_up_leg_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_left_leg_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_left_foot_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_right_up_leg_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_right_leg_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_joint_actors[s_right_foot_index].first);
+			l_is_valid &= l_colliders.size() == 1;
+
+			if (!l_is_valid)
+			{
+				throw bc_invalid_operation_exception("nodes with more than one collider is not supported in ragdoll");
+			}
+		}
+
+		void bc_human_ragdoll_component::_fill_colliders_map()
+		{
+			if (!m_colliders_map.empty())
+			{
+				return;
+			}
+
+			const auto& l_mesh = m_mesh_component->get_mesh();
+			const auto& l_mesh_collider = l_mesh.get_mesh_collider();
+
+			core::bc_stack_frame<_bc_ragdoll_collider_entry> l_colliders_stack;
+			m_colliders_map.reserve(l_mesh_collider.get_colliders().size());
+
+			bool l_dummy;
+			l_mesh.iterate_over_nodes(l_dummy, [&](const bc_mesh_node& p_node, bool)
+			{
+				if (l_colliders_stack.empty())
+				{
+					l_colliders_stack.push(_bc_ragdoll_collider_entry());
+					l_colliders_stack.top().m_attached_node_index = bc_mesh_node::s_invalid_index;
+				}
+
+				auto* l_last_collider = &l_colliders_stack.top();
+				const auto l_node_colliders = l_mesh_collider.find_mesh_collider(p_node.get_name());
+
+				if (!l_node_colliders.empty())
+				{
+					if (l_last_collider->m_attached_node_index != bc_mesh_node::s_invalid_index)
+					{
+						l_colliders_stack.push(_bc_ragdoll_collider_entry());
+						l_last_collider = &l_colliders_stack.top();
+					}
+
+					l_last_collider->m_attached_node_index = p_node.get_index();
+					l_last_collider->m_attached_node_name = p_node.get_name();
+				}
+
+				_bc_ragdoll_collider_entry::affected_node l_affected_node;
+				l_affected_node.m_node_index = p_node.get_index();
+				l_affected_node.m_collider_offset_transform = physics::bc_transform::identity();
+
+				l_last_collider->m_affected_nodes.push_back(l_affected_node);
+
+				return false;
+			},
+			[&](const bc_mesh_node& p_node, const bool)
+			{
+				if (l_colliders_stack.empty())
+				{
+					return;
+				}
+
+				if (p_node.get_index() == l_colliders_stack.top().m_attached_node_index)
+				{
+					m_colliders_map.push_back(std::move(l_colliders_stack.top()));
+					l_colliders_stack.pop();
+				}
+			});
+
+			for (auto& l_entry : m_colliders_map)
+			{
+				auto l_collider = l_mesh_collider.find_mesh_collider(l_entry.m_attached_node_name);
+
+				// Ignore collider rotation in bind pose transform
+				const auto l_collider_inv_bind_pose_transform = l_collider.front().m_absolute_transform.as_position().get_inverse();
+				const auto l_collider_inv_bind_pose_rotation = l_collider.front().m_absolute_transform.as_rotation().get_inverse();
+
+				for (auto& l_affected_node : l_entry.m_affected_nodes)
+				{
+					const auto& l_affected_mesh_node = *l_mesh.find_node(l_affected_node.m_node_index);
+					auto l_affected_node_bind_pose = l_mesh.get_node_bind_pose_transform(l_affected_mesh_node);
+					l_affected_node_bind_pose.set_translation(l_affected_node_bind_pose.get_translation() * l_mesh.get_mesh_scale()); // TODO mesh scale
+					const auto l_affected_node_bind_pose_transform = physics::bc_transform(l_affected_node_bind_pose);
+
+					l_affected_node.m_collider_offset_transform = l_collider_inv_bind_pose_transform * l_affected_node_bind_pose_transform;
+					l_affected_node.m_collider_inv_bind_pose_rotation = l_collider_inv_bind_pose_rotation;
+				}
+			}
+		}
+
 		void bc_human_ragdoll_component::_create_physics_joints()
 		{
+			auto& l_physics = m_physics_system->get_physics();
 			const auto& l_mesh = m_mesh_component->get_mesh();
 			const auto& l_mesh_colliders = l_mesh.get_mesh_collider();
 
-			auto& l_physics = m_physics_system->get_physics();
-			const auto l_rigid_body = m_rigid_controller_component->get_dynamic_body();
+			const auto l_rigid_body = m_rigid_body_component->get_body();
 			const auto l_rigid_body_global_transform = l_rigid_body.get_global_pose();
-			
+
 			core::bc_vector_frame<physics::bc_shape> l_rigid_body_shapes(l_rigid_body.get_shape_count());
 			l_rigid_body.get_shapes(l_rigid_body_shapes.data(), l_rigid_body_shapes.size());
 
-			for(auto& l_rigid_body_shape : l_rigid_body_shapes)
+			for (auto& l_rigid_body_shape : l_rigid_body_shapes)
 			{
 				const auto l_shape_global_transform = l_rigid_body_global_transform * l_rigid_body_shape.get_local_pose();
 				auto l_px_joint_actor = l_physics.create_rigid_dynamic(l_shape_global_transform);
@@ -331,19 +395,16 @@ namespace black_cat
 			auto l_create_spherical_joint = [&](std::string_view p_collider1, physics::bc_rigid_actor& p_actor1, std::string_view p_collider2, physics::bc_rigid_actor& p_actor2)
 			{
 				const auto* l_colliders_joint = l_mesh_colliders.find_joint(p_collider1, p_collider2);
-				if(!l_colliders_joint)
+				if (!l_colliders_joint)
 				{
-					const auto l_message = core::bc_string_stream_frame() << "cannot find joint for colliders " << p_collider1 << " and " << p_collider2;
-					throw bc_invalid_operation_exception(l_message.str().c_str());
+					const auto l_message = core::bc_estring_stream_frame() << bcL("cannot find joint for colliders ") << p_collider1 << bcL(" and ") << p_collider2;
+					core::bc_log(core::bc_log_type::error, l_message.str().c_str());
+					return physics::bc_spherical_joint_ref();
 				}
 
 				const auto l_collider1_colliders = l_mesh_colliders.find_mesh_collider(p_collider1);
 				const auto l_collider2_colliders = l_mesh_colliders.find_mesh_collider(p_collider2);
-				if(l_collider1_colliders.size() != 1 || l_collider2_colliders.size() != 1)
-				{
-					throw bc_invalid_operation_exception("nodes with more than one collider is not supported in ragdoll");
-				}
-				
+
 				const auto& l_collider1_inv_bind_post = l_collider1_colliders.front().m_local_transform.get_inverse();
 				const auto& l_collider2_inv_bind_post = l_collider2_colliders.front().m_local_transform.get_inverse();
 				const auto l_collider1_local_frame = physics::bc_transform(l_collider1_inv_bind_post) * *l_colliders_joint;
@@ -371,7 +432,7 @@ namespace black_cat
 			);
 			auto l_left_arm_joint = l_create_spherical_joint
 			(
-				m_joint_actors[s_body_index].first, 
+				m_joint_actors[s_body_index].first,
 				m_joint_actors[s_body_index].second.get(),
 				m_joint_actors[s_left_arm_index].first,
 				m_joint_actors[s_left_arm_index].second.get()
@@ -453,7 +514,7 @@ namespace black_cat
 				m_joint_actors[s_right_foot_index].first,
 				m_joint_actors[s_right_foot_index].second.get()
 			);
-			
+
 			m_joints.push_back(physics::bc_joint_ref(l_head_joint.release()));
 			m_joints.push_back(physics::bc_joint_ref(l_left_arm_joint.release()));
 			m_joints.push_back(physics::bc_joint_ref(l_left_fore_arm_joint.release()));
@@ -467,21 +528,26 @@ namespace black_cat
 			m_joints.push_back(physics::bc_joint_ref(l_right_up_leg_joint.release()));
 			m_joints.push_back(physics::bc_joint_ref(l_right_leg_joint.release()));
 			m_joints.push_back(physics::bc_joint_ref(l_right_foot_joint.release()));
+
+			// Capture the vector which transform body part origin into local origin
+			const auto l_body_transform = m_joint_actors[s_body_index].second->get_global_pose();
+			m_body_to_origin_vector = get_actor().get_component<bc_mediate_component>()->get_position() - l_body_transform.get_position();
+			m_body_to_origin_vector = l_body_transform.as_rotation().get_inverse().transform(m_body_to_origin_vector);
 		}
 
 		void bc_human_ragdoll_component::_destroy_physics_joints()
 		{
-			if(m_joints.empty())
+			if (m_joints.empty())
 			{
 				return;
 			}
-			
+
 			m_joints.clear();
 
 			for (auto& [l_joint_name, l_joint_actor] : m_joint_actors)
 			{
 				m_px_scene->remove_actor(*l_joint_actor);
-				l_joint_actor = physics::bc_rigid_dynamic_ref();
+				l_joint_actor.reset();
 			}
 		}
 	}

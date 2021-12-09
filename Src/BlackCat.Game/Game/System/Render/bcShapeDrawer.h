@@ -5,6 +5,7 @@
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcSpan.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "PhysicsImp/Shape/bcShape.h"
@@ -32,7 +33,15 @@ namespace black_cat
 			~bc_shape_drawer();
 
 			bc_shape_drawer& operator=(bc_shape_drawer&& p_other) noexcept;
-						
+
+			/**
+			 * \brief
+			 * \ThreadSafe
+			 * \param p_vertices
+			 * \param p_indices
+			 */
+			void draw_point_list(core::bc_span<core::bc_vector3f> p_vertices, core::bc_span<bcUINT32> p_indices);
+			
 			/**
 			 * \brief
 			 * \ThreadSafe

@@ -12,7 +12,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_shape_generator_buffer::bc_shape_generator_buffer(core::bc_vector_movable< core::bc_vector3f >& p_vertices, core::bc_vector_movable< bcUINT32 >& p_indices)
+		bc_shape_generator_buffer::bc_shape_generator_buffer(core::bc_vector_movable<core::bc_vector3f>& p_vertices, core::bc_vector_movable<bcUINT32>& p_indices)
 			: m_vertices(p_vertices),
 			m_indices(p_indices)
 		{
@@ -41,7 +41,7 @@ namespace black_cat
 		void bc_shape_generator::create_wired_bound_box(bc_shape_generator_buffer& p_buffer, const physics::bc_bound_box& p_box)
 		{
 			const auto l_start_index = p_buffer.vertices_count();
-			core::bc_array< core::bc_vector3f, 8> l_points;
+			core::bc_array<core::bc_vector3f, 8> l_points;
 			p_box.get_points(l_points);
 
 			std::for_each(std::begin(l_points), std::end(l_points), [&](const core::bc_vector3f& p_point)
@@ -80,7 +80,7 @@ namespace black_cat
 		void bc_shape_generator::create_wired_box(bc_shape_generator_buffer& p_buffer, const physics::bc_shape_box& p_box, const physics::bc_transform& p_transform)
 		{
 			const auto l_start_index = p_buffer.vertices_count();
-			core::bc_array< core::bc_vector3f, 8> l_points;
+			core::bc_array<core::bc_vector3f, 8> l_points;
 			p_box.get_points(l_points);
 
 			std::for_each(std::begin(l_points), std::end(l_points), [&](const core::bc_vector3f& p_point)
@@ -262,8 +262,8 @@ namespace black_cat
 			const core::bc_matrix4f& p_world, 
 			const bc_sub_mesh_mat4_transform& p_mesh_transforms)
 		{
-			auto l_identity = core::bc_matrix4f::identity();
-			p_mesh.iterate_over_nodes(l_identity, [&p_buffer, &p_world, &p_mesh_transforms](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)
+			auto l_root_transform = p_world;
+			p_mesh.iterate_over_nodes(l_root_transform, [&p_buffer, &p_world, &p_mesh_transforms](const bc_mesh_node& p_node, core::bc_matrix4f& p_parent_transform)
 			{
 				const auto l_start_index = p_buffer.vertices_count();
 				const auto l_node_transform = p_mesh_transforms.get_node_transform(p_node) * p_world;

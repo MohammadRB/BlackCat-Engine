@@ -49,6 +49,27 @@ namespace black_cat
 			return *this;
 		}
 
+		void bc_shape_drawer::draw_point_list(core::bc_span<core::bc_vector3f> p_vertices, core::bc_span<bcUINT32> p_indices)
+		{
+			{
+				core_platform::bc_mutex_guard l_guard(m_mutex);
+
+				auto& l_vertices = m_vertices[m_buffer_write_index];
+				auto& l_indices = m_indices[m_buffer_write_index];
+
+				std::transform
+				(
+					std::begin(p_indices), 
+					std::end(p_indices), 
+					std::begin(p_indices), 
+					std::bind(std::plus<>(), std::placeholders::_1, l_vertices.size())
+				);
+				
+				l_vertices.insert(std::end(l_vertices), std::begin(p_vertices), std::end(p_vertices));
+				l_indices.insert(std::end(l_indices), std::begin(p_indices), std::end(p_indices));
+			}	
+		}
+
 		void bc_shape_drawer::draw_wired_bound_box(const physics::bc_bound_box& p_box)
 		{
 			{
