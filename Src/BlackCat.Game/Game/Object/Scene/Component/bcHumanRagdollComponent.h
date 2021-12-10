@@ -24,10 +24,17 @@ namespace black_cat
 	{
 		class bc_physics_system;
 		class bc_skinned_mesh_component;
-		class bc_rigid_body_component;
+		class bc_rigid_controller_component;
 
-		using bc_ragdoll_part = bcUINT32;
+		using bc_ragdoll_body_part = bcUINT32;
 
+		struct _bc_ragdoll_collider_map
+		{
+			std::string_view m_attached_node_name;
+			bcFLOAT m_mass_multiplier;
+			physics::bc_rigid_dynamic_ref m_actor;
+		};
+		
 		struct _bc_ragdoll_collider_entry
 		{
 			struct affected_node
@@ -55,20 +62,20 @@ namespace black_cat
 			BC_COMPONENT(ragdoll, true, true)
 
 		public:
-			constexpr static bc_ragdoll_part s_head_index = 0;
-			constexpr static bc_ragdoll_part s_body_index = 1;
-			constexpr static bc_ragdoll_part s_left_arm_index = 2;
-			constexpr static bc_ragdoll_part s_left_fore_arm_index = 3;
-			constexpr static bc_ragdoll_part s_left_hand_index = 4;
-			constexpr static bc_ragdoll_part s_right_arm_index = 5;
-			constexpr static bc_ragdoll_part s_right_fore_arm_index = 6;
-			constexpr static bc_ragdoll_part s_right_hand_index = 7;
-			constexpr static bc_ragdoll_part s_left_up_leg_index = 8;
-			constexpr static bc_ragdoll_part s_left_leg_index = 9;
-			constexpr static bc_ragdoll_part s_left_foot_index = 10;
-			constexpr static bc_ragdoll_part s_right_up_leg_index = 11;
-			constexpr static bc_ragdoll_part s_right_leg_index = 12;
-			constexpr static bc_ragdoll_part s_right_foot_index = 13;
+			constexpr static bc_ragdoll_body_part s_head_index = 0;
+			constexpr static bc_ragdoll_body_part s_body_index = 1;
+			constexpr static bc_ragdoll_body_part s_left_arm_index = 2;
+			constexpr static bc_ragdoll_body_part s_left_fore_arm_index = 3;
+			constexpr static bc_ragdoll_body_part s_left_hand_index = 4;
+			constexpr static bc_ragdoll_body_part s_right_arm_index = 5;
+			constexpr static bc_ragdoll_body_part s_right_fore_arm_index = 6;
+			constexpr static bc_ragdoll_body_part s_right_hand_index = 7;
+			constexpr static bc_ragdoll_body_part s_left_up_leg_index = 8;
+			constexpr static bc_ragdoll_body_part s_left_leg_index = 9;
+			constexpr static bc_ragdoll_body_part s_left_foot_index = 10;
+			constexpr static bc_ragdoll_body_part s_right_up_leg_index = 11;
+			constexpr static bc_ragdoll_body_part s_right_leg_index = 12;
+			constexpr static bc_ragdoll_body_part s_right_foot_index = 13;
 
 		public:
 			bc_human_ragdoll_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept;
@@ -91,7 +98,9 @@ namespace black_cat
 
 			void set_enable(bool p_enable);
 
-			void add_force(bc_ragdoll_part p_part, const core::bc_vector3f& p_force);
+			void add_force(bc_ragdoll_body_part p_part, const core::bc_vector3f& p_force);
+			
+			void add_force(std::string_view p_part_name, const core::bc_vector3f& p_force);
 
 			void debug_draw(const bc_actor_component_debug_draw_context& p_context) override;
 			
@@ -100,7 +109,7 @@ namespace black_cat
 
 			void _validate_mesh_colliders();
 
-			void _fill_colliders_map();
+			void _fill_colliders_hierarchy();
 
 			void _create_physics_joints();
 
@@ -109,10 +118,10 @@ namespace black_cat
 			bc_physics_system* m_physics_system;
 			physics::bc_scene* m_px_scene;
 			bc_skinned_mesh_component* m_mesh_component;
-			bc_rigid_body_component* m_rigid_body_component;
+			bc_rigid_controller_component* m_rigid_component;
 
-			core::bc_array<std::pair<std::string_view, physics::bc_rigid_dynamic_ref>, 14> m_joint_actors;
-			core::bc_vector<_bc_ragdoll_collider_entry> m_colliders_map;
+			core::bc_array<_bc_ragdoll_collider_map, 14> m_colliders_map;
+			core::bc_vector<_bc_ragdoll_collider_entry> m_colliders_hierarchy;
 			core::bc_vector<physics::bc_joint_ref> m_joints;
 			core::bc_unique_ptr<bc_ragdoll_animation_job> m_ragdoll_animation_job;
 			core::bc_vector3f m_body_to_origin_vector;

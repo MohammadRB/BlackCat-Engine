@@ -135,18 +135,7 @@ namespace black_cat
 				return p_value->c_str();
 			}
 		);
-		core::bc_vector<core::bc_string> l_entity_file_names;
-		l_entity_file_names.reserve(l_json_document->m_entity_files.size());
-		std::transform
-		(
-			std::cbegin(l_json_document->m_entity_files),
-			std::cend(l_json_document->m_entity_files),
-			std::back_inserter(l_entity_file_names),
-			[](const core::bc_json_value<core::bc_string_frame>& p_value)
-			{
-				return p_value->c_str();
-			}
-		);
+
 		core::bc_vector<core::bc_string> l_material_file_names;
 		l_material_file_names.reserve(l_json_document->m_material_files.size());
 		std::transform
@@ -159,6 +148,7 @@ namespace black_cat
 				return p_value->c_str();
 			}
 		);
+
 		core::bc_vector<core::bc_string> l_decal_file_names;
 		l_material_file_names.reserve(l_json_document->m_decal_files.size());
 		std::transform
@@ -171,6 +161,20 @@ namespace black_cat
 				return p_value->c_str();
 			}
 		);
+		
+		core::bc_vector<core::bc_string> l_entity_file_names;
+		l_entity_file_names.reserve(l_json_document->m_entity_files.size());
+		std::transform
+		(
+			std::cbegin(l_json_document->m_entity_files),
+			std::cend(l_json_document->m_entity_files),
+			std::back_inserter(l_entity_file_names),
+			[](const core::bc_json_value<core::bc_string_frame>& p_value)
+			{
+				return p_value->c_str();
+			}
+		);
+		
 		core::bc_vector<core::bc_string> l_stream_names;
 		l_stream_names.reserve(l_json_document->m_streams.size());
 		std::transform
@@ -189,11 +193,11 @@ namespace black_cat
 			l_entity_manager,
 			l_game_system,
 			core::bc_estring(p_context.m_file_path),
-			core::bc_string(l_json_document->m_name->c_str()),
+			core::bc_string(*l_json_document->m_name),
 			l_stream_file_names,
-			l_entity_file_names,
 			l_material_file_names,
 			l_decal_file_names,
+			l_entity_file_names,
 			l_stream_names,
 			std::move(l_scene_graph),
 			std::move(l_px_scene)
@@ -234,7 +238,6 @@ namespace black_cat
 		auto* l_scene = static_cast<game::bc_scene*>(p_context.m_content);
 
 		core::bc_json_document<_bc_scene_json> l_json_document;
-		
 		*l_json_document->m_name = l_scene->get_name();
 		*l_json_document->m_scene_graph->m_center = l_scene->get_scene_graph().get_bound_box().get_center();
 		*l_json_document->m_scene_graph->m_half_extends = l_scene->get_scene_graph().get_bound_box().get_half_extends();
@@ -242,22 +245,31 @@ namespace black_cat
 		for (auto& l_stream_file : l_scene->get_stream_files())
 		{
 			auto& l_entry = l_json_document->m_stream_files.new_entry();
-			*l_entry = l_stream_file.c_str();
+			*l_entry = l_stream_file;
 		}
-		for (auto& l_entity_file : l_scene->get_entity_files())
-		{
-			auto& l_entry = l_json_document->m_entity_files.new_entry();
-			*l_entry = l_entity_file.c_str();
-		}
+		
 		for (auto& l_material : l_scene->get_material_files())
 		{
 			auto& l_entry = l_json_document->m_material_files.new_entry();
-			*l_entry = l_material.c_str();
+			*l_entry = l_material;
 		}
+		
+		for (auto& l_decal : l_scene->get_decal_files())
+		{
+			auto& l_entry = l_json_document->m_decal_files.new_entry();
+			*l_entry = l_decal;
+		}
+		
+		for (auto& l_entity_file : l_scene->get_entity_files())
+		{
+			auto& l_entry = l_json_document->m_entity_files.new_entry();
+			*l_entry = l_entity_file;
+		}
+		
 		for (auto& l_stream : l_scene->get_loaded_streams())
 		{
 			auto& l_entry = l_json_document->m_streams.new_entry();
-			*l_entry = l_stream.c_str();
+			*l_entry = l_stream;
 		}
 
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;

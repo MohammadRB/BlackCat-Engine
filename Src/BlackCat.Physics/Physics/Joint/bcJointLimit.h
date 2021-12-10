@@ -11,25 +11,39 @@ namespace black_cat
 		struct bc_joint_limit
 		{
 			bc_joint_limit()
-				: m_stiffness(0),
+				: m_restitution(0),
+				m_stiffness(0),
 				m_damping(0)
 			{
 			}
 
 			bc_joint_limit(bcFLOAT p_stiffness, bcFLOAT p_damping)
-				: m_stiffness(p_stiffness),
+				: m_restitution(0),
+				m_stiffness(p_stiffness),
 				m_damping(p_damping)
 			{
 			}
 
 			/**
-			* \brief a spring pulls the joint back to the limit
+			 * \brief Controls the amount of bounce when the joint hits a limit.
+			 * \n A restitution value of 1.0 causes the joint to bounce back with the velocity which it hit the limit. A value of zero causes the joint to stop dead.
+			 *
+			 * <b>Range:</b> [0,1]<br>
+			 * <b>Default:</b> 0.0
+			 */
+			const bcFLOAT m_restitution;
+			
+			/**
+			* \brief if greater than zero, the limit is soft, i.e. a spring pulls the joint back to the limit
+			* 
 			* Range: [0, PX_MAX_F32)
 			* Default: 0.0
 			*/
 			const bcFLOAT m_stiffness;
+			
 			/**
-			* \brief the damping of the limit spring
+			* \brief if spring is greater than zero, this is the damping of the limit spring
+			* 
 			* Range: [0, PX_MAX_F32)
 			* Default: 0.0
 			*/

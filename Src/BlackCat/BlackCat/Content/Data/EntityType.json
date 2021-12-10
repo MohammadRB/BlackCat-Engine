@@ -13,7 +13,7 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 30.0,
+            "mass": 10.0,
             "collider_materials": {
               "cube": "iron"
             }
@@ -38,7 +38,7 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 30.0,
+            "mass": 10.0,
             "collider_materials": {
               "cube": "iron"
             }
@@ -69,7 +69,7 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 30.0,
+            "mass": 10.0,
             "collider_materials": {
               "cube": "iron"
             }
@@ -110,7 +110,7 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 30.0,
+            "mass": 10.0,
             "collider_materials": {
               "sphere": "iron"
             }
@@ -131,7 +131,7 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 30.0,
+            "mass": 10.0,
             "collider_materials": {
               "convex": "iron"
             }
@@ -152,7 +152,7 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 30.0,
+            "mass": 10.0,
             "collider_materials": {
               "capsule": "iron"
             }
@@ -276,6 +276,7 @@
         {
           "name": "rigid_controller",
           "parameters": {
+            "mass": 100.0,
             "collider_materials": {
               "mixamorig:Spine1": "iron",
               "mixamorig:Head": "iron",
@@ -291,20 +292,6 @@
               "mixamorig:RightUpLeg": "iron",
               "mixamorig:RightLeg": "iron",
               "mixamorig:RightFoot": "iron"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "xbot_idle_red",
-      "inherit": "xbot_idle",
-      "components": [
-        {
-          "name": "skinned_mesh",
-          "parameters": {
-            "materials": {
-              "Beta_Surface": "red"
             }
           }
         },
@@ -326,6 +313,20 @@
               "right_up_leg": "mixamorig:RightUpLeg",
               "right_leg": "mixamorig:RightLeg",
               "right_foot": "mixamorig:RightFoot"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbot_idle_red",
+      "inherit": "xbot_idle",
+      "components": [
+        {
+          "name": "skinned_mesh",
+          "parameters": {
+            "materials": {
+              "Beta_Surface": "red"
             }
           }
         }

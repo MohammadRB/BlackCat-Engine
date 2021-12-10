@@ -2,8 +2,10 @@
 
 #pragma once
 
+#include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "Game/Object/Scene/Component/bcRigidControllerComponent.h"
+#include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "BlackCat/SampleImp/XBot/bcXBotActorController.h"
 #include "BlackCat/bcExport.h"
 
@@ -25,20 +27,23 @@ namespace black_cat
 		void update_origin_instance(const game::bc_actor_component_update_content& p_context) override;
 		
 		void update_replicated_instance(const game::bc_actor_component_update_content& p_context) override;
+
+		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 		
 	private:
 		void throw_grenade(game::bc_actor& p_grenade) noexcept override;
-		
+
+		game::bc_physics_system* m_physics_system = nullptr;
 		game::bc_human_ragdoll_component* m_ragdoll_component = nullptr;
 		game::bc_rigid_controller_component* m_rigid_controller_component = nullptr;
 		bool m_ragdoll_enabled = false;
-		bcFLOAT m_ragdoll_timer = 0;
 	};
 
 	inline void bc_xbot_idle_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		bc_xbot_actor_controller::initialize(p_context);
-		
+
+		m_physics_system = &p_context.m_game_system.get_physics_system();
 		m_ragdoll_component = p_context.m_actor.get_component<game::bc_human_ragdoll_component>();
 		m_rigid_controller_component = p_context.m_actor.get_component<game::bc_rigid_controller_component>();
 	}
@@ -61,36 +66,43 @@ namespace black_cat
 
 	inline void bc_xbot_idle_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
-		if(m_ragdoll_component)
+		if(m_ragdoll_enabled)
 		{
-			const auto l_prev_time = m_ragdoll_timer;
-			m_ragdoll_timer += p_context.m_clock.m_elapsed_second;
-			if (m_ragdoll_timer >= 2.f && l_prev_time < 2.f)
-			{
-				m_rigid_controller_component->reset_controller();
-				m_ragdoll_component->set_enable(true);
-				m_ragdoll_component->add_force(game::bc_human_ragdoll_component::s_head_index, core::bc_vector3f(0, .1f, 1) * 10000);
-				m_ragdoll_enabled = true;
-			}
+			return;
 		}
-
-		if(!m_ragdoll_enabled)
+		
+		bc_xbot_actor_controller::update(bc_xbot_input_update_context
 		{
-			bc_xbot_actor_controller::update(bc_xbot_input_update_context
-			{
-				p_context.m_clock,
-				0,
-				false,
-				false,
-				false,
-				false,
-				false
-			});
-		}
+			p_context.m_clock,
+			0,
+			false,
+			false,
+			false,
+			false,
+			false
+		});
 	}
 
 	inline void bc_xbot_idle_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
 	{
+	}
+
+	inline void bc_xbot_idle_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
+	{
+		bc_xbot_actor_controller::handle_event(p_context);
+		
+		const auto* l_bullet_hit_event = core::bci_message::as<game::bc_bullet_hit_actor_event>(p_context.m_event);
+		if (l_bullet_hit_event)
+		{
+			const auto l_hit_shape = l_bullet_hit_event->get_hit_shape();
+			const auto* l_hit_shape_data = m_physics_system->get_game_shape_data(l_hit_shape);
+			const auto l_force = l_bullet_hit_event->get_bullet_direction() * l_bullet_hit_event->calculate_applied_force() * 10;
+			
+			m_rigid_controller_component->reset_controller();
+			m_ragdoll_component->set_enable(true);
+			m_ragdoll_component->add_force(l_hit_shape_data->m_collider_entry->m_attached_mesh_name, l_force);
+			m_ragdoll_enabled = true;
+		}
 	}
 
 	inline void bc_xbot_idle_actor_controller::throw_grenade(game::bc_actor& p_grenade) noexcept

@@ -95,7 +95,7 @@ namespace black_cat
 			bc_joint_linear_limit get_linear_limit() const noexcept;
 
 			/**
-			 * \brief Set the twist limit for the joint.
+			 * \brief Set the twist limit for the joint. The twist limit controls the range of motion around the twist axis.
 			 * The twist limit controls the range of motion around the twist axis.
 			 * Default PI/2
 			 * Range (-2*PI, 2*PI)
@@ -111,6 +111,7 @@ namespace black_cat
 
 			/**
 			 * \brief Enable the limit cone for the joint along with strength and damping of the joint spring.
+			 * The cone limit is used if either or both swing axes are limited.
 			 * Default PI/2
 			 * Range (0,PI)
 			 * \param p_limit

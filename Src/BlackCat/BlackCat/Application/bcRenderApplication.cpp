@@ -11,7 +11,7 @@
 #include "Core/Utility/bcLogger.h"
 #include "Core/Math/bcCoordinate.h"
 #include "Core/bcEvent.h"
-#include "PhysicsImp/Joint/bcSphericalJoint.h"
+#include "PhysicsImp/Joint/bcD6Joint.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "GraphicImp/Device/bcDevice.h"
@@ -218,7 +218,7 @@ namespace black_cat
 	bool bc_render_application::app_event(core::bci_event& p_event)
 	{
 		auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
-		if(l_key_event)
+		if (l_key_event)
 		{
 			if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
 			{
@@ -227,10 +227,40 @@ namespace black_cat
 				auto* l_scene = m_game_system->get_scene();
 
 				l_scene->add_bullet(game::bc_bullet(l_camera.get_position(), l_camera.get_forward(), 250, 0.2f));
+
+				//const auto l_position1 = l_camera.get_position() + l_camera.get_forward() * 3;
+				//const auto l_position2 = l_position1;// +core::bc_vector3f::right();
+				//auto l_actor1 = l_scene->create_actor("capsule", core::bc_matrix4f::translation_matrix(l_position1));
+				//auto l_actor2 = l_scene->create_actor("capsule", core::bc_matrix4f::translation_matrix(l_position2));
+				//auto l_rigid_body1 = l_actor1.get_component<game::bc_rigid_dynamic_component>()->get_body();
+				//auto l_rigid_body2 = l_actor2.get_component<game::bc_rigid_dynamic_component>()->get_body();
+
+				//{
+				//	physics::bc_scene_lock l_lock(&l_scene->get_px_scene());
+
+				//	auto l_px_joint = m_game_system->get_physics_system().get_physics().create_d6_joint
+				//	(
+				//		&l_rigid_body1,
+				//		physics::bc_transform(core::bc_vector3f(0.75, 0, 0)),
+				//		&l_rigid_body2,
+				//		physics::bc_transform(core::bc_vector3f(-0.75, 0, 0))
+				//	);
+				//	//l_px_joint->set_visualization(true);
+				//	//l_px_joint->enable_limit(physics::bc_joint_cone_limit(core::bc_to_radian(90), core::bc_to_radian(90)));
+				//	l_px_joint->set_motion(physics::bc_d6_axis::around_x, physics::bc_d6_motion::limited);
+				//	l_px_joint->set_motion(physics::bc_d6_axis::around_y, physics::bc_d6_motion::limited);
+				//	l_px_joint->set_motion(physics::bc_d6_axis::around_z, physics::bc_d6_motion::limited);
+				//	l_px_joint->set_twist_limit(physics::bc_joint_angular_limit(core::bc_to_radian(45), -core::bc_to_radian(45)));
+				//	l_px_joint->set_swing_limit(physics::bc_joint_cone_limit(core::bc_to_radian(45), core::bc_to_radian(45)));
+				//	l_px_joint.release();
+
+				//	const auto l_direction = l_camera.get_forward();
+				//	l_rigid_body1.set_linear_velocity(l_direction * 40);
+				//}
 			}
+
+			return application_event(p_event);
 		}
-		
-		return application_event(p_event);
 	}
 
 	void bc_render_application::app_unload_content()

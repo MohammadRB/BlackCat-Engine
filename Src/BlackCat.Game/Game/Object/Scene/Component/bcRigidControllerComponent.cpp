@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Math/bcCoordinate.h"
+#include "Core/bcUtility.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcRigidControllerComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
@@ -68,6 +69,11 @@ namespace black_cat
 				}
 
 				set_kinematic(true);
+
+				const auto l_mass_value = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_mass), 1);
+				const auto l_cmass_value = p_context.m_parameters.get_value_vector3f(constant::g_param_rigid_cmass);
+				m_px_body->update_mass_inertia(l_mass_value, l_cmass_value.get());
+				m_px_body->set_mass(l_mass_value);
 				
 				return;
 			}

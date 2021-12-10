@@ -64,6 +64,11 @@ namespace black_cat
 			const core::bc_matrix4f& p_initial_world_transform)
 		{
 			auto* l_decal = m_decal_manager->create_decal(p_decal_name, p_local_pos, p_local_rotation);
+			if(!l_decal)
+			{
+				return;
+			}
+			
 			l_decal->set_world_transform(p_initial_world_transform);
 		}
 
@@ -74,6 +79,11 @@ namespace black_cat
 			const core::bc_matrix4f& p_initial_world_transform)
 		{
 			auto* l_decal = m_decal_manager->create_decal(p_decal_name, p_local_pos, p_local_rotation, p_render_group);
+			if (!l_decal)
+			{
+				return;
+			}
+			
 			l_decal->set_world_transform(p_initial_world_transform);
 		}
 
@@ -90,8 +100,12 @@ namespace black_cat
 			else
 			{
 				auto l_decal = m_decal_manager->create_decal(p_decal_name, get_actor(), p_local_pos, p_local_rotation, p_attached_node);
+				if (!l_decal)
+				{
+					return;
+				}
+				
 				l_decal->set_world_transform(p_initial_world_transform);
-
 				_add_decal(std::move(l_decal));
 			}
 		}
@@ -110,8 +124,12 @@ namespace black_cat
 			else
 			{
 				auto l_decal = m_decal_manager->create_decal(p_decal_name, get_actor(), p_local_pos, p_local_rotation, p_render_group, p_attached_node);
+				if (!l_decal)
+				{
+					return;
+				}
+				
 				l_decal->set_world_transform(p_initial_world_transform);
-
 				_add_decal(std::move(l_decal));
 			}
 		}

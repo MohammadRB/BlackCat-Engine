@@ -146,6 +146,8 @@ namespace black_cat
 
 			bc_shape_flag get_flags() const noexcept;
 
+			void set_flags(bc_shape_flag p_flags) noexcept;
+			
 			void set_flag(bc_shape_flag p_flag, bool p_value) noexcept;
 
 			bc_collision_filter get_collision_group() const noexcept;
@@ -154,6 +156,8 @@ namespace black_cat
 
 			bc_shape_notify_flag get_notify_flags() const noexcept;
 
+			void set_notify_flags(bc_shape_notify_flag p_flags) noexcept;
+			
 			void set_notify_flag(bc_shape_notify_flag p_flag, bool p_value) noexcept;
 
 			bc_query_group get_query_group() const noexcept;
@@ -162,6 +166,8 @@ namespace black_cat
 
 			bc_shape_query_flag get_query_flags() const noexcept;
 
+			void set_query_flags(bc_shape_query_flag p_flags) noexcept;
+			
 			void set_query_flag(bc_shape_query_flag p_flag, bool p_value) noexcept;
 
 			bool get_high_detail_query_shape() const noexcept;

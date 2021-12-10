@@ -3,6 +3,8 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Container/bcString.h"
+#include "Core/Container/bcStringStream.h"
+#include "Core/Utility/bcLogger.h"
 #include "Core/File/bcStream.h"
 #include "Core/File/bcFileStream.h"
 #include "Core/File/bcJsonDocument.h"
@@ -118,6 +120,7 @@ namespace black_cat
 
 			{
 				core_platform::bc_mutex_guard l_lock(m_decals_mutex);
+
 				const auto l_ite = m_decals.find(l_hash);
 				if (l_ite != std::end(m_decals))
 				{
@@ -128,6 +131,7 @@ namespace black_cat
 			const auto l_desc_ite = m_decal_descriptions.find(l_hash);
 			if(l_desc_ite == std::cend(m_decal_descriptions))
 			{
+				core::bc_log(core::bc_log_type::warning) << "No entry was found for decal with name '" << p_name << "'" << core::bc_lend;
 				return nullptr;
 			}
 
@@ -155,6 +159,7 @@ namespace black_cat
 
 			{
 				core_platform::bc_mutex_guard l_lock(m_decals_mutex);
+				
 				m_decals.insert(std::make_pair(l_hash, l_decal));
 			}
 
@@ -166,11 +171,8 @@ namespace black_cat
 			auto l_decal_ptr = load_decal(p_name);
 			if(l_decal_ptr == nullptr)
 			{
-				core::bc_string_frame l_msg = "No entry was found for decal with name '";
-				l_msg += p_name;
-				l_msg += "'";
-
-				throw bc_key_not_found_exception(l_msg.c_str());
+				const auto l_msg = core::bc_string_stream_frame() << "No entry was found for decal with name '" << p_name << "'";
+				throw bc_key_not_found_exception(l_msg.str().c_str());
 			}
 
 			return l_decal_ptr;
@@ -199,7 +201,11 @@ namespace black_cat
 			const core::bc_matrix3f& p_local_rotation,
 			bc_mesh_node::node_index_t p_attached_node_index)
 		{
-			auto l_decal_ptr = load_decal_throw(p_decal_name);
+			auto l_decal_ptr = load_decal(p_decal_name);
+			if(!l_decal_ptr)
+			{
+				return nullptr;
+			}
 
 			{
 				core_platform::bc_mutex_guard l_lock(m_decal_instances_mutex);
@@ -223,7 +229,11 @@ namespace black_cat
 			bc_render_group p_render_group,
 			bc_mesh_node::node_index_t p_attached_node_index)
 		{
-			auto l_decal_ptr = load_decal_throw(p_decal_name);
+			auto l_decal_ptr = load_decal(p_decal_name);
+			if (!l_decal_ptr)
+			{
+				return nullptr;
+			}
 
 			{
 				core_platform::bc_mutex_guard l_lock(m_decal_instances_mutex);

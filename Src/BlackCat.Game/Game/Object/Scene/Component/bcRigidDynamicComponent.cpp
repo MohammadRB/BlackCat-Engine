@@ -13,6 +13,7 @@
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcNetworkReplicateActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat
@@ -78,6 +79,7 @@ namespace black_cat
 				const auto l_mass_value = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_mass), 1);
 				const auto l_cmass_value = p_context.m_parameters.get_value_vector3f(constant::g_param_rigid_cmass);
 				m_px_actor_ref->update_mass_inertia(l_mass_value, l_cmass_value.get());
+				m_px_actor_ref->set_mass(l_mass_value);
 				
 				added_to_scene(p_context.m_scene.get_px_scene(), m_px_actor_ref.get());
 				
@@ -128,6 +130,18 @@ namespace black_cat
 				return;
 			}
 
+			const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event);
+			if(l_bullet_hit_event)
+			{
+				const auto l_force = l_bullet_hit_event->calculate_applied_force();
+				
+				{
+					physics::bc_scene_lock l_lock(get_scene());
+
+					m_px_actor_ref->add_force_at_pose(l_bullet_hit_event->get_bullet_direction() * l_force, l_bullet_hit_event->get_hit_position());
+				}
+			}
+			
 			/*const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
 			if (l_scene_add_event)
 			{

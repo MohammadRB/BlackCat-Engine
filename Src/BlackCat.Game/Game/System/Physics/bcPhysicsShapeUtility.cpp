@@ -225,8 +225,13 @@ namespace black_cat
 				BC_ASSERT(false);
 			}
 
+			l_shape->set_contact_offset(p_shape.get_contact_offset());
+			l_shape->set_rest_offset(p_shape.get_rest_offset());
 			l_shape->set_query_group(p_shape.get_query_group());
 			l_shape->set_collision_group(p_shape.get_collision_group());
+			l_shape->set_high_detail_query_shape(p_shape.get_high_detail_query_shape());
+			l_shape->set_flags(p_shape.get_flags());
+			l_shape->set_query_flags(p_shape.get_query_flags());
 			l_shape->set_data(p_shape.get_data());
 
 			return l_shape;

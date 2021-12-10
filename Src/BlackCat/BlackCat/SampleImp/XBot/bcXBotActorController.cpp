@@ -584,10 +584,10 @@ namespace black_cat
 		{
 			return;
 		}
-		
-		const auto l_ccontroller_actor = p_hit.get_ccontroller().get_actor().is_rigid_body();
+
+		const auto l_actor_mass = m_rigid_controller_component->get_body().get_mass();
 		const auto l_multiplier = m_state_machine->m_state.m_move_amount / m_state_machine->m_state.m_move_speed;
-		l_rigid_dynamic.add_force(m_state_machine->m_state.m_move_direction * l_multiplier * l_ccontroller_actor.get_mass());
+		l_rigid_dynamic.add_force(m_state_machine->m_state.m_move_direction * l_multiplier * l_actor_mass);
 	}
 
 	void bc_xbot_actor_controller::on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit)
