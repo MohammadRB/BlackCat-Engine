@@ -181,18 +181,21 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteCommand.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectUpdateCommand.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIEditorModeCommand.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectInsertCommand.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectListCommand.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectSelectCommand.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUISceneCommand.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainCommand.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainHeightCommand.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainMaterialCommand.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainMaterialSmoothCommand.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainSmoothCommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalNamesUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalPainterUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalRemoverUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectUpdateUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcEditorModeUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectInsertUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcEntityNamesUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectSelectUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcSceneUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainHeightUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainMaterialUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainMaterialSmoothUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainSmoothUICommand.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainToolBar.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormTools.cpp" />
@@ -481,18 +484,21 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -D_WINSOCKAPI_ -DQT_NO_DEBUG -DNDEBUG -D%(PreprocessorDefinitions)  "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\..\..\3rdParty\3rdParty\Ozz\Include" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/Widget/%(Filename)%(Extension)"</Command>
     </CustomBuild>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteCommand.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectUpdateCommand.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIEditorModeCommand.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectInsertCommand.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectListCommand.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectSelectCommand.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUISceneCommand.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainCommand.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainHeightCommand.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainMaterialCommand.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainMaterialSmoothCommand.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainSmoothCommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalNamesUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalPainterUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalRemoverUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectUpdateUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcEditorModeUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectInsertUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcEntityNamesUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectSelectUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcSceneUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainHeightUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainMaterialUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainMaterialSmoothUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainSmoothUICommand.h" />
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
       <Message Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Moc%27ing %(Identity)...</Message>
@@ -535,7 +541,8 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -D_WINSOCKAPI_ -DQT_NO_DEBUG -DNDEBUG -D%(PreprocessorDefinitions)  "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat" "-I.\..\..\3rdParty" "-I.\..\..\3rdParty\3rdParty\Ozz\Include" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/UI/%(Filename)%(Extension)"</Command>
     </CustomBuild>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObjectInsert.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormDecalInsert.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormEntityInsert.h" />
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormTerrain.h" />
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormTools.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

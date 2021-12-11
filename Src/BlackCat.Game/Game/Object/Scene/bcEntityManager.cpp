@@ -165,20 +165,17 @@ namespace black_cat
 			}
 		}
 
-		core::bc_vector_frame<const bcCHAR*> bc_entity_manager::get_entity_names() const
+		core::bc_vector_frame<std::string_view> bc_entity_manager::get_entity_names() const
 		{
-			core::bc_vector_frame<const bcCHAR*> l_result;
+			core::bc_vector_frame<std::string_view> l_result;
 			l_result.reserve(m_entities.size());
 
 			for (const auto& l_entity : m_entities)
 			{
-				l_result.push_back(l_entity.second.m_entity_name.c_str());
+				l_result.push_back(l_entity.second.m_entity_name);
 			}
 
-			std::sort(std::begin(l_result), std::end(l_result), [](const bcCHAR* p_first, const bcCHAR* p_second)
-			{
-				return std::strcmp(p_first, p_second) <= 0;
-			});
+			std::sort(std::begin(l_result), std::end(l_result));
 			
 			return l_result;
 		}

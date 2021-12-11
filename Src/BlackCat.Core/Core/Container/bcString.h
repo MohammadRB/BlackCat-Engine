@@ -462,9 +462,6 @@ namespace black_cat
 
 		using bc_string_frame = bc_string_a<bc_allocator_frame>;
 
-		/*template<template<typename> typename TAllocator >
-		using bc_string_movable = bc_string_a< bc_allocator_movable >;*/
-
 		using bc_wstring = bc_basic_string<bcWCHAR, std::char_traits<bcWCHAR>, bc_allocator<bcECHAR>>;
 
 		template<template<typename> typename TAllocator >
@@ -473,9 +470,6 @@ namespace black_cat
 		using bc_wstring_program = bc_wstring_a<bc_allocator_program>;
 
 		using bc_wstring_frame = bc_wstring_a<bc_allocator_frame>;
-
-		/*template<template<typename> typename TAllocator >
-		using bc_wstring_movable = bc_wstring_a< bc_allocator_movable >;*/
 
 #ifdef BC_UNICODE
 		using bc_estring = bc_wstring;
@@ -1227,7 +1221,7 @@ namespace black_cat
 
 		inline bc_string bc_to_string(const bcWCHAR* p_str)
 		{
-			auto l_str_len = std::wcslen(p_str);
+			const auto l_str_len = std::wcslen(p_str);
 			bc_string l_str(l_str_len, bcL('#'));
 
 			_bc_to_string(p_str, &l_str.at(0), l_str_len);
@@ -1353,7 +1347,7 @@ namespace black_cat
 		
 		inline bc_string_program bc_to_string_program(const bcWCHAR* p_str)
 		{
-			auto l_str_len = std::wcslen(p_str);
+			const auto l_str_len = std::wcslen(p_str);
 			bc_string_program l_str(l_str_len, bcL('#'));
 
 			_bc_to_string(p_str, &l_str.at(0), l_str_len);
@@ -1479,7 +1473,7 @@ namespace black_cat
 
 		inline bc_string_frame bc_to_string_frame(const bcWCHAR* p_str)
 		{
-			auto l_str_len = std::wcslen(p_str);
+			const auto l_str_len = std::wcslen(p_str);
 			bc_string_frame l_str(l_str_len, bcL('#'));
 
 			_bc_to_string(p_str, &l_str.at(0), l_str_len);
@@ -1670,7 +1664,7 @@ namespace black_cat
 
 		inline bc_wstring bc_to_wstring(const bcCHAR* p_str)
 		{
-			auto l_str_len = std::strlen(p_str);
+			const auto l_str_len = std::strlen(p_str);
 			bc_wstring l_str(l_str_len, bcL('#'));
 
 			_bc_to_wstring(p_str, &l_str.at(0), l_str_len);
@@ -1796,7 +1790,7 @@ namespace black_cat
 
 		inline bc_wstring_program bc_to_wstring_program(const bcCHAR* p_str)
 		{
-			auto l_str_len = std::strlen(p_str);
+			const auto l_str_len = std::strlen(p_str);
 			bc_wstring_program l_str(l_str_len, bcL('#'));
 
 			_bc_to_wstring(p_str, &l_str.at(0), l_str_len);
@@ -1922,7 +1916,7 @@ namespace black_cat
 
 		inline bc_wstring_frame bc_to_wstring_frame(const bcCHAR* p_str)
 		{
-			auto l_str_len = std::strlen(p_str);
+			const auto l_str_len = std::strlen(p_str);
 			bc_wstring_frame l_str(l_str_len, bcL('#'));
 
 			_bc_to_wstring(p_str, &l_str.at(0), l_str_len);
@@ -2431,7 +2425,7 @@ namespace black_cat
 
 		inline bc_string bc_to_exclusive_string(const bcWCHAR* p_value)
 		{
-			auto l_str_len = std::wcslen(p_value);
+			const auto l_str_len = std::wcslen(p_value);
 			bc_string l_str(l_str_len, '#');
 
 			_bc_to_string(p_value, &l_str.at(0), l_str_len);
@@ -2451,7 +2445,7 @@ namespace black_cat
 
 		inline bc_wstring bc_to_exclusive_wstring(const bcCHAR* p_value)
 		{
-			auto l_str_len = std::strlen(p_value);
+			const auto l_str_len = std::strlen(p_value);
 			bc_wstring l_str(l_str_len, bcL('#'));
 
 			_bc_to_wstring(p_value, &l_str.at(0), l_str_len);

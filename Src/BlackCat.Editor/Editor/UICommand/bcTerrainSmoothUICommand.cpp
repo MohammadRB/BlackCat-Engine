@@ -8,13 +8,13 @@
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
-#include "Editor/UICommand/bcUITerrainSmoothCommand.h"
+#include "Editor/UICommand/bcTerrainSmoothUICommand.h"
 
 namespace black_cat
 {
 	namespace editor
 	{
-		bc_ui_terrain_smooth_command::bc_ui_terrain_smooth_command(bcUINT16 p_screen_width,
+		bc_terrain_smooth_ui_command::bc_terrain_smooth_ui_command(bcUINT16 p_screen_width,
 			bcUINT16 p_screen_height,
 			bcUINT16 p_point_left,
 			bcUINT16 p_point_top,
@@ -32,18 +32,18 @@ namespace black_cat
 		{
 		}
 
-		bc_ui_terrain_smooth_command::bc_ui_terrain_smooth_command(const bc_ui_terrain_smooth_command&) = default;
+		bc_terrain_smooth_ui_command::bc_terrain_smooth_ui_command(const bc_terrain_smooth_ui_command&) = default;
 
-		bc_ui_terrain_smooth_command::~bc_ui_terrain_smooth_command() = default;
+		bc_terrain_smooth_ui_command::~bc_terrain_smooth_ui_command() = default;
 
-		bc_ui_terrain_smooth_command& bc_ui_terrain_smooth_command::operator=(const bc_ui_terrain_smooth_command&) = default;
+		bc_terrain_smooth_ui_command& bc_terrain_smooth_ui_command::operator=(const bc_terrain_smooth_ui_command&) = default;
 
-		core::bc_string bc_ui_terrain_smooth_command::title() const
+		core::bc_string bc_terrain_smooth_ui_command::title() const
 		{
 			return "TerrainSmooth";
 		}
 
-		bc_iui_command::state_ptr bc_ui_terrain_smooth_command::create_state(state_context& p_context) const
+		bci_ui_command::state_ptr bc_terrain_smooth_ui_command::create_state(state_context& p_context) const
 		{
 			auto& l_render_system = p_context.m_game_system.get_render_system();
 
@@ -51,21 +51,21 @@ namespace black_cat
 				.as_buffer
 				(
 					1,
-					sizeof(bc_ui_terrain_smooth_command_parameter_cbuffer),
+					sizeof(bc_terrain_smooth_ui_command_parameter_cbuffer),
 					graphic::bc_resource_usage::gpu_rw,
 					graphic::bc_resource_view_type::none
 				)
 				.as_constant_buffer();
 
-			bc_ui_terrain_smooth_commnad_state l_state;
+			bc_terrain_smooth_ui_command_state l_state;
 			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_smooth_cs");
 			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);
 			l_state.m_device_command_list = l_render_system.get_device().create_command_list();
 
-			return core::bc_make_unique< bc_ui_terrain_smooth_commnad_state >(std::move(l_state));
+			return core::bc_make_unique< bc_terrain_smooth_ui_command_state >(std::move(l_state));
 		}
 
-		bool bc_ui_terrain_smooth_command::update(terrain_update_context& p_context)
+		bool bc_terrain_smooth_ui_command::update(terrain_update_context& p_context)
 		{
 			using height_map_sample_t = std::tuple< bcINT16, physics::bc_material_index >;
 			
@@ -74,7 +74,7 @@ namespace black_cat
 			auto& l_dx11_height_map = static_cast< const bc_editor_height_map_dx11& >(l_height_map_component->get_height_map());
 			auto l_px_height_map = l_dx11_height_map.get_px_height_field();
 
-			const bc_ui_terrain_smooth_command_parameter_cbuffer l_cbuffer_parameters
+			const bc_terrain_smooth_ui_command_parameter_cbuffer l_cbuffer_parameters
 			{
 				p_context.m_tool_center_x,
 				p_context.m_tool_center_z,
@@ -82,10 +82,10 @@ namespace black_cat
 				m_smooth
 			};
 
-			bc_ui_terrain_smooth_command_render_task l_render_task
+			bc_terrain_smooth_ui_command_render_task l_render_task
 			(
 				l_dx11_height_map,
-				*static_cast< bc_ui_terrain_smooth_commnad_state* >(p_context.m_state),
+				*static_cast< bc_terrain_smooth_ui_command_state* >(p_context.m_state),
 				l_cbuffer_parameters
 			);
 			p_context.m_game_system.get_render_system().add_render_task(l_render_task);
@@ -171,16 +171,16 @@ namespace black_cat
 			return false;
 		}
 
-		bc_ui_terrain_smooth_command_render_task::bc_ui_terrain_smooth_command_render_task(const bc_editor_height_map_dx11& p_height_map,
-			bc_ui_terrain_smooth_commnad_state& p_command_state,
-			const bc_ui_terrain_smooth_command_parameter_cbuffer& p_shader_parameter)
+		bc_terrain_smooth_ui_command_render_task::bc_terrain_smooth_ui_command_render_task(const bc_editor_height_map_dx11& p_height_map,
+			bc_terrain_smooth_ui_command_state& p_command_state,
+			const bc_terrain_smooth_ui_command_parameter_cbuffer& p_shader_parameter)
 			: m_height_map(p_height_map),
 			m_command_state(p_command_state),
 			m_shader_parameter(p_shader_parameter)
 		{
 		}
 
-		void bc_ui_terrain_smooth_command_render_task::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_render_thread)
+		void bc_terrain_smooth_ui_command_render_task::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_render_thread)
 		{
 			const auto l_tool_diameter = m_shader_parameter.m_tool_radius * 2;
 			const auto l_thread_group_count = (l_tool_diameter / 32) + 1;

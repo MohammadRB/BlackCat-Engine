@@ -14,7 +14,7 @@ namespace black_cat
 {
 	namespace editor
 	{
-		_bc_ui_command_entry::_bc_ui_command_entry(core::bc_unique_ptr<bc_iui_command> p_command)
+		_bc_ui_command_entry::_bc_ui_command_entry(core::bc_unique_ptr<bci_ui_command> p_command)
 			: m_command(std::move(p_command)),
 			m_task_link(core::bc_delegate< core::bc_any() >(*this, &_bc_ui_command_entry::_execute_task)),
 			m_update_context(nullptr),
@@ -27,26 +27,26 @@ namespace black_cat
 			return m_task_link.get_task();
 		}
 
-		bc_iui_command& _bc_ui_command_entry::get_command()
+		bci_ui_command& _bc_ui_command_entry::get_command()
 		{
 			return *m_command;
 		}
 
-		bool _bc_ui_command_entry::command_update(bc_iui_command::update_context& p_context)
+		bool _bc_ui_command_entry::command_update(bci_ui_command::update_context& p_context)
 		{
 			m_update_context = &p_context;
 			m_task_link(core::bc_concurrency::current_thread_id());
 			return m_command_result;
 		}
 
-		void _bc_ui_command_entry::command_update_ui(bc_iui_command::update_ui_context& p_context)
+		void _bc_ui_command_entry::command_update_ui(bci_ui_command::update_ui_context& p_context)
 		{
 			m_command->update_ui(p_context);
 		}
 
-		void _bc_ui_command_entry::command_undo(bc_iui_command::undo_context& p_context)
+		void _bc_ui_command_entry::command_undo(bci_ui_command::undo_context& p_context)
 		{
-			static_cast<bc_iui_command_reversible&>(*m_command).undo(p_context);
+			static_cast<bci_ui_command_reversible&>(*m_command).undo(p_context);
 		}
 
 		core::bc_any _bc_ui_command_entry::_execute_task()
@@ -107,7 +107,7 @@ namespace black_cat
 				while (!m_commands_to_execute.empty())
 				{
 					_bc_ui_command_entry& l_command_entry = *m_commands_to_execute.front();
-					bc_iui_command::update_context l_context
+					bci_ui_command::update_context l_context
 					(
 						p_elapsed, 
 						m_game_system, 
@@ -124,7 +124,7 @@ namespace black_cat
 				if(m_commands_to_undo)
 				{
 					_bc_ui_command_entry& l_command_entry = *m_reversible_commands.front();
-					bc_iui_command::undo_context l_context
+					bci_ui_command::undo_context l_context
 					(
 						p_elapsed,
 						m_game_system,
@@ -138,7 +138,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_ui_command_service::update_ui(bc_iui_command::update_ui_context& p_context)
+		void bc_ui_command_service::update_ui(bci_ui_command::update_ui_context& p_context)
 		{
 			{
 				core_platform::bc_mutex_guard l_guard(m_commands_lock);
@@ -152,15 +152,15 @@ namespace black_cat
 			}
 		}
 
-		bc_iui_command::state* bc_ui_command_service::_get_command_state(const bc_iui_command& p_command)
+		bci_ui_command::state* bc_ui_command_service::_get_command_state(const bci_ui_command& p_command)
 		{
 			auto l_command_hash = command_hash_t()(p_command.title());
 			auto l_command_state = m_command_states.find(l_command_hash);
 
 			if (l_command_state == std::cend(m_command_states))
 			{
-				bc_iui_command::state_context l_context(m_content_stream, m_game_system);
-				bc_iui_command::state_ptr l_state = p_command.create_state(l_context);
+				bci_ui_command::state_context l_context(m_content_stream, m_game_system);
+				bci_ui_command::state_ptr l_state = p_command.create_state(l_context);
 
 				l_command_state = m_command_states.insert(command_state_container::value_type(l_command_hash, std::move(l_state))).first;
 			}

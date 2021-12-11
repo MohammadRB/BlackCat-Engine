@@ -5,7 +5,7 @@
 #include "Core/File/bcPath.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Editor/Application/bcUICommandService.h"
-#include "Editor/UICommand/bcUISceneCommand.h"
+#include "Editor/UICommand/bcSceneUICommand.h"
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QAction>
@@ -60,7 +60,7 @@ namespace black_cat
 
 		inline void bc_form_main_menu::onNewSceneClicked() const
 		{
-			bc_ui_scene_command l_command = bc_ui_scene_command::for_new_scene();
+			bc_scene_ui_command l_command = bc_scene_ui_command::for_new_scene();
 			m_command_service.queue_command(std::move(l_command));
 		}
 
@@ -80,13 +80,13 @@ namespace black_cat
 				return;
 			}
 
-			bc_ui_scene_command l_command = bc_ui_scene_command::for_load_scene(l_file_name.toStdWString().c_str());
+			bc_scene_ui_command l_command = bc_scene_ui_command::for_load_scene(l_file_name.toStdWString().c_str());
 			m_command_service.queue_command(std::move(l_command));
 		}
 
 		inline void bc_form_main_menu::onSaveSceneClicked() const
 		{
-			auto l_task = m_command_service.queue_command(bc_ui_scene_command::for_get_scene());
+			auto l_task = m_command_service.queue_command(bc_scene_ui_command::for_get_scene());
 			auto* l_scene = *l_task.get().as<game::bc_scene*>();
 			if(!l_scene)
 			{
@@ -113,7 +113,7 @@ namespace black_cat
 			}
 			else*/
 			{
-				bc_ui_scene_command l_command = bc_ui_scene_command::for_save_scene(l_scene);
+				bc_scene_ui_command l_command = bc_scene_ui_command::for_save_scene(l_scene);
 				m_command_service.queue_command(std::move(l_command));
 			}
 		}

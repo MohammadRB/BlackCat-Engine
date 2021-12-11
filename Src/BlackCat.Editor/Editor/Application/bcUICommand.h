@@ -20,14 +20,15 @@ namespace black_cat
 	namespace editor
 	{
 		class bc_form_main_menu;
-		class bc_form_object_insert;
+		class bc_form_entity_insert;
 		class bc_form_object;
+		class bc_form_decal_insert;
 		class bc_ui_command_service;
 
-		class bc_iui_command_state
+		class bci_ui_command_state
 		{
 		public:
-			virtual ~bc_iui_command_state() = default;
+			virtual ~bci_ui_command_state() = default;
 		};
 
 		class bc_ui_command_state_context
@@ -49,7 +50,7 @@ namespace black_cat
 		public:
 			bc_ui_command_update_context(const core_platform::bc_clock::update_param& p_clock, 
 				game::bc_game_system& p_game_system, 
-				bc_iui_command_state* p_state)
+				bci_ui_command_state* p_state)
 				: m_clock(p_clock),
 				m_game_system(p_game_system),
 				m_state(p_state),
@@ -59,7 +60,7 @@ namespace black_cat
 
 			const core_platform::bc_clock::update_param& m_clock;
 			game::bc_game_system& m_game_system;
-			bc_iui_command_state* m_state;
+			bci_ui_command_state* m_state;
 			core::bc_any m_result;
 		};
 
@@ -67,16 +68,19 @@ namespace black_cat
 		{
 		public:
 			bc_ui_command_update_ui_context(bc_form_object& p_form_object, 
-				bc_form_object_insert& p_form_object_insert,
+				bc_form_entity_insert& p_form_object_insert,
+				bc_form_decal_insert& p_form_decal_insert,
 				bc_form_main_menu& p_form_main_menu)
 				: m_form_object(p_form_object),
 				m_form_object_insert(p_form_object_insert),
+				m_form_decal_insert(p_form_decal_insert),
 				m_form_main_menu(p_form_main_menu)
 			{
 			}
 
 			bc_form_object& m_form_object;
-			bc_form_object_insert& m_form_object_insert;
+			bc_form_entity_insert& m_form_object_insert;
+			bc_form_decal_insert& m_form_decal_insert;
 			bc_form_main_menu& m_form_main_menu;
 		};
 
@@ -85,7 +89,7 @@ namespace black_cat
 		public:
 			bc_ui_command_undo_context(const core_platform::bc_clock::update_param& p_clock,
 				game::bc_game_system& p_game_system,
-				bc_iui_command_state* p_state)
+				bci_ui_command_state* p_state)
 				: m_clock(p_clock),
 				m_game_system(p_game_system),
 				m_state(p_state)
@@ -94,21 +98,21 @@ namespace black_cat
 
 			const core_platform::bc_clock::update_param& m_clock;
 			game::bc_game_system& m_game_system;
-			bc_iui_command_state* m_state;
+			bci_ui_command_state* m_state;
 		};
 
-		class bc_iui_command
+		class bci_ui_command
 		{
 		public:
-			using state = bc_iui_command_state;
-			using state_ptr = core::bc_unique_ptr<bc_iui_command_state>;
+			using state = bci_ui_command_state;
+			using state_ptr = core::bc_unique_ptr<bci_ui_command_state>;
 			using state_context = bc_ui_command_state_context;
 			using update_context = bc_ui_command_update_context;
 			using update_ui_context = bc_ui_command_update_ui_context;
 			using undo_context = bc_ui_command_undo_context;
 
 		public:
-			virtual ~bc_iui_command() = default;
+			virtual ~bci_ui_command() = default;
 
 			virtual core::bc_string title() const = 0;
 
@@ -151,10 +155,10 @@ namespace black_cat
 				physics::bc_scene_ray_query_buffer& p_result) const;
 		};
 
-		class bc_iui_command_reversible : public bc_iui_command
+		class bci_ui_command_reversible : public bci_ui_command
 		{
 		public:
-			virtual ~bc_iui_command_reversible() = default;
+			virtual ~bci_ui_command_reversible() = default;
 
 			bool is_reversible() const override final;
 
@@ -165,12 +169,12 @@ namespace black_cat
 			virtual void undo(undo_context& p_context) = 0;
 		};
 
-		inline bool bc_iui_command::is_reversible() const
+		inline bool bci_ui_command::is_reversible() const
 		{
 			return false;
 		}
 		
-		inline bool bc_iui_command_reversible::is_reversible() const
+		inline bool bci_ui_command_reversible::is_reversible() const
 		{
 			return true;
 		}

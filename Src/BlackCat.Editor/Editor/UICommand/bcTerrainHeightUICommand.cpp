@@ -1,24 +1,28 @@
-// [03/21/2017 MRB]
+// [02/20/2017 MRB]
 
 #include "Editor/EditorPCH.h"
 
+#include "Core/Utility/bcLogger.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "PhysicsImp/Shape/bcHeightField.h"
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Game/System/Render/bcRenderThread.h"
-#include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
+#include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
-#include "Editor/UICommand/bcUITerrainMaterialCommand.h"
+#include "Editor/Application/bcUICommandService.h"
+#include "Editor/UICommand/bcTerrainHeightUICommand.h"
 
 namespace black_cat
 {
 	namespace editor
 	{
-		bc_ui_terrain_material_command::bc_ui_terrain_material_command(bcUINT16 p_screen_width,
+		bc_terrain_height_ui_command::bc_terrain_height_ui_command(bcUINT16 p_screen_width,
 			bcUINT16 p_screen_height,
 			bcUINT16 p_point_left,
 			bcUINT16 p_point_top,
 			bcUINT16 p_radius,
-			bcUINT16 p_material)
+			bcINT16 p_height)
 			: bc_ui_terrain_command
 			(
 				p_screen_width,
@@ -27,78 +31,79 @@ namespace black_cat
 				p_point_top,
 				p_radius
 			),
-			m_material(p_material)
+			m_height(p_height)
 		{
 		}
 
-		bc_ui_terrain_material_command::bc_ui_terrain_material_command(const bc_ui_terrain_material_command&) = default;
+		bc_terrain_height_ui_command::bc_terrain_height_ui_command(const bc_terrain_height_ui_command&) = default;
 
-		bc_ui_terrain_material_command::~bc_ui_terrain_material_command() = default;
+		bc_terrain_height_ui_command::~bc_terrain_height_ui_command() = default;
 
-		bc_ui_terrain_material_command& bc_ui_terrain_material_command::operator=(const bc_ui_terrain_material_command&) = default;
+		bc_terrain_height_ui_command& bc_terrain_height_ui_command::operator=(const bc_terrain_height_ui_command&) = default;
 
-		core::bc_string bc_ui_terrain_material_command::title() const
+		core::bc_string bc_terrain_height_ui_command::title() const
 		{
-			return "TerrainMaterial";
+			return "TerrainHeight";
 		}
 
-		bc_iui_command::state_ptr bc_ui_terrain_material_command::create_state(state_context& p_context) const
+		bci_ui_command::state_ptr bc_terrain_height_ui_command::create_state(state_context& p_context) const
 		{
 			auto& l_render_system = p_context.m_game_system.get_render_system();
 
-			auto l_cb_config = graphic::bc_graphic_resource_builder().as_resource()
+			auto l_cb_config = graphic::bc_graphic_resource_builder()
+				.as_resource()
 				.as_buffer
 				(
 					1,
-					sizeof(bc_ui_terrain_material_command_parameter_cbuffer),
+					sizeof(bc_terrain_height_ui_command_parameter_cbuffer),
 					graphic::bc_resource_usage::gpu_rw,
 					graphic::bc_resource_view_type::none
 				)
 				.as_constant_buffer();
 
-			bc_ui_terrain_material_command_state l_state;
-			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_material_cs");
+			bc_terrain_height_ui_command_state l_state;
+			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_height_cs");
 			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);
 			l_state.m_device_command_list = l_render_system.get_device().create_command_list();
 
-			return core::bc_make_unique<bc_ui_terrain_material_command_state>(std::move(l_state));
+			return core::bc_make_unique<bc_terrain_height_ui_command_state>(std::move(l_state));
 		}
 
-		bool bc_ui_terrain_material_command::update(terrain_update_context& p_context)
+		bool bc_terrain_height_ui_command::update(terrain_update_context& p_context)
 		{
 			using height_map_sample_t = std::tuple<bcINT16, physics::bc_material_index>;
-
+			
 			auto* l_rigid_component = p_context.m_terrain.get_component<game::bc_rigid_static_component>();
 			auto* l_height_map_component = p_context.m_terrain.get_component<game::bc_height_map_component>();
 			auto& l_dx11_height_map = static_cast<const bc_editor_height_map_dx11&>(l_height_map_component->get_height_map());
 			auto l_px_height_map = l_dx11_height_map.get_px_height_field();
 
-			bc_ui_terrain_material_command_parameter_cbuffer l_cbuffer_parameters;
+			bc_terrain_height_ui_command_parameter_cbuffer l_cbuffer_parameters;
 			l_cbuffer_parameters.m_tool_center_x = p_context.m_tool_center_x;
 			l_cbuffer_parameters.m_tool_center_z = p_context.m_tool_center_z;
+			l_cbuffer_parameters.m_tool_height = m_height;
 			l_cbuffer_parameters.m_tool_radius = m_radius;
-			l_cbuffer_parameters.m_tool_material = m_material;
 
-			bc_ui_terrain_material_command_render_task l_render_task
+			bc_terrain_height_ui_command_render_task l_render_task
 			(
-				l_dx11_height_map,
-				*static_cast<bc_ui_terrain_material_command_state*>(p_context.m_state),
+				l_dx11_height_map, 
+				*static_cast< bc_terrain_height_ui_command_state* >(p_context.m_state), 
 				l_cbuffer_parameters
 			);
 			p_context.m_game_system.get_render_system().add_render_task(l_render_task);
 
 			const auto l_height_map_array = l_px_height_map.get_sample_array(core::bc_alloc_type::frame);
-
+			
 			const bcINT32 l_diameter = l_cbuffer_parameters.m_tool_radius * 2;
 			const core::bc_vector2i l_tool_center(p_context.m_tool_center_x, p_context.m_tool_center_z);
 			const bcUINT32 l_sample_count = l_diameter * l_diameter;
-			const core::bc_unique_ptr<height_map_sample_t> l_sample_buffer
+			const core::bc_unique_ptr< height_map_sample_t > l_sample_buffer
 			(
-				static_cast<height_map_sample_t*>(BC_ALLOC(l_sample_count * sizeof(height_map_sample_t), core::bc_alloc_type::frame))
+				static_cast<height_map_sample_t* >(BC_ALLOC(l_sample_count * sizeof(height_map_sample_t), core::bc_alloc_type::frame))
 			);
 			auto* l_samples = l_sample_buffer.get();
 
-			for (bcINT32 l_z = 0; l_z < l_diameter; ++l_z)
+			for(bcINT32 l_z = 0; l_z < l_diameter; ++l_z)
 			{
 				for (bcINT32 l_x = 0; l_x < l_diameter; ++l_x)
 				{
@@ -107,14 +112,18 @@ namespace black_cat
 					core::bc_vector2i l_global_coords = l_tool_center + l_circle_coords;
 					const bcFLOAT l_center_distance = (l_tool_center - l_global_coords).magnitude();
 					auto l_height_map_sample = l_height_map_array.get_sample_from_top_left(l_global_coords.x, l_global_coords.y);
-
-					if (l_center_distance> m_radius)
+					
+					if (l_center_distance > m_radius)
 					{
 						l_samples[l_sample_index] = l_height_map_sample;
 						continue;
 					}
 
-					std::get<1>(l_height_map_sample) = m_material;
+					const bcFLOAT l_height_ratio = 1 - std::pow(l_center_distance / m_radius, 2);
+					bcFLOAT l_height = std::get<0>(l_height_map_sample) * l_dx11_height_map.get_physics_y_scale();
+					l_height += l_height_ratio * l_cbuffer_parameters.m_tool_height;
+
+					std::get<0>(l_height_map_sample) = l_height / l_dx11_height_map.get_physics_y_scale();
 					l_samples[l_sample_index] = l_height_map_sample;
 				}
 			}
@@ -145,26 +154,17 @@ namespace black_cat
 			return false;
 		}
 
-		bc_ui_terrain_material_command_render_task::bc_ui_terrain_material_command_render_task(const bc_editor_height_map_dx11& p_height_map,
-			bc_ui_terrain_material_command_state& p_command_state,
-			const bc_ui_terrain_material_command_parameter_cbuffer& p_shader_parameter)
+		bc_terrain_height_ui_command_render_task::bc_terrain_height_ui_command_render_task(const bc_editor_height_map_dx11& p_height_map,
+			bc_terrain_height_ui_command_state& p_command_state,
+			const bc_terrain_height_ui_command_parameter_cbuffer& p_shader_parameter)
 			: m_height_map(p_height_map),
 			m_command_state(p_command_state),
 			m_shader_parameter(p_shader_parameter)
 		{
 		}
 
-		void bc_ui_terrain_material_command_render_task::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_render_thread)
+		void bc_terrain_height_ui_command_render_task::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_render_thread)
 		{
-			const auto l_height_map_width = static_cast<bcFLOAT>(m_height_map.get_width());
-			const auto l_height_map_height = static_cast<bcFLOAT>(m_height_map.get_height());
-			const auto l_texture_map_width = static_cast<bcFLOAT>(m_height_map.get_texture_map().get_width());
-			const auto l_texture_map_height = static_cast<bcFLOAT>(m_height_map.get_texture_map().get_height());
-			
-			m_shader_parameter.m_tool_center_x = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_center_x) / l_height_map_width) * l_texture_map_width;
-			m_shader_parameter.m_tool_center_z = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_center_z) / l_height_map_height) * l_texture_map_height;
-			m_shader_parameter.m_tool_radius = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_radius) / l_height_map_width) * l_texture_map_width;
-			
 			const auto l_tool_diameter = m_shader_parameter.m_tool_radius * 2;
 			const auto l_thread_group_count = (l_tool_diameter / 32) + 1;
 
@@ -174,7 +174,7 @@ namespace black_cat
 				{},
 				{},
 				{
-					graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_height_map.get_texture_map_unordered_view()) 
+					graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::compute, m_height_map.get_height_map_unordered_view())
 				},
 				{
 					graphic::bc_constant_buffer_parameter(0, graphic::bc_shader_type::compute, m_height_map.get_parameter_cbuffer()),
@@ -188,8 +188,8 @@ namespace black_cat
 			(
 				m_command_state.m_parameter_cbuffer.get(),
 				0,
-				&m_shader_parameter,
-				0,
+				&m_shader_parameter, 
+				0, 
 				0
 			);
 			p_render_thread.bind_compute_state(*l_compute_state);

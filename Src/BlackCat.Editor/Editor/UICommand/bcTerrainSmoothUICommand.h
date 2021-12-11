@@ -5,7 +5,7 @@
 #include "Graphic/bcRenderApiInfo.h"
 #include "Game/System/Render/bcRenderTask.h"
 #include "Editor/Application/bcUICommand.h"
-#include "Editor/UICommand/bcUITerrainCommand.h"
+#include "Editor/UICommand/bcTerrainUICommand.h"
 
 namespace black_cat
 {
@@ -13,7 +13,7 @@ namespace black_cat
 	{
 		class bc_editor_height_map_dx11;
 
-		struct bc_ui_terrain_smooth_command_parameter_cbuffer
+		struct bc_terrain_smooth_ui_command_parameter_cbuffer
 		{
 			BC_CBUFFER_ALIGN
 			bcUINT32 m_tool_center_x;
@@ -22,23 +22,23 @@ namespace black_cat
 			bcUINT32 m_tool_smooth;
 		};
 
-		using bc_ui_terrain_smooth_commnad_state = bc_ui_terrain_command_state;
+		using bc_terrain_smooth_ui_command_state = bc_terrain_ui_command_state;
 
-		class bc_ui_terrain_smooth_command : public bc_ui_terrain_command
+		class bc_terrain_smooth_ui_command : public bc_ui_terrain_command
 		{
 		public:
-			bc_ui_terrain_smooth_command(bcUINT16 p_screen_width,
+			bc_terrain_smooth_ui_command(bcUINT16 p_screen_width,
 				bcUINT16 p_screen_height,
 				bcUINT16 p_point_left,
 				bcUINT16 p_point_top,
 				bcUINT16 p_radius,
 				bcUINT16 p_smooth);
 
-			bc_ui_terrain_smooth_command(const bc_ui_terrain_smooth_command&);
+			bc_terrain_smooth_ui_command(const bc_terrain_smooth_ui_command&);
 
-			~bc_ui_terrain_smooth_command();
+			~bc_terrain_smooth_ui_command();
 
-			bc_ui_terrain_smooth_command& operator=(const bc_ui_terrain_smooth_command&);
+			bc_terrain_smooth_ui_command& operator=(const bc_terrain_smooth_ui_command&);
 
 			core::bc_string title() const override;
 
@@ -54,18 +54,18 @@ namespace black_cat
 			bcUINT16 m_smooth;
 		};
 
-		class bc_ui_terrain_smooth_command_render_task : public game::bci_render_task
+		class bc_terrain_smooth_ui_command_render_task : public game::bci_render_task
 		{
 		public:
-			bc_ui_terrain_smooth_command_render_task(const bc_editor_height_map_dx11& p_height_map,
-				bc_ui_terrain_smooth_commnad_state& p_command_state,
-				const bc_ui_terrain_smooth_command_parameter_cbuffer& p_shader_parameter);
+			bc_terrain_smooth_ui_command_render_task(const bc_editor_height_map_dx11& p_height_map,
+				bc_terrain_smooth_ui_command_state& p_command_state,
+				const bc_terrain_smooth_ui_command_parameter_cbuffer& p_shader_parameter);
 
 			void execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_render_thread) override;
 
 			const bc_editor_height_map_dx11& m_height_map;
-			bc_ui_terrain_smooth_commnad_state& m_command_state;
-			bc_ui_terrain_smooth_command_parameter_cbuffer m_shader_parameter;
+			bc_terrain_smooth_ui_command_state& m_command_state;
+			bc_terrain_smooth_ui_command_parameter_cbuffer m_shader_parameter;
 		};
 	}
 }

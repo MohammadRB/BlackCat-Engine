@@ -1,7 +1,7 @@
 // [04/22/2021 MRB]
 
 #include "Editor/EditorPCH.h"
-#include "Editor/UICommand/bcUIEditorModeCommand.h"
+#include "Editor/UICommand/bcEditorModeUICommand.h"
 #include "Editor/UI/bcFormMainToolBar.h"
 
 namespace black_cat
@@ -46,7 +46,7 @@ namespace black_cat
 			}
 			
 			m_editor_mode = false;
-			m_command_service->queue_command(bc_ui_editor_mode_command(false));
+			m_command_service->queue_command(bc_editor_mode_ui_command(false));
 		}
 
 		void bc_form_main_tool_bar::editorModeClick(bool)
@@ -57,7 +57,7 @@ namespace black_cat
 			}
 			
 			m_editor_mode = true;
-			m_command_service->queue_command(bc_ui_editor_mode_command(true));
+			m_command_service->queue_command(bc_editor_mode_ui_command(true));
 		}
 	}
 }

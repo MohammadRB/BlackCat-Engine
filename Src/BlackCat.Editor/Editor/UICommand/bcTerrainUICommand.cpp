@@ -6,7 +6,7 @@
 #include "PhysicsImp/Collision/bcSceneQuery.h"
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
-#include "Editor/UICommand/bcUITerrainCommand.h"
+#include "Editor/UICommand/bcTerrainUICommand.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
 #include "BlackCat/RenderPass/GBuffer/bcGBufferTerrainPassDx11.h"
 

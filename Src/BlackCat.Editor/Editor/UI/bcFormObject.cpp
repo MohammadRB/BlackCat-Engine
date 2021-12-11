@@ -9,8 +9,8 @@
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/bcUtility.h"
 #include "Editor/UI/bcFormObject.h"
-#include "Editor/UICommand/bcObjectUpdateCommand.h"
-#include "Editor/UICommand/bcObjectDeleteCommand.h"
+#include "Editor/UICommand/bcObjectUpdateUICommand.h"
+#include "Editor/UICommand/bcObjectDeleteUICommand.h"
 
 namespace black_cat
 {
@@ -108,12 +108,12 @@ namespace black_cat
 			l_transform.set_translation(l_position);
 			l_transform.set_rotation(l_rotation_mat);
 			
-			m_command_service->queue_command(bc_ui_object_update_command(m_selected_actor, l_transform));
+			m_command_service->queue_command(bc_object_update_ui_command(m_selected_actor, l_transform));
 		}
 
 		void bc_form_object::actorDeleteClick(bool)
 		{
-			m_command_service->queue_command(bc_ui_object_delete_command(m_selected_actor));
+			m_command_service->queue_command(bc_object_delete_ui_command(m_selected_actor));
 		}
 	}	
 }

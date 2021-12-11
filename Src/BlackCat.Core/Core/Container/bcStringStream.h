@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include "Core/Container/bcAllocator.h"
+#include "Core/Container/bcString.h"
 #include "Core/File/bcStream.h"
 
 namespace black_cat
@@ -301,70 +302,88 @@ namespace black_cat
 		template<typename TChar, typename TTraits, typename TAllocator>
 		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, const bcCHAR* p_str)
 		{
-			std::operator<<(p_stream, p_str);
-			return p_stream;
+			if constexpr (std::is_same_v<typename TTraits::char_type, bcWCHAR>)
+			{
+				const auto l_str = bc_to_wstring_frame(p_str);
+				p_stream << l_str;
+				return p_stream;
+			}
+			else
+			{
+				std::operator<<(p_stream, p_str);
+				return p_stream;
+			}
 		}
 
 		template<typename TChar, typename TTraits, typename TAllocator>
 		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, const bcWCHAR* p_str)
 		{
-			std::operator<<(p_stream, p_str);
-			return p_stream;
+			if constexpr (std::is_same_v<typename TTraits::char_type, bcCHAR>)
+			{
+				const auto l_str = bc_to_string_frame(p_str);
+				p_stream << l_str;
+				return p_stream;
+			}
+			else
+			{
+				std::operator<<(p_stream, p_str);
+				return p_stream;
+			}
 		}
 
 		template<typename TChar, typename TTraits, typename TAllocator>
 		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, std::string_view p_str)
 		{
-			std::operator<<(p_stream, p_str.data());
+			p_stream << p_str.data();
 			return p_stream;
 		}
 
 		template<typename TChar, typename TTraits, typename TAllocator>
 		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, std::wstring_view p_str)
 		{
-			std::operator<<(p_stream, p_str.data());
+			p_stream << p_str.data();
 			return p_stream;
 		}
 		
 		template<typename TChar, typename TTraits, typename TAllocator>
 		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, const bc_string& p_str)
 		{
-			std::operator<<(p_stream, p_str.c_str());
+			p_stream << p_str.data();
 			return p_stream;
 		}
 
 		template<typename TChar, typename TTraits, typename TAllocator>
 		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, const bc_string_frame& p_str)
 		{
-			std::operator<<(p_stream, p_str.c_str());
+			p_stream << p_str.data();
 			return p_stream;
 		}
 
 		template<typename TChar, typename TTraits, typename TAllocator>
 		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, const bc_string_program& p_str)
 		{
-			std::operator<<(p_stream, p_str.c_str());
+			p_stream << p_str.data();
 			return p_stream;
 		}
 
 		template<typename TChar, typename TTraits, typename TAllocator>
 		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, const bc_wstring& p_str)
 		{
-			std::operator<<(p_stream, p_str.c_str());
+			p_stream << p_str.data();
 			return p_stream;
 		}
 
 		template<typename TChar, typename TTraits, typename TAllocator>
 		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, const bc_wstring_frame& p_str)
 		{
-			std::operator<<(p_stream, p_str.c_str());
+			p_stream << p_str.data();
 			return p_stream;
 		}
 
 		template<typename TChar, typename TTraits, typename TAllocator>
 		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, const bc_wstring_program& p_str)
 		{
-			std::operator<<(p_stream, p_str.c_str());
+			p_stream << p_str.data();
 			return p_stream;
 		}
 

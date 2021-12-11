@@ -13,7 +13,8 @@
 #include "Editor/UI/bcFormMainToolBar.h"
 #include "Editor/UI/bcFormTerrain.h"
 #include "Editor/UI/bcFormObject.h"
-#include "Editor/UI/bcFormObjectInsert.h"
+#include "Editor/UI/bcFormEntityInsert.h"
+#include "Editor/UI/bcFormDecalInsert.h"
 #include "ui_bcBlackCatEditor.h"
 #include <QtWidgets/QMainWindow>
 #include <QtConcurrent/QtConcurrent>
@@ -71,8 +72,9 @@ namespace black_cat
 			std::unique_ptr<bc_form_main_tool_bar> m_form_main_tool_bar;
 			std::unique_ptr<bc_form_tools> m_form_tools;
 			std::unique_ptr<bc_form_object> m_form_object;
-			std::unique_ptr<bc_form_object_insert> m_form_object_insert;
+			std::unique_ptr<bc_form_entity_insert> m_form_object_insert;
 			std::unique_ptr<bc_form_terrain> m_form_terrain;
+			std::unique_ptr<bc_form_decal_insert> m_form_decal_insert;
 			std::unique_ptr<QTimer> m_timer;
 
 			bc_editor_render_app_thread m_render_app_thread;

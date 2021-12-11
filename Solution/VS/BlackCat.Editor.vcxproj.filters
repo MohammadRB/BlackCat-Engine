@@ -128,21 +128,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormTools.cpp">
       <Filter>Editor\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainCommand.cpp">
-      <Filter>Editor\UICommand</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainHeightCommand.cpp">
-      <Filter>Editor\UICommand</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainMaterialCommand.cpp">
-      <Filter>Editor\UICommand</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainMaterialSmoothCommand.cpp">
-      <Filter>Editor\UICommand</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainSmoothCommand.cpp">
-      <Filter>Editor\UICommand</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\EditorPCH.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
@@ -152,26 +137,14 @@
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Application\bcUICommand.cpp">
       <Filter>Editor\Application</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectSelectCommand.cpp">
-      <Filter>Editor\UICommand</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorRenderApplicationThread.cpp">
       <Filter>Editor\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectListCommand.cpp">
-      <Filter>Editor\UICommand</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectInsertCommand.cpp">
-      <Filter>Editor\UICommand</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcFormMainMenu.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_bcFormMainMenu.cpp">
       <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUISceneCommand.cpp">
-      <Filter>Editor\UICommand</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcWidgetConsole.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -190,9 +163,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetD3DOutput.cpp">
       <Filter>Editor\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteCommand.cpp">
-      <Filter>Editor\UICommand</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.cpp">
       <Filter>Editor\UI</Filter>
@@ -245,10 +215,49 @@
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainToolBar.cpp">
       <Filter>Editor\UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIEditorModeCommand.cpp">
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalPainterUICommand.cpp">
       <Filter>Editor\UICommand</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectUpdateCommand.cpp">
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectUpdateUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcEditorModeUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectInsertUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectSelectUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcSceneUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainHeightUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainMaterialUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainMaterialSmoothUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainSmoothUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalRemoverUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcEntityNamesUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalNamesUICommand.cpp">
       <Filter>Editor\UICommand</Filter>
     </ClCompile>
   </ItemGroup>
@@ -274,50 +283,62 @@
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormTerrain.h">
       <Filter>Editor\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainCommand.h">
-      <Filter>Editor\UICommand</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainHeightCommand.h">
-      <Filter>Editor\UICommand</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainMaterialCommand.h">
-      <Filter>Editor\UICommand</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainMaterialSmoothCommand.h">
-      <Filter>Editor\UICommand</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUITerrainSmoothCommand.h">
-      <Filter>Editor\UICommand</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\EditorPCH.h">
       <Filter>Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectSelectCommand.h">
-      <Filter>Editor\UICommand</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObjectInsert.h">
-      <Filter>Editor\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorRenderApplicationThread.h">
       <Filter>Editor\Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectListCommand.h">
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalPainterUICommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIObjectInsertCommand.h">
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteUICommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUISceneCommand.h">
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectUpdateUICommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteCommand.h">
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcEditorModeUICommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcUIEditorModeCommand.h">
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectInsertUICommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectUpdateCommand.h">
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectSelectUICommand.h">
       <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcSceneUICommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainUICommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainHeightUICommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainMaterialUICommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainMaterialSmoothUICommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainSmoothUICommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalRemoverUICommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcEntityNamesUICommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalNamesUICommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormDecalInsert.h">
+      <Filter>Editor\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormEntityInsert.h">
+      <Filter>Editor\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

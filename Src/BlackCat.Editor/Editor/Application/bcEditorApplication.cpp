@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace editor
 	{
-		bc_editor_app::bc_editor_app(HINSTANCE p_instance, QWidget *p_parent)
+		bc_editor_app::bc_editor_app(HINSTANCE p_instance, QWidget* p_parent)
 			: QMainWindow(p_parent)
 		{
 			setAttribute(Qt::WA_QuitOnClose);
@@ -40,9 +40,19 @@ namespace black_cat
 			m_form_main_menu = std::make_unique<bc_form_main_menu>(*ui.mainMenuBar, *m_ui_command_service);
 			m_form_main_tool_bar = std::make_unique<bc_form_main_tool_bar>(*m_ui_command_service, *ui.mainToolBar);
 			m_form_object = std::make_unique<bc_form_object>(*ui.centralWidget, *m_ui_command_service);
-			m_form_object_insert = std::make_unique<bc_form_object_insert>(*ui.centralWidget);
+			m_form_object_insert = std::make_unique<bc_form_entity_insert>(*ui.centralWidget);
 			m_form_terrain = std::make_unique<bc_form_terrain>(*ui.centralWidget);
-			m_form_tools = std::make_unique<bc_form_tools>(*m_ui_command_service, *m_d3d_widget, *ui.toolsDock, *ui.rightToolBox, *m_form_terrain, *m_form_object_insert);
+			m_form_decal_insert = std::make_unique<bc_form_decal_insert>(*ui.centralWidget);
+			m_form_tools = std::make_unique<bc_form_tools>
+			(
+				*m_ui_command_service, 
+				*m_d3d_widget, 
+				*ui.toolsDock, 
+				*ui.rightToolBox, 
+				*m_form_terrain, 
+				*m_form_object_insert, 
+				*m_form_decal_insert
+			);
 			m_timer = std::make_unique<QTimer>();
 			m_timer->start(1000.f / 60.f);
 
@@ -224,7 +234,7 @@ namespace black_cat
 
 			m_editor_game_console->update_ui();
 			
-			bc_iui_command::update_ui_context l_context(*m_form_object, *m_form_object_insert, *m_form_main_menu);
+			bci_ui_command::update_ui_context l_context(*m_form_object, *m_form_object_insert, *m_form_decal_insert, *m_form_main_menu);
 			m_ui_command_service->update_ui(l_context);
 		}
 	}

@@ -164,6 +164,7 @@ namespace black_cat
 			{
 				bc_mesh_component::process_bullet_hit
 				(
+					p_context.m_game_system.get_physics_system(),
 					p_context.m_game_system.get_scene()->get_particle_manager(),
 					*l_bullet_hit_event,
 					true
@@ -214,6 +215,12 @@ namespace black_cat
 			const core::bc_vector3f& p_world_direction,
 			bc_mesh_node::node_index_t p_attached_node_index)
 		{
+			if(p_attached_node_index == bc_mesh_node::s_invalid_index)
+			{
+				core::bc_log(core::bc_log_type::warning, bcL("decals should have been attached to a node in skinned meshes"));
+				return;
+			}
+			
 			auto l_actor = get_actor();
 			auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
 			const auto& l_mesh = get_mesh();

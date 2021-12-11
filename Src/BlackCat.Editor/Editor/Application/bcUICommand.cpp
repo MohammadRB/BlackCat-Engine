@@ -11,16 +11,16 @@ namespace black_cat
 {
 	namespace editor
 	{
-		bc_iui_command::state_ptr bc_iui_command::create_state(state_context& p_context) const
+		bci_ui_command::state_ptr bci_ui_command::create_state(state_context& p_context) const
 		{
 			return nullptr;
 		}
 
-		void bc_iui_command::update_ui(update_ui_context& p_context)
+		void bci_ui_command::update_ui(update_ui_context& p_context)
 		{
 		}
 
-		physics::bc_ray bc_iui_command::get_pointer_ray(const update_context& p_context,
+		physics::bc_ray bci_ui_command::get_pointer_ray(const update_context& p_context,
 			bcUINT16 p_point_left,
 			bcUINT16 p_point_top) const
 		{
@@ -30,7 +30,7 @@ namespace black_cat
 			return physics::bc_ray(l_camera.get_position(), l_pointing_ray, l_camera.get_far_clip());
 		}
 
-		bool bc_iui_command::query_ray_in_scene(const update_context& p_context,
+		bool bci_ui_command::query_ray_in_scene(const update_context& p_context,
 			bcUINT16 p_point_left,
 			bcUINT16 p_point_top,
 			game::bc_actor_group p_query_group,

@@ -13,7 +13,7 @@ namespace black_cat
 {
 	namespace editor
 	{
-		class bc_ui_terrain_command_state : public bc_iui_command_state
+		class bc_terrain_ui_command_state : public bci_ui_command_state
 		{
 		public:
 			graphic::bc_buffer_ref m_parameter_cbuffer;
@@ -36,7 +36,7 @@ namespace black_cat
 			bcUINT32 m_tool_center_z;			// pointed position in terrain local space converted to [0, height] range
 		};
 
-		class bc_ui_terrain_command : public bc_iui_command
+		class bc_ui_terrain_command : public bci_ui_command
 		{
 		public:
 			using terrain_update_context = bc_ui_terrain_command_update_context;

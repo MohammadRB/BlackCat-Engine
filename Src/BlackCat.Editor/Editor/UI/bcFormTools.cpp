@@ -2,14 +2,17 @@
 
 #include "Editor/EditorPCH.h"
 #include "Editor/UI/bcFormTools.h"
-#include "Editor/UICommand/bcUITerrainHeightCommand.h"
-#include "Editor/UICommand/bcUITerrainSmoothCommand.h"
-#include "Editor/UICommand/bcUITerrainMaterialCommand.h"
-#include "Editor/UICommand/bcUITerrainMaterialSmoothCommand.h"
-#include "Editor/UICommand/bcUIObjectSelectCommand.h"
-#include "Editor/UICommand/bcUIObjectListCommand.h"
-#include "Editor/UICommand/bcUIObjectInsertCommand.h"
-#include "Editor/UI/bcFormObjectInsert.h"
+#include "Editor/UICommand/bcTerrainHeightUICommand.h"
+#include "Editor/UICommand/bcTerrainSmoothUICommand.h"
+#include "Editor/UICommand/bcTerrainMaterialUICommand.h"
+#include "Editor/UICommand/bcTerrainMaterialSmoothUICommand.h"
+#include "Editor/UICommand/bcObjectSelectUICommand.h"
+#include "Editor/UICommand/bcEntityNamesUICommand.h"
+#include "Editor/UICommand/bcDecalNamesUICommand.h"
+#include "Editor/UICommand/bcObjectInsertUICommand.h"
+#include "Editor/UICommand/bcDecalPainterUICommand.h"
+#include "Editor/UICommand/bcDecalRemoverUICommand.h"
+#include "Editor/UI/bcFormEntityInsert.h"
 
 namespace black_cat
 {
@@ -20,11 +23,13 @@ namespace black_cat
 			QDockWidget& p_container,
 			QToolBox& p_tool_properties_container,
 			bc_form_terrain& p_terrain_form,
-			bc_form_object_insert& p_object_insert_form)
+			bc_form_entity_insert& p_object_insert_form,
+			bc_form_decal_insert& p_decal_insert_form)
 			: m_ui_command_service(p_ui_command_service),
 			m_render_widget(p_render_widget),
 			m_terrain_form(p_terrain_form),
 			m_object_insert_form(p_object_insert_form),
+			m_decal_insert_form(p_decal_insert_form),
 			m_tool_bar(p_container),
 			m_tool_properties_container(p_tool_properties_container),
 			m_state(state::none),
@@ -32,25 +37,29 @@ namespace black_cat
 		{
 			m_tool_bar.setTitleBarWidget(new QWidget(&m_tool_bar));
 
-			m_object_selection = m_tool_bar.findChild<QAbstractButton*>("objectSelectButton");
-			m_object_insert = m_tool_bar.findChild<QAbstractButton*>("objectInsertButton");
-			m_terrain_height = m_tool_bar.findChild<QAbstractButton*>("terrainHeightButton");
-			m_terrain_smooth = m_tool_bar.findChild<QAbstractButton*>("terrainSmoothButton");
-			m_terrain_material = m_tool_bar.findChild<QAbstractButton*>("terrainMaterialButton");
-			m_terrain_material_smooth = m_tool_bar.findChild<QAbstractButton*>("terrainMaterialSmoothButton");
+			m_object_select_button = m_tool_bar.findChild<QAbstractButton*>("objectSelectButton");
+			m_object_insert_button = m_tool_bar.findChild<QAbstractButton*>("objectInsertButton");
+			m_terrain_height_button = m_tool_bar.findChild<QAbstractButton*>("terrainHeightButton");
+			m_terrain_smooth_button = m_tool_bar.findChild<QAbstractButton*>("terrainSmoothButton");
+			m_terrain_material_button = m_tool_bar.findChild<QAbstractButton*>("terrainMaterialButton");
+			m_terrain_material_smooth_button = m_tool_bar.findChild<QAbstractButton*>("terrainMaterialSmoothButton");
+			m_decal_painter_button = m_tool_bar.findChild<QAbstractButton*>("decalPainterButton");
+			m_decal_select_button = m_tool_bar.findChild<QAbstractButton*>("decalSelectButton");
 			
-			QObject::connect(m_object_selection, SIGNAL(toggled(bool)), this, SLOT(objectSelectionToggled(bool)));
-			QObject::connect(m_object_insert, SIGNAL(toggled(bool)), this, SLOT(objectInsertToggled(bool)));
-			QObject::connect(m_terrain_height, SIGNAL(toggled(bool)), this, SLOT(terrainHeightToggled(bool)));
-			QObject::connect(m_terrain_smooth, SIGNAL(toggled(bool)), this, SLOT(terrainSmoothToggled(bool)));
-			QObject::connect(m_terrain_material, SIGNAL(toggled(bool)), this, SLOT(terrainMaterialToggled(bool)));
-			QObject::connect(m_terrain_material_smooth, SIGNAL(toggled(bool)), this, SLOT(terrainMaterialSmoothToggled(bool)));\
+			QObject::connect(m_object_select_button, SIGNAL(toggled(bool)), this, SLOT(objectSelectToggled(bool)));
+			QObject::connect(m_object_insert_button, SIGNAL(toggled(bool)), this, SLOT(objectInsertToggled(bool)));
+			QObject::connect(m_terrain_height_button, SIGNAL(toggled(bool)), this, SLOT(terrainHeightToggled(bool)));
+			QObject::connect(m_terrain_smooth_button, SIGNAL(toggled(bool)), this, SLOT(terrainSmoothToggled(bool)));
+			QObject::connect(m_terrain_material_button, SIGNAL(toggled(bool)), this, SLOT(terrainMaterialToggled(bool)));
+			QObject::connect(m_terrain_material_smooth_button, SIGNAL(toggled(bool)), this, SLOT(terrainMaterialSmoothToggled(bool)));
+			QObject::connect(m_decal_painter_button, SIGNAL(toggled(bool)), this, SLOT(decalPainterToggled(bool)));
+			QObject::connect(m_decal_select_button, SIGNAL(toggled(bool)), this, SLOT(decalSelectToggled(bool)));
 			QObject::connect(&m_render_widget, SIGNAL(mousePressed(QMouseEvent*)), this, SLOT(mousePressed(QMouseEvent*)));
 			QObject::connect(&m_render_widget, SIGNAL(mouseReleased(QMouseEvent*)), this, SLOT(mouseReleased(QMouseEvent*)));
 			QObject::connect(&m_render_widget, SIGNAL(mouseMoved(QMouseEvent*)), this, SLOT(mouseMoved(QMouseEvent*)));
 		}
 
-		void bc_form_tools::objectSelectionToggled(bool p_toggled)
+		void bc_form_tools::objectSelectToggled(bool p_toggled)
 		{
 			if(!p_toggled)
 			{
@@ -58,7 +67,7 @@ namespace black_cat
 				return;
 			}
 
-			m_state = state::object_selection;
+			m_state = state::object_select;
 			m_tool_properties_container.setCurrentIndex(0);
 		}
 
@@ -72,7 +81,7 @@ namespace black_cat
 
 			m_state = state::object_insert;
 			m_tool_properties_container.setCurrentIndex(1);
-			m_ui_command_service.queue_command(bc_ui_object_list_command());
+			m_ui_command_service.queue_command(bc_entity_names_ui_command());
 		}
 
 		void bc_form_tools::terrainHeightToggled(bool p_toggled)
@@ -123,6 +132,31 @@ namespace black_cat
 			m_tool_properties_container.setCurrentIndex(2);
 		}
 
+		void bc_form_tools::decalPainterToggled(bool p_toggled)
+		{
+			if (!p_toggled)
+			{
+				m_state = state::none;
+				return;
+			}
+
+			m_state = state::decal_painter;
+			m_tool_properties_container.setCurrentIndex(3);
+			m_ui_command_service.queue_command(bc_decal_names_ui_command());
+		}
+
+		void bc_form_tools::decalSelectToggled(bool p_toggled)
+		{
+			if (!p_toggled)
+			{
+				m_state = state::none;
+				return;
+			}
+
+			m_state = state::decal_select;
+			m_tool_properties_container.setCurrentIndex(4);
+		}
+
 		void bc_form_tools::mousePressed(QMouseEvent* p_event)
 		{
 			if(p_event->button() != Qt::MouseButton::LeftButton)
@@ -142,7 +176,7 @@ namespace black_cat
 		void bc_form_tools::mouseMoved(QMouseEvent* p_event)
 		{
 			if (m_is_mouse_pressed &&
-				m_state != state::object_selection &&
+				m_state != state::object_select &&
 				m_state != state::object_insert)
 			{
 				_send_ui_command(p_event);
@@ -153,9 +187,9 @@ namespace black_cat
 		{
 			switch (m_state)
 			{
-			case state::object_selection:
+			case state::object_select:
 				{
-					bc_ui_object_select_command l_command
+					bc_object_select_ui_command l_command
 					(
 						m_render_widget.width(),
 						m_render_widget.height(),
@@ -163,8 +197,8 @@ namespace black_cat
 						p_event->y()
 					);
 					m_ui_command_service.queue_command(std::move(l_command));
+					break;
 				}
-				break;
 			case state::object_insert:
 				{
 					QString l_selected_entity = m_object_insert_form.get_selected_entity();
@@ -173,20 +207,20 @@ namespace black_cat
 						break;
 					}
 
-					bc_ui_object_insert_command l_command
+					bc_object_insert_ui_command l_command
 					(
-						l_selected_entity,
+						std::move(l_selected_entity),
 						m_render_widget.width(),
 						m_render_widget.height(),
 						p_event->x(),
 						p_event->y()
 					);
 					m_ui_command_service.queue_command(std::move(l_command));
+					break;
 				}
-				break;
 			case state::terrain_height:
 				{
-					bc_ui_terrain_height_command l_command
+					bc_terrain_height_ui_command l_command
 					(
 						m_render_widget.width(),
 						m_render_widget.height(),
@@ -196,11 +230,11 @@ namespace black_cat
 						m_terrain_form.get_height()
 					);
 					m_ui_command_service.queue_command(std::move(l_command));
+					break;
 				}
-				break;
 			case state::terrain_smooth:
 				{
-					bc_ui_terrain_smooth_command l_command
+					bc_terrain_smooth_ui_command l_command
 					(
 						m_render_widget.width(),
 						m_render_widget.height(),
@@ -210,11 +244,11 @@ namespace black_cat
 						m_terrain_form.get_smooth()
 					);
 					m_ui_command_service.queue_command(std::move(l_command));
+					break;
 				}
-				break;
 			case state::terrain_material:
 				{
-					bc_ui_terrain_material_command l_command
+					bc_terrain_material_ui_command l_command
 					(
 						m_render_widget.width(),
 						m_render_widget.height(),
@@ -224,11 +258,11 @@ namespace black_cat
 						m_terrain_form.get_material()
 					);
 					m_ui_command_service.queue_command(std::move(l_command));
+					break;
 				}
-				break;
 			case bc_form_tools_state::terrain_material_smooth:
 				{
-					bc_ui_terrain_material_smooth_command l_command
+					bc_terrain_material_smooth_ui_command l_command
 					(
 						m_render_widget.width(),
 						m_render_widget.height(),
@@ -238,8 +272,39 @@ namespace black_cat
 						m_terrain_form.get_smooth()
 					);
 					m_ui_command_service.queue_command(std::move(l_command));
+					break;
 				}
+			case bc_form_tools_state::decal_painter:
+			{
+				QString l_selected_entity = m_decal_insert_form.get_selected_decal();
+				if (l_selected_entity.size() == 0)
+				{
+					break;
+				}
+				
+				bc_decal_painter_ui_command l_command
+				(
+					std::move(l_selected_entity),
+					m_render_widget.width(),
+					m_render_widget.height(),
+					p_event->x(),
+					p_event->y()
+				);
+				m_ui_command_service.queue_command(std::move(l_command));
 				break;
+			}
+			case bc_form_tools_state::decal_select:
+			{
+				bc_decal_remover_ui_command l_command
+				(
+					m_render_widget.width(),
+					m_render_widget.height(),
+					p_event->x(),
+					p_event->y()
+				);
+				m_ui_command_service.queue_command(std::move(l_command));
+				break;
+			}
 			case state::none:
 			default:
 				break;

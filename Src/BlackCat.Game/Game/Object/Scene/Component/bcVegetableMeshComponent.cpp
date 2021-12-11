@@ -105,6 +105,7 @@ namespace black_cat
 			{
 				bc_mesh_component::process_bullet_hit
 				(
+					p_context.m_game_system.get_physics_system(),
 					p_context.m_game_system.get_scene()->get_particle_manager(),
 					*l_bullet_hit_event,
 					false

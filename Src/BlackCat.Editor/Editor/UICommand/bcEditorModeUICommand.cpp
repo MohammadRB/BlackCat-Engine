@@ -6,29 +6,29 @@
 #include "Core/File/bcPath.h"
 #include "Game/Object/Scene/bcSceneCheckPoint.h"
 #include "Game/bcEvent.h"
-#include "Editor/UICommand/bcUIEditorModeCommand.h"
+#include "Editor/UICommand/bcEditorModeUICommand.h"
 
 namespace black_cat
 {
 	namespace editor
 	{
-		bc_ui_editor_mode_command::bc_ui_editor_mode_command(bool p_editor_mode) noexcept
+		bc_editor_mode_ui_command::bc_editor_mode_ui_command(bool p_editor_mode) noexcept
 			: m_editor_mode(p_editor_mode)
 		{
 		}
 
-		bc_ui_editor_mode_command::bc_ui_editor_mode_command(const bc_ui_editor_mode_command&) noexcept = default;
+		bc_editor_mode_ui_command::bc_editor_mode_ui_command(const bc_editor_mode_ui_command&) noexcept = default;
 
-		bc_ui_editor_mode_command::~bc_ui_editor_mode_command() = default;
+		bc_editor_mode_ui_command::~bc_editor_mode_ui_command() = default;
 
-		bc_ui_editor_mode_command& bc_ui_editor_mode_command::operator=(const bc_ui_editor_mode_command&) noexcept = default;
+		bc_editor_mode_ui_command& bc_editor_mode_ui_command::operator=(const bc_editor_mode_ui_command&) noexcept = default;
 
-		core::bc_string bc_ui_editor_mode_command::title() const
+		core::bc_string bc_editor_mode_ui_command::title() const
 		{
 			return "EditorMode";
 		}
 
-		bool bc_ui_editor_mode_command::update(update_context& p_context)
+		bool bc_editor_mode_ui_command::update(update_context& p_context)
 		{
 			auto* l_scene = p_context.m_game_system.get_scene();
 			if(!l_scene)

@@ -22,6 +22,7 @@ namespace black_cat
 		
 		struct _bc_decal_desc_entry
 		{
+			core::bc_string m_name;
 			core::bc_string m_material_name;
 			bcUINT32 m_u0;
 			bcUINT32 m_v0;
@@ -91,6 +92,8 @@ namespace black_cat
 			 */
 			void read_decal_file(const bcECHAR* p_decal_file);
 
+			core::bc_vector_frame<std::string_view> get_decal_names() const;
+			
 			/**
 			 * \brief Try to found decal and load all associated resources
 			 * \n ThreadSafe

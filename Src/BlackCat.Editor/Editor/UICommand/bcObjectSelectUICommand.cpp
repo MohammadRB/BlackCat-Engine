@@ -7,14 +7,14 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
-#include "Editor/UICommand/bcUIObjectSelectCommand.h"
+#include "Editor/UICommand/bcObjectSelectUICommand.h"
 #include "Editor/UI/bcFormObject.h"
 
 namespace black_cat
 {
 	namespace editor
 	{
-		bc_ui_object_select_command::bc_ui_object_select_command(bcUINT16 p_screen_width,
+		bc_object_select_ui_command::bc_object_select_ui_command(bcUINT16 p_screen_width,
 			bcUINT16 p_screen_height,
 			bcUINT16 p_point_left,
 			bcUINT16 p_point_top)
@@ -26,23 +26,23 @@ namespace black_cat
 		{
 		}
 
-		bc_ui_object_select_command::bc_ui_object_select_command(const bc_ui_object_select_command&) = default;
+		bc_object_select_ui_command::bc_object_select_ui_command(const bc_object_select_ui_command&) = default;
 
-		bc_ui_object_select_command::~bc_ui_object_select_command() = default;
+		bc_object_select_ui_command::~bc_object_select_ui_command() = default;
 
-		bc_ui_object_select_command& bc_ui_object_select_command::operator=(const bc_ui_object_select_command&) = default;
+		bc_object_select_ui_command& bc_object_select_ui_command::operator=(const bc_object_select_ui_command&) = default;
 
-		core::bc_string bc_ui_object_select_command::title() const
+		core::bc_string bc_object_select_ui_command::title() const
 		{
 			return "ObjectSelect";
 		}
 
-		bc_iui_command::state_ptr bc_ui_object_select_command::create_state(state_context& p_context) const
+		bci_ui_command::state_ptr bc_object_select_ui_command::create_state(state_context& p_context) const
 		{
 			return nullptr;
 		}
 
-		bool bc_ui_object_select_command::update(update_context& p_context)
+		bool bc_object_select_ui_command::update(update_context& p_context)
 		{
 			auto* l_shape_draw_pass = p_context.m_game_system.get_render_system().get_render_pass<bc_shape_draw_pass>();
 			physics::bc_scene_ray_query_buffer l_query_buffer;
@@ -76,7 +76,7 @@ namespace black_cat
 			return false;
 		}
 
-		void bc_ui_object_select_command::update_ui(update_ui_context& p_context)
+		void bc_object_select_ui_command::update_ui(update_ui_context& p_context)
 		{
 			p_context.m_form_object.setSelectedActor(m_actor, m_actor_transformation);
 		}

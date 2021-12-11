@@ -175,6 +175,35 @@ namespace black_cat
 					l_scene->add_actor(l_actor);*/
 					//l_scene->add_bullet(game::bc_bullet(l_camera.get_position(), l_camera.get_forward(), 250, 0.2f));
 					//l_scene->create_actor("sample_rocket", bc_matrix4f_from_position_and_direction(l_camera.get_position(), l_camera.get_direction()));
+
+					//const auto l_position1 = l_camera.get_position() + l_camera.get_forward() * 3;
+					//const auto l_position2 = l_position1;// +core::bc_vector3f::right();
+					//auto l_actor1 = l_scene->create_actor("capsule", core::bc_matrix4f::translation_matrix(l_position1));
+					//auto l_actor2 = l_scene->create_actor("capsule", core::bc_matrix4f::translation_matrix(l_position2));
+					//auto l_rigid_body1 = l_actor1.get_component<game::bc_rigid_dynamic_component>()->get_body();
+					//auto l_rigid_body2 = l_actor2.get_component<game::bc_rigid_dynamic_component>()->get_body();
+
+					//{
+					//	physics::bc_scene_lock l_lock(&l_scene->get_px_scene());
+
+					//	auto l_px_joint = m_game_system->get_physics_system().get_physics().create_d6_joint
+					//	(
+					//		&l_rigid_body1,
+					//		physics::bc_transform(core::bc_vector3f(0.75, 0, 0)),
+					//		&l_rigid_body2,
+					//		physics::bc_transform(core::bc_vector3f(-0.75, 0, 0))
+					//	);
+					//	//l_px_joint->set_visualization(true);
+					//	//l_px_joint->enable_limit(physics::bc_joint_cone_limit(core::bc_to_radian(90), core::bc_to_radian(90)));
+					//	l_px_joint->set_motion(physics::bc_d6_axis::around_x, physics::bc_d6_motion::limited);
+					//	l_px_joint->set_motion(physics::bc_d6_axis::around_y, physics::bc_d6_motion::limited);
+					//	l_px_joint->set_motion(physics::bc_d6_axis::around_z, physics::bc_d6_motion::limited);
+					//	l_px_joint->set_twist_limit(physics::bc_joint_angular_limit(core::bc_to_radian(45), -core::bc_to_radian(45)));
+					//	l_px_joint->set_swing_limit(physics::bc_joint_cone_limit(core::bc_to_radian(45), core::bc_to_radian(45)));
+					//	l_px_joint.release();
+
+					//	const auto l_direction = l_camera.get_forward();
+					//	l_rigid_body1.set_linear_velocity(l_direction * 40);
 				}
 				
 				return true;

@@ -10,19 +10,19 @@ namespace black_cat
 {
 	namespace editor
 	{
-		class bc_ui_object_select_command : public bc_iui_command
+		class bc_object_select_ui_command : public bci_ui_command
 		{
 		public:
-			bc_ui_object_select_command(bcUINT16 p_screen_width,
+			bc_object_select_ui_command(bcUINT16 p_screen_width,
 				bcUINT16 p_screen_height,
 				bcUINT16 p_point_left,
 				bcUINT16 p_point_top);
 
-			bc_ui_object_select_command(const bc_ui_object_select_command&);
+			bc_object_select_ui_command(const bc_object_select_ui_command&);
 
-			virtual ~bc_ui_object_select_command();
+			virtual ~bc_object_select_ui_command();
 
-			bc_ui_object_select_command& operator=(const bc_ui_object_select_command&);
+			bc_object_select_ui_command& operator=(const bc_object_select_ui_command&);
 
 			core::bc_string title() const override;
 

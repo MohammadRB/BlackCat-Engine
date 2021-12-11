@@ -6,13 +6,13 @@
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/System/Physics/bcPxWrap.h"
-#include "Editor/UICommand/bcUIObjectInsertCommand.h"
+#include "Editor/UICommand/bcObjectInsertUICommand.h"
 
 namespace black_cat
 {
 	namespace editor
 	{
-		bc_ui_object_insert_command::bc_ui_object_insert_command(QString p_entity_name,
+		bc_object_insert_ui_command::bc_object_insert_ui_command(QString p_entity_name,
 			bcUINT16 p_screen_width,
 			bcUINT16 p_screen_height,
 			bcUINT16 p_point_left,
@@ -25,23 +25,23 @@ namespace black_cat
 		{
 		}
 
-		bc_ui_object_insert_command::bc_ui_object_insert_command(const bc_ui_object_insert_command&) = default;
+		bc_object_insert_ui_command::bc_object_insert_ui_command(const bc_object_insert_ui_command&) = default;
 
-		bc_ui_object_insert_command::~bc_ui_object_insert_command() = default;
+		bc_object_insert_ui_command::~bc_object_insert_ui_command() = default;
 
-		bc_ui_object_insert_command& bc_ui_object_insert_command::operator=(const bc_ui_object_insert_command&) = default;
+		bc_object_insert_ui_command& bc_object_insert_ui_command::operator=(const bc_object_insert_ui_command&) = default;
 
-		core::bc_string bc_ui_object_insert_command::title() const
+		core::bc_string bc_object_insert_ui_command::title() const
 		{
 			return "ObjectInsert";
 		}
 
-		bc_iui_command::state_ptr bc_ui_object_insert_command::create_state(state_context& p_context) const
+		bci_ui_command::state_ptr bc_object_insert_ui_command::create_state(state_context& p_context) const
 		{
 			return nullptr;
 		}
 
-		bool bc_ui_object_insert_command::update(update_context& p_context)
+		bool bc_object_insert_ui_command::update(update_context& p_context)
 		{
 			physics::bc_scene_ray_query_buffer l_query_buffer;
 			const bool l_query_result = query_ray_in_scene

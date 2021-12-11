@@ -10,16 +10,16 @@ namespace black_cat
 {
 	namespace editor
 	{
-		class bc_ui_object_list_command : public bc_iui_command
+		class bc_entity_names_ui_command : public bci_ui_command
 		{
 		public:
-			bc_ui_object_list_command();
+			bc_entity_names_ui_command();
 
-			bc_ui_object_list_command(const bc_ui_object_list_command&);
+			bc_entity_names_ui_command(const bc_entity_names_ui_command&);
 
-			~bc_ui_object_list_command();
+			~bc_entity_names_ui_command();
 
-			bc_ui_object_list_command& operator=(const bc_ui_object_list_command&);
+			bc_entity_names_ui_command& operator=(const bc_entity_names_ui_command&);
 
 			core::bc_string title() const override;
 

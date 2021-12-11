@@ -38,7 +38,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_4">
     <property name="leftMargin">
      <number>3</number>
     </property>
@@ -174,7 +174,7 @@
             <number>0</number>
            </property>
            <property name="fontAwesome" stdset="0">
-            <string>handpointero,cubes,areachart</string>
+            <string>handpointero,cubes,areachart,pencil,pencilsquareo</string>
            </property>
            <widget class="QWidget" name="rightToolBoxObjectSelect">
             <property name="geometry">
@@ -182,11 +182,11 @@
               <x>0</x>
               <y>0</y>
               <width>340</width>
-              <height>724</height>
+              <height>670</height>
              </rect>
             </property>
             <attribute name="label">
-             <string>ObjectSelection</string>
+             <string>Object Select</string>
             </attribute>
             <widget class="QLabel" name="entityNameLabel">
              <property name="geometry">
@@ -198,7 +198,7 @@
               </rect>
              </property>
              <property name="text">
-              <string>EntityName:</string>
+              <string>Entity Name:</string>
              </property>
             </widget>
             <widget class="QLabel" name="entityNameLabelValue">
@@ -452,12 +452,12 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>91</width>
-              <height>91</height>
+              <width>340</width>
+              <height>670</height>
              </rect>
             </property>
             <attribute name="label">
-             <string>ObjectInsert</string>
+             <string>Object Insert</string>
             </attribute>
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <item>
@@ -470,8 +470,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>91</width>
-              <height>222</height>
+              <width>340</width>
+              <height>670</height>
              </rect>
             </property>
             <attribute name="icon">
@@ -643,6 +643,116 @@
              </item>
             </layout>
            </widget>
+           <widget class="QWidget" name="rightToolBoxDecalInsert">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>340</width>
+              <height>670</height>
+             </rect>
+            </property>
+            <attribute name="label">
+             <string>Decal Paint</string>
+            </attribute>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QListWidget" name="decalNameList"/>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="rightToolBoxDecalSelect">
+            <attribute name="label">
+             <string>Decal Select</string>
+            </attribute>
+            <widget class="QPushButton" name="decalUpdateButton">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="geometry">
+              <rect>
+               <x>20</x>
+               <y>90</y>
+               <width>81</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Update</string>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="decalDeleteButton">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="geometry">
+              <rect>
+               <x>160</x>
+               <y>90</y>
+               <width>81</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Delete</string>
+             </property>
+            </widget>
+            <widget class="QLineEdit" name="decalRotationText">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="geometry">
+              <rect>
+               <x>100</x>
+               <y>40</y>
+               <width>91</width>
+               <height>25</height>
+              </rect>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+            </widget>
+            <widget class="QLabel" name="decalNameLabel">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>0</y>
+               <width>81</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Decal Name:</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="decalRotationLabel">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>40</y>
+               <width>81</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Decal Rotation:</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="decalNameLabelValue">
+             <property name="geometry">
+              <rect>
+               <x>100</x>
+               <y>0</y>
+               <width>231</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </widget>
           </widget>
          </item>
         </layout>
@@ -760,7 +870,7 @@
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="toolsDockContents">
-    <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,0,0">
+    <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,0,0,0,0">
      <property name="spacing">
       <number>0</number>
      </property>
@@ -788,7 +898,7 @@
         </sizepolicy>
        </property>
        <property name="toolTip">
-        <string>Object selection</string>
+        <string>Object Select</string>
        </property>
        <property name="text">
         <string/>
@@ -944,6 +1054,56 @@
        </property>
        <property name="fontAwesome" stdset="0">
         <string>bullseye</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="decalPainterButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Decal Painter</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+       <property name="fontAwesome" stdset="0">
+        <string>pencil</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="decalSelectButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Decal Select</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+       <property name="fontAwesome" stdset="0">
+        <string>pencilsquareo</string>
        </property>
       </widget>
      </item>

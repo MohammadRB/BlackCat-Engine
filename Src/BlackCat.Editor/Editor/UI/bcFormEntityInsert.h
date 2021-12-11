@@ -8,15 +8,15 @@ namespace black_cat
 {
 	namespace editor
 	{
-		class bc_form_object_insert
+		class bc_form_entity_insert
 		{
 		public:
-			bc_form_object_insert(QWidget& p_parent)
+			explicit bc_form_entity_insert(QWidget& p_parent)
 			{
 				m_entity_list = p_parent.findChild<QListWidget*>("entityNameList");
 			}
 
-			void add_entity_names(QVector<QString> p_entity_names, bool p_clear_exists = true)
+			void add_entity_names(const QVector<QString>& p_entity_names, bool p_clear_exists = true)
 			{
 				if(p_clear_exists)
 				{
@@ -31,13 +31,13 @@ namespace black_cat
 
 			QString get_selected_entity() const
 			{
-				auto* selected_item = m_entity_list->currentItem();
-				if(selected_item == nullptr)
+				auto* l_selected_item = m_entity_list->currentItem();
+				if(l_selected_item == nullptr)
 				{
 					return QString();
 				}
 
-				return selected_item->text();
+				return l_selected_item->text();
 			}
 
 		private:

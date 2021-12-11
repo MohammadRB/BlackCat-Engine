@@ -82,10 +82,8 @@ namespace black_cat
 
 			if (!l_json_file.open_read(p_decal_file))
 			{
-				core::bc_string_frame l_msg = "Error in reading material file: ";
-				l_msg += core::bc_to_string_frame(p_decal_file).c_str();
-
-				throw bc_io_exception(l_msg.c_str());
+				const auto l_msg = core::bc_string_stream_frame() << "Error in reading material file: " << p_decal_file;
+				throw bc_io_exception(l_msg.str().c_str());
 			}
 
 			core::bc_read_all_lines(l_json_file, l_json_file_buffer);
@@ -98,6 +96,7 @@ namespace black_cat
 				auto l_hash = string_hash()(l_decal->m_name->c_str());
 				_bc_decal_desc_entry l_desc
 				{
+					l_decal->m_name->c_str(),
 					l_decal->m_material_name->c_str(),
 					*l_decal->m_u0,
 					*l_decal->m_v0,
@@ -110,8 +109,24 @@ namespace black_cat
 					l_decal->m_group.has_value() ? static_cast<bc_render_group>(*l_decal->m_group) : bc_render_group::all,
 					l_decal->m_auto_remove.has_value() ? *l_decal->m_auto_remove : false
 				};
+				
 				m_decal_descriptions.insert(std::make_pair(l_hash, std::move(l_desc)));
 			}
+		}
+
+		core::bc_vector_frame<std::string_view> bc_decal_manager::get_decal_names() const
+		{
+			core::bc_vector_frame<std::string_view> l_result;
+			l_result.reserve(m_decal_descriptions.size());
+
+			for (const auto& [l_key, l_entry] : m_decal_descriptions)
+			{
+				l_result.push_back(l_entry.m_name);
+			}
+
+			std::sort(std::begin(l_result), std::end(l_result));
+
+			return l_result;
 		}
 
 		bc_decal_ptr bc_decal_manager::load_decal(const bcCHAR* p_name) noexcept

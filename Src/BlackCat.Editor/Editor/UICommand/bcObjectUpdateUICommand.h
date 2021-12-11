@@ -10,16 +10,16 @@ namespace black_cat
 {
 	namespace editor
 	{
-		class bc_ui_object_update_command : public bc_iui_command
+		class bc_object_update_ui_command : public bci_ui_command
 		{
 		public:
-			bc_ui_object_update_command(game::bc_actor p_actor, const core::bc_matrix4f& p_transform) noexcept;
+			bc_object_update_ui_command(game::bc_actor p_actor, const core::bc_matrix4f& p_transform) noexcept;
 
-			bc_ui_object_update_command(const bc_ui_object_update_command&) noexcept;
+			bc_object_update_ui_command(const bc_object_update_ui_command&) noexcept;
 
-			~bc_ui_object_update_command() override;
+			~bc_object_update_ui_command() override;
 
-			bc_ui_object_update_command& operator=(const bc_ui_object_update_command&) noexcept;
+			bc_object_update_ui_command& operator=(const bc_object_update_ui_command&) noexcept;
 
 			core::bc_string title() const override;
 

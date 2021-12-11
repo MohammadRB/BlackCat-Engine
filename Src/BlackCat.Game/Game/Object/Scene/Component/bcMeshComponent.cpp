@@ -88,11 +88,13 @@ namespace black_cat
 			p_actor.add_event(bc_bound_box_changed_actor_event(l_bound_box));
 		}
 
-		void bc_mesh_component::process_bullet_hit(bc_particle_manager& p_particle_manager, 
+		void bc_mesh_component::process_bullet_hit(const bc_physics_system& p_physics_system,
+			bc_particle_manager& p_particle_manager, 
 			const bc_bullet_hit_actor_event& p_event,
 			bool p_store_reference_to_bullet)
 		{
-			auto* l_hit_shape_data = static_cast<bc_px_shape_data*>(p_event.get_hit_shape().get_data());
+			auto* l_hit_shape_data = p_physics_system.get_game_shape_data(p_event.get_hit_shape());
+
 			BC_ASSERT(l_hit_shape_data);
 
 			if (l_hit_shape_data->m_collision_particle)

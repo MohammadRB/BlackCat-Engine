@@ -9,16 +9,16 @@ namespace black_cat
 {
 	namespace editor
 	{
-		class bc_ui_object_delete_command : public bc_iui_command
+		class bc_object_delete_ui_command : public bci_ui_command
 		{
 		public:
-			bc_ui_object_delete_command(game::bc_actor p_actor) noexcept;
+			bc_object_delete_ui_command(game::bc_actor p_actor) noexcept;
 
-			bc_ui_object_delete_command(const bc_ui_object_delete_command&) noexcept;
+			bc_object_delete_ui_command(const bc_object_delete_ui_command&) noexcept;
 
-			~bc_ui_object_delete_command() override;
+			~bc_object_delete_ui_command() override;
 
-			bc_ui_object_delete_command& operator=(const bc_ui_object_delete_command&) noexcept;
+			bc_object_delete_ui_command& operator=(const bc_object_delete_ui_command&) noexcept;
 
 			core::bc_string title() const override;
 

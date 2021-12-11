@@ -18,6 +18,7 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_physics_system;
 		class bc_particle_manager;
 		
 		class BC_GAME_DLL bc_mesh_component : public bc_render_component, public bc_decal_resolver_component
@@ -56,7 +57,8 @@ namespace black_cat
 			
 			void set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform) noexcept;
 
-			void process_bullet_hit(bc_particle_manager& p_particle_manager, 
+			void process_bullet_hit(const bc_physics_system& p_physics_system,
+				bc_particle_manager& p_particle_manager, 
 				const bc_bullet_hit_actor_event& p_event,
 				bool p_store_reference_to_bullet);
 			
