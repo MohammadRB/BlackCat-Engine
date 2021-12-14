@@ -116,7 +116,7 @@ public:
     QToolButton *terrainSmoothButton;
     QToolButton *terrainMaterialButton;
     QToolButton *terrainMaterialSmoothButton;
-    QToolButton *decalPainterButton;
+    QToolButton *decalPaintButton;
     QToolButton *decalSelectButton;
 
     void setupUi(QMainWindow *bcBlackCatEditorClass)
@@ -421,25 +421,26 @@ public:
         rightToolBox->addItem(rightToolBoxDecalInsert, QStringLiteral("Decal Paint"));
         rightToolBoxDecalSelect = new QWidget();
         rightToolBoxDecalSelect->setObjectName(QStringLiteral("rightToolBoxDecalSelect"));
+        rightToolBoxDecalSelect->setGeometry(QRect(0, 0, 340, 670));
         decalUpdateButton = new QPushButton(rightToolBoxDecalSelect);
         decalUpdateButton->setObjectName(QStringLiteral("decalUpdateButton"));
         decalUpdateButton->setEnabled(false);
-        decalUpdateButton->setGeometry(QRect(20, 90, 81, 31));
+        decalUpdateButton->setGeometry(QRect(30, 80, 81, 31));
         decalDeleteButton = new QPushButton(rightToolBoxDecalSelect);
         decalDeleteButton->setObjectName(QStringLiteral("decalDeleteButton"));
         decalDeleteButton->setEnabled(false);
-        decalDeleteButton->setGeometry(QRect(160, 90, 81, 31));
+        decalDeleteButton->setGeometry(QRect(160, 80, 81, 31));
         decalRotationText = new QLineEdit(rightToolBoxDecalSelect);
         decalRotationText->setObjectName(QStringLiteral("decalRotationText"));
         decalRotationText->setEnabled(false);
-        decalRotationText->setGeometry(QRect(100, 40, 91, 25));
+        decalRotationText->setGeometry(QRect(100, 30, 91, 25));
         decalRotationText->setReadOnly(false);
         decalNameLabel = new QLabel(rightToolBoxDecalSelect);
         decalNameLabel->setObjectName(QStringLiteral("decalNameLabel"));
         decalNameLabel->setGeometry(QRect(10, 0, 81, 16));
         decalRotationLabel = new QLabel(rightToolBoxDecalSelect);
         decalRotationLabel->setObjectName(QStringLiteral("decalRotationLabel"));
-        decalRotationLabel->setGeometry(QRect(10, 40, 81, 16));
+        decalRotationLabel->setGeometry(QRect(10, 30, 81, 16));
         decalNameLabelValue = new QLabel(rightToolBoxDecalSelect);
         decalNameLabelValue->setObjectName(QStringLiteral("decalNameLabelValue"));
         decalNameLabelValue->setGeometry(QRect(100, 0, 231, 16));
@@ -563,14 +564,14 @@ public:
 
         verticalLayout_3->addWidget(terrainMaterialSmoothButton);
 
-        decalPainterButton = new QToolButton(toolsDockContents);
-        decalPainterButton->setObjectName(QStringLiteral("decalPainterButton"));
-        sizePolicy7.setHeightForWidth(decalPainterButton->sizePolicy().hasHeightForWidth());
-        decalPainterButton->setSizePolicy(sizePolicy7);
-        decalPainterButton->setCheckable(true);
-        decalPainterButton->setAutoExclusive(true);
+        decalPaintButton = new QToolButton(toolsDockContents);
+        decalPaintButton->setObjectName(QStringLiteral("decalPaintButton"));
+        sizePolicy7.setHeightForWidth(decalPaintButton->sizePolicy().hasHeightForWidth());
+        decalPaintButton->setSizePolicy(sizePolicy7);
+        decalPaintButton->setCheckable(true);
+        decalPaintButton->setAutoExclusive(true);
 
-        verticalLayout_3->addWidget(decalPainterButton);
+        verticalLayout_3->addWidget(decalPaintButton);
 
         decalSelectButton = new QToolButton(toolsDockContents);
         decalSelectButton->setObjectName(QStringLiteral("decalSelectButton"));
@@ -597,7 +598,7 @@ public:
         QObject::connect(terrainRadiusSlider, SIGNAL(valueChanged(int)), terrainRadiusValue, SLOT(setNum(int)));
 
         leftBottomTab->setCurrentIndex(0);
-        rightToolBox->setCurrentIndex(0);
+        rightToolBox->setCurrentIndex(4);
 
 
         QMetaObject::connectSlotsByName(bcBlackCatEditorClass);
@@ -691,10 +692,10 @@ public:
         terrainMaterialSmoothButton->setText(QString());
         terrainMaterialSmoothButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "bullseye", nullptr)));
 #ifndef QT_NO_TOOLTIP
-        decalPainterButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Decal Painter", nullptr));
+        decalPaintButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Decal Paint", nullptr));
 #endif // QT_NO_TOOLTIP
-        decalPainterButton->setText(QString());
-        decalPainterButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "pencil", nullptr)));
+        decalPaintButton->setText(QString());
+        decalPaintButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "pencil", nullptr)));
 #ifndef QT_NO_TOOLTIP
         decalSelectButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "Decal Select", nullptr));
 #endif // QT_NO_TOOLTIP

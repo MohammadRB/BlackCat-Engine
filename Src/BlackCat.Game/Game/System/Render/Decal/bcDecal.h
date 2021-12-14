@@ -34,7 +34,8 @@ namespace black_cat
 		class bc_decal : public core::bc_ref_count
 		{
 		public:
-			bc_decal(bc_mesh_material_ptr p_material, 
+			bc_decal(std::string_view p_name,
+				bc_mesh_material_ptr p_material, 
 				bcFLOAT p_u0, 
 				bcFLOAT p_v0, 
 				bcFLOAT p_u1, 
@@ -52,6 +53,8 @@ namespace black_cat
 
 			bc_decal& operator=(bc_decal&&) noexcept;
 
+			std::string_view get_name() const noexcept;
+			
 			const bc_mesh_material& get_material() const noexcept;
 
 			bcFLOAT get_u0() const noexcept;
@@ -72,9 +75,10 @@ namespace black_cat
 
 			bc_render_group get_group() const noexcept;
 
-			bool get_temporary() const noexcept;
+			bool get_auto_remove() const noexcept;
 
 		private:
+			std::string_view m_name;
 			bc_mesh_material_ptr m_material;
 			bcFLOAT m_u0;
 			bcFLOAT m_v0;
@@ -88,7 +92,7 @@ namespace black_cat
 			bool m_auto_remove;
 		};
 
-		using bc_decal_ptr = core::bc_ref_count_ptr< bc_decal, bc_decal_deleter >;
+		using bc_decal_ptr = core::bc_ref_count_ptr<bc_decal, bc_decal_deleter>;
 		
 		inline bc_decal_deleter::bc_decal_deleter()
 			: m_manager(nullptr)
@@ -100,7 +104,8 @@ namespace black_cat
 		{
 		}
 
-		inline bc_decal::bc_decal(bc_mesh_material_ptr p_material,
+		inline bc_decal::bc_decal(std::string_view p_name,
+			bc_mesh_material_ptr p_material,
 			bcFLOAT p_u0,
 			bcFLOAT p_v0,
 			bcFLOAT p_u1,
@@ -111,7 +116,8 @@ namespace black_cat
 			bcFLOAT p_lod_scale,
 			bc_render_group p_group,
 			bool p_auto_remove)
-			: m_material(std::move(p_material)),
+			: m_name(p_name),
+			m_material(std::move(p_material)),
 			m_u0(p_u0),
 			m_v0(p_v0),
 			m_u1(p_u1),
@@ -130,6 +136,11 @@ namespace black_cat
 		inline bc_decal::~bc_decal() = default;
 
 		inline bc_decal& bc_decal::operator=(bc_decal&&) noexcept = default;
+
+		inline std::string_view bc_decal::get_name() const noexcept
+		{
+			return m_name;
+		}
 		
 		inline const bc_mesh_material& bc_decal::get_material() const noexcept
 		{
@@ -181,7 +192,7 @@ namespace black_cat
 			return m_group;
 		}
 
-		inline bool bc_decal::get_temporary() const noexcept
+		inline bool bc_decal::get_auto_remove() const noexcept
 		{
 			return m_auto_remove;
 		}

@@ -115,5 +115,5 @@ namespace black_cat
 		{
 			m_command_service->queue_command(bc_object_delete_ui_command(m_selected_actor));
 		}
-	}	
+	}
 }

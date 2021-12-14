@@ -171,7 +171,7 @@
          <item>
           <widget class="QToolBox" name="rightToolBox">
            <property name="currentIndex">
-            <number>0</number>
+            <number>4</number>
            </property>
            <property name="fontAwesome" stdset="0">
             <string>handpointero,cubes,areachart,pencil,pencilsquareo</string>
@@ -662,6 +662,14 @@
             </layout>
            </widget>
            <widget class="QWidget" name="rightToolBoxDecalSelect">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>340</width>
+              <height>670</height>
+             </rect>
+            </property>
             <attribute name="label">
              <string>Decal Select</string>
             </attribute>
@@ -671,8 +679,8 @@
              </property>
              <property name="geometry">
               <rect>
-               <x>20</x>
-               <y>90</y>
+               <x>30</x>
+               <y>80</y>
                <width>81</width>
                <height>31</height>
               </rect>
@@ -688,7 +696,7 @@
              <property name="geometry">
               <rect>
                <x>160</x>
-               <y>90</y>
+               <y>80</y>
                <width>81</width>
                <height>31</height>
               </rect>
@@ -704,7 +712,7 @@
              <property name="geometry">
               <rect>
                <x>100</x>
-               <y>40</y>
+               <y>30</y>
                <width>91</width>
                <height>25</height>
               </rect>
@@ -730,7 +738,7 @@
              <property name="geometry">
               <rect>
                <x>10</x>
-               <y>40</y>
+               <y>30</y>
                <width>81</width>
                <height>16</height>
               </rect>
@@ -1058,7 +1066,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="decalPainterButton">
+      <widget class="QToolButton" name="decalPaintButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -1066,7 +1074,7 @@
         </sizepolicy>
        </property>
        <property name="toolTip">
-        <string>Decal Painter</string>
+        <string>Decal Paint</string>
        </property>
        <property name="text">
         <string/>

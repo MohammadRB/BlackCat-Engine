@@ -1,6 +1,8 @@
 // [02/17/2017 MRB]
 
 #include "Editor/EditorPCH.h"
+
+#include "BlackCat/RenderPass/GBuffer/bcGBufferDecalPass.h"
 #include "Editor/UI/bcFormTools.h"
 #include "Editor/UICommand/bcTerrainHeightUICommand.h"
 #include "Editor/UICommand/bcTerrainSmoothUICommand.h"
@@ -10,22 +12,25 @@
 #include "Editor/UICommand/bcEntityNamesUICommand.h"
 #include "Editor/UICommand/bcDecalNamesUICommand.h"
 #include "Editor/UICommand/bcObjectInsertUICommand.h"
-#include "Editor/UICommand/bcDecalPainterUICommand.h"
-#include "Editor/UICommand/bcDecalRemoverUICommand.h"
-#include "Editor/UI/bcFormEntityInsert.h"
+#include "Editor/UICommand/bcDecalPaintUICommand.h"
+#include "Editor/UICommand/bcDecalSelectUICommand.h"
+#include "Editor/UICommand/bcDecalRemoveUICommand.h"
+#include "Editor/UI/bcFormObjectInsert.h"
 
 namespace black_cat
 {
 	namespace editor
 	{
-		bc_form_tools::bc_form_tools(bc_ui_command_service& p_ui_command_service,
+		bc_form_tools::bc_form_tools(game::bc_game_system& p_game_system,
+			bc_ui_command_service& p_ui_command_service,
 			bc_widget_d3d_output& p_render_widget,
 			QDockWidget& p_container,
 			QToolBox& p_tool_properties_container,
 			bc_form_terrain& p_terrain_form,
-			bc_form_entity_insert& p_object_insert_form,
+			bc_form_object_insert& p_object_insert_form,
 			bc_form_decal_insert& p_decal_insert_form)
-			: m_ui_command_service(p_ui_command_service),
+			: m_game_system(p_game_system),
+			m_ui_command_service(p_ui_command_service),
 			m_render_widget(p_render_widget),
 			m_terrain_form(p_terrain_form),
 			m_object_insert_form(p_object_insert_form),
@@ -43,7 +48,7 @@ namespace black_cat
 			m_terrain_smooth_button = m_tool_bar.findChild<QAbstractButton*>("terrainSmoothButton");
 			m_terrain_material_button = m_tool_bar.findChild<QAbstractButton*>("terrainMaterialButton");
 			m_terrain_material_smooth_button = m_tool_bar.findChild<QAbstractButton*>("terrainMaterialSmoothButton");
-			m_decal_painter_button = m_tool_bar.findChild<QAbstractButton*>("decalPainterButton");
+			m_decal_painter_button = m_tool_bar.findChild<QAbstractButton*>("decalPaintButton");
 			m_decal_select_button = m_tool_bar.findChild<QAbstractButton*>("decalSelectButton");
 			
 			QObject::connect(m_object_select_button, SIGNAL(toggled(bool)), this, SLOT(objectSelectToggled(bool)));
@@ -148,13 +153,20 @@ namespace black_cat
 		void bc_form_tools::decalSelectToggled(bool p_toggled)
 		{
 			if (!p_toggled)
-			{
+			{	
 				m_state = state::none;
-				return;
+			}
+			else
+			{
+				m_state = state::decal_select;
+				m_tool_properties_container.setCurrentIndex(4);
 			}
 
-			m_state = state::decal_select;
-			m_tool_properties_container.setCurrentIndex(4);
+			auto* l_decal_render_pass = m_game_system.get_render_system().get_render_pass<bc_gbuffer_decal_pass>();
+			if (l_decal_render_pass)
+			{
+				l_decal_render_pass->draw_decal_bounds(p_toggled);
+			}
 		}
 
 		void bc_form_tools::mousePressed(QMouseEvent* p_event)
@@ -282,7 +294,7 @@ namespace black_cat
 					break;
 				}
 				
-				bc_decal_painter_ui_command l_command
+				bc_decal_paint_ui_command l_command
 				(
 					std::move(l_selected_entity),
 					m_render_widget.width(),
@@ -295,7 +307,7 @@ namespace black_cat
 			}
 			case bc_form_tools_state::decal_select:
 			{
-				bc_decal_remover_ui_command l_command
+				bc_decal_select_ui_command l_command
 				(
 					m_render_widget.width(),
 					m_render_widget.height(),

@@ -148,7 +148,7 @@ bc_ps_output ps(bc_vs_output p_input)
 		l_normal_map = g_tex2d_normal.SampleLevel(g_sam_linear, l_decal_texcoord, 0);
 		l_specular_map = g_tex2d_specular.SampleLevel(g_sam_linear, l_decal_texcoord, 0);
 	}
-
+	
 	clip(l_diffuse_map.a - 0.005);
 	
 	const float3 l_ddx_pixel_world = ddx(l_pixel_world);
@@ -161,6 +161,23 @@ bc_ps_output ps(bc_vs_output p_input)
 	l_output.m_diffuse = l_diffuse_map;
 	l_output.m_normal = float4(bc_to_encoded_normal(l_world_normal), l_diffuse_map.a);
 	l_output.m_specular = float4(l_specular_map.r, 0.1, 0, l_diffuse_map.a);
+	
+	return l_output;
+}
+
+bc_ps_output debug_ps(bc_vs_output p_input)
+{
+	bc_ps_output l_output;
+
+	const float4 l_clip_space = p_input.m_cs_position / p_input.m_cs_position.w;
+	const float2 l_texcoord = bc_clip_space_to_texcoord(p_input.m_cs_position);
+	const float l_depth = g_tex2d_depth.Sample(g_sam_point, l_texcoord).r;
+
+	clip(l_depth - l_clip_space.z);
+	
+	l_output.m_diffuse = float4(1, 1, 1, 0.5);
+	l_output.m_normal = float4(0, 0, 0, 0);
+	l_output.m_specular = float4(0, 0, 0, 0);
 	
 	return l_output;
 }

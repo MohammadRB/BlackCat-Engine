@@ -8,10 +8,10 @@ namespace black_cat
 {
 	namespace editor
 	{
-		class bc_form_entity_insert
+		class bc_form_object_insert
 		{
 		public:
-			explicit bc_form_entity_insert(QWidget& p_parent)
+			explicit bc_form_object_insert(QWidget& p_parent)
 			{
 				m_entity_list = p_parent.findChild<QListWidget*>("entityNameList");
 			}

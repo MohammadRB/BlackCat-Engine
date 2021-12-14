@@ -164,9 +164,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetD3DOutput.cpp">
       <Filter>Editor\Widget</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.cpp">
-      <Filter>Editor\UI</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Develope\moc_bcEditorApplication.cpp">
       <Filter>Generated Files\Develope</Filter>
     </ClCompile>
@@ -194,9 +191,6 @@
     <ClCompile Include="GeneratedFiles\Develope\moc_bcFormObject.cpp">
       <Filter>Generated Files\Develope</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Develop\moc_bcFormObject.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcFormObject.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -214,9 +208,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainToolBar.cpp">
       <Filter>Editor\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalPainterUICommand.cpp">
-      <Filter>Editor\UICommand</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteUICommand.cpp">
       <Filter>Editor\UICommand</Filter>
@@ -251,13 +242,43 @@
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainSmoothUICommand.cpp">
       <Filter>Editor\UICommand</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalRemoverUICommand.cpp">
-      <Filter>Editor\UICommand</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcEntityNamesUICommand.cpp">
       <Filter>Editor\UICommand</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalNamesUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalRemoveUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalPaintUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormDecal.cpp">
+      <Filter>Editor\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Develope\moc_bcFormDecal.cpp">
+      <Filter>Generated Files\Develope</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_bcFormDecal.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_bcFormDecal.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Develope\moc_bcFormEntity.cpp">
+      <Filter>Generated Files\Develope</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_bcFormEntity.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_bcFormEntity.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.cpp">
+      <Filter>Editor\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalSelectUICommand.cpp">
       <Filter>Editor\UICommand</Filter>
     </ClCompile>
   </ItemGroup>
@@ -288,9 +309,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorRenderApplicationThread.h">
       <Filter>Editor\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalPainterUICommand.h">
-      <Filter>Editor\UICommand</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteUICommand.h">
       <Filter>Editor\UICommand</Filter>
@@ -325,9 +343,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcTerrainSmoothUICommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalRemoverUICommand.h">
-      <Filter>Editor\UICommand</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcEntityNamesUICommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
@@ -337,8 +352,17 @@
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormDecalInsert.h">
       <Filter>Editor\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormEntityInsert.h">
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalRemoveUICommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalPaintUICommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObjectInsert.h">
       <Filter>Editor\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalSelectUICommand.h">
+      <Filter>Editor\UICommand</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -360,9 +384,6 @@
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.h">
-      <Filter>Editor\UI</Filter>
-    </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainMenu.h">
       <Filter>Editor\UI</Filter>
     </CustomBuild>
@@ -377,6 +398,12 @@
     </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\FormFiles\bcBlackCatEditor.ui">
       <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormDecal.h">
+      <Filter>Editor\UI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.h">
+      <Filter>Editor\UI</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

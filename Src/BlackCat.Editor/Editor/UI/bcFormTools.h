@@ -6,7 +6,7 @@
 #include "Editor/Application/bcUICommandService.h"
 #include "Editor/Widget/bcWidgetD3DOutput.h"
 #include "Editor/UI/bcFormTerrain.h"
-#include "Editor/UI/bcFormEntityInsert.h"
+#include "Editor/UI/bcFormObjectInsert.h"
 #include "Editor/UI/bcFormDecalInsert.h"
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QDockWidget>
@@ -34,12 +34,13 @@ namespace black_cat
 			using state = bc_form_tools_state;
 
 		public:
-			bc_form_tools(bc_ui_command_service& p_ui_command_service,
+			bc_form_tools(game::bc_game_system& p_game_system,
+				bc_ui_command_service& p_ui_command_service,
 				bc_widget_d3d_output& p_render_widget,
 				QDockWidget& p_container,
 				QToolBox& p_tool_properties_container,
 				bc_form_terrain& p_terrain_form,
-				bc_form_entity_insert& p_object_insert_form,
+				bc_form_object_insert& p_object_insert_form,
 				bc_form_decal_insert& p_decal_insert_form);
 
 		private slots:
@@ -68,11 +69,12 @@ namespace black_cat
 		private:
 			void _send_ui_command(QMouseEvent* p_event);
 
+			game::bc_game_system& m_game_system;
 			bc_ui_command_service& m_ui_command_service;
 
 			bc_widget_d3d_output& m_render_widget;
 			bc_form_terrain& m_terrain_form;
-			bc_form_entity_insert& m_object_insert_form;
+			bc_form_object_insert& m_object_insert_form;
 			bc_form_decal_insert& m_decal_insert_form;
 
 			QDockWidget& m_tool_bar;

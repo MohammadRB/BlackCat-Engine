@@ -342,6 +342,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcStack.h">
       <Filter>Core\Container</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcSboVector.h">
+      <Filter>Core\Container</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp">

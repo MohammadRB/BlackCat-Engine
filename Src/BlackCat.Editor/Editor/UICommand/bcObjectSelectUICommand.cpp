@@ -44,9 +44,7 @@ namespace black_cat
 
 		bool bc_object_select_ui_command::update(update_context& p_context)
 		{
-			auto* l_shape_draw_pass = p_context.m_game_system.get_render_system().get_render_pass<bc_shape_draw_pass>();
 			physics::bc_scene_ray_query_buffer l_query_buffer;
-
 			const bool l_query_result = query_ray_in_scene
 			(
 				p_context,
@@ -68,6 +66,7 @@ namespace black_cat
 				m_actor = game::bc_actor();
 			}
 
+			auto* l_shape_draw_pass = p_context.m_game_system.get_render_system().get_render_pass<bc_shape_draw_pass>();
 			if(l_shape_draw_pass)
 			{
 				l_shape_draw_pass->set_selected_actor(m_actor);

@@ -166,6 +166,17 @@
               "CAMERA_INSIDE": "true"
             }
           }
+        },
+        {
+          "content_title": "decal_debug_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "content\\shader\\directx11\\gbuffer\\bcDecalGBuffer.hlsl",
+          "content_parameter": {
+            "function": "debug_ps",
+            "macros": {
+              "CAMERA_INSIDE": "false"
+            }
+          }
         }
       ]
     },

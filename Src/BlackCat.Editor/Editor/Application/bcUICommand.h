@@ -20,8 +20,9 @@ namespace black_cat
 	namespace editor
 	{
 		class bc_form_main_menu;
-		class bc_form_entity_insert;
 		class bc_form_object;
+		class bc_form_object_insert;
+		class bc_form_decal;
 		class bc_form_decal_insert;
 		class bc_ui_command_service;
 
@@ -68,18 +69,21 @@ namespace black_cat
 		{
 		public:
 			bc_ui_command_update_ui_context(bc_form_object& p_form_object, 
-				bc_form_entity_insert& p_form_object_insert,
+				bc_form_object_insert& p_form_object_insert,
+				bc_form_decal& p_form_decal,
 				bc_form_decal_insert& p_form_decal_insert,
 				bc_form_main_menu& p_form_main_menu)
 				: m_form_object(p_form_object),
 				m_form_object_insert(p_form_object_insert),
+				m_form_decal(p_form_decal),
 				m_form_decal_insert(p_form_decal_insert),
 				m_form_main_menu(p_form_main_menu)
 			{
 			}
 
 			bc_form_object& m_form_object;
-			bc_form_entity_insert& m_form_object_insert;
+			bc_form_object_insert& m_form_object_insert;
+			bc_form_decal& m_form_decal;
 			bc_form_decal_insert& m_form_decal_insert;
 			bc_form_main_menu& m_form_main_menu;
 		};

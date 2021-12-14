@@ -7,6 +7,7 @@
 #include "Core/Math/bcMatrix3f.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "Core/Container/bcIteratorAdapter.h"
+#include "Core/Container/bcArray.h"
 #include "Core/Container/bcVector.h"
 #include "Game/System/Render/Decal/bcDecalInstance.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
@@ -34,31 +35,29 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
-			void add_decal(const bcCHAR* p_decal_name,
+			void add_decal(std::string_view p_name,
 				const core::bc_vector3f& p_local_pos,
 				const core::bc_matrix3f& p_local_rotation,
 				const core::bc_matrix4f& p_initial_world_transform);
 
-			void add_decal(const bcCHAR* p_decal_name,
+			void add_decal(std::string_view p_name,
 				const core::bc_vector3f& p_local_pos,
 				const core::bc_matrix3f& p_local_rotation,
 				bc_render_group p_render_group,
 				const core::bc_matrix4f& p_initial_world_transform);
 
-			void add_decal(const bcCHAR* p_decal_name,
+			void add_decal(std::string_view p_name,
 				const core::bc_vector3f& p_local_pos,
 				const core::bc_matrix3f& p_local_rotation,
 				const core::bc_matrix4f& p_initial_world_transform,
 				bc_mesh_node::node_index_t p_attached_node);
 			
-			void add_decal(const bcCHAR* p_decal_name,
+			void add_decal(std::string_view p_name,
 				const core::bc_vector3f& p_local_pos,
 				const core::bc_matrix3f& p_local_rotation,
 				bc_render_group p_render_group,
 				const core::bc_matrix4f& p_initial_world_transform,
 				bc_mesh_node::node_index_t p_attached_node);
-
-			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
 			void initialize_entity(const bc_actor_component_initialize_entity_context& p_context) override;
 			
@@ -67,15 +66,15 @@ namespace black_cat
 			void render(const bc_actor_component_render_context& p_context) const override;
 
 		private:
-			void _add_decal(bc_decal_instance_ptr p_decal) noexcept;
+			void _add_decal_if_needed(bc_decal_instance_ptr p_decal, bool p_need_update) noexcept;
 
-			const bcUINT32 m_decals_count = 10;
-			
 			bc_decal_manager* m_decal_manager;
-			core_platform::bc_atomic<bcUINT32> m_decals_slot;
-			container_type m_decals;
 			bcFLOAT m_mesh_scale;
 			bool m_use_hierarchy_transforms;
+
+			core_platform::bc_atomic<bcUINT32> m_temporary_decals_slot;
+			core::bc_array<bc_decal_instance_ptr, 10> m_temporary_decals;
+			container_type m_persistent_decals;
 		};
 	}
 }

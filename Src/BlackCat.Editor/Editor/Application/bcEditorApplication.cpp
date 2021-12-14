@@ -14,41 +14,44 @@ namespace black_cat
 			: QMainWindow(p_parent)
 		{
 			setAttribute(Qt::WA_QuitOnClose);
-			ui.setupUi(this);
-			ui.mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
+			m_ui.setupUi(this);
+			m_ui.mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
 			
-			m_d3d_widget = new bc_widget_d3d_output(ui.centralWidget->findChild<QFrame*>("leftRenderFrame"));
+			m_d3d_widget = new bc_widget_d3d_output(m_ui.centralWidget->findChild<QFrame*>("leftRenderFrame"));
 			m_d3d_output_window = std::make_unique<bc_render_application_d3dwidget_output_window>(m_d3d_widget);
 
 			m_render_app_thread.start(p_instance, nullptr, m_d3d_output_window.get());
 
 			m_awesome = std::make_unique<QtAwesome>(this);
 			m_awesome->initFontAwesome();
-			m_console_widget = new bc_widget_console(m_awesome.get(), ui.centralWidget->findChild<QWidget*>("consoleTab"));
+			m_console_widget = new bc_widget_console(m_awesome.get(), m_ui.centralWidget->findChild<QWidget*>("consoleTab"));
 			_load_style();
 			_load_icons();
 			
 			m_render_app_thread.wait_for_initialization();
 
 			// Now that game is available initialize console
-			game::bc_game_console& l_game_console = core::bc_get_service<game::bc_game_system>()->get_console();
+			auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
+			auto& l_game_console = l_game_system.get_console();
 			m_editor_game_console = std::make_unique<bc_editor_game_console>(l_game_console, *m_console_widget);
 			m_editor_game_console->connect_widget(m_console_widget);
 			l_game_console.set_implementation(m_editor_game_console.get());
 			
 			m_ui_command_service = core::bc_get_service<bc_ui_command_service>();
-			m_form_main_menu = std::make_unique<bc_form_main_menu>(*ui.mainMenuBar, *m_ui_command_service);
-			m_form_main_tool_bar = std::make_unique<bc_form_main_tool_bar>(*m_ui_command_service, *ui.mainToolBar);
-			m_form_object = std::make_unique<bc_form_object>(*ui.centralWidget, *m_ui_command_service);
-			m_form_object_insert = std::make_unique<bc_form_entity_insert>(*ui.centralWidget);
-			m_form_terrain = std::make_unique<bc_form_terrain>(*ui.centralWidget);
-			m_form_decal_insert = std::make_unique<bc_form_decal_insert>(*ui.centralWidget);
+			m_form_main_menu = std::make_unique<bc_form_main_menu>(*m_ui.mainMenuBar, *m_ui_command_service);
+			m_form_main_tool_bar = std::make_unique<bc_form_main_tool_bar>(*m_ui_command_service, *m_ui.mainToolBar);
+			m_form_object = std::make_unique<bc_form_object>(*m_ui.centralWidget, *m_ui_command_service);
+			m_form_object_insert = std::make_unique<bc_form_object_insert>(*m_ui.centralWidget);
+			m_form_terrain = std::make_unique<bc_form_terrain>(*m_ui.centralWidget);
+			m_form_decal = std::make_unique<bc_form_decal>(*m_ui.centralWidget, *m_ui_command_service);
+			m_form_decal_insert = std::make_unique<bc_form_decal_insert>(*m_ui.centralWidget);
 			m_form_tools = std::make_unique<bc_form_tools>
 			(
+				l_game_system,
 				*m_ui_command_service, 
 				*m_d3d_widget, 
-				*ui.toolsDock, 
-				*ui.rightToolBox, 
+				*m_ui.toolsDock, 
+				*m_ui.rightToolBox, 
 				*m_form_terrain, 
 				*m_form_object_insert, 
 				*m_form_decal_insert
@@ -129,9 +132,9 @@ namespace black_cat
 			l_icon_defaults.insert("color-selected", l_icon_default_color);
 			l_icon_defaults.insert("color-active", l_icon_default_color);
 			
-			_load_icon(ui.centralWidget, l_icon_defaults);
-			_load_icon(ui.toolsDock, l_icon_defaults);
-			_load_icon(ui.mainToolBar, l_icon_defaults);
+			_load_icon(m_ui.centralWidget, l_icon_defaults);
+			_load_icon(m_ui.toolsDock, l_icon_defaults);
+			_load_icon(m_ui.mainToolBar, l_icon_defaults);
 		}
 
 		void bc_editor_app::_load_icon(QWidget* p_parent, QVariantMap& p_options) const
@@ -234,7 +237,7 @@ namespace black_cat
 
 			m_editor_game_console->update_ui();
 			
-			bci_ui_command::update_ui_context l_context(*m_form_object, *m_form_object_insert, *m_form_decal_insert, *m_form_main_menu);
+			bci_ui_command::update_ui_context l_context(*m_form_object, *m_form_object_insert, *m_form_decal, *m_form_decal_insert, *m_form_main_menu);
 			m_ui_command_service->update_ui(l_context);
 		}
 	}

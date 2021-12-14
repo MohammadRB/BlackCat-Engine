@@ -194,12 +194,15 @@ namespace black_cat
 
 		_render_decals(p_context, *m_render_pass_state, l_decal_groups, &l_non_culling_decals);
 		
-		if(l_non_culling_decals.empty())
+		if(!l_non_culling_decals.empty())
 		{
-			return;
+			_render_decals(p_context, *m_render_pass_state_for_non_culling, l_non_culling_decals, nullptr);
 		}
 
-		_render_decals(p_context, *m_render_pass_state_for_non_culling, l_non_culling_decals, nullptr);
+		if(m_draw_decal_bounds)
+		{
+			_render_decals(p_context, *m_render_pass_state_for_debug_bounds, l_decal_groups, nullptr);
+		}
 	}
 
 	void bc_gbuffer_decal_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
@@ -218,6 +221,7 @@ namespace black_cat
 		}
 
 		auto l_depth_stencil = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
+		const auto l_depth_stencil_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
 		const auto l_diffuse_map = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1);
 		const auto l_normal_map = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2);
 		const auto l_specular_map = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_3);
@@ -280,6 +284,7 @@ namespace black_cat
 				p_context.m_render_system.get_global_cbuffer()
 			}
 		);
+		
 		m_device_pipeline_state_for_non_culling = p_context.m_render_system.create_device_pipeline_state
 		(
 			"gbuffer_decal_vs",
@@ -301,6 +306,48 @@ namespace black_cat
 		m_render_pass_state_for_non_culling = p_context.m_render_system.create_render_pass_state
 		(
 			m_device_pipeline_state_for_non_culling.get(),
+			l_viewport,
+			{
+				l_diffuse_map_view, l_normal_map_view, l_specular_map_view
+			},
+			graphic::bc_depth_stencil_view(),
+			{
+				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_point_sampler.get()),
+				graphic::bc_sampler_parameter(1, graphic::bc_shader_type::pixel, m_linear_sampler.get())
+			},
+			{
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, m_depth_view.get()),
+				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::pixel, m_stencil_view.get()),
+				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::vertex, m_instance_buffer_view.get())
+			},
+			{
+			},
+			{
+				p_context.m_render_system.get_global_cbuffer()
+			}
+		);
+
+		m_device_pipeline_state_for_debug_bounds = p_context.m_render_system.create_device_pipeline_state
+		(
+			"gbuffer_decal_vs",
+			nullptr,
+			nullptr,
+			nullptr,
+			"decal_debug_ps",
+			game::bc_vertex_type::pos,
+			game::bc_blend_type::blending_overwrite_alpha,
+			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
+			game::bc_rasterizer_type::fill_solid_cull_back,
+			0x1,
+			{
+				l_diffuse_map.get_format()
+			},
+			l_depth_stencil.get_format(),
+			game::bc_multi_sample_type::c1_q1
+		);
+		m_render_pass_state_for_debug_bounds = p_context.m_render_system.create_render_pass_state
+		(
+			m_device_pipeline_state_for_debug_bounds.get(),
 			l_viewport,
 			{
 				l_diffuse_map_view, l_normal_map_view, l_specular_map_view

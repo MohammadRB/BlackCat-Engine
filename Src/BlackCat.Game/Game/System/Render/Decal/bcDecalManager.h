@@ -39,16 +39,16 @@ namespace black_cat
 		class _bc_decal_entry : public bc_decal
 		{
 		public:
-			using string_hash = std::hash<const bcCHAR*>;
+			using string_hash = std::hash<std::string_view>;
 			
 		public:
-			_bc_decal_entry(bc_decal p_decal, string_hash::result_type p_hash)
+			_bc_decal_entry(bc_decal p_decal, bcSIZE p_hash)
 				: bc_decal(std::move(p_decal)),
 				m_hash(p_hash)
 			{
 			}
 
-			string_hash::result_type m_hash;
+			bcSIZE m_hash;
 		};
 
 		class _bc_decal_instance_entry : public bc_decal_instance
@@ -70,8 +70,8 @@ namespace black_cat
 		{
 		private:
 			using string_hash = _bc_decal_entry::string_hash;
-			using decal_desc_map = core::bc_unordered_map_program<string_hash::result_type, _bc_decal_desc_entry>;
-			using decal_map = core::bc_unordered_map<string_hash::result_type, bc_decal*>;
+			using decal_desc_map = core::bc_unordered_map_program<bcSIZE, _bc_decal_desc_entry>;
+			using decal_map = core::bc_unordered_map<bcSIZE, bc_decal*>;
 			using decal_instance_container = core::bc_list_pool<_bc_decal_instance_entry>;
 
 		public:
@@ -93,6 +93,8 @@ namespace black_cat
 			void read_decal_file(const bcECHAR* p_decal_file);
 
 			core::bc_vector_frame<std::string_view> get_decal_names() const;
+
+			bool is_decal_auto_remove(std::string_view p_name) const noexcept;
 			
 			/**
 			 * \brief Try to found decal and load all associated resources
@@ -100,7 +102,7 @@ namespace black_cat
 			 * \param p_name 
 			 * \return 
 			 */
-			bc_decal_ptr load_decal(const bcCHAR* p_name) noexcept;
+			bc_decal_ptr load_decal(std::string_view p_name) noexcept;
 			
 			/**
 			 * \brief Find decal description and load associated resources from its descriptor. If decal has already been loaded return pointer to it.
@@ -109,22 +111,22 @@ namespace black_cat
 			 * \param p_name 
 			 * \return 
 			 */
-			bc_decal_ptr load_decal_throw(const bcCHAR* p_name);
+			bc_decal_ptr load_decal_throw(std::string_view p_name);
 
 			/**
 			 * \brief Create a decal without a reference to owning actor.
 			 * Decals without reference will be removed automatically.
 			 * \n ThreadSafe
-			 * \param p_decal_name 
+			 * \param p_name 
 			 * \param p_local_position 
 			 * \param p_local_rotation
 			 * \return 
 			 */
-			bc_decal_instance* create_decal(const bcCHAR* p_decal_name,
+			bc_decal_instance* create_decal(std::string_view p_name,
 				const core::bc_vector3f& p_local_position,
 				const core::bc_matrix3f& p_local_rotation);
 
-			bc_decal_instance* create_decal(const bcCHAR* p_decal_name,
+			bc_decal_instance* create_decal(std::string_view p_name,
 				const core::bc_vector3f& p_local_position,
 				const core::bc_matrix3f& p_local_rotation,
 				bc_render_group p_render_group);
@@ -133,20 +135,20 @@ namespace black_cat
 			 * \brief Create a decal with a strong reference to owning actor.
 			 * Decals with strong reference will be removed when their reference count reach to zero.
 			 * \n ThreadSafe
-			 * \param p_decal_name 
+			 * \param p_name 
 			 * \param p_actor 
 			 * \param p_local_position 
 			 * \param p_local_rotation 
 			 * \param p_attached_node_index 
 			 * \return 
 			 */
-			bc_decal_instance_ptr create_decal(const bcCHAR* p_decal_name,
+			bc_decal_instance_ptr create_decal(std::string_view p_name,
 				const bc_actor& p_actor,
 				const core::bc_vector3f& p_local_position,
 				const core::bc_matrix3f& p_local_rotation,
 				bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index);
 
-			bc_decal_instance_ptr create_decal(const bcCHAR* p_decal_name,
+			bc_decal_instance_ptr create_decal(std::string_view p_name,
 				const bc_actor& p_actor,
 				const core::bc_vector3f& p_local_position,
 				const core::bc_matrix3f& p_local_rotation,

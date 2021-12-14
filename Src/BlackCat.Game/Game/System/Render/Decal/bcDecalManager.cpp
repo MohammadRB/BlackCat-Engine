@@ -129,7 +129,15 @@ namespace black_cat
 			return l_result;
 		}
 
-		bc_decal_ptr bc_decal_manager::load_decal(const bcCHAR* p_name) noexcept
+		bool bc_decal_manager::is_decal_auto_remove(std::string_view p_name) const noexcept
+		{
+			const auto l_hash = string_hash()(p_name);
+			const auto l_desc_ite = m_decal_descriptions.find(l_hash);
+
+			return l_desc_ite == std::end(m_decal_descriptions) || l_desc_ite->second.m_auto_remove;
+		}
+
+		bc_decal_ptr bc_decal_manager::load_decal(std::string_view p_name) noexcept
 		{
 			const auto l_hash = string_hash()(p_name);
 
@@ -157,6 +165,7 @@ namespace black_cat
 			(
 				bc_decal
 				(
+					l_desc_ite->second.m_name,
 					std::move(l_material), 
 					l_desc_ite->second.m_u0 / l_diffuse_width,
 					l_desc_ite->second.m_v0 / l_diffuse_height,
@@ -181,7 +190,7 @@ namespace black_cat
 			return bc_decal_ptr(l_decal, bc_decal_deleter(*this));
 		}
 
-		bc_decal_ptr bc_decal_manager::load_decal_throw(const bcCHAR* p_name)
+		bc_decal_ptr bc_decal_manager::load_decal_throw(std::string_view p_name)
 		{
 			auto l_decal_ptr = load_decal(p_name);
 			if(l_decal_ptr == nullptr)
@@ -193,30 +202,30 @@ namespace black_cat
 			return l_decal_ptr;
 		}
 
-		bc_decal_instance* bc_decal_manager::create_decal(const bcCHAR* p_decal_name,
+		bc_decal_instance* bc_decal_manager::create_decal(std::string_view p_name,
 			const core::bc_vector3f& p_local_position,
 			const core::bc_matrix3f& p_local_rotation)
 		{
-			auto l_ptr = create_decal(p_decal_name, bc_actor(), p_local_position, p_local_rotation, bc_mesh_node::s_invalid_index);
+			auto l_ptr = create_decal(p_name, bc_actor(), p_local_position, p_local_rotation, bc_mesh_node::s_invalid_index);
 			return l_ptr.release();
 		}
 
-		bc_decal_instance* bc_decal_manager::create_decal(const bcCHAR* p_decal_name,
+		bc_decal_instance* bc_decal_manager::create_decal(std::string_view p_name,
 			const core::bc_vector3f& p_local_position,
 			const core::bc_matrix3f& p_local_rotation,
 			bc_render_group p_render_group)
 		{
-			auto l_ptr = create_decal(p_decal_name, bc_actor(), p_local_position, p_local_rotation, p_render_group, bc_mesh_node::s_invalid_index);
+			auto l_ptr = create_decal(p_name, bc_actor(), p_local_position, p_local_rotation, p_render_group, bc_mesh_node::s_invalid_index);
 			return l_ptr.release();
 		}
 
-		bc_decal_instance_ptr bc_decal_manager::create_decal(const bcCHAR* p_decal_name,
+		bc_decal_instance_ptr bc_decal_manager::create_decal(std::string_view p_name,
 			const bc_actor& p_actor,
 			const core::bc_vector3f& p_local_position,
 			const core::bc_matrix3f& p_local_rotation,
 			bc_mesh_node::node_index_t p_attached_node_index)
 		{
-			auto l_decal_ptr = load_decal(p_decal_name);
+			auto l_decal_ptr = load_decal(p_name);
 			if(!l_decal_ptr)
 			{
 				return nullptr;
@@ -237,14 +246,14 @@ namespace black_cat
 			}
 		}
 
-		bc_decal_instance_ptr bc_decal_manager::create_decal(const bcCHAR* p_decal_name,
+		bc_decal_instance_ptr bc_decal_manager::create_decal(std::string_view p_name,
 			const bc_actor& p_actor,
 			const core::bc_vector3f& p_local_position,
 			const core::bc_matrix3f& p_local_rotation,
 			bc_render_group p_render_group,
 			bc_mesh_node::node_index_t p_attached_node_index)
 		{
-			auto l_decal_ptr = load_decal(p_decal_name);
+			auto l_decal_ptr = load_decal(p_name);
 			if (!l_decal_ptr)
 			{
 				return nullptr;
@@ -291,7 +300,7 @@ namespace black_cat
 				while (l_num_to_free && l_begin != l_end)
 				{
 					bc_decal_instance& l_instance = *l_begin;
-					if(!l_instance.get_decal()->get_temporary())
+					if(!l_instance.get_decal()->get_auto_remove())
 					{
 						++l_begin;
 						continue;
@@ -301,7 +310,7 @@ namespace black_cat
 					{
 						l_begin = m_decal_instances_pool.erase(l_begin);
 
-						++l_begin;
+						//++l_begin;
 						--l_num_to_free;
 						continue;
 					}

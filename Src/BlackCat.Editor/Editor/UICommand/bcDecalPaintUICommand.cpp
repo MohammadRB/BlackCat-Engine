@@ -3,13 +3,13 @@
 #include "Editor/EditorPCH.h"
 
 #include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
-#include "Editor/UICommand/bcDecalPainterUICommand.h"
+#include "Editor/UICommand/bcDecalPaintUICommand.h"
 
 namespace black_cat
 {
 	namespace editor
 	{
-		bc_decal_painter_ui_command::bc_decal_painter_ui_command(QString p_decal_name,
+		bc_decal_paint_ui_command::bc_decal_paint_ui_command(QString p_decal_name,
 			bcUINT16 p_screen_width,
 			bcUINT16 p_screen_height,
 			bcUINT16 p_point_left,
@@ -22,18 +22,18 @@ namespace black_cat
 		{
 		}
 
-		bc_decal_painter_ui_command::bc_decal_painter_ui_command(const bc_decal_painter_ui_command&) noexcept = default;
+		bc_decal_paint_ui_command::bc_decal_paint_ui_command(const bc_decal_paint_ui_command&) noexcept = default;
 
-		bc_decal_painter_ui_command::~bc_decal_painter_ui_command() = default;
+		bc_decal_paint_ui_command::~bc_decal_paint_ui_command() = default;
 
-		bc_decal_painter_ui_command& bc_decal_painter_ui_command::operator=(bc_decal_painter_ui_command&) noexcept = default;
+		bc_decal_paint_ui_command& bc_decal_paint_ui_command::operator=(bc_decal_paint_ui_command&) noexcept = default;
 
-		core::bc_string bc_decal_painter_ui_command::title() const
+		core::bc_string bc_decal_paint_ui_command::title() const
 		{
-			return "DecalPainter";
+			return "DecalPaint";
 		}
 
-		bool bc_decal_painter_ui_command::update(update_context& p_context)
+		bool bc_decal_paint_ui_command::update(update_context& p_context)
 		{
 			physics::bc_scene_ray_query_buffer l_query_buffer;
 

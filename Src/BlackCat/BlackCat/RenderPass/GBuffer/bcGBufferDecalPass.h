@@ -46,6 +46,8 @@ namespace black_cat
 		
 		void destroy(game::bc_render_system& p_render_system) override;
 
+		void draw_decal_bounds(bool p_value);
+		
 	private:
 		void _render_decals(const game::bc_render_pass_render_context& p_param,
 			game::bc_render_pass_state& p_render_pass_state, 
@@ -66,11 +68,19 @@ namespace black_cat
 		graphic::bc_sampler_state_ref m_linear_sampler;
 		graphic::bc_device_pipeline_state_ref m_device_pipeline_state;
 		graphic::bc_device_pipeline_state_ref m_device_pipeline_state_for_non_culling;
+		graphic::bc_device_pipeline_state_ref m_device_pipeline_state_for_debug_bounds;
 		game::bc_render_pass_state_ptr m_render_pass_state;
 		game::bc_render_pass_state_ptr m_render_pass_state_for_non_culling;
+		game::bc_render_pass_state_ptr m_render_pass_state_for_debug_bounds;
 		core::bc_unordered_map<const game::bc_mesh_material*, game::bc_render_state_ptr> m_render_states; // Use raw pointer to let materials get destroyed
 
 		core::bc_query_result<game::bc_scene_decal_query> m_decals_query;
 		game::bc_render_state_buffer m_decals_buffer;
+		bool m_draw_decal_bounds = false;
 	};
+
+	inline void bc_gbuffer_decal_pass::draw_decal_bounds(bool p_value)
+	{
+		m_draw_decal_bounds = p_value;
+	}
 }

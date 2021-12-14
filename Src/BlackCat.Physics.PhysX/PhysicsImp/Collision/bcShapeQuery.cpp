@@ -254,7 +254,7 @@ namespace black_cat
 				*p_shape.get_platform_pack().m_px_geometry,
 				p_shape_pose.get_platform_pack().m_px_transform,
 				p_ray.m_length,
-				static_cast< physx::PxHitFlag::Enum >(p_flags),
+				static_cast<physx::PxHitFlag::Enum>(p_flags),
 				p_hits_count,
 				&p_hits->get_platform_pack().m_px_hit
 			);

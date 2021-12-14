@@ -9,6 +9,7 @@
 #include "Game/Object/Mesh/bcMeshNode.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/System/Render/Decal/bcDecal.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
@@ -17,7 +18,7 @@ namespace black_cat
 		class bc_decal_manager;
 		class bc_decal_instance;
 		
-		class bc_decal_instance_deleter
+		class BC_GAME_DLL bc_decal_instance_deleter
 		{
 		public:
 			bc_decal_instance_deleter();
@@ -30,7 +31,7 @@ namespace black_cat
 			bc_decal_manager* m_manager;
 		};
 		
-		class bc_decal_instance : public core::bc_ref_count
+		class BC_GAME_DLL bc_decal_instance : public core::bc_ref_count
 		{
 		public:
 			bc_decal_instance(bc_decal_ptr p_decal,
