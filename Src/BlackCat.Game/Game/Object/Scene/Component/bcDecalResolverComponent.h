@@ -29,6 +29,10 @@ namespace black_cat
 			virtual ~bc_decal_resolver_component() override;
 
 			bc_decal_resolver_component& operator=(bc_decal_resolver_component&&) noexcept;
+
+			void load_instance(const bc_actor_component_load_context& p_context) override;
+			
+			void write_instance(const bc_actor_component_write_context& p_context) override;
 		};
 
 		inline bc_decal_resolver_component::bc_decal_resolver_component() noexcept = default;

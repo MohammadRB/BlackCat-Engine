@@ -185,6 +185,7 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalPaintUICommand.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalRemoveUICommand.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalSelectUICommand.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalUpdateUICommand.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteUICommand.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectUpdateUICommand.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcEditorModeUICommand.cpp" />
@@ -483,6 +484,7 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalPaintUICommand.h" />
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalRemoveUICommand.h" />
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalSelectUICommand.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalUpdateUICommand.h" />
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectDeleteUICommand.h" />
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcObjectUpdateUICommand.h" />
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcEditorModeUICommand.h" />

@@ -58,9 +58,13 @@ namespace black_cat
 			bc_decal_ptr get_decal_ptr() const noexcept;
 
 			bc_actor get_actor() const noexcept;
+
+			void set_local_position(const core::bc_vector3f& p_position) noexcept;
 			
 			const core::bc_vector3f& get_local_position() const noexcept;
 
+			void set_local_rotation(const core::bc_matrix3f& p_rotation) noexcept;
+			
 			const core::bc_matrix3f& get_local_rotation() const noexcept;
 			
 			bc_mesh_node::node_index_t get_attached_node_index() const noexcept;
@@ -68,7 +72,7 @@ namespace black_cat
 			bc_render_group get_render_group() const noexcept;
 			
 			/**
-			 * \brief Apply decal local transforms and scale and set decal world transform
+			 * \brief Apply decal local transforms and scale then set decal world transform
 			 * \param p_world_transform
 			 */
 			void set_world_transform(const core::bc_matrix4f& p_world_transform) noexcept;
@@ -146,12 +150,17 @@ namespace black_cat
 		{
 			return m_actor;
 		}
+
+		inline void bc_decal_instance::set_local_position(const core::bc_vector3f& p_position) noexcept
+		{
+			m_local_position = p_position;
+		}
 		
 		inline const core::bc_vector3f& bc_decal_instance::get_local_position() const noexcept
 		{
 			return m_local_position;
 		}
-
+		
 		inline const core::bc_matrix3f& bc_decal_instance::get_local_rotation() const noexcept
 		{
 			return m_local_rotation;

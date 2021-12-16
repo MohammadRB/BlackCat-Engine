@@ -171,6 +171,12 @@ namespace black_cat
 
 		const auto l_px_controller_material = p_context.m_game_system.get_render_system().get_material_manager().get_default_collider_material().m_px_material;
 		m_rigid_controller_component->reset_controller(create_px_controller(l_px_controller_material));
+
+		auto l_mass = 0.f;
+		{
+			game::bc_rigid_component_shared_lock l_lock(*m_rigid_controller_component);
+			l_mass = m_rigid_controller_component->get_body().get_mass();
+		}
 		
 		m_state_machine = core::bc_make_unique<bc_xbot_state_machine>(bc_xbot_state_machine
 		(
@@ -178,6 +184,7 @@ namespace black_cat
 			7.f, 
 			m_bound_box_max_side_length * 1.3f, 
 			m_bound_box_max_side_length * 0.6f,
+			l_mass,
 			*m_animation_pipeline
 		));
 	}
@@ -508,10 +515,16 @@ namespace black_cat
 			return;
 		}
 
+		auto l_weapon_mass = 0.f;
 		auto* l_rigid_dynamic_component = p_weapon.get_component<game::bc_rigid_dynamic_component>();
 		if (l_rigid_dynamic_component)
 		{
 			l_rigid_dynamic_component->set_enable(false);
+
+			{
+				game::bc_rigid_component_shared_lock l_lock(*l_rigid_dynamic_component);
+				l_weapon_mass = l_rigid_dynamic_component->get_body().get_mass();
+			}			
 		}
 		
 		bc_xbot_weapon l_weapon;
@@ -523,6 +536,7 @@ namespace black_cat
 		l_weapon.m_main_hand_offset = l_weapon_component->get_main_hand_offset_ls();
 		l_weapon.m_second_hand_offset = l_weapon_component->get_second_hand_offset_ls();
 		l_weapon.m_rate_of_fire_seconds = l_weapon_component->get_rate_of_fire_seconds();
+		l_weapon.m_mass = l_weapon_mass;
 
 		m_weapon.reset(l_weapon);
 		m_state_machine->attach_weapon(*m_weapon, m_rifle_joint.second, m_rifle_joint_offset);

@@ -74,6 +74,54 @@ namespace black_cat
 		return l_matrix;
 	}
 
+	inline core::bc_matrix3f bc_matrix3f_rotation_x(bcFLOAT p_radians)
+	{
+		core::bc_matrix3f l_matrix;
+
+		if constexpr (graphic::bc_render_api_info::use_left_handed())
+		{
+			l_matrix.rotation_x_lh(p_radians);
+		}
+		else
+		{
+			l_matrix.rotation_x_rh(p_radians);
+		}
+
+		return l_matrix;
+	}
+
+	inline core::bc_matrix3f bc_matrix3f_rotation_y(bcFLOAT p_radians)
+	{
+		core::bc_matrix3f l_matrix;
+
+		if constexpr (graphic::bc_render_api_info::use_left_handed())
+		{
+			l_matrix.rotation_y_lh(p_radians);
+		}
+		else
+		{
+			l_matrix.rotation_y_rh(p_radians);
+		}
+
+		return l_matrix;
+	}
+
+	inline core::bc_matrix3f bc_matrix3f_rotation_z(bcFLOAT p_radians)
+	{
+		core::bc_matrix3f l_matrix;
+
+		if constexpr (graphic::bc_render_api_info::use_left_handed())
+		{
+			l_matrix.rotation_z_lh(p_radians);
+		}
+		else
+		{
+			l_matrix.rotation_z_rh(p_radians);
+		}
+
+		return l_matrix;
+	}
+	
 	inline core::bc_vector4f bc_matrix3f_decompose_to_axis_angle(const core::bc_matrix3f& p_transform)
 	{
 		const auto l_up = p_transform.get_row(1);

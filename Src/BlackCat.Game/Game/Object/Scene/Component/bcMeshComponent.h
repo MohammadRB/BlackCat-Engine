@@ -38,6 +38,10 @@ namespace black_cat
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
+			void load_instance(const bc_actor_component_load_context& p_context) override;
+
+			void write_instance(const bc_actor_component_write_context& p_context) override;
+			
 		protected:
 			bc_mesh_component() noexcept;
 

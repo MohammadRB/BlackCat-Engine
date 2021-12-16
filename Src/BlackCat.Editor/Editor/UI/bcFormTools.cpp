@@ -14,7 +14,6 @@
 #include "Editor/UICommand/bcObjectInsertUICommand.h"
 #include "Editor/UICommand/bcDecalPaintUICommand.h"
 #include "Editor/UICommand/bcDecalSelectUICommand.h"
-#include "Editor/UICommand/bcDecalRemoveUICommand.h"
 #include "Editor/UI/bcFormObjectInsert.h"
 
 namespace black_cat
@@ -27,13 +26,17 @@ namespace black_cat
 			QDockWidget& p_container,
 			QToolBox& p_tool_properties_container,
 			bc_form_terrain& p_terrain_form,
+			bc_form_object& p_object_form,
 			bc_form_object_insert& p_object_insert_form,
+			bc_form_decal& p_decal_form,
 			bc_form_decal_insert& p_decal_insert_form)
 			: m_game_system(p_game_system),
 			m_ui_command_service(p_ui_command_service),
 			m_render_widget(p_render_widget),
 			m_terrain_form(p_terrain_form),
+			m_object_form(p_object_form),
 			m_object_insert_form(p_object_insert_form),
+			m_decal_form(p_decal_form),
 			m_decal_insert_form(p_decal_insert_form),
 			m_tool_bar(p_container),
 			m_tool_properties_container(p_tool_properties_container),
@@ -69,6 +72,7 @@ namespace black_cat
 			if(!p_toggled)
 			{
 				m_state = state::none;
+				m_object_form.setSelectedActor(game::bc_actor(), core::bc_matrix4f::identity());
 				return;
 			}
 
@@ -155,6 +159,7 @@ namespace black_cat
 			if (!p_toggled)
 			{	
 				m_state = state::none;
+				m_decal_form.setSelectedDecal(nullptr);
 			}
 			else
 			{

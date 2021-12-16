@@ -27,25 +27,18 @@ namespace black_cat
 
 			bc_height_map_component& operator=(bc_height_map_component&&) noexcept;
 
-			core::bc_vector3f get_world_position() const
-			{
-				return m_transform.get_translation();
-			}
+			core::bc_vector3f get_world_position() const noexcept;
 
-			const bc_height_map& get_height_map() const
-			{
-				return *m_height_map;
-			}
+			const bc_height_map& get_height_map() const noexcept;
 
-			bc_height_map_ptr get_height_map_ptr() const
-			{
-				return m_height_map;
-			}
+			bc_height_map_ptr get_height_map_ptr() const noexcept;
 
 			bc_actor get_actor() const noexcept override;
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
+			void load_instance(const bc_actor_component_load_context& p_context) override;
+			
 			void write_instance(const bc_actor_component_write_context& p_context) override;
 
 			void handle_event(const bc_actor_component_event_context& p_context) override;
@@ -56,10 +49,25 @@ namespace black_cat
 				const core::bc_vector3f& p_world_position, 
 				const core::bc_vector3f& p_dir, 
 				bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index) override;
-			
+
 		private:
 			bc_height_map_ptr m_height_map;
 			core::bc_matrix4f m_transform;
 		};
+
+		inline core::bc_vector3f bc_height_map_component::get_world_position() const noexcept
+		{
+			return m_transform.get_translation();
+		}
+
+		inline const bc_height_map& bc_height_map_component::get_height_map() const noexcept
+		{
+			return *m_height_map;
+		}
+
+		inline bc_height_map_ptr bc_height_map_component::get_height_map_ptr() const noexcept
+		{
+			return m_height_map;
+		}
 	}
 }

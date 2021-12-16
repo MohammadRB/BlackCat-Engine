@@ -998,5 +998,8 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcModelToSkinningAnimationJob.cpp">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcDecalResolverComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

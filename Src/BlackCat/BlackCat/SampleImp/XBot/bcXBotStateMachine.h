@@ -192,6 +192,7 @@ namespace black_cat
 			bcFLOAT p_look_speed,
 			bcFLOAT p_run_speed,
 			bcFLOAT p_walk_speed,
+			bcFLOAT p_mass,
 			game::bci_animation_job& p_animation_pipeline);
 
 		bc_xbot_state_machine(bc_xbot_state_machine&&) noexcept;
@@ -217,7 +218,7 @@ namespace black_cat
 		bc_xbot_state m_state;
 	
 	private:
-		void update_directions(const bc_xbot_state_update_params& p_update_params) noexcept;
+		void update_directions(const bc_xbot_state_update_params& p_update_params, bcFLOAT p_holding_mass = 0) noexcept;
 
 		void blend_without_weapon_animation(game::bci_animation_job& p_animation) noexcept;
 		
@@ -244,6 +245,7 @@ namespace black_cat
 		bcFLOAT m_look_speed;
 		bcFLOAT m_run_speed;
 		bcFLOAT m_walk_speed;
+		bcFLOAT m_mass;
 		game::bci_animation_job* m_new_active_animation;
 	};
 
@@ -379,7 +381,7 @@ namespace black_cat
 		auto& l_machine = get_machine();
 		auto* l_idle_blending_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(*m_animation, "weapon_idle_blending");
 
-		l_machine.update_directions(p_event.m_update_params);
+		l_machine.update_directions(p_event.m_update_params, m_weapon->m_mass);
 		l_machine.blend_with_weapon_animation(*m_animation);
 		l_machine.blend_idle_animation(p_event.m_update_params, *l_idle_blending_job);
 		l_machine.blend_aim_animation(p_event.m_update_params, *m_animation);
@@ -454,7 +456,7 @@ namespace black_cat
 		auto& l_machine = get_machine();
 		auto* l_running_blending_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(*m_animation, "weapon_running_blending");
 		
-		l_machine.update_directions(p_event.m_update_params);
+		l_machine.update_directions(p_event.m_update_params, m_weapon->m_mass);
 		l_machine.blend_with_weapon_animation(*m_animation);
 		l_machine.blend_running_animation(p_event.m_update_params, *l_running_blending_job);
 		l_machine.blend_aim_animation(p_event.m_update_params, *m_animation);
@@ -511,6 +513,7 @@ namespace black_cat
 		bcFLOAT p_look_speed,
 		bcFLOAT p_run_speed,
 		bcFLOAT p_walk_speed,
+		bcFLOAT p_mass,
 		game::bci_animation_job& p_animation_pipeline)
 		: bc_state_machine
 		(
@@ -524,6 +527,7 @@ namespace black_cat
 		m_look_speed = p_look_speed;
 		m_run_speed = p_run_speed;
 		m_walk_speed = p_walk_speed;
+		m_mass = p_mass;
 		m_state.m_look_side = 0;
 		m_state.m_look_direction = p_local_forward;
 		m_state.m_move_direction = p_local_forward;
@@ -625,7 +629,7 @@ namespace black_cat
 		return *m_state.m_active_animation;
 	}
 
-	inline void bc_xbot_state_machine::update_directions(const bc_xbot_state_update_params& p_update_params) noexcept
+	inline void bc_xbot_state_machine::update_directions(const bc_xbot_state_update_params& p_update_params, bcFLOAT p_holding_mass) noexcept
 	{
 		core::bc_matrix3f l_look_rotation;
 		core::bc_vector3f l_right_vector;
@@ -675,20 +679,22 @@ namespace black_cat
 			l_left_vector = core::bc_vector3f::normalize(l_right_left_direction * m_state.m_look_direction);
 		}
 
+		const auto l_holding_mass = std::max(.6f, 1 - p_holding_mass / m_mass);
 		m_state.m_move_speed = (1 - p_update_params.m_walk_velocity) * m_run_speed + p_update_params.m_walk_velocity * m_walk_speed;
 		m_state.m_move_direction = m_state.m_look_direction * p_update_params.m_forward_velocity +
 				m_state.m_look_direction * -p_update_params.m_backward_velocity +
 				l_right_vector * p_update_params.m_right_velocity +
 				l_left_vector * p_update_params.m_left_velocity;
-		m_state.m_move_amount = std::max
-		(
-			{
-				p_update_params.m_forward_velocity,
-				p_update_params.m_backward_velocity,
-				p_update_params.m_right_velocity,
-				p_update_params.m_left_velocity
-			}
-		) * m_state.m_move_speed;
+		m_state.m_move_amount = l_holding_mass * m_state.m_move_speed *
+				std::max
+				(
+					{
+						p_update_params.m_forward_velocity,
+						p_update_params.m_backward_velocity,
+						p_update_params.m_right_velocity,
+						p_update_params.m_left_velocity
+					}
+				);
 
 		if (core::bc_vector3f::length_sq(m_state.m_move_direction) <= 0)
 		{

@@ -19,7 +19,7 @@ namespace black_cat
 
 			bc_decal_paint_ui_command(const bc_decal_paint_ui_command&) noexcept;
 
-			~bc_decal_paint_ui_command();
+			~bc_decal_paint_ui_command() override;
 
 			bc_decal_paint_ui_command& operator=(bc_decal_paint_ui_command&) noexcept;
 

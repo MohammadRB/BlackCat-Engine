@@ -5,17 +5,32 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
-#include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemoveDecalActorEvent.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcUtility.h"
+#include "Game/bcConstant.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		BC_JSON_STRUCTURE(_bc_decal_parameter_json)
+		{
+			BC_JSON_VALUE(core::bc_string_frame, nm);
+			BC_JSON_VALUE(core::bc_vector3f, pos_ls);
+			BC_JSON_VALUE(core::bc_vector3f, rot_ls);
+			BC_JSON_VALUE(bcINT32, rg);
+			BC_JSON_VALUE(bc_mesh_node::node_index_t, ani);
+		};
+		
+		BC_JSON_STRUCTURE(_bc_decal_array_json)
+		{
+			BC_JSON_ARRAY(_bc_decal_parameter_json, decals);
+		};
+		
 		bc_decal_component::bc_decal_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
 			: bci_actor_component(p_actor_index, p_index),
 			bc_render_component(),
@@ -182,6 +197,50 @@ namespace black_cat
 				m_mesh_scale = 1;
 				m_use_hierarchy_transforms = false;
 			}
+		}
+
+		void bc_decal_component::load_instance(const bc_actor_component_load_context& p_context)
+		{
+			const auto l_ite = p_context.m_parameters.find(constant::g_param_decal_parameters);
+			if(l_ite != std::end(p_context.m_parameters))
+			{
+				auto& l_json_str = l_ite->second.as_throw<core::bc_string>();
+
+				core::bc_json_document<_bc_decal_array_json> l_json;
+				l_json.load(l_json_str.c_str());
+
+				for(auto& l_json_entry : l_json->m_decals)
+				{
+					add_decal
+					(
+						*l_json_entry->m_nm,
+						*l_json_entry->m_pos_ls,
+						bc_matrix3f_rotation_zyx(*l_json_entry->m_rot_ls),
+						static_cast<bc_render_group>(*l_json_entry->m_rg),
+						core::bc_matrix4f::identity(),
+						*l_json_entry->m_ani
+					);
+				}
+			}
+		}
+
+		void bc_decal_component::write_instance(const bc_actor_component_write_context& p_context)
+		{
+			core::bc_json_document<_bc_decal_array_json> l_json;
+			l_json.set_max_decimal_places(2);
+			
+			for(auto& l_decal : m_persistent_decals)
+			{
+				auto& l_json_entry = l_json->m_decals.new_entry();
+				*l_json_entry->m_nm = l_decal->get_decal()->get_name();
+				*l_json_entry->m_pos_ls = l_decal->get_local_position();
+				*l_json_entry->m_rot_ls = bc_matrix3f_decompose_to_euler_angles(l_decal->get_local_rotation());
+				*l_json_entry->m_rg = static_cast<bcINT32>(l_decal->get_render_group());
+				*l_json_entry->m_ani = l_decal->get_attached_node_index();
+			}
+
+			core::bc_string l_json_str = l_json.write().c_str();
+			p_context.m_parameters.add(constant::g_param_decal_parameters, core::bc_any(std::move(l_json_str)));
 		}
 
 		void bc_decal_component::handle_event(const bc_actor_component_event_context& p_context)

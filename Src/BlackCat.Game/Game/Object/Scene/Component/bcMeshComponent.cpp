@@ -80,6 +80,16 @@ namespace black_cat
 			set_lod_factor(l_bound_box);
 		}
 
+		void bc_mesh_component::load_instance(const bc_actor_component_load_context& p_context)
+		{
+			bc_decal_resolver_component::load_instance(p_context);
+		}
+
+		void bc_mesh_component::write_instance(const bc_actor_component_write_context& p_context)
+		{
+			bc_decal_resolver_component::write_instance(p_context);
+		}
+
 		void bc_mesh_component::set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform) noexcept
 		{
 			physics::bc_bound_box l_bound_box;

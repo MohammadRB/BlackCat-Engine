@@ -34,7 +34,7 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 100.0,
+            "mass": 20.0,
             "cmass": [ -1.0, 0.0, 0.0 ]
           }
         }

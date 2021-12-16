@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/Math/bcMatrix4f.h"
 #include "Game/System/Render/Decal/bcDecalInstance.h"
 #include "Editor/Application/bcUICommandService.h"
 #include <QtWidgets/QLabel>
@@ -31,7 +30,9 @@ namespace black_cat
 			bc_ui_command_service* m_command_service;
 
 			QLabel* m_decal_name_label;
-			QLineEdit* m_decal_rotation_text;
+			QLineEdit* m_decal_rotation_x_text;
+			QLineEdit* m_decal_rotation_y_text;
+			QLineEdit* m_decal_rotation_z_text;
 			QAbstractButton* m_decal_update_button;
 			QAbstractButton* m_decal_delete_button;
 

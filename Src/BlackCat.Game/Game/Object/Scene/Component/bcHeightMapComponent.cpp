@@ -64,9 +64,16 @@ namespace black_cat
 			m_height_map = p_context.m_stream_manager.find_content_throw<bc_height_map>(l_height_map_name.c_str());
 		}
 
+		void bc_height_map_component::load_instance(const bc_actor_component_load_context& p_context)
+		{
+			bc_decal_resolver_component::load_instance(p_context);
+		}
+
 		void bc_height_map_component::write_instance(const bc_actor_component_write_context& p_context)
 		{
-			auto* l_content_manager = core::bc_get_service< core::bc_content_manager >();
+			bc_decal_resolver_component::write_instance(p_context);
+			
+			auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
 			l_content_manager->save(*m_height_map);
 		}
 

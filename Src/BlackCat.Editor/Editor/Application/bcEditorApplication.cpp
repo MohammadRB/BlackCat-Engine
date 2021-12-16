@@ -53,7 +53,9 @@ namespace black_cat
 				*m_ui.toolsDock, 
 				*m_ui.rightToolBox, 
 				*m_form_terrain, 
+				*m_form_object, 
 				*m_form_object_insert, 
+				*m_form_decal,
 				*m_form_decal_insert
 			);
 			m_timer = std::make_unique<QTimer>();

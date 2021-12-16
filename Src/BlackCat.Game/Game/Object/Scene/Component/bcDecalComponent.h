@@ -60,6 +60,10 @@ namespace black_cat
 				bc_mesh_node::node_index_t p_attached_node);
 
 			void initialize_entity(const bc_actor_component_initialize_entity_context& p_context) override;
+
+			void load_instance(const bc_actor_component_load_context& p_context) override;
+			
+			void write_instance(const bc_actor_component_write_context& p_context) override;
 			
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 

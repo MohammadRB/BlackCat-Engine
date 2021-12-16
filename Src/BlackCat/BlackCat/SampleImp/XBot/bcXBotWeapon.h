@@ -19,6 +19,7 @@ namespace black_cat
 		core::bc_vector3f m_second_hand_offset;
 		core::bc_vector3f m_fire_offset;
 		bcFLOAT m_rate_of_fire_seconds;
+		bcFLOAT m_mass;
 	};
 
 	struct bc_xbot_grenade

@@ -121,6 +121,11 @@ namespace black_cat
 
 			for (const auto& [l_key, l_entry] : m_decal_descriptions)
 			{
+				if(l_entry.m_auto_remove)
+				{
+					continue;
+				}
+				
 				l_result.push_back(l_entry.m_name);
 			}
 

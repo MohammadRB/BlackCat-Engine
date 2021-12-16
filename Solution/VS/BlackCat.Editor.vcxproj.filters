@@ -191,12 +191,6 @@
     <ClCompile Include="GeneratedFiles\Develope\moc_bcFormObject.cpp">
       <Filter>Generated Files\Develope</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcFormObject.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcFormObject.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Develope\moc_bcFormMainToolBar.cpp">
       <Filter>Generated Files\Develope</Filter>
     </ClCompile>
@@ -266,19 +260,13 @@
     <ClCompile Include="GeneratedFiles\Release\moc_bcFormDecal.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Develope\moc_bcFormEntity.cpp">
-      <Filter>Generated Files\Develope</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcFormEntity.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcFormEntity.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.cpp">
       <Filter>Editor\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalSelectUICommand.cpp">
+      <Filter>Editor\UICommand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalUpdateUICommand.cpp">
       <Filter>Editor\UICommand</Filter>
     </ClCompile>
   </ItemGroup>
@@ -362,6 +350,9 @@
       <Filter>Editor\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalSelectUICommand.h">
+      <Filter>Editor\UICommand</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalUpdateUICommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
   </ItemGroup>

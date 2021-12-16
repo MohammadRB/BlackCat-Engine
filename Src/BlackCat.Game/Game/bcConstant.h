@@ -28,6 +28,7 @@ namespace black_cat
 		BC_PARAMETER(heightmap, "heightmap");
 		BC_PARAMETER(texture_config, "config");
 		BC_PARAMETER(emitter_name, "emitter_name");
+		BC_PARAMETER(decal_parameters, "decals");
 		BC_PARAMETER(decal_name, "decal_name");
 		BC_PARAMETER(weapon_class, "class");
 		BC_PARAMETER(weapon_up_ls, "up_ls");

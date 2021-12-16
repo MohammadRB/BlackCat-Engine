@@ -278,8 +278,8 @@ namespace black_cat
 					m_task_count.fetch_sub(1);
 					m_num_thread_in_spin.fetch_sub(1);
 
-					if(s_num_thread_in_spin != 0)	// If number of steady threads in worker spin method is zero
-					{								// there is no need to notify another thread
+					if constexpr (s_num_thread_in_spin != 0)	// If number of steady threads in worker spin method is zero
+					{											// there is no need to notify another thread
 						m_cvariable.notify_one();
 					}
 

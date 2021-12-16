@@ -78,6 +78,27 @@
     </Expand>
   </Type>
 
+  <Type Name="black_cat::core::bc_handle_ptr&lt;*&gt;">
+    <DisplayString>{"$T1"}</DisplayString>
+    <Expand>
+      <Item Name="[pointer]">($T1*)m_pointer</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="black_cat::core::bc_unique_ptr&lt;*&gt;">
+    <DisplayString>{"$T1"}</DisplayString>
+    <Expand>
+      <Item Name="[pointer]">($T1*)m_pointer</Item>
+    </Expand>
+  </Type>
+
+  <Type Name="black_cat::core::bc_shared_ptr&lt;*&gt;">
+    <DisplayString>{"$T1"}</DisplayString>
+    <Expand>
+      <Item Name="[pointer]">($T1*)m_pointer</Item>
+    </Expand>
+  </Type>
+
   <Type Name="std::atomic&lt;*&gt;">
     <DisplayString>{{{($T1)_Storage._Value}}}</DisplayString>
   </Type>

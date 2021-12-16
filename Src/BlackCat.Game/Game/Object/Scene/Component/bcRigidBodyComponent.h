@@ -127,12 +127,18 @@ namespace black_cat
 
 		inline void bc_rigid_body_component::unlock()
 		{
-			m_scene->unlock();
+			if (m_scene)
+			{
+				m_scene->unlock();
+			}
 		}
 
 		inline void bc_rigid_body_component::unlock_shared()
 		{
-			m_scene->unlock_shared();
+			if(m_scene)
+			{
+				m_scene->unlock_shared();
+			}
 		}
 		
 		inline physics::bc_scene* bc_rigid_body_component::get_scene() noexcept

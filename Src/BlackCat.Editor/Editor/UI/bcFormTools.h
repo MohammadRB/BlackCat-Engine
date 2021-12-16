@@ -6,7 +6,9 @@
 #include "Editor/Application/bcUICommandService.h"
 #include "Editor/Widget/bcWidgetD3DOutput.h"
 #include "Editor/UI/bcFormTerrain.h"
+#include "Editor/UI/bcFormObject.h"
 #include "Editor/UI/bcFormObjectInsert.h"
+#include "Editor/UI/bcFormDecal.h"
 #include "Editor/UI/bcFormDecalInsert.h"
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QDockWidget>
@@ -40,7 +42,9 @@ namespace black_cat
 				QDockWidget& p_container,
 				QToolBox& p_tool_properties_container,
 				bc_form_terrain& p_terrain_form,
+				bc_form_object& p_object_form,
 				bc_form_object_insert& p_object_insert_form,
+				bc_form_decal& p_decal_form,
 				bc_form_decal_insert& p_decal_insert_form);
 
 		private slots:
@@ -74,7 +78,9 @@ namespace black_cat
 
 			bc_widget_d3d_output& m_render_widget;
 			bc_form_terrain& m_terrain_form;
+			bc_form_object& m_object_form;
 			bc_form_object_insert& m_object_insert_form;
+			bc_form_decal& m_decal_form;
 			bc_form_decal_insert& m_decal_insert_form;
 
 			QDockWidget& m_tool_bar;
