@@ -18,7 +18,7 @@ namespace black_cat
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_depth_stencil_view : public bci_platform_resource_view<TRenderApi>
 		{
 		public:

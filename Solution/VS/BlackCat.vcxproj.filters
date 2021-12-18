@@ -240,6 +240,9 @@
     <ClInclude Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotGrenadeNetworkMessage.h">
       <Filter>BlackCat\SampleImp\XBot</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcGlowPass.h">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\Loader\bcComputeShaderLoader.cpp">
@@ -380,6 +383,9 @@
     <ClCompile Include="..\..\Src\BlackCat\BlackCat\SampleImp\XBot\bcXBotGrenadeNetworkMessage.cpp">
       <Filter>BlackCat\SampleImp\XBot</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat\BlackCat\RenderPass\PostProcess\bcGlowPass.cpp">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\bcShapeDraw.hlsl">
@@ -446,6 +452,9 @@
       <Filter>BlackCat\Content\Shader\DirectX11\GBuffer</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\PostProcess\bcLightFlare.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
+    </FxCompile>
+    <FxCompile Include="bcGlow.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
     </FxCompile>
   </ItemGroup>

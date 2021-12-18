@@ -14,12 +14,12 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_vertex_shader_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_vertex_shader : public bci_platform_shader<TRenderApi>
 		{
 		public:
@@ -75,9 +75,9 @@ namespace black_cat
 		};
 
 		constexpr bcCHAR g_vertex_shader_content_name[] = BC_CONTENT_NAME(vtx_shd);
-		using bc_vertex_shader = bc_platform_vertex_shader< g_current_render_api >;
+		using bc_vertex_shader = bc_platform_vertex_shader<g_current_render_api>;
 		using bc_vertex_shader_ref = bc_device_ref<bc_vertex_shader>;
-		using bc_vertex_shader_content = bc_device_resource_content< bc_vertex_shader, g_vertex_shader_content_name >;
+		using bc_vertex_shader_content = bc_device_resource_content<bc_vertex_shader, g_vertex_shader_content_name>;
 		using bc_vertex_shader_content_ptr = core::bc_content_ptr<bc_vertex_shader_content>;
 	}
 }

@@ -41,7 +41,7 @@ namespace black_cat
 		graphic::bc_buffer_ref m_indices_buffer;
 
 		graphic::bc_sampler_state_ref m_sampler_state;
-		graphic::bc_render_target_view_ref m_back_buffer_view;
+		graphic::bc_render_target_view_ref m_back_buffer_render_view;
 		graphic::bc_resource_view_ref m_input_texture_view;
 
 		graphic::bc_device_pipeline_state_ref m_pipeline_state;

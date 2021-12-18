@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		struct bc_platform_device_ref_pack
 		{
 		};
@@ -19,12 +19,12 @@ namespace black_cat
 		 * \tparam TApi
 		 * \tparam TObject
 		 */
-		template< bc_render_api TApi, class TObject >
+		template<bc_render_api TApi, class TObject>
 		class bc_platform_device_ref
 		{
 		public:
 			using type = TObject;
-			using platform_pack = bc_platform_device_ref_pack< TApi, TObject >;
+			using platform_pack = bc_platform_device_ref_pack<TApi, TObject>;
 
 		public:
 			bc_platform_device_ref();
@@ -37,7 +37,7 @@ namespace black_cat
 			<
 				typename = std::enable_if_t
 				<
-					std::is_base_of_v< bc_platform_device_reference< TApi >, std::decay_t< type > >
+					std::is_base_of_v<bc_platform_device_reference<TApi>, std::decay_t<type>>
 				>
 			>
 			explicit bc_platform_device_ref(const type& p_object);
@@ -79,7 +79,12 @@ namespace black_cat
 
 			bool operator!=(std::nullptr_t) const noexcept;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}
@@ -88,7 +93,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< typename TObject >
-		using bc_device_ref = bc_platform_device_ref< g_current_render_api, TObject >;
+		template<typename TObject>
+		using bc_device_ref = bc_platform_device_ref<g_current_render_api, TObject>;
 	}
 }

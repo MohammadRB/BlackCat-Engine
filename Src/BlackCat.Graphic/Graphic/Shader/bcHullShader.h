@@ -13,12 +13,12 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_hull_shader_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_hull_shader : public bci_platform_shader<TRenderApi>
 		{
 		public:
@@ -31,7 +31,7 @@ namespace black_cat
 
 			bc_platform_hull_shader(const bc_platform_hull_shader& p_other) noexcept;
 
-			~bc_platform_hull_shader() noexcept;
+			~bc_platform_hull_shader() noexcept override;
 
 			bc_platform_hull_shader& operator=(const bc_platform_hull_shader& p_other) noexcept;
 
@@ -74,9 +74,9 @@ namespace black_cat
 		};
 
 		constexpr bcCHAR g_hull_shader_content_name[] = BC_CONTENT_NAME(hul_shd);
-		using bc_hull_shader = bc_platform_hull_shader< g_current_render_api >;
-		using bc_hull_shader_ref = bc_device_ref< bc_hull_shader >;
-		using bc_hull_shader_content = bc_device_resource_content< bc_hull_shader, g_hull_shader_content_name >;
+		using bc_hull_shader = bc_platform_hull_shader<g_current_render_api>;
+		using bc_hull_shader_ref = bc_device_ref<bc_hull_shader>;
+		using bc_hull_shader_content = bc_device_resource_content<bc_hull_shader, g_hull_shader_content_name>;
 		using bc_hull_shader_content_ptr = core::bc_content_ptr<bc_hull_shader_content>;
 	}
 }

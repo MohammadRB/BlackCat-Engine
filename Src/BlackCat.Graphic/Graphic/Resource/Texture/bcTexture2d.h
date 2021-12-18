@@ -90,9 +90,9 @@ namespace black_cat
 		};
 
 		constexpr bcCHAR g_texture_content_name[] = BC_CONTENT_NAME(tex_2d);
-		using bc_texture2d = bc_platform_texture2d< g_current_render_api >;
-		using bc_texture2d_ref = bc_device_ref< bc_texture2d >;
-		using bc_texture2d_content = bc_device_resource_content< bc_texture2d, g_texture_content_name >;
+		using bc_texture2d = bc_platform_texture2d<g_current_render_api>;
+		using bc_texture2d_ref = bc_device_ref<bc_texture2d>;
+		using bc_texture2d_content = bc_device_resource_content<bc_texture2d, g_texture_content_name>;
 		using bc_texture2d_content_ptr = core::bc_content_ptr<bc_texture2d_content>;
 	}
 }

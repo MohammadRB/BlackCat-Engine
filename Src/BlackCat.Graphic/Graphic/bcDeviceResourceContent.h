@@ -14,7 +14,7 @@ namespace black_cat
 		 * \tparam TResource
 		 * \tparam TContentName
 		 */
-		template< class TResource, const bcCHAR TContentName[] >
+		template<class TResource, const bcCHAR TContentName[]>
 		class bc_device_resource_content : public core::bci_content
 		{
 		public:
@@ -25,7 +25,7 @@ namespace black_cat
 
 			bc_device_resource_content(bc_device_resource_content&&) noexcept = default;
 
-			~bc_device_resource_content() = default;
+			~bc_device_resource_content() override = default;
 
 			bc_device_resource_content& operator=(bc_device_resource_content&&)  noexcept = default;
 

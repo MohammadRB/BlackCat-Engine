@@ -35,7 +35,7 @@ namespace black_cat
 
 				s_config.m_alpha_to_coverage_enable = false;
 				s_config.m_independent_blend_enable = false;
-				for (bcUINT32 i = 0; i < bc_render_api_info::number_of_om_render_target_slots(); i++)
+				for (bcUINT32 i = 0; i <bc_render_api_info::number_of_om_render_target_slots(); i++)
 				{
 					s_config.m_render_target[i].m_blend_enable = false;
 					s_config.m_render_target[i].m_src_blend = bc_blend::one;
@@ -51,13 +51,13 @@ namespace black_cat
 			}
 		};
 
-		/*template< bc_platform_render_api TRenderApi >
+		/*template<bc_platform_render_api TRenderApi>
 		struct bc_platform_blend_state_pack
 		{
 			
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template<bc_platform_render_api TRenderApi>
 		class bc_platform_blend_state : public core_platform::bc_no_copy
 		{
 		public:

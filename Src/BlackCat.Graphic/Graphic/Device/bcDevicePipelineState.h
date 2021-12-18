@@ -52,12 +52,12 @@ namespace black_cat
 			bc_texture_ms_config m_sample_config;
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_device_pipeline_state_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_device_pipeline_state : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
@@ -70,7 +70,7 @@ namespace black_cat
 			
 			bc_platform_device_pipeline_state(const bc_platform_device_pipeline_state&) noexcept;
 
-			~bc_platform_device_pipeline_state();
+			~bc_platform_device_pipeline_state() override;
 
 			bc_platform_device_pipeline_state& operator=(const bc_platform_device_pipeline_state&) noexcept;
 

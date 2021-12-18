@@ -17,7 +17,7 @@ namespace black_cat
 		class bc_platform_texture_config
 		{
 		public:
-			using platform_pack = bc_platform_texture_config_pack< TRenderApi >;
+			using platform_pack = bc_platform_texture_config_pack<TRenderApi>;
 
 			bcUINT32 get_width() const;
 
@@ -29,7 +29,12 @@ namespace black_cat
 
 			bc_format get_format() const;
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const  noexcept
 			{
 				return m_pack;
 			}

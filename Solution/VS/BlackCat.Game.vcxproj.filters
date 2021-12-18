@@ -261,9 +261,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcLightComponent.h">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassResourceShare.h">
-      <Filter>Game\System\Render\Pass</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\bcConstant.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -663,6 +660,12 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Animation\Job\bcSkinningTransformAnimationJob.h">
       <Filter>Game\Object\Animation\Job</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcIntermediateTextureManager.h">
+      <Filter>Game\System\Render\Pass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPassResourceManager.h">
+      <Filter>Game\System\Render\Pass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -1000,6 +1003,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcDecalResolverComponent.cpp">
       <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcIntermediateTextureManager.cpp">
+      <Filter>Game\System\Render\Pass</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

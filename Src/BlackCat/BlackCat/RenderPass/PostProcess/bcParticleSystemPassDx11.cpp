@@ -571,7 +571,7 @@ namespace black_cat
 
 		const auto l_back_buffer = p_context.m_device_swap_buffer.get_back_buffer_texture();
 		const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer.get_width(), l_back_buffer.get_height());
-		const auto l_back_buffer_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_back_buffer_view);
+		const auto l_back_buffer_render_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_back_buffer_render_view);
 		
 		m_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
 		(
@@ -596,7 +596,7 @@ namespace black_cat
 			m_device_pipeline_state.get(),
 			l_viewport,
 			{
-				l_back_buffer_view
+				l_back_buffer_render_view
 			},
 			graphic::bc_depth_stencil_view(),
 			{

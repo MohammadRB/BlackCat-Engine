@@ -24,19 +24,19 @@ namespace black_cat
 
 		struct bc_input_layout_config
 		{
-			core::bc_vector_movable< bc_input_element_desc > m_input_elements;
+			core::bc_vector_movable<bc_input_element_desc> m_input_elements;
 		};
 
-		/*template< bc_platform_render_api TRenderApi >
+		/*template<bc_platform_render_api TRenderApi>
 		struct bc_platform_input_layout_pack
 		{
 		};
 
-		template< bc_platform_render_api TRenderApi>
+		template<bc_platform_render_api TRenderApi>
 		class bc_platform_input_layout : public core_platform::bc_no_copy
 		{
 		public:
-			using platform_pack = bc_platform_input_layout_pack< TRenderApi >;
+			using platform_pack = bc_platform_input_layout_pack<TRenderApi>;
 
 		public:
 			platform_pack& get_platform_pack()

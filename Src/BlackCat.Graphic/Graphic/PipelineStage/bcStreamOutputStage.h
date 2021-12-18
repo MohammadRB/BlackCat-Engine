@@ -16,7 +16,7 @@ namespace black_cat
 	{
 		template<bc_render_api>
 		class bc_platform_device_pipeline;
-		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
+		using bc_device_pipeline = bc_platform_device_pipeline<g_current_render_api>;
 
 		class bc_stream_output_stage_state
 		{
@@ -37,8 +37,8 @@ namespace black_cat
 
 			void reset_tracking() noexcept;
 
-			bc_pipeline_state_array_variable< bc_buffer, bc_render_api_info::number_of_so_streams() >  m_stream_buffers;
-			bc_pipeline_state_array_variable< bcUINT, bc_render_api_info::number_of_so_streams()> m_stream_offsets;
+			bc_pipeline_state_array_variable<bc_buffer, bc_render_api_info::number_of_so_streams()>  m_stream_buffers;
+			bc_pipeline_state_array_variable<bcUINT, bc_render_api_info::number_of_so_streams()> m_stream_offsets;
 		};
 
 		inline bc_stream_output_stage_state::bc_stream_output_stage_state() noexcept
@@ -63,12 +63,12 @@ namespace black_cat
 			m_stream_offsets.reset_tracking();
 		}
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_stream_output_stage_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_stream_output_stage : public core_platform::bc_no_copy
 		{
 		public:
@@ -92,7 +92,12 @@ namespace black_cat
 				return m_required_state;
 			}
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}

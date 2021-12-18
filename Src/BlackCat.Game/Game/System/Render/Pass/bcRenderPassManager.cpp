@@ -7,21 +7,38 @@
 #include "Game/System/Render/Pass/bcRenderPassManager.h"
 #include "Game/bcException.h"
 
- namespace black_cat
+namespace black_cat
 {
 	namespace game
 	{
-		bc_render_pass_manager::bc_render_pass_manager()
+		bc_render_pass_manager::bc_render_pass_manager(graphic::bc_device& p_device) noexcept
+			: m_texture_manager(p_device)
 		{
 			// Force vector to allocate memory so when we call begin on it we get valid iterator
 			m_passes.reserve(1);
 		}
 
+		bc_render_pass_manager::bc_render_pass_manager(bc_render_pass_manager&& p_other) noexcept
+			: m_passes(std::move(p_other.m_passes)),
+			m_resource_manager(std::move(p_other.m_resource_manager)),
+			m_texture_manager(std::move(p_other.m_texture_manager))
+		{
+			
+		}
+
 		bc_render_pass_manager::~bc_render_pass_manager() = default;
+
+		bc_render_pass_manager& bc_render_pass_manager::operator=(bc_render_pass_manager&& p_other) noexcept
+		{
+			m_passes = std::move(p_other.m_passes);
+			m_resource_manager = std::move(p_other.m_resource_manager);
+			m_texture_manager = std::move(p_other.m_texture_manager);
+			return *this;
+		}
 
 		void bc_render_pass_manager::pass_initialize_resources(bc_render_system& p_render_system)
 		{
-			for (auto& l_entry : m_passes)
+			for (const auto& l_entry : m_passes)
 			{
 				l_entry.m_pass->initialize_resources(p_render_system);
 			}
@@ -29,7 +46,7 @@
 
 		void bc_render_pass_manager::pass_update(const bc_render_pass_update_context& p_param)
 		{
-			for (auto& l_entry : m_passes)
+			for (const auto& l_entry : m_passes)
 			{
 				l_entry.m_pass->update(p_param);
 			}
@@ -39,21 +56,21 @@
 		{
 			auto* l_counter_value_manager = core::bc_get_service<core::bc_counter_value_manager>();
 			
-			for (_bc_render_pass_entry& l_entry : m_passes)
+			for (const _bc_render_pass_entry& l_entry : m_passes)
 			{
 				l_entry.m_stop_watch->start();
 				l_entry.m_pass->initialize_frame(p_param);
 				l_entry.m_stop_watch->stop();
 			}
 			
-			for(_bc_render_pass_entry& l_entry : m_passes)
+			for(const _bc_render_pass_entry& l_entry : m_passes)
 			{
 				l_entry.m_stop_watch->start();
 				l_entry.m_pass->execute(p_param);
 				l_entry.m_stop_watch->stop();
 			}
 
-			for (_bc_render_pass_entry& l_entry : m_passes)
+			for (const _bc_render_pass_entry& l_entry : m_passes)
 			{
 				l_entry.m_stop_watch->start();
 				l_entry.m_pass->cleanup_frame(p_param);
@@ -66,7 +83,7 @@
 
 		void bc_render_pass_manager::before_reset(const bc_render_pass_reset_context& p_param)
 		{
-			for (auto& l_entry : m_passes)
+			for (const auto& l_entry : m_passes)
 			{
 				l_entry.m_pass->before_reset(p_param);
 			}
@@ -74,7 +91,7 @@
 
 		void bc_render_pass_manager::after_reset(const bc_render_pass_reset_context& p_param)
 		{
-			for (auto& l_entry : m_passes)
+			for (const auto& l_entry : m_passes)
 			{
 				l_entry.m_pass->after_reset(p_param);
 			}
@@ -82,7 +99,7 @@
 
 		void bc_render_pass_manager::pass_destroy(bc_render_system& p_render_system)
 		{
-			for (auto& l_entry : m_passes)
+			for (const auto& l_entry : m_passes)
 			{
 				l_entry.m_pass->destroy(p_render_system);
 			}
@@ -99,7 +116,7 @@
 			l_entry.m_name = p_name;
 			l_entry.m_pass = std::move(p_pass);
 			l_entry.m_stop_watch = core::bc_make_unique<core::bc_stop_watch>();
-			l_entry.m_pass->_set_pass_resource_share(&m_state_share);
+			l_entry.m_pass->_set_private_fields(m_resource_manager, m_texture_manager);
 
 			if(p_before == nullptr)
 			{

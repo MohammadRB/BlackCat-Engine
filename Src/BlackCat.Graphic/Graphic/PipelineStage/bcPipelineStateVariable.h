@@ -8,7 +8,7 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< typename TState >
+		template<typename TState>
 		class bc_pipeline_state_variable
 		{
 		public:
@@ -37,7 +37,7 @@ namespace black_cat
 			bool m_update_needed;
 		};
 
-		template< typename TState >
+		template<typename TState>
 		bc_pipeline_state_variable<TState>::bc_pipeline_state_variable(TState p_initial_state) noexcept
 			: m_initial_state(p_initial_state),
 			m_state(p_initial_state),
@@ -45,7 +45,7 @@ namespace black_cat
 		{
 		}
 
-		template< typename TState >
+		template<typename TState>
 		bc_pipeline_state_variable<TState>::bc_pipeline_state_variable(const bc_pipeline_state_variable& p_other) noexcept
 			: m_initial_state(p_other.m_initial_state),
 			m_state(p_other.m_state),
@@ -53,12 +53,12 @@ namespace black_cat
 		{
 		}
 
-		template< typename TState >
+		template<typename TState>
 		bc_pipeline_state_variable<TState>::~bc_pipeline_state_variable()
 		{
 		}
 
-		template< typename TState >
+		template<typename TState>
 		bc_pipeline_state_variable<TState>& bc_pipeline_state_variable<TState>::operator=(const bc_pipeline_state_variable& p_other) noexcept
 		{
 			m_state = p_other.m_state;
@@ -67,7 +67,7 @@ namespace black_cat
 			return *this;
 		}
 
-		template< typename TState >
+		template<typename TState>
 		void bc_pipeline_state_variable<TState>::set(TState p_state) noexcept
 		{
 			if (p_state != m_state)
@@ -82,25 +82,25 @@ namespace black_cat
 			m_state = p_state;
 		}
 
-		template< typename TState >
+		template<typename TState>
 		TState bc_pipeline_state_variable<TState>::get() const noexcept
 		{
 			return m_state;
 		}
 
-		template< typename TState >
+		template<typename TState>
 		void bc_pipeline_state_variable<TState>::set_to_initial_state() noexcept
 		{
 			set(m_initial_state);
 		}
 
-		template< typename TState >
+		template<typename TState>
 		bool bc_pipeline_state_variable<TState>::update_needed() const noexcept
 		{
 			return m_update_needed;
 		}
 
-		template< typename TState >
+		template<typename TState>
 		void bc_pipeline_state_variable<TState>::reset_tracking() noexcept
 		{
 			m_update_needed = false;

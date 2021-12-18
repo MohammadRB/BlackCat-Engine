@@ -96,6 +96,6 @@ namespace black_cat
 		};
 
 		using bc_sampler_state = bc_platform_sampler_state<g_current_render_api>;
-		using bc_sampler_state_ref = bc_device_ref< bc_sampler_state >;
+		using bc_sampler_state_ref = bc_device_ref<bc_sampler_state>;
 	}
 }

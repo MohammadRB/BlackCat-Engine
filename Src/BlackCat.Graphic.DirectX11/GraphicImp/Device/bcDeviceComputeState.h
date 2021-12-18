@@ -29,7 +29,7 @@ namespace black_cat
 		};
 
 		template<>
-		inline bc_platform_device_compute_state< g_api_dx11 >::bc_platform_device_compute_state() noexcept
+		inline bc_platform_device_compute_state<g_api_dx11>::bc_platform_device_compute_state() noexcept
 			: bc_platform_device_reference()
 		{
 			m_pack.m_compute_state_proxy = nullptr;
@@ -43,19 +43,19 @@ namespace black_cat
 		}
 
 		template<>
-		inline bc_platform_device_compute_state< g_api_dx11 >::bc_platform_device_compute_state(const bc_platform_device_compute_state& p_other) noexcept
+		inline bc_platform_device_compute_state<g_api_dx11>::bc_platform_device_compute_state(const bc_platform_device_compute_state& p_other) noexcept
 			: bc_platform_device_reference(p_other),
 			m_pack(p_other.m_pack)
 		{
 		}
 
 		template<>
-		inline bc_platform_device_compute_state< g_api_dx11 >::~bc_platform_device_compute_state()
+		inline bc_platform_device_compute_state<g_api_dx11>::~bc_platform_device_compute_state()
 		{
 		}
 
 		template<>
-		inline bc_platform_device_compute_state< g_api_dx11 >& bc_platform_device_compute_state< g_api_dx11 >::operator=(const bc_platform_device_compute_state& p_other) noexcept
+		inline bc_platform_device_compute_state<g_api_dx11>& bc_platform_device_compute_state<g_api_dx11>::operator=(const bc_platform_device_compute_state& p_other) noexcept
 		{
 			bc_platform_device_reference::operator=(p_other);
 			m_pack = p_other.m_pack;
@@ -64,13 +64,13 @@ namespace black_cat
 		}
 
 		template<>
-		inline const bc_device_compute_state_config& bc_platform_device_compute_state< g_api_dx11 >::get_config() const
+		inline const bc_device_compute_state_config& bc_platform_device_compute_state<g_api_dx11>::get_config() const
 		{
 			return m_pack.m_compute_state_proxy->m_config;
 		}
 
 		template<>
-		inline bool bc_platform_device_compute_state< g_api_dx11 >::is_valid() const noexcept
+		inline bool bc_platform_device_compute_state<g_api_dx11>::is_valid() const noexcept
 		{
 			return m_pack.m_compute_state_proxy != nullptr;
 		}

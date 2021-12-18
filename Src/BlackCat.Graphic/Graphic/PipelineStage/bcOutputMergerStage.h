@@ -20,7 +20,7 @@ namespace black_cat
 	{
 		template<bc_render_api>
 		class bc_platform_device_pipeline;
-		using bc_device_pipeline = bc_platform_device_pipeline< g_current_render_api >;
+		using bc_device_pipeline = bc_platform_device_pipeline<g_current_render_api>;
 
 		class bc_output_merger_stage_state
 		{
@@ -43,13 +43,13 @@ namespace black_cat
 
 			bcUINT associated_render_target_count() const noexcept;
 
-			//bc_pipeline_state_variable< bc_blend_state* > m_blend_state;
-			//bc_pipeline_state_variable< bc_depth_stencil_state* > m_depth_stencil_state;
-			bc_pipeline_state_variable< core::bc_vector4f > m_blend_factors;
-			bc_pipeline_state_variable< bcUINT > m_stencil_ref;
-			bc_pipeline_state_array_variable< bc_render_target_view, bc_render_api_info::number_of_om_render_target_slots() > m_render_target_views;
-			bc_pipeline_state_variable< bc_depth_stencil_view > m_depth_target_view;
-			//bc_pipeline_state_array_variable< bcUINT > m_uav_initial_counts;
+			//bc_pipeline_state_variable<bc_blend_state*> m_blend_state;
+			//bc_pipeline_state_variable<bc_depth_stencil_state*> m_depth_stencil_state;
+			bc_pipeline_state_variable<core::bc_vector4f> m_blend_factors;
+			bc_pipeline_state_variable<bcUINT> m_stencil_ref;
+			bc_pipeline_state_array_variable<bc_render_target_view, bc_render_api_info::number_of_om_render_target_slots()> m_render_target_views;
+			bc_pipeline_state_variable<bc_depth_stencil_view> m_depth_target_view;
+			//bc_pipeline_state_array_variable<bcUINT> m_uav_initial_counts;
 		};
 
 		inline bc_output_merger_stage_state::bc_output_merger_stage_state() noexcept
@@ -90,7 +90,7 @@ namespace black_cat
 			bcUINT l_count = 0;
 			constexpr bcUINT l_render_target_slot_count = bc_render_api_info::number_of_om_render_target_slots();
 
-			for (bcUINT i = 0; i < l_render_target_slot_count; ++i)
+			for (bcUINT i = 0; i <l_render_target_slot_count; ++i)
 			{
 				if (m_render_target_views.get(i).is_valid())
 				{
@@ -130,7 +130,12 @@ namespace black_cat
 				return m_required_state;
 			}
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}

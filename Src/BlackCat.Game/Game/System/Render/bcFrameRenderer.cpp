@@ -57,7 +57,7 @@ namespace black_cat
 		};
 
 		static _bc_render_system_global_state_cbuffer g_global_state;
-		static const bcSIZE g_max_skinned_transform = 90;
+		static constexpr bcSIZE g_max_skinned_transform = 90;
 
 		struct _bc_render_system_per_object_cbuffer
 		{
@@ -131,10 +131,16 @@ namespace black_cat
 		{
 			m_thread_manager = p_other.m_thread_manager;
 			m_render_pass_manager = p_other.m_render_pass_manager;
+
 			m_global_cbuffer = std::move(p_other.m_global_cbuffer);
 			m_per_object_cbuffer = std::move(p_other.m_per_object_cbuffer);
 			m_global_cbuffer_parameter = std::move(p_other.m_global_cbuffer_parameter);
 			m_per_object_cbuffer_parameter = std::move(p_other.m_per_object_cbuffer_parameter);
+
+			m_prev_camera_instance = p_other.m_prev_camera_instance;
+			m_camera_instance = p_other.m_camera_instance;
+			m_prev_camera.store(p_other.m_prev_camera.load());
+			m_camera.store(p_other.m_camera.load());
 			
 			return *this;
 		}
@@ -369,8 +375,8 @@ namespace black_cat
 
 		void bc_frame_renderer::render(const render_context& p_render_param)
 		{
-			auto* l_prev_camera = m_prev_camera.load(core_platform::bc_memory_order::consume);
-			auto* l_camera = m_camera.load(core_platform::bc_memory_order::consume);
+			const auto* l_prev_camera = m_prev_camera.load(core_platform::bc_memory_order::consume);
+			const auto* l_camera = m_camera.load(core_platform::bc_memory_order::consume);
 
 			if(!l_prev_camera)
 			{

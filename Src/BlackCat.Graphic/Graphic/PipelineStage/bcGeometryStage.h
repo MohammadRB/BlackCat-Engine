@@ -18,7 +18,7 @@ namespace black_cat
 
 			bc_platform_geometry_stage(bc_platform_geometry_stage&&) noexcept;
 
-			~bc_platform_geometry_stage();
+			~bc_platform_geometry_stage() override;
 
 			bc_platform_geometry_stage& operator=(bc_platform_geometry_stage&&) noexcept;
 
@@ -34,6 +34,6 @@ namespace black_cat
 			/*void apply_unordered_access_views(bc_device_pipeline& p_pipeline) override;*/
 		};
 
-		using bc_geometry_stage = bc_platform_geometry_stage< g_current_render_api >;
+		using bc_geometry_stage = bc_platform_geometry_stage<g_current_render_api>;
 	}
 }

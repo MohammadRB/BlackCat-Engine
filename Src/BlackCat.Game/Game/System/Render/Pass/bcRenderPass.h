@@ -6,7 +6,9 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcString.h"
 #include "Graphic/bcEvent.h"
-#include "Game/System/Render/Pass/bcRenderPassResourceShare.h"
+#include "GraphicImp/Resource/Texture/bcTextureConfig.h"
+#include "Game/System/Render/Pass/bcRenderPassResourceManager.h"
+#include "Game/System/Render/Pass/bcIntermediateTextureManager.h"
 #include "Game/System/Input/bcCameraInstance.h"
 #include "Game/bcException.h"
 
@@ -24,6 +26,7 @@ namespace black_cat
 		class bc_render_thread;
 		class bc_default_render_thread;
 		class bc_scene;
+		class bc_render_pass_manager;
 		
 		template<typename TPass>
 		struct bc_render_pass_trait
@@ -111,8 +114,10 @@ namespace black_cat
 		 */
 		class bci_render_pass : public core_platform::bc_no_copy
 		{
+			friend class bc_render_pass_manager;
+			
 		public:
-			bci_render_pass() = default;
+			bci_render_pass() noexcept;
 
 			bci_render_pass(bci_render_pass&&) = default;
 
@@ -171,51 +176,55 @@ namespace black_cat
 			 */
 			virtual void destroy(bc_render_system& p_render_system) = 0;
 
-			void _set_pass_resource_share(bc_render_pass_resource_share* p_state_share);
-
 		protected:
-			template< typename T >
+			template<typename T>
 			void share_resource(bc_render_pass_variable_t p_variable, T&& p_value);
 
 			void unshare_resource(bc_render_pass_variable_t p_variable);
 
-			template< typename T >
+			template<typename T>
 			T* get_shared_resource(bc_render_pass_variable_t p_variable) const noexcept;
 
-			template< typename T >
+			template<typename T>
 			T& get_shared_resource_throw(bc_render_pass_variable_t p_variable) const;
 
+			bc_intermediate_texture_guard get_intermediate_texture(const graphic::bc_texture_config& p_texture_config);
+
 		private:
-			bc_render_pass_resource_share* m_resource_share;
+			void _set_private_fields(bc_render_pass_resource_manager& p_resource_manager, bc_intermediate_texture_manager& p_texture_manager);
+			
+			bc_render_pass_resource_manager* m_resource_manager;
+			bc_intermediate_texture_manager* m_texture_manager;
 		};
+
+		inline bci_render_pass::bci_render_pass() noexcept
+			: m_resource_manager(nullptr),
+			m_texture_manager(nullptr)
+		{
+		}
 
 		inline void bci_render_pass::cleanup_frame(const bc_render_pass_render_context& p_context)
 		{
 		}
 
-		inline void bci_render_pass::_set_pass_resource_share(bc_render_pass_resource_share* p_state_share)
-		{
-			m_resource_share = p_state_share;
-		}
-
-		template< typename T >
+		template<typename T>
 		void bci_render_pass::share_resource(bc_render_pass_variable_t p_variable, T&& p_value)
 		{
-			m_resource_share->share_resource(p_variable, std::forward<T>(p_value));
+			m_resource_manager->share_resource(p_variable, std::forward<T>(p_value));
 		}
 
 		inline void bci_render_pass::unshare_resource(bc_render_pass_variable_t p_variable)
 		{
-			m_resource_share->unshare_resource(p_variable);
+			m_resource_manager->unshare_resource(p_variable);
 		}
 
-		template< typename T >
+		template<typename T>
 		T* bci_render_pass::get_shared_resource(bc_render_pass_variable_t p_variable) const noexcept
 		{
-			return m_resource_share->get_resource< T >(p_variable);
+			return m_resource_manager->get_resource<T>(p_variable);
 		}
 
-		template< typename T >
+		template<typename T>
 		T& bci_render_pass::get_shared_resource_throw(bc_render_pass_variable_t p_variable) const
 		{
 			auto* l_resource = get_shared_resource<T>(p_variable);
@@ -225,6 +234,17 @@ namespace black_cat
 			}
 
 			throw bc_key_not_found_exception("No shared resource were found in render passes with the given key");
+		}
+
+		inline bc_intermediate_texture_guard bci_render_pass::get_intermediate_texture(const graphic::bc_texture_config& p_texture_config)
+		{
+			return bc_intermediate_texture_guard(*m_texture_manager, p_texture_config);
+		}
+
+		inline void bci_render_pass::_set_private_fields(bc_render_pass_resource_manager& p_resource_manager, bc_intermediate_texture_manager& p_texture_manager)
+		{
+			m_resource_manager = &p_resource_manager;
+			m_texture_manager = &p_texture_manager;
 		}
 	}
 }

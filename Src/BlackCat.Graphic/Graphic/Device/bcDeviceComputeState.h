@@ -16,12 +16,12 @@ namespace black_cat
 			bc_compute_shader m_compute_shader;
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_device_compute_state_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_device_compute_state : public bc_platform_device_reference<TRenderApi>
 		{
 		public:

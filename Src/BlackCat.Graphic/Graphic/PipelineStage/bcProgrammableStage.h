@@ -39,10 +39,10 @@ namespace black_cat
 
 			void reset_tracking() noexcept;
 
-			bc_pipeline_state_array_variable< bc_buffer, bc_render_api_info::number_of_shader_constant_buffer()> m_constant_buffers;
-			bc_pipeline_state_array_variable< bc_sampler_state, bc_render_api_info::number_of_shader_sampler() > m_sampler_states;
-			bc_pipeline_state_array_variable< bc_resource_view, bc_render_api_info::number_of_shader_resource()> m_shader_resource_views;
-			bc_pipeline_state_array_variable< bc_resource_view, bc_render_api_info::number_of_ps_cs_uav_resource() > m_unordered_access_views;
+			bc_pipeline_state_array_variable<bc_buffer, bc_render_api_info::number_of_shader_constant_buffer()> m_constant_buffers;
+			bc_pipeline_state_array_variable<bc_sampler_state, bc_render_api_info::number_of_shader_sampler()> m_sampler_states;
+			bc_pipeline_state_array_variable<bc_resource_view, bc_render_api_info::number_of_shader_resource()> m_shader_resource_views;
+			bc_pipeline_state_array_variable<bc_resource_view, bc_render_api_info::number_of_ps_cs_uav_resource()> m_unordered_access_views;
 		};
 
 		inline bc_programmable_stage_state::bc_programmable_stage_state() noexcept
@@ -71,12 +71,12 @@ namespace black_cat
 			m_unordered_access_views.reset_tracking();
 		}
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_programmable_stage_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_programmable_stage : public core_platform::bc_no_copy
 		{
 		public:
@@ -100,7 +100,12 @@ namespace black_cat
 				return m_required_state;
 			}
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}

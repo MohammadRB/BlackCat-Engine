@@ -13,16 +13,16 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_device_command_executor_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_device_command_executor : public bc_platform_device_reference<TRenderApi>
 		{
 		public:
-			using platform_pack = bc_platform_device_command_executor_pack< TRenderApi >;
+			using platform_pack = bc_platform_device_command_executor_pack<TRenderApi>;
 
 		public:
 			bc_platform_device_command_executor() noexcept;
@@ -63,7 +63,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_device_command_executor = bc_platform_device_command_executor< g_current_render_api >;
-		using bc_device_command_executor_ref = bc_device_ref< bc_device_command_executor >;
+		using bc_device_command_executor = bc_platform_device_command_executor<g_current_render_api>;
+		using bc_device_command_executor_ref = bc_device_ref<bc_device_command_executor>;
 	}
 }

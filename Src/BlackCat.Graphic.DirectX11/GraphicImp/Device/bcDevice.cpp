@@ -63,10 +63,10 @@ namespace black_cat
 			return p_buffer.data();
 		}
 		
-		ID3D11Buffer* _initialize_buffer(bc_device* p_device, bc_buffer_config* p_config, bc_subresource_data* p_data)
+		ID3D11Buffer* _initialize_buffer(bc_device* p_device, const bc_buffer_config* p_config, const bc_subresource_data* p_data)
 		{
 			ID3D11Buffer* l_buffer;
-			D3D11_BUFFER_DESC& l_buffer_desc = p_config->get_platform_pack().m_desc;
+			const D3D11_BUFFER_DESC& l_buffer_desc = p_config->get_platform_pack().m_desc;
 			D3D11_SUBRESOURCE_DATA l_data;
 
 			if (p_data)
@@ -81,10 +81,10 @@ namespace black_cat
 			return l_buffer;
 		}
 
-		ID3D11Texture2D* _initialize_texture(bc_device* p_device, bc_texture_config* p_config, bc_subresource_data* p_data)
+		ID3D11Texture2D* _initialize_texture(bc_device* p_device, const bc_texture_config* p_config, const bc_subresource_data* p_data)
 		{
 			ID3D11Texture2D* l_texture;
-			D3D11_TEXTURE2D_DESC& l_texture_desc = p_config->get_platform_pack().m_desc;
+			const D3D11_TEXTURE2D_DESC& l_texture_desc = p_config->get_platform_pack().m_desc;
 			D3D11_SUBRESOURCE_DATA l_data;
 
 			BC_ASSERT
@@ -110,15 +110,15 @@ namespace black_cat
 			return l_texture;
 		}
 
-		ID3D11Texture2D* _initialize_texture(bc_device* p_device, bc_texture_config* p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
+		ID3D11Texture2D* _initialize_texture(bc_device* p_device, const bc_texture_config* p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
 		{
 			ID3D11Resource* l_texture;
-			D3D11_TEXTURE2D_DESC& l_texture_desc = p_config->get_platform_pack().m_desc;
+			const D3D11_TEXTURE2D_DESC& l_texture_desc = p_config->get_platform_pack().m_desc;
 
-			D3D11_USAGE l_usage = l_texture_desc.Usage;
-			bcUINT l_bind_flags = l_texture_desc.BindFlags;
-			bcUINT l_access_flags = l_texture_desc.CPUAccessFlags;
-			bcUINT l_misc_flags = l_texture_desc.MiscFlags;
+			const D3D11_USAGE l_usage = l_texture_desc.Usage;
+			const bcUINT l_bind_flags = l_texture_desc.BindFlags;
+			const bcUINT l_access_flags = l_texture_desc.CPUAccessFlags;
+			const bcUINT l_misc_flags = l_texture_desc.MiscFlags;
 
 			if (p_format == bc_image_format::dds)
 			{
@@ -159,7 +159,7 @@ namespace black_cat
 			return static_cast<ID3D11Texture2D*>(l_texture);
 		}
 
-		void _save_texture(bc_device* p_device, bc_texture2d* p_texture, bc_image_format p_format, const bcECHAR* p_file_name)
+		void _save_texture(bc_device* p_device, const bc_texture2d* p_texture, bc_image_format p_format, const bcECHAR* p_file_name)
 		{
 			{
 				core_platform::bc_mutex_guard l_guard(p_device->get_platform_pack().m_immediate_context_mutex);
@@ -362,7 +362,7 @@ namespace black_cat
 			return l_shader;
 		}
 
-		ID3D11View* _initialize_shader_view(bc_device* p_device, bci_resource* p_resource, bc_resource_view_config* p_view_config)
+		ID3D11View* _initialize_shader_view(bc_device* p_device, const bci_resource* p_resource, const bc_resource_view_config* p_view_config)
 		{
 			BC_ASSERT
 			(
@@ -376,7 +376,7 @@ namespace black_cat
 
 			if (p_view_config->get_platform_pack().m_type == bc_resource_view_type::shader)
 			{
-				D3D11_SHADER_RESOURCE_VIEW_DESC& l_resource_view_desc = p_view_config->get_platform_pack().m_shader_view_desc;
+				const D3D11_SHADER_RESOURCE_VIEW_DESC& l_resource_view_desc = p_view_config->get_platform_pack().m_shader_view_desc;
 
 				dx_call(p_device->get_platform_pack().m_device->CreateShaderResourceView
 				(
@@ -389,7 +389,7 @@ namespace black_cat
 			}
 			else
 			{
-				D3D11_UNORDERED_ACCESS_VIEW_DESC& l_unordered_view_desc = p_view_config->get_platform_pack().m_unordered_shader_view_desc;
+				const D3D11_UNORDERED_ACCESS_VIEW_DESC& l_unordered_view_desc = p_view_config->get_platform_pack().m_unordered_shader_view_desc;
 
 				dx_call(p_device->get_platform_pack().m_device->CreateUnorderedAccessView
 				(
@@ -402,12 +402,12 @@ namespace black_cat
 			}
 		}
 
-		ID3D11DepthStencilView* _initialize_depth_stencil_view(bc_device* p_device, bci_resource* p_resource, bc_depth_stencil_view_config* p_view_config)
+		ID3D11DepthStencilView* _initialize_depth_stencil_view(bc_device* p_device, const bci_resource* p_resource, const bc_depth_stencil_view_config* p_view_config)
 		{
 			ID3D11Resource* l_resource = p_resource->get_resource_platform_pack().m_resource;
 			ID3D11DepthStencilView* l_depth_stencil_view;
 
-			D3D11_DEPTH_STENCIL_VIEW_DESC& l_depth_stencil_view_desc = p_view_config->get_platform_pack().m_depth_stencil_view_desc;
+			const D3D11_DEPTH_STENCIL_VIEW_DESC& l_depth_stencil_view_desc = p_view_config->get_platform_pack().m_depth_stencil_view_desc;
 
 			dx_call(p_device->get_platform_pack().m_device->CreateDepthStencilView
 			(
@@ -419,12 +419,12 @@ namespace black_cat
 			return l_depth_stencil_view;
 		}
 
-		ID3D11RenderTargetView* _initialize_render_target_view(bc_device* p_device, bci_resource* p_resource, bc_render_target_view_config* p_view_config)
+		ID3D11RenderTargetView* _initialize_render_target_view(bc_device* p_device, const bci_resource* p_resource, const bc_render_target_view_config* p_view_config)
 		{
 			ID3D11Resource* l_resource = p_resource->get_resource_platform_pack().m_resource;
 			ID3D11RenderTargetView* l_render_target_view;
 
-			D3D11_RENDER_TARGET_VIEW_DESC& l_render_target_view_desc = p_view_config->get_platform_pack().m_render_target_view_desc;
+			const D3D11_RENDER_TARGET_VIEW_DESC& l_render_target_view_desc = p_view_config->get_platform_pack().m_render_target_view_desc;
 
 			dx_call(p_device->get_platform_pack().m_device->CreateRenderTargetView
 			(
@@ -472,7 +472,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_info bc_platform_device<g_api_dx11>::get_device_info(bc_device_swap_buffer& p_swap_buffer) const
+		bc_device_info bc_platform_device<g_api_dx11>::get_device_info(const bc_device_swap_buffer& p_swap_buffer) const
 		{
 			ComPtr<IDXGIDevice> l_dxgi_device;
 			ComPtr<IDXGIAdapter> l_adapter;
@@ -490,18 +490,18 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bcUINT bc_platform_device<g_api_dx11>::check_multi_sampling(bc_format p_textue_format, bcUINT p_sample_count) const
+		bcUINT bc_platform_device<g_api_dx11>::check_multi_sampling(bc_format p_texture_format, bcUINT p_sample_count) const
 		{
 			bcUINT l_sample_quality;
 
-			m_pack.m_device->CheckMultisampleQualityLevels(bc_graphic_cast(p_textue_format), p_sample_count, &l_sample_quality);
+			m_pack.m_device->CheckMultisampleQualityLevels(bc_graphic_cast(p_texture_format), p_sample_count, &l_sample_quality);
 
 			return l_sample_quality;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_buffer_ref bc_platform_device<g_api_dx11>::create_buffer(bc_buffer_config& p_config, bc_subresource_data* p_data)
+		bc_buffer_ref bc_platform_device<g_api_dx11>::create_buffer(const bc_buffer_config& p_config, const bc_subresource_data* p_data)
 		{
 			auto* l_dx_buffer = _initialize_buffer(static_cast<bc_device*>(this), &p_config, p_data);
 
@@ -519,7 +519,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_texture2d_ref bc_platform_device<g_api_dx11>::create_texture2d(bc_texture_config& p_config, bc_subresource_data* p_data)
+		bc_texture2d_ref bc_platform_device<g_api_dx11>::create_texture2d(const bc_texture_config& p_config, const bc_subresource_data* p_data)
 		{
 			auto* l_dx_texture = _initialize_texture(static_cast<bc_device*>(this), &p_config, p_data);
 
@@ -537,7 +537,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_texture2d_ref bc_platform_device<g_api_dx11>::create_texture2d(bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
+		bc_texture2d_ref bc_platform_device<g_api_dx11>::create_texture2d(const bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
 		{
 			auto* l_dx_texture = _initialize_texture(static_cast<bc_device*>(this), &p_config, p_data, p_data_size, p_format);
 			
@@ -928,7 +928,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_resource_view_ref bc_platform_device<g_api_dx11>::create_resource_view(bci_resource& p_resource, bc_resource_view_config& p_view_config)
+		bc_resource_view_ref bc_platform_device<g_api_dx11>::create_resource_view(const bci_resource& p_resource, const bc_resource_view_config& p_view_config)
 		{
 			auto* l_dx_view = _initialize_shader_view(static_cast<bc_device*>(this), &p_resource, &p_view_config);
 
@@ -959,7 +959,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_depth_stencil_view_ref bc_platform_device<g_api_dx11>::create_depth_stencil_view(bci_resource& p_resource, bc_depth_stencil_view_config& p_view_config)
+		bc_depth_stencil_view_ref bc_platform_device<g_api_dx11>::create_depth_stencil_view(const bci_resource& p_resource, const bc_depth_stencil_view_config& p_view_config)
 		{
 			auto* l_dx_view = _initialize_depth_stencil_view(static_cast<bc_device*>(this), &p_resource, &p_view_config);
 
@@ -976,7 +976,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_render_target_view_ref bc_platform_device<g_api_dx11>::create_render_target_view(bci_resource& p_resource, bc_render_target_view_config& p_view_config)
+		bc_render_target_view_ref bc_platform_device<g_api_dx11>::create_render_target_view(const bci_resource& p_resource, const bc_render_target_view_config& p_view_config)
 		{
 			auto* l_dx_view = _initialize_render_target_view(static_cast<bc_device*>(this), &p_resource, &p_view_config);
 
@@ -993,7 +993,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_pipeline_state_ref bc_platform_device<g_api_dx11>::create_pipeline_state(bc_device_pipeline_state_config& p_config)
+		bc_device_pipeline_state_ref bc_platform_device<g_api_dx11>::create_pipeline_state(const bc_device_pipeline_state_config& p_config)
 		{
 			ID3D11BlendState* l_dx_blend_state = nullptr;
 			ID3D11DepthStencilState* l_dx_depth_stencil = nullptr;
@@ -1103,7 +1103,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_compute_state_ref bc_platform_device<g_api_dx11>::create_compute_state(bc_device_compute_state_config& p_config)
+		bc_device_compute_state_ref bc_platform_device<g_api_dx11>::create_compute_state(const bc_device_compute_state_config& p_config)
 		{
 			/*auto l_compute_state_proxy = allocate<bc_device_compute_state_proxy>();*/
 			auto* l_compute_state_proxy = BC_NEW(bc_device_compute_state_proxy, core::bc_alloc_type::unknown);

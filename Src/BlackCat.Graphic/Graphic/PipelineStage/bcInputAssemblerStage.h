@@ -37,13 +37,13 @@ namespace black_cat
 
 			void reset_tracking() noexcept;
 
-			bc_pipeline_state_variable< bc_buffer > m_index_buffer;
-			bc_pipeline_state_variable< bc_format > m_index_buffer_format;
-			bc_pipeline_state_array_variable< bc_buffer, bc_render_api_info::number_of_ia_vertex_buffers() > m_vertex_buffers;
-			bc_pipeline_state_array_variable< bcUINT, bc_render_api_info::number_of_ia_vertex_buffers() > m_vertex_buffers_strides;
-			bc_pipeline_state_array_variable< bcUINT, bc_render_api_info::number_of_ia_vertex_buffers() > m_vertex_buffers_offsets;
-			//bc_pipeline_state_variable< bc_input_layout* > m_input_layout;
-			bc_pipeline_state_variable< bc_primitive > m_primitive_topology;
+			bc_pipeline_state_variable<bc_buffer> m_index_buffer;
+			bc_pipeline_state_variable<bc_format> m_index_buffer_format;
+			bc_pipeline_state_array_variable<bc_buffer, bc_render_api_info::number_of_ia_vertex_buffers()> m_vertex_buffers;
+			bc_pipeline_state_array_variable<bcUINT, bc_render_api_info::number_of_ia_vertex_buffers()> m_vertex_buffers_strides;
+			bc_pipeline_state_array_variable<bcUINT, bc_render_api_info::number_of_ia_vertex_buffers()> m_vertex_buffers_offsets;
+			//bc_pipeline_state_variable<bc_input_layout*> m_input_layout;
+			bc_pipeline_state_variable<bc_primitive> m_primitive_topology;
 		};
 
 		inline bc_input_assembler_stage_state::bc_input_assembler_stage_state() noexcept
@@ -111,7 +111,12 @@ namespace black_cat
 				return m_required_state;
 			}
 
-			platform_pack& get_platform_pack()
+			platform_pack& get_platform_pack() noexcept
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}

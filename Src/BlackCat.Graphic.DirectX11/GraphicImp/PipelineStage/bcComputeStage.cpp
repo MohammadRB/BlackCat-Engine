@@ -13,7 +13,7 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_compute_stage<g_api_dx11>::bc_platform_compute_stage() noexcept
 			: bc_platform_programmable_stage(platform_pack()),
@@ -21,7 +21,7 @@ namespace black_cat
 		{
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_compute_stage<g_api_dx11>::bc_platform_compute_stage(bc_platform_compute_stage&& p_other) noexcept
 			: bc_platform_programmable_stage(std::move(p_other)),
@@ -29,13 +29,13 @@ namespace black_cat
 		{
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_compute_stage<g_api_dx11>::~bc_platform_compute_stage()
 		{
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_compute_stage<g_api_dx11>& bc_platform_compute_stage<g_api_dx11>::operator=(bc_platform_compute_stage&& p_other) noexcept
 		{
@@ -44,7 +44,7 @@ namespace black_cat
 			return *this;
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_compute_stage<g_api_dx11>::apply_required_state(bc_device_pipeline& p_pipeline, const initial_counts_array* p_initial_counts)
 		{
@@ -68,14 +68,14 @@ namespace black_cat
 			});
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_compute_stage<g_api_dx11>::apply_shader_program(bc_device_pipeline& p_pipeline)
 		{
 			// shader programs are in pipeline state
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_compute_stage<g_api_dx11>::apply_constant_buffers(bc_device_pipeline& p_pipeline)
 		{
@@ -98,7 +98,7 @@ namespace black_cat
 			}
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_compute_stage<g_api_dx11>::apply_sampler_states(bc_device_pipeline& p_pipeline)
 		{
@@ -121,7 +121,7 @@ namespace black_cat
 			}
 		}
 
-		template < >
+		template<>
 		BC_GRAPHICIMP_DLL
 		void bc_platform_compute_stage<g_api_dx11>::apply_shader_resource_views(bc_device_pipeline& p_pipeline)
 		{
@@ -162,7 +162,7 @@ namespace black_cat
 			}
 		}
 
-		//template < >
+		//template <>
 		//void bc_platform_compute_stage<g_api_dx11>::apply_unordered_access_views(bc_device_pipeline& p_pipeline)
 		//{
 		//	ID3D11DeviceContext* l_context = p_pipeline.get_platform_pack().m_context.Get();

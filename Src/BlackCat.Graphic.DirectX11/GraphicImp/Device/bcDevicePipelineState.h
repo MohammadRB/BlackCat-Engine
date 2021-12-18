@@ -31,13 +31,13 @@ namespace black_cat
 		using bc_device_pipeline_state_proxy = bc_refcount_proxy<_bc_device_pipeline_state>;
 
 		template<>
-		struct bc_platform_device_pipeline_state_pack< g_api_dx11 > : bc_platform_device_reference_pack<g_api_dx11>
+		struct bc_platform_device_pipeline_state_pack<g_api_dx11> : bc_platform_device_reference_pack<g_api_dx11>
 		{
 			bc_device_pipeline_state_proxy* m_pipeline_state_proxy;
 		};
 
 		template<>
-		inline bc_platform_device_pipeline_state< g_api_dx11 >::bc_platform_device_pipeline_state() noexcept
+		inline bc_platform_device_pipeline_state<g_api_dx11>::bc_platform_device_pipeline_state() noexcept
 			: m_pack()
 		{
 			m_pack.m_pipeline_state_proxy = nullptr;
@@ -51,22 +51,22 @@ namespace black_cat
 		}
 
 		template<>
-		inline bc_platform_device_pipeline_state< g_api_dx11 >::bc_platform_device_pipeline_state(const bc_platform_device_pipeline_state&) noexcept = default;
+		inline bc_platform_device_pipeline_state<g_api_dx11>::bc_platform_device_pipeline_state(const bc_platform_device_pipeline_state&) noexcept = default;
 
 		template<>
-		inline bc_platform_device_pipeline_state< g_api_dx11 >::~bc_platform_device_pipeline_state() = default;
+		inline bc_platform_device_pipeline_state<g_api_dx11>::~bc_platform_device_pipeline_state() = default;
 
 		template<>
-		inline bc_platform_device_pipeline_state< g_api_dx11 >& bc_platform_device_pipeline_state< g_api_dx11 >::operator=(const bc_platform_device_pipeline_state&) noexcept = default;
+		inline bc_platform_device_pipeline_state<g_api_dx11>& bc_platform_device_pipeline_state<g_api_dx11>::operator=(const bc_platform_device_pipeline_state&) noexcept = default;
 
 		template<>
-		inline const bc_device_pipeline_state_config& bc_platform_device_pipeline_state< g_api_dx11 >::get_config() const
+		inline const bc_device_pipeline_state_config& bc_platform_device_pipeline_state<g_api_dx11>::get_config() const
 		{
 			return m_pack.m_pipeline_state_proxy->m_config;
 		}
 
 		template<>
-		inline bool bc_platform_device_pipeline_state< g_api_dx11 >::is_valid() const noexcept
+		inline bool bc_platform_device_pipeline_state<g_api_dx11>::is_valid() const noexcept
 		{
 			return m_pack.m_pipeline_state_proxy != nullptr;
 		}

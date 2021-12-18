@@ -18,7 +18,7 @@ namespace black_cat
 
 			bc_platform_pixel_stage(bc_platform_pixel_stage&&) noexcept;
 
-			~bc_platform_pixel_stage();
+			~bc_platform_pixel_stage() override;
 
 			bc_platform_pixel_stage& operator=(bc_platform_pixel_stage&&) noexcept;
 
@@ -34,6 +34,6 @@ namespace black_cat
 			/*void apply_unordered_access_views(bc_device_pipeline& p_pipeline) override;*/
 		};
 
-		using bc_pixel_stage = bc_platform_pixel_stage< g_current_render_api >;
+		using bc_pixel_stage = bc_platform_pixel_stage<g_current_render_api>;
 	}
 }

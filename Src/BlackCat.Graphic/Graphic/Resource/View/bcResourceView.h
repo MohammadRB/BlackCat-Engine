@@ -13,12 +13,12 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		struct bc_platform_shader_view_pack
 		{
 		};
 
-		template< bc_render_api TRenderApi >
+		template<bc_render_api TRenderApi>
 		class bc_platform_resource_view : public bci_platform_resource_view<TRenderApi>
 		{
 		public:
@@ -74,7 +74,7 @@ namespace black_cat
 			bc_resource_view_type m_type;
 		};
 
-		using bc_resource_view = bc_platform_resource_view< g_current_render_api >;
-		using bc_resource_view_ref = bc_device_ref< bc_resource_view >;
+		using bc_resource_view = bc_platform_resource_view<g_current_render_api>;
+		using bc_resource_view_ref = bc_device_ref<bc_resource_view>;
 	}
 }

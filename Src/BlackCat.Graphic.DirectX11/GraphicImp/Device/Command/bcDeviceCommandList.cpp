@@ -10,7 +10,7 @@ namespace black_cat
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device_command_list< g_api_dx11 >::bc_platform_device_command_list() noexcept
+		bc_platform_device_command_list<g_api_dx11>::bc_platform_device_command_list() noexcept
 		{
 			m_pack.m_command_list_proxy = nullptr;
 		}
@@ -25,7 +25,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device_command_list< g_api_dx11 >::bc_platform_device_command_list(const bc_platform_device_command_list& p_other) noexcept
+		bc_platform_device_command_list<g_api_dx11>::bc_platform_device_command_list(const bc_platform_device_command_list& p_other) noexcept
 			: bc_platform_device_reference(p_other),
 			m_pack(p_other.m_pack)
 		{
@@ -33,13 +33,13 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device_command_list< g_api_dx11 >::~bc_platform_device_command_list()
+		bc_platform_device_command_list<g_api_dx11>::~bc_platform_device_command_list()
 		{
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device_command_list< g_api_dx11 >& bc_platform_device_command_list< g_api_dx11 >::operator=(const bc_platform_device_command_list& p_other) noexcept
+		bc_platform_device_command_list<g_api_dx11>& bc_platform_device_command_list<g_api_dx11>::operator=(const bc_platform_device_command_list& p_other) noexcept
 		{
 			bc_platform_device_reference::operator=(p_other);
 			m_pack = p_other.m_pack;
@@ -49,7 +49,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_command_list< g_api_dx11 >::finished()
+		void bc_platform_device_command_list<g_api_dx11>::finished()
 		{
 			if(is_valid() && m_pack.m_command_list_proxy->m_command_list)
 			{
@@ -60,7 +60,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bool bc_platform_device_command_list< g_api_dx11 >::is_valid() const noexcept
+		bool bc_platform_device_command_list<g_api_dx11>::is_valid() const noexcept
 		{
 			return m_pack.m_command_list_proxy != nullptr;
 		}

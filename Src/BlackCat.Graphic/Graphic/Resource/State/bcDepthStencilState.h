@@ -54,13 +54,13 @@ namespace black_cat
 			}
 		};
 
-		/*template< bc_platform_render_api TRenderApi >
+		/*template<bc_platform_render_api TRenderApi>
 		struct bc_platform_depth_stencil_state_pack
 		{
 
 		};
 
-		template< bc_platform_render_api TRenderApi >
+		template<bc_platform_render_api TRenderApi>
 		class bc_platform_depth_stencil_state : public core_platform::bc_no_copy
 		{
 		public:

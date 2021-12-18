@@ -20,7 +20,7 @@ namespace black_cat
 
 			bc_resource_view_parameter(const bc_resource_view_parameter&) = default;
 
-			~bc_resource_view_parameter() = default;
+			~bc_resource_view_parameter() override = default;
 
 			bc_resource_view_parameter& operator=(const bc_resource_view_parameter&) = default;
 

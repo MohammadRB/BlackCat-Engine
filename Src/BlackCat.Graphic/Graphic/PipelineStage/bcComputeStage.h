@@ -23,7 +23,7 @@ namespace black_cat
 
 			bc_platform_compute_stage(bc_platform_compute_stage&&) noexcept;
 
-			~bc_platform_compute_stage();
+			~bc_platform_compute_stage() override;
 
 			bc_platform_compute_stage& operator=(bc_platform_compute_stage&&) noexcept;
 

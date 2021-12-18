@@ -20,7 +20,7 @@ namespace black_cat
 			
 			bc_sampler_parameter(bc_sampler_parameter&) = default;
 
-			~bc_sampler_parameter() = default;
+			~bc_sampler_parameter() override = default;
 
 			bc_sampler_parameter& operator=(const bc_sampler_parameter&) = default;
 

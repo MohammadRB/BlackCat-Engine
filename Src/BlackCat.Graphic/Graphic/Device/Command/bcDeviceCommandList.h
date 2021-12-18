@@ -28,7 +28,7 @@ namespace black_cat
 
 			bc_platform_device_command_list(const bc_platform_device_command_list&) noexcept;
 
-			~bc_platform_device_command_list();
+			~bc_platform_device_command_list() override;
 
 			bc_platform_device_command_list& operator=(const bc_platform_device_command_list&) noexcept;
 
@@ -60,7 +60,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_device_command_list = bc_platform_device_command_list< g_current_render_api >;
-		using bc_device_command_list_ref = bc_device_ref< bc_device_command_list >;
+		using bc_device_command_list = bc_platform_device_command_list<g_current_render_api>;
+		using bc_device_command_list_ref = bc_device_ref<bc_device_command_list>;
 	}
 }

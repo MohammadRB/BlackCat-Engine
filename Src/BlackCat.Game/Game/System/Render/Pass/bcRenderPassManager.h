@@ -6,9 +6,11 @@
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcStopWatch.h"
+#include "GraphicImp/Device/bcDevice.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
-#include "Game/System/Render/Pass/bcRenderPassResourceShare.h"
+#include "Game/System/Render/Pass/bcRenderPassResourceManager.h"
+#include "Game/System/Render/Pass/bcIntermediateTextureManager.h"
 
 namespace black_cat
 {
@@ -29,13 +31,13 @@ namespace black_cat
 		class BC_GAME_DLL bc_render_pass_manager : public core_platform::bc_no_copy
 		{
 		public:
-			bc_render_pass_manager();
+			explicit bc_render_pass_manager(graphic::bc_device& p_device) noexcept;
 
-			bc_render_pass_manager(bc_render_pass_manager&&) noexcept = default;
+			bc_render_pass_manager(bc_render_pass_manager&&) noexcept;
 			
 			~bc_render_pass_manager();
 
-			bc_render_pass_manager& operator=(bc_render_pass_manager&&) noexcept = default;
+			bc_render_pass_manager& operator=(bc_render_pass_manager&&) noexcept;
 
 			template<typename TPass>
 			TPass* get_pass();
@@ -71,7 +73,8 @@ namespace black_cat
 			bci_render_pass* _get_pass(const bcCHAR* p_name);
 
 			core::bc_vector<_bc_render_pass_entry> m_passes;
-			bc_render_pass_resource_share m_state_share;
+			bc_render_pass_resource_manager m_resource_manager;
+			bc_intermediate_texture_manager m_texture_manager;
 		};
 
 		template<typename TPass>

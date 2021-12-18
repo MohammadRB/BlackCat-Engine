@@ -6,7 +6,6 @@
 #include "GraphicImp/bcDeviceRef.h"
 #include "GraphicImp/bcDeviceResourceContent.h"
 #include "GraphicImp/Resource/bcResource.h"
-#include "GraphicImp/Resource/Texture/bcTextureConfig.h"
 
 #include "Graphic/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/GraphicImpPCH.h"

@@ -75,9 +75,9 @@ namespace black_cat
 		};
 
 		constexpr bcCHAR g_geometry_shader_content_name[] = BC_CONTENT_NAME(gmt_shd);
-		using bc_geometry_shader = bc_platform_geometry_shader< g_current_render_api >;
-		using bc_geometry_shader_ref = bc_device_ref< bc_geometry_shader >;
-		using bc_geometry_shader_content = bc_device_resource_content< bc_geometry_shader, g_geometry_shader_content_name >;
+		using bc_geometry_shader = bc_platform_geometry_shader<g_current_render_api>;
+		using bc_geometry_shader_ref = bc_device_ref<bc_geometry_shader>;
+		using bc_geometry_shader_content = bc_device_resource_content<bc_geometry_shader, g_geometry_shader_content_name>;
 		using bc_geometry_shader_content_ptr = core::bc_content_ptr<bc_geometry_shader_content>;
 	}
 }

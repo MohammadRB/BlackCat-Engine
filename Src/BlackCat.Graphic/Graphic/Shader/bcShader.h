@@ -100,6 +100,6 @@ namespace black_cat
 			bci_platform_shader& operator=(const bci_platform_shader& p_other) noexcept;
 		};
 
-		using bci_shader = bci_platform_shader< g_current_render_api >;
+		using bci_shader = bci_platform_shader<g_current_render_api>;
 	}
 }

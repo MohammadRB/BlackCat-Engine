@@ -181,17 +181,17 @@ namespace black_cat
 
 			bc_platform_device& operator=(bc_platform_device&& p_other) noexcept;
 
-			bc_device_info get_device_info(bc_device_swap_buffer& p_swap_buffer) const;
+			bc_device_info get_device_info(const bc_device_swap_buffer& p_swap_buffer) const;
 
-			bcUINT check_multi_sampling(bc_format p_textue_format, bcUINT p_sample_count) const;
+			bcUINT check_multi_sampling(bc_format p_texture_format, bcUINT p_sample_count) const;
 
-			bc_buffer_ref create_buffer(bc_buffer_config& p_config, bc_subresource_data* p_data);
+			bc_buffer_ref create_buffer(const bc_buffer_config& p_config, const bc_subresource_data* p_data);
 
-			bc_texture2d_ref create_texture2d(bc_texture_config& p_config, bc_subresource_data* p_data);
+			bc_texture2d_ref create_texture2d(const bc_texture_config& p_config, const bc_subresource_data* p_data);
 
-			bc_texture2d_ref create_texture2d(bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format);
+			bc_texture2d_ref create_texture2d(const bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format);
 
-			void save_texture2d(bc_texture2d p_texture, bc_image_format p_format, const bcECHAR* p_path);
+			void save_texture2d(const bc_texture2d p_texture, bc_image_format p_format, const bcECHAR* p_path);
 
 			bc_sampler_state_ref create_sampler_state(const bc_sampler_state_config& p_config);
 
@@ -249,15 +249,15 @@ namespace black_cat
 
 			bc_compute_shader_ref create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-			bc_resource_view_ref create_resource_view(bci_resource& p_resource, bc_resource_view_config& p_view_config);
+			bc_resource_view_ref create_resource_view(const bci_resource& p_resource, const bc_resource_view_config& p_view_config);
 
-			bc_depth_stencil_view_ref create_depth_stencil_view(bci_resource& p_resource, bc_depth_stencil_view_config& p_view_config);
+			bc_depth_stencil_view_ref create_depth_stencil_view(const bci_resource& p_resource, const bc_depth_stencil_view_config& p_view_config);
 
-			bc_render_target_view_ref create_render_target_view(bci_resource& p_resource, bc_render_target_view_config& p_view_config);
+			bc_render_target_view_ref create_render_target_view(const bci_resource& p_resource, const bc_render_target_view_config& p_view_config);
 
-			bc_device_pipeline_state_ref create_pipeline_state(bc_device_pipeline_state_config& p_config);
+			bc_device_pipeline_state_ref create_pipeline_state(const bc_device_pipeline_state_config& p_config);
 
-			bc_device_compute_state_ref create_compute_state(bc_device_compute_state_config& p_config);
+			bc_device_compute_state_ref create_compute_state(const bc_device_compute_state_config& p_config);
 
 			bc_device_pipeline_ref get_default_pipeline();
 			
@@ -293,6 +293,11 @@ namespace black_cat
 				bcUINT p_num_views);
 
 			platform_pack& get_platform_pack()
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const noexcept
 			{
 				return m_pack;
 			}

@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/bcConstant.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Utility/bcParameterPack.h"
@@ -13,20 +12,20 @@ namespace black_cat
 	{
 		using bc_render_pass_variable_t = const bcCHAR*;
 		
-		class bc_render_pass_resource_share
+		class bc_render_pass_resource_manager
 		{
 		private:
 			using resource_variable_hash = std::hash<bc_render_pass_variable_t>;
 			using map_type = core::bc_unordered_map<resource_variable_hash::result_type, core::bc_any>;
 
 		public:
-			bc_render_pass_resource_share() = default;
+			bc_render_pass_resource_manager() = default;
 
-			bc_render_pass_resource_share(bc_render_pass_resource_share&&) = default;
+			bc_render_pass_resource_manager(bc_render_pass_resource_manager&&) = default;
 
-			~bc_render_pass_resource_share() = default;
+			~bc_render_pass_resource_manager() = default;
 
-			bc_render_pass_resource_share& operator=(bc_render_pass_resource_share&&) = default;
+			bc_render_pass_resource_manager& operator=(bc_render_pass_resource_manager&&) = default;
 
 			template<typename T>
 			void share_resource(bc_render_pass_variable_t p_variable, T&& p_value)
@@ -70,7 +69,7 @@ namespace black_cat
 			template<typename T>
 			const T* get_resource(bc_render_pass_variable_t p_variable) const noexcept
 			{
-				return const_cast<bc_render_pass_resource_share&>(*this).get_resource<T>(p_variable);
+				return const_cast<bc_render_pass_resource_manager&>(*this).get_resource<T>(p_variable);
 			}
 
 		private:

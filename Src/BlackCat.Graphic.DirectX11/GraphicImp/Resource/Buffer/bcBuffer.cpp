@@ -13,7 +13,7 @@ namespace black_cat
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_buffer< g_api_dx11 >::bc_platform_buffer() noexcept
+		bc_platform_buffer<g_api_dx11>::bc_platform_buffer() noexcept
 			: bci_platform_resource()
 		{
 			m_pack.m_buffer = nullptr;
@@ -30,7 +30,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_buffer< g_api_dx11 >::bc_platform_buffer(const bc_platform_buffer& p_other) noexcept
+		bc_platform_buffer<g_api_dx11>::bc_platform_buffer(const bc_platform_buffer& p_other) noexcept
 			: bci_platform_resource(p_other),
 			m_pack(p_other.m_pack)
 		{
@@ -38,13 +38,13 @@ namespace black_cat
 		
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_buffer< g_api_dx11 >::~bc_platform_buffer()
+		bc_platform_buffer<g_api_dx11>::~bc_platform_buffer()
 		{
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_buffer< g_api_dx11 >& bc_platform_buffer< g_api_dx11 >::operator=(const bc_platform_buffer& p_other) noexcept
+		bc_platform_buffer<g_api_dx11>& bc_platform_buffer<g_api_dx11>::operator=(const bc_platform_buffer& p_other) noexcept
 		{
 			bci_platform_resource::operator=(p_other);
 			m_pack = p_other.m_pack;
@@ -54,40 +54,40 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bcUINT bc_platform_buffer< g_api_dx11 >::get_byte_width() const
+		bcUINT bc_platform_buffer<g_api_dx11>::get_byte_width() const
 		{
 			D3D11_BUFFER_DESC l_desc;
 
-			const_cast< bc_platform_buffer* >(this)->m_pack.m_buffer->GetDesc(&l_desc);
+			const_cast<bc_platform_buffer*>(this)->m_pack.m_buffer->GetDesc(&l_desc);
 
 			return l_desc.ByteWidth;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_resource_usage bc_platform_buffer< g_api_dx11 >::get_usage() const
+		bc_resource_usage bc_platform_buffer<g_api_dx11>::get_usage() const
 		{
 			D3D11_BUFFER_DESC l_desc;
 
-			const_cast< bc_platform_buffer* >(this)->m_pack.m_buffer->GetDesc(&l_desc);
+			const_cast<bc_platform_buffer*>(this)->m_pack.m_buffer->GetDesc(&l_desc);
 
 			return bc_graphic_cast(l_desc.Usage);
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bcUINT bc_platform_buffer< g_api_dx11 >::get_structure_byte_stride() const
+		bcUINT bc_platform_buffer<g_api_dx11>::get_structure_byte_stride() const
 		{
 			D3D11_BUFFER_DESC l_desc;
 
-			const_cast< bc_platform_buffer* >(this)->m_pack.m_buffer->GetDesc(&l_desc);
+			const_cast<bc_platform_buffer*>(this)->m_pack.m_buffer->GetDesc(&l_desc);
 
 			return l_desc.StructureByteStride;
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bool bc_platform_buffer< g_api_dx11 >::is_valid() const noexcept
+		bool bc_platform_buffer<g_api_dx11>::is_valid() const noexcept
 		{
 			return m_pack.m_buffer != nullptr;
 		}
