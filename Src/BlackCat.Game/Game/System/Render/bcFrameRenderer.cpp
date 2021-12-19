@@ -263,7 +263,7 @@ namespace black_cat
 		{
 			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
 			const auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
-			auto l_last_render_group = game::bc_render_group::unknown;
+			auto l_last_render_group = bc_render_group::unknown;
 			
 			for (const auto& l_render_state_entry : p_buffer.get_instances())
 			{

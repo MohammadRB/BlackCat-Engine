@@ -54,7 +54,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bcUINT32 bc_platform_texture2d< g_api_dx11 >::get_width() const
+		bcUINT32 bc_platform_texture2d< g_api_dx11 >::get_width() const noexcept
 		{
 			D3D11_TEXTURE2D_DESC l_desc;
 
@@ -65,7 +65,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bcUINT32 bc_platform_texture2d< g_api_dx11 >::get_height() const
+		bcUINT32 bc_platform_texture2d< g_api_dx11 >::get_height() const noexcept
 		{
 			D3D11_TEXTURE2D_DESC l_desc;
 
@@ -76,7 +76,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_resource_usage bc_platform_texture2d< g_api_dx11 >::get_usage() const
+		bc_resource_usage bc_platform_texture2d< g_api_dx11 >::get_usage() const noexcept
 		{
 			D3D11_TEXTURE2D_DESC l_desc;
 
@@ -87,7 +87,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bool bc_platform_texture2d< g_api_dx11 >::is_multisampled() const
+		bool bc_platform_texture2d< g_api_dx11 >::is_multisampled() const noexcept
 		{
 			D3D11_TEXTURE2D_DESC l_desc;
 
@@ -98,7 +98,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_texture_ms_config bc_platform_texture2d< g_api_dx11 >::get_sample_count() const
+		bc_texture_ms_config bc_platform_texture2d< g_api_dx11 >::get_sample_count() const noexcept
 		{
 			D3D11_TEXTURE2D_DESC l_desc;
 
@@ -109,7 +109,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_format bc_platform_texture2d< g_api_dx11 >::get_format() const
+		bc_format bc_platform_texture2d< g_api_dx11 >::get_format() const noexcept
 		{
 			D3D11_TEXTURE2D_DESC l_desc;
 

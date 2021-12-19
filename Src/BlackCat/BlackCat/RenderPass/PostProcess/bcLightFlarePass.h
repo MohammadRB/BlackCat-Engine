@@ -42,7 +42,7 @@ namespace black_cat
 		BC_RENDER_PASS(lgt_flr)
 		
 	public:
-		bc_light_flare_pass();
+		bc_light_flare_pass(game::bc_render_pass_variable_t p_render_target_texture, game::bc_render_pass_variable_t p_render_target_view);
 		
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 		
@@ -72,6 +72,8 @@ namespace black_cat
 		constexpr static bcFLOAT s_flare_size_ratio = 0.9;
 		constexpr static bcFLOAT s_flare_size_distance = 5;
 		bcFLOAT m_flare_size_distance;
+		const game::bc_render_pass_variable_t m_render_target_texture;
+		const game::bc_render_pass_variable_t m_render_target_view;
 		
 		graphic::bc_sampler_state_ref m_linear_sampler;
 		graphic::bc_buffer_ref m_cube_vb;

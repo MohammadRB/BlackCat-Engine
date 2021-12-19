@@ -65,7 +65,7 @@ namespace black_cat
 
 			bc_platform_sampler_state(const bc_platform_sampler_state& p_other) noexcept;
 
-			~bc_platform_sampler_state();
+			~bc_platform_sampler_state() override;
 
 			bc_platform_sampler_state& operator=(const bc_platform_sampler_state& p_other) noexcept;
 

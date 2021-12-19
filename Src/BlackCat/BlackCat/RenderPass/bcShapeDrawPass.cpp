@@ -147,20 +147,27 @@ namespace black_cat
 		{
 			const auto l_back_buffer_texture = p_context.m_device_swap_buffer.get_back_buffer_texture();
 
-			const auto l_depth_stencil_view = *get_shared_resource< graphic::bc_depth_stencil_view >(constant::g_rpass_depth_stencil_render_view);
-			const auto l_render_target_view = *get_shared_resource< graphic::bc_render_target_view >(m_render_target_view_variable);
+			const auto l_depth_stencil_view = *get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
+			const auto l_render_target_view = *get_shared_resource<graphic::bc_render_target_view>(m_render_target_view_variable);
 			const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
 			
 			m_render_pass_state = p_context.m_render_system.create_render_pass_state
 			(
 				m_pipeline_state.get(),
 				l_viewport,
-				{ l_render_target_view },
+				{
+					graphic::bc_render_target_view_parameter(l_render_target_view)
+				},
 				l_depth_stencil_view,
-				{},
-				{},
-				{},
-				{ p_context.m_render_system.get_global_cbuffer() }
+				{
+				},
+				{
+				},
+				{
+				},
+				{
+					p_context.m_render_system.get_global_cbuffer()
+				}
 			);
 		}
 	}

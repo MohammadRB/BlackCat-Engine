@@ -11,6 +11,5 @@ namespace black_cat
 {
 	namespace graphic
 	{
-
 	}
 }

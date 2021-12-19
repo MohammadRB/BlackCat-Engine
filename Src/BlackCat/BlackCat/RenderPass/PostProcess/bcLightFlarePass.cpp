@@ -29,9 +29,11 @@ namespace black_cat
 		bcFLOAT m_v1;
 	};
 
-	bc_light_flare_pass::bc_light_flare_pass()
+	bc_light_flare_pass::bc_light_flare_pass(game::bc_render_pass_variable_t p_render_target_texture, game::bc_render_pass_variable_t p_render_target_view)
+		: m_flare_size_distance(s_flare_size_distance * bc_get_global_config().get_global_scale()),
+		m_render_target_texture(p_render_target_texture),
+		m_render_target_view(p_render_target_view)
 	{
-		m_flare_size_distance = s_flare_size_distance * bc_get_global_config().get_global_scale();
 	}
 
 	void bc_light_flare_pass::initialize_resources(game::bc_render_system& p_render_system)
@@ -190,9 +192,9 @@ namespace black_cat
 
 		const auto l_depth_stencil = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
 		const auto l_depth_stencil_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
-		const auto l_back_buffer = p_context.m_device_swap_buffer.get_back_buffer_texture();
-		const auto l_back_buffer_render_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_back_buffer_render_view);
-		const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer.get_width(), l_back_buffer.get_height());
+		const auto l_render_target = get_shared_resource_throw<graphic::bc_texture2d>(m_render_target_texture);
+		const auto l_render_target_view = get_shared_resource_throw<graphic::bc_render_target_view>(m_render_target_view);
+		const auto l_viewport = graphic::bc_viewport::default_config(l_render_target.get_width(), l_render_target.get_height());
 		
 		m_query_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
 		(
@@ -207,7 +209,7 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_back,
 			0xffffffff,
 			{
-				l_back_buffer.get_format()
+				l_render_target.get_format()
 			},
 			l_depth_stencil.get_format(),
 			game::bc_multi_sample_type::c1_q1
@@ -217,7 +219,7 @@ namespace black_cat
 			m_query_device_pipeline_state.get(),
 			l_viewport,
 			{
-				l_back_buffer_render_view
+				graphic::bc_render_target_view_parameter(l_render_target_view)
 			},
 			l_depth_stencil_view,
 			{},
@@ -262,7 +264,7 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0xffffffff,
 			{
-				l_back_buffer.get_format()
+				l_render_target.get_format()
 			},
 			l_depth_stencil.get_format(),
 			game::bc_multi_sample_type::c1_q1
@@ -272,7 +274,7 @@ namespace black_cat
 			m_flare_device_pipeline_state.get(),
 			l_viewport,
 			{
-				l_back_buffer_render_view
+				graphic::bc_render_target_view_parameter(l_render_target_view)
 			},
 			l_depth_stencil_view,
 			{
@@ -387,7 +389,7 @@ namespace black_cat
 						{
 						case game::bc_light_type::point:
 						{
-							auto* l_point_light = l_light.as_point_light();
+							const auto* l_point_light = l_light.as_point_light();
 							l_flare.m_position = l_point_light->get_position();
 							l_flare.m_color = l_point_light->get_color();
 							l_flare.m_size = l_point_light->get_radius();
@@ -396,7 +398,7 @@ namespace black_cat
 						case game::bc_light_type::spot:
 						{
 							// TODO compute intensity base on camera angle
-							auto* l_spot_light = l_light.as_spot_light();
+							const auto* l_spot_light = l_light.as_spot_light();
 							l_flare.m_position = l_spot_light->get_position();
 							l_flare.m_color = l_spot_light->get_color();
 							l_flare.m_size = l_spot_light->get_length();
@@ -435,12 +437,12 @@ namespace black_cat
 
 		if(p_light.get_type() == game::bc_light_type::point)
 		{
-			auto* l_point_light = p_light.as_point_light();
+			const auto* l_point_light = p_light.as_point_light();
 			l_light_flare_surface_world.set_translation(l_point_light->get_position());
 		}
 		else if(p_light.get_type() == game::bc_light_type::spot)
 		{
-			auto* l_spot_light = p_light.as_point_light();
+			const auto* l_spot_light = p_light.as_point_light();
 			l_light_flare_surface_world.set_translation(l_spot_light->get_position());
 		}
 		else

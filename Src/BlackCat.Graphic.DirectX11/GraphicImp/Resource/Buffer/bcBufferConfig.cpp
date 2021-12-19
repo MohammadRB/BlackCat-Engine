@@ -8,20 +8,20 @@ namespace black_cat
 {
 	namespace graphic
 	{
-		template< >
-		bcUINT bc_platform_buffer_config<g_api_dx11>::get_byte_width() const
+		template<>
+		bcUINT bc_platform_buffer_config<g_api_dx11>::get_byte_width() const noexcept
 		{
 			return m_pack.m_desc.ByteWidth;
 		}
 
-		template< >
-		bc_resource_usage bc_platform_buffer_config<g_api_dx11>::get_usage() const
+		template<>
+		bc_resource_usage bc_platform_buffer_config<g_api_dx11>::get_usage() const noexcept
 		{
 			return bc_graphic_cast(m_pack.m_desc.Usage);
 		}
 
-		template< >
-		bcUINT bc_platform_buffer_config<g_api_dx11>::get_structure_byte_stride() const
+		template<>
+		bcUINT bc_platform_buffer_config<g_api_dx11>::get_structure_byte_stride() const noexcept
 		{
 			return m_pack.m_desc.StructureByteStride;
 		}

@@ -84,7 +84,7 @@ namespace black_cat
 		{
 			bcSIZE l_render_target_count = 0;
 
-			bc_render_pass_state_render_target_view_array l_render_targets;
+			core::bc_array<graphic::bc_render_target_view, g_render_pass_state_render_target_view_count> l_render_targets;
 			const graphic::bc_depth_stencil_view l_depth_stencil = p_render_pass_state.m_shader_depth;
 			
 			std::transform
@@ -92,14 +92,14 @@ namespace black_cat
 				std::cbegin(p_render_pass_state.m_shader_targets),
 				std::cend(p_render_pass_state.m_shader_targets),
 				std::begin(l_render_targets),
-				[&l_render_target_count](const graphic::bc_render_target_view& p_target)
+				[&l_render_target_count](const graphic::bc_render_target_view_parameter& p_target)
 				{
-					if (p_target != nullptr)
+					if (p_target.is_valid())
 					{
 						++l_render_target_count;
 					}
 
-					return p_target;
+					return p_target.get_render_target_view();
 				}
 			);
 
@@ -235,7 +235,7 @@ namespace black_cat
 			);
 
 			graphic::bc_pipeline_stage l_pipeline_stages = graphic::bc_pipeline_stage::input_assembler_stage;
-			graphic::bc_shader_type l_shader_types = core::bc_enum::none< graphic::bc_shader_type >();
+			auto l_shader_types = core::bc_enum::none<graphic::bc_shader_type>();
 
 			for (const auto& l_view_parameter : p_render_state.get_shader_views())
 			{

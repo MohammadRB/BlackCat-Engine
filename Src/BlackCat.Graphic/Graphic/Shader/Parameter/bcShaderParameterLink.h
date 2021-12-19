@@ -6,6 +6,7 @@
 #include "Graphic/Resource/State/bcSamplerState.h"
 #include "Graphic/Resource/Buffer/bcBuffer.h"
 #include "Graphic/Resource/View/bcResourceView.h"
+#include "Graphic/Resource/View/bcRenderTargetView.h"
 
 namespace black_cat
 {
@@ -13,6 +14,7 @@ namespace black_cat
 	{
 		enum class bc_shader_parameter_type : bcUBYTE
 		{
+			render_target_view,
 			shader_view,
 			unordered_view,
 			cbuffer,
@@ -27,6 +29,8 @@ namespace black_cat
 
 			_bc_shader_parameter_link_data(bc_resource_view p_view);
 
+			_bc_shader_parameter_link_data(bc_render_target_view p_view);
+
 			_bc_shader_parameter_link_data(const _bc_shader_parameter_link_data& p_other);
 			
 			~_bc_shader_parameter_link_data();
@@ -39,6 +43,7 @@ namespace black_cat
 				bc_sampler_state m_sampler;
 				bc_buffer m_cbuffer;
 				bc_resource_view m_resource_view;
+				bc_render_target_view m_render_target_view;
 			};
 		};
 
@@ -69,6 +74,10 @@ namespace black_cat
 
 			bc_resource_view get_as_resource_view() const noexcept;
 
+			void set_as_render_target_view(bc_render_target_view p_view) noexcept;
+
+			bc_render_target_view get_as_render_target_view() const noexcept;
+
 		private:
 			core::bc_unique_ptr<_bc_shader_parameter_link_data> m_data;
 		};
@@ -95,6 +104,12 @@ namespace black_cat
 			}
 		}
 
+		inline _bc_shader_parameter_link_data::_bc_shader_parameter_link_data(bc_render_target_view p_view)
+			: m_parameter_type(bc_shader_parameter_type::render_target_view),
+			m_render_target_view(p_view)
+		{
+		}
+
 		inline _bc_shader_parameter_link_data::_bc_shader_parameter_link_data(const _bc_shader_parameter_link_data& p_other)
 		{
 			operator=(p_other);
@@ -105,8 +120,6 @@ namespace black_cat
 			switch (m_parameter_type)
 			{
 			case bc_shader_parameter_type::shader_view:
-				m_resource_view.~bc_resource_view();
-				break;
 			case bc_shader_parameter_type::unordered_view:
 				m_resource_view.~bc_resource_view();
 				break;
@@ -115,6 +128,9 @@ namespace black_cat
 				break;
 			case bc_shader_parameter_type::sampler:
 				m_sampler.~bc_sampler_state();
+				break;
+			case bc_shader_parameter_type::render_target_view:
+				m_render_target_view.~bc_platform_render_target_view();
 				break;
 			default: 
 				BC_ASSERT(false);
@@ -128,8 +144,6 @@ namespace black_cat
 			switch (m_parameter_type)
 			{
 			case bc_shader_parameter_type::shader_view:
-				m_resource_view = p_other.m_resource_view;
-				break;
 			case bc_shader_parameter_type::unordered_view:
 				m_resource_view = p_other.m_resource_view;
 				break;
@@ -138,6 +152,9 @@ namespace black_cat
 				break;
 			case bc_shader_parameter_type::sampler:
 				m_sampler = p_other.m_sampler;
+				break;
+			case bc_shader_parameter_type::render_target_view:
+				m_render_target_view = p_other.m_render_target_view;
 				break;
 			default: 
 				BC_ASSERT(false);
@@ -235,6 +252,30 @@ namespace black_cat
 			BC_ASSERT(m_data->m_parameter_type == bc_shader_parameter_type::shader_view || m_data->m_parameter_type == bc_shader_parameter_type::unordered_view);
 
 			return m_data->m_resource_view;
+		}
+
+		inline void bc_shader_parameter_link::set_as_render_target_view(bc_render_target_view p_view) noexcept
+		{
+			if (!m_data)
+			{
+				m_data = core::bc_make_unique<_bc_shader_parameter_link_data>(p_view);
+			}
+			else
+			{
+				*m_data = _bc_shader_parameter_link_data(p_view);
+			}
+		}
+
+		inline bc_render_target_view bc_shader_parameter_link::get_as_render_target_view() const noexcept
+		{
+			if (!m_data)
+			{
+				return bc_render_target_view();
+			}
+
+			BC_ASSERT(m_data->m_parameter_type == bc_shader_parameter_type::render_target_view);
+
+			return m_data->m_render_target_view;
 		}
 	}
 }

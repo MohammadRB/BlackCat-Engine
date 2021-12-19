@@ -454,7 +454,10 @@
     <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\PostProcess\bcLightFlare.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
     </FxCompile>
-    <FxCompile Include="bcGlow.hlsl">
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\PostProcess\bcGlow.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat\BlackCat\Content\Shader\DirectX11\PostProcess\bcGaussianBlur.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
     </FxCompile>
   </ItemGroup>

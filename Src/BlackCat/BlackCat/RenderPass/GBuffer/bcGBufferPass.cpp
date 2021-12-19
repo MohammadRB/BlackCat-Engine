@@ -136,7 +136,9 @@ namespace black_cat
 			m_pipeline_state.get(),
 			l_viewport,
 			{
-				*l_diffuse_map_view, *l_normal_map_view, *l_specular_map_view
+				graphic::bc_render_target_view_parameter(*l_diffuse_map_view),
+				graphic::bc_render_target_view_parameter(*l_normal_map_view),
+				graphic::bc_render_target_view_parameter(*l_specular_map_view)
 			},
 			*l_depth_stencil_view,
 			{

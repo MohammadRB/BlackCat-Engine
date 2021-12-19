@@ -1254,7 +1254,7 @@ namespace black_cat
 			l_swap_chain_desc.BufferDesc.RefreshRate.Denominator = 1;
 			l_swap_chain_desc.SampleDesc.Count = 1;
 			l_swap_chain_desc.SampleDesc.Quality = 0;
-			l_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+			l_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
 			l_swap_chain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 			l_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 			l_swap_chain_desc.OutputWindow = p_output.get_platform_pack().m_output_handle;

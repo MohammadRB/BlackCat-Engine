@@ -237,6 +237,12 @@
       "stream_name": "post_process_shaders",
       "stream_content": [
         {
+          "content_title": "gaussian_blur_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcGaussianBlur.hlsl",
+          "content_parameter": { "function": "gaussian_blur_ps" }
+        },
+        {
           "content_title": "light_flare_query_vs",
           "content_loader": "vertex_shader",
           "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcLightFlare.hlsl",
@@ -259,6 +265,24 @@
           "content_loader": "pixel_shader",
           "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcLightFlare.hlsl",
           "content_parameter": { "function": "light_flare_ps" }
+        },
+        {
+          "content_title": "glow_extract_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcGlow.hlsl",
+          "content_parameter": { "function": "glow_extract_vs" }
+        },
+        {
+          "content_title": "glow_extract_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcGlow.hlsl",
+          "content_parameter": { "function": "glow_extract_ps" }
+        },
+        {
+          "content_title": "glow_apply_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcGlow.hlsl",
+          "content_parameter": { "function": "glow_apply_ps" }
         }
       ] 
     },

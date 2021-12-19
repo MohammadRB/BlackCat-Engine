@@ -87,6 +87,7 @@ namespace black_cat
 			{
 				l_entry.m_pass->before_reset(p_param);
 			}
+			m_texture_manager.before_reset(p_param);
 		}
 
 		void bc_render_pass_manager::after_reset(const bc_render_pass_reset_context& p_param)
@@ -95,6 +96,7 @@ namespace black_cat
 			{
 				l_entry.m_pass->after_reset(p_param);
 			}
+			m_texture_manager.after_reset(p_param);
 		}
 
 		void bc_render_pass_manager::pass_destroy(bc_render_system& p_render_system)

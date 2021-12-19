@@ -266,7 +266,9 @@ namespace black_cat
 			m_device_pipeline_state.get(),
 			l_viewport,
 			{
-				l_diffuse_map_view, l_normal_map_view, l_specular_map_view
+				graphic::bc_render_target_view_parameter(l_diffuse_map_view),
+				graphic::bc_render_target_view_parameter(l_normal_map_view),
+				graphic::bc_render_target_view_parameter(l_specular_map_view)
 			},
 			graphic::bc_depth_stencil_view(),
 			{
@@ -308,7 +310,9 @@ namespace black_cat
 			m_device_pipeline_state_for_non_culling.get(),
 			l_viewport,
 			{
-				l_diffuse_map_view, l_normal_map_view, l_specular_map_view
+				graphic::bc_render_target_view_parameter(l_diffuse_map_view),
+				graphic::bc_render_target_view_parameter(l_normal_map_view),
+				graphic::bc_render_target_view_parameter(l_specular_map_view)
 			},
 			graphic::bc_depth_stencil_view(),
 			{
@@ -350,7 +354,9 @@ namespace black_cat
 			m_device_pipeline_state_for_debug_bounds.get(),
 			l_viewport,
 			{
-				l_diffuse_map_view, l_normal_map_view, l_specular_map_view
+				graphic::bc_render_target_view_parameter(l_diffuse_map_view),
+				graphic::bc_render_target_view_parameter(l_normal_map_view),
+				graphic::bc_render_target_view_parameter(l_specular_map_view)
 			},
 			graphic::bc_depth_stencil_view(),
 			{

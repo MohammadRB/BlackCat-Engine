@@ -67,7 +67,7 @@ namespace black_cat
 				.emitter(core::bc_vector3f(0), core::bc_vector3f::up(), m_smoke_time, 0, 0)
 				.with_emission_deviation(180)
 				.with_texture(1)
-				.with_particles_color({ 0.8f, 0.8f, 0.8f }, 1)
+				.with_particles_color({ 0.7f, 0.7f, 0.7f }, 1)
 				.with_particle_size(4.0f, 10.0f)
 				.with_particles_rotation(10)
 				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step2, 5)

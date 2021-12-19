@@ -29,6 +29,7 @@
 #include "BlackCat/RenderPass/ShadowMap/bcSkinnedCascadedShadowMapPass.h"
 #include "BlackCat/RenderPass/PostProcess/bcParticleSystemPassDx11.h"
 #include "BlackCat/RenderPass/PostProcess/bcLightFlarePass.h"
+#include "BlackCat/RenderPass/PostProcess/bcGlowPass.h"
 #include "BlackCat/RenderPass/bcBackBufferWritePass.h"
 #include "BlackCat/RenderPass/bcTextDrawPass.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
@@ -91,9 +92,10 @@ namespace black_cat
 			l_render_system.add_render_pass(bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
 			l_render_system.add_render_pass(bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
+			l_render_system.add_render_pass(bc_particle_system_pass_dx11(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Sprites.dds")));
+			l_render_system.add_render_pass(bc_light_flare_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
+			l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 			l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
-			l_render_system.add_render_pass(bc_particle_system_pass_dx11(bcL("Sprites.dds")));
-			l_render_system.add_render_pass(bc_light_flare_pass());
 			l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view));
 
 			game::bc_event_editor_mode l_editor_mode_event(true);
@@ -140,6 +142,9 @@ namespace black_cat
 					auto& l_input_system = m_game_system->get_input_system();
 					auto& l_camera = *l_input_system.get_camera();
 					auto* l_scene = m_game_system->get_scene();
+
+					auto* l_glow_pass = m_game_system->get_render_system().get_render_pass<bc_glow_pass>();
+					l_glow_pass->set_enable(!l_glow_pass->get_enable());
 
 					/*game::bc_actor l_actor;
 

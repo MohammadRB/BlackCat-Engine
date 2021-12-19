@@ -54,7 +54,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bcUINT bc_platform_buffer<g_api_dx11>::get_byte_width() const
+		bcUINT bc_platform_buffer<g_api_dx11>::get_byte_width() const noexcept
 		{
 			D3D11_BUFFER_DESC l_desc;
 
@@ -65,7 +65,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_resource_usage bc_platform_buffer<g_api_dx11>::get_usage() const
+		bc_resource_usage bc_platform_buffer<g_api_dx11>::get_usage() const noexcept
 		{
 			D3D11_BUFFER_DESC l_desc;
 
@@ -76,7 +76,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bcUINT bc_platform_buffer<g_api_dx11>::get_structure_byte_stride() const
+		bcUINT bc_platform_buffer<g_api_dx11>::get_structure_byte_stride() const noexcept
 		{
 			D3D11_BUFFER_DESC l_desc;
 

@@ -34,11 +34,11 @@ namespace black_cat
 
 			bc_platform_buffer& operator=(const bc_platform_buffer& p_other) noexcept;
 
-			bcUINT get_byte_width() const;
+			bcUINT get_byte_width() const noexcept;
 
-			bc_resource_usage get_usage() const;
+			bc_resource_usage get_usage() const noexcept;
 
-			bcUINT get_structure_byte_stride() const;
+			bcUINT get_structure_byte_stride() const noexcept;
 
 			bool is_valid() const noexcept override;
 
@@ -52,7 +52,7 @@ namespace black_cat
 
 			bool operator!=(std::nullptr_t) const noexcept;
 
-			bc_resource_type get_type() const override
+			bc_resource_type get_type() const noexcept override
 			{
 				return bc_resource_type::buffer;
 			}

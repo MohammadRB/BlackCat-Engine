@@ -11,6 +11,7 @@ namespace black_cat
 		BC_RENDER_PASS_VARIABLE(depth_stencil_texture);
 		BC_RENDER_PASS_VARIABLE(depth_stencil_render_view);
 		BC_RENDER_PASS_VARIABLE(depth_stencil_read_view);
+		BC_RENDER_PASS_VARIABLE(back_buffer_texture);
 		BC_RENDER_PASS_VARIABLE(back_buffer_render_view);
 		BC_RENDER_PASS_VARIABLE(render_target_texture_1);
 		BC_RENDER_PASS_VARIABLE(render_target_render_view_1);

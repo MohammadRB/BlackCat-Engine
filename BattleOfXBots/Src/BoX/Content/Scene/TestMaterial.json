@@ -3,8 +3,8 @@
     {
       "name": "terrain_material_1",
       "diffuse_color": [ 0.8, 0.8, 0.8, 1.0 ],
-      "specular_intensity": 0.3,
-      "specular_power": 0.3,
+      "specular_intensity": 0.2,
+      "specular_power": 0.2,
       "diffuse_map": "beach_white_sand_fine",
       "normal_map": "beach_white_sand_fine_nrm"
     },

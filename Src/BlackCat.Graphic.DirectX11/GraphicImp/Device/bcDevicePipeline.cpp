@@ -611,7 +611,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline<g_api_dx11>::unbind_ps_shader_view_parameter(const bc_resource_view_parameter& p_parameter)
 		{
-			bc_resource_view l_resource = p_parameter.get_resource_view();
+			const bc_resource_view l_resource = p_parameter.get_resource_view();
 
 			BC_ASSERT
 			(

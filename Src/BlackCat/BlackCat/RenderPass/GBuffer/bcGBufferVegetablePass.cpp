@@ -172,7 +172,9 @@ namespace black_cat
 			m_leaf_pipeline_state.get(),
 			l_viewport,
 			{
-				*l_diffuse_map_view, *l_normal_map_view, *l_specular_map_view
+				graphic::bc_render_target_view_parameter(*l_diffuse_map_view),
+				graphic::bc_render_target_view_parameter(*l_normal_map_view),
+				graphic::bc_render_target_view_parameter(*l_specular_map_view)
 			},
 			*l_depth_stencil_view,
 			{
@@ -189,7 +191,9 @@ namespace black_cat
 			m_trunk_pipeline_state.get(),
 			l_viewport,
 			{
-				*l_diffuse_map_view, *l_normal_map_view, *l_specular_map_view
+				graphic::bc_render_target_view_parameter(*l_diffuse_map_view),
+				graphic::bc_render_target_view_parameter(*l_normal_map_view),
+				graphic::bc_render_target_view_parameter(*l_specular_map_view)
 			},
 			*l_depth_stencil_view,
 			{

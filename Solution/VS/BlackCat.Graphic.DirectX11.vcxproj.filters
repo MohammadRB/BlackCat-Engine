@@ -323,5 +323,8 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceSwapBuffer.h">
       <Filter>GraphicImp\Device</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\Parameter\bcRenderTargetViewParameter.h">
+      <Filter>GraphicImp\Shader\Parameter</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

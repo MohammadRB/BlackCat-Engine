@@ -49,7 +49,7 @@ namespace black_cat
 		public:
 			virtual ~bci_platform_resource() override;
 
-			virtual bc_resource_type get_type() const = 0;
+			virtual bc_resource_type get_type() const noexcept = 0;
 
 			bc_resource_eviction_priority get_eviction_priority() const;
 

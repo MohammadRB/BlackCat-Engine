@@ -79,8 +79,10 @@ namespace black_cat
 		core::bc_vector4f m_lights[TLightCount * 2];
 	};
 
-	bc_particle_system_pass_dx11::bc_particle_system_pass_dx11(const bcECHAR* p_sprites_content_name)
-		: m_sprites_content_name(p_sprites_content_name)
+	bc_particle_system_pass_dx11::bc_particle_system_pass_dx11(game::bc_render_pass_variable_t p_render_target_texture, game::bc_render_pass_variable_t p_render_target_view, const bcECHAR* p_sprites_content_name)
+		: m_render_target_texture(p_render_target_texture),
+		m_render_target_view(p_render_target_view),
+		m_sprites_content_name(p_sprites_content_name)
 	{
 	}
 
@@ -326,14 +328,14 @@ namespace black_cat
 		
 		if(!m_emitters_query_result.empty())
 		{
-			game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, m_dead_particles_initial_count, -1, -1, -1, -1, -1, -1 };
+			const game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, m_dead_particles_initial_count, -1, -1, -1, -1, -1, -1 };
 			p_context.m_render_thread.bind_compute_state(*m_emission_compute, &l_initial_count);
 			p_context.m_render_thread.update_subresource(*m_emitters_buffer, 0, m_emitters_query_result.data(), m_emitters_query_result.size(), 1);
 			p_context.m_render_thread.dispatch(m_emitters_query_result.size(), 1, 1);
 			p_context.m_render_thread.unbind_compute_state(*m_emission_compute);
 		}
 
-		game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, 0, m_dead_particles_initial_count, -1, -1, -1, -1, -1 };
+		const game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, 0, m_dead_particles_initial_count, -1, -1, -1, -1, -1 };
 		p_context.m_render_thread.bind_compute_state(*m_simulation_compute, &l_initial_count);
 		p_context.m_render_thread.dispatch(std::max(1U, s_particles_count / s_simulation_shader_group_size), 1, 1);
 		p_context.m_render_thread.unbind_compute_state(*m_simulation_compute);
@@ -569,9 +571,9 @@ namespace black_cat
 			}
 		);
 
-		const auto l_back_buffer = p_context.m_device_swap_buffer.get_back_buffer_texture();
-		const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer.get_width(), l_back_buffer.get_height());
-		const auto l_back_buffer_render_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_back_buffer_render_view);
+		const auto l_render_target = get_shared_resource_throw<graphic::bc_texture2d>(m_render_target_texture);
+		const auto l_render_render_view = get_shared_resource_throw<graphic::bc_render_target_view>(m_render_target_view);
+		const auto l_viewport = graphic::bc_viewport::default_config(l_render_target.get_width(), l_render_target.get_height());
 		
 		m_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
 		(
@@ -586,7 +588,7 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0x1,
 			{
-				l_back_buffer.get_format()
+				l_render_target.get_format()
 			},
 			graphic::bc_format::unknown,
 			game::bc_multi_sample_type::c1_q1
@@ -596,7 +598,7 @@ namespace black_cat
 			m_device_pipeline_state.get(),
 			l_viewport,
 			{
-				l_back_buffer_render_view
+				graphic::bc_render_target_view_parameter(l_render_render_view)
 			},
 			graphic::bc_depth_stencil_view(),
 			{

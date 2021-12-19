@@ -22,7 +22,7 @@ namespace black_cat
 		BC_RENDER_PASS(ptc_sys)
 		
 	public:
-		explicit bc_particle_system_pass_dx11(const bcECHAR* p_sprites_content_name);
+		bc_particle_system_pass_dx11(game::bc_render_pass_variable_t p_render_target_texture, game::bc_render_pass_variable_t p_render_target_view, const bcECHAR* p_sprites_content_name);
 		
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 		
@@ -44,17 +44,19 @@ namespace black_cat
 		// The number of elements to sort is limited to an even power of 2
 		// At minimum - m_sort_shader_group_size * m_sort_transpose_shader_group_size
 		// At maximum - m_sort_shader_group_size * m_sort_shader_group_size
-		static const bcSIZE s_emitters_count = 128;
-		static const bcSIZE s_particles_count = 32768;
-		static const bcSIZE s_emission_shader_group_size = 1;
-		static const bcSIZE s_simulation_shader_group_size = 1024;
-		static const bcSIZE s_sort_shader_group_size = 1024;
-		static const bcSIZE s_sort_transpose_shader_group_size = 32;
-		static const bcSIZE s_sort_transpose_matrix_width = s_sort_shader_group_size;
-		static const bcSIZE s_sort_transpose_matrix_height = s_particles_count / s_sort_shader_group_size;
-		static const bcSIZE s_lights_count = 10;
+		static constexpr bcSIZE s_emitters_count = 128;
+		static constexpr bcSIZE s_particles_count = 32768;
+		static constexpr bcSIZE s_emission_shader_group_size = 1;
+		static constexpr bcSIZE s_simulation_shader_group_size = 1024;
+		static constexpr bcSIZE s_sort_shader_group_size = 1024;
+		static constexpr bcSIZE s_sort_transpose_shader_group_size = 32;
+		static constexpr bcSIZE s_sort_transpose_matrix_width = s_sort_shader_group_size;
+		static constexpr bcSIZE s_sort_transpose_matrix_height = s_particles_count / s_sort_shader_group_size;
+		static constexpr bcSIZE s_lights_count = 10;
 		
 		bcINT32 m_dead_particles_initial_count = s_particles_count;
+		const game::bc_render_pass_variable_t m_render_target_texture;
+		const game::bc_render_pass_variable_t m_render_target_view;
 		const bcECHAR* m_sprites_content_name;
 		
 		graphic::bc_depth_stencil_view m_depth_buffer_view;

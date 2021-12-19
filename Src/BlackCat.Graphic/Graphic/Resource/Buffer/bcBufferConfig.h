@@ -21,11 +21,11 @@ namespace black_cat
 		public:
 			using platform_pack = bc_platform_buffer_config_pack<TRenderApi>;
 
-			bcUINT get_byte_width() const;
+			bcUINT get_byte_width() const noexcept;
 
-			bc_resource_usage get_usage() const;
+			bc_resource_usage get_usage() const noexcept;
 
-			bcUINT get_structure_byte_stride() const;
+			bcUINT get_structure_byte_stride() const noexcept;
 
 			platform_pack& get_platform_pack() noexcept
 			{

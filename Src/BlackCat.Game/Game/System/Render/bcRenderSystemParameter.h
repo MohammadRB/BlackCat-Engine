@@ -6,6 +6,7 @@
 #include "GraphicImp/Shader/Parameter/bcConstantBufferParameter.h"
 #include "GraphicImp/Shader/Parameter/bcSamplerParameter.h"
 #include "GraphicImp/Shader/Parameter/bcResourceViewParameter.h"
+#include "GraphicImp/Shader/Parameter/bcRenderTargetViewParameter.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "GraphicImp/Resource/View/bcDepthStencilView.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
@@ -53,7 +54,7 @@ namespace black_cat
 
 		using bc_render_pass_state_render_target_view_array = core::bc_array
 		<
-			graphic::bc_render_target_view,
+			graphic::bc_render_target_view_parameter,
 			g_render_pass_state_render_target_view_count
 		>;
 		using bc_render_pass_state_sampler_array = core::bc_array

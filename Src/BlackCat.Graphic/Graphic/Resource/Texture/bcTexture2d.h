@@ -36,19 +36,19 @@ namespace black_cat
 			
 			bc_platform_texture2d& operator=(const bc_platform_texture2d& p_other) noexcept;
 
-			bcUINT32 get_width() const;
+			bcUINT32 get_width() const noexcept;
 
-			bcUINT32 get_height() const;
+			bcUINT32 get_height() const noexcept;
 
-			bc_resource_usage get_usage() const;
+			bc_resource_usage get_usage() const noexcept;
 
-			bool is_multisampled() const;
+			bool is_multisampled() const noexcept;
 
-			bc_texture_ms_config get_sample_count() const;
+			bc_texture_ms_config get_sample_count() const noexcept;
 
-			bc_format get_format() const;
+			bc_format get_format() const noexcept;
 
-			bc_resource_type get_type() const override
+			bc_resource_type get_type() const noexcept override
 			{
 				return bc_resource_type::texture_2d;
 			}
