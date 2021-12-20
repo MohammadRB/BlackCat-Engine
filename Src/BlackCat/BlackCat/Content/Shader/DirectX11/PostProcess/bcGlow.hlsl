@@ -6,7 +6,7 @@ SamplerState g_sam_sampler				: register(BC_RENDER_PASS_STATE_S0);
 
 Texture2D g_tex2d_input					: register(BC_RENDER_PASS_STATE_T0);
 
-cbuffer g_cb_object_state				: register(BC_RENDER_PASS_STATE_CB1)
+cbuffer g_cb_params						: register(BC_RENDER_PASS_STATE_CB1)
 {
 	float g_threshold					: packoffset(c0.x);
 	float g_intensity					: packoffset(c0.y);

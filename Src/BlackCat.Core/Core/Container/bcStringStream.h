@@ -332,14 +332,14 @@ namespace black_cat
 		}
 
 		template<typename TChar, typename TTraits, typename TAllocator>
-		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, std::string_view p_str)
+		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, bc_string_view p_str)
 		{
 			p_stream << p_str.data();
 			return p_stream;
 		}
 
 		template<typename TChar, typename TTraits, typename TAllocator>
-		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, std::wstring_view p_str)
+		bc_basic_string_stream<TChar, TTraits, TAllocator>& operator<<(bc_basic_string_stream<TChar, TTraits, TAllocator>& p_stream, bc_wstring_view p_str)
 		{
 			p_stream << p_str.data();
 			return p_stream;

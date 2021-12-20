@@ -54,7 +54,7 @@ namespace black_cat
 			bool try_steal(delegate_type& p_task);
 
 		private:
-			bc_deque< delegate_type > m_deque;
+			bc_deque<delegate_type> m_deque;
 			mutable core_platform::bc_mutex m_mutex;
 		};
 
@@ -105,7 +105,7 @@ namespace black_cat
 
 			bc_thread_manager(bc_thread_manager&& p_other) noexcept = delete;
 
-			~bc_thread_manager();
+			~bc_thread_manager() override;
 
 			bc_thread_manager& operator=(const bc_thread_manager&) = delete;
 
@@ -122,7 +122,7 @@ namespace black_cat
 			void check_for_interruption();
 
 			template<typename T>
-			bc_task< T > start_new_task(bc_delegate< T() >&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
+			bc_task<T> start_new_task(bc_delegate<T()>&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
 
 		private:
 			void _initialize(bcSIZE p_thread_count, bcSIZE p_reserved_thread_count);
@@ -149,16 +149,16 @@ namespace black_cat
 
 			bcSIZE m_thread_count;
 			bcSIZE m_reserved_thread_count;
-			core_platform::bc_atomic< bool > m_done;
-			core_platform::bc_atomic< bcUINT32 > m_task_count;
-			core_platform::bc_atomic< bcUINT32 > m_num_thread_in_spin;
+			core_platform::bc_atomic<bool> m_done;
+			core_platform::bc_atomic<bcUINT32> m_task_count;
+			core_platform::bc_atomic<bcUINT32> m_num_thread_in_spin;
 			core_platform::bc_mutex m_cvariable_mutex;
 			core_platform::bc_condition_variable m_cvariable;
 
 			mutable core_platform::bc_shared_mutex m_threads_mutex;
-			bc_vector_program< bc_unique_ptr<_thread_data> > m_threads;
-			bc_concurrent_queue< task_type > m_global_queue;
-			core_platform::bc_thread_local< _thread_data > m_my_data;
+			bc_vector_program<bc_unique_ptr<_thread_data>> m_threads;
+			bc_concurrent_queue<task_type> m_global_queue;
+			core_platform::bc_thread_local<_thread_data> m_my_data;
 		};
 
 		class bc_thread_manager::_thread_data
@@ -211,11 +211,11 @@ namespace black_cat
 			core_platform::bc_thread m_thread;
 		};
 
-		template< typename T >
-		bc_task< T > bc_thread_manager::start_new_task(bc_delegate< T() >&& p_delegate, bc_task_creation_option p_option)
+		template<typename T>
+		bc_task<T> bc_thread_manager::start_new_task(bc_delegate<T()>&& p_delegate, bc_task_creation_option p_option)
 		{
-			bc_task_link< T > l_task_link(std::move(p_delegate));
-			bc_task< T > l_task = l_task_link.get_task();
+			bc_task_link<T> l_task_link(std::move(p_delegate));
+			bc_task<T> l_task = l_task_link.get_task();
 
 			bc_alloc_type l_alloc_type = bc_alloc_type::frame;
 			bool l_policy_none = true;
@@ -250,7 +250,7 @@ namespace black_cat
 				m_cvariable.notify_one();
 			}
 
-			if (l_task_count >= s_new_thread_threshold)
+			if (l_task_count>= s_new_thread_threshold)
 			{
 				_push_worker();
 			}

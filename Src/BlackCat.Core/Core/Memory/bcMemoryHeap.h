@@ -43,11 +43,11 @@ namespace black_cat
 			pointer_refs::iterator pointers_end() noexcept;
 #endif
 
-			void lock(core_platform::bc_lock_operation p_operation) noexcept;
+			void lock() noexcept;
 
 			void unlock() noexcept;
 
-			bool try_lock(core_platform::bc_lock_operation p_operation) noexcept;
+			bool try_lock() noexcept;
 
 #ifdef BC_MEMORY_DEFRAG
 			// If any pointer exist in this block or this block is not free return MemBlock of one of it's pointers 
@@ -62,7 +62,7 @@ namespace black_cat
 			bcSIZE m_size;
 			bcSIZE m_prev_size;
 			bool m_free;
-			core_platform::bc_hybrid_mutex m_mutex;
+			core_platform::bc_spin_mutex m_mutex;
 #ifdef BC_MEMORY_DEFRAG
 			pointer_refs m_pointers;
 #endif
@@ -176,9 +176,9 @@ namespace black_cat
 		}
 #endif
 
-		inline void _bc_heap_memblock::lock(core_platform::bc_lock_operation p_operation) noexcept
+		inline void _bc_heap_memblock::lock() noexcept
 		{
-			m_mutex.lock(p_operation);
+			m_mutex.lock();
 		}
 
 		inline void _bc_heap_memblock::unlock() noexcept
@@ -186,9 +186,9 @@ namespace black_cat
 			m_mutex.unlock();
 		}
 
-		inline bool _bc_heap_memblock::try_lock(core_platform::bc_lock_operation p_operation) noexcept
+		inline bool _bc_heap_memblock::try_lock() noexcept
 		{
-			return m_mutex.try_lock(p_operation);
+			return m_mutex.try_lock();
 		}
 
 #ifdef BC_MEMORY_DEFRAG
@@ -220,7 +220,7 @@ namespace black_cat
 			bool l_has_set = false;
 
 			{
-				core_platform::bc_hybrid_mutex_guard l_lock(m_mutex, core_platform::bc_lock_operation::light);
+				core_platform::bc_spin_mutex_guard l_lock(m_mutex);
 
 				for (void**& l_ptr : m_pointers)
 				{
@@ -241,7 +241,7 @@ namespace black_cat
 			bool l_found = false;
 
 			{
-				core_platform::bc_hybrid_mutex_guard l_lock(m_mutex, core_platform::bc_lock_operation::light);
+				core_platform::bc_spin_mutex_guard l_lock(m_mutex);
 
 				for (void**& l_ptr : m_pointers)
 				{

@@ -65,8 +65,13 @@ namespace black_cat
 			bc_global_config& get_global_config() noexcept;
 
 			const bc_global_config& get_global_config() const noexcept;
+
+			void update(const core_platform::bc_clock::update_param& p_clock);
 			
 		private:
+			core::bc_content_manager* m_content_manager;
+			core::bc_content_stream_manager* m_content_stream_manager;
+
 			core::bc_estring m_execute_path;
 			core::bc_estring m_content_base_path;
 			core::bc_estring m_content_data_path;
@@ -75,10 +80,10 @@ namespace black_cat
 			core::bc_estring m_content_platform_shader_path;
 			core::bc_estring m_content_script_path;
 			core::bc_estring m_content_scene_path;
+
 			core::bc_unique_ptr<bc_global_config> m_global_config;
-			
-			core::bc_content_manager* m_content_manager;
-			core::bc_content_stream_manager* m_content_stream_manager;
+			bcUINT64 m_global_config_last_write_time;
+			bcUINT32 m_global_config_last_check_time;
 		};
 
 		inline bc_global_config& bc_file_system::get_global_config() noexcept

@@ -165,9 +165,9 @@ namespace black_cat
 			}
 		}
 
-		core::bc_vector_frame<std::string_view> bc_entity_manager::get_entity_names() const
+		core::bc_vector_frame<core::bc_string_view> bc_entity_manager::get_entity_names() const
 		{
-			core::bc_vector_frame<std::string_view> l_result;
+			core::bc_vector_frame<core::bc_string_view> l_result;
 			l_result.reserve(m_entities.size());
 
 			for (const auto& l_entity : m_entities)

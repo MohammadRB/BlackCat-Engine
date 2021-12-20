@@ -34,7 +34,7 @@ namespace black_cat
 		class bc_decal : public core::bc_ref_count
 		{
 		public:
-			bc_decal(std::string_view p_name,
+			bc_decal(core::bc_string_view p_name,
 				bc_mesh_material_ptr p_material, 
 				bcFLOAT p_u0, 
 				bcFLOAT p_v0, 
@@ -53,7 +53,7 @@ namespace black_cat
 
 			bc_decal& operator=(bc_decal&&) noexcept;
 
-			std::string_view get_name() const noexcept;
+			core::bc_string_view get_name() const noexcept;
 			
 			const bc_mesh_material& get_material() const noexcept;
 
@@ -78,7 +78,7 @@ namespace black_cat
 			bool get_auto_remove() const noexcept;
 
 		private:
-			std::string_view m_name;
+			core::bc_string_view m_name;
 			bc_mesh_material_ptr m_material;
 			bcFLOAT m_u0;
 			bcFLOAT m_v0;
@@ -104,7 +104,7 @@ namespace black_cat
 		{
 		}
 
-		inline bc_decal::bc_decal(std::string_view p_name,
+		inline bc_decal::bc_decal(core::bc_string_view p_name,
 			bc_mesh_material_ptr p_material,
 			bcFLOAT p_u0,
 			bcFLOAT p_v0,
@@ -137,7 +137,7 @@ namespace black_cat
 
 		inline bc_decal& bc_decal::operator=(bc_decal&&) noexcept = default;
 
-		inline std::string_view bc_decal::get_name() const noexcept
+		inline core::bc_string_view bc_decal::get_name() const noexcept
 		{
 			return m_name;
 		}

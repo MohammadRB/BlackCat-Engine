@@ -160,7 +160,7 @@ namespace black_cat
 			return &m_nodes[p_index];
 		}
 		
-		const bc_mesh_node* bc_mesh::find_node(std::string_view p_name) const noexcept
+		const bc_mesh_node* bc_mesh::find_node(core::bc_string_view p_name) const noexcept
 		{
 			const auto l_hash = hash_t()(p_name);
 			const auto l_entry = m_nodes_map.find(l_hash);
@@ -173,7 +173,7 @@ namespace black_cat
 			return l_entry->second;
 		}
 
-		std::string_view bc_mesh::get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
+		core::bc_string_view bc_mesh::get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
 			if (p_mesh_index >= p_node.m_mesh_count)
 			{
@@ -181,7 +181,7 @@ namespace black_cat
 			}
 
 			const auto& l_mesh_name = m_meshes[p_node.m_first_mesh_index + p_mesh_index].m_name;
-			return std::string_view(l_mesh_name.c_str(), l_mesh_name.size());
+			return core::bc_string_view(l_mesh_name.c_str(), l_mesh_name.size());
 		}
 
 		const bc_mesh_material& bc_mesh::get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const

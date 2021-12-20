@@ -8,6 +8,34 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_global_config;
+
+		class bc_event_global_config_changed : public core::bc_app_event
+		{
+			BC_EVENT(glb_cng)
+
+		public:
+			explicit bc_event_global_config_changed(bc_global_config& p_config) noexcept
+				: bc_app_event(message_name()),
+				m_config(&p_config)
+			{
+			}
+
+			bc_event_global_config_changed(const bc_event_global_config_changed&) noexcept = default;
+
+			~bc_event_global_config_changed() override = default;
+
+			bc_event_global_config_changed& operator=(const bc_event_global_config_changed&) noexcept = default;
+
+			bc_global_config& get_config() const noexcept
+			{
+				return *m_config;
+			}
+
+		private:
+			bc_global_config* m_config;
+		};
+
 		class bc_event_editor_mode : public core::bc_app_event
 		{
 			BC_EVENT(edt_mde)

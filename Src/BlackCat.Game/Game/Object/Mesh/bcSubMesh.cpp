@@ -34,7 +34,7 @@ namespace black_cat
 			}
 		}
 
-		bc_sub_mesh::bc_sub_mesh(bc_mesh_ptr p_mesh, std::string_view p_node_name)
+		bc_sub_mesh::bc_sub_mesh(bc_mesh_ptr p_mesh, core::bc_string_view p_node_name)
 			: bc_sub_mesh(std::move(p_mesh), p_mesh->find_node(p_node_name.data())->get_index())
 		{
 		}

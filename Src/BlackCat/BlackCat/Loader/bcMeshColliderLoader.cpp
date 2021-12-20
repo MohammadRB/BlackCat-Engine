@@ -20,7 +20,7 @@ namespace black_cat
 {
 	std::tuple<core::bc_unique_ptr<bcBYTE>, physics::bc_triangle_mesh_desc> _bc_extract_triangle_mesh(const aiMesh& p_ai_mesh);
 
-	void _bc_extract_skinned_mesh_collider(const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
+	void _bc_extract_skinned_mesh_collider(const core::bc_unordered_map_frame<core::bc_string_view, bcUINT32>& p_node_mapping,
 		const aiMesh& p_ai_mesh,
 		game::bc_mesh_collider_builder& p_builder);
 
@@ -61,9 +61,9 @@ namespace black_cat
 			throw bc_io_exception(l_error_msg.c_str());
 		}
 		
-		core::bc_unordered_map_frame<std::string_view, bcUINT32> l_node_mapping;
-		core::bc_unordered_map_frame<std::string_view, core::bc_vector_frame<const aiNode*>> l_px_node_mapping;
-		core::bc_vector<std::tuple<std::string_view, std::string_view, physics::bc_transform>> l_px_joint_mapping;
+		core::bc_unordered_map_frame<core::bc_string_view, bcUINT32> l_node_mapping;
+		core::bc_unordered_map_frame<core::bc_string_view, core::bc_vector_frame<const aiNode*>> l_px_node_mapping;
+		core::bc_vector<std::tuple<core::bc_string_view, core::bc_string_view, physics::bc_transform>> l_px_joint_mapping;
 		
 		const bool l_is_skinned = bc_null_default(p_context.m_parameters->get_value<bool>(constant::g_param_mesh_skinned), false);
 		if(l_is_skinned)
@@ -126,7 +126,7 @@ namespace black_cat
 	}
 
 	void bc_mesh_collider_loader::convert_px_node(physics::bc_physics& p_physics,
-		const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
+		const core::bc_unordered_map_frame<core::bc_string_view, bcUINT32>& p_node_mapping,
 		const aiScene& p_ai_scene,
 		const bcCHAR* p_attached_mesh_name,
 		const aiNode& p_attached_node,
@@ -209,8 +209,8 @@ namespace black_cat
 
 	void bc_mesh_collider_loader::convert_nodes(core::bc_content_loading_context& p_context,
 		physics::bc_physics& p_physics,
-		const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
-		const core::bc_unordered_map_frame<std::string_view, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping,
+		const core::bc_unordered_map_frame<core::bc_string_view, bcUINT32>& p_node_mapping,
+		const core::bc_unordered_map_frame<core::bc_string_view, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping,
 		const aiScene& p_ai_scene,
 		const aiNode& p_ai_node,
 		bool p_high_detail_query_shape,
@@ -370,7 +370,7 @@ namespace black_cat
 		return std::make_tuple(std::move(l_indices_buffer), std::move(l_px_triangle_desc));
 	}
 
-	void _bc_extract_skinned_mesh_collider(const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
+	void _bc_extract_skinned_mesh_collider(const core::bc_unordered_map_frame<core::bc_string_view, bcUINT32>& p_node_mapping,
 		const aiMesh& p_ai_mesh,
 		game::bc_mesh_collider_builder& p_builder)
 	{

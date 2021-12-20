@@ -204,7 +204,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_human_ragdoll_component::add_force(std::string_view p_part_name, const core::bc_vector3f& p_force)
+		void bc_human_ragdoll_component::add_force(core::bc_string_view p_part_name, const core::bc_vector3f& p_force)
 		{
 			const auto l_collider_ite = std::find_if(std::begin(m_colliders_map), std::end(m_colliders_map), [=](const _bc_ragdoll_collider_map& p_entry)
 			{
@@ -438,9 +438,9 @@ namespace black_cat
 
 			m_joints.reserve(l_mesh_colliders.get_collider_joints().size());
 
-			auto l_create_spherical_joint = [&](std::string_view p_collider1, 
+			auto l_create_spherical_joint = [&](core::bc_string_view p_collider1, 
 				physics::bc_rigid_actor& p_actor1, 
-				std::string_view p_collider2, 
+				core::bc_string_view p_collider2, 
 				physics::bc_rigid_actor& p_actor2,
 				physics::bc_d6_motion p_x_motion,
 				physics::bc_d6_motion p_y_motion,

@@ -2,12 +2,15 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/File/bcPath.h"
+#include "CorePlatformImp/File/bcFileInfo.h"
 #include "Core/Container/bcString.h"
+#include "Core/Messaging/Event/bcEventManager.h"
+#include "Core/File/bcPath.h"
 #include "Graphic/bcRenderApiInfo.h"
 #include "Game/Application/bcRenderApplication.h"
 #include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/Input/bcGlobalConfig.h"
+#include "Game/bcEvent.h"
 
 namespace black_cat
 {
@@ -15,9 +18,12 @@ namespace black_cat
 	{
 		bc_file_system::bc_file_system(core::bc_content_manager& p_content_manager, core::bc_content_stream_manager& p_content_stream_manager)
 			: m_content_manager(&p_content_manager),
-			m_content_stream_manager(&p_content_stream_manager)
+			m_content_stream_manager(&p_content_stream_manager),
+			m_global_config_last_write_time(0),
+			m_global_config_last_check_time(0)
 		{
-			const auto l_execute_path = core::bc_path(core::bc_path(core::bc_path::get_program_path().c_str()).get_directory().c_str());
+			const auto l_execute_path = core::bc_path
+					(core::bc_path(core::bc_path::get_program_path().c_str()).get_directory().c_str());
 			m_execute_path = l_execute_path.get_string();
 
 			auto l_temp = l_execute_path;
@@ -37,14 +43,17 @@ namespace black_cat
 			m_content_model_path = l_temp.get_string();
 
 			l_temp = l_execute_path;
-			l_temp.combine(core::bc_path
+			l_temp.combine
 			(
+				core::bc_path
 				(
-					core::bc_estring_frame(bcL("Content\\Shader\\"))
-					+
-					core::bc_to_exclusive_wstring(graphic::bc_render_api_info::api_name()).c_str()
-				).c_str()
-			));
+					(
+						core::bc_estring_frame(bcL("Content\\Shader\\"))
+						+
+						core::bc_to_exclusive_wstring(graphic::bc_render_api_info::api_name()).c_str()
+					).c_str()
+				)
+			);
 			m_content_platform_shader_path = l_temp.get_string();
 
 			l_temp = l_execute_path;
@@ -58,7 +67,7 @@ namespace black_cat
 			const auto l_config_name = core::bc_estring_frame(bc_get_application().get_app_name()) + bcL(".config");
 			m_global_config = core::bc_make_unique<bc_global_config>
 			(
-				core::bc_alloc_type::program, 
+				core::bc_alloc_type::program,
 				bc_global_config(m_content_base_path.c_str(), l_config_name.c_str())
 			);
 			g_global_config = m_global_config.get();
@@ -69,12 +78,13 @@ namespace black_cat
 			operator=(std::move(p_other));
 		}
 
-		bc_file_system::~bc_file_system()
-		{
-		}
+		bc_file_system::~bc_file_system() = default;
 
 		bc_file_system& bc_file_system::operator=(bc_file_system&& p_other) noexcept
 		{
+			m_content_manager = p_other.m_content_manager;
+			m_content_stream_manager = p_other.m_content_stream_manager;
+
 			m_execute_path = std::move(p_other.m_execute_path);
 			m_content_base_path = std::move(p_other.m_content_base_path);
 			m_content_data_path = std::move(p_other.m_content_data_path);
@@ -83,10 +93,9 @@ namespace black_cat
 			m_content_platform_shader_path = std::move(m_content_platform_shader_path);
 			m_content_script_path = std::move(m_content_script_path);
 			m_content_scene_path = std::move(m_content_scene_path);
-			m_global_config = std::move(p_other.m_global_config);
 
-			m_content_manager = p_other.m_content_manager;
-			m_content_stream_manager = p_other.m_content_stream_manager;
+			m_global_config = std::move(p_other.m_global_config);
+			m_global_config_last_check_time = p_other.m_global_config_last_check_time;
 
 			return *this;
 		}
@@ -214,6 +223,31 @@ namespace black_cat
 			l_path.combine(core::bc_path(l_scene_name.data()));
 
 			return l_path.get_string();
+		}
+
+		void bc_file_system::update(const core_platform::bc_clock::update_param& p_clock)
+		{
+			m_global_config_last_check_time += p_clock.m_elapsed;
+			if(m_global_config_last_check_time <= 1000)
+			{
+				return;
+			}
+
+			m_global_config_last_check_time = 0;
+			
+			core_platform::bc_basic_file_info l_global_config_file_info;
+			core_platform::bc_file_info::get_basic_info(m_global_config->get_path().data(), &l_global_config_file_info);
+
+			const bool l_global_config_has_changed = l_global_config_file_info.m_last_write_time.m_total_milliseconds > m_global_config_last_write_time;
+			if(l_global_config_has_changed)
+			{
+				m_global_config->reload();
+
+				bc_event_global_config_changed l_event(*m_global_config);
+				core::bc_get_service<core::bc_event_manager>()->process_event(l_event);
+
+				m_global_config_last_write_time = l_global_config_file_info.m_last_write_time.m_total_milliseconds;
+			}
 		}
 	}
 }

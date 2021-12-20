@@ -26,7 +26,7 @@ namespace black_cat
 
 			bc_sub_mesh(bc_mesh_ptr p_mesh, bc_mesh_node::node_index_t p_node_index);
 			
-			bc_sub_mesh(bc_mesh_ptr p_mesh, std::string_view p_node_name);
+			bc_sub_mesh(bc_mesh_ptr p_mesh, core::bc_string_view p_node_name);
 
 			bc_sub_mesh(bc_sub_mesh&&) noexcept;
 
@@ -50,7 +50,7 @@ namespace black_cat
 
 			const bc_mesh_node* find_node(bc_mesh_node::node_index_t p_index) const noexcept;
 			
-			const bc_mesh_node* find_node(std::string_view p_name) const noexcept;
+			const bc_mesh_node* find_node(core::bc_string_view p_name) const noexcept;
 			
 			const bc_mesh_node* get_node_parent(const bc_mesh_node& p_node) const noexcept;
 
@@ -62,7 +62,7 @@ namespace black_cat
 			
 			const core::bc_matrix4f& get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
 			
-			std::string_view get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+			core::bc_string_view get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_mesh_material& get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 			
@@ -147,7 +147,7 @@ namespace black_cat
 			return m_mesh->find_node(p_index);
 		}
 		
-		inline const bc_mesh_node* bc_sub_mesh::find_node(std::string_view p_name) const noexcept
+		inline const bc_mesh_node* bc_sub_mesh::find_node(core::bc_string_view p_name) const noexcept
 		{
 			const auto* l_mesh_node = m_mesh->find_node(p_name);
 			if(!l_mesh_node || l_mesh_node->get_index() < m_root_node->get_index())
@@ -183,7 +183,7 @@ namespace black_cat
 			return m_mesh->get_node_transform(p_node);
 		}
 
-		inline std::string_view bc_sub_mesh::get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
+		inline core::bc_string_view bc_sub_mesh::get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const
 		{
 			return m_mesh->get_node_mesh_name(p_node, p_mesh_index);
 		}

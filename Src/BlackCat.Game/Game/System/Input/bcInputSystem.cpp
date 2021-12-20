@@ -114,7 +114,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_input_system::update(const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_input_system::update(const core_platform::bc_clock::update_param& p_clock)
 		{
 			if(m_window_has_focus)
 			{
@@ -125,7 +125,7 @@ namespace black_cat
 			auto* l_camera = get_camera();
 			if (l_camera)
 			{
-				l_camera->update(p_clock_update_param);
+				l_camera->update(p_clock);
 			}
 		}
 
@@ -134,7 +134,7 @@ namespace black_cat
 			auto* l_window_resize_event = core::bci_message::as<platform::bc_app_event_window_resize>(p_event);
 			if (l_window_resize_event)
 			{
-				for(auto& l_camera : m_cameras)
+				for(const auto& l_camera : m_cameras)
 				{
 					l_camera->set_projection(l_window_resize_event->width(), l_window_resize_event->height());
 				}

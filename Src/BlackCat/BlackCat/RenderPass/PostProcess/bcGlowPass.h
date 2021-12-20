@@ -5,6 +5,7 @@
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/Texture/bcTextureConfig.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
+#include "Core/Messaging/bcMessageHandle.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/State/bcRenderState.h"
@@ -37,17 +38,25 @@ namespace black_cat
 
 		void set_enable(bool p_value) noexcept;
 
-		void update_parameters(game::bc_default_render_thread& p_render_thread, bcFLOAT p_threshold, bcFLOAT p_intensity) noexcept;
+		void update_parameters(bcFLOAT p_glow_threshold, bcFLOAT p_glow_intensity);
 
 	private:
+		void _update_parameters(game::bc_default_render_thread& p_render_thread);
+
 		bool m_enabled = true;
+		bool m_parameters_changed = false;
 		game::bc_render_pass_variable_t m_render_target_texture;
 		game::bc_render_pass_variable_t m_render_target_view;
+
+		core::bc_event_listener_handle m_config_change_handle;
+		bcFLOAT m_glow_threshold = 0;
+		bcFLOAT m_glow_intensity = 0;
 
 		graphic::bc_texture_config m_intermediate_texture_config;
 		graphic::bc_sampler_state_ref m_point_sampler;
 		graphic::bc_sampler_state_ref m_linear_sampler;
-		graphic::bc_buffer_ref m_parameters_buffer;
+		graphic::bc_buffer_ref m_glow_params_buffer;
+		graphic::bc_buffer_ref m_blur_params_buffer;
 		graphic::bc_resource_view_ref m_render_target_resource_view;
 		graphic::bc_shader_parameter_link m_intermediate_texture1_link;
 		graphic::bc_shader_parameter_link m_intermediate_texture2_link;

@@ -13,42 +13,42 @@ namespace black_cat
 {
 	namespace core_platform
 	{
-		template< bc_platform TP >
+		template<bc_platform TP>
 		struct bc_platform_spin_mutex_pack
 		{
 		};
 		
-		template< bc_platform TP >
+		template<bc_platform TP>
 		struct bc_platform_mutex_pack
 		{
 		};
 
-		template< bc_platform TP >
+		template<bc_platform TP>
 		struct bc_platform_timed_mutex_pack
 		{
 		};
 
-		template< bc_platform TP >
+		template<bc_platform TP>
 		struct bc_platform_recursive_mutex_pack
 		{
 		};
 
-		template< bc_platform TP >
+		template<bc_platform TP>
 		struct bc_platform_recursive_timed_mutex_pack
 		{
 		};
 
-		template< bc_platform TP >
+		template<bc_platform TP>
 		struct bc_platform_shared_mutex_pack
 		{
 		};
 
-		template< bc_platform TP >
+		template<bc_platform TP>
 		struct bc_platform_hybrid_mutex_pack
 		{
 		};
 
-		template< bc_platform TP >
+		template<bc_platform TP>
 		class bc_platform_spin_mutex : private bc_no_copy
 		{
 		public:
@@ -69,7 +69,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 		
-		template< bc_platform TP >
+		template<bc_platform TP>
 		class bc_platform_mutex : private bc_no_copy
 		{
 		public:
@@ -90,7 +90,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< bc_platform TP >
+		template<bc_platform TP>
 		class bc_platform_timed_mutex : private bc_no_copy
 		{
 		public:
@@ -113,7 +113,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< bc_platform TP >
+		template<bc_platform TP>
 		class bc_platform_recursive_mutex : private bc_no_copy
 		{
 		public:
@@ -134,7 +134,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< bc_platform TP >
+		template<bc_platform TP>
 		class bc_platform_recursive_timed_mutex : private bc_no_copy
 		{
 		public:
@@ -157,7 +157,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< bc_platform TP >
+		template<bc_platform TP>
 		class bc_platform_shared_mutex : private bc_no_copy
 		{
 		public:
@@ -188,7 +188,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< bc_platform TP >
+		template<bc_platform TP>
 		class bc_platform_hybrid_mutex : private bc_no_copy
 		{
 		public:
@@ -213,15 +213,15 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_spin_mutex = bc_platform_spin_mutex< g_current_platform >;
-		using bc_mutex = bc_platform_mutex< g_current_platform >;
-		using bc_timed_mutex = bc_platform_timed_mutex< g_current_platform >;
-		using bc_recursive_mutex = bc_platform_recursive_mutex< g_current_platform >;
-		using bc_recursive_timed_mutex = bc_platform_recursive_timed_mutex< g_current_platform >;
-		using bc_shared_mutex = bc_platform_shared_mutex< g_current_platform >;
-		using bc_hybrid_mutex = bc_platform_hybrid_mutex< g_current_platform >;
+		using bc_spin_mutex = bc_platform_spin_mutex<g_current_platform>;
+		using bc_mutex = bc_platform_mutex<g_current_platform>;
+		using bc_timed_mutex = bc_platform_timed_mutex<g_current_platform>;
+		using bc_recursive_mutex = bc_platform_recursive_mutex<g_current_platform>;
+		using bc_recursive_timed_mutex = bc_platform_recursive_timed_mutex<g_current_platform>;
+		using bc_shared_mutex = bc_platform_shared_mutex<g_current_platform>;
+		using bc_hybrid_mutex = bc_platform_hybrid_mutex<g_current_platform>;
 
-		template< typename T >
+		template<typename T>
 		class bc_lock_guard : private bc_no_copy
 		{
 		public:
@@ -255,7 +255,7 @@ namespace black_cat
 			mutex_type* m_lock;
 		};
 
-		template< typename T >
+		template<typename T>
 		class bc_unique_lock : private bc_no_copy
 		{
 		public:
@@ -429,7 +429,7 @@ namespace black_cat
 			bool m_owns;
 		};
 
-		template< typename T >
+		template<typename T>
 		class bc_shared_lock : private bc_no_copy
 		{
 		public:
@@ -575,22 +575,22 @@ namespace black_cat
 		using bc_hybrid_mutex_guard = bc_lock_guard<bc_hybrid_mutex>;
 		using bc_hybrid_mutex_unique_guard = bc_unique_lock<bc_hybrid_mutex>;
 
-		template< class TMutex >
+		template<class TMutex>
 		void swap(bc_unique_lock<TMutex>& p_first, bc_unique_lock<TMutex>& p_second) noexcept
 		{
 			p_first.swap(p_second);
 		}
 
-		template< class TMutex >
+		template<class TMutex>
 		void swap(bc_shared_lock<TMutex>& p_first, bc_shared_lock<TMutex>& p_second) noexcept
 		{
 			p_first.swap(p_second);
 		}
 
-		template< typename ...T >
+		template<typename ...T>
 		bool bc_try_lock(T&... p_locks);
 
-		template< typename ...T >
+		template<typename ...T>
 		bool bc_try_lock(T&... p_locks)
 		{
 			const bcUINT32 l_count = sizeof...(p_locks);
@@ -600,7 +600,7 @@ namespace black_cat
 			bcUINT32 l_i = 0;
 			try
 			{
-				for (l_i = 0; l_i < l_count; ++l_i)
+				for (l_i = 0; l_i <l_count; ++l_i)
 				{
 					if (!l_locks[l_i].tryLock())
 					{
@@ -616,7 +616,7 @@ namespace black_cat
 
 			if (l_break != -1)
 			{
-				for (l_i = 0; l_i < l_break; ++l_i)
+				for (l_i = 0; l_i <l_break; ++l_i)
 				{
 					l_locks[l_i].unlock();
 				}
@@ -625,10 +625,10 @@ namespace black_cat
 			return true;
 		}
 
-		template< typename ...T >
+		template<typename ...T>
 		bool bc_try_lock(T&... p_locks, bc_lock_operation p_lock_operation);
 
-		template< typename ...T >
+		template<typename ...T>
 		bool bc_try_lock(T&... p_locks, bc_lock_operation p_lock_operation)
 		{
 			const bcUINT32 l_count = sizeof...(p_locks);
@@ -638,7 +638,7 @@ namespace black_cat
 			bcUINT32 l_i = 0;
 			try
 			{
-				for (l_i = 0; l_i < l_count; ++l_i)
+				for (l_i = 0; l_i <l_count; ++l_i)
 				{
 					if (!l_locks[l_i].tryLock(p_lock_operation))
 					{
@@ -654,7 +654,7 @@ namespace black_cat
 
 			if (l_break != -1)
 			{
-				for (l_i = 0; l_i < l_break; ++l_i)
+				for (l_i = 0; l_i <l_break; ++l_i)
 				{
 					l_locks[l_i].unlock();
 				}
@@ -663,10 +663,10 @@ namespace black_cat
 			return true;
 		}
 
-		template< typename ...T >
+		template<typename ...T>
 		void bc_lock(T&... p_locks);
 
-		template< typename ...T >
+		template<typename ...T>
 		void bc_lock(T&... p_locks)
 		{
 			while (!bc_try_lock(p_locks...))
@@ -674,10 +674,10 @@ namespace black_cat
 			}
 		}
 
-		template< typename ...T >
+		template<typename ...T>
 		void bc_lock(T&... p_locks, bc_lock_operation p_lock_operation);
 
-		template< typename ...T >
+		template<typename ...T>
 		void bc_lock(T&... p_locks, bc_lock_operation p_lock_operation)
 		{
 			while (!bc_try_lock(p_locks..., p_lock_operation))
@@ -685,16 +685,16 @@ namespace black_cat
 			}
 		}
 
-		template< typename ...T >
+		template<typename ...T>
 		void bc_unlock(T&... p_locks);
 
-		template< typename ...T >
+		template<typename ...T>
 		void bc_unlock(T&... p_locks)
 		{
 			const bcUINT32 l_count = sizeof...(p_locks);
 			T& l_locks[l_count] = { p_locks... };
 
-			for (bcUINT32 i = 0; i < l_count; ++i)
+			for (bcUINT32 i = 0; i <l_count; ++i)
 			{
 				l_locks[i].unlock();
 			}

@@ -84,7 +84,7 @@ namespace black_cat
 
 		struct bc_mesh_part_collider_joint_entry
 		{
-			using hash_t = std::hash<std::string_view>;
+			using hash_t = std::hash<core::bc_string_view>;
 
 			hash_t::result_type m_collider1;
 			hash_t::result_type m_collider2;
@@ -109,9 +109,9 @@ namespace black_cat
 			
 			const bc_skinned_mesh_collider& get_skinned_collider() const noexcept;
 			
-			core::bc_const_span<bc_mesh_part_collider_entry> find_mesh_collider(std::string_view p_mesh_name) const noexcept;
+			core::bc_const_span<bc_mesh_part_collider_entry> find_mesh_collider(core::bc_string_view p_mesh_name) const noexcept;
 
-			const physics::bc_transform* find_joint(std::string_view p_collider1, std::string_view p_collider2) const noexcept;
+			const physics::bc_transform* find_joint(core::bc_string_view p_collider1, core::bc_string_view p_collider2) const noexcept;
 
 			core::bc_span<bc_mesh_part_collider_entry> get_colliders() noexcept;
 			

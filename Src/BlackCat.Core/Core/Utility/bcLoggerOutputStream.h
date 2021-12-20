@@ -72,9 +72,9 @@ namespace black_cat
 			
 			bc_logger_output_stream& operator<<(const bcWCHAR* p_str);
 
-			bc_logger_output_stream& operator<<(std::string_view p_str);
+			bc_logger_output_stream& operator<<(bc_string_view p_str);
 			
-			bc_logger_output_stream& operator<<(std::wstring_view p_str);
+			bc_logger_output_stream& operator<<(bc_wstring_view p_str);
 			
 			bc_logger_output_stream& operator<<(const bc_string& p_str);
 			
@@ -181,13 +181,13 @@ namespace black_cat
 			return *this;
 		}
 
-		inline bc_logger_output_stream& bc_logger_output_stream::operator<<(std::string_view p_str)
+		inline bc_logger_output_stream& bc_logger_output_stream::operator<<(bc_string_view p_str)
 		{
 			std::operator<<(*this, p_str.data());
 			return *this;
 		}
 
-		inline bc_logger_output_stream& bc_logger_output_stream::operator<<(std::wstring_view p_str)
+		inline bc_logger_output_stream& bc_logger_output_stream::operator<<(bc_wstring_view p_str)
 		{
 			std::operator<<(*this, p_str);
 			return *this;

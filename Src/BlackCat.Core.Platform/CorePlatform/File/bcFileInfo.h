@@ -31,7 +31,7 @@ namespace black_cat
 			bcUINT64 m_size;
 		};
 
-		template< bc_platform TPlatform >
+		template<bc_platform TPlatform>
 		class bc_platform_file_info
 		{
 		public:
@@ -40,6 +40,6 @@ namespace black_cat
 			static bool get_basic_info(const bcECHAR* p_file_name, bc_basic_file_info* p_info);
 		};
 
-		using bc_file_info = bc_platform_file_info< g_current_platform >;
+		using bc_file_info = bc_platform_file_info<g_current_platform>;
 	}
 }

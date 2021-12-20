@@ -22,16 +22,16 @@ namespace black_cat
 			highest
 		};
 		
-		template< bc_platform TP >
+		template<bc_platform TP>
 		struct bc_platform_thread_pack
 		{
 		};
 
-		template< bc_platform TP >
+		template<bc_platform TP>
 		class bc_platform_thread : private bc_no_copy
 		{
 		public:
-			using this_type = bc_platform_thread< TP >;
+			using this_type = bc_platform_thread<TP>;
 			using id = bcSIZE;
 			using platform_pack = bc_platform_thread_pack<TP>;
 
@@ -40,7 +40,7 @@ namespace black_cat
 
 			bc_platform_thread(this_type&& p_other) noexcept;
 
-			template< typename Callable, typename ...Args >
+			template<typename Callable, typename ...Args>
 			explicit bc_platform_thread(Callable&& pFunc, Args&&... pArgs);
 
 			~bc_platform_thread();
@@ -86,7 +86,7 @@ namespace black_cat
 			 */
 			static void current_thread_yield_switch() noexcept;
 
-			static void current_thread_on_exit(std::function< void() > p_func)
+			static void current_thread_on_exit(std::function<void()> p_func)
 			{
 				// http://stackoverflow.com/questions/20112221/invoking-a-function-automatically-on-stdthread-exit-in-c11
 				class thread_exit : private bc_no_copy
@@ -103,13 +103,13 @@ namespace black_cat
 						}
 					}
 
-					void add(std::function< void() > p_func)
+					void add(std::function<void()> p_func)
 					{
 						m_exit_functions.push(std::move(p_func));
 					}
 
 				private:
-					std::stack< std::function< void() > > m_exit_functions;
+					std::stack<std::function<void()>> m_exit_functions;
 				};
 
 				thread_local static thread_exit l_exit;
@@ -120,6 +120,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_thread = bc_platform_thread< g_current_platform >;
+		using bc_thread = bc_platform_thread<g_current_platform>;
 	}
 }

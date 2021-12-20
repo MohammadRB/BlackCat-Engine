@@ -14,14 +14,14 @@ namespace black_cat
 {
 	namespace core_platform
 	{
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		bool bc_platform_file_info<g_api_win32>::exist(const bcECHAR* p_file_name)
 		{
 			return PathFileExists(p_file_name);
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		bool bc_platform_file_info<g_api_win32>::get_basic_info(const bcECHAR* p_file_name, bc_basic_file_info* p_info)
 		{

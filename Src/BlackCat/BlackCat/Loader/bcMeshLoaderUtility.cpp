@@ -32,26 +32,26 @@ namespace black_cat
 	
 	bool bc_mesh_loader_utility::is_px_node(const aiNode& p_ai_node)
 	{
-		const std::string_view l_px_str = "px.";
+		const core::bc_string_view l_px_str = "px.";
 		const auto l_length_to_compare = l_px_str.size();
 		return l_px_str.compare(0, l_length_to_compare, &p_ai_node.mName.data[0], l_length_to_compare) == 0;
 	}
 
 	bool bc_mesh_loader_utility::is_px_joint_node(const aiNode& p_ai_node)
 	{
-		const std::string_view l_px_str = "px.joint.";
+		const core::bc_string_view l_px_str = "px.joint.";
 		const auto l_length_to_compare = l_px_str.size();
 		return l_px_str.compare(0, l_length_to_compare, &p_ai_node.mName.data[0], l_length_to_compare) == 0;
 	}
 
-	void bc_mesh_loader_utility::calculate_node_mapping(const aiNode& p_ai_node, core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping)
+	void bc_mesh_loader_utility::calculate_node_mapping(const aiNode& p_ai_node, core::bc_unordered_map_frame<core::bc_string_view, bcUINT32>& p_node_mapping)
 	{
 		if (bc_mesh_loader_utility::is_px_node(p_ai_node))
 		{
 			return;
 		}
 
-		p_node_mapping.insert(std::make_pair(std::string_view(p_ai_node.mName.C_Str()), p_node_mapping.size()));
+		p_node_mapping.insert(std::make_pair(core::bc_string_view(p_ai_node.mName.C_Str()), p_node_mapping.size()));
 
 		for (bcUINT32 l_child_ite = 0; l_child_ite < p_ai_node.mNumChildren; ++l_child_ite)
 		{
@@ -61,7 +61,7 @@ namespace black_cat
 
 	void bc_mesh_loader_utility::calculate_px_node_mapping(const aiScene& p_ai_scene,
 		const aiNode& p_ai_node,
-		core::bc_unordered_map_frame<std::string_view, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping)
+		core::bc_unordered_map_frame<core::bc_string_view, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping)
 	{
 		if (is_px_node(p_ai_node) || is_px_joint_node(p_ai_node))
 		{
@@ -91,7 +91,7 @@ namespace black_cat
 			
 			if(!l_ai_mesh_colliders.empty())
 			{
-				p_px_node_mapping.insert(std::make_pair(std::string_view(l_ai_mesh->mName.data), std::move(l_ai_mesh_colliders)));
+				p_px_node_mapping.insert(std::make_pair(core::bc_string_view(l_ai_mesh->mName.data), std::move(l_ai_mesh_colliders)));
 			}
 		}
 
@@ -103,7 +103,7 @@ namespace black_cat
 
 	void bc_mesh_loader_utility::calculate_skinned_px_node_mapping(const aiScene& p_ai_scene,
 		const aiNode& p_ai_node,
-		core::bc_unordered_map_frame<std::string_view, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping)
+		core::bc_unordered_map_frame<core::bc_string_view, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping)
 	{
 		if (is_px_node(p_ai_node) || is_px_joint_node(p_ai_node))
 		{
@@ -130,7 +130,7 @@ namespace black_cat
 		
 		if(!l_ai_node_colliders.empty())
 		{
-			p_px_node_mapping.insert(std::make_pair(std::string_view(p_ai_node.mName.C_Str()), std::move(l_ai_node_colliders)));
+			p_px_node_mapping.insert(std::make_pair(core::bc_string_view(p_ai_node.mName.C_Str()), std::move(l_ai_node_colliders)));
 		}
 
 		for (bcUINT32 l_child_ite = 0; l_child_ite < p_ai_node.mNumChildren; ++l_child_ite)
@@ -140,7 +140,7 @@ namespace black_cat
 	}
 
 	void bc_mesh_loader_utility::calculate_px_joint_mapping(const aiScene& p_ai_scene,
-		core::bc_vector<std::tuple<std::string_view, std::string_view, physics::bc_transform>>& p_px_joint_mapping)
+		core::bc_vector<std::tuple<core::bc_string_view, core::bc_string_view, physics::bc_transform>>& p_px_joint_mapping)
 	{
 		for (bcUINT32 l_child_ite = 0; l_child_ite < p_ai_scene.mRootNode->mNumChildren; ++l_child_ite)
 		{
@@ -150,7 +150,7 @@ namespace black_cat
 				continue;
 			}
 
-			std::string_view l_node_name = l_child_node->mName.data;
+			core::bc_string_view l_node_name = l_child_node->mName.data;
 			l_node_name = l_node_name.substr(9);
 
 			const auto l_split_pos = l_node_name.find('.');

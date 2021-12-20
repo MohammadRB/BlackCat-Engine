@@ -12,6 +12,11 @@ namespace black_cat
 		{
 		}
 
+		bc_path::bc_path(bc_estring_view p_path)
+			: m_path(p_path.data())
+		{
+		}
+
 		bc_path::bc_path(const bc_path& p_other) = default;
 
 		bc_path::bc_path(bc_path&& p_other) noexcept = default;

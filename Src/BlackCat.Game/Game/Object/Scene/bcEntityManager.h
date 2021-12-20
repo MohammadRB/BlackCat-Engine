@@ -90,7 +90,7 @@ namespace black_cat
 
 			void read_entity_file(const bcECHAR* p_json_file_path);
 
-			core::bc_vector_frame<std::string_view> get_entity_names() const;
+			core::bc_vector_frame<core::bc_string_view> get_entity_names() const;
 
 			/**
 			 * \brief Create an actor along with it's components. In case of any error returns invalid actor

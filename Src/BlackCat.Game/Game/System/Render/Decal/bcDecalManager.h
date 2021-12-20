@@ -39,7 +39,7 @@ namespace black_cat
 		class _bc_decal_entry : public bc_decal
 		{
 		public:
-			using string_hash = std::hash<std::string_view>;
+			using string_hash = std::hash<core::bc_string_view>;
 			
 		public:
 			_bc_decal_entry(bc_decal p_decal, bcSIZE p_hash)
@@ -92,9 +92,9 @@ namespace black_cat
 			 */
 			void read_decal_file(const bcECHAR* p_decal_file);
 
-			core::bc_vector_frame<std::string_view> get_decal_names() const;
+			core::bc_vector_frame<core::bc_string_view> get_decal_names() const;
 
-			bool is_decal_auto_remove(std::string_view p_name) const noexcept;
+			bool is_decal_auto_remove(core::bc_string_view p_name) const noexcept;
 			
 			/**
 			 * \brief Try to found decal and load all associated resources
@@ -102,7 +102,7 @@ namespace black_cat
 			 * \param p_name 
 			 * \return 
 			 */
-			bc_decal_ptr load_decal(std::string_view p_name) noexcept;
+			bc_decal_ptr load_decal(core::bc_string_view p_name) noexcept;
 			
 			/**
 			 * \brief Find decal description and load associated resources from its descriptor. If decal has already been loaded return pointer to it.
@@ -111,7 +111,7 @@ namespace black_cat
 			 * \param p_name 
 			 * \return 
 			 */
-			bc_decal_ptr load_decal_throw(std::string_view p_name);
+			bc_decal_ptr load_decal_throw(core::bc_string_view p_name);
 
 			/**
 			 * \brief Create a decal without a reference to owning actor.
@@ -122,11 +122,11 @@ namespace black_cat
 			 * \param p_local_rotation
 			 * \return 
 			 */
-			bc_decal_instance* create_decal(std::string_view p_name,
+			bc_decal_instance* create_decal(core::bc_string_view p_name,
 				const core::bc_vector3f& p_local_position,
 				const core::bc_matrix3f& p_local_rotation);
 
-			bc_decal_instance* create_decal(std::string_view p_name,
+			bc_decal_instance* create_decal(core::bc_string_view p_name,
 				const core::bc_vector3f& p_local_position,
 				const core::bc_matrix3f& p_local_rotation,
 				bc_render_group p_render_group);
@@ -142,13 +142,13 @@ namespace black_cat
 			 * \param p_attached_node_index 
 			 * \return 
 			 */
-			bc_decal_instance_ptr create_decal(std::string_view p_name,
+			bc_decal_instance_ptr create_decal(core::bc_string_view p_name,
 				const bc_actor& p_actor,
 				const core::bc_vector3f& p_local_position,
 				const core::bc_matrix3f& p_local_rotation,
 				bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index);
 
-			bc_decal_instance_ptr create_decal(std::string_view p_name,
+			bc_decal_instance_ptr create_decal(core::bc_string_view p_name,
 				const bc_actor& p_actor,
 				const core::bc_vector3f& p_local_position,
 				const core::bc_matrix3f& p_local_rotation,

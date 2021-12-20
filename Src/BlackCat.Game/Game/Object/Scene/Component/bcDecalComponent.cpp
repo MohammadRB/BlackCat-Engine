@@ -74,7 +74,7 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		void bc_decal_component::add_decal(std::string_view p_name,
+		void bc_decal_component::add_decal(core::bc_string_view p_name,
 			const core::bc_vector3f& p_local_pos,
 			const core::bc_matrix3f& p_local_rotation,
 			const core::bc_matrix4f& p_initial_world_transform)
@@ -104,7 +104,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_decal_component::add_decal(std::string_view p_name,
+		void bc_decal_component::add_decal(core::bc_string_view p_name,
 			const core::bc_vector3f& p_local_pos,
 			const core::bc_matrix3f& p_local_rotation,
 			bc_render_group p_render_group,
@@ -135,7 +135,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_decal_component::add_decal(std::string_view p_name,
+		void bc_decal_component::add_decal(core::bc_string_view p_name,
 			const core::bc_vector3f& p_local_pos,
 			const core::bc_matrix3f& p_local_rotation,
 			const core::bc_matrix4f& p_initial_world_transform,
@@ -158,7 +158,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_decal_component::add_decal(std::string_view p_name,
+		void bc_decal_component::add_decal(core::bc_string_view p_name,
 			const core::bc_vector3f& p_local_pos,
 			const core::bc_matrix3f& p_local_rotation,
 			bc_render_group p_render_group,

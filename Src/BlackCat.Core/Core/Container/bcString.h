@@ -15,12 +15,12 @@ namespace black_cat
 	namespace core
 	{
 		/*
-		template < typename TChar, class TTrait, class TAllocator >
-		class bc_basic_string_base : public bc_container< TChar, TAllocator >
+		template <typename TChar, class TTrait, class TAllocator>
+		class bc_basic_string_base : public bc_container<TChar, TAllocator>
 		{
 		public:
 		using this_type = bc_basic_string_base;
-		using base_type = bc_container< TChar, TAllocator >;
+		using base_type = bc_container<TChar, TAllocator>;
 		using traits_type = TTrait;
 		using value_type = typename traits_type::char_type;
 		using allocator_type = TAllocator;
@@ -33,8 +33,8 @@ namespace black_cat
 
 		protected:
 		using node_type = value_type;
-		using node_pointer_type = typename std::pointer_traits< pointer_type >::template rebind< node_type >::other;
-		using internal_allocator_type = typename bc_allocator_traits< allocator_type >::template rebind_alloc< node_type >::other;
+		using node_pointer_type = typename std::pointer_traits<pointer_type>::template rebind<node_type>::other;
+		using internal_allocator_type = typename bc_allocator_traits<allocator_type>::template rebind_alloc<node_type>::other;
 
 		public:
 		bc_basic_string_base(const allocator_type& p_allocator = allocator_type())
@@ -49,17 +49,17 @@ namespace black_cat
 		protected:
 		bcInline void _change_capacity(size_type p_new_capacity)
 		{
-		node_type* l_heap = static_cast< node_type* >(bc_allocator_traits< internal_allocator_type >::allocate(m_allocator, p_new_capacity));
+		node_type* l_heap = static_cast<node_type*>(bc_allocator_traits<internal_allocator_type>::allocate(m_allocator, p_new_capacity));
 
 		if (base_type::m_first)
 		{
-		traits_type::copy(l_heap, base_type::m_first, sizeof(node_type)* std::min< size_type >(base_type::m_size, p_new_capacity));
+		traits_type::copy(l_heap, base_type::m_first, sizeof(node_type)* std::min<size_type>(base_type::m_size, p_new_capacity));
 
-		bc_allocator_traits< internal_allocator_type >::deallocate(base_type::m_allocator, base_type::m_first);
+		bc_allocator_traits<internal_allocator_type>::deallocate(base_type::m_allocator, base_type::m_first);
 		}
 
 		base_type::m_first = l_heap;
-		bc_allocator_traits< internal_allocator_type >::register_pointer(base_type::m_allocator, &base_type::m_first);
+		bc_allocator_traits<internal_allocator_type>::register_pointer(base_type::m_allocator, &base_type::m_first);
 		base_type::m_capacity = p_new_capacity;
 		}
 
@@ -75,7 +75,7 @@ namespace black_cat
 		l_reserved_count += (l_new_capacity - base_type::m_capacity);
 		}
 
-		while (p_count_to_add > l_reserved_count)
+		while (p_count_to_add> l_reserved_count)
 		{
 		l_new_capacity *= 2;
 		l_reserved_count += (l_new_capacity - base_type::m_capacity);
@@ -89,7 +89,7 @@ namespace black_cat
 
 		bcInline void _decrease_capacity()
 		{
-		if (base_type::m_capacity > base_type::m_size)
+		if (base_type::m_capacity> base_type::m_size)
 		{
 		_change_capacity(base_type::m_size);
 		}
@@ -128,7 +128,7 @@ namespace black_cat
 
 		bcInline void _insert(const node_type* p_position, const value_type* p_string)
 		{
-		bcAssert(p_position >= m_first && p_position < m_first + base_type::m_size);
+		bcAssert(p_position>= m_first && p_position <m_first + base_type::m_size);
 
 		difference_type l_offset = p_position - m_first;
 		size_type l_str_size = traits_type::length(p_string);
@@ -144,7 +144,7 @@ namespace black_cat
 
 		bcInline void _erase(const node_type* p_position, bcUINT32 p_count)
 		{
-		bcAssert(base_type::m_size - p_count >= 0);
+		bcAssert(base_type::m_size - p_count>= 0);
 
 		difference_type l_offset = p_position - m_first;
 		size_type l_str_size = p_count;
@@ -159,9 +159,9 @@ namespace black_cat
 		{
 		size_type l_str_size = traits_type::length(p_string);
 
-		if (base_type::m_size > l_str_size)
+		if (base_type::m_size> l_str_size)
 		return 1;
-		else if (base_type::m_size < l_str_size)
+		else if (base_type::m_size <l_str_size)
 		return -1;
 		else
 		{
@@ -173,7 +173,7 @@ namespace black_cat
 		bcInline void _clear()
 		{
 		if (m_first)
-		bc_allocator_traits< internal_allocator_type >::deallocate(m_allocator, m_first);
+		bc_allocator_traits<internal_allocator_type>::deallocate(m_allocator, m_first);
 
 		m_first = nullptr;
 		base_type::base_type::m_size = 0;
@@ -184,12 +184,12 @@ namespace black_cat
 		internal_allocator_type m_allocator;
 		};
 
-		template < typename TChar, class TTrait = std::char_traits< TChar >, class TAllocator = bc_allocator_movable< TChar > >
-		class bc_basic_string : public bc_basic_string_base< TChar, TTrait, TAllocator >
+		template <typename TChar, class TTrait = std::char_traits<TChar>, class TAllocator = bc_allocator_movable<TChar>>
+		class bc_basic_string : public bc_basic_string_base<TChar, TTrait, TAllocator>
 		{
 		public:
 		using this_type = bc_basic_string;
-		using base_type = bc_basic_string_base< TChar, TTrait, TAllocator >;
+		using base_type = bc_basic_string_base<TChar, TTrait, TAllocator>;
 		using traits_type = typename base_type::traits_type;
 		using value_type = typename traits_type::char_type;
 		using allocator_type = TAllocator;
@@ -199,8 +199,8 @@ namespace black_cat
 		using const_reference_type = typename base_type::const_reference_type;
 		using size_type = typename base_type::size_type;
 		using difference_type = typename base_type::difference_type;
-		using iterator_type = bc_random_access_iterator< this_type >;
-		using const_iterator_type = bc_const_random_access_iterator< this_type >;
+		using iterator_type = bc_random_access_iterator<this_type>;
+		using const_iterator_type = bc_const_random_access_iterator<this_type>;
 
 		static const size_type npos = -1;
 
@@ -219,7 +219,7 @@ namespace black_cat
 
 		bc_basic_string(const value_type* p_str, const allocator_type& p_alloc = allocator_type());
 
-		template< class InputIterator >
+		template<class InputIterator>
 		bc_basic_string(InputIterator p_first, InputIterator p_last, const allocator_type& p_alloc = allocator_type());
 
 		bc_basic_string(std::initializer_list<value_type> p_init, const allocator_type& p_alloc = allocator_type());
@@ -254,7 +254,7 @@ namespace black_cat
 
 		this_type& assign(const value_type* p_str);
 
-		template< class InputIterator >
+		template<class InputIterator>
 		this_type& assign(InputIterator p_first, InputIterator p_last);
 
 		this_type& assign(std::initializer_list<value_type> p_ilist);
@@ -317,7 +317,7 @@ namespace black_cat
 
 		iterator_type insert(const_iterator_type p_pos, size_type count, value_type p_ch);
 
-		template< class InputIterator >
+		template<class InputIterator>
 		iterator_type insert(const_iterator_type p_pos, InputIterator p_first, InputIterator p_last);
 
 		iterator_type insert(const_iterator_type p_pos, std::initializer_list<value_type> p_ilist);
@@ -342,7 +342,7 @@ namespace black_cat
 
 		this_type& append(const value_type* p_str);
 
-		template< class InputIt >
+		template<class InputIt>
 		this_type& append(InputIt p_first, InputIt p_last);
 
 		this_type& append(std::initializer_list<value_type> p_ilist);
@@ -373,7 +373,7 @@ namespace black_cat
 
 		this_type& replace(size_type p_pos, size_type p_count, const this_type& p_str, size_type p_pos2, size_type p_count2 = npos);
 
-		template< class InputIt >
+		template<class InputIt>
 		this_type& replace(const_iterator_type p_first, const_iterator p_last, InputIt p_first2, InputIt p_last2);
 
 		this_type& replace(size_type p_pos, size_type p_count, const value_type* p_cstr, size_type p_count2);
@@ -453,6 +453,8 @@ namespace black_cat
 		template<typename TChar, typename TTraits, typename TAllocator>
 		using bc_basic_string = std::basic_string<TChar, TTraits, TAllocator>;
 
+		using bc_string_view = std::string_view;
+
 		using bc_string = bc_basic_string<bcCHAR, std::char_traits<bcCHAR>, bc_allocator<bcCHAR>>;
 
 		template<template<typename> typename TAllocator>
@@ -462,9 +464,11 @@ namespace black_cat
 
 		using bc_string_frame = bc_string_a<bc_allocator_frame>;
 
+		using bc_wstring_view = std::wstring_view;
+
 		using bc_wstring = bc_basic_string<bcWCHAR, std::char_traits<bcWCHAR>, bc_allocator<bcECHAR>>;
 
-		template<template<typename> typename TAllocator >
+		template<template<typename> typename TAllocator>
 		using bc_wstring_a = bc_basic_string<bcWCHAR, std::char_traits<bcWCHAR>, TAllocator<bcECHAR>>;
 
 		using bc_wstring_program = bc_wstring_a<bc_allocator_program>;
@@ -472,11 +476,15 @@ namespace black_cat
 		using bc_wstring_frame = bc_wstring_a<bc_allocator_frame>;
 
 #ifdef BC_UNICODE
+		using bc_estring_view = bc_wstring_view;
+
 		using bc_estring = bc_wstring;
 
 		template<template<typename> typename TAllocator>
 		using bc_estring_a = bc_wstring_a<TAllocator>;
 #else
+		using bc_estring_view = bc_string_view;
+
 		using bc_estring = bc_string;
 
 		template<template<typename> typename TAllocator>
@@ -488,200 +496,200 @@ namespace black_cat
 		using bc_estring_frame = bc_estring_a<bc_allocator_frame>;
 		
 		/*
-		template< class TChar, class TTraits, class TAllocator >
-		bc_basic_string< TChar, TTraits, TAllocator > operator+(const bc_basic_string< TChar, TTraits, TAllocator >& lhs, const bc_basic_string< TChar, TTraits, TAllocator >& rhs)
+		template<class TChar, class TTraits, class TAllocator>
+		bc_basic_string<TChar, TTraits, TAllocator> operator+(const bc_basic_string<TChar, TTraits, TAllocator>& lhs, const bc_basic_string<TChar, TTraits, TAllocator>& rhs)
 		{
 			return std::operator+(lhs, rhs);
 		}
 
-		template< class TChar, class TTraits, class TAllocator >
-		bc_basic_string< TChar, TTraits, TAllocator > operator+(const TChar* lhs, const bc_basic_string< TChar, TTraits, TAllocator >& rhs)
+		template<class TChar, class TTraits, class TAllocator>
+		bc_basic_string<TChar, TTraits, TAllocator> operator+(const TChar* lhs, const bc_basic_string<TChar, TTraits, TAllocator>& rhs)
 		{
 			return std::operator+(lhs, rhs);
 		}
 
-		template< class TChar, class TTraits, class TAllocator >
-		bc_basic_string< TChar, TTraits, TAllocator > operator+(TChar lhs, const bc_basic_string< TChar, TTraits, TAllocator >& rhs)
+		template<class TChar, class TTraits, class TAllocator>
+		bc_basic_string<TChar, TTraits, TAllocator> operator+(TChar lhs, const bc_basic_string<TChar, TTraits, TAllocator>& rhs)
 		{
 			return std::operator+(lhs, rhs);
 		}
 
-		template< class TChar, class TTraits, class TAllocator >
-		bc_basic_string< TChar, TTraits, TAllocator > operator+(const bc_basic_string< TChar, TTraits, TAllocator >& lhs, const TChar* rhs)
+		template<class TChar, class TTraits, class TAllocator>
+		bc_basic_string<TChar, TTraits, TAllocator> operator+(const bc_basic_string<TChar, TTraits, TAllocator>& lhs, const TChar* rhs)
 		{
 			return std::operator+(lhs, rhs);
 		}
 
-		template< class TChar, class TTraits, class TAllocator >
-		bc_basic_string< TChar, TTraits, TAllocator > operator+(const bc_basic_string< TChar, TTraits, TAllocator >& lhs, TChar rhs)
+		template<class TChar, class TTraits, class TAllocator>
+		bc_basic_string<TChar, TTraits, TAllocator> operator+(const bc_basic_string<TChar, TTraits, TAllocator>& lhs, TChar rhs)
 		{
 			return std::operator+(lhs, rhs);
 		}
 
-		template< class TChar, class TTraits, class TAllocator >
-		bc_basic_string< TChar, TTraits, TAllocator > operator+(bc_basic_string< TChar, TTraits, TAllocator >&& lhs, const bc_basic_string< TChar, TTraits, TAllocator >& rhs)
+		template<class TChar, class TTraits, class TAllocator>
+		bc_basic_string<TChar, TTraits, TAllocator> operator+(bc_basic_string<TChar, TTraits, TAllocator>&& lhs, const bc_basic_string<TChar, TTraits, TAllocator>& rhs)
 		{
 			return std::operator+(std::move(lhs), rhs);
 		}
 
-		template< class TChar, class TTraits, class TAllocator >
-		bc_basic_string< TChar, TTraits, TAllocator > operator+(const bc_basic_string< TChar, TTraits, TAllocator >& lhs, bc_basic_string< TChar, TTraits, TAllocator >&& rhs)
+		template<class TChar, class TTraits, class TAllocator>
+		bc_basic_string<TChar, TTraits, TAllocator> operator+(const bc_basic_string<TChar, TTraits, TAllocator>& lhs, bc_basic_string<TChar, TTraits, TAllocator>&& rhs)
 		{
 			return std::operator+(lhs, std::move(rhs));
 		}
 
-		template< class TChar, class TTraits, class TAllocator >
-		bc_basic_string< TChar, TTraits, TAllocator > operator+(bc_basic_string< TChar, TTraits, TAllocator >&& lhs, bc_basic_string< TChar, TTraits, TAllocator >&& rhs)
+		template<class TChar, class TTraits, class TAllocator>
+		bc_basic_string<TChar, TTraits, TAllocator> operator+(bc_basic_string<TChar, TTraits, TAllocator>&& lhs, bc_basic_string<TChar, TTraits, TAllocator>&& rhs)
 		{
 			return std::operator+(std::move(lhs), std::move(rhs));
 		}
 
-		template< class TChar, class TTraits, class TAllocator >
-		bc_basic_string< TChar, TTraits, TAllocator > operator+(const TChar* lhs, bc_basic_string< TChar, TTraits, TAllocator >&& rhs)
+		template<class TChar, class TTraits, class TAllocator>
+		bc_basic_string<TChar, TTraits, TAllocator> operator+(const TChar* lhs, bc_basic_string<TChar, TTraits, TAllocator>&& rhs)
 		{
 			return std::operator+(lhs, std::move(rhs));
 		}
 
-		template< class TChar, class TTraits, class TAllocator >
-		bc_basic_string< TChar, TTraits, TAllocator > operator+(TChar lhs, bc_basic_string< TChar, TTraits, TAllocator >&& rhs)
+		template<class TChar, class TTraits, class TAllocator>
+		bc_basic_string<TChar, TTraits, TAllocator> operator+(TChar lhs, bc_basic_string<TChar, TTraits, TAllocator>&& rhs)
 		{
 			return std::operator+(lhs, std::move(rhs));
 		}
 
-		template< class TChar, class TTraits, class TAllocator >
-		bc_basic_string< TChar, TTraits, TAllocator > operator+(bc_basic_string< TChar, TTraits, TAllocator >&& lhs, const TChar* rhs)
+		template<class TChar, class TTraits, class TAllocator>
+		bc_basic_string<TChar, TTraits, TAllocator> operator+(bc_basic_string<TChar, TTraits, TAllocator>&& lhs, const TChar* rhs)
 		{
 			return std::operator+(std::move(lhs), rhs);
 		}
 
-		template< class TChar, class TTraits, class TAllocator >
-		bc_basic_string< TChar, TTraits, TAllocator > operator+(bc_basic_string< TChar, TTraits, TAllocator >&& lhs, TChar rhs)
+		template<class TChar, class TTraits, class TAllocator>
+		bc_basic_string<TChar, TTraits, TAllocator> operator+(bc_basic_string<TChar, TTraits, TAllocator>&& lhs, TChar rhs)
 		{
 			return std::operator+(std::move(lhs), rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator==(const bc_basic_string< TChar, TTrait, TAllocator >& lhs, const bc_basic_string< TChar, TTrait, TAllocator >& rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator==(const bc_basic_string<TChar, TTrait, TAllocator>& lhs, const bc_basic_string<TChar, TTrait, TAllocator>& rhs)
 		{
 			return std::operator==(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator!=(const bc_basic_string< TChar, TTrait, TAllocator >& lhs, const bc_basic_string< TChar, TTrait, TAllocator >& rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator!=(const bc_basic_string<TChar, TTrait, TAllocator>& lhs, const bc_basic_string<TChar, TTrait, TAllocator>& rhs)
 		{
 			return std::operator!=(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator<(const bc_basic_string< TChar, TTrait, TAllocator >& lhs, const bc_basic_string< TChar, TTrait, TAllocator >& rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator<(const bc_basic_string<TChar, TTrait, TAllocator>& lhs, const bc_basic_string<TChar, TTrait, TAllocator>& rhs)
 		{
 			return std::operator<(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator<=(const bc_basic_string< TChar, TTrait, TAllocator >& lhs, const bc_basic_string< TChar, TTrait, TAllocator >& rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator<=(const bc_basic_string<TChar, TTrait, TAllocator>& lhs, const bc_basic_string<TChar, TTrait, TAllocator>& rhs)
 		{
 			return std::operator<=(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator>(const bc_basic_string< TChar, TTrait, TAllocator >& lhs, const bc_basic_string< TChar, TTrait, TAllocator >& rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator>(const bc_basic_string<TChar, TTrait, TAllocator>& lhs, const bc_basic_string<TChar, TTrait, TAllocator>& rhs)
 		{
 			return std::operator>(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator>=(const bc_basic_string< TChar, TTrait, TAllocator >& lhs, const bc_basic_string< TChar, TTrait, TAllocator >& rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator>=(const bc_basic_string<TChar, TTrait, TAllocator>& lhs, const bc_basic_string<TChar, TTrait, TAllocator>& rhs)
 		{
 			return std::operator>=(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator==(const TChar* lhs, const bc_basic_string< TChar, TTrait, TAllocator >& rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator==(const TChar* lhs, const bc_basic_string<TChar, TTrait, TAllocator>& rhs)
 		{
 			return std::operator==(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator==(const bc_basic_string< TChar, TTrait, TAllocator >& lhs, const TChar* rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator==(const bc_basic_string<TChar, TTrait, TAllocator>& lhs, const TChar* rhs)
 		{
 			return std::operator==(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator!=(const TChar* lhs, const bc_basic_string< TChar, TTrait, TAllocator >& rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator!=(const TChar* lhs, const bc_basic_string<TChar, TTrait, TAllocator>& rhs)
 		{
 			return std::operator!=(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator!=(const bc_basic_string< TChar, TTrait, TAllocator >& lhs, const TChar* rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator!=(const bc_basic_string<TChar, TTrait, TAllocator>& lhs, const TChar* rhs)
 		{
 			return std::operator!=(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator<(const TChar* lhs, const bc_basic_string< TChar, TTrait, TAllocator >& rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator<(const TChar* lhs, const bc_basic_string<TChar, TTrait, TAllocator>& rhs)
 		{
 			return std::operator<(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator<(const bc_basic_string< TChar, TTrait, TAllocator >& lhs, const TChar* rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator<(const bc_basic_string<TChar, TTrait, TAllocator>& lhs, const TChar* rhs)
 		{
 			return std::operator<(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator<=(const TChar* lhs, const bc_basic_string< TChar, TTrait, TAllocator >& rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator<=(const TChar* lhs, const bc_basic_string<TChar, TTrait, TAllocator>& rhs)
 		{
 			return std::operator<=(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator<=(const bc_basic_string< TChar, TTrait, TAllocator >& lhs, const TChar* rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator<=(const bc_basic_string<TChar, TTrait, TAllocator>& lhs, const TChar* rhs)
 		{
 			return std::operator<=(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator>(const TChar* lhs, const bc_basic_string< TChar, TTrait, TAllocator >& rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator>(const TChar* lhs, const bc_basic_string<TChar, TTrait, TAllocator>& rhs)
 		{
 			return std::operator>(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator>(const bc_basic_string< TChar, TTrait, TAllocator >& lhs, const TChar* rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator>(const bc_basic_string<TChar, TTrait, TAllocator>& lhs, const TChar* rhs)
 		{
 			return std::operator>(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator>=(const TChar* lhs, const bc_basic_string< TChar, TTrait, TAllocator >& rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator>=(const TChar* lhs, const bc_basic_string<TChar, TTrait, TAllocator>& rhs)
 		{
 			return std::operator>=(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bool operator>=(const bc_basic_string< TChar, TTrait, TAllocator >& lhs, const TChar* rhs)
+		template<class TChar, class TTrait, class TAllocator>
+		bool operator>=(const bc_basic_string<TChar, TTrait, TAllocator>& lhs, const TChar* rhs)
 		{
 			return std::operator>=(lhs, rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
+		template<class TChar, class TTrait, class TAllocator>
 		void swap(bc_basic_string<TChar, TTrait, TAllocator> &lhs, bc_basic_string<TChar, TTrait, TAllocator> &rhs)
 		{
 			return lhs.swap(rhs);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bc_basic_string< TChar, TTrait, TAllocator >& operator<<(std::basic_ostream< TChar, TTrait >& os, const bc_basic_string< TChar, TTrait, TAllocator >& str)
+		template<class TChar, class TTrait, class TAllocator>
+		bc_basic_string<TChar, TTrait, TAllocator>& operator<<(std::basic_ostream<TChar, TTrait>& os, const bc_basic_string<TChar, TTrait, TAllocator>& str)
 		{
 			return std::operator<<(os, str);
 		}
 
-		template< class TChar, class TTrait, class TAllocator >
-		bc_basic_string< TChar, TTrait, TAllocator >& operator>>(std::basic_istream< TChar, TTrait >& is, bc_basic_string< TChar, TTrait, TAllocator >& str)
+		template<class TChar, class TTrait, class TAllocator>
+		bc_basic_string<TChar, TTrait, TAllocator>& operator>>(std::basic_istream<TChar, TTrait>& is, bc_basic_string<TChar, TTrait, TAllocator>& str)
 		{
 			return std::operator>>(is, str);
 		}
@@ -698,7 +706,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid stoi argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -722,7 +730,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid stoi argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -746,7 +754,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid stol argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -770,7 +778,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid stol argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -794,7 +802,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid stoll argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -818,7 +826,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid stoll argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -842,7 +850,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid strtoul argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -866,7 +874,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid wcstoul argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -890,7 +898,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid strtoull argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -914,7 +922,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid wcstoull argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -938,7 +946,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid strtof argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -962,7 +970,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid wcstof argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -986,7 +994,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid strtod argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -1010,7 +1018,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid wcstod argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -1034,7 +1042,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid strtold argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -1058,7 +1066,7 @@ namespace black_cat
 			{
 				throw std::invalid_argument("invalid wcstold argument");
 			}
-			if (errno == ERANGE || l_ans < INT_MIN != INT_MAX < l_ans)
+			if (errno == ERANGE || l_ans <INT_MIN != INT_MAX <l_ans)
 			{
 				throw std::out_of_range("stoi argument out of range");
 			}
@@ -1124,7 +1132,7 @@ namespace black_cat
 			std::wcsrtombs(p_dest, &p_src, p_len, &l_state);
 		}
 
-		template< template< typename > class TInputAllocator, template< typename > class TOutputAllocator >
+		template<template<typename> class TInputAllocator, template<typename> class TOutputAllocator>
 		inline bc_string_a<TOutputAllocator> _bc_to_string(const bc_wstring_a<TInputAllocator>& p_str)
 		{
 			typename bc_string_a<TOutputAllocator>::size_type l_len = p_str.size();
@@ -1567,7 +1575,7 @@ namespace black_cat
 			std::mbsrtowcs(p_dest, &p_src, p_len, &l_state);
 		};
 
-		template< template<typename> typename TInputAllocator, template<typename> typename TOutputAllocator >
+		template<template<typename> typename TInputAllocator, template<typename> typename TOutputAllocator>
 		inline bc_wstring_a<TOutputAllocator> _bc_to_wstring(const bc_string_a<TInputAllocator>& p_str)
 		{
 			typename bc_wstring_a<TOutputAllocator>::size_type l_len = p_str.size();
@@ -2435,7 +2443,7 @@ namespace black_cat
 
 		inline bc_string& bc_to_exclusive_string(const bc_string& p_value)
 		{
-			return const_cast< bc_string& >(p_value);
+			return const_cast<bc_string&>(p_value);
 		}
 
 		inline bc_string bc_to_exclusive_string(const bc_wstring& p_value)
@@ -2465,7 +2473,7 @@ namespace black_cat
 
 		inline bc_wstring& bc_to_exclusive_wstring(const bc_wstring& p_value)
 		{
-			return const_cast< bc_wstring& >(p_value);
+			return const_cast<bc_wstring&>(p_value);
 		}
 
 #undef TO_STRING_BUFF
@@ -2475,9 +2483,9 @@ namespace black_cat
 			const bcUINT32 l_length = std::strlen(p_string);
 			bcUINT32 l_hash = 0;
 
-			for (bcUINT32 i = 0; i < l_length; i++)
+			for (bcUINT32 i = 0; i <l_length; i++)
 			{
-				l_hash += ((i + 1) * static_cast< bcUINT32 >(p_string[i]));
+				l_hash += ((i + 1) * static_cast<bcUINT32>(p_string[i]));
 			}
 
 			return l_hash;
@@ -2488,9 +2496,9 @@ namespace black_cat
 			const bcUINT32 l_length = std::wcslen(p_string);
 			bcUINT32 l_hash = 0;
 
-			for (bcUINT32 i = 0; i < l_length; i++)
+			for (bcUINT32 i = 0; i <l_length; i++)
 			{
-				l_hash += ((i + 1) * static_cast< bcUINT32 >(p_string[i]));
+				l_hash += ((i + 1) * static_cast<bcUINT32>(p_string[i]));
 			}
 
 			return l_hash;
@@ -2583,7 +2591,7 @@ namespace black_cat
 		constexpr bc_string_cmp_hash _str_crc32(const bcCHAR* p_str)
 		{
 			static_assert(TLen + 1 <= 11, "Length of compile time string must be equal-lower than 11");
-			return (_str_crc32< TLen - 1 >(p_str) >> 8) ^ _crc_table[(_str_crc32< TLen - 1 >(p_str) ^ p_str[TLen]) & 0x000000FF];
+			return (_str_crc32<TLen - 1>(p_str)>> 8) ^ _crc_table[(_str_crc32<TLen - 1>(p_str) ^ p_str[TLen]) & 0x000000FF];
 		}
 
 		template<>
@@ -2600,7 +2608,7 @@ namespace black_cat
 			}
 
 			const bc_string_cmp_hash l_prev_crc = __str_crc32(p_str, p_idx - 1); // TODO make function non recursive
-			return (l_prev_crc >> 8) ^ _crc_table[(l_prev_crc ^ p_str[p_idx]) & 0x000000FF];
+			return (l_prev_crc>> 8) ^ _crc_table[(l_prev_crc ^ p_str[p_idx]) & 0x000000FF];
 		}
 
 #define BC_COMPILE_TIME_STRING_HASH(str) (black_cat::core::_str_crc32<black_cat::core::bc_compile_time_str_len(str) - 1>(str) ^ 0xFFFFFFFF)
@@ -2611,7 +2619,7 @@ namespace black_cat
 namespace std
 {
 	template<>
-	struct hash< const black_cat::bcCHAR* >
+	struct hash<const black_cat::bcCHAR*>
 	{
 	public:
 		using argument_type = const black_cat::bcCHAR*;
@@ -2624,7 +2632,7 @@ namespace std
 	};
 
 	template<>
-	struct equal_to< const black_cat::bcCHAR* >
+	struct equal_to<const black_cat::bcCHAR*>
 	{
 	public:
 		using first_argument_type = const black_cat::bcCHAR*;
@@ -2638,7 +2646,7 @@ namespace std
 	};
 
 	template<>
-	struct hash< const black_cat::bcWCHAR* >
+	struct hash<const black_cat::bcWCHAR*>
 	{
 	public:
 		using argument_type = const black_cat::bcWCHAR*;
@@ -2651,7 +2659,7 @@ namespace std
 	};
 
 	template<>
-	struct equal_to< const black_cat::bcWCHAR* >
+	struct equal_to<const black_cat::bcWCHAR*>
 	{
 	public:
 		using first_argument_type = const black_cat::bcWCHAR*;
@@ -2665,7 +2673,7 @@ namespace std
 	};
 
 	template<>
-	struct hash< black_cat::core::bc_string >
+	struct hash<black_cat::core::bc_string>
 	{
 	public:
 		using argument_type = black_cat::core::bc_string;
@@ -2678,7 +2686,7 @@ namespace std
 	};
 
 	template<>
-	struct hash< black_cat::core::bc_string_program >
+	struct hash<black_cat::core::bc_string_program>
 	{
 	public:
 		using argument_type = black_cat::core::bc_string_program;
@@ -2691,7 +2699,7 @@ namespace std
 	};
 
 	template<>
-	struct hash< black_cat::core::bc_string_frame >
+	struct hash<black_cat::core::bc_string_frame>
 	{
 	public:
 		using argument_type = black_cat::core::bc_string_frame;
@@ -2704,7 +2712,7 @@ namespace std
 	};
 
 	template<>
-	struct hash< black_cat::core::bc_wstring >
+	struct hash<black_cat::core::bc_wstring>
 	{
 		using argument_type = black_cat::core::bc_wstring;
 		using result_type = std::size_t;
@@ -2716,7 +2724,7 @@ namespace std
 	};
 
 	template<>
-	struct hash< black_cat::core::bc_wstring_program >
+	struct hash<black_cat::core::bc_wstring_program>
 	{
 	public:
 		using argument_type = black_cat::core::bc_wstring_program;
@@ -2729,7 +2737,7 @@ namespace std
 	};
 
 	template<>
-	struct hash< black_cat::core::bc_wstring_frame >
+	struct hash<black_cat::core::bc_wstring_frame>
 	{
 	public:
 		using argument_type = black_cat::core::bc_wstring_frame;

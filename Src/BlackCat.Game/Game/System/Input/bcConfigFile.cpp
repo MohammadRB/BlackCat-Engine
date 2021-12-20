@@ -13,13 +13,31 @@ namespace black_cat
 	namespace game
 	{
 		bc_config_file::bc_config_file()
-			: m_json_key_value(nullptr)
+			: m_key_values(nullptr)
 		{
 		}
 
-		bc_config_file& bc_config_file::add_or_update_config_key(const bcCHAR* p_key, core::bc_any p_value) noexcept
+		core::bc_estring_view bc_config_file::get_path() const noexcept
 		{
-			auto& l_key_values = *m_json_key_value;
+			return m_path;
+		}
+
+		bc_config_file& bc_config_file::add_if_not_exist_config_key(core::bc_string_view p_key, core::bc_any p_value) noexcept
+		{
+			auto& l_key_values = *m_key_values;
+			const auto l_entry = l_key_values.find(p_key);
+
+			if (l_entry == std::end(l_key_values))
+			{
+				l_key_values.add(core::bc_string(p_key), std::move(p_value));
+			}
+
+			return *this;
+		}
+
+		bc_config_file& bc_config_file::add_or_update_config_key(core::bc_string_view p_key, core::bc_any p_value) noexcept
+		{
+			auto& l_key_values = *m_key_values;
 			auto l_entry = l_key_values.find(p_key);
 			
 			if(l_entry == std::end(l_key_values))
@@ -34,33 +52,33 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::add_or_update_config_key(const bcCHAR* p_key, const core::bc_vector2f& p_value) noexcept
+		bc_config_file& bc_config_file::add_or_update_config_key(core::bc_string_view p_key, const core::bc_vector2f& p_value) noexcept
 		{
-			json_parse::bc_write(*m_json_key_value, p_key, p_value);
+			json_parse::bc_write(*m_key_values, core::bc_string(p_key), p_value);
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::add_or_update_config_key(const bcCHAR* p_key, const core::bc_vector3f& p_value) noexcept
+		bc_config_file& bc_config_file::add_or_update_config_key(core::bc_string_view p_key, const core::bc_vector3f& p_value) noexcept
 		{
-			json_parse::bc_write(*m_json_key_value, p_key, p_value);
+			json_parse::bc_write(*m_key_values, core::bc_string(p_key), p_value);
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::add_or_update_config_key(const bcCHAR* p_key, const core::bc_vector4f& p_value) noexcept
+		bc_config_file& bc_config_file::add_or_update_config_key(core::bc_string_view p_key, const core::bc_vector4f& p_value) noexcept
 		{
-			json_parse::bc_write(*m_json_key_value, p_key, p_value);
+			json_parse::bc_write(*m_key_values, core::bc_string(p_key), p_value);
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_any& p_value) noexcept
+		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_any& p_value) noexcept
 		{
 			bool l_succeeded;
 			return read_config_key(p_key, p_value, l_succeeded);
 		}
 
-		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_any& p_value, bool& p_succeeded) noexcept
+		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_any& p_value, bool& p_succeeded) noexcept
 		{
-			auto& l_key_values = *m_json_key_value;
+			auto& l_key_values = *m_key_values;
 			const auto l_entry = l_key_values.find(p_key);
 
 			if(l_entry == std::end(l_key_values))
@@ -74,9 +92,9 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_vector2f& p_value)
+		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector2f& p_value)
 		{
-			const bool l_succeeded = json_parse::bc_load(*m_json_key_value, p_key, p_value);
+			const bool l_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
 			if(!l_succeeded)
 			{
 				throw bc_invalid_operation_exception("Cannot read config key of type vector2");
@@ -85,15 +103,15 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_vector2f& p_value, bool& p_succeeded) noexcept
+		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector2f& p_value, bool& p_succeeded) noexcept
 		{
-			p_succeeded = json_parse::bc_load(*m_json_key_value, p_key, p_value);
+			p_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_vector3f& p_value)
+		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector3f& p_value)
 		{
-			const bool l_succeeded = json_parse::bc_load(*m_json_key_value, p_key, p_value);
+			const bool l_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
 			if (!l_succeeded)
 			{
 				throw bc_invalid_operation_exception("Cannot read config key of type vector3");
@@ -102,15 +120,15 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_vector3f& p_value, bool& p_succeeded) noexcept
+		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector3f& p_value, bool& p_succeeded) noexcept
 		{
-			p_succeeded = json_parse::bc_load(*m_json_key_value, p_key, p_value);
+			p_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_vector4f& p_value)
+		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector4f& p_value)
 		{
-			const bool l_succeeded = json_parse::bc_load(*m_json_key_value, p_key, p_value);
+			const bool l_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
 			if (!l_succeeded)
 			{
 				throw bc_invalid_operation_exception("Cannot read config key of type vector4");
@@ -119,14 +137,29 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(const bcCHAR* p_key, core::bc_vector4f& p_value, bool& p_succeeded) noexcept
+		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector4f& p_value, bool& p_succeeded) noexcept
 		{
-			p_succeeded = json_parse::bc_load(*m_json_key_value, p_key, p_value);
+			p_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
 			return *this;
+		}
+
+		void bc_config_file::reload()
+		{
+			load(core::bc_path(m_path));
 		}
 
 		void bc_config_file::flush_changes()
 		{
+			std::sort
+			(
+				std::begin(*m_key_values), 
+				std::end(*m_key_values), 
+				[](const core::bc_json_key_value::value_type& p_entry1, const core::bc_json_key_value::value_type& p_entry2)
+				{
+					return p_entry1.first < p_entry2.first;
+				}
+			);
+
 			const auto l_json_file_buffer = write_json();
 
 			m_stream.open
@@ -144,25 +177,24 @@ namespace black_cat
 			m_stream.close();
 		}
 
-		void bc_config_file::load(const bcECHAR* p_content_path, const bcECHAR* p_config_name)
+		void bc_config_file::load(const core::bc_path& p_path)
 		{
-			const auto l_config_path = core::bc_path(p_content_path).combine(core::bc_path(p_config_name));
-			const bool l_config_exist = l_config_path.exist();
+			m_path = p_path.get_string();
 
 			if (!m_stream.open
 			(
-				l_config_path.get_string().c_str(),
+				m_path.c_str(),
 				core_platform::bc_file_mode::open_create,
 				core_platform::bc_file_access::read_write,
 				core_platform::bc_file_sharing::read
 			))
 			{
-				const auto l_error_message = "Cannot open config file: " + core::bc_to_string_frame(l_config_path.get_string().c_str());
+				const auto l_error_message = "Cannot open config file: " + core::bc_to_string_frame(p_path.get_string().c_str());
 				throw bc_io_exception(l_error_message.c_str());
 			}
 
 			core::bc_string_frame l_file_content;
-			if (l_config_exist && m_stream.length() > 0)
+			if (p_path.exist() && m_stream.length() > 0)
 			{
 				core::bc_read_all_lines(m_stream, l_file_content);
 			}
@@ -172,7 +204,7 @@ namespace black_cat
 			}
 
 			m_stream.close();
-			m_json_key_value = load_json(l_file_content.c_str());
+			m_key_values = load_json(l_file_content.c_str());
 		}
 	}
 }

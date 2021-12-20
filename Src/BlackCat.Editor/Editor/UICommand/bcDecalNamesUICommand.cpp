@@ -37,7 +37,7 @@ namespace black_cat
 				std::cbegin(l_decal_names),
 				std::cend(l_decal_names),
 				std::back_inserter(m_entity_list),
-				[](std::string_view p_entity_name)
+				[](core::bc_string_view p_entity_name)
 				{
 					return QString(p_entity_name.data());
 				}

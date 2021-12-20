@@ -75,7 +75,7 @@ namespace black_cat
 		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
 
 		game::bc_mesh_builder l_builder;
-		core::bc_unordered_map_frame<std::string_view, bcUINT32> l_node_mapping;
+		core::bc_unordered_map_frame<core::bc_string_view, bcUINT32> l_node_mapping;
 		
 		bc_mesh_loader_utility::calculate_node_mapping(*l_scene->mRootNode, l_node_mapping);
 		
@@ -165,7 +165,7 @@ namespace black_cat
 	}
 
 	void bc_mesh_loader::fill_skinned_vertices(const aiMesh& p_ai_mesh,
-		const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
+		const core::bc_unordered_map_frame<core::bc_string_view, bcUINT32>& p_node_mapping,
 		core::bc_vector_movable<game::bc_vertex_pos_tex_nor_tan_bon>& p_vertices,
 		game::bc_mesh_builder& p_builder)
 	{
@@ -285,7 +285,7 @@ namespace black_cat
 	void bc_mesh_loader::convert_ai_mesh(game::bc_render_system& p_render_system,
 		core::bc_content_loading_context& p_context,
 		const aiScene& p_ai_scene,
-		const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
+		const core::bc_unordered_map_frame<core::bc_string_view, bcUINT32>& p_node_mapping,
 		const aiNode& p_ai_node,
 		const aiMesh& p_ai_mesh,
 		game::bc_mesh_builder& p_builder)
@@ -506,7 +506,7 @@ namespace black_cat
 	void bc_mesh_loader::convert_ai_nodes(game::bc_render_system& p_render_system,
 		core::bc_content_loading_context& p_context,
 		const aiScene& p_ai_scene,
-		const core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping,
+		const core::bc_unordered_map_frame<core::bc_string_view, bcUINT32>& p_node_mapping,
 		const aiNode& p_ai_node,
 		game::bc_mesh_builder& p_builder)
 	{

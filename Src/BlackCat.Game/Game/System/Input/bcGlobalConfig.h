@@ -49,7 +49,7 @@ namespace black_cat
 			core::bc_json_array<core::bc_string>& get_counter_values() noexcept;
 		
 		private:
-			core::bc_json_key_value* load_json(const bcCHAR* p_config_content) override;
+			core::bc_json_key_value* load_json(const bcCHAR* p_json) override;
 			
 			core::bc_string_frame write_json() override;
 

@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CorePlatformImp/File/bcPath.h"
-#include "Core/bcExport.h"
 #include "Core/Container/bcString.h"
+#include "Core/bcExport.h"
 
 namespace black_cat
 {
@@ -16,6 +16,8 @@ namespace black_cat
 		{
 		public:
 			bc_path(const bcECHAR* p_path);
+
+			bc_path(bc_estring_view p_path);
 
 			bc_path(const bc_path& p_other);
 

@@ -47,23 +47,23 @@ namespace black_cat
 			 * \param p_sharing 
 			 * \return 
 			 */
-			bool open(const bcECHAR* p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access, core_platform::bc_file_sharing p_sharing) noexcept;
+			bool open(bc_estring_view p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access, core_platform::bc_file_sharing p_sharing) noexcept;
 
-			bool open(const bcECHAR* p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access) noexcept;
+			bool open(bc_estring_view p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access) noexcept;
 			
 			/**
 			 * \brief Open an existing file for reading
 			 * \param p_file 
 			 * \return 
 			 */
-			bool open_read(const bcECHAR* p_file) noexcept;
+			bool open_read(bc_estring_view p_file) noexcept;
 
 			/**
 			 * \brief Open an existing file or create a new file for writing
 			 * \param p_file 
 			 * \return 
 			 */
-			bool open_write(const bcECHAR* p_file) noexcept;
+			bool open_write(bc_estring_view p_file) noexcept;
 
 			bcUINT64 get_position() const override;
 
@@ -160,9 +160,9 @@ namespace black_cat
 		{
 		}
 
-		inline bool bc_file_stream::open(const bcECHAR* p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access, core_platform::bc_file_sharing p_sharing) noexcept
+		inline bool bc_file_stream::open(bc_estring_view p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access, core_platform::bc_file_sharing p_sharing) noexcept
 		{
-			const bool l_result = m_file.open(p_file, p_mode, p_access, p_sharing);
+			const bool l_result = m_file.open(p_file.data(), p_mode, p_access, p_sharing);
 			
 			if (l_result)
 			{
@@ -173,9 +173,9 @@ namespace black_cat
 			return l_result;
 		}
 
-		inline bool bc_file_stream::open(const bcECHAR* p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access) noexcept
+		inline bool bc_file_stream::open(bc_estring_view p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access) noexcept
 		{
-			const bool l_result = m_file.open(p_file, p_mode, p_access);
+			const bool l_result = m_file.open(p_file.data(), p_mode, p_access);
 
 			if (l_result)
 			{
@@ -186,9 +186,9 @@ namespace black_cat
 			return l_result;
 		}
 
-		inline bool bc_file_stream::open_read(const bcECHAR* p_file) noexcept
+		inline bool bc_file_stream::open_read(bc_estring_view p_file) noexcept
 		{
-			const bool l_result = m_file.open_read(p_file);
+			const bool l_result = m_file.open_read(p_file.data());
 
 			if (l_result)
 			{
@@ -199,9 +199,9 @@ namespace black_cat
 			return l_result;
 		}
 
-		inline bool bc_file_stream::open_write(const bcECHAR* p_file) noexcept
+		inline bool bc_file_stream::open_write(bc_estring_view p_file) noexcept
 		{
-			const bool l_result = m_file.open_write(p_file);
+			const bool l_result = m_file.open_write(p_file.data());
 
 			if (l_result)
 			{

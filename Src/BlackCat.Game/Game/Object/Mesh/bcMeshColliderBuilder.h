@@ -58,8 +58,8 @@ namespace black_cat
 				physics::bc_shape_flag p_flags = physics::bc_shape_flag::default_v,
 				bool p_high_detail_query_shape = false);
 
-			void add_px_joint(std::string_view p_collider1,
-				std::string_view p_collider2,
+			void add_px_joint(core::bc_string_view p_collider1,
+				core::bc_string_view p_collider2,
 				const physics::bc_transform& p_transform);
 			
 			void add_skinned_mesh_collider(bc_skinned_mesh_collider_vertex* p_vertices, 

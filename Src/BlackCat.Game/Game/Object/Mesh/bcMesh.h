@@ -45,7 +45,7 @@ namespace black_cat
 
 		private:
 			using node_index_t = bc_mesh_node::node_index_t;
-			using hash_t = std::hash<std::string_view>;
+			using hash_t = std::hash<core::bc_string_view>;
 
 		public:
 			bc_mesh(bc_mesh_builder p_builder, bc_mesh_collider_ptr p_colliders);
@@ -56,7 +56,7 @@ namespace black_cat
 
 			bc_mesh& operator=(bc_mesh&& p_other) noexcept;
 
-			std::string_view get_name() const noexcept;
+			core::bc_string_view get_name() const noexcept;
 
 			bcFLOAT get_auto_scale() const noexcept;
 			
@@ -74,7 +74,7 @@ namespace black_cat
 
 			const bc_mesh_node* find_node(bc_mesh_node::node_index_t p_index) const noexcept;
 			
-			const bc_mesh_node* find_node(std::string_view p_name) const noexcept;
+			const bc_mesh_node* find_node(core::bc_string_view p_name) const noexcept;
 
 			const bc_mesh_node* get_node_parent(const bc_mesh_node& p_node) const noexcept;
 
@@ -86,7 +86,7 @@ namespace black_cat
 			
 			const core::bc_matrix4f& get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
 			
-			std::string_view get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+			core::bc_string_view get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
 			const bc_mesh_material& get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 			
@@ -129,9 +129,9 @@ namespace black_cat
 
 		using bc_mesh_ptr = core::bc_content_ptr< bc_mesh >;
 
-		inline std::string_view bc_mesh::get_name() const noexcept
+		inline core::bc_string_view bc_mesh::get_name() const noexcept
 		{
-			return std::string_view(m_name.c_str(), m_name.size());
+			return core::bc_string_view(m_name.c_str(), m_name.size());
 		}
 
 		inline bcFLOAT bc_mesh::get_auto_scale() const noexcept

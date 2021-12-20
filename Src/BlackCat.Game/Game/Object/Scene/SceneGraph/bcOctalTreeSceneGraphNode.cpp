@@ -51,7 +51,7 @@ namespace black_cat
 				throw bc_invalid_argument_exception("bound box min size must be power of two");
 			}
 
-			auto& l_global_config = bc_get_global_config();
+			const auto& l_global_config = bc_get_global_config();
 			m_actors_pool->initialize
 			(
 				l_global_config.get_scene_graph_actors_pool_capacity(),

@@ -30,7 +30,7 @@ namespace black_cat
 
 		struct _bc_ragdoll_collider_map
 		{
-			std::string_view m_attached_node_name;
+			core::bc_string_view m_attached_node_name;
 			bcFLOAT m_mass_multiplier;
 			physics::bc_rigid_dynamic_ref m_actor;
 		};
@@ -52,7 +52,7 @@ namespace black_cat
 				physics::bc_transform m_collider_inv_bind_pose_rotation;
 			};
 
-			std::string_view m_attached_node_name;
+			core::bc_string_view m_attached_node_name;
 			bc_mesh_node::node_index_t m_attached_node_index;
 			core::bc_vector<affected_node> m_affected_nodes;
 		};
@@ -100,7 +100,7 @@ namespace black_cat
 
 			void add_force(bc_ragdoll_body_part p_part, const core::bc_vector3f& p_force);
 			
-			void add_force(std::string_view p_part_name, const core::bc_vector3f& p_force);
+			void add_force(core::bc_string_view p_part_name, const core::bc_vector3f& p_force);
 
 			void debug_draw(const bc_actor_component_debug_draw_context& p_context) override;
 			

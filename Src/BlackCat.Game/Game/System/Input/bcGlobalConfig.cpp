@@ -18,9 +18,8 @@ namespace black_cat
 			{
 				l_config_file_name.append(l_config_file_extension);
 			}
-			
-			m_json = core::bc_make_unique<core::bc_json_document<bc_config_layout>>();
-			load(p_content_path, l_config_file_name.c_str());
+
+			load(core::bc_path(p_content_path).combine(core::bc_path(l_config_file_name)));
 
 			auto& l_json = *m_json;
 			if (!l_json->m_global_scale.has_value())
@@ -80,9 +79,11 @@ namespace black_cat
 			flush_changes();
 		}
 
-		core::bc_json_key_value* bc_global_config::load_json(const bcCHAR* p_config_content)
+		core::bc_json_key_value* bc_global_config::load_json(const bcCHAR* p_json)
 		{
-			m_json->load(p_config_content);
+			m_json = core::bc_make_unique<core::bc_json_document<bc_config_layout>>();
+			m_json->load(p_json);
+
 			return &(*m_json)->m_key_values.get();
 		}
 

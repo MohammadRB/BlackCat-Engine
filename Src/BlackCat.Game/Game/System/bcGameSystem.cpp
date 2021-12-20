@@ -60,6 +60,7 @@ namespace black_cat
 			auto& l_animation_manager = m_render_system.get_animation_manager();
 			auto& l_render_system = m_render_system;
 			auto& l_script_system = m_script_system;
+			auto& l_file_system = m_file_system;
 			auto& l_input_system = m_input_system;
 			auto& l_physics_system = m_physics_system;
 			auto& l_network_system = m_network_system;
@@ -87,6 +88,7 @@ namespace black_cat
 				core::bc_task<void> l_network_task;
 				core::bc_task<void> l_animation_task;
 
+				l_file_system.update(p_clock);
 				l_input_system.update(p_clock);
 				l_physics_system.update(p_clock);
 
@@ -133,6 +135,7 @@ namespace black_cat
 			}
 			else
 			{
+				l_file_system.update(p_clock);
 				l_input_system.update(p_clock);
 				l_event_manager.process_event_queue(p_clock);
 				l_actor_component_manager.process_actor_events(p_clock);

@@ -29,7 +29,7 @@ namespace black_cat
 
 			bc_mesh_node& operator=(bc_mesh_node&&) = default;
 
-			std::string_view get_name() const;
+			core::bc_string_view get_name() const;
 			
 			node_index_t get_index() const;
 
@@ -48,9 +48,9 @@ namespace black_cat
 			bcSIZE m_mesh_count;
 		};
 
-		inline std::string_view bc_mesh_node::get_name() const
+		inline core::bc_string_view bc_mesh_node::get_name() const
 		{
-			return std::string_view(m_name.c_str(), m_name.size());
+			return core::bc_string_view(m_name.c_str(), m_name.size());
 		}
 		
 		inline bc_mesh_node::node_index_t bc_mesh_node::get_index() const

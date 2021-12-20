@@ -31,7 +31,7 @@ namespace black_cat
 		 * \param p_ai_node
 		 * \param p_node_mapping
 		 */
-		static void calculate_node_mapping(const aiNode& p_ai_node, core::bc_unordered_map_frame<std::string_view, bcUINT32>& p_node_mapping);
+		static void calculate_node_mapping(const aiNode& p_ai_node, core::bc_unordered_map_frame<core::bc_string_view, bcUINT32>& p_node_mapping);
 
 		/**
 		 * \brief Find px-nodes associated with a particular mesh
@@ -41,7 +41,7 @@ namespace black_cat
 		 */
 		static void calculate_px_node_mapping(const aiScene& p_ai_scene,
 			const aiNode& p_ai_node,
-			core::bc_unordered_map_frame<std::string_view, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping);
+			core::bc_unordered_map_frame<core::bc_string_view, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping);
 		
 		/**
 		 * \brief Find px-nodes associated with a particular node in a skinned mesh
@@ -51,7 +51,7 @@ namespace black_cat
 		 */
 		static void calculate_skinned_px_node_mapping(const aiScene& p_ai_scene,
 			const aiNode& p_ai_node,
-			core::bc_unordered_map_frame<std::string_view, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping);
+			core::bc_unordered_map_frame<core::bc_string_view, core::bc_vector_frame<const aiNode*>>& p_px_node_mapping);
 
 		/**
 		 * \brief Find px-joint nodes
@@ -59,7 +59,7 @@ namespace black_cat
 		 * \param p_px_joint_mapping
 		 */
 		static void calculate_px_joint_mapping(const aiScene& p_ai_scene,
-			core::bc_vector<std::tuple<std::string_view, std::string_view, physics::bc_transform>>& p_px_joint_mapping);
+			core::bc_vector<std::tuple<core::bc_string_view, core::bc_string_view, physics::bc_transform>>& p_px_joint_mapping);
 
 		static void store_skinned_vertex_weights(core::bc_vector4i& p_indices, core::bc_vector4f& p_weights, bcUINT32 p_bone_index, bcFLOAT p_bone_weight);
 		

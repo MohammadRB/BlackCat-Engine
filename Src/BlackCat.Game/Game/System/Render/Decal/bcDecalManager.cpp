@@ -114,9 +114,9 @@ namespace black_cat
 			}
 		}
 
-		core::bc_vector_frame<std::string_view> bc_decal_manager::get_decal_names() const
+		core::bc_vector_frame<core::bc_string_view> bc_decal_manager::get_decal_names() const
 		{
-			core::bc_vector_frame<std::string_view> l_result;
+			core::bc_vector_frame<core::bc_string_view> l_result;
 			l_result.reserve(m_decal_descriptions.size());
 
 			for (const auto& [l_key, l_entry] : m_decal_descriptions)
@@ -134,7 +134,7 @@ namespace black_cat
 			return l_result;
 		}
 
-		bool bc_decal_manager::is_decal_auto_remove(std::string_view p_name) const noexcept
+		bool bc_decal_manager::is_decal_auto_remove(core::bc_string_view p_name) const noexcept
 		{
 			const auto l_hash = string_hash()(p_name);
 			const auto l_desc_ite = m_decal_descriptions.find(l_hash);
@@ -142,7 +142,7 @@ namespace black_cat
 			return l_desc_ite == std::end(m_decal_descriptions) || l_desc_ite->second.m_auto_remove;
 		}
 
-		bc_decal_ptr bc_decal_manager::load_decal(std::string_view p_name) noexcept
+		bc_decal_ptr bc_decal_manager::load_decal(core::bc_string_view p_name) noexcept
 		{
 			const auto l_hash = string_hash()(p_name);
 
@@ -195,7 +195,7 @@ namespace black_cat
 			return bc_decal_ptr(l_decal, bc_decal_deleter(*this));
 		}
 
-		bc_decal_ptr bc_decal_manager::load_decal_throw(std::string_view p_name)
+		bc_decal_ptr bc_decal_manager::load_decal_throw(core::bc_string_view p_name)
 		{
 			auto l_decal_ptr = load_decal(p_name);
 			if(l_decal_ptr == nullptr)
@@ -207,7 +207,7 @@ namespace black_cat
 			return l_decal_ptr;
 		}
 
-		bc_decal_instance* bc_decal_manager::create_decal(std::string_view p_name,
+		bc_decal_instance* bc_decal_manager::create_decal(core::bc_string_view p_name,
 			const core::bc_vector3f& p_local_position,
 			const core::bc_matrix3f& p_local_rotation)
 		{
@@ -215,7 +215,7 @@ namespace black_cat
 			return l_ptr.release();
 		}
 
-		bc_decal_instance* bc_decal_manager::create_decal(std::string_view p_name,
+		bc_decal_instance* bc_decal_manager::create_decal(core::bc_string_view p_name,
 			const core::bc_vector3f& p_local_position,
 			const core::bc_matrix3f& p_local_rotation,
 			bc_render_group p_render_group)
@@ -224,7 +224,7 @@ namespace black_cat
 			return l_ptr.release();
 		}
 
-		bc_decal_instance_ptr bc_decal_manager::create_decal(std::string_view p_name,
+		bc_decal_instance_ptr bc_decal_manager::create_decal(core::bc_string_view p_name,
 			const bc_actor& p_actor,
 			const core::bc_vector3f& p_local_position,
 			const core::bc_matrix3f& p_local_rotation,
@@ -251,7 +251,7 @@ namespace black_cat
 			}
 		}
 
-		bc_decal_instance_ptr bc_decal_manager::create_decal(std::string_view p_name,
+		bc_decal_instance_ptr bc_decal_manager::create_decal(core::bc_string_view p_name,
 			const bc_actor& p_actor,
 			const core::bc_vector3f& p_local_position,
 			const core::bc_matrix3f& p_local_rotation,

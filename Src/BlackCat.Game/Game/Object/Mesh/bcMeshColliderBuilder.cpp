@@ -116,8 +116,8 @@ namespace black_cat
 			m_triangle_shapes.push_back(std::move(p_mesh));
 		}
 
-		void bc_mesh_collider_builder::add_px_joint(std::string_view p_collider1,
-			std::string_view p_collider2,
+		void bc_mesh_collider_builder::add_px_joint(core::bc_string_view p_collider1,
+			core::bc_string_view p_collider2,
 			const physics::bc_transform& p_transform)
 		{
 			m_joints.push_back(bc_mesh_part_collider_joint_entry

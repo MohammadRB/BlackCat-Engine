@@ -18,12 +18,12 @@ namespace black_cat
 {
 	namespace core
 	{
-#define BC_JSON_VALUE(type, name)			black_cat::core::bc_json_value<type> m_##name { #name, this }
-#define BC_JSON_VALUE_OP(type, name)		black_cat::core::bc_json_value<type> m_##name { #name, this, true }
-#define BC_JSON_OBJECT(type, name)			black_cat::core::bc_json_object<type> m_##name { #name, this }
-#define BC_JSON_OBJECT_OP(type, name)		black_cat::core::bc_json_object<type> m_##name { #name, this, true }
-#define BC_JSON_ARRAY(type, name)			black_cat::core::bc_json_array<type> m_##name { #name, this }
-#define BC_JSON_ARRAY_OP(type, name)		black_cat::core::bc_json_array<type> m_##name { #name, this, true }
+#define BC_JSON_VALUE(type, name)			black_cat::core::bc_json_value<type>	m_##name { #name, this }
+#define BC_JSON_VALUE_OP(type, name)		black_cat::core::bc_json_value<type>	m_##name { #name, this, true }
+#define BC_JSON_OBJECT(type, name)			black_cat::core::bc_json_object<type>	m_##name { #name, this }
+#define BC_JSON_OBJECT_OP(type, name)		black_cat::core::bc_json_object<type>	m_##name { #name, this, true }
+#define BC_JSON_ARRAY(type, name)			black_cat::core::bc_json_array<type>	m_##name { #name, this }
+#define BC_JSON_ARRAY_OP(type, name)		black_cat::core::bc_json_array<type>	m_##name { #name, this, true }
 #define BC_JSON_STRUCTURE(type)				struct type : public black_cat::core::bci_json_structure
 
 		class bci_json_value;
@@ -206,7 +206,7 @@ namespace black_cat
 				return m_key_values.cend();
 			}
 
-			iterator find(const bcCHAR* p_key) noexcept
+			iterator find(bc_string_view p_key) noexcept
 			{
 				auto l_current = std::begin(m_key_values);
 				const auto l_end = std::end(m_key_values);
@@ -221,7 +221,7 @@ namespace black_cat
 				return l_current;
 			}
 
-			const_iterator find(const bcCHAR* p_key) const noexcept
+			const_iterator find(bc_string_view p_key) const noexcept
 			{
 				return const_cast<bc_json_key_value*>(this)->find(p_key);
 			}
@@ -371,7 +371,7 @@ namespace black_cat
 			}
 
 		private:
-			void _load(bc_json_value_object& p_json_value, bool& p_value)
+			void _load(const bc_json_value_object& p_json_value, bool& p_value)
 			{
 				if (!p_json_value.IsBool())
 				{
@@ -386,7 +386,7 @@ namespace black_cat
 				p_json_value.SetBool(p_value);
 			}
 
-			void _load(bc_json_value_object& p_json_value, bcINT8& p_value)
+			void _load(const bc_json_value_object& p_json_value, bcINT8& p_value)
 			{
 				if (!p_json_value.IsNumber())
 				{
@@ -401,7 +401,7 @@ namespace black_cat
 				p_json_value.SetInt(p_value);
 			}
 			
-			void _load(bc_json_value_object& p_json_value, bcUINT8& p_value)
+			void _load(const bc_json_value_object& p_json_value, bcUINT8& p_value)
 			{
 				if (!p_json_value.IsNumber())
 				{
@@ -416,7 +416,7 @@ namespace black_cat
 				p_json_value.SetUint(p_value);
 			}
 
-			void _load(bc_json_value_object& p_json_value, bcINT16& p_value)
+			void _load(const bc_json_value_object& p_json_value, bcINT16& p_value)
 			{
 				if (!p_json_value.IsNumber())
 				{
@@ -431,7 +431,7 @@ namespace black_cat
 				p_json_value.SetInt(p_value);
 			}
 
-			void _load(bc_json_value_object& p_json_value, bcUINT16& p_value)
+			void _load(const bc_json_value_object& p_json_value, bcUINT16& p_value)
 			{
 				if (!p_json_value.IsNumber())
 				{
@@ -446,7 +446,7 @@ namespace black_cat
 				p_json_value.SetUint(p_value);
 			}
 			
-			void _load(bc_json_value_object& p_json_value, bcINT32& p_value)
+			void _load(const bc_json_value_object& p_json_value, bcINT32& p_value)
 			{
 				if (!p_json_value.IsNumber())
 				{
@@ -461,7 +461,7 @@ namespace black_cat
 				p_json_value.SetInt(p_value);
 			}
 
-			void _load(bc_json_value_object& p_json_value, bcUINT32& p_value)
+			void _load(const bc_json_value_object& p_json_value, bcUINT32& p_value)
 			{
 				if (!p_json_value.IsNumber())
 				{
@@ -476,7 +476,7 @@ namespace black_cat
 				p_json_value.SetUint(p_value);
 			}
 
-			void _load(bc_json_value_object& p_json_value, bcINT64& p_value)
+			void _load(const bc_json_value_object& p_json_value, bcINT64& p_value)
 			{
 				if (!p_json_value.IsNumber())
 				{
@@ -491,7 +491,7 @@ namespace black_cat
 				p_json_value.SetInt64(p_value);
 			}
 
-			void _load(bc_json_value_object& p_json_value, bcUINT64& p_value)
+			void _load(const bc_json_value_object& p_json_value, bcUINT64& p_value)
 			{
 				if (!p_json_value.IsNumber())
 				{
@@ -506,7 +506,7 @@ namespace black_cat
 				p_json_value.SetUint64(p_value);
 			}
 
-			void _load(bc_json_value_object& p_json_value, bcFLOAT& p_value)
+			void _load(const bc_json_value_object& p_json_value, bcFLOAT& p_value)
 			{
 				if (!p_json_value.IsFloat())
 				{
@@ -521,7 +521,7 @@ namespace black_cat
 				p_json_value.SetFloat(p_value);
 			}
 
-			void _load(bc_json_value_object& p_json_value, bcDOUBLE& p_value)
+			void _load(const bc_json_value_object& p_json_value, bcDOUBLE& p_value)
 			{
 				if (!p_json_value.IsDouble())
 				{
@@ -536,7 +536,7 @@ namespace black_cat
 				p_json_value.SetDouble(p_value);
 			}
 
-			void _load(bc_json_value_object& p_json_value, bc_string& p_value)
+			void _load(const bc_json_value_object& p_json_value, bc_string& p_value)
 			{
 				if (!p_json_value.IsString())
 				{
@@ -551,7 +551,7 @@ namespace black_cat
 				p_json_value.SetString(p_value.c_str(), p_value.length());
 			}
 
-			void _load(bc_json_value_object& p_json_value, bc_string_program& p_value)
+			void _load(const bc_json_value_object& p_json_value, bc_string_program& p_value)
 			{
 				if (!p_json_value.IsString())
 				{
@@ -566,7 +566,7 @@ namespace black_cat
 				p_json_value.SetString(p_value.c_str(), p_value.length());
 			}
 
-			void _load(bc_json_value_object& p_json_value, bc_string_frame& p_value)
+			void _load(const bc_json_value_object& p_json_value, bc_string_frame& p_value)
 			{
 				if (!p_json_value.IsString())
 				{
@@ -581,7 +581,7 @@ namespace black_cat
 				p_json_value.SetString(p_value.c_str(), p_value.length());
 			}
 
-			void _load(bc_json_value_object& p_json_value, bc_parameter_pack& p_value)
+			void _load(const bc_json_value_object& p_json_value, bc_parameter_pack& p_value)
 			{
 				if (p_json_value.IsBool())
 				{
@@ -715,7 +715,7 @@ namespace black_cat
 				}
 			}
 
-			void _load(bc_json_value_object& p_json_value, bc_any& p_value)
+			void _load(const bc_json_value_object& p_json_value, bc_any& p_value)
 			{
 				_load(p_json_value, static_cast<bc_parameter_pack&>(p_value));
 			}
@@ -725,7 +725,7 @@ namespace black_cat
 				_write(p_document, p_json_value, static_cast<bc_parameter_pack&>(p_value));
 			}
 
-			void _load(bc_json_value_object& p_json_value, bc_json_key_value& p_value)
+			void _load(const bc_json_value_object& p_json_value, bc_json_key_value& p_value)
 			{
 				if (p_json_value.IsObject())
 				{
@@ -759,7 +759,7 @@ namespace black_cat
 			}
 
 			template<typename T1>
-			void _load(bc_json_value_object& p_json_value, T1& p_value)
+			void _load(const bc_json_value_object& p_json_value, T1& p_value)
 			{
 				json_parse::bc_load(p_json_value, p_value);
 			}
@@ -990,18 +990,18 @@ namespace black_cat
 		class bc_json_array
 		<
 			T,
-			typename std::enable_if
+			std::enable_if_t
 			<
-			std::is_same<bool, typename std::decay<T>::type>::value ||
-			std::is_same<bcINT, typename std::decay<T>::type>::value ||
-			std::is_same<bcUINT, typename std::decay<T>::type>::value ||
-			std::is_same<bcFLOAT, typename std::decay<T>::type>::value ||
-			std::is_same<bc_string, typename std::decay<T>::type>::value ||
-			std::is_same<bc_string_program, typename std::decay<T>::type>::value ||
-			std::is_same<bc_string_frame, typename std::decay<T>::type>::value ||
-			std::is_same<bc_parameter_pack, typename std::decay<T>::type>::value ||
-			std::is_same<bc_any, typename std::decay<T>::type>::value
-			>::type
+				std::is_same_v<bool, std::decay_t<T>> ||
+				std::is_same_v<bcINT, std::decay_t<T>> ||
+				std::is_same_v<bcUINT, std::decay_t<T>> ||
+				std::is_same_v<bcFLOAT, std::decay_t<T>> ||
+				std::is_same_v<bc_string, std::decay_t<T>> ||
+				std::is_same_v<bc_string_program, std::decay_t<T>> ||
+				std::is_same_v<bc_string_frame, std::decay_t<T>> ||
+				std::is_same_v<bc_parameter_pack, std::decay_t<T>> ||
+				std::is_same_v<bc_any, std::decay_t<T>>
+			>
 		> : public bci_json_value, public bc_iterator_adapter<bc_list<bc_json_value<T>>>
 		{
 		public:

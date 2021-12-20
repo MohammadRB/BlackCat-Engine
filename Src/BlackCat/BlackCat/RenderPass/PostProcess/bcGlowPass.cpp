@@ -2,9 +2,12 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcDefaultRenderThread.h"
+#include "Game/System/Input/bcGlobalConfig.h"
+#include "Game/bcEvent.h"
 #include "BlackCat/RenderPass/PostProcess/bcGlowPass.h"
 #include "BlackCat/bcConstant.h"
 
@@ -16,11 +19,18 @@ namespace black_cat
 		core::bc_vector2f m_texcoord;
 	};
 
-	struct _bc_parameters_struct
+	struct _bc_glow_params_struct
 	{
 		BC_CBUFFER_ALIGN
 		bcFLOAT m_threshold;
 		bcFLOAT m_intensity;
+	};
+
+	struct _bc_blur_params_struct
+	{
+		BC_CBUFFER_ALIGN
+		bcUINT32 m_width;
+		bcUINT32 m_height;
 	};
 
 	bc_glow_pass::bc_glow_pass(game::bc_render_pass_variable_t p_render_target_texture, game::bc_render_pass_variable_t p_render_target_view):
@@ -28,6 +38,10 @@ namespace black_cat
 		m_render_target_view(p_render_target_view),
 		m_intermediate_texture_config()
 	{
+		auto& l_global_config = bc_get_global_config();
+		l_global_config
+			.add_if_not_exist_config_key("render_glow_threshold", core::bc_any(.8f))
+			.add_if_not_exist_config_key("render_glow_intensity", core::bc_any(.5f));
 	}
 
 	void bc_glow_pass::initialize_resources(game::bc_render_system& p_render_system)
@@ -58,13 +72,39 @@ namespace black_cat
 		m_point_sampler = l_device.create_sampler_state(l_point_sampler_config);
 		m_linear_sampler = l_device.create_sampler_state(l_linear_sampler_config);
 
-		const auto l_parameters_buffer_config = graphic::bc_graphic_resource_builder()
+		const auto l_glow_params_buffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
-			.as_buffer(1, sizeof(_bc_parameters_struct), graphic::bc_resource_usage::gpu_rw)
+			.as_buffer(1, sizeof(_bc_glow_params_struct), graphic::bc_resource_usage::gpu_rw)
 			.as_constant_buffer();
-		auto l_parameters_struct = _bc_parameters_struct{.8f, .5f};
-		const graphic::bc_subresource_data l_parameters_data{ &l_parameters_struct, 0,0 };
-		m_parameters_buffer = l_device.create_buffer(l_parameters_buffer_config, &l_parameters_data);
+		m_glow_params_buffer = l_device.create_buffer(l_glow_params_buffer_config, nullptr);
+
+		const auto l_blur_params_buffer_config = graphic::bc_graphic_resource_builder()
+			.as_resource()
+			.as_buffer(1, sizeof(_bc_blur_params_struct), graphic::bc_resource_usage::gpu_rw)
+			.as_constant_buffer();
+		m_blur_params_buffer = l_device.create_buffer(l_blur_params_buffer_config, nullptr);
+
+		m_config_change_handle = core::bc_get_service<core::bc_event_manager>()->register_event_listener<game::bc_event_global_config_changed>
+		(
+			core::bc_event_manager::delegate_type([&](core::bci_event& p_event)
+			{
+				const auto* l_global_config_event = core::bci_event::as<game::bc_event_global_config_changed>(p_event);
+				auto& l_global_config = l_global_config_event->get_config();
+
+				core::bc_any l_threshold_value;
+				core::bc_any l_intensity_value;
+				l_global_config
+					.read_config_key("render_glow_threshold", l_threshold_value)
+					.read_config_key("render_glow_intensity", l_intensity_value);
+
+				if (l_threshold_value.as<bcFLOAT>() && l_intensity_value.as<bcFLOAT>())
+				{
+					p_render_system.get_render_pass<bc_glow_pass>()->update_parameters(*l_threshold_value.as<bcFLOAT>(), *l_intensity_value.as<bcFLOAT>());
+				}
+
+				return true;
+			})
+		);
 
 		after_reset
 		(
@@ -111,6 +151,12 @@ namespace black_cat
 			const auto l_intermediate_texture2 = get_intermediate_texture(m_intermediate_texture_config);
 
 			p_context.m_render_thread.start();
+
+			if (m_parameters_changed)
+			{
+				_update_parameters(p_context.m_render_thread);
+				m_parameters_changed = false;
+			}
 
 			// Glow extract
 			m_intermediate_texture1_link.set_as_render_target_view(l_intermediate_texture1.get_render_target_view());
@@ -175,6 +221,7 @@ namespace black_cat
 		const auto l_half_viewport = graphic::bc_viewport::default_config(l_render_target_texture.get_width() / 2, l_render_target_texture.get_height() / 2);
 		const auto l_full_viewport = graphic::bc_viewport::default_config(l_render_target_texture.get_width(), l_render_target_texture.get_height());
 
+		m_parameters_changed = true;
 		m_intermediate_texture_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_texture2d
@@ -192,12 +239,12 @@ namespace black_cat
 			)
 			.as_render_target_texture();
 
-		const auto l_render_target_view_config = graphic::bc_graphic_resource_builder()
+		const auto l_render_target_resource_view_config = graphic::bc_graphic_resource_builder()
 			.as_resource_view()
 			.as_texture_view(l_render_target_texture.get_format())
 			.as_tex2d_shader_view(0, 1)
 			.on_render_target_texture2d();
-		m_render_target_resource_view = p_context.m_device.create_resource_view(l_render_target_texture, l_render_target_view_config);
+		m_render_target_resource_view = p_context.m_device.create_resource_view(l_render_target_texture, l_render_target_resource_view_config);
 
 		m_glow_extract_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
 		(
@@ -235,7 +282,7 @@ namespace black_cat
 			},
 			{
 				p_context.m_render_system.get_global_cbuffer(),
-				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::pixel, *m_parameters_buffer)
+				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::pixel, *m_glow_params_buffer)
 			}
 		);
 		m_glow_extract_render_state = p_context.m_render_system.create_render_state
@@ -289,7 +336,8 @@ namespace black_cat
 			{
 			},
 			{
-				p_context.m_render_system.get_global_cbuffer()
+				p_context.m_render_system.get_global_cbuffer(),
+				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::pixel, *m_blur_params_buffer)
 			}
 		);
 		m_blur_render_state = p_context.m_render_system.create_render_state
@@ -381,13 +429,27 @@ namespace black_cat
 		m_render_target_resource_view.reset();
 	}
 
-	void bc_glow_pass::update_parameters(game::bc_default_render_thread& p_render_thread, bcFLOAT p_threshold, bcFLOAT p_intensity) noexcept
+	void bc_glow_pass::update_parameters(bcFLOAT p_glow_threshold, bcFLOAT p_glow_intensity)
 	{
-		const _bc_parameters_struct l_parameters
-		{
-			p_threshold, p_intensity
-		};
+		m_glow_threshold = p_glow_threshold;
+		m_glow_intensity = p_glow_intensity;
+		m_parameters_changed = true;
+	}
 
-		p_render_thread.update_subresource(*m_parameters_buffer, 0, &l_parameters, 0, 0);
+	void bc_glow_pass::_update_parameters(game::bc_default_render_thread& p_render_thread)
+	{
+		const _bc_blur_params_struct l_blur_params
+		{
+			m_intermediate_texture_config.get_width(),
+			m_intermediate_texture_config.get_height()
+		};
+		p_render_thread.update_subresource(*m_blur_params_buffer, 0, &l_blur_params, 0, 0);
+
+		const _bc_glow_params_struct l_parameters
+		{
+			m_glow_threshold,
+			m_glow_intensity
+		};
+		p_render_thread.update_subresource(*m_glow_params_buffer, 0, &l_parameters, 0, 0);
 	}
 }

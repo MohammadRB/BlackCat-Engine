@@ -21,7 +21,7 @@ namespace black_cat
 				return nullptr;
 			}
 
-			return reinterpret_cast< _bc_heap_memblock* >(l_block);
+			return reinterpret_cast<_bc_heap_memblock*>(l_block);
 		}
 
 		_bc_heap_memblock* _get_prev(_bc_heap_memblock* p_block)
@@ -36,7 +36,7 @@ namespace black_cat
 			auto* l_block = reinterpret_cast<bcBYTE*>(p_block);
 			l_block -= l_prev_block_size;
 
-			return reinterpret_cast< _bc_heap_memblock* >(l_block);
+			return reinterpret_cast<_bc_heap_memblock*>(l_block);
 		}
 
 		bc_memory_heap::bc_memory_heap() noexcept
@@ -131,13 +131,13 @@ namespace black_cat
 			const bcSIZE l_size = p_memblock->size();
 			const bcSIZE l_require_size = l_size + m_block_size;
 
-			BC_ASSERT(l_require_size > 0);
+			BC_ASSERT(l_size > 0);
 
 			_bc_heap_memblock* l_next = m_last_block;
-			l_next->lock(core_platform::bc_lock_operation::light);
+			l_next->lock();
 
 			_bc_heap_memblock* l_curr_block = _get_prev(l_next);
-			l_curr_block->lock(core_platform::bc_lock_operation::light);
+			l_curr_block->lock();
 
 			while (l_curr_block && (!l_curr_block->free() || l_curr_block->size() < l_require_size))
 			{
@@ -145,7 +145,7 @@ namespace black_cat
 
 				if(l_prev)
 				{
-					l_prev->lock(core_platform::bc_lock_operation::light);
+					l_prev->lock();
 					l_next->unlock();
 				}
 				else
@@ -169,7 +169,7 @@ namespace black_cat
 			// Check if we must divide our free block then do it
 			if (l_curr_block->size() - l_require_size >= m_remaining_free_space_limit)
 			{
-				_bc_heap_memblock* l_new_heap_block = reinterpret_cast< _bc_heap_memblock* >(reinterpret_cast<bcBYTE*>(l_curr_block) + l_require_size);
+				auto* l_new_heap_block = reinterpret_cast<_bc_heap_memblock*>(reinterpret_cast<bcBYTE*>(l_curr_block) + l_require_size);
 				new (l_new_heap_block) _bc_heap_memblock(l_curr_block->size() - l_require_size, l_require_size, true);
 
 				l_curr_block->size(l_require_size);
@@ -202,7 +202,7 @@ namespace black_cat
 
 		void bc_memory_heap::free(void* p_pointer, bc_memblock* p_memblock) noexcept
 		{
-			_bc_heap_memblock* l_block = reinterpret_cast< _bc_heap_memblock* >(static_cast<bcBYTE*>(p_pointer) - m_block_size);
+			_bc_heap_memblock* l_block = reinterpret_cast<_bc_heap_memblock*>(static_cast<bcBYTE*>(p_pointer) - m_block_size);
 			_bc_heap_memblock* l_next_next;
 			_bc_heap_memblock* l_next;
 			_bc_heap_memblock* l_prev;
@@ -213,16 +213,15 @@ namespace black_cat
 			// We always have next block
 			l_next = _get_next(l_block, m_heap, m_heap_size);
 			
-			// Try to lock next and next next block (if required) so avoid deadlock.
-			// (We lock memory blocks in reverse order)
+			// Try to lock next and next next block (if required) to avoid deadlock. (We lock memory blocks in reverse order)
 			while (true)
 			{
-				l_next->lock(core_platform::bc_lock_operation::light);
+				l_next->lock();
 				l_next_next = _get_next(l_next, m_heap, m_heap_size);
 
 				if (l_next->free() && l_next_next)
 				{
-					if(l_next_next->try_lock(core_platform::bc_lock_operation::light))
+					if(l_next_next->try_lock())
 					{
 						break;
 					}
@@ -237,13 +236,13 @@ namespace black_cat
 				}
 			}
 
-			l_block->lock(core_platform::bc_lock_operation::light);
+			l_block->lock();
 
 			// We must get prev block after locking current block
 			l_prev = _get_prev(l_block);
 			if(l_prev)
 			{
-				l_prev->lock(core_platform::bc_lock_operation::light);
+				l_prev->lock();
 			}
 
 			l_block->free(true);
@@ -260,6 +259,7 @@ namespace black_cat
 					l_next_next->prev_size(l_block->size());
 				}
 			}
+
 			// Merge free block to it's prev, if prev block is free
 			if (l_prev && l_prev->free())
 			{
@@ -337,7 +337,7 @@ namespace black_cat
 			
 			while(l_curr_block)
 			{
-				l_curr_block->lock(core_platform::bc_lock_operation::light);
+				l_curr_block->lock();
 				
 				_bc_heap_memblock* l_prev = _get_prev(l_curr_block);
 
@@ -364,9 +364,9 @@ namespace black_cat
 #ifdef BC_MEMORY_DEFRAG
 		void bc_memory_heap::register_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept
 		{
-			_bc_heap_memblock* l_mem_block = reinterpret_cast< _bc_heap_memblock* >
+			_bc_heap_memblock* l_mem_block = reinterpret_cast<_bc_heap_memblock*>
 			(
-				reinterpret_cast< bcUINTPTR >(*p_pointer) - p_memblock->offset() - m_block_size
+				reinterpret_cast<bcUINTPTR>(*p_pointer) - p_memblock->offset() - m_block_size
 			);
 
 			l_mem_block->register_new_pointer(p_pointer);
@@ -374,9 +374,9 @@ namespace black_cat
 
 		void bc_memory_heap::unregister_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept
 		{
-			_bc_heap_memblock* l_mem_block = reinterpret_cast< _bc_heap_memblock* >
+			_bc_heap_memblock* l_mem_block = reinterpret_cast<_bc_heap_memblock*>
 			(
-				reinterpret_cast< bcUINTPTR >(*p_pointer) - p_memblock->offset() - m_block_size
+				reinterpret_cast<bcUINTPTR>(*p_pointer) - p_memblock->offset() - m_block_size
 			);
 
 			l_mem_block->unregister_pointer(p_pointer);
@@ -432,7 +432,7 @@ namespace black_cat
 					auto l_free_block_size = l_free_block->size();
 					auto l_free_block_prev_size = l_free_block->prev_size();
 					auto l_used_block_size = l_first_used_block->size();
-					auto* l_free_block_new_pos = reinterpret_cast< _bc_heap_memblock* >(reinterpret_cast<bcBYTE*>(l_free_block) + l_used_block_size);
+					auto* l_free_block_new_pos = reinterpret_cast<_bc_heap_memblock*>(reinterpret_cast<bcBYTE*>(l_free_block) + l_used_block_size);
 					auto* l_used_block_new_pos = l_free_block;
 					_bc_heap_memblock::pointer_refs l_used_block_ptrs;
 
@@ -458,7 +458,7 @@ namespace black_cat
 
 						if (*l_new_used_block_pointers_begin != nullptr)
 						{
-							**l_new_used_block_pointers_begin = reinterpret_cast< void* >(reinterpret_cast< bcUINTPTR >(**l_used_block_pointers_begin) - l_move_offset);
+							**l_new_used_block_pointers_begin = reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(**l_used_block_pointers_begin) - l_move_offset);
 						}
 
 						++l_used_block_pointers_begin;
@@ -502,7 +502,6 @@ namespace black_cat
 			}
 		}
 #endif
-
 #endif
 	}
 }
