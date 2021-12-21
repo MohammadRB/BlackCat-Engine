@@ -1,6 +1,42 @@
 {
   "entities": [
     {
+      "name": "xbot_red_player",
+      "inherit": "xbot_player",
+      "controller": "xbot_player",
+      "parameters": {
+        "threw_smoke_grenade_name": "xbot_threw_red_smoke_grenade"
+      },
+      "components": [
+        {
+          "name": "skinned_mesh",
+          "parameters": {
+            "materials": {
+              "Beta_Surface": "red"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbot_blue_player",
+      "inherit": "xbot_player",
+      "controller": "xbot_player",
+      "parameters": {
+        "threw_smoke_grenade_name": "xbot_threw_blue_smoke_grenade"
+      },
+      "components": [
+        {
+          "name": "skinned_mesh",
+          "parameters": {
+            "materials": {
+              "Beta_Surface": "blue"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "xbot_rifle",
       "components": [
         {
@@ -105,7 +141,7 @@
       "controller": "smoke_grenade",
       "parameters": {
         "lifetime": 4.0,
-        "smoke_time": 30.0 
+        "smoke_time": 30.0
       },
       "components": [
         {
@@ -114,6 +150,24 @@
             "data_dir": "replicate_sync"
           }
         }
+      ]
+    },
+    {
+      "name": "xbot_threw_red_smoke_grenade",
+      "inherit": "xbot_threw_smoke_grenade",
+      "parameters": {
+        "color": [ 0.8, 0.4, 0.3 ]
+      },
+      "components": [
+      ]
+    },
+    {
+      "name": "xbot_threw_blue_smoke_grenade",
+      "inherit": "xbot_threw_smoke_grenade",
+      "parameters": {
+        "color": [ 0.3, 0.4, 0.8 ]
+      },
+      "components": [
       ]
     }
   ]

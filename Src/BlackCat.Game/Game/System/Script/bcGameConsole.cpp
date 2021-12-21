@@ -202,11 +202,11 @@ namespace black_cat
 			}
 		}
 
-		bool bc_game_console::_on_key(core::bci_event& p_event)
+		void bc_game_console::_on_key(core::bci_event& p_event)
 		{
 			if(!m_imp)
 			{
-				return false;
+				return;
 			}
 
 			const auto l_key_event = static_cast<platform::bc_app_event_key&>(p_event);
@@ -222,8 +222,6 @@ namespace black_cat
 					m_imp->show();
 				}
 			}
-
-			return true;
 		}
 	}
 }

@@ -147,7 +147,7 @@ namespace black_cat
 
 			void _destroy() override;
 
-			bool _app_event(core::bci_event& p_event);
+			void _app_event(core::bci_event& p_event);
 
 			const bcECHAR* m_app_name;
 			core::bc_unique_ptr<platform::bc_application> m_app;

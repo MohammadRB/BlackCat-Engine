@@ -5,14 +5,9 @@
 #include "PlatformImp/Script/bcScriptGlobalPrototypeBuilder.h"
 #include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
 #include "Game/System/Script/bcScriptBinding.h"
-#include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
 #include "BoX.Server/Application/bxServerApplication.h"
 #include "BoX.Server/Application/bxServerScript.h"
-#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
-#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
-#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
-#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 
 using namespace black_cat;

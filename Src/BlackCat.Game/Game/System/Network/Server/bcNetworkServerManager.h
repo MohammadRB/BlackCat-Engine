@@ -110,7 +110,7 @@ namespace black_cat
 			
 			bc_network_server_manager_client* _find_client(const platform::bc_network_address& p_address);
 
-			bool _event_handler(core::bci_event& p_event);
+			void _event_handler(core::bci_event& p_event);
 
 			core::bc_event_manager* m_event_manager;
 			bc_game_system* m_game_system;

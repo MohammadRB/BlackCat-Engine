@@ -48,11 +48,11 @@ namespace black_cat
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 		
 	private:
-		bool _on_event(core::bci_event& p_event) noexcept;
+		void _on_event(core::bci_event& p_event) noexcept;
 
-		bool _on_pointing(platform::bc_app_event_pointing& p_pointing_event) noexcept;
+		void _on_pointing(platform::bc_app_event_pointing& p_pointing_event) noexcept;
 
-		bool _on_key(platform::bc_app_event_key& p_key_event) noexcept;
+		void _on_key(platform::bc_app_event_key& p_key_event) noexcept;
 
 		void _start_grenade_throw(const bcCHAR* p_entity);
 

@@ -768,7 +768,7 @@ namespace black_cat
 			}
 		}
 
-		bool bc_network_server_manager::_event_handler(core::bci_event& p_event)
+		void bc_network_server_manager::_event_handler(core::bci_event& p_event)
 		{
 			auto* l_scene_change_event = core::bci_event::as<bc_event_scene_change>(p_event);
 			if(l_scene_change_event)
@@ -787,10 +787,9 @@ namespace black_cat
 						l_client.set_ready_for_sync(false);
 					}
 				}
-				return true;
-			}
 
-			return false;
+				return;
+			}
 		}
 	}
 }

@@ -78,7 +78,7 @@ namespace black_cat
 			void update(const core_platform::bc_clock::update_param& p_clock);
 
 		private:
-			bool _event_handler(core::bci_event& p_event);
+			void _event_handler(core::bci_event& p_event);
 
 			core::bc_event_listener_handle m_window_resize_event_handle;
 			core::bc_event_listener_handle m_window_focus_event_handle;

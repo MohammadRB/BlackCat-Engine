@@ -74,7 +74,7 @@ namespace black_cat
 		private:
 			void on_log(core::bc_log_type p_type, const bcECHAR* p_log) override;
 
-			bool _on_key(core::bci_event& p_event);
+			void _on_key(core::bci_event& p_event);
 
 			bc_script_system* m_script_system;
 			bci_game_console_imp* m_imp;

@@ -310,14 +310,6 @@ namespace black_cat
 				m_num_fragmentation.fetch_sub(1, core_platform::bc_memory_order::relaxed);
 			}
 
-			if (l_next_free)
-			{
-				m_tracer.accept_free_overhead(m_block_size);
-			}
-			if (l_prev_free)
-			{
-				m_tracer.accept_free_overhead(m_block_size);
-			}
 			m_tracer.accept_free_overhead(m_block_size);
 			m_tracer.accept_free(p_memblock->size());
 
@@ -477,8 +469,6 @@ namespace black_cat
 							
 							l_free_block_next = _get_next(l_free_block_new_pos, m_heap, m_heap_size);
 							l_free_block_next->prev_size(l_free_block_new_pos->size());
-							
-							m_tracer.accept_free_overhead(m_block_size);
 						}
 						else
 						{

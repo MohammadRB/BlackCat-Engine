@@ -361,14 +361,6 @@
       },
       "components": [
         {
-          "name": "skinned_mesh",
-          "parameters": {
-            "materials": {
-              "Beta_Surface": "red"
-            }
-          }
-        },
-        {
           "name": "network",
           "parameters": {
             "data_dir": "replicate_sync_from_client",

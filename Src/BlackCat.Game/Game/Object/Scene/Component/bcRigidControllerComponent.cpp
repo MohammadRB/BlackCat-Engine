@@ -30,7 +30,13 @@ namespace black_cat
 		{
 			if (m_px_body->is_valid())
 			{
-				core::bc_get_service<bc_game_system>()->get_physics_system().clear_px_shapes_data(*m_px_body);
+				{
+					bc_rigid_component_lock l_lock(*this);
+
+					core::bc_get_service<bc_game_system>()->get_physics_system().clear_px_shapes_data(*m_px_body);
+					m_px_body.reset();
+					m_px_controller.reset();
+				}
 			}
 		}
 

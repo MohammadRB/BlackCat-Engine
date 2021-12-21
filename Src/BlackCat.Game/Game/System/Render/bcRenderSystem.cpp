@@ -451,7 +451,7 @@ namespace black_cat
 			m_device.destroy();
 		}
 		
-		bool bc_render_system::_event_handler(core::bci_event& p_event)
+		void bc_render_system::_event_handler(core::bci_event& p_event)
 		{
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
@@ -460,13 +460,13 @@ namespace black_cat
 			{
 				if(!m_swap_buffer->is_valid())
 				{
-					return true;
+					return;
 				}
 				
 				// If nothing has change do not continue
 				if (l_window_resize_event->width() == m_swap_buffer->get_back_buffer_width() && l_window_resize_event->height() == m_swap_buffer->get_back_buffer_height())
 				{
-					return true;
+					return;
 				}
 
 				const auto l_device_back_buffer = m_swap_buffer->get_back_buffer_texture();
@@ -489,7 +489,7 @@ namespace black_cat
 				// Put device reset event in render event queue
 				l_event_manager->queue_event(graphic::bc_app_event_device_reset(m_device, m_swap_buffer.get(), l_old_parameters, l_new_parameters, true), 0);
 
-				return true;
+				return;
 			}
 
 			auto* l_device_reset_event = core::bci_message::as<graphic::bc_app_event_device_reset>(p_event);
@@ -497,7 +497,7 @@ namespace black_cat
 			{
 				m_device_reset_event.reset(*l_device_reset_event);
 				
-				return true;
+				return;
 			}
 
 			auto* l_frame_swap_event = core::bci_message::as<core::bc_event_frame_swap>(p_event);
@@ -505,10 +505,8 @@ namespace black_cat
 			{
 				m_shape_drawer->clear_swap_buffers();
 
-				return true;
+				return;
 			}
-			
-			return false;
 		}
 		
 		void bc_render_system::_destroy_render_pass_state(bc_render_pass_state* p_render_pass_state)

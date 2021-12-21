@@ -83,6 +83,7 @@ namespace black_cat
 			m_rate_of_fire_seconds = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_rate_of_fire_seconds);
 			m_bullet_speed = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_speed);
 			m_bullet_mass = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_mass);
+			m_scene = &p_context.m_scene;
 
 			const auto l_flare_surface = p_context.m_parameters.get_value_vector3f(constant::g_param_weapon_fire_light_flare_surface);
 			const auto* l_flare_mask_material = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_weapon_fire_light_flare_mask_material);
@@ -128,11 +129,11 @@ namespace black_cat
 
 		void bc_weapon_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
+			/*const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
 			if(l_scene_add_event)
 			{
 				m_scene = &l_scene_add_event->get_scene();
-			}
+			}*/
 		}
 	}	
 }

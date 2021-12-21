@@ -242,33 +242,31 @@ namespace black_cat
 			}
 		}
 
-		bool bc_free_camera::_on_event(core::bci_event& p_event) noexcept
+		void bc_free_camera::_on_event(core::bci_event& p_event) noexcept
 		{
 			if(core::bci_message::is<platform::bc_app_event_pointing>(p_event))
 			{
-				return _on_pointing(static_cast<platform::bc_app_event_pointing&>(p_event));
+				_on_pointing(static_cast<platform::bc_app_event_pointing&>(p_event));
+				return;
 			}
 
 			if(core::bci_message::is<platform::bc_app_event_key>(p_event))
 			{
-				return _on_key(static_cast<platform::bc_app_event_key&>(p_event));
+				_on_key(static_cast<platform::bc_app_event_key&>(p_event));
+				return;
 			}
-
-			return false;
 		}
 
-		bool bc_free_camera::_on_pointing(platform::bc_app_event_pointing& p_pointing_event) noexcept
+		void bc_free_camera::_on_pointing(platform::bc_app_event_pointing& p_pointing_event) noexcept
 		{
 			if(m_rmb_pressed)
 			{
 				m_new_pointing_delta.x = p_pointing_event.get_state().m_dx;
 				m_new_pointing_delta.y = p_pointing_event.get_state().m_dy;
 			}
-
-			return true;
 		}
 		
-		bool bc_free_camera::_on_key(platform::bc_app_event_key& p_key_event) noexcept
+		void bc_free_camera::_on_key(platform::bc_app_event_key& p_key_event) noexcept
 		{
 			if (p_key_event.get_key() == platform::bc_key::kb_W)
 			{
@@ -369,8 +367,6 @@ namespace black_cat
 					m_rmb_pressed = false;
 				}
 			}
-
-			return true;
 		}
 	}
 }

@@ -394,9 +394,10 @@ namespace black_cat
 			app_close_engine_components();
 		}
 
-		bool bc_render_application::_app_event(core::bci_event& p_event)
+		void bc_render_application::_app_event(core::bci_event& p_event)
 		{
-			bool l_handled = false;
+			app_event(p_event);
+
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
 			auto* l_window_state_event = core::bci_message::as<platform::bc_app_event_window_state>(p_event);
@@ -415,8 +416,8 @@ namespace black_cat
 						l_event_manager->process_event(l_active_event);
 					}
 				}
-				
-				l_handled = true;
+
+				return;
 			}
 			
 			auto* l_window_focus_event = core::bci_message::as<platform::bc_app_event_window_focus>(p_event);
@@ -432,8 +433,8 @@ namespace black_cat
 					platform::bc_app_event_pause_state l_active_event(platform::bc_app_event_pause_state::state::pause_request);
 					l_event_manager->process_event(l_active_event);
 				}*/
-				
-				l_handled = true;
+
+				return;
 			}
 
 			auto* l_active_event = core::bci_message::as<platform::bc_app_event_pause_state>(p_event);
@@ -450,9 +451,9 @@ namespace black_cat
 					{
 						m_clock->resume();
 					}
-
-					l_handled = true;
 				}
+
+				return;
 			}
 
 			auto* l_close_event = core::bci_message::as<platform::bc_app_event_window_close>(p_event);
@@ -464,7 +465,7 @@ namespace black_cat
 					l_event_manager->process_event(l_exit_event);
 				}
 				
-				l_handled = true;
+				return;
 			}
 
 			auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event);
@@ -472,18 +473,17 @@ namespace black_cat
 			{
 				m_is_terminated = true;
 				m_termination_code = l_exit_event->exit_code();
-				l_handled = true;
+				
+				return;
 			}
 
 			auto* l_error_event = core::bci_message::as<core::bc_app_event_error>(p_event);
 			if (l_error_event)
 			{
 				core::bc_log(core::bc_log_type::error) << l_error_event->get_message() << core::bc_lend;
-				l_handled = true;
+
+				return;
 			}
-			
-			const bool l_handled1 = app_event(p_event);
-			return l_handled || l_handled1;
 		}
 	}
 }

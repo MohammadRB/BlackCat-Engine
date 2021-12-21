@@ -10,7 +10,6 @@ namespace black_cat
 	namespace core
 	{
 #ifdef BC_MEMORY_ENABLE
-
 		bc_memory_fixed_size::bc_memory_fixed_size() noexcept
 			: m_num_block(0),
 			m_block_size(0),
@@ -34,7 +33,7 @@ namespace black_cat
 			}
 		}
 
-		bc_memory_fixed_size::this_type& bc_memory_fixed_size::operator =(this_type&& p_other) noexcept
+		bc_memory_fixed_size::this_type& bc_memory_fixed_size::operator=(this_type&& p_other) noexcept
 		{
 			bci_memory::operator =(std::move(p_other));
 			_move(std::move(p_other));
@@ -46,11 +45,10 @@ namespace black_cat
 		{
 			const bcUINT32 l_size = p_mem_block->size();
 
-			// we can't handle allocations larger than our block size /
 			BC_ASSERT(l_size <= m_block_size);
 			BC_ASSERT(l_size > 0);
 
-			// Search for a free block /
+			// Search for a free block
 			bcINT32 l_block = -1;
 			void* l_result = nullptr;
 
@@ -97,7 +95,7 @@ namespace black_cat
 				}
 			}
 
-			// A free block found /
+			// A free block found
 			if (-1 != l_block || l_block <= m_num_block)
 			{
 				l_result = reinterpret_cast<void*>(m_heap + l_block * m_block_size);
@@ -115,23 +113,23 @@ namespace black_cat
 		{
 			auto* l_pointer = static_cast<bcUBYTE*>(p_pointer);
 
-			// is this pointer in our heap? /
+			// is this pointer in our heap?
 			BC_ASSERT((l_pointer >= m_heap) && (l_pointer < m_heap + m_block_size * m_num_block));
 
-			// convert the pointer into a block index /
-			const bcINT32 l_block = static_cast<bcINT32>(l_pointer - m_heap) / m_block_size;
+			// convert the pointer into a block index
+			const bcINT32 l_block = (l_pointer - m_heap) / m_block_size;
 
-			// reset the bit in our block management array /
+			// reset the bit in our block management array
 			const bcINT32 l_chunk_index = l_block / s_bit_block_size;
 			const bcINT32 l_bit_index = l_block % s_bit_block_size;
 
-#ifdef BC_MEMORY_DEBUG
-			std::memset(l_pointer, 0, p_mem_block->size());
-#endif
-
-			m_blocks[l_chunk_index].fetch_and(~(static_cast< bit_block_type >(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
+			m_blocks[l_chunk_index].fetch_and(~(static_cast<bit_block_type>(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
 
 			m_tracer.accept_free(p_mem_block->size());
+
+//#ifdef BC_MEMORY_DEBUG
+//			std::memset(l_pointer, 0, p_mem_block->size());
+//#endif
 		}
 
 		bool bc_memory_fixed_size::contain_pointer(void* p_pointer) const noexcept

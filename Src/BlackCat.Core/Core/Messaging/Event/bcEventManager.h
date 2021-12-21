@@ -20,10 +20,10 @@ namespace black_cat
 {
 	namespace core
 	{
-		template< class TEvent >
+		template<class TEvent>
 		using bc_event_ptr = bc_unique_ptr<TEvent>;
 
-		template< class TEvent >
+		template<class TEvent>
 		bc_event_ptr<std::decay_t<TEvent>> bc_make_event(TEvent&& p_event)
 		{
 			return bc_make_unique<std::decay_t<TEvent>>(std::forward<TEvent>(p_event));
@@ -70,7 +70,7 @@ namespace black_cat
 			BC_SERVICE(evt_mng)
 
 		public:
-			using event_handler_type = bc_event_handler<bool(bci_event&)>;
+			using event_handler_type = bc_event_handler<void(bci_event&)>;
 			using delegate_type = event_handler_type::delegate_type;
 
 		private:
@@ -135,7 +135,7 @@ namespace black_cat
 		template<class TEvent>
 		bc_event_listener_handle bc_event_manager::register_event_listener(delegate_type&& p_listener)
 		{
-			return _register_event_listener(bc_message_traits< TEvent >::message_name(), std::move(p_listener));
+			return _register_event_listener(bc_message_traits<TEvent>::message_name(), std::move(p_listener));
 		}
 
 		template<class TEvent>

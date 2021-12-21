@@ -173,12 +173,12 @@ namespace black_cat
 
 	void bc_render_application::app_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock)
 	{
-		m_update_watch.start();
+		//m_update_watch.start();
 		
 		m_game_system->swap_frame_idle(p_clock);
 		application_swap_frame_idle(p_clock);
 		
-		m_update_watch.stop();
+		//m_update_watch.stop();
 	}
 
 	void bc_render_application::app_swap_frame(const core_platform::bc_clock::update_param& p_clock)
@@ -238,8 +238,16 @@ namespace black_cat
 
 	void bc_render_application::app_close_engine_components()
 	{
+		const auto& l_memory_manager = core::bc_memory_manager::get();
+
 		core::bc_log(core::bc_log_type::info) << "closing engine components" << core::bc_lend;
-		
+		core::bc_log(core::bc_log_type::info)
+			<< "memory report: "
+			<< " total size: " << l_memory_manager.get_total_size()
+			<< " max used size: " << l_memory_manager.get_max_used_size()
+			<< core::bc_only_file
+			<< core::bc_lend;
+
 		application_close_engine_components();
 		bc_close_engine_services();
 	}

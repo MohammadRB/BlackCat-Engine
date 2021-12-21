@@ -34,6 +34,10 @@ namespace black_cat
 			{
 				*l_json->m_lod_culling_index = 6;
 			}
+			if (!l_json->m_scene_graph_debug_draw.has_value())
+			{
+				*l_json->m_scene_graph_debug_draw = false;
+			}
 			if(!l_json->m_scene_graph_actors_pool_capacity.has_value())
 			{
 				*l_json->m_scene_graph_actors_pool_capacity = 2000;

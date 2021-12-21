@@ -25,7 +25,7 @@ namespace black_cat
 			{
 			}
 
-			bc_memory_tracer(bc_memory_tracer& p_other)
+			bc_memory_tracer(const bc_memory_tracer& p_other)
 #ifdef BC_MEMORY_TRACING
 				: m_total_size(p_other.total_size()),
 				m_alloc_count(p_other.alloc_count()),
@@ -38,7 +38,9 @@ namespace black_cat
 			{
 			}
 
-			bc_memory_tracer& operator =(bc_memory_tracer& p_other)
+			~bc_memory_tracer() = default;
+
+			bc_memory_tracer& operator=(const bc_memory_tracer& p_other)
 			{
 #ifdef BC_MEMORY_TRACING
 				total_size(p_other.total_size());
@@ -68,12 +70,14 @@ namespace black_cat
 				return 0;
 #endif
 			}
-			void total_size(bcSIZE val)
+
+			void total_size(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_total_size.store(val, core_platform::bc_memory_order::relaxed);
+				m_total_size.store(p_val, core_platform::bc_memory_order::relaxed);
 #endif
 			}
+
 			bcSIZE used_size() const
 			{
 #ifdef BC_MEMORY_TRACING
@@ -82,12 +86,14 @@ namespace black_cat
 				return 0;
 #endif
 			}
-			void used_size(bcSIZE val)
+
+			void used_size(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_used_size.store(val, core_platform::bc_memory_order::relaxed);
+				m_used_size.store(p_val, core_platform::bc_memory_order::relaxed);
 #endif 
 			}
+
 			bcSIZE overhead_size() const
 			{
 #ifdef BC_MEMORY_TRACING
@@ -96,12 +102,14 @@ namespace black_cat
 				return 0;
 #endif
 			}
-			void overhead_size(bcSIZE val)
+
+			void overhead_size(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_overhead_size.store(val, core_platform::bc_memory_order::relaxed);
+				m_overhead_size.store(p_val, core_platform::bc_memory_order::relaxed);
 #endif
 			}
+
 			bcSIZE max_used_size() const
 			{
 #ifdef BC_MEMORY_TRACING
@@ -110,12 +118,14 @@ namespace black_cat
 				return 0;
 #endif
 			}
-			void max_used_size(bcSIZE val)
+
+			void max_used_size(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_max_used_size.store(val, core_platform::bc_memory_order::relaxed);
+				m_max_used_size.store(p_val, core_platform::bc_memory_order::relaxed);
 #endif 
 			}
+
 			bcSIZE alloc_count() const
 			{
 #ifdef BC_MEMORY_TRACING
@@ -124,12 +134,14 @@ namespace black_cat
 				return 0;
 #endif
 			}
-			void alloc_count(bcSIZE val)
+
+			void alloc_count(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_alloc_count.store(val, core_platform::bc_memory_order::relaxed);
+				m_alloc_count.store(p_val, core_platform::bc_memory_order::relaxed);
 #endif
 			}
+
 			bcSIZE rejected_alloc_size() const
 			{
 #ifdef BC_MEMORY_TRACING
@@ -138,12 +150,14 @@ namespace black_cat
 				return 0;
 #endif
 			}
-			void rejected_alloc_size(bcSIZE val)
+
+			void rejected_alloc_size(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_rejected_alloc_size.store(val, core_platform::bc_memory_order::relaxed);
+				m_rejected_alloc_size.store(p_val, core_platform::bc_memory_order::relaxed);
 #endif 
 			}
+
 			bcSIZE rejected_alloc_count() const
 			{
 #ifdef BC_MEMORY_TRACING
@@ -152,10 +166,11 @@ namespace black_cat
 				return 0;
 #endif
 			}
-			void rejected_alloc_count(bcSIZE val)
+
+			void rejected_alloc_count(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_rejected_alloc_count.store(val, core_platform::bc_memory_order::relaxed);
+				m_rejected_alloc_count.store(p_val, core_platform::bc_memory_order::relaxed);
 #endif 
 			}
 
@@ -225,13 +240,13 @@ namespace black_cat
 
 		protected:
 #ifdef BC_MEMORY_TRACING
-			core_platform::bc_atomic< bcSIZE > m_total_size;
-			core_platform::bc_atomic< bcSIZE > m_alloc_count;
-			core_platform::bc_atomic< bcSIZE > m_used_size;
-			core_platform::bc_atomic< bcSIZE > m_overhead_size;
-			core_platform::bc_atomic< bcSIZE > m_max_used_size;
-			core_platform::bc_atomic< bcSIZE > m_rejected_alloc_count;
-			core_platform::bc_atomic< bcSIZE > m_rejected_alloc_size;
+			core_platform::bc_atomic<bcSIZE> m_total_size;
+			core_platform::bc_atomic<bcSIZE> m_alloc_count;
+			core_platform::bc_atomic<bcSIZE> m_used_size;
+			core_platform::bc_atomic<bcSIZE> m_overhead_size;
+			core_platform::bc_atomic<bcSIZE> m_max_used_size;
+			core_platform::bc_atomic<bcSIZE> m_rejected_alloc_count;
+			core_platform::bc_atomic<bcSIZE> m_rejected_alloc_size;
 #endif	
 		};
 	}

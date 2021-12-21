@@ -72,7 +72,7 @@ namespace black_cat
 			return l_ite;
 		}
 
-		bool bc_counter_value_manager::_event_handler(bci_event& p_event)
+		void bc_counter_value_manager::_event_handler(bci_event& p_event)
 		{
 			if (bci_message::is<bc_event_frame_swap>(p_event))
 			{
@@ -84,10 +84,8 @@ namespace black_cat
 				m_read_container = m_write_container;
 				m_write_container = (m_read_container + 1) % 2;
 				
-				return true;
+				return;
 			}
-
-			return false;
 		}
 	}
 }

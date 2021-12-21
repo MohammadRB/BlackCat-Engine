@@ -235,34 +235,30 @@ namespace black_cat
 		}
 	}
 
-	bool bc_xbot_player_actor_controller::_on_event(core::bci_event& p_event) noexcept
+	void bc_xbot_player_actor_controller::_on_event(core::bci_event& p_event) noexcept
 	{
-		bool l_handled = false;
-		
 		auto* l_pointing_event = core::bci_message::as<platform::bc_app_event_pointing>(p_event);
 		if (l_pointing_event)
 		{
-			l_handled = _on_pointing(*l_pointing_event);
+			_on_pointing(*l_pointing_event);
+			return;
 		}
 
 		auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
 		if (l_key_event)
 		{
-			l_handled = _on_key(*l_key_event);
+			_on_key(*l_key_event);
+			return;
 		}
-
-		return l_handled;
 	}
 
-	bool bc_xbot_player_actor_controller::_on_pointing(platform::bc_app_event_pointing& p_pointing_event) noexcept
+	void bc_xbot_player_actor_controller::_on_pointing(platform::bc_app_event_pointing& p_pointing_event) noexcept
 	{
 		m_pointing_delta_x = p_pointing_event.get_state().m_x - m_pointing_last_x;
 		m_pointing_last_x = p_pointing_event.get_state().m_x;
-		
-		return true;
 	}
 
-	bool bc_xbot_player_actor_controller::_on_key(platform::bc_app_event_key& p_key_event) noexcept
+	void bc_xbot_player_actor_controller::_on_key(platform::bc_app_event_key& p_key_event) noexcept
 	{
 		if (p_key_event.get_key() == platform::bc_key::kb_W)
 		{
@@ -368,8 +364,6 @@ namespace black_cat
 				_shoot_weapon();
 			}
 		}
-		
-		return true;
 	}
 
 	void bc_xbot_player_actor_controller::_start_grenade_throw(const bcCHAR* p_entity)

@@ -89,7 +89,7 @@ namespace black_cat
 		private:
 			bci_ui_command::state* _get_command_state(const bci_ui_command& p_command);
 
-			bool _event_handler(core::bci_event& p_event);
+			void _event_handler(core::bci_event& p_event);
 
 			core::bc_content_stream_manager& m_content_stream;
 			game::bc_game_system& m_game_system;

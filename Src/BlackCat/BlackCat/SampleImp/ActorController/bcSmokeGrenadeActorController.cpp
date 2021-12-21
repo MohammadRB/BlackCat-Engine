@@ -2,9 +2,9 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
-#include "Core/Utility/bcJsonParse.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
+#include "Game/bcUtility.h"
 #include "BlackCat/SampleImp/ActorController/bcSmokeGrenadeActorController.h"
 
 namespace black_cat
@@ -15,6 +15,7 @@ namespace black_cat
 		
 		m_lifetime = p_context.m_parameters.get_value_throw<bcFLOAT>("lifetime");
 		m_smoke_time = p_context.m_parameters.get_value_throw<bcFLOAT>("smoke_time");
+		m_color = bc_null_default(p_context.m_parameters.get_value_vector3f("color"), core::bc_vector3f(.7f));
 		m_num_particles_per_second = 20;
 	}
 
@@ -67,7 +68,7 @@ namespace black_cat
 				.emitter(core::bc_vector3f(0), core::bc_vector3f::up(), m_smoke_time, 0, 0)
 				.with_emission_deviation(180)
 				.with_texture(1)
-				.with_particles_color({ 0.7f, 0.7f, 0.7f }, 1)
+				.with_particles_color(m_color, 1)
 				.with_particle_size(4.0f, 10.0f)
 				.with_particles_rotation(10)
 				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step2, 5)

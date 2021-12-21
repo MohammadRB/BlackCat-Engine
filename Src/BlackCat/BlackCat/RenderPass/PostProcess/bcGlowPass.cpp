@@ -41,7 +41,8 @@ namespace black_cat
 		auto& l_global_config = bc_get_global_config();
 		l_global_config
 			.add_if_not_exist_config_key("render_glow_threshold", core::bc_any(.8f))
-			.add_if_not_exist_config_key("render_glow_intensity", core::bc_any(.5f));
+			.add_if_not_exist_config_key("render_glow_intensity", core::bc_any(2.f))
+			.flush_changes();
 	}
 
 	void bc_glow_pass::initialize_resources(game::bc_render_system& p_render_system)
@@ -101,8 +102,6 @@ namespace black_cat
 				{
 					p_render_system.get_render_pass<bc_glow_pass>()->update_parameters(*l_threshold_value.as<bcFLOAT>(), *l_intensity_value.as<bcFLOAT>());
 				}
-
-				return true;
 			})
 		);
 

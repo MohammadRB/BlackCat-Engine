@@ -479,7 +479,7 @@ namespace black_cat
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_total_size = 0;
 
-			for(bcUINT32 i = 0; i <m_fsa_num_allocators; i++)
+			for(bcUINT32 i = 0; i < m_fsa_num_allocators; i++)
 			{
 				l_total_size += m_fsa_allocators[i].tracer().total_size();
 			}
@@ -498,8 +498,10 @@ namespace black_cat
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_used_size = 0;
 
-			for(bcUINT32 i = 0; i <m_fsa_num_allocators; i++)
+			for(bcUINT32 i = 0; i < m_fsa_num_allocators; i++)
+			{
 				l_used_size += m_fsa_allocators[i].tracer().used_size();
+			}
 
 			l_used_size += m_per_program_stack->tracer().used_size();
 			l_used_size += m_per_frame_stack->tracer().used_size();
@@ -516,7 +518,9 @@ namespace black_cat
 			bcSIZE l_wasted_size = 0;
 
 			for(bcUINT32 i = 0; i <m_fsa_num_allocators; i++)
+			{
 				l_wasted_size += m_fsa_allocators[i].tracer().overhead_size();
+			}
 
 			l_wasted_size += m_per_program_stack->tracer().overhead_size();
 			l_wasted_size += m_per_frame_stack->tracer().overhead_size();
@@ -532,8 +536,10 @@ namespace black_cat
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_max_used_size = 0;
 
-			for(bcUINT32 i = 0; i <m_fsa_num_allocators; i++)
+			for(bcUINT32 i = 0; i < m_fsa_num_allocators; i++)
+			{
 				l_max_used_size += m_fsa_allocators[i].tracer().max_used_size();
+			}
 
 			l_max_used_size += m_per_program_stack->tracer().max_used_size();
 			l_max_used_size += m_per_frame_stack->tracer().max_used_size();

@@ -12,37 +12,33 @@ namespace black_cat
 	{
 		using bc_event_handler_index = bcSIZE;
 
-		template< typename T >
+		template<typename T>
 		class bc_event_handler;
 			
-		template< typename R, typename ...A >
-		class bc_event_handler< R(A...) >
+		template<typename R, typename ...A>
+		class bc_event_handler<R(A...)>
 		{
 		public:
-			using this_type = bc_event_handler< R(A...) >;
-			using delegate_type = bc_delegate< R(A...) >;
+			using this_type = bc_event_handler<R(A...)>;
+			using delegate_type = bc_delegate<R(A...)>;
 			using return_type = R;
 
 		public:
-			bc_event_handler() noexcept
-			{
-			}
+			bc_event_handler() = default;
 
 			explicit bc_event_handler(bcUINT32 p_reserve) noexcept
 			{
 				m_delegates.reserve(p_reserve);
 			}
 
-			~bc_event_handler() noexcept
-			{
-			}
+			~bc_event_handler() = default;
 
 			bcUINT32 delegate_count() const noexcept
 			{
 				return m_delegates.size();
 			}
 
-			template < typename ...A >
+			template <typename ...A>
 			void operator()(A&&... p_args) const
 			{
 				for (auto l_i = m_delegates.begin(), l_e = m_delegates.end(); l_i != l_e; ++l_i)
@@ -93,7 +89,7 @@ namespace black_cat
 			}
 
 		private:
-			bc_vector< delegate_type > m_delegates;
+			bc_vector<delegate_type> m_delegates;
 		};
 	}
 }

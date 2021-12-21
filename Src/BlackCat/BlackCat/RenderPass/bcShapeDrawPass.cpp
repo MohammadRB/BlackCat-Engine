@@ -2,20 +2,24 @@
 
 #include "BlackCat/BlackCatPCH.h"
 
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcDefaultRenderThread.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Query/bcMainCameraSceneSharedQuery.h"
+#include "Game/bcEvent.h"
 #include "BlackCat/RenderPass/bcShapeDrawPass.h"
 #include "BlackCat/bcConstant.h"
 
 namespace black_cat
 {
-	bc_scene_debug_shape_query::bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer, const game::bc_actor& p_selected_actor) noexcept
+	bc_scene_debug_shape_query::bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer, game::bc_actor p_selected_actor, bool p_draw_scene_graph) noexcept
 		: bc_query(message_name()),
 		m_shape_drawer(&p_shape_drawer),
-		m_selected_actor(p_selected_actor)
+		m_selected_actor(std::move(p_selected_actor)),
+		m_draw_scene_graph(p_draw_scene_graph)
 	{
 	}
 
@@ -32,12 +36,10 @@ namespace black_cat
 			}
 		}
 
-		/*for(auto& l_actor : l_actors_buffer)
+		if(m_draw_scene_graph)
 		{
-			l_actor.draw_debug(*m_shape_drawer);
-		}*/
-		
-		p_context.m_scene->draw_debug_shapes(*m_shape_drawer);
+			p_context.m_scene->draw_debug_shapes(*m_shape_drawer);
+		}
 	}
 	
 	bc_shape_draw_pass::bc_shape_draw_pass(game::bc_render_pass_variable_t p_render_target_view)
@@ -55,7 +57,7 @@ namespace black_cat
 		auto& l_device = p_render_system.get_device();
 		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 
-		m_pipeline_state = p_render_system.create_device_pipeline_state
+		m_device_pipeline_state = p_render_system.create_device_pipeline_state
 		(
 			"shape_draw_vs",
 			nullptr,
@@ -71,7 +73,17 @@ namespace black_cat
 			game::bc_surface_format_type::D32_FLOAT,
 			game::bc_multi_sample_type::c1_q1
 		);
-		
+
+		m_config_change_event_handle = core::bc_get_service<core::bc_event_manager>()->register_event_listener<game::bc_event_global_config_changed>
+		(
+			core::bc_event_manager::delegate_type([&](core::bci_event& p_event)
+			{
+				const auto& l_config_change_event = *core::bci_event::as<game::bc_event_global_config_changed>(p_event);
+				const auto& l_config = l_config_change_event.get_config();
+				p_render_system.get_render_pass<bc_shape_draw_pass>()->set_parameters(l_config.get_scene_graph_debug_draw());
+			})
+		);
+
 		after_reset(game::bc_render_pass_reset_context
 		(
 			p_render_system, 
@@ -100,9 +112,9 @@ namespace black_cat
 
 	void bc_shape_draw_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
 	{
-		m_scene_debug_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		m_scene_debug_query = p_context.m_query_manager.queue_query
 		(
-			bc_scene_debug_shape_query(p_context.m_render_system.get_shape_drawer(), m_selected_actor)
+			bc_scene_debug_shape_query(p_context.m_render_system.get_shape_drawer(), m_selected_actor, m_draw_scene_graph_debug)
 		);
 	}
 
@@ -153,7 +165,7 @@ namespace black_cat
 			
 			m_render_pass_state = p_context.m_render_system.create_render_pass_state
 			(
-				m_pipeline_state.get(),
+				m_device_pipeline_state.get(),
 				l_viewport,
 				{
 					graphic::bc_render_target_view_parameter(l_render_target_view)
@@ -175,6 +187,11 @@ namespace black_cat
 	void bc_shape_draw_pass::destroy(game::bc_render_system& p_render_system)
 	{
 		m_render_pass_state.reset();
-		m_pipeline_state.reset();
+		m_device_pipeline_state.reset();
+	}
+
+	void bc_shape_draw_pass::set_parameters(bool p_draw_scene_debug)
+	{
+		m_draw_scene_graph_debug = p_draw_scene_debug;
 	}
 }

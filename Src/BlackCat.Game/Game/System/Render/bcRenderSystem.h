@@ -302,7 +302,7 @@ namespace black_cat
 
 			void _destroy() override;
 
-			bool _event_handler(core::bci_event& p_event);
+			void _event_handler(core::bci_event& p_event);
 
 			/**
 			 * \brief ThreadSafe function

@@ -17,6 +17,7 @@ namespace black_cat
 			BC_JSON_VALUE_OP(bcFLOAT, global_scale);
 			BC_JSON_VALUE_OP(bcFLOAT, lod_global_scale);
 			BC_JSON_VALUE_OP(bcUINT32, lod_culling_index);
+			BC_JSON_VALUE_OP(bool, scene_graph_debug_draw);
 			BC_JSON_VALUE_OP(bcUINT32, scene_graph_actors_pool_capacity);
 			BC_JSON_VALUE_OP(bcFLOAT, bullet_reference_mass);
 			BC_JSON_ARRAY_OP(core::bc_string, counter_values);
@@ -39,6 +40,8 @@ namespace black_cat
 			bcFLOAT get_lod_global_scale() const noexcept;
 
 			bcUINT32 get_lod_culling_index() const noexcept;
+
+			bool get_scene_graph_debug_draw() const noexcept;
 
 			bcUINT32 get_scene_graph_actors_pool_capacity() const noexcept;
 
@@ -75,6 +78,11 @@ namespace black_cat
 		inline bcUINT32 bc_global_config::get_lod_culling_index() const noexcept
 		{
 			return *(*m_json)->m_lod_culling_index;
+		}
+
+		inline bool bc_global_config::get_scene_graph_debug_draw() const noexcept
+		{
+			return *(*m_json)->m_scene_graph_debug_draw;
 		}
 
 		inline bcUINT32 bc_global_config::get_scene_graph_actors_pool_capacity() const noexcept

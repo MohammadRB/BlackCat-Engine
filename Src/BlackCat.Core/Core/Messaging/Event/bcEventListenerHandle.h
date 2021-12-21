@@ -18,7 +18,7 @@ namespace black_cat
 		{
 		public:
 			friend class bc_event_manager;
-			using event_handler_type = bc_event_handler< bool(bci_event&) >;
+			using event_handler_type = bc_event_handler<void(bci_event&)>;
 			using delegate_type = event_handler_type::delegate_type;
 
 		public:

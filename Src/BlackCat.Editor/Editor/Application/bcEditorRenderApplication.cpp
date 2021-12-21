@@ -143,8 +143,8 @@ namespace black_cat
 					auto& l_camera = *l_input_system.get_camera();
 					auto* l_scene = m_game_system->get_scene();
 
-					auto* l_glow_pass = m_game_system->get_render_system().get_render_pass<bc_glow_pass>();
-					l_glow_pass->set_enable(!l_glow_pass->get_enable());
+					/*auto* l_glow_pass = m_game_system->get_render_system().get_render_pass<bc_glow_pass>();
+					l_glow_pass->set_enable(!l_glow_pass->get_enable());*/
 
 					/*game::bc_actor l_actor;
 

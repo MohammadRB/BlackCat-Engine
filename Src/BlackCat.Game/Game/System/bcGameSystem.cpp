@@ -239,14 +239,13 @@ namespace black_cat
 			m_physics_system.destroy();
 		}
 
-		bool bc_game_system::_event_handler(core::bci_event& p_event)
+		void bc_game_system::_event_handler(core::bci_event& p_event)
 		{
 			auto* l_editor_event = core::bci_message::as<bc_event_editor_mode>(p_event);
 			if (l_editor_event)
 			{
 				m_editor_mode = l_editor_event->get_editor_mode();
 			}
-			return true;
 		}
 	}
 }

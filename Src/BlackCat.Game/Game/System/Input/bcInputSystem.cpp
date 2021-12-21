@@ -129,7 +129,7 @@ namespace black_cat
 			}
 		}
 
-		bool bc_input_system::_event_handler(core::bci_event& p_event)
+		void bc_input_system::_event_handler(core::bci_event& p_event)
 		{
 			auto* l_window_resize_event = core::bci_message::as<platform::bc_app_event_window_resize>(p_event);
 			if (l_window_resize_event)
@@ -139,7 +139,7 @@ namespace black_cat
 					l_camera->set_projection(l_window_resize_event->width(), l_window_resize_event->height());
 				}
 
-				return true;
+				return;
 			}
 
 			auto* l_window_focus_event = core::bci_message::as<platform::bc_app_event_window_focus>(p_event);
@@ -148,7 +148,7 @@ namespace black_cat
 				// TODO check if event belongs to main window
 				m_window_has_focus = l_window_focus_event->get_focus();
 				
-				return true;
+				return;
 			}
 
 			auto* l_editor_mode_event = core::bci_message::as<bc_event_editor_mode>(p_event);
@@ -157,7 +157,7 @@ namespace black_cat
 				m_editor_mode = l_editor_mode_event->get_editor_mode();
 			}
 
-			return false;
+			return;
 		}
 	}
 }

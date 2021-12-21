@@ -42,11 +42,11 @@ namespace black_cat
 
 			void _update_velocity(bcFLOAT p_elapsed_second);
 			
-			bool _on_event(core::bci_event& p_event) noexcept;
+			void _on_event(core::bci_event& p_event) noexcept;
 
-			bool _on_pointing(platform::bc_app_event_pointing& p_pointing_event) noexcept;
+			void _on_pointing(platform::bc_app_event_pointing& p_pointing_event) noexcept;
 			
-			bool _on_key(platform::bc_app_event_key& p_key_event) noexcept;
+			void _on_key(platform::bc_app_event_key& p_key_event) noexcept;
 
 			bcFLOAT m_move_speed;
 			bcFLOAT m_rotate_speed;

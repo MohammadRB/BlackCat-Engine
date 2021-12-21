@@ -168,15 +168,13 @@ namespace black_cat
 			return l_command_state->second.get();
 		}
 
-		bool bc_ui_command_service::_event_handler(core::bci_event& p_event)
+		void bc_ui_command_service::_event_handler(core::bci_event& p_event)
 		{
 			auto* l_editor_mode_event = core::bci_message::as<game::bc_event_editor_mode>(p_event);
 			if (l_editor_mode_event)
 			{
 				m_editor_mode = l_editor_mode_event->get_editor_mode();
 			}
-
-			return false;
 		}
 	}
 }

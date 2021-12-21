@@ -35,10 +35,14 @@ namespace black_cat
 
 		bc_rigid_dynamic_component::~bc_rigid_dynamic_component()
 		{
-			auto& l_body = get_body();
-			if (l_body.is_valid())
+			if (m_px_actor_ref->is_valid())
 			{
-				core::bc_get_service<bc_game_system>()->get_physics_system().clear_px_shapes_data(l_body);
+				{
+					bc_rigid_component_lock l_lock(*this);
+
+					core::bc_get_service<bc_game_system>()->get_physics_system().clear_px_shapes_data(*m_px_actor_ref);
+					m_px_actor_ref.reset();
+				}
 			}
 		}
 
