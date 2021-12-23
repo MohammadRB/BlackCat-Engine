@@ -5,7 +5,7 @@
 #include "PlatformImp/Script/bcScriptGlobalPrototypeBuilder.h"
 #include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
 #include "Game/System/Script/bcScriptBinding.h"
-#include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
+#include "App/Loader/bcHeightMapLoaderDx11.h"
 #include "BoX.Server/Application/bxServerApplication.h"
 #include "BoX.Server/Application/bxServerScript.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"

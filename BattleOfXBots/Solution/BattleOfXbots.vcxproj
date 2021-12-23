@@ -130,13 +130,13 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\Src;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Src;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat.App;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.App.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -153,7 +153,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\Src;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Src;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat.App;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -161,7 +161,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.App.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -210,7 +210,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>..\Src;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Src;..\..\Src\BlackCat.Core;..\..\Src\BlackCat.Core.Platform;..\..\Src\BlackCat.Core.Platform.Win32;..\..\Src\BlackCat.Platform;..\..\Src\BlackCat.Platform.Win32;..\..\Src\BlackCat.Graphic;..\..\Src\BlackCat.Graphic.DirectX11;..\..\Src\BlackCat.Physics;..\..\Src\BlackCat.Physics.PhysX;..\..\Src\BlackCat.Game;..\..\Src\BlackCat.App;..\..\3rdParty;..\..\3rdParty\3rdParty\Ozz\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -218,7 +218,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Game.lib;BlackCat.App.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>

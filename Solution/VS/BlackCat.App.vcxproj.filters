@@ -1,0 +1,519 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="BlackCat">
+      <UniqueIdentifier>{1dcee172-f641-40f6-a4ac-36797947cdce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Application">
+      <UniqueIdentifier>{e10ee3b7-46cd-4758-b2df-7a5e94555f5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Loader">
+      <UniqueIdentifier>{f9899ba9-f744-4944-aee2-a10c56072bfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\RenderPass">
+      <UniqueIdentifier>{89a16671-3371-4fee-aac0-1ebfe8d07ad3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content">
+      <UniqueIdentifier>{0272d40c-51ff-4240-8df8-d373f05adc6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Data">
+      <UniqueIdentifier>{76cbf5fd-58e2-47f2-90db-70e446b5a6e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Script">
+      <UniqueIdentifier>{7268506e-ebe2-4972-8b35-d1d4c77e3eea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Shader">
+      <UniqueIdentifier>{4a0c7987-a9ff-45ed-9f43-089cca5858c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Shader\DirectX11">
+      <UniqueIdentifier>{5ffddde4-c01d-47e1-99b4-0016f04a463c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Shader\DirectX11\Terrain">
+      <UniqueIdentifier>{1570a4a2-fbd6-40e3-9e4d-3b1bf2e07319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Shader\DirectX11\ShadowMap">
+      <UniqueIdentifier>{3422575b-c78c-402d-8f1b-5412f27964a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\RenderPass\ShadowMap">
+      <UniqueIdentifier>{c72d1f99-b4e0-4ab4-8f62-f492d470eb71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\RenderPass\PostProcess">
+      <UniqueIdentifier>{4dcff852-268c-492a-ab15-ced6c16b5213}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Shader\DirectX11\Particle">
+      <UniqueIdentifier>{477364e8-673a-4071-aa55-ba8a431db87e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Texture">
+      <UniqueIdentifier>{98093a72-b2e4-48af-94ef-54024abe2461}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Model">
+      <UniqueIdentifier>{a1d271e0-9139-4aef-96d8-e0f85414fa46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\RenderPass\GBuffer">
+      <UniqueIdentifier>{11351fa6-41e9-41f7-9990-ed38a045d677}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Shader\DirectX11\GBuffer">
+      <UniqueIdentifier>{fedec527-ffe6-4dfa-bae6-98f8930fccaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\SampleImp">
+      <UniqueIdentifier>{5efa8a69-0ff7-437a-a5ca-9a9f2bd6e4c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\SampleImp\ActorController">
+      <UniqueIdentifier>{3cc56406-f62d-41fb-980c-7dc15c0a638d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\SampleImp\Particle">
+      <UniqueIdentifier>{4ab9c3f0-d322-451c-b2f0-dabf98843651}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\Content\Shader\DirectX11\PostProcess">
+      <UniqueIdentifier>{2071d54a-0059-4402-b697-5d7d1d33d141}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BlackCat\SampleImp\XBot">
+      <UniqueIdentifier>{28d7f02c-c0c3-44d8-a43f-170bb40867f2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcComputeShaderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcDomainShaderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcGeometryShaderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcHeightMapLoaderDx11.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcHullShaderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcMeshLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcPixelShaderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcTextureLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcVertexShaderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\bcException.h">
+      <Filter>BlackCat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\bcExport.h">
+      <Filter>BlackCat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\BlackCatPCH.h">
+      <Filter>BlackCat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcMeshColliderLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Application\bcRenderApplication.h">
+      <Filter>BlackCat\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcShapeDrawPass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcSceneLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcBackBufferWritePass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcCascadedShadowMapPass.h">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcCascadedShadowMapBufferContainer.h">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\bcConstant.h">
+      <Filter>BlackCat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcCascadedShadowMapCamera.h">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcBaseCascadedShadowMapPass.h">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcVegetableCascadedShadowMapPass.h">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcTextDrawPass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Application\bcApplicationHookFuncations.h">
+      <Filter>BlackCat\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcSkinnedAnimationLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcMeshLoaderUtility.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcSkinnedCascadedShadowMapPass.h">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcParticleSystemPassDx11.h">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferInitializePass.h">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferLightMapPass.h">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferPass.h">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferSkinnedPass.h">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferTerrainPassDx11.h">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferVegetablePass.h">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferDecalPass.h">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcExplosionActorController.h">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcFireActorController.h">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\Particle\bcExplosionParticle.h">
+      <Filter>BlackCat\SampleImp\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\Particle\bcWeaponParticle.h">
+      <Filter>BlackCat\SampleImp\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcSceneCheckPointLoader.h">
+      <Filter>BlackCat\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcRocketActorController.h">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcLightFlarePass.h">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcRigidDynamicNetworkActorController.h">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotActorController.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotIdleActorController.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotNetworkPlayerActorController.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotPlayerActorController.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotStateMachine.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotUpdateAnimationJob.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotWeapon.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotWeaponIKAnimationJob.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcGrenadeActorController.h">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotWeaponNetworkMessage.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcSmokeGrenadeActorController.h">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotGrenadeNetworkMessage.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcGlowPass.h">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcComputeShaderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcDomainShaderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcGeometryShaderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcHeightMapLoaderDx11.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcHullShaderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcMeshLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcPixelShaderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcTextureLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcVertexShaderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\BlackCatPCH.cpp">
+      <Filter>BlackCat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcMeshColliderLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Application\bcRenderApplication.cpp">
+      <Filter>BlackCat\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcShapeDrawPass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcSceneLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcBackBufferWritePass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcCascadedShadowMapPass.cpp">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcBaseCascadedShadowMapPass.cpp">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcVegetableCascadedShadowMapPass.cpp">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcTextDrawPass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcSkinnedAnimationLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Application\bcApplicationHookFunctions.cpp">
+      <Filter>BlackCat\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcMeshLoaderUtility.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcSkinnedCascadedShadowMapPass.cpp">
+      <Filter>BlackCat\RenderPass\ShadowMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcParticleSystemPassDx11.cpp">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferInitializePass.cpp">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferLightMapPass.cpp">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferPass.cpp">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferSkinnedPass.cpp">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferTerrainPassDx11.cpp">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferVegetablePass.cpp">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferDecalPass.cpp">
+      <Filter>BlackCat\RenderPass\GBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcExplosionActorController.cpp">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcFireActorController.cpp">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcSceneCheckPointLoader.cpp">
+      <Filter>BlackCat\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcRocketActorController.cpp">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcLightFlarePass.cpp">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcRigidDynamicNetworkActorController.cpp">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotActorController.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotNetworkPlayerActorController.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotPlayerActorController.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotUpdateAnimationJob.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotWeaponIKAnimationJob.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcGrenadeActorController.cpp">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotWeaponNetworkMessage.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcSmokeGrenadeActorController.cpp">
+      <Filter>BlackCat\SampleImp\ActorController</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotGrenadeNetworkMessage.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcGlowPass.cpp">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\bcShapeDraw.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\bcBBWrite.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\bcHelper.hlsli">
+      <Filter>BlackCat\Content\Shader\DirectX11</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\Terrain\bcTerrain.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\Terrain\bcTerrainChunkInfo.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\ShadowMap\bcVegetableLeafShadowMap.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\ShadowMap</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\ShadowMap\bcVegetableTrunkShadowMap.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\ShadowMap</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\ShadowMap\bcMeshShadowMap.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\ShadowMap</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\Particle\bcParticleEmission.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\Particle\bcParticleSimulation.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\Particle\bcParticleSort.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\Particle\bcParticleRender.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\Particle\bcParticleSortTranspose.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\Particle\bcParticleGroupSort.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\ShadowMap\bcSkinnedMeshShadowMap.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\ShadowMap</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\GBuffer\bcGBufferLightMap.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\GBuffer</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\GBuffer\bcMeshGBuffer.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\GBuffer</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\GBuffer\bcSkinnedMeshGBuffer.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\GBuffer</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\GBuffer\bcVegetableLeafGBuffer.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\GBuffer</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\GBuffer\bcVegetableTrunkGBuffer.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\GBuffer</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\GBuffer\bcDecalGBuffer.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\GBuffer</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\PostProcess\bcLightFlare.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\PostProcess\bcGlow.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\PostProcess\bcGaussianBlur.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Src\BlackCat.App\App\Content\Data\ContentStream.json">
+      <Filter>BlackCat\Content\Data</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.App\App\Content\Data\EntityType.json">
+      <Filter>BlackCat\Content\Data</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.App\App\Content\Data\Material.json">
+      <Filter>BlackCat\Content\Data</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\bcRegister.hlsli">
+      <Filter>BlackCat\Content\Shader\DirectX11</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.App\App\Content\Data\DX11.spritefont">
+      <Filter>BlackCat\Content\Data</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\Particle\bcParticle.hlsli">
+      <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.App\App\Content\Data\Decal.json">
+      <Filter>BlackCat\Content\Data</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\GBuffer\bcVegetableAnimation.hlsli">
+      <Filter>BlackCat\Content\Shader\DirectX11\GBuffer</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.App\App\Content\config.json">
+      <Filter>BlackCat\Content</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Default.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Sprites.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Decal.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Decal.nrm.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Decal.spec.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Flare1.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Flare2.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Flare3.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

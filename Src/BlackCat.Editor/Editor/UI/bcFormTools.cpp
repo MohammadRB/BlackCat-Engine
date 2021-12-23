@@ -2,7 +2,7 @@
 
 #include "Editor/EditorPCH.h"
 
-#include "BlackCat/RenderPass/GBuffer/bcGBufferDecalPass.h"
+#include "App/RenderPass/GBuffer/bcGBufferDecalPass.h"
 #include "Editor/UI/bcFormTools.h"
 #include "Editor/UICommand/bcTerrainHeightUICommand.h"
 #include "Editor/UICommand/bcTerrainSmoothUICommand.h"

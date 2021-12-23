@@ -4,7 +4,7 @@
 
 #include "Game/System/Script/bcDefaultGameConsole.h"
 #include "Game/System/Network/Client/bcNetworkClientManagerHook.h"
-#include "BlackCat/Application/bcRenderApplication.h"
+#include "App/Application/bcRenderApplication.h"
 
 namespace box
 {

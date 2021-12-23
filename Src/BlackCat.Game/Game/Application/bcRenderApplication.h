@@ -7,9 +7,10 @@
 #include "Core/Utility/bcValueSampler.h"
 #include "Core/Utility/bcStopWatch.h"
 #include "PlatformImp/Application/bcApplication.h"
-#include "Game/bcExport.h"
 #include "Game/Application/bcIRenderApplicationOutputWindow.h"
 #include "Game/Application/bcEngineApplicationParameter.h"
+#include "Game/bcEvent.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
@@ -167,8 +168,8 @@ namespace black_cat
 			core::bc_event_listener_handle m_event_handle_window_resize;
 			core::bc_event_listener_handle m_event_handle_window_focus;
 			core::bc_event_listener_handle m_event_handle_window_close;
-			core::bc_event_listener_handle m_event_handle_app_active;
 			core::bc_event_listener_handle m_event_handle_app_exit;
+			core::bc_event_listener_handle m_event_handle_app_pause;
 			core::bc_event_listener_handle m_event_handle_error;
 			core::bc_event_listener_handle m_event_handle_key;
 			core::bc_event_listener_handle m_event_handle_pointing;

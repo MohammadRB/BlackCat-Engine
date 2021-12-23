@@ -19,12 +19,15 @@ namespace black_cat
 
 		private slots:
 			void gameModeClick(bool);
+
+			void pauseModeClick(bool);
 			
 			void editorModeClick(bool);
 		
 		private:
 			bc_ui_command_service* m_command_service;
 			QAction* m_game_mode_button;
+			QAction* m_pause_mode_button;
 			QAction* m_editor_mode_button;
 			bool m_editor_mode;
 		};

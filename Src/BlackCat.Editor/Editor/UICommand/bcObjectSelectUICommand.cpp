@@ -6,7 +6,7 @@
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
-#include "BlackCat/RenderPass/bcShapeDrawPass.h"
+#include "App/RenderPass/bcShapeDrawPass.h"
 #include "Editor/UICommand/bcObjectSelectUICommand.h"
 #include "Editor/UI/bcFormObject.h"
 

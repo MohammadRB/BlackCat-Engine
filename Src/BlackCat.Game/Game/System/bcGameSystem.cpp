@@ -31,6 +31,7 @@ namespace black_cat
 			m_render_system(),
 			m_console(),
 			m_scene(),
+			m_paused(false),
 			m_editor_mode(false)
 		{
 			m_console = core::bc_make_unique<bc_game_console>(core::bc_alloc_type::program, m_script_system);
@@ -44,7 +45,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_game_system::set_scene(bc_scene_ptr p_scene)
+		void bc_game_system::set_scene(bc_scene_ptr p_scene) noexcept
 		{
 			m_new_scene = std::move(p_scene);
 
@@ -70,7 +71,7 @@ namespace black_cat
 			auto* l_particle_manager = l_scene ? &l_scene->get_particle_manager() : static_cast<bc_particle_manager*>(nullptr);
 			auto* l_decal_manager = l_scene ? &l_scene->get_decal_manager() : static_cast<bc_decal_manager*>(nullptr);
 
-			if(!m_editor_mode)
+			if(!m_editor_mode && !m_paused)
 			{
 				if (p_is_partial_update)
 				{
@@ -133,8 +134,39 @@ namespace black_cat
 
 				core::bc_concurrency::when_all(l_scene_task, l_scene_task1);
 			}
-			else
+
+			if(!m_editor_mode && m_paused)
 			{
+				if (p_is_partial_update)
+				{
+					return;
+				}
+
+				if(!m_pause_last_total_elapsed.has_value())
+				{
+					m_pause_last_total_elapsed.reset(p_clock.m_total_elapsed);
+				}
+
+				l_file_system.update(p_clock);
+				l_input_system.update(p_clock);
+				l_event_manager.process_event_queue(p_clock);
+
+				l_console->update(p_clock);
+
+				if (l_camera)
+				{
+					const auto l_paused_clock = core_platform::bc_clock::update_param(*m_pause_last_total_elapsed, 0, p_clock.m_average_elapsed);
+					l_render_system.update(bc_render_system::update_context(l_paused_clock, *l_camera));
+				}
+			}
+
+			if(m_editor_mode)
+			{
+				if (p_is_partial_update)
+				{
+					return;
+				}
+
 				l_file_system.update(p_clock);
 				l_input_system.update(p_clock);
 				l_event_manager.process_event_queue(p_clock);
@@ -167,7 +199,15 @@ namespace black_cat
 
 			if(m_input_system.get_camera() && m_scene)
 			{
-				m_render_system.render(bc_render_system::render_context(p_clock, *m_query_manager));
+				if(!m_paused)
+				{
+					m_render_system.render(bc_render_system::render_context(p_clock, *m_query_manager));
+				}
+				else
+				{
+					const auto l_paused_clock = core_platform::bc_clock::update_param(*m_pause_last_total_elapsed, 0, p_clock.m_average_elapsed);
+					m_render_system.render(bc_render_system::render_context(l_paused_clock, *m_query_manager));
+				}
 			}
 		}
 
@@ -207,6 +247,10 @@ namespace black_cat
 			m_script_system.initialize(true);
 			m_render_system.initialize(std::move(p_parameter.m_render_system_parameter));
 
+			m_pause_event_handle = m_event_manager->register_event_listener<bc_event_game_pause_state>
+			(
+				core::bc_event_manager::delegate_type(*this, &bc_game_system::_event_handler)
+			);
 			m_editor_event_handle = m_event_manager->register_event_listener<bc_event_editor_mode>
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_game_system::_event_handler)
@@ -225,6 +269,7 @@ namespace black_cat
 
 		void bc_game_system::_destroy()
 		{
+			m_pause_event_handle.reset();
 			m_editor_event_handle.reset();
 			m_scene_query_context_provider.reset();
 
@@ -241,10 +286,22 @@ namespace black_cat
 
 		void bc_game_system::_event_handler(core::bci_event& p_event)
 		{
-			auto* l_editor_event = core::bci_message::as<bc_event_editor_mode>(p_event);
+			const auto* l_pause_event = core::bci_message::as<bc_event_game_pause_state>(p_event);
+			if(l_pause_event)
+			{
+				m_paused = l_pause_event->get_state() == bc_event_game_pause_state::state::paused;
+				if(m_paused)
+				{
+					m_pause_last_total_elapsed.reset();
+				}
+				return;
+			}
+
+			const auto* l_editor_event = core::bci_message::as<bc_event_editor_mode>(p_event);
 			if (l_editor_event)
 			{
 				m_editor_mode = l_editor_event->get_editor_mode();
+				return;
 			}
 		}
 	}

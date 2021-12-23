@@ -15,7 +15,7 @@ namespace black_cat
 
 			bc_editor_mode_ui_command(const bc_editor_mode_ui_command&) noexcept;
 
-			~bc_editor_mode_ui_command();
+			~bc_editor_mode_ui_command() override;
 
 			bc_editor_mode_ui_command& operator=(const bc_editor_mode_ui_command&) noexcept;
 

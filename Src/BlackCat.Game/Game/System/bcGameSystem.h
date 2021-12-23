@@ -53,91 +53,91 @@ namespace black_cat
 
 			bc_game_system(bc_game_system&&) noexcept = delete;
 
-			~bc_game_system();
+			~bc_game_system() override;
 
 			bc_game_system& operator=(bc_game_system&&) noexcept = delete;
 
-			bc_input_system& get_input_system()
+			bc_input_system& get_input_system() noexcept
 			{
 				return m_input_system;
 			}
 
-			const bc_input_system& get_input_system() const
+			const bc_input_system& get_input_system() const noexcept
 			{
 				return m_input_system;
 			}
 
-			bc_file_system& get_file_system()
+			bc_file_system& get_file_system() noexcept
 			{
 				return m_file_system;
 			}
 
-			const bc_file_system& get_file_system() const
+			const bc_file_system& get_file_system() const noexcept
 			{
 				return m_file_system;
 			}
 
-			bc_physics_system& get_physics_system()
+			bc_physics_system& get_physics_system() noexcept
 			{
 				return m_physics_system;
 			}
 
-			const bc_physics_system& get_physics_system() const
+			const bc_physics_system& get_physics_system() const noexcept
 			{
 				return m_physics_system;
 			}
 
-			bc_network_system& get_network_system()
+			bc_network_system& get_network_system() noexcept
 			{
 				return m_network_system;
 			}
 
-			const bc_network_system& get_network_system() const
+			const bc_network_system& get_network_system() const noexcept
 			{
 				return m_network_system;
 			}
 
-			bc_script_system& get_script_system()
+			bc_script_system& get_script_system() noexcept
 			{
 				return m_script_system;
 			}
 
-			const bc_script_system& get_script_system() const
+			const bc_script_system& get_script_system() const noexcept
 			{
 				return m_script_system;
 			}
 
-			bc_render_system& get_render_system()
+			bc_render_system& get_render_system() noexcept
 			{
 				return m_render_system;
 			}
 
-			const bc_render_system& get_render_system() const
+			const bc_render_system& get_render_system() const noexcept
 			{
 				return m_render_system;
 			}
 			
-			bc_game_console& get_console()
+			bc_game_console& get_console() noexcept
 			{
 				return *m_console;
 			}
 
-			const bc_game_console& get_console() const
+			const bc_game_console& get_console() const noexcept
 			{
 				return *m_console;
 			}
 
-			bc_scene* get_scene()
+			bc_scene* get_scene() noexcept
 			{
 				return m_scene.get();
 			}
 
-			const bc_scene* get_scene() const
+			const bc_scene* get_scene() const noexcept
 			{
 				return m_scene.get();
 			}
 
-			void set_scene(bc_scene_ptr p_scene);
+			void set_scene(bc_scene_ptr p_scene) noexcept;
 			
 			/**
 			 * \brief Start updating game core logic
@@ -182,10 +182,13 @@ namespace black_cat
 			bc_scene_ptr m_scene;
 			bc_scene_ptr m_new_scene;
 
+			core::bc_event_listener_handle m_pause_event_handle;
 			core::bc_event_listener_handle m_editor_event_handle;
 			core::bc_query_provider_handle m_scene_query_context_provider;
 
+			bool m_paused;
 			bool m_editor_mode;
+			core::bc_nullable<core_platform::bc_clock::big_delta_time> m_pause_last_total_elapsed;
 		};
 	}
 }

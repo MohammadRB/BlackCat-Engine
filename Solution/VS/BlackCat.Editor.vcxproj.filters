@@ -6,10 +6,6 @@
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
-    <Filter Include="Form Files">
-      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
-      <Extensions>ui</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
       <Extensions>qrc;*</Extensions>
@@ -65,6 +61,10 @@
     </Filter>
     <Filter Include="Generated Files\Develope">
       <UniqueIdentifier>{a2b1c5a7-aa4d-4158-8c7e-af44bbaed9fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\FormFiles">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -387,14 +387,14 @@
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainToolBar.h">
       <Filter>Editor\UI</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\FormFiles\bcBlackCatEditor.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormDecal.h">
       <Filter>Editor\UI</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.h">
       <Filter>Editor\UI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\FormFiles\bcBlackCatEditor.ui">
+      <Filter>Editor\FormFiles</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

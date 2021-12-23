@@ -36,6 +36,39 @@ namespace black_cat
 			bc_global_config* m_config;
 		};
 
+		class bc_event_game_pause_state : public core::bc_app_event
+		{
+			BC_EVENT(gam_pus)
+
+		public:
+			enum class state : bcBYTE
+			{
+				paused,
+				resumed
+			};
+
+		public:
+			explicit bc_event_game_pause_state(state p_state)
+				: bc_app_event(message_name()),
+				m_state(p_state)
+			{
+			}
+
+			bc_event_game_pause_state(const bc_event_game_pause_state&) = default;
+
+			~bc_event_game_pause_state() override = default;
+
+			bc_event_game_pause_state& operator =(const bc_event_game_pause_state&) = default;
+
+			state get_state() const noexcept
+			{
+				return m_state;
+			}
+
+		private:
+			state m_state;
+		};
+
 		class bc_event_editor_mode : public core::bc_app_event
 		{
 			BC_EVENT(edt_mde)

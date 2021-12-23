@@ -6,7 +6,7 @@
 #include "PlatformImp/Script/bcScriptObject.h"
 #include "Game/System/Script/bcDefaultGameConsole.h"
 #include "Game/System/Network/Server/bcNetworkServerManagerHook.h"
-#include "BlackCat/Application/bcRenderApplication.h"
+#include "App/Application/bcRenderApplication.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 
 namespace box

@@ -44,6 +44,7 @@ public:
     QAction *saveSceneMenu;
     QAction *gameModeButton;
     QAction *editorModeButton;
+    QAction *pauseModeButton;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_4;
     QHBoxLayout *mainLayout;
@@ -150,6 +151,10 @@ public:
         editorModeButton->setObjectName(QStringLiteral("editorModeButton"));
         editorModeButton->setCheckable(true);
         editorModeButton->setChecked(true);
+        pauseModeButton = new QAction(bcBlackCatEditorClass);
+        pauseModeButton->setObjectName(QStringLiteral("pauseModeButton"));
+        pauseModeButton->setCheckable(true);
+        pauseModeButton->setChecked(false);
         centralWidget = new QWidget(bcBlackCatEditorClass);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -233,7 +238,7 @@ public:
         rightToolBox->setObjectName(QStringLiteral("rightToolBox"));
         rightToolBoxObjectSelect = new QWidget();
         rightToolBoxObjectSelect->setObjectName(QStringLiteral("rightToolBoxObjectSelect"));
-        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 340, 658));
+        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 340, 670));
         entityNameLabel = new QLabel(rightToolBoxObjectSelect);
         entityNameLabel->setObjectName(QStringLiteral("entityNameLabel"));
         entityNameLabel->setGeometry(QRect(10, 10, 81, 16));
@@ -305,7 +310,7 @@ public:
         rightToolBox->addItem(rightToolBoxObjectSelect, QStringLiteral("Object Select"));
         rightToolBoxObjectInsert = new QWidget();
         rightToolBoxObjectInsert->setObjectName(QStringLiteral("rightToolBoxObjectInsert"));
-        rightToolBoxObjectInsert->setGeometry(QRect(0, 0, 340, 658));
+        rightToolBoxObjectInsert->setGeometry(QRect(0, 0, 340, 670));
         horizontalLayout_2 = new QHBoxLayout(rightToolBoxObjectInsert);
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -318,7 +323,7 @@ public:
         rightToolBox->addItem(rightToolBoxObjectInsert, QStringLiteral("Object Insert"));
         rightToolBoxTerrain = new QWidget();
         rightToolBoxTerrain->setObjectName(QStringLiteral("rightToolBoxTerrain"));
-        rightToolBoxTerrain->setGeometry(QRect(0, 0, 340, 658));
+        rightToolBoxTerrain->setGeometry(QRect(0, 0, 340, 670));
         formLayout = new QFormLayout(rightToolBoxTerrain);
         formLayout->setSpacing(6);
         formLayout->setContentsMargins(11, 11, 11, 11);
@@ -414,7 +419,7 @@ public:
         rightToolBox->addItem(rightToolBoxTerrain, icon, QStringLiteral("Terrain"));
         rightToolBoxDecalInsert = new QWidget();
         rightToolBoxDecalInsert->setObjectName(QStringLiteral("rightToolBoxDecalInsert"));
-        rightToolBoxDecalInsert->setGeometry(QRect(0, 0, 340, 658));
+        rightToolBoxDecalInsert->setGeometry(QRect(0, 0, 340, 670));
         horizontalLayout = new QHBoxLayout(rightToolBoxDecalInsert);
         horizontalLayout->setSpacing(6);
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
@@ -427,7 +432,7 @@ public:
         rightToolBox->addItem(rightToolBoxDecalInsert, QStringLiteral("Decal Paint"));
         rightToolBoxDecalSelect = new QWidget();
         rightToolBoxDecalSelect->setObjectName(QStringLiteral("rightToolBoxDecalSelect"));
-        rightToolBoxDecalSelect->setGeometry(QRect(0, 0, 340, 658));
+        rightToolBoxDecalSelect->setGeometry(QRect(0, 0, 340, 670));
         decalUpdateButton = new QPushButton(rightToolBoxDecalSelect);
         decalUpdateButton->setObjectName(QStringLiteral("decalUpdateButton"));
         decalUpdateButton->setEnabled(false);
@@ -618,6 +623,7 @@ public:
         fileMenu->addAction(loadSceneMenu);
         fileMenu->addAction(saveSceneMenu);
         mainToolBar->addAction(gameModeButton);
+        mainToolBar->addAction(pauseModeButton);
         mainToolBar->addAction(editorModeButton);
 
         retranslateUi(bcBlackCatEditorClass);
@@ -648,6 +654,11 @@ public:
         editorModeButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "EditorMode", nullptr));
 #endif // QT_NO_TOOLTIP
         editorModeButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "stop", nullptr)));
+        pauseModeButton->setText(QApplication::translate("bcBlackCatEditorClass", "PauseMode", nullptr));
+#ifndef QT_NO_TOOLTIP
+        pauseModeButton->setToolTip(QApplication::translate("bcBlackCatEditorClass", "PauseMode", nullptr));
+#endif // QT_NO_TOOLTIP
+        pauseModeButton->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "pause", nullptr)));
         leftBottomTab->setTabText(leftBottomTab->indexOf(consoleTab), QApplication::translate("bcBlackCatEditorClass", "Console", nullptr));
         rightToolBox->setProperty("fontAwesome", QVariant(QApplication::translate("bcBlackCatEditorClass", "handpointero,cubes,areachart,pencil,pencilsquareo", nullptr)));
         entityNameLabel->setText(QApplication::translate("bcBlackCatEditorClass", "Entity Name:", nullptr));

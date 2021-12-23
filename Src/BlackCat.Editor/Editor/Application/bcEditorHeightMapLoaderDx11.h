@@ -3,7 +3,7 @@
 #pragma once
 
 #include "GraphicImp/Resource/View/bcResourceView.h"
-#include "BlackCat/Loader/bcHeightMapLoaderDx11.h"
+#include "App/Loader/bcHeightMapLoaderDx11.h"
 
 namespace black_cat
 {

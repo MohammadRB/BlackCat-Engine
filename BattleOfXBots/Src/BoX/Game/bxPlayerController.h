@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "BlackCat/SampleImp/XBot/bcXBotPlayerActorController.h"
+#include "App/SampleImp/XBot/bcXBotPlayerActorController.h"
 
 namespace box
 {
