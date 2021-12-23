@@ -5,6 +5,8 @@
 #include "Game/Object/Scene/SceneGraph/bcOctalTreeSceneGraphNode.h"
 #include "BoX/Application/bxApplication.h"
 
+using namespace black_cat;
+
 int WINAPI WinMain(HINSTANCE p_instance, HINSTANCE p_prev_instance, CHAR* p_cmd_line, int p_cmd_show)
 {
 	std::unique_ptr<game::bc_render_application_basic_output_window> l_output_window;

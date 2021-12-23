@@ -13,10 +13,10 @@ namespace black_cat
 	}
 }
 
-using namespace black_cat;
-
 namespace box
 {
+	using namespace black_cat;
+
 	class bx_client_script
 	{
 	public:

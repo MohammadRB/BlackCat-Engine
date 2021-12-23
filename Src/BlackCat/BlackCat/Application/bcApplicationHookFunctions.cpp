@@ -223,7 +223,7 @@ namespace black_cat
 		);
 	}
 
-	void bc_register_network_messages(game::bc_network_system& p_network_system)
+	void bc_register_engine_network_messages(game::bc_network_system& p_network_system)
 	{
 		p_network_system.register_messages
 		<
@@ -245,7 +245,7 @@ namespace black_cat
 		>();
 	}
 	
-	void bc_bind_scripts(game::bc_game_system& p_game_system)
+	void bc_bind_engine_scripts(game::bc_game_system& p_game_system)
 	{
 		auto& l_script_system = p_game_system.get_script_system();
 		auto l_script_binder = l_script_system.get_script_binder();
@@ -255,7 +255,7 @@ namespace black_cat
 		l_script_system.set_script_binder(std::move(l_script_binder));
 	}
 
-	void bc_register_particle_emitters(game::bc_game_system& p_game_system)
+	void bc_register_engine_particle_emitters(game::bc_game_system& p_game_system)
 	{
 		core::bc_random l_random;
 

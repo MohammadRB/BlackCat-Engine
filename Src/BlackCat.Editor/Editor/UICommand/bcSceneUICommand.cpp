@@ -45,23 +45,34 @@ namespace black_cat
 		{
 			switch (m_type)
 			{
-			case bc_scene_ui_command_type::get_scene:
-				p_context.m_result.set_value(p_context.m_game_system.get_scene());
-				break;
-			case bc_scene_ui_command_type::new_scene:
-				break;
-			case bc_scene_ui_command_type::load_scene:
-				p_context.m_game_system.get_file_system()
-				         .get_content_manager()
-				         .load<game::bc_scene>(m_scene_path.c_str(), nullptr, core::bc_content_loader_parameter());
-				break;
-			case bc_scene_ui_command_type::save_scene:
-				p_context.m_game_system.get_file_system()
-					.get_content_manager()
-					.save(*m_scene);
-				break;
-			case bc_scene_ui_command_type::save_as_scene:
-				break;
+				case bc_scene_ui_command_type::get_scene:
+				{
+					p_context.m_result.set_value(p_context.m_game_system.get_scene());
+					break;
+				}
+				case bc_scene_ui_command_type::new_scene:
+				{
+					break;
+				}
+				case bc_scene_ui_command_type::load_scene:
+				{
+					auto l_scene = p_context.m_game_system.get_file_system()
+						.get_content_manager()
+						.load<game::bc_scene>(m_scene_path.c_str(), nullptr, core::bc_content_loader_parameter());
+					p_context.m_game_system.set_scene(std::move(l_scene));
+					break;
+				}
+				case bc_scene_ui_command_type::save_scene:
+				{
+					p_context.m_game_system.get_file_system()
+						.get_content_manager()
+						.save(*m_scene);
+					break;
+				}
+				case bc_scene_ui_command_type::save_as_scene:
+				{
+					break;
+				}
 			}
 			return false;
 		}

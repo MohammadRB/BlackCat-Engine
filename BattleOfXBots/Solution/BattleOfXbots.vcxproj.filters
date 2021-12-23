@@ -25,6 +25,9 @@
     <Filter Include="BoX\Content\Texture">
       <UniqueIdentifier>{ef9af2bd-9ac6-4176-af0d-4d335fdf46cc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BoX\Game">
+      <UniqueIdentifier>{a5ebdb5e-67d3-4d8b-93b1-07ec54c0d3b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\BoX\BattleOfXbots.cpp">
@@ -36,12 +39,21 @@
     <ClCompile Include="..\Src\BoX\Application\bxClientScript.cpp">
       <Filter>BoX\Application</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\BoX\Application\bxApplicationHookFunctions.cpp">
+      <Filter>BoX\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\BoX\Application\bxApplication.h">
       <Filter>BoX\Application</Filter>
     </ClInclude>
     <ClInclude Include="..\Src\BoX\Application\bxClientScript.h">
+      <Filter>BoX\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX\Game\bxPlayerController.h">
+      <Filter>BoX\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX\Application\bxApplicationHookFunctions.h">
       <Filter>BoX\Application</Filter>
     </ClInclude>
   </ItemGroup>

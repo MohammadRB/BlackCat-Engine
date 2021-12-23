@@ -8,14 +8,10 @@
 #include "Game/System/Network/Server/bcNetworkServerManagerHook.h"
 #include "BlackCat/Application/bcRenderApplication.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
-#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
-#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
-#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
-
-using namespace black_cat;
 
 namespace box
 {
+	using namespace black_cat;
 	class bx_server_script;
 
 	class bx_server_application : public bc_render_application, game::bci_network_server_manager_hook

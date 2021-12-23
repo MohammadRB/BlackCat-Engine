@@ -90,9 +90,9 @@ namespace black_cat
 			)
 		);
 
-		bc_register_network_messages(m_game_system->get_network_system());
-		bc_bind_scripts(*m_game_system);
-		bc_register_particle_emitters(*m_game_system);
+		bc_register_engine_network_messages(m_game_system->get_network_system());
+		bc_bind_engine_scripts(*m_game_system);
+		bc_register_engine_particle_emitters(*m_game_system);
 		bc_load_engine_shaders(*core::bc_get_service<core::bc_content_stream_manager>(), *m_game_system);
 
 		application_initialize(p_parameters);

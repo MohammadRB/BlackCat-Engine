@@ -1,6 +1,6 @@
 {
   "global_scale": 1.0,
-  "lod_global_scale": 10.0,
+  "lod_global_scale": 5.0,
   "lod_culling_index": 6,
   "counter_values": [
     "fps",

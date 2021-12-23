@@ -24,11 +24,11 @@ namespace black_cat
 
 	void bc_register_engine_actor_components();
 
-	void bc_register_network_messages(game::bc_network_system& p_network_system);
+	void bc_register_engine_network_messages(game::bc_network_system& p_network_system);
 	
-	void bc_bind_scripts(game::bc_game_system& p_game_system);
+	void bc_bind_engine_scripts(game::bc_game_system& p_game_system);
 
-	void bc_register_particle_emitters(game::bc_game_system& p_game_system);
+	void bc_register_engine_particle_emitters(game::bc_game_system& p_game_system);
 
 	void bc_load_engine_shaders(core::bc_content_stream_manager& p_stream_manager, game::bc_game_system& p_game_system);
 	

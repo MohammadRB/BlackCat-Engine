@@ -245,6 +245,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Src\BoX\Application\bxApplicationHookFunctions.cpp" />
     <ClCompile Include="..\Src\BoX\Application\bxApplication.cpp" />
     <ClCompile Include="..\Src\BoX\Application\bxClientScript.cpp" />
     <ClCompile Include="..\Src\BoX\BattleOfXbots.cpp" />
@@ -273,8 +274,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Src\BoX\Application\bxApplicationHookFunctions.h" />
     <ClInclude Include="..\Src\BoX\Application\bxClientScript.h" />
     <ClInclude Include="..\Src\BoX\Application\bxApplication.h" />
+    <ClInclude Include="..\Src\BoX\Game\bxPlayerController.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Src\BoX\Content\Data\BoXContentStream.json" />

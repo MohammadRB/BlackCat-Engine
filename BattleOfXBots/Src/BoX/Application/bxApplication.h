@@ -6,10 +6,10 @@
 #include "Game/System/Network/Client/bcNetworkClientManagerHook.h"
 #include "BlackCat/Application/bcRenderApplication.h"
 
-using namespace black_cat;
-
 namespace box
 {
+	using namespace black_cat;
+
 	class bx_application : public bc_render_application, public game::bci_network_client_manager_hook
 	{
 	public:
