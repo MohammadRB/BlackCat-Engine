@@ -20,7 +20,7 @@ namespace black_cat
 
 			bc_scene_query(bc_scene_query&&) = default;
 
-			~bc_scene_query() = default;
+			~bc_scene_query() override = default;
 
 			bc_scene_query& operator=(bc_scene_query&&) = default;
 

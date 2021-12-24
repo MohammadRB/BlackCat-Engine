@@ -14,7 +14,6 @@
 #include "Game/Object/Mesh/bcHeightMap.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
-#include "App/Loader/bcHeightMapLoaderDx11.h"
 #include "App/RenderPass/bcBackBufferWritePass.h"
 #include "App/RenderPass/bcShapeDrawPass.h"
 #include "App/RenderPass/bcTextDrawPass.h"
@@ -33,6 +32,7 @@
 #include "App/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"
 #include "App/bcConstant.h"
 #include "BoX/Application/bxApplication.h"
+#include "BoX/Application/bxApplicationHookFunctions.h"
 #include "BoX/Application/bxClientScript.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 
@@ -61,10 +61,13 @@ namespace box
 
 	void bx_application::application_start_engine_components(game::bc_engine_application_parameter& p_parameters)
 	{
-		core::bc_register_loader<game::bc_height_map, bc_height_map_loader_dx11>
-		(
-			"height_map", core::bc_make_loader<bc_height_map_loader_dx11>()
-		);
+		bx_start_game_services(p_parameters);
+		bx_register_game_loaders(p_parameters);
+		bx_register_game_actor_components();
+		bx_register_game_network_messages(m_game_system->get_network_system());
+		bx_bind_game_scripts(*m_game_system);
+		bx_register_game_particle_emitters(*m_game_system);
+		bx_load_game_shaders(*core::bc_get_service<core::bc_content_stream_manager>(), *m_game_system);
 	}
 
 	void bx_application::application_initialize(game::bc_engine_application_parameter& p_parameters)
@@ -119,6 +122,7 @@ namespace box
 
 	void bx_application::application_load_content(core::bc_content_stream_manager& p_stream_manager)
 	{
+		bx_load_game_resources(p_stream_manager, *m_game_system);
 	}
 
 	void bx_application::application_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
@@ -141,7 +145,7 @@ namespace box
 
 	bool bx_application::application_event(core::bci_event& p_event)
 	{
-		auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
+		const auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
 		if(l_key_event)
 		{
 			if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
@@ -162,7 +166,7 @@ namespace box
 			}
 		}
 		
-		auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event);
+		const auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event);
 		if (l_exit_event)
 		{
 			auto& l_global_config = bc_get_global_config();
@@ -185,6 +189,7 @@ namespace box
 
 	void bx_application::application_unload_content(core::bc_content_stream_manager& p_stream_manager)
 	{
+		bx_unload_game_resources(p_stream_manager);
 	}
 
 	void bx_application::application_destroy()
@@ -202,6 +207,7 @@ namespace box
 
 	void bx_application::application_close_engine_components()
 	{
+		bx_close_game_services();
 	}
 
 	void bx_application::connecting_to_server(const platform::bc_network_address& p_address)

@@ -30,7 +30,7 @@ namespace black_cat
 
 			_bc_query_shared_state& operator=(_bc_query_shared_state&&) noexcept;
 			
-			core_platform::bc_atomic< state > m_state;
+			core_platform::bc_atomic<state> m_state;
 			bci_query* m_query;
 		};
 
@@ -58,7 +58,7 @@ namespace black_cat
 			return *this;
 		}
 
-		template< class TQuery >
+		template<class TQuery>
 		class bc_query_result
 		{
 			friend class bc_query_manager;
@@ -68,21 +68,27 @@ namespace black_cat
 						
 			bc_query_result(bc_query_result&&) noexcept;
 
-			template< class TQuery1 >
+			template<class TQuery1>
 			bc_query_result(bc_query_result<TQuery1>&& p_other) noexcept;
 
 			~bc_query_result();
 
 			bc_query_result& operator=(bc_query_result&&) noexcept;
 
-			template< class TQuery1 >
+			template<class TQuery1>
 			bc_query_result& operator=(bc_query_result<TQuery1>&& p_other) noexcept;
 
+			/**
+			 * \brief Check to see if query is executed and the result is ready.
+			 * \n After the result is fetched the internal state of query will be removed and any subsequent call on this object will be undefined.
+			 * \return 
+			 */
 			bool is_executed() const noexcept;
 
 			/**
 			 * \brief Before calling this function availability of query must be examined by <b>is_executed</b> function.
-			 * If query is not executed calling this function will throw an exception.
+			 * \n If query is not executed calling this function will throw an exception.
+			 * \n After calling this function the internal state of query will be removed and any subsequent call on this object will be undefined.
 			 * \return Original query which was scheduled.
 			 */
 			TQuery get();
@@ -94,21 +100,21 @@ namespace black_cat
 			_bc_query_shared_state* m_shared_state;
 		};
 
-		template< class TQuery >
+		template<class TQuery>
 		bc_query_result<TQuery>::bc_query_result(bc_query_manager& p_query_manager, _bc_query_shared_state& p_shared_state) noexcept
 			: m_query_manager(&p_query_manager),
 			m_shared_state(&p_shared_state)
 		{
 		}
 
-		template< class TQuery >
+		template<class TQuery>
 		bc_query_result<TQuery>::bc_query_result() noexcept
 			: m_query_manager(nullptr),
 			m_shared_state(nullptr)
 		{
 		}
 
-		template< class TQuery >
+		template<class TQuery>
 		bc_query_result<TQuery>::bc_query_result(bc_query_result&& p_other) noexcept
 			: m_query_manager(nullptr),
 			m_shared_state(nullptr)
@@ -116,14 +122,14 @@ namespace black_cat
 			operator=(std::move(p_other));
 		}
 
-		template< class TQuery >
-		template< class TQuery1 >
+		template<class TQuery>
+		template<class TQuery1>
 		bc_query_result<TQuery>::bc_query_result(bc_query_result<TQuery1>&& p_other) noexcept
 		{
 			operator=(std::move(p_other));
 		}
 
-		template< class TQuery >
+		template<class TQuery>
 		bc_query_result<TQuery>::~bc_query_result()
 		{
 			if(m_shared_state)
@@ -132,7 +138,7 @@ namespace black_cat
 			}
 		}
 
-		template< class TQuery >
+		template<class TQuery>
 		bc_query_result<TQuery>& bc_query_result<TQuery>::operator=(bc_query_result&& p_other) noexcept
 		{
 			if(m_shared_state)
@@ -148,8 +154,8 @@ namespace black_cat
 			return *this;
 		}
 
-		template< class TQuery >
-		template< class TQuery1 >
+		template<class TQuery>
+		template<class TQuery1>
 		bc_query_result<TQuery>& bc_query_result<TQuery>::operator=(bc_query_result<TQuery1>&& p_other) noexcept
 		{
 			static_assert(std::is_base_of_v<TQuery, TQuery1>, "TQuery1 must be a derived type of TQuery");
@@ -167,14 +173,14 @@ namespace black_cat
 			return *this;
 		}
 
-		template< class TQuery >
+		template<class TQuery>
 		bool bc_query_result<TQuery>::is_executed() const noexcept
 		{
 			// use acquire memory order so memory changes become available for calling thread
 			return m_shared_state && m_shared_state->m_state.load(core_platform::bc_memory_order::acquire) == _bc_query_shared_state::state::executed;
 		}
 
-		template< class TQuery >
+		template<class TQuery>
 		TQuery bc_query_result<TQuery>::get()
 		{
 			const bool l_is_executed = is_executed();

@@ -10,12 +10,12 @@ namespace black_cat
 {
 	namespace physics
 	{
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		struct bc_platform_task_pack
 		{
 		};
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_task
 		{
 		public:
@@ -41,6 +41,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_task = bc_platform_task< g_current_physics_api >;
+		using bc_task = bc_platform_task<g_current_physics_api>;
 	}
 }

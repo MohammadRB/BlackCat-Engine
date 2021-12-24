@@ -5,10 +5,11 @@
 #include "PlatformImp/Script/bcScriptGlobalPrototypeBuilder.h"
 #include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
 #include "Game/System/Script/bcScriptBinding.h"
+#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 #include "App/Loader/bcHeightMapLoaderDx11.h"
 #include "BoX.Server/Application/bxServerApplication.h"
 #include "BoX.Server/Application/bxServerScript.h"
-#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "BoX/Application/bxApplicationHookFunctions.h"
 
 using namespace black_cat;
 
@@ -47,28 +48,37 @@ namespace box
 		m_console->get_console_window()->set_caption(p_parameters.m_app_parameters.m_app_name);
 		l_game_console.set_implementation(m_console.get());
 
-		core::bc_register_loader<game::bc_height_map, bc_height_map_loader_dx11>
-		(
-			"height_map", core::bc_make_loader<bc_height_map_loader_dx11>()
-		);
+		bx_start_game_services(p_parameters);
+		bx_register_game_loaders(p_parameters);
+		bx_register_game_actor_components();
+		bx_register_game_network_messages(m_game_system->get_network_system());
+		bx_bind_game_scripts(*m_game_system);
+		bx_register_game_particle_emitters(*m_game_system);
+		bx_load_game_shaders(*core::bc_get_service<core::bc_content_stream_manager>(), *m_game_system);
 	}
 
 	void bx_server_application::application_initialize(game::bc_engine_application_parameter& p_parameters)
 	{
-		auto& l_script_system = m_game_system->get_script_system();
+		const auto& l_script_system = m_game_system->get_script_system();
 		auto l_script_binder = l_script_system.get_script_binder();
 		l_script_binder.bind(game::bc_script_context::app, *this);
 	}
 
 	void bx_server_application::application_load_content(core::bc_content_stream_manager& p_stream_manager)
 	{
-		auto& l_script_system = m_game_system->get_script_system();
-		l_script_system.run_script_throw(game::bc_script_context::app, L"server.start(6699);");
-		l_script_system.run_script_throw(game::bc_script_context::app, L"server.load_scene(\"test\");");
+		bx_load_game_resources(p_stream_manager, *m_game_system);
 	}
 
 	void bx_server_application::application_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
 	{
+		if(!m_server_started)
+		{
+			auto& l_script_system = m_game_system->get_script_system();
+			l_script_system.run_script_throw(game::bc_script_context::app, L"server.start(6699);");
+			l_script_system.run_script_throw(game::bc_script_context::app, L"server.load_scene(\"test\");");
+
+			m_server_started = true;
+		}
 	}
 
 	void bx_server_application::application_render(const core_platform::bc_clock::update_param& p_clock)
@@ -102,6 +112,7 @@ namespace box
 
 	void bx_server_application::application_unload_content(core::bc_content_stream_manager& p_stream_manager)
 	{
+		bx_unload_game_resources(p_stream_manager);
 	}
 
 	void bx_server_application::application_destroy()
@@ -119,6 +130,7 @@ namespace box
 
 	void bx_server_application::application_close_engine_components()
 	{
+		bx_close_game_services();
 	}
 
 	void bx_server_application::started_listening(bcUINT16 p_port)

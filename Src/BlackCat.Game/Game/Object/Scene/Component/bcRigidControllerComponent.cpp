@@ -53,11 +53,11 @@ namespace black_cat
 
 		void bc_rigid_controller_component::initialize_entity(const bc_actor_component_initialize_entity_context& p_context)
 		{
-			auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();
+			const auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();
 			auto& l_physics_system = p_context.m_game_system.get_physics_system();
 			auto& l_physics = l_physics_system.get_physics();
 
-			auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
+			const auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
 			if (l_mesh_component)
 			{
 				m_px_body = l_physics.create_rigid_dynamic(physics::bc_transform::identity());

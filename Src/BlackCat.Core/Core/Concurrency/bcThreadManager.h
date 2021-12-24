@@ -122,7 +122,7 @@ namespace black_cat
 			void check_for_interruption();
 
 			template<typename T>
-			bc_task<T> start_new_task(bc_delegate<T()>&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
+			bc_task<T> start_new_task(bc_delegate<T()> p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
 
 		private:
 			void _initialize(bcSIZE p_thread_count, bcSIZE p_reserved_thread_count);
@@ -212,7 +212,7 @@ namespace black_cat
 		};
 
 		template<typename T>
-		bc_task<T> bc_thread_manager::start_new_task(bc_delegate<T()>&& p_delegate, bc_task_creation_option p_option)
+		bc_task<T> bc_thread_manager::start_new_task(bc_delegate<T()> p_delegate, bc_task_creation_option p_option)
 		{
 			bc_task_link<T> l_task_link(std::move(p_delegate));
 			bc_task<T> l_task = l_task_link.get_task();

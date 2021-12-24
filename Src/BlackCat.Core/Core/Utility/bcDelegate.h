@@ -204,9 +204,9 @@ namespace black_cat
 					) && bc_is_callable<TFunctor>::value // Check if TFunctor is actually a callable object
 				>
 			>
-			bc_delegate(TFunctor p_functor) noexcept(std::is_nothrow_copy_constructible<TFunctor>::value)
+			bc_delegate(TFunctor p_functor) noexcept(std::is_nothrow_copy_constructible_v<TFunctor>)
 			{
-				_bind(p_functor);
+				_bind(std::move(p_functor));
 			}
 
 			~bc_delegate()
@@ -214,14 +214,14 @@ namespace black_cat
 				reset();
 			}
 
-			this_type& operator=(const this_type& p_other) noexcept
+			bc_delegate& operator=(const this_type& p_other) noexcept
 			{
 				_assign(p_other);
 
 				return *this;
 			}
 
-			this_type& operator=(this_type&& p_other) noexcept
+			bc_delegate& operator=(this_type&& p_other) noexcept
 			{
 				_assign(std::move(p_other));
 
@@ -242,22 +242,22 @@ namespace black_cat
 
 			void bind(func_type p_func_ptr) noexcept
 			{
-				_bind(p_func_ptr);
+				_bind(std::move(p_func_ptr));
 			}
 
 			template
 			<
 				typename TFunctor,
 				// Disable template bind for func_type so correct bind function overload can be called 
-				typename = typename std::enable_if
+				typename = std::enable_if_t
 				<
-					!std::is_same<func_type, typename std::decay<TFunctor>::type>::value && 
+					!std::is_same_v<func_type, std::decay_t<TFunctor>> && 
 					bc_is_callable<TFunctor>::value // Check if TFunctor is actually a callable object
-				>::type
+				>
 			>
-			void bind(TFunctor p_functor) noexcept(std::is_nothrow_copy_constructible<TFunctor>::value)
+			void bind(TFunctor p_functor) noexcept(std::is_nothrow_copy_constructible_v<TFunctor>)
 			{
-				_bind(p_functor);
+				_bind(std::move(p_functor));
 			}
 
 			void swap(const this_type& p_other) noexcept
@@ -359,7 +359,7 @@ namespace black_cat
 
 			// bind to functor objects
 			template<typename TFunctor>
-			void _bind(TFunctor& p_functor)
+			void _bind(TFunctor p_functor)
 			{
 				static_assert(fit_into_buffer<TFunctor>(), "Functor object is too large");
 
@@ -391,7 +391,7 @@ namespace black_cat
 				}
 			}
 
-			static const bcUINT32 s_buffer_size = sizeof(void*) * 5;
+			static constexpr bcUINT32 s_buffer_size = sizeof(void*) * 5;
 
 			_stub_call_type m_stub_call;
 			_stub_action_type m_stub_action;

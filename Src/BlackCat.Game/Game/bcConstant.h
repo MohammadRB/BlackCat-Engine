@@ -22,6 +22,8 @@ namespace black_cat
 		BC_PARAMETER(high_detail_query_shape, "high_detail_query_shape");
 		BC_PARAMETER(rigid_cmass, "cmass");
 		BC_PARAMETER(rigid_mass, "mass");
+		BC_PARAMETER(rigid_force_amount, "force_amount");
+		BC_PARAMETER(rigid_force_radius, "force_radius");
 		BC_PARAMETER(animations, "animations");
 		BC_PARAMETER(animation_additive, "additive");
 		BC_PARAMETER(child_actor, "childs");

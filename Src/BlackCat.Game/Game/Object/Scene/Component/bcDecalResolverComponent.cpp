@@ -11,7 +11,7 @@ namespace black_cat
 	{
 		void bc_decal_resolver_component::load_instance(const bc_actor_component_load_context& p_context)
 		{
-			// Decal component is usually create on the fly and is not included in entity template components
+			// Decal component is usually created on the fly and is not included in entity template components
 			const auto l_decals_ite = p_context.m_parameters.find(constant::g_param_decal_parameters);
 			if(l_decals_ite != std::end(p_context.m_parameters))
 			{

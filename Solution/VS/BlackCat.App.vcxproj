@@ -81,12 +81,12 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BC_DLL;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../Src/BlackCat.App;../../Src/BlackCat.Core;../../Src/BlackCat.Core.Platform;../../Src/BlackCat.Core.Platform.Win32;../../Src/BlackCat.Platform;../../Src/BlackCat.Platform.Win32;../../Src/BlackCat.Graphic;../../Src/BlackCat.Graphic.DirectX11;../../Src/BlackCat.Game;../../Src/BlackCat.Physics;../../Src/BlackCat.Physics.PhysX;../../3rdParty;../../3rdParty/3rdParty/Ozz/Include</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>App/BlackCatPCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>App/AppPCH.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -136,12 +136,12 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BC_DLL;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../Src/BlackCat.App;../../Src/BlackCat.Core;../../Src/BlackCat.Core.Platform;../../Src/BlackCat.Core.Platform.Win32;../../Src/BlackCat.Platform;../../Src/BlackCat.Platform.Win32;../../Src/BlackCat.Graphic;../../Src/BlackCat.Graphic.DirectX11;../../Src/BlackCat.Game;../../Src/BlackCat.Physics;../../Src/BlackCat.Physics.PhysX;../../3rdParty;../../3rdParty/3rdParty/Ozz/Include</AdditionalIncludeDirectories>
-      <PrecompiledHeaderFile>App/BlackCatPCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>App/AppPCH.h</PrecompiledHeaderFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
@@ -194,14 +194,14 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>BC_DLL;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../Src/BlackCat.App;../../Src/BlackCat.Core;../../Src/BlackCat.Core.Platform;../../Src/BlackCat.Core.Platform.Win32;../../Src/BlackCat.Platform;../../Src/BlackCat.Platform.Win32;../../Src/BlackCat.Graphic;../../Src/BlackCat.Graphic.DirectX11;../../Src/BlackCat.Game;../../Src/BlackCat.Physics;../../Src/BlackCat.Physics.PhysX;../../3rdParty;../../3rdParty/3rdParty/Ozz/Include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <PrecompiledHeaderFile>App/BlackCatPCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>App/AppPCH.h</PrecompiledHeaderFile>
       <EnablePREfast>true</EnablePREfast>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -249,7 +249,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat.App\App\bcConstant.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\bcException.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\bcExport.h" />
-    <ClInclude Include="..\..\Src\BlackCat.App\App\BlackCatPCH.h" />
+    <ClInclude Include="..\..\Src\BlackCat.App\App\AppPCH.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcComputeShaderLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcDomainShaderLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcGeometryShaderLoader.h" />
@@ -305,7 +305,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.App\App\Application\bcApplicationHookFunctions.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\Application\bcRenderApplication.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.App\App\BlackCatPCH.cpp">
+    <ClCompile Include="..\..\Src\BlackCat.App\App\AppPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

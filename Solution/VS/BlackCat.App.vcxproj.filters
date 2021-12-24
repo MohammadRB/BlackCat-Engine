@@ -105,9 +105,6 @@
     <ClInclude Include="..\..\Src\BlackCat.App\App\bcExport.h">
       <Filter>BlackCat</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.App\App\BlackCatPCH.h">
-      <Filter>BlackCat</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcMeshColliderLoader.h">
       <Filter>BlackCat\Loader</Filter>
     </ClInclude>
@@ -243,6 +240,9 @@
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcGlowPass.h">
       <Filter>BlackCat\RenderPass\PostProcess</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\AppPCH.h">
+      <Filter>BlackCat</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcComputeShaderLoader.cpp">
@@ -271,9 +271,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcVertexShaderLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.App\App\BlackCatPCH.cpp">
-      <Filter>BlackCat</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcMeshColliderLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
@@ -385,6 +382,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcGlowPass.cpp">
       <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\AppPCH.cpp">
+      <Filter>BlackCat</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

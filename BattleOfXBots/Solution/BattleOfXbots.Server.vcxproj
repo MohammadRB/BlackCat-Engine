@@ -239,12 +239,17 @@
     <ClCompile Include="..\Src\BoX.Server\Application\bxServerScript.cpp" />
     <ClCompile Include="..\Src\BoX.Server\Application\bxServerApplication.cpp" />
     <ClCompile Include="..\Src\BoX.Server\BattleOfXbots.Server.cpp" />
+    <ClCompile Include="..\Src\BoX\Application\bxApplicationHookFunctions.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\BoX.Server\Application\bxServerScript.h" />
     <ClInclude Include="..\Src\BoX.Server\Application\bxServerApplication.h" />
+    <ClInclude Include="..\Src\BoX\Application\bxApplicationHookFunctions.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Solution\VS\BlackCat.App.vcxproj">
+      <Project>{d6d32113-4c80-4613-87df-1000c12d3fe9}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\Solution\VS\BlackCat.Core.Platform.Win32.vcxproj">
       <Project>{be5cab27-d8e0-4781-abf8-f37fe773b65b}</Project>
     </ProjectReference>
@@ -262,9 +267,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Solution\VS\BlackCat.Platform.Win32.vcxproj">
       <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Solution\VS\BlackCat.vcxproj">
-      <Project>{d6d32113-4c80-4613-87df-1000c12d3fe9}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

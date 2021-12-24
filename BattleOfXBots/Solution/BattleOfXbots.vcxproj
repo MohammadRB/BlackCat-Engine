@@ -249,8 +249,12 @@
     <ClCompile Include="..\Src\BoX\Application\bxApplication.cpp" />
     <ClCompile Include="..\Src\BoX\Application\bxClientScript.cpp" />
     <ClCompile Include="..\Src\BoX\BattleOfXbots.cpp" />
+    <ClCompile Include="..\Src\BoX\Game\bxPlayerController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Solution\VS\BlackCat.App.vcxproj">
+      <Project>{d6d32113-4c80-4613-87df-1000c12d3fe9}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\Solution\VS\BlackCat.Core.Platform.Win32.vcxproj">
       <Project>{be5cab27-d8e0-4781-abf8-f37fe773b65b}</Project>
     </ProjectReference>
@@ -268,9 +272,6 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Solution\VS\BlackCat.Platform.Win32.vcxproj">
       <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Solution\VS\BlackCat.vcxproj">
-      <Project>{d6d32113-4c80-4613-87df-1000c12d3fe9}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 // [12/19/2020 MRB]
 
-#include "App/BlackCatPCH.h"
+#include "App/AppPCH.h"
 
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Utility/bcEnumOperand.h"
@@ -16,6 +16,7 @@
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
+#include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
 #include "Game/bcConstant.h"
 #include "App/SampleImp/ActorController/bcExplosionActorController.h"
 
@@ -29,9 +30,11 @@ namespace black_cat
 			throw bc_invalid_operation_exception("explosion actor must have point light components");
 		}
 
-		auto* l_point_light = l_light_component->get_light()->as_point_light();
+		const auto* l_point_light = l_light_component->get_light()->as_point_light();
 		m_emitter_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_emitter_name)->c_str();
 		m_decal_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_decal_name)->c_str();
+		m_force_amount = *p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_force_amount);
+		m_force_radius = *p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_force_radius);
 		m_light_intensity = l_point_light->get_intensity();
 		m_light_particle_intensity = l_point_light->get_particle_intensity();
 		m_light_flare_intensity = l_point_light->get_flare() ? l_point_light->get_flare()->get_intensity() : 0.f;
@@ -49,9 +52,9 @@ namespace black_cat
 				auto& l_px_scene = l_scene->get_px_scene();
 				const auto l_position = l_actor.get_component<game::bc_mediate_component>()->get_position();
 
+				bool l_has_collided;
 				const physics::bc_ray l_ray(l_position + core::bc_vector3f(0,1,0), core::bc_vector3f(0, -1, 0), 2 * l_scene->get_global_scale());
 				physics::bc_scene_ray_query_buffer l_query_buffer;
-				bool l_has_collided;
 
 				{
 					physics::bc_scene_shared_lock l_lock(&l_px_scene);
@@ -80,50 +83,90 @@ namespace black_cat
 				return core::bc_any(l_result);
 			}
 		));
+		m_scene_dynamics_query = p_context.m_query_manager.queue_query(game::bc_scene_query().with_callable
+		(
+			[this, l_scene = &p_scene, l_actor = p_context.m_actor](const game::bc_scene_query_context& p_query_context)
+			{
+				auto& l_px_scene = l_scene->get_px_scene();
+				const auto l_position = l_actor.get_component<game::bc_mediate_component>()->get_position();
+
+				physics::bc_scene_overlap_query_buffer l_query_buffer(100);
+
+				{
+					physics::bc_scene_shared_lock l_lock(&l_px_scene);
+
+					l_px_scene.overlap
+					(
+						physics::bc_shape_sphere(m_force_radius),
+						physics::bc_transform(l_position),
+						l_query_buffer,
+						physics::bc_query_flags::dynamics
+					);
+				}
+
+				const auto l_num_touches = l_query_buffer.get_touch_count();
+				core::bc_vector<physics::bc_overlap_hit> l_result(l_num_touches);
+
+				for(auto l_ite = 0U; l_ite < l_num_touches; ++l_ite)
+				{
+					l_result[l_ite] = l_query_buffer.get_touch(l_ite);
+				}
+
+				return core::bc_any(std::move(l_result));
+			}
+		));
 	}
 
 	void bc_explosion_actor_controller::update(const game::bc_actor_component_update_content& p_context)
 	{
-		if(m_scene_terrain_query.is_executed())
+		if(!m_has_started)
 		{
-			auto l_hit_result = *m_scene_terrain_query.get().get_result().as<core::bc_nullable<game::bc_ray_hit>>();
-			auto& l_particle_manager = m_scene->get_particle_manager();
-			auto& l_mediate_component = *p_context.m_actor.get_component<game::bc_mediate_component>();
-			m_direction = l_mediate_component.get_world_transform().get_basis_z();
-			
-			if(l_hit_result.has_value())
+			m_has_started = m_scene_terrain_query.is_executed() && m_scene_dynamics_query.is_executed();
+
+			if(!m_has_started)
 			{
-				auto* l_height_map_component = l_hit_result->get_actor().get_component<game::bc_height_map_component>();
+				return;
+			}
+
+			const auto& l_explosion_mediate_component = *p_context.m_actor.get_component<game::bc_mediate_component>();
+			m_position = l_explosion_mediate_component.get_position();
+			m_direction = l_explosion_mediate_component.get_world_transform().get_basis_z();
+
+			const auto l_terrain_hit_result = *m_scene_terrain_query.get().get_result().as<core::bc_nullable<game::bc_ray_hit>>();
+			if (l_terrain_hit_result.has_value())
+			{
+				auto* l_height_map_component = l_terrain_hit_result->get_actor().get_component<game::bc_height_map_component>();
 				const auto l_px_height_map = l_height_map_component->get_height_map().get_px_height_field();
-				const auto l_height_map_material_index = l_px_height_map.get_triangle_material(l_hit_result->get_face_index());
+				const auto l_height_map_material_index = l_px_height_map.get_triangle_material(l_terrain_hit_result->get_face_index());
 				const auto& l_material = l_height_map_component->get_height_map().get_material(l_height_map_material_index);
 				const auto l_color = l_material.m_mesh_material->get_diffuse().xyz();
 
 				if (m_emitter_name)
 				{
-					l_particle_manager.spawn_emitter(m_emitter_name, l_mediate_component.get_position(), m_direction, &l_color);
+					auto& l_particle_manager = m_scene->get_particle_manager();
+					l_particle_manager.spawn_emitter(m_emitter_name, m_position, m_direction, &l_color);
 				}
-				if(m_decal_name)
+				if (m_decal_name)
 				{
-					l_height_map_component->add_decal(m_decal_name, l_hit_result->get_position(), m_direction);
+					l_height_map_component->add_decal(m_decal_name, l_terrain_hit_result->get_position(), m_direction);
 				}
 			}
 			else
-			{			
+			{
 				if (m_emitter_name)
 				{
-					l_particle_manager.spawn_emitter(m_emitter_name, l_mediate_component.get_position(), m_direction);
+					auto& l_particle_manager = m_scene->get_particle_manager();
+					l_particle_manager.spawn_emitter(m_emitter_name, m_position, m_direction);
 				}
 			}
 
-			m_has_started = true;
+			const auto l_dynamics_hit_result = std::move(*m_scene_dynamics_query.get().get_result().as<core::bc_vector<physics::bc_overlap_hit>>());
+			for(game::bc_overlap_hit l_hit : l_dynamics_hit_result)
+			{
+				l_hit.get_actor().add_event(game::bc_explosion_actor_event(m_position, m_force_radius, m_force_amount));
+			}
 		}
 
-		if(!m_has_started)
-		{
-			return;
-		}
-		
 		auto* l_light_component = p_context.m_actor.get_component<game::bc_light_component>();
 		auto* l_point_light = l_light_component->get_light()->as_point_light();
 

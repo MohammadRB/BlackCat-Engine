@@ -204,22 +204,24 @@ namespace black_cat
 			const auto l_ite = p_context.m_parameters.find(constant::g_param_decal_parameters);
 			if(l_ite != std::end(p_context.m_parameters))
 			{
-				auto& l_json_str = l_ite->second.as_throw<core::bc_string>();
-
-				core::bc_json_document<_bc_decal_array_json> l_json;
-				l_json.load(l_json_str.c_str());
-
-				for(auto& l_json_entry : l_json->m_decals)
+				const auto& l_json_str = l_ite->second.as_throw<core::bc_string>();
+				if(!l_json_str.empty())
 				{
-					add_decal
-					(
-						*l_json_entry->m_nm,
-						*l_json_entry->m_pos_ls,
-						bc_matrix3f_rotation_zyx(*l_json_entry->m_rot_ls),
-						static_cast<bc_render_group>(*l_json_entry->m_rg),
-						core::bc_matrix4f::identity(),
-						*l_json_entry->m_ani
-					);
+					core::bc_json_document<_bc_decal_array_json> l_json;
+					l_json.load(l_json_str.c_str());
+
+					for (auto& l_json_entry : l_json->m_decals)
+					{
+						add_decal
+						(
+							*l_json_entry->m_nm,
+							*l_json_entry->m_pos_ls,
+							bc_matrix3f_rotation_zyx(*l_json_entry->m_rot_ls),
+							static_cast<bc_render_group>(*l_json_entry->m_rg),
+							core::bc_matrix4f::identity(),
+							*l_json_entry->m_ani
+						);
+					}
 				}
 			}
 		}

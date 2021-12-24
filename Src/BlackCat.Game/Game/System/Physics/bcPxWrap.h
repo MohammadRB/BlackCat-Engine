@@ -32,7 +32,7 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept
 			{
-				auto l_px_actor = get_px_actor();
+				const auto l_px_actor = get_px_actor();
 				return core::bc_get_service<bc_game_system>()->get_physics_system().get_game_actor(l_px_actor);
 			}
 		};
@@ -58,7 +58,7 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept
 			{
-				auto l_px_actor = get_px_actor();
+				const auto l_px_actor = get_px_actor();
 				return core::bc_get_service<bc_game_system>()->get_physics_system().get_game_actor(l_px_actor);
 			}
 		};
@@ -84,7 +84,7 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept
 			{
-				auto l_px_actor = get_px_actor();
+				const auto l_px_actor = get_px_actor();
 				return core::bc_get_service<bc_game_system>()->get_physics_system().get_game_actor(l_px_actor);
 			}
 		};

@@ -90,7 +90,7 @@ namespace black_cat
 			else
 			{
 				auto l_actor = get_actor();
-				auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
+				const auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
 				
 				_set_world_transform(l_actor, l_mediate_component->get_world_transform());
 				m_animation_played = false;

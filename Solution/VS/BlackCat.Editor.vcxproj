@@ -807,11 +807,6 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="BlackCat.vcxproj">
-      <Project>{d6d32113-4c80-4613-87df-1000c12d3fe9}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\bcTerrainHeight.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Compute</ShaderType>
@@ -850,6 +845,29 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(Configuration)\Content\ /E 
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="BlackCat.App.vcxproj">
+      <Project>{d6d32113-4c80-4613-87df-1000c12d3fe9}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Core.Platform.Win32.vcxproj">
+      <Project>{be5cab27-d8e0-4781-abf8-f37fe773b65b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Core.vcxproj">
+      <Project>{e4a77cc4-66c0-49b1-bfcf-a92173763741}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Game.vcxproj">
+      <Project>{905ddbc6-a5b1-49e9-8af0-064c358fce65}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Graphic.DirectX11.vcxproj">
+      <Project>{d176029e-3b2c-4599-986c-3c8685f35f6f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Physics.PhysX.vcxproj">
+      <Project>{f3bd2963-a256-4b38-9018-a31aa5558593}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BlackCat.Platform.Win32.vcxproj">
+      <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

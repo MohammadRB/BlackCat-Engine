@@ -31,7 +31,7 @@ namespace black_cat
 		class bc_px_allocator : public physx::PxAllocatorCallback
 		{
 		public:
-			explicit bc_px_allocator(core::bc_unique_ptr< bci_allocator > p_imp)
+			explicit bc_px_allocator(core::bc_unique_ptr<bci_allocator> p_imp) noexcept
 				: m_imp(std::move(p_imp))
 			{
 			}
@@ -46,13 +46,13 @@ namespace black_cat
 				m_imp->free(p_ptr);
 			}
 
-			core::bc_unique_ptr< bci_allocator > m_imp;
+			core::bc_unique_ptr<bci_allocator> m_imp;
 		};
 
 		class bc_px_task_dispatcher : public physx::PxCpuDispatcher
 		{
 		public:
-			explicit bc_px_task_dispatcher(core::bc_unique_ptr< bci_task_dispatcher > p_imp)
+			explicit bc_px_task_dispatcher(core::bc_unique_ptr<bci_task_dispatcher> p_imp) noexcept
 				: m_imp(std::move(p_imp))
 			{
 			}
@@ -67,13 +67,13 @@ namespace black_cat
 				return m_imp->worker_count();
 			}
 
-			core::bc_unique_ptr< bci_task_dispatcher > m_imp;
+			core::bc_unique_ptr<bci_task_dispatcher> m_imp;
 		};
 
 		class bc_px_logger : public physx::PxErrorCallback
 		{
 		public:
-			explicit bc_px_logger(core::bc_unique_ptr<bci_logger> p_imp)
+			explicit bc_px_logger(core::bc_unique_ptr<bci_logger> p_imp) noexcept
 				: m_imp(std::move(p_imp))
 			{
 			}
@@ -105,7 +105,7 @@ namespace black_cat
 		class bc_px_contact_filter_callback : public physx::PxSimulationFilterCallback
 		{
 		public:
-			explicit bc_px_contact_filter_callback(core::bc_unique_ptr< bci_contact_filter_callback > p_imp);
+			explicit bc_px_contact_filter_callback(core::bc_unique_ptr<bci_contact_filter_callback> p_imp) noexcept;
 
 			physx::PxFilterFlags pairFound(physx::PxU32 p_pair_id,
 				physx::PxFilterObjectAttributes p_attributes0,
@@ -129,25 +129,25 @@ namespace black_cat
 				physx::PxPairFlags& p_pair_flags,
 				physx::PxFilterFlags& p_filter_flags) override;
 
-			core::bc_unique_ptr< bci_contact_filter_callback > m_imp;
+			core::bc_unique_ptr<bci_contact_filter_callback> m_imp;
 		};
 
 		class bc_px_contact_modify_callback : public physx::PxContactModifyCallback, public physx::PxCCDContactModifyCallback
 		{
 		public:
-			explicit bc_px_contact_modify_callback(core::bc_unique_ptr< bci_contact_modify_callback > p_imp);
+			explicit bc_px_contact_modify_callback(core::bc_unique_ptr<bci_contact_modify_callback> p_imp) noexcept;
 
 			void onContactModify(physx::PxContactModifyPair* const p_pairs, physx::PxU32 p_count) override;
 
 			void onCCDContactModify(physx::PxContactModifyPair* const p_pairs, physx::PxU32 p_count) override;
 
-			core::bc_unique_ptr< bci_contact_modify_callback > m_imp;
+			core::bc_unique_ptr<bci_contact_modify_callback> m_imp;
 		};
 
 		class bc_px_simulation_callback : public physx::PxSimulationEventCallback
 		{
 		public:
-			explicit bc_px_simulation_callback(core::bc_unique_ptr< bci_physics_simulation_callback > p_imp);
+			explicit bc_px_simulation_callback(core::bc_unique_ptr<bci_physics_simulation_callback> p_imp) noexcept;
 
 			void onConstraintBreak(physx::PxConstraintInfo* p_constraints, physx::PxU32 p_count) override;
 
@@ -165,18 +165,16 @@ namespace black_cat
 				const physx::PxTransform* p_pose_buffer,
 				const physx::PxU32 p_count) override;
 			
-			core::bc_unique_ptr< bci_physics_simulation_callback > m_imp;
+			core::bc_unique_ptr<bci_physics_simulation_callback> m_imp;
 		};
 
 		class bc_px_query_filter_callback : public physx::PxQueryFilterCallback
 		{
 		public:
-			explicit bc_px_query_filter_callback(bc_scene_query_post_filter_callback* p_post_filter_callback, bool p_high_detail_query_shape)
-				: m_post_filter_callback(p_post_filter_callback),
-				m_high_detail_query_shape(p_high_detail_query_shape)
-			{
-			}
-			
+			bc_px_query_filter_callback(bc_scene_query_post_filter_callback* p_post_filter_callback, 
+				bool p_high_detail_query_shape, 
+				bc_shape_query_flag p_default_type = bc_shape_query_flag::blocking) noexcept;
+
 			physx::PxQueryHitType::Enum preFilter(const physx::PxFilterData& p_filter_data,
 				const physx::PxShape* p_shape,
 				const physx::PxRigidActor* p_actor,
@@ -188,12 +186,13 @@ namespace black_cat
 		private:
 			bc_scene_query_post_filter_callback* m_post_filter_callback;
 			bool m_high_detail_query_shape;
+			bc_shape_query_flag m_default_type;
 		};
 
 		class bc_px_controller_hit_callback : public physx::PxUserControllerHitReport
 		{
 		public:
-			explicit bc_px_controller_hit_callback(bci_ccontroller_hit_callback* p_callback);
+			explicit bc_px_controller_hit_callback(bci_ccontroller_hit_callback* p_callback) noexcept;
 			
 			void onShapeHit(const physx::PxControllerShapeHit& p_hit) override;
 			
@@ -210,7 +209,7 @@ namespace black_cat
 		public:
 			bc_px_ccontroller_query_filter(bc_scene_query_pre_filter_callback* p_pre_filter,
 				bc_scene_query_post_filter_callback* p_post_filter,
-				bool p_high_detail_query_shape);
+				bool p_high_detail_query_shape) noexcept;
 
 			physx::PxQueryHitType::Enum preFilter(const physx::PxFilterData& p_filter_data,
 				const physx::PxShape* p_shape,
@@ -229,7 +228,7 @@ namespace black_cat
 		class bc_px_ccontroller_collision_filter : public physx::PxControllerFilterCallback
 		{
 		public:
-			explicit bc_px_ccontroller_collision_filter(bc_ccontroller_collision_filter_callback* p_callback);
+			explicit bc_px_ccontroller_collision_filter(bc_ccontroller_collision_filter_callback* p_callback) noexcept;
 
 			bool filter(const physx::PxController& p_controller1, const physx::PxController& p_controller2) override;
 

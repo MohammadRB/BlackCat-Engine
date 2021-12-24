@@ -7,7 +7,6 @@
 #include "Game/System/Script/bcDefaultGameConsole.h"
 #include "Game/System/Network/Server/bcNetworkServerManagerHook.h"
 #include "App/Application/bcRenderApplication.h"
-#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 
 namespace box
 {
@@ -62,5 +61,7 @@ namespace box
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
 		platform::bc_script_context* m_server_script_context = nullptr;
 		platform::bc_script_object_ref m_server_script_object;
+
+		bool m_server_started = false;
 	};
 }

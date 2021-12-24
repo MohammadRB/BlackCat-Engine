@@ -301,6 +301,10 @@ namespace black_cat
 			if (l_editor_event)
 			{
 				m_editor_mode = l_editor_event->get_editor_mode();
+				if(m_editor_mode)
+				{
+					m_paused = false;
+				}
 				return;
 			}
 		}

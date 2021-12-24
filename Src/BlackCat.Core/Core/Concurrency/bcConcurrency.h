@@ -23,7 +23,7 @@ namespace black_cat
 			static bcSIZE worker_count();
 
 			template< typename T >
-			static bc_task<T> start_task(bc_delegate< T(void) >&& p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
+			static bc_task<T> start_task(bc_delegate<T(void)> p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
 
 			template< typename ...T >
 			static void when_all(bc_task<T>&... p_tasks);
@@ -84,7 +84,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		bc_task<T> bc_concurrency::start_task(bc_delegate<T()>&& p_delegate, bc_task_creation_option p_option)
+		bc_task<T> bc_concurrency::start_task(bc_delegate<T()> p_delegate, bc_task_creation_option p_option)
 		{
 			return _get_thread_manager()->start_new_task(std::move(p_delegate), p_option);
 		}

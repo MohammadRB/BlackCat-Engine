@@ -42,6 +42,9 @@
     <ClCompile Include="..\Src\BoX\Application\bxApplicationHookFunctions.cpp">
       <Filter>BoX\Application</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\BoX\Game\bxPlayerController.cpp">
+      <Filter>BoX\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\BoX\Application\bxApplication.h">

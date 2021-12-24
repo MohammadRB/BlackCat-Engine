@@ -43,7 +43,7 @@ namespace black_cat
 		public:
 			virtual ~bci_task_dispatcher() = default;
 
-			virtual void add_task(bc_task&& p_task) = 0;
+			virtual void add_task(bc_task p_task) = 0;
 
 			virtual bcSIZE worker_count() const noexcept = 0;
 		};
@@ -112,9 +112,9 @@ namespace black_cat
 		class bc_default_task_dispatcher : public bci_task_dispatcher
 		{
 		public:
-			void add_task(bc_task&& p_task) override
+			void add_task(bc_task p_task) override
 			{
-				core::bc_concurrency::start_task< void >
+				core::bc_concurrency::start_task<void>
 				(
 					[t = std::move(p_task)]() mutable
 					{

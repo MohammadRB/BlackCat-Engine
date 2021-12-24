@@ -1,6 +1,6 @@
 // [04/23/2021 MRB]
 
-#include "App/BlackCatPCH.h"
+#include "App/AppPCH.h"
 
 #include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcJsonParse.h"
@@ -71,7 +71,7 @@ namespace black_cat
 
 	void bc_scene_check_point_loader::content_processing(core::bc_content_saving_context& p_context) const
 	{
-		auto* l_check_point = static_cast<game::bc_scene_check_point*>(p_context.m_content);
+		const auto* l_check_point = static_cast<game::bc_scene_check_point*>(p_context.m_content);
 		auto l_dynamic_actors = l_check_point->export_dynamic_actors();
 
 		core::bc_json_document<_bc_scene_check_point_json> l_json_document;
@@ -79,11 +79,11 @@ namespace black_cat
 		
 		for (auto& l_actor : l_dynamic_actors)
 		{
-			auto* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();
+			const auto* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();
 			auto& l_json_entry = l_json_document->m_actors.new_entry();
 
 			l_actor.get_components(std::back_inserter(l_actor_components));
-			for (auto& l_component : l_actor_components)
+			for (const auto& l_component : l_actor_components)
 			{
 				l_component->write_instance(game::bc_actor_component_write_context(*l_json_entry->m_parameters, l_actor));
 			}
@@ -98,6 +98,6 @@ namespace black_cat
 		}
 
 		const auto l_json = l_json_document.write_pretty();
-		p_context.m_file.write(reinterpret_cast<const bcBYTE*>(l_json.c_str()), sizeof(decltype(l_json)::value_type)* l_json.size());
+		p_context.m_file.write(reinterpret_cast<const bcBYTE*>(l_json.c_str()), sizeof(decltype(l_json)::value_type) * l_json.size());
 	}
 }

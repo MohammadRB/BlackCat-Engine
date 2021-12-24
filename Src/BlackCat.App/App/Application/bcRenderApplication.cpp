@@ -1,6 +1,6 @@
 // [11/22/2018 MRB]
 
-#include "App/BlackCatPCH.h"
+#include "App/AppPCH.h"
 
 #include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
@@ -173,12 +173,8 @@ namespace black_cat
 
 	void bc_render_application::app_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock)
 	{
-		//m_update_watch.start();
-		
 		m_game_system->swap_frame_idle(p_clock);
 		application_swap_frame_idle(p_clock);
-		
-		//m_update_watch.stop();
 	}
 
 	void bc_render_application::app_swap_frame(const core_platform::bc_clock::update_param& p_clock)

@@ -14,6 +14,7 @@
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcNetworkReplicateActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat
@@ -66,11 +67,11 @@ namespace black_cat
 
 		void bc_rigid_dynamic_component::initialize_entity(const bc_actor_component_initialize_entity_context& p_context)
 		{
-			auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
+			const auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
 
 			if (l_mesh_component)
 			{
-				auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();
+				const auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();
 				auto& l_physics_system = core::bc_get_service<bc_game_system>()->get_physics_system();
 				auto& l_physics = l_physics_system.get_physics();
 
@@ -143,6 +144,17 @@ namespace black_cat
 					physics::bc_scene_lock l_lock(get_scene());
 
 					m_px_actor_ref->add_force_at_pose(l_bullet_hit_event->get_bullet_direction() * l_force, l_bullet_hit_event->get_hit_position());
+				}
+			}
+
+			const auto* l_explosion_hit_event = core::bci_message::as<bc_explosion_actor_event>(p_context.m_event);
+			if (l_explosion_hit_event)
+			{
+				{
+					physics::bc_scene_lock l_lock(get_scene());
+
+					const auto l_force = l_explosion_hit_event->calculate_applied_force(m_px_actor_ref->get_global_pose().get_position());
+					m_px_actor_ref->add_force(l_force.first * l_force.second);
 				}
 			}
 			
