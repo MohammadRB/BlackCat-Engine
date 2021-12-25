@@ -6,6 +6,7 @@
 #include "Core/Math/bcMatrix4f.h"
 #include "Core/Memory/bcPtr.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
+#include "Game/bcConstant.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
@@ -24,15 +25,11 @@ namespace black_cat
 			BC_COMPONENT(mediate, true, true)
 
 		public:
-			static constexpr const bcCHAR* s_position_json_key = "position";
-			static constexpr const bcCHAR* s_entity_name_json_key = "entity_name";
-
-		public:
 			bc_mediate_component(bc_actor_id p_actor_index, bc_actor_component_id p_index);
 
 			bc_mediate_component(bc_mediate_component&&) noexcept;
 
-			~bc_mediate_component();
+			~bc_mediate_component() override;
 			
 			bc_mediate_component& operator=(bc_mediate_component&&) noexcept;
 
@@ -41,10 +38,6 @@ namespace black_cat
 			const bcCHAR* get_entity_name() const noexcept;
 
 			void set_entity_name(const bcCHAR* p_entity_name) noexcept;
-
-			bci_actor_controller* get_controller() const noexcept;
-			
-			void set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller) noexcept;
 
 			bc_scene* get_scene() const noexcept;
 			
@@ -55,6 +48,10 @@ namespace black_cat
 			const core::bc_matrix4f& get_world_transform() const noexcept;
 			
 			core::bc_vector3f get_position() const noexcept;
+
+			bci_actor_controller* get_controller() const noexcept;
+
+			void set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller, const bc_actor_component_initialize_context& p_context) noexcept;
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
@@ -100,16 +97,6 @@ namespace black_cat
 		{
 			m_entity_name = p_entity_name;
 		}
-
-		inline bci_actor_controller* bc_mediate_component::get_controller() const noexcept
-		{
-			return m_controller.get();
-		}
-
-		inline void bc_mediate_component::set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller) noexcept
-		{
-			m_controller = std::move(p_controller);
-		}
 		
 		inline bc_scene* bc_mediate_component::get_scene() const noexcept
 		{
@@ -134,6 +121,11 @@ namespace black_cat
 		inline core::bc_vector3f bc_mediate_component::get_position() const noexcept
 		{
 			return m_world_transform.get_translation();
+		}
+
+		inline bci_actor_controller* bc_mediate_component::get_controller() const noexcept
+		{
+			return m_controller.get();
 		}
 	}
 }

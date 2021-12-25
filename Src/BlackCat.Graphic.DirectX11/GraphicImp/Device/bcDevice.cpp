@@ -1213,8 +1213,8 @@ namespace black_cat
 			const auto l_sprite_path = core::bc_path::get_absolute_path(L"Content\\Data\\DX11.spritefont");
 			
 			bc_device_text_renderer::platform_pack l_pack;
-			l_pack.m_sprite_font = core::bc_make_unique<DirectX::SpriteFont>(m_pack.m_device.Get(), l_sprite_path.c_str());
-			l_pack.m_sprite_batch = core::bc_make_unique<DirectX::SpriteBatch>(m_pack.m_immediate_context.Get());
+			l_pack.m_sprite_font = core::bc_make_unique<DirectX::SpriteFont>(DirectX::SpriteFont(m_pack.m_device.Get(), l_sprite_path.c_str()));
+			l_pack.m_sprite_batch = core::bc_make_unique<DirectX::SpriteBatch>(DirectX::SpriteBatch(m_pack.m_immediate_context.Get()));
 
 			return bc_device_text_renderer(std::move(l_pack));
 		}

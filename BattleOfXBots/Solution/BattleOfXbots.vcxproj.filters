@@ -28,6 +28,9 @@
     <Filter Include="BoX\Game">
       <UniqueIdentifier>{a5ebdb5e-67d3-4d8b-93b1-07ec54c0d3b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BoX\RenderPass">
+      <UniqueIdentifier>{8dcc7cdf-b7fb-4808-8e65-5684a6e35ad9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\BoX\BattleOfXbots.cpp">
@@ -42,8 +45,11 @@
     <ClCompile Include="..\Src\BoX\Application\bxApplicationHookFunctions.cpp">
       <Filter>BoX\Application</Filter>
     </ClCompile>
-    <ClCompile Include="..\Src\BoX\Game\bxPlayerController.cpp">
+    <ClCompile Include="..\Src\BoX\Game\bxPlayerActorController.cpp">
       <Filter>BoX\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX\RenderPass\bcPlayerUIPass.cpp">
+      <Filter>BoX\RenderPass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,11 +59,17 @@
     <ClInclude Include="..\Src\BoX\Application\bxClientScript.h">
       <Filter>BoX\Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\Src\BoX\Game\bxPlayerController.h">
-      <Filter>BoX\Game</Filter>
-    </ClInclude>
     <ClInclude Include="..\Src\BoX\Application\bxApplicationHookFunctions.h">
       <Filter>BoX\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX\Game\bxPlayerActorController.h">
+      <Filter>BoX\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX\Application\bxPlayerUIService.h">
+      <Filter>BoX\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX\RenderPass\bcPlayerUIPass.h">
+      <Filter>BoX\RenderPass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

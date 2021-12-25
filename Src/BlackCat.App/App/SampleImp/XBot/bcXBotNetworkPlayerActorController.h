@@ -23,7 +23,16 @@ namespace black_cat
 		~bc_xbot_network_player_actor_controller() override = default;
 
 		bc_xbot_network_player_actor_controller& operator=(bc_xbot_network_player_actor_controller&&) noexcept = default;
-		
+
+		void start_grenade_throw(const bcCHAR* p_entity_name) noexcept;
+
+		void attach_weapon(const bcCHAR* p_entity) noexcept;
+
+		void detach_weapon() noexcept;
+
+		void shoot_weapon() noexcept;
+
+	protected:
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
 		
 		void load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
@@ -43,14 +52,6 @@ namespace black_cat
 		void removed_from_scene(const game::bc_actor_component_event_context& p_context,game::bc_scene& p_scene) override;
 		
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
-
-		void start_grenade_throw(const bcCHAR* p_entity_name) noexcept;
-		
-		void attach_weapon(const bcCHAR* p_entity) noexcept;
-
-		void detach_weapon() noexcept;
-
-		void shoot_weapon() noexcept;
 
 	private:
 		void throw_grenade(game::bc_actor& p_grenade) noexcept override;

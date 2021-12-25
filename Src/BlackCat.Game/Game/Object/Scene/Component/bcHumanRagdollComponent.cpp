@@ -427,7 +427,7 @@ namespace black_cat
 
 				// Rigid controller create collision shapes only for query, so newly created ragdoll shapes must not be used for queries
 				l_px_joint_shape->set_flags(core::bc_enum::mask_or({ physics::bc_shape_flag::visualization, physics::bc_shape_flag::simulation }));
-				
+								
 				l_px_joint_actor->set_mass(l_rigid_body_mass * l_joint_ite->m_mass_multiplier);
 				l_px_joint_actor->attach_shape(l_px_joint_shape.get());
 				m_physics_system->set_game_actor(l_px_joint_actor.get(), bc_actor());
@@ -438,7 +438,7 @@ namespace black_cat
 
 			m_joints.reserve(l_mesh_colliders.get_collider_joints().size());
 
-			auto l_create_spherical_joint = [&](core::bc_string_view p_collider1, 
+			auto l_create_d6_joint = [&](core::bc_string_view p_collider1, 
 				physics::bc_rigid_actor& p_actor1, 
 				core::bc_string_view p_collider2, 
 				physics::bc_rigid_actor& p_actor2,
@@ -480,7 +480,7 @@ namespace black_cat
 				return l_joint;
 			};
 
-			auto l_head_joint = l_create_spherical_joint
+			auto l_head_joint = l_create_d6_joint
 			(
 				m_colliders_map[s_head_index].m_attached_node_name,
 				m_colliders_map[s_head_index].m_actor.get(),
@@ -492,7 +492,7 @@ namespace black_cat
 				70,
 				70
 			);
-			auto l_left_arm_joint = l_create_spherical_joint
+			auto l_left_arm_joint = l_create_d6_joint
 			(
 				m_colliders_map[s_body_index].m_attached_node_name,
 				m_colliders_map[s_body_index].m_actor.get(),
@@ -504,7 +504,7 @@ namespace black_cat
 				70,
 				70
 			);
-			auto l_left_fore_arm_joint = l_create_spherical_joint
+			auto l_left_fore_arm_joint = l_create_d6_joint
 			(
 				m_colliders_map[s_left_arm_index].m_attached_node_name,
 				m_colliders_map[s_left_arm_index].m_actor.get(),
@@ -516,7 +516,7 @@ namespace black_cat
 				70,
 				70
 			);
-			auto l_left_hand_joint = l_create_spherical_joint
+			auto l_left_hand_joint = l_create_d6_joint
 			(
 				m_colliders_map[s_left_fore_arm_index].m_attached_node_name,
 				m_colliders_map[s_left_fore_arm_index].m_actor.get(),
@@ -528,7 +528,7 @@ namespace black_cat
 				70,
 				70
 			);
-			auto l_right_arm_joint = l_create_spherical_joint
+			auto l_right_arm_joint = l_create_d6_joint
 			(
 				m_colliders_map[s_body_index].m_attached_node_name,
 				m_colliders_map[s_body_index].m_actor.get(),
@@ -540,7 +540,7 @@ namespace black_cat
 				70,
 				70
 			);
-			auto l_right_fore_arm_joint = l_create_spherical_joint
+			auto l_right_fore_arm_joint = l_create_d6_joint
 			(
 				m_colliders_map[s_right_arm_index].m_attached_node_name,
 				m_colliders_map[s_right_arm_index].m_actor.get(),
@@ -552,7 +552,7 @@ namespace black_cat
 				70,
 				70
 			);
-			auto l_right_hand_joint = l_create_spherical_joint
+			auto l_right_hand_joint = l_create_d6_joint
 			(
 				m_colliders_map[s_right_fore_arm_index].m_attached_node_name,
 				m_colliders_map[s_right_fore_arm_index].m_actor.get(),
@@ -564,7 +564,7 @@ namespace black_cat
 				70,
 				70
 			);
-			auto l_left_up_leg_joint = l_create_spherical_joint
+			auto l_left_up_leg_joint = l_create_d6_joint
 			(
 				m_colliders_map[s_body_index].m_attached_node_name,
 				m_colliders_map[s_body_index].m_actor.get(),
@@ -576,7 +576,7 @@ namespace black_cat
 				70,
 				70
 			);
-			auto l_left_leg_joint = l_create_spherical_joint
+			auto l_left_leg_joint = l_create_d6_joint
 			(
 				m_colliders_map[s_left_up_leg_index].m_attached_node_name,
 				m_colliders_map[s_left_up_leg_index].m_actor.get(),
@@ -588,7 +588,7 @@ namespace black_cat
 				70,
 				70
 			);
-			auto l_left_foot_joint = l_create_spherical_joint
+			auto l_left_foot_joint = l_create_d6_joint
 			(
 				m_colliders_map[s_left_leg_index].m_attached_node_name,
 				m_colliders_map[s_left_leg_index].m_actor.get(),
@@ -600,7 +600,7 @@ namespace black_cat
 				70,
 				70
 			);
-			auto l_right_up_leg_joint = l_create_spherical_joint
+			auto l_right_up_leg_joint = l_create_d6_joint
 			(
 				m_colliders_map[s_body_index].m_attached_node_name,
 				m_colliders_map[s_body_index].m_actor.get(),
@@ -612,7 +612,7 @@ namespace black_cat
 				70,
 				70
 			);
-			auto l_right_leg_joint = l_create_spherical_joint
+			auto l_right_leg_joint = l_create_d6_joint
 			(
 				m_colliders_map[s_right_up_leg_index].m_attached_node_name,
 				m_colliders_map[s_right_up_leg_index].m_actor.get(),
@@ -624,7 +624,7 @@ namespace black_cat
 				70,
 				70
 			);
-			auto l_right_foot_joint = l_create_spherical_joint
+			auto l_right_foot_joint = l_create_d6_joint
 			(
 				m_colliders_map[s_right_leg_index].m_attached_node_name,
 				m_colliders_map[s_right_leg_index].m_actor.get(),

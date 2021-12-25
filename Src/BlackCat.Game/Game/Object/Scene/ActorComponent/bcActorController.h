@@ -12,6 +12,7 @@ namespace black_cat
 	{
 		class bc_scene;
 		class bc_shape_drawer;
+		class bc_mediate_component;
 		struct bc_actor_component_initialize_context;
 		struct bc_actor_component_load_context;
 		struct bc_actor_component_write_context;
@@ -23,9 +24,15 @@ namespace black_cat
 		
 		class bci_actor_controller
 		{
+			friend class bc_mediate_component;
+
 		public:
 			virtual ~bci_actor_controller() = 0;
 
+		protected:
+			bc_scene* get_scene() const noexcept;
+		
+		private:
 			virtual void initialize(const bc_actor_component_initialize_context& p_context);
 
 			virtual void load_instance(const bc_actor_component_load_context& p_context);
@@ -35,21 +42,17 @@ namespace black_cat
 			virtual void load_network_instance(const bc_actor_component_network_load_context& p_context);
 
 			virtual void write_network_instance(const bc_actor_component_network_write_context& p_context);
-			
+
 			virtual void added_to_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene);
-			
+
 			virtual void update(const bc_actor_component_update_content& p_context);
 
 			virtual void removed_from_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene);
-			
+
 			virtual void handle_event(const bc_actor_component_event_context& p_context);
-			
+
 			virtual void debug_draw(const bc_actor_component_debug_draw_context& p_context);
 
-		protected:
-			bc_scene* get_scene() const noexcept;
-		
-		private:
 			bc_scene* m_scene{ nullptr };
 		};
 

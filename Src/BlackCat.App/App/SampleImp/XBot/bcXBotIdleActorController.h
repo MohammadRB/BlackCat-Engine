@@ -13,7 +13,7 @@ namespace black_cat
 {
 	class BC_DLL bc_xbot_idle_actor_controller : public bc_xbot_actor_controller
 	{
-	public:
+	private:
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
 		
 		void load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
@@ -29,8 +29,7 @@ namespace black_cat
 		void update_replicated_instance(const game::bc_actor_component_update_content& p_context) override;
 
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
-		
-	private:
+
 		void throw_grenade(game::bc_actor& p_grenade) noexcept override;
 
 		game::bc_physics_system* m_physics_system = nullptr;

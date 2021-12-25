@@ -26,43 +26,60 @@ namespace black_cat
 		~bc_xbot_player_actor_controller() override;
 
 		bc_xbot_player_actor_controller& operator=(bc_xbot_player_actor_controller&&) noexcept;
-		
+
+	protected:
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
 
 		void load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
-		
+
 		void load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
 
 		void write_origin_network_instance(const game::bc_actor_component_network_write_context& p_context) override;
-		
+
 		void write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context) override;
-		
+
 		void added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
-		
+
 		void update_origin_instance(const game::bc_actor_component_update_content& p_context) override;
 
 		void update_replicated_instance(const game::bc_actor_component_update_content& p_context) override;
-		
+
 		void removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
-		
+
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
-		
+
 	private:
 		void _on_event(core::bci_event& p_event) noexcept;
 
-		void _on_pointing(platform::bc_app_event_pointing& p_pointing_event) noexcept;
+		void _on_pointing(const platform::bc_app_event_pointing& p_pointing_event) noexcept;
 
-		void _on_key(platform::bc_app_event_key& p_key_event) noexcept;
+		void _on_key(const platform::bc_app_event_key& p_key_event) noexcept;
 
 		void _start_grenade_throw(const bcCHAR* p_entity);
-
-		void throw_grenade(game::bc_actor& p_grenade) noexcept override;
 		
 		void _attach_weapon(const bcCHAR* p_entity);
 
 		void _detach_weapon();
 
 		void _shoot_weapon();
+
+		void throw_grenade(game::bc_actor& p_grenade) noexcept override final;
+
+		virtual bool can_look() noexcept;
+
+		virtual bool can_move() noexcept;
+
+		virtual bool can_throw_grenade(core::bc_string_view p_entity) noexcept;
+
+		virtual bool can_attach_weapon(core::bc_string_view p_entity) noexcept;
+
+		virtual bool can_shoot_weapon() noexcept;
+
+		virtual void grenade_thrown(core::bc_string_view p_entity) noexcept;
+
+		virtual void weapon_attached(game::bc_actor& p_weapon) noexcept;
+
+		virtual void weapon_shoot(game::bc_actor& p_weapon) noexcept;
 
 		game::bc_input_system* m_input_system;
 		game::bc_network_system* m_network_system;

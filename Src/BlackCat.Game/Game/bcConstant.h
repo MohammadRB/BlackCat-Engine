@@ -20,6 +20,10 @@ namespace black_cat
 		BC_PARAMETER(mesh_collider_materials, "collider_materials");
 		BC_PARAMETER(mesh_is_lod, "is_lod");
 		BC_PARAMETER(high_detail_query_shape, "high_detail_query_shape");
+		BC_PARAMETER(position, "position");
+		BC_PARAMETER(direction, "direction");
+		BC_PARAMETER(rotation, "rotation");
+		BC_PARAMETER(entity_name, "entity_name");
 		BC_PARAMETER(rigid_cmass, "cmass");
 		BC_PARAMETER(rigid_mass, "mass");
 		BC_PARAMETER(rigid_force_amount, "force_amount");

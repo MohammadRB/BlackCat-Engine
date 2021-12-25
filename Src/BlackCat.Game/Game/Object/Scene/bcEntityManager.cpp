@@ -183,7 +183,7 @@ namespace black_cat
 		bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name)
 		{
 			const auto l_hash = string_hash()(p_entity_name);
-			auto l_entity_entry = m_entities.find(l_hash);
+			const auto l_entity_entry = m_entities.find(l_hash);
 			bc_actor l_actor;
 			
 			try
@@ -271,15 +271,18 @@ namespace black_cat
 					}
 
 					auto l_controller = l_controller_ite->second();
-					l_controller->initialize(bc_actor_component_initialize_context
+					l_mediate_component->set_controller
 					(
-						l_entity_entry->second.m_parameters,
-						m_content_stream_manager,
-						m_game_system,
-						p_scene,
-						l_actor
-					));
-					l_mediate_component->set_controller(std::move(l_controller));
+						std::move(l_controller), 
+						bc_actor_component_initialize_context
+						(
+							l_entity_entry->second.m_parameters,
+							m_content_stream_manager,
+							m_game_system,
+							p_scene,
+							l_actor
+						)
+					);
 				}
 			}
 			catch (const std::exception& p_exception)

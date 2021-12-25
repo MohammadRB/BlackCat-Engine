@@ -20,7 +20,7 @@ namespace black_cat
 
 		bc_mesh_collider_loader(bc_mesh_collider_loader&&) = default;
 
-		~bc_mesh_collider_loader() = default;
+		~bc_mesh_collider_loader() override = default;
 
 		bc_mesh_collider_loader& operator=(bc_mesh_collider_loader&&) = default;
 

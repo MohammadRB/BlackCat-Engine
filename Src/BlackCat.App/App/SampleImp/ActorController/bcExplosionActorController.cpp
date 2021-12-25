@@ -163,7 +163,11 @@ namespace black_cat
 			const auto l_dynamics_hit_result = std::move(*m_scene_dynamics_query.get().get_result().as<core::bc_vector<physics::bc_overlap_hit>>());
 			for(game::bc_overlap_hit l_hit : l_dynamics_hit_result)
 			{
-				l_hit.get_actor().add_event(game::bc_explosion_actor_event(m_position, m_force_radius, m_force_amount));
+				auto l_actor = l_hit.get_actor();
+				if(l_actor.is_valid())
+				{
+					l_hit.get_actor().add_event(game::bc_explosion_actor_event(m_position, m_force_radius, m_force_amount));
+				}
 			}
 		}
 

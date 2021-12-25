@@ -24,6 +24,63 @@ namespace black_cat
 	{
 	}
 
+	void bc_xbot_network_player_actor_controller::start_grenade_throw(const bcCHAR* p_entity_name) noexcept
+	{
+		// Entity name parameter will be passed form network messages. To prevent endangled reference we must make a copy of it  
+		m_string = p_entity_name;
+		bc_xbot_actor_controller::start_grenade_throw(m_string.c_str());
+
+		if (get_network_component().get_network_type() == game::bc_network_type::server)
+		{
+			m_network_system->send_message(bc_xbot_start_grenade_throw_network_message(get_actor(), m_string.c_str()));
+		}
+	}
+
+	void bc_xbot_network_player_actor_controller::attach_weapon(const bcCHAR* p_entity) noexcept
+	{
+		auto* l_weapon = get_weapon();
+		if (l_weapon)
+		{
+			bc_xbot_actor_controller::detach_weapon();
+		}
+
+		auto l_weapon_actor = get_scene()->create_actor(p_entity, core::bc_matrix4f::translation_matrix(get_position()));
+		l_weapon_actor.mark_for_double_update();
+
+		bc_xbot_actor_controller::attach_weapon(l_weapon_actor);
+
+		if (get_network_component().get_network_type() == game::bc_network_type::server)
+		{
+			m_network_system->send_message(bc_xbot_weapon_attach_network_message(get_actor(), l_weapon_actor));
+		}
+	}
+
+	void bc_xbot_network_player_actor_controller::detach_weapon() noexcept
+	{
+		auto* l_weapon = get_weapon();
+		if (!l_weapon)
+		{
+			return;
+		}
+
+		bc_xbot_actor_controller::detach_weapon();
+
+		if (get_network_component().get_network_type() == game::bc_network_type::server)
+		{
+			m_network_system->send_message(bc_xbot_weapon_detach_network_message(get_actor()));
+		}
+	}
+
+	void bc_xbot_network_player_actor_controller::shoot_weapon() noexcept
+	{
+		bc_xbot_actor_controller::shoot_weapon();
+
+		if (get_network_component().get_network_type() == game::bc_network_type::server)
+		{
+			m_network_system->send_message(bc_xbot_weapon_shoot_network_message(get_actor()));
+		}
+	}
+
 	void bc_xbot_network_player_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		bc_xbot_actor_controller::initialize(p_context);
@@ -145,63 +202,6 @@ namespace black_cat
 	void bc_xbot_network_player_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
 	{
 		bc_xbot_actor_controller::handle_event(p_context);
-	}
-
-	void bc_xbot_network_player_actor_controller::start_grenade_throw(const bcCHAR* p_entity_name) noexcept
-	{
-		// Entity name parameter will be passed form network messages. To prevent endangled reference we must make a copy of it  
-		m_string = p_entity_name;
-		bc_xbot_actor_controller::start_grenade_throw(m_string.c_str());
-
-		if (get_network_component().get_network_type() == game::bc_network_type::server)
-		{
-			m_network_system->send_message(bc_xbot_start_grenade_throw_network_message(get_actor(), m_string.c_str()));
-		}
-	}
-
-	void bc_xbot_network_player_actor_controller::attach_weapon(const bcCHAR* p_entity) noexcept
-	{
-		auto* l_weapon = get_weapon();
-		if (l_weapon)
-		{
-			bc_xbot_actor_controller::detach_weapon();
-		}
-
-		auto l_weapon_actor = get_scene()->create_actor(p_entity, core::bc_matrix4f::translation_matrix(get_position()));
-		l_weapon_actor.mark_for_double_update();
-		
-		bc_xbot_actor_controller::attach_weapon(l_weapon_actor);
-
-		if(get_network_component().get_network_type() == game::bc_network_type::server)
-		{
-			m_network_system->send_message(bc_xbot_weapon_attach_network_message(get_actor(), l_weapon_actor));
-		}
-	}
-
-	void bc_xbot_network_player_actor_controller::detach_weapon() noexcept
-	{
-		auto* l_weapon = get_weapon();
-		if (!l_weapon)
-		{
-			return;
-		}
-
-		bc_xbot_actor_controller::detach_weapon();
-
-		if (get_network_component().get_network_type() == game::bc_network_type::server)
-		{
-			m_network_system->send_message(bc_xbot_weapon_detach_network_message(get_actor()));
-		}
-	}
-
-	void bc_xbot_network_player_actor_controller::shoot_weapon() noexcept
-	{
-		bc_xbot_actor_controller::shoot_weapon();
-
-		if (get_network_component().get_network_type() == game::bc_network_type::server)
-		{
-			m_network_system->send_message(bc_xbot_weapon_shoot_network_message(get_actor()));
-		}
 	}
 
 	void bc_xbot_network_player_actor_controller::throw_grenade(game::bc_actor& p_grenade) noexcept

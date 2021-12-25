@@ -60,6 +60,76 @@ namespace black_cat
 	{
 	}
 
+	void bc_xbot_actor_controller::update_attachment_transforms()
+	{
+		if (m_grenade.has_value())
+		{
+			if (m_state_machine->m_state.m_grenade_throw_time >= m_grenade_anim_attach_time &&
+				m_state_machine->m_state.m_grenade_throw_time <= m_grenade_anim_throw_time)
+			{
+				if (m_grenade->m_actor == nullptr)
+				{
+					m_grenade->m_actor = get_scene()->create_actor(m_grenade->m_entity_name, core::bc_matrix4f::translation_matrix(m_position));
+
+					auto* l_rigid_dynamic_component = m_grenade->m_actor.get_component<game::bc_rigid_dynamic_component>();
+					if (l_rigid_dynamic_component)
+					{
+						l_rigid_dynamic_component->set_enable(false);
+					}
+				}
+
+				const auto l_grenade_transform = _calculate_attachment_transform
+				(
+					m_right_hand_chain[2].first,
+					m_right_hand_weapon_up,
+					m_right_hand_weapon_forward,
+					m_right_hand_attachment_offset,
+					m_grenade->m_local_up,
+					m_grenade->m_local_forward,
+					core::bc_vector3f(0)
+				);
+
+				m_grenade->m_actor.add_event(game::bc_world_transform_actor_event(l_grenade_transform));
+				m_grenade->m_actor.mark_for_double_update();
+			}
+			else if (m_grenade->m_actor != nullptr)
+			{
+				throw_grenade(m_grenade->m_actor);
+				m_grenade.reset();
+			}
+		}
+
+		if (m_weapon.has_value())
+		{
+			auto* l_weapon_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(m_state_machine->get_active_animation());
+			const auto l_weapon_ik_weight = l_weapon_ik_job->get_weight();
+			core::bc_matrix4f l_weapon_transform;
+
+			if (l_weapon_ik_weight >= 1)
+			{
+				l_weapon_transform = _calculate_weapon_aim_transform();
+			}
+			else
+			{
+				const auto l_weapon_aim_transform = _calculate_weapon_aim_transform();
+				const auto l_weapon_attached_transform = _calculate_attachment_transform
+				(
+					m_left_hand_chain[2].first,
+					m_left_hand_weapon_up,
+					m_left_hand_weapon_forward,
+					m_left_hand_attachment_offset,
+					m_weapon->m_local_up,
+					m_weapon->m_local_forward,
+					m_weapon->m_second_hand_offset
+				);
+				l_weapon_transform = (l_weapon_aim_transform * l_weapon_ik_weight) + (l_weapon_attached_transform * (1 - l_weapon_ik_weight));
+			}
+
+			m_weapon->m_actor.add_event(game::bc_world_transform_actor_event(l_weapon_transform));
+			m_weapon->m_actor.mark_for_double_update();
+		}
+	}
+
 	void bc_xbot_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		try
@@ -70,7 +140,7 @@ namespace black_cat
 		{
 			// If no network component is presented network controller throws exception
 		}
-		
+
 		m_physics_system = &p_context.m_game_system.get_physics_system();
 		m_actor = p_context.m_actor;
 		m_skinned_mesh_component = p_context.m_actor.get_component<game::bc_skinned_mesh_component>();
@@ -96,7 +166,7 @@ namespace black_cat
 		m_rifle_joint_offset = p_context.m_parameters.get_value_vector3f_throw("rifle_joint_offset");
 		m_grenade_anim_attach_time = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>("grenade_anim_attach_time"), 0);
 		m_grenade_anim_throw_time = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>("grenade_anim_throw_time"), 0);
-		
+
 		std::transform
 		(
 			std::begin(l_upper_body_chain_value),
@@ -115,11 +185,11 @@ namespace black_cat
 			[this](const core::bc_any& p_any)
 			{
 				const auto l_joint = m_skinned_mesh_component->get_skeleton()->find_joint_by_name(p_any.as_throw<core::bc_string>().c_str());
-				if(!l_joint.second)
+				if (!l_joint.second)
 				{
 					throw bc_invalid_argument_exception("Right hand and/or left hand were not found");
 				}
-				
+
 				return l_joint;
 			}
 		);
@@ -135,7 +205,7 @@ namespace black_cat
 				{
 					throw bc_invalid_argument_exception("Right hand and/or left hand were not found");
 				}
-				
+
 				return l_joint;
 			}
 		);
@@ -177,12 +247,12 @@ namespace black_cat
 			game::bc_rigid_component_shared_lock l_lock(*m_rigid_controller_component);
 			l_mass = m_rigid_controller_component->get_body().get_mass();
 		}
-		
+
 		m_state_machine = core::bc_make_unique<bc_xbot_state_machine>(bc_xbot_state_machine
 		(
-			m_local_forward, 
-			7.f, 
-			m_bound_box_max_side_length * 1.3f, 
+			m_local_forward,
+			7.f,
+			m_bound_box_max_side_length * 1.3f,
 			m_bound_box_max_side_length * 0.6f,
 			l_mass,
 			*m_animation_pipeline
@@ -195,7 +265,7 @@ namespace black_cat
 		{
 			return;
 		}
-		
+
 		m_look_delta_x = p_context.m_look_delta_x;
 		if (p_context.m_look_delta_x != 0)
 		{
@@ -294,7 +364,7 @@ namespace black_cat
 		{
 			m_forward_velocity.release(p_context.m_clock.m_elapsed_second);
 		}
-		
+
 		if (p_context.m_backward_pressed)
 		{
 			m_backward_velocity.push(p_context.m_clock.m_elapsed_second);
@@ -358,12 +428,12 @@ namespace black_cat
 	{
 		{
 			physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
-			
+
 			auto* l_rigid_controller_component = p_context.m_actor.get_component<game::bc_rigid_controller_component>();
 			l_rigid_controller_component->reset_controller();
 		}
-		
-		if(m_weapon.has_value())
+
+		if (m_weapon.has_value())
 		{
 			m_scene->remove_actor(m_weapon->m_actor);
 			m_weapon.reset();
@@ -376,14 +446,14 @@ namespace black_cat
 	void bc_xbot_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
 	{
 		const auto* l_world_transform_event = core::bci_message::as<game::bc_world_transform_actor_event>(p_context.m_event);
-		if(l_world_transform_event && l_world_transform_event->get_transform_type() != game::bc_transform_event_type::physics)
+		if (l_world_transform_event && l_world_transform_event->get_transform_type() != game::bc_transform_event_type::physics)
 		{
 			const auto& l_world_transform = l_world_transform_event->get_transform();
 			m_position = l_world_transform.get_translation() - m_local_origin;
 
 			// In case we have transform event before actor added to scene
 			auto l_px_controller = m_rigid_controller_component->get_controller();
-			if(l_px_controller.is_valid())
+			if (l_px_controller.is_valid())
 			{
 				{
 					physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
@@ -393,82 +463,11 @@ namespace black_cat
 		}
 	}
 
-	void bc_xbot_actor_controller::update_attachment_transforms()
-	{
-		if(m_grenade.has_value())
-		{
-			if (m_state_machine->m_state.m_grenade_throw_time >= m_grenade_anim_attach_time &&
-				m_state_machine->m_state.m_grenade_throw_time <= m_grenade_anim_throw_time)
-			{
-				if (m_grenade->m_actor == nullptr)
-				{
-					m_grenade->m_actor = get_scene()->create_actor(m_grenade->m_entity_name, core::bc_matrix4f::translation_matrix(m_position));
-
-					auto* l_rigid_dynamic_component = m_grenade->m_actor.get_component<game::bc_rigid_dynamic_component>();
-					if(l_rigid_dynamic_component)
-					{
-						l_rigid_dynamic_component->set_enable(false);
-					}
-				}
-
-				const auto l_grenade_transform = _calculate_attachment_transform
-				(
-					m_right_hand_chain[2].first,
-					m_right_hand_weapon_up,
-					m_right_hand_weapon_forward,
-					m_right_hand_attachment_offset,
-					m_grenade->m_local_up,
-					m_grenade->m_local_forward,
-					core::bc_vector3f(0)
-				);
-
-				m_grenade->m_actor.add_event(game::bc_world_transform_actor_event(l_grenade_transform));
-				m_grenade->m_actor.mark_for_double_update();
-			}
-			else if(m_grenade->m_actor != nullptr)
-			{
-				throw_grenade(m_grenade->m_actor);
-				m_grenade.reset();
-			}
-		}
-		
-		if (m_weapon.has_value())
-		{
-			auto* l_weapon_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(m_state_machine->get_active_animation());
-			const auto l_weapon_ik_weight = l_weapon_ik_job->get_weight();
-			core::bc_matrix4f l_weapon_transform;
-
-			if (l_weapon_ik_weight >= 1)
-			{
-				l_weapon_transform = _calculate_weapon_aim_transform();
-			}
-			else
-			{
-				const auto l_weapon_aim_transform = _calculate_weapon_aim_transform();
-				const auto l_weapon_attached_transform = _calculate_attachment_transform
-				(
-					m_left_hand_chain[2].first, 
-					m_left_hand_weapon_up, 
-					m_left_hand_weapon_forward,
-					m_left_hand_attachment_offset,
-					m_weapon->m_local_up,
-					m_weapon->m_local_forward,
-					m_weapon->m_second_hand_offset
-				);
-				l_weapon_transform = (l_weapon_aim_transform * l_weapon_ik_weight) + (l_weapon_attached_transform * (1 - l_weapon_ik_weight));
-			}
-
-			m_weapon->m_actor.add_event(game::bc_world_transform_actor_event(l_weapon_transform));
-			m_weapon->m_actor.mark_for_double_update();
-		}
-	}
-
 	physics::bc_ccontroller_ref bc_xbot_actor_controller::create_px_controller(physics::bc_material p_material)
 	{
 		const auto l_px_controller_desc = physics::bc_ccontroller_desc
 		                                  (
-			                                  core::bc_vector3f
-			                                  (m_position + core::bc_vector3f::up() * m_bound_box_max_side_length / 2),
+			                                  core::bc_vector3f(m_position + core::bc_vector3f::up() * m_bound_box_max_side_length / 2),
 			                                  m_bound_box_max_side_length * .65f,
 			                                  m_bound_box_max_side_length * .2f,
 			                                  p_material
@@ -494,22 +493,23 @@ namespace black_cat
 			return l_px_controller;
 		}
 	}
-	
-	void bc_xbot_actor_controller::start_grenade_throw(const bcCHAR* p_entity_name) noexcept
+
+	bool bc_xbot_actor_controller::start_grenade_throw(const bcCHAR* p_entity_name) noexcept
 	{
 		const bool l_threw = m_state_machine->throw_grenade();
-		if(!l_threw)
+		if (!l_threw)
 		{
-			return;
+			return false;
 		}
 
-		m_grenade.reset(bc_xbot_grenade{p_entity_name});
+		m_grenade.reset(bc_xbot_grenade{ p_entity_name });
+		return true;
 	}
 
 	void bc_xbot_actor_controller::attach_weapon(game::bc_actor& p_weapon) noexcept
 	{
 		auto* l_weapon_component = p_weapon.get_component<game::bc_weapon_component>();
-		if(!l_weapon_component)
+		if (!l_weapon_component)
 		{
 			core::bc_log(core::bc_log_type::error) << "Passed actor does not have weapon component" << core::bc_lend;
 			return;
@@ -519,14 +519,14 @@ namespace black_cat
 		auto* l_rigid_dynamic_component = p_weapon.get_component<game::bc_rigid_dynamic_component>();
 		if (l_rigid_dynamic_component)
 		{
-			l_rigid_dynamic_component->set_enable(false);
+			l_rigid_dynamic_component->set_kinematic(true);
 
 			{
 				game::bc_rigid_component_shared_lock l_lock(*l_rigid_dynamic_component);
 				l_weapon_mass = l_rigid_dynamic_component->get_body().get_mass();
-			}			
+			}
 		}
-		
+
 		bc_xbot_weapon l_weapon;
 		l_weapon.m_actor = p_weapon;
 		l_weapon.m_component = l_weapon_component;
@@ -549,7 +549,7 @@ namespace black_cat
 		auto* l_rigid_dynamic_component = m_weapon->m_actor.get_component<game::bc_rigid_dynamic_component>();
 		if (l_rigid_dynamic_component)
 		{
-			l_rigid_dynamic_component->set_enable(true);
+			l_rigid_dynamic_component->set_kinematic(false);
 
 			{
 				physics::bc_scene_lock l_lock(&get_scene()->get_px_scene());
@@ -560,19 +560,19 @@ namespace black_cat
 				l_rigid_dynamic.set_linear_velocity(get_look_direction() * 2);
 			}
 		}
-		
+
 		m_weapon.reset();
 	}
 
 	bool bc_xbot_actor_controller::shoot_weapon() noexcept
 	{
-		if(!m_weapon.has_value())
+		if (!m_weapon.has_value())
 		{
 			return false;
 		}
 
 		const bool l_shoot = m_state_machine->shoot_weapon();
-		if(!l_shoot)
+		if (!l_shoot)
 		{
 			return false;
 		}
@@ -818,7 +818,12 @@ namespace black_cat
 			[this](const physics::bc_scene_query_pre_filter_data& p_filter_data)
 			{
 				const auto l_actor = m_physics_system->get_game_actor(p_filter_data.m_actor);
-				if (l_actor == m_actor)
+				if
+				(
+					l_actor == m_actor || 
+					(m_weapon.has_value() && l_actor == m_weapon->m_actor) ||
+					(m_grenade.has_value() && l_actor == m_grenade->m_actor)
+				)
 				{
 					return physics::bc_query_hit_type::none;
 				}

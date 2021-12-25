@@ -3,6 +3,7 @@
 #include "App/AppPCH.h"
 
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcStringStream.h"
 #include "Core/bcUtility.h"
 #include "PhysicsImp/Fundation/bcMemoryBuffer.h"
 #include "PhysicsImp/Shape/bcShape.h"
@@ -50,15 +51,11 @@ namespace black_cat
 		
 		if (!l_scene || !l_scene->HasMeshes())
 		{
-			const auto l_error_msg =
-				core::bc_string_frame("Content file loading error: ")
-				+
-				core::bc_to_string_frame(p_context.m_file_path).c_str()
-				+
-				", "
-				+
-				l_importer.GetErrorString();
-			throw bc_io_exception(l_error_msg.c_str());
+			const auto l_error_msg = core::bc_string_stream_frame()
+				<< "Content file loading error: "
+				<< p_context.m_file_path << ", "
+				<< l_importer.GetErrorString();
+			throw bc_io_exception(l_error_msg.str().c_str());
 		}
 		
 		core::bc_unordered_map_frame<core::bc_string_view, bcUINT32> l_node_mapping;
@@ -139,9 +136,10 @@ namespace black_cat
 		const auto l_attached_node_index = p_node_mapping.find(p_attached_node.mName.C_Str())->second;
 
 		bc_mesh_loader_utility::convert_ai_matrix(p_px_node.mTransformation, l_node_transformation);
-		const physics::bc_shape_flag l_shape_flag = p_high_detail_query_shape && !p_skinned ?
+		/*const physics::bc_shape_flag l_shape_flag = p_high_detail_query_shape && !p_skinned ?
 			core::bc_enum::mask_or({ physics::bc_shape_flag::simulation, physics::bc_shape_flag::visualization }) :
-			physics::bc_shape_flag::default_v;
+			physics::bc_shape_flag::default_v;*/
+		const physics::bc_shape_flag l_shape_flag = physics::bc_shape_flag::default_v;
 
 		core::bc_string_frame l_mesh_name;
 		for (bcUINT32 l_mesh_index = 0; l_mesh_index < p_px_node.mNumMeshes; ++l_mesh_index)
@@ -225,7 +223,7 @@ namespace black_cat
 		if(p_skinned)
 		{
 			const auto* l_ai_node_name = p_ai_node.mName.C_Str();
-			auto l_px_nodes = p_px_node_mapping.find(l_ai_node_name);
+			const auto l_px_nodes = p_px_node_mapping.find(l_ai_node_name);
 
 			if (l_px_nodes != std::end(p_px_node_mapping))
 			{

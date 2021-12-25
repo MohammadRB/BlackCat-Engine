@@ -65,29 +65,17 @@ namespace black_cat
 	class BC_DLL bc_xbot_actor_controller : public game::bc_actor_network_controller, protected physics::bci_ccontroller_hit_callback
 	{
 	public:
-		bc_xbot_actor_controller() noexcept;
-
-		bc_xbot_actor_controller(bc_xbot_actor_controller&&) noexcept = default;
-		
 		~bc_xbot_actor_controller() override = default;
-
-		bc_xbot_actor_controller& operator=(bc_xbot_actor_controller&&) noexcept = default;
-		
-		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
-
-		void added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
-
-		void update(const bc_xbot_input_update_context& p_context);
-		
-		void update(const bc_xbot_input_update_context1& p_context);
-		
-		void removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
-		
-		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 
 		void update_attachment_transforms();
 		
 	protected:
+		bc_xbot_actor_controller() noexcept;
+
+		bc_xbot_actor_controller(bc_xbot_actor_controller&&) noexcept = default;
+
+		bc_xbot_actor_controller& operator=(bc_xbot_actor_controller&&) noexcept = default;
+
 		game::bc_scene* get_scene() noexcept;
 
 		game::bc_actor& get_actor() noexcept;
@@ -110,9 +98,21 @@ namespace black_cat
 
 		bc_xbot_weapon* get_weapon() noexcept;
 
+		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
+
+		void added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
+
+		void update(const bc_xbot_input_update_context& p_context);
+
+		void update(const bc_xbot_input_update_context1& p_context);
+
+		void removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
+
+		void handle_event(const game::bc_actor_component_event_context& p_context) override;
+
 		physics::bc_ccontroller_ref create_px_controller(physics::bc_material p_material);
 		
-		void start_grenade_throw(const bcCHAR* p_entity_name) noexcept;
+		bool start_grenade_throw(const bcCHAR* p_entity_name) noexcept;
 		
 		void attach_weapon(game::bc_actor& p_weapon) noexcept;
 
@@ -120,11 +120,11 @@ namespace black_cat
 
 		bool shoot_weapon() noexcept;
 		
+	private:
 		void on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit) override;
 
 		void on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit) override;
-		
-	private:
+
 		virtual void throw_grenade(game::bc_actor& p_grenade) noexcept = 0;
 		
 		core::bc_shared_ptr<game::bci_animation_job> _create_animation_pipeline(const bcCHAR* p_idle_animation,
