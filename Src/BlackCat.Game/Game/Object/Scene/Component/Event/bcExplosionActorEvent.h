@@ -64,7 +64,7 @@ namespace black_cat
 		inline std::pair<core::bc_vector3f, bcFLOAT> bc_explosion_actor_event::calculate_applied_force(const core::bc_vector3f& p_position) const
 		{
 			const auto l_force_dir = p_position - m_center;
-			const auto l_force_amount = (m_radius - l_force_dir.magnitude()) / m_radius * m_force;
+			const auto l_force_amount = std::max(0.f, m_radius - l_force_dir.magnitude()) / m_radius * m_force;
 
 			return std::make_pair(core::bc_vector3f::normalize(l_force_dir), l_force_amount);
 		}

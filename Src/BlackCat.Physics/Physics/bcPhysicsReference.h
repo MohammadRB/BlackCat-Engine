@@ -26,6 +26,14 @@ namespace black_cat
 		public:
 			virtual bool is_valid() const noexcept = 0;
 
+			bool operator==(const bc_platform_physics_reference& p_other) const noexcept;
+
+			bool operator!=(const bc_platform_physics_reference& p_other) const noexcept;
+
+			bool operator==(std::nullptr_t) const noexcept;
+
+			bool operator!=(std::nullptr_t) const noexcept;
+
 			virtual platform_pack& get_platform_pack() noexcept = 0;
 			
 			virtual const platform_pack& get_platform_pack() const noexcept = 0;

@@ -89,7 +89,7 @@ namespace black_cat
 		template<>
 		inline bc_platform_thread<bc_platform::win32>::id bc_platform_thread<bc_platform::win32>::get_id() const noexcept
 		{
-			return std::hash<std::thread::id>()(m_pack.m_thread.get_id());
+			return GetThreadId(const_cast<std::thread&>(m_pack.m_thread).native_handle());
 		}
 
 		template<>

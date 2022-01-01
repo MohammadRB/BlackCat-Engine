@@ -44,7 +44,7 @@ namespace black_cat
 		m_smoke_grenade_name(nullptr),
 		m_threw_smoke_grenade_name(nullptr),
 		m_grenade_throw_time(0),
-		m_grenade_throw_power(0)
+		m_grenade_throw_force(0)
 	{
 	}
 
@@ -91,7 +91,7 @@ namespace black_cat
 		m_smoke_grenade_name = p_context.m_parameters.get_value_throw<core::bc_string>("smoke_grenade_name").c_str();
 		m_threw_smoke_grenade_name = p_context.m_parameters.get_value_throw<core::bc_string>("threw_smoke_grenade_name").c_str();
 		m_grenade_throw_time = p_context.m_parameters.get_value_throw<bcFLOAT>("grenade_throw_time");
-		m_grenade_throw_power = p_context.m_parameters.get_value_throw<bcFLOAT>("grenade_throw_power");
+		m_grenade_throw_force = p_context.m_parameters.get_value_throw<bcFLOAT>("grenade_throw_force");
 
 		if(get_replication_side() == game::bc_actor_replication_side::origin)
 		{
@@ -466,7 +466,7 @@ namespace black_cat
 		auto* l_scene = get_scene();
 		const auto* l_grenade_mediate_component = p_grenade.get_component<game::bc_mediate_component>();
 		const auto l_grenade_throw_power = std::max(0.3f, std::min(1.0f, m_grenade_throw_passed_time / m_grenade_throw_time)) *
-			m_grenade_throw_power *
+			m_grenade_throw_force *
 			get_bound_box_max_side_length();
 		const auto l_throw_direction = core::bc_vector3f::normalize(get_look_direction() + core::bc_vector3f(0, 0.2f, 0)) * l_grenade_throw_power;
 
@@ -487,7 +487,7 @@ namespace black_cat
 			{
 				game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
 
-				l_rigid_body.set_linear_velocity(l_throw_direction);
+				l_rigid_body.add_force(l_throw_direction);
 			}
 		}
 

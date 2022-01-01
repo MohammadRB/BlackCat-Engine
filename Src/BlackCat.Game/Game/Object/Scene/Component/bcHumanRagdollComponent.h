@@ -98,9 +98,9 @@ namespace black_cat
 
 			void set_enable(bool p_enable);
 
-			void add_force(bc_ragdoll_body_part p_part, const core::bc_vector3f& p_force);
+			void add_force(bc_ragdoll_body_part p_part, const core::bc_vector3f& p_force, bool p_clear_force = false);
 			
-			void add_force(core::bc_string_view p_part_name, const core::bc_vector3f& p_force);
+			void add_force(core::bc_string_view p_part_name, const core::bc_vector3f& p_force, bool p_clear_force = false);
 
 			void debug_draw(const bc_actor_component_debug_draw_context& p_context) override;
 			

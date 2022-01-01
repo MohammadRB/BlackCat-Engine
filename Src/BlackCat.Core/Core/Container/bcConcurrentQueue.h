@@ -97,6 +97,8 @@ namespace black_cat
 				}
 				while (!l_tail->m_next.compare_exchange_weak(&l_expected_next, l_node, core_platform::bc_memory_order::seqcst));
 
+				BC_ASSERT(l_tail != l_node);
+
 				node_pointer l_hint_tail = l_node;
 				do
 				{

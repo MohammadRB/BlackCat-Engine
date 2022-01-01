@@ -249,8 +249,9 @@
     <ClCompile Include="..\Src\BoX\Application\bxApplication.cpp" />
     <ClCompile Include="..\Src\BoX\Application\bxClientScript.cpp" />
     <ClCompile Include="..\Src\BoX\BattleOfXbots.cpp" />
+    <ClCompile Include="..\Src\BoX\Game\bxNetworkPlayerActorController.cpp" />
     <ClCompile Include="..\Src\BoX\Game\bxPlayerActorController.cpp" />
-    <ClCompile Include="..\Src\BoX\RenderPass\bcPlayerUIPass.cpp" />
+    <ClCompile Include="..\Src\BoX\RenderPass\bxPlayerUIPass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Solution\VS\BlackCat.App.vcxproj">
@@ -279,9 +280,10 @@
     <ClInclude Include="..\Src\BoX\Application\bxApplicationHookFunctions.h" />
     <ClInclude Include="..\Src\BoX\Application\bxClientScript.h" />
     <ClInclude Include="..\Src\BoX\Application\bxApplication.h" />
-    <ClInclude Include="..\Src\BoX\Application\bxPlayerUIService.h" />
+    <ClInclude Include="..\Src\BoX\Application\bxPlayerService.h" />
+    <ClInclude Include="..\Src\BoX\Game\bxNetworkPlayerActorController.h" />
     <ClInclude Include="..\Src\BoX\Game\bxPlayerActorController.h" />
-    <ClInclude Include="..\Src\BoX\RenderPass\bcPlayerUIPass.h" />
+    <ClInclude Include="..\Src\BoX\RenderPass\bxPlayerUIPass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Src\BoX\Content\Data\BoXContentStream.json" />

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcString.h"
+#include "Core/Utility/bcLogger.h"
 #include "Game/System/Network/Message/bcNetworkMessage.h"
 
 namespace black_cat
@@ -23,6 +24,10 @@ namespace black_cat
 			~bc_string_network_message() override;
 
 			bc_string_network_message& operator=(bc_string_network_message&&) noexcept;
+
+			void execute(const bc_network_message_client_context& p_context) noexcept override;
+
+			void execute(const bc_network_message_server_context& p_context) noexcept override;
 
 		private:
 			void serialize_message(const bc_network_message_serialization_context& p_context) override;
@@ -48,6 +53,16 @@ namespace black_cat
 		inline bc_string_network_message::~bc_string_network_message() = default;
 
 		inline bc_string_network_message& bc_string_network_message::operator=(bc_string_network_message&&) noexcept = default;
+
+		inline void bc_string_network_message::execute(const bc_network_message_client_context& p_context) noexcept
+		{
+			core::bc_log(core::bc_log_type::info) << m_str << core::bc_lend;
+		}
+
+		inline void bc_string_network_message::execute(const bc_network_message_server_context& p_context) noexcept
+		{
+			core::bc_log(core::bc_log_type::info) << m_str << core::bc_lend;
+		}
 
 		inline void bc_string_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{

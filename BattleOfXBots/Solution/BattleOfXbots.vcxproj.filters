@@ -48,8 +48,11 @@
     <ClCompile Include="..\Src\BoX\Game\bxPlayerActorController.cpp">
       <Filter>BoX\Game</Filter>
     </ClCompile>
-    <ClCompile Include="..\Src\BoX\RenderPass\bcPlayerUIPass.cpp">
+    <ClCompile Include="..\Src\BoX\RenderPass\bxPlayerUIPass.cpp">
       <Filter>BoX\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX\Game\bxNetworkPlayerActorController.cpp">
+      <Filter>BoX\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,11 +68,14 @@
     <ClInclude Include="..\Src\BoX\Game\bxPlayerActorController.h">
       <Filter>BoX\Game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Src\BoX\Application\bxPlayerUIService.h">
-      <Filter>BoX\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\BoX\RenderPass\bcPlayerUIPass.h">
+    <ClInclude Include="..\Src\BoX\RenderPass\bxPlayerUIPass.h">
       <Filter>BoX\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX\Game\bxNetworkPlayerActorController.h">
+      <Filter>BoX\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX\Application\bxPlayerService.h">
+      <Filter>BoX\Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

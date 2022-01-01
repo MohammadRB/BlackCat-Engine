@@ -12,23 +12,23 @@ namespace black_cat
 {
 	namespace physics
 	{
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_aggregate;
 		using bc_aggregate = bc_platform_aggregate<g_current_physics_api>;
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_rigid_actor;
 		using bc_rigid_actor = bc_platform_rigid_actor<g_current_physics_api>;
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_rigid_body;
 		using bc_rigid_body = bc_platform_rigid_body<g_current_physics_api>;
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_rigid_static;
 		using bc_rigid_static = bc_platform_rigid_static<g_current_physics_api>;
 
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_rigid_dynamic;
 		using bc_rigid_dynamic = bc_platform_rigid_dynamic<g_current_physics_api>;
 

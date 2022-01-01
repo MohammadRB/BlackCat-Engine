@@ -7,7 +7,7 @@
 namespace box
 {
 	using namespace black_cat;
-	class bx_player_ui_service;
+	class bx_player_service;
 
 	class bx_player_actor_controller : public bc_xbot_player_actor_controller
 	{
@@ -55,9 +55,10 @@ namespace box
 
 		void weapon_shoot(game::bc_actor& p_weapon) noexcept override;
 
-		bx_player_ui_service* m_ui_service;
+		bx_player_service* m_ui_service;
 
 		bcUBYTE m_health_recover_per_second;
+		bcUBYTE m_health_damage_per_thousands_force;
 		bcUBYTE m_rifle_heat_per_shoot;
 		bcUBYTE m_rifle_cool_per_second;
 		bcUBYTE m_grenade_load_time;

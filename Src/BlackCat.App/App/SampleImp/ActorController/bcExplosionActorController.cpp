@@ -105,11 +105,27 @@ namespace black_cat
 				}
 
 				const auto l_num_touches = l_query_buffer.get_touch_count();
-				core::bc_vector<physics::bc_overlap_hit> l_result(l_num_touches);
+				core::bc_vector<physics::bc_overlap_hit> l_result;
+				l_result.reserve(l_num_touches);
 
 				for(auto l_ite = 0U; l_ite < l_num_touches; ++l_ite)
 				{
-					l_result[l_ite] = l_query_buffer.get_touch(l_ite);
+					const auto l_hit = l_query_buffer.get_touch(l_ite);
+					const auto l_find_ite = std::find_if
+					(
+						std::begin(l_result),
+						std::end(l_result),
+						[&](const physics::bc_overlap_hit& p_entry)
+						{
+							return p_entry.get_actor() == l_hit.get_actor();
+						}
+					);
+					if(l_find_ite != std::end(l_result))
+					{
+						continue;
+					}
+
+					l_result.push_back(l_hit);
 				}
 
 				return core::bc_any(std::move(l_result));

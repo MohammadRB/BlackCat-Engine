@@ -7,6 +7,9 @@
     <Filter Include="BoX.Server\Application">
       <UniqueIdentifier>{d314c2ef-92c8-47d5-82b1-f8a73df0c512}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BoX.Server\Game">
+      <UniqueIdentifier>{17fdb8aa-3b62-423f-95c1-438c26f4d66f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\BoX.Server\BattleOfXbots.Server.cpp">
@@ -21,6 +24,12 @@
     <ClCompile Include="..\Src\BoX\Application\bxApplicationHookFunctions.cpp">
       <Filter>BoX.Server\Application</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\BoX\Game\bxPlayerActorController.cpp">
+      <Filter>BoX.Server\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX\Game\bxNetworkPlayerActorController.cpp">
+      <Filter>BoX.Server\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\BoX.Server\Application\bxServerApplication.h">
@@ -31,6 +40,12 @@
     </ClInclude>
     <ClInclude Include="..\Src\BoX\Application\bxApplicationHookFunctions.h">
       <Filter>BoX.Server\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX\Game\bxPlayerActorController.h">
+      <Filter>BoX.Server\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX\Game\bxNetworkPlayerActorController.h">
+      <Filter>BoX.Server\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -106,6 +106,6 @@ namespace black_cat
 		const bcCHAR* m_smoke_grenade_name;
 		const bcCHAR* m_threw_smoke_grenade_name;
 		bcFLOAT m_grenade_throw_time;
-		bcFLOAT m_grenade_throw_power;
+		bcFLOAT m_grenade_throw_force;
 	};
 }

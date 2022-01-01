@@ -359,7 +359,7 @@
         "smoke_grenade_name": "xbot_smoke_grenade",
         "threw_smoke_grenade_name": "xbot_threw_smoke_grenade",
         "grenade_throw_time": 1.5,
-        "grenade_throw_power": 6.0
+        "grenade_throw_force": 2000.0
       },
       "components": [
         {

@@ -108,6 +108,7 @@ namespace black_cat
 				l_network_task = l_network_system.update_async(p_clock);
 				l_animation_task = l_animation_manager.run_scheduled_jobs_async(p_clock);
 
+				auto* l_thread_manager = core::bc_get_service<core::bc_thread_manager>();
 				core::bc_concurrency::when_all(l_network_task, l_animation_task);
 				
 				l_actor_component_manager.double_update_actors(p_clock);
@@ -214,11 +215,6 @@ namespace black_cat
 		void bc_game_system::swap_frame_idle(const core_platform::bc_clock::update_param& p_clock)
 		{
 			const auto l_num_query = m_query_manager->process_query_queue(p_clock);
-
-			if(!l_num_query)
-			{
-				core_platform::bc_thread::current_thread_yield();
-			}
 		}
 
 		void bc_game_system::swap_frame(const core_platform::bc_clock::update_param& p_clock)
@@ -230,6 +226,12 @@ namespace black_cat
 			{
 				m_scene = std::move(m_new_scene);
 				m_new_scene = nullptr;
+
+				// Process actor events to apply initial transforms to prevent random force applied by physics engine to overlaped objects
+				auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
+				l_actor_component_manager.process_actor_events(p_clock);
+				l_actor_component_manager.update_actors(p_clock);
+				l_actor_component_manager.double_update_actors(p_clock);
 			}
 		}
 

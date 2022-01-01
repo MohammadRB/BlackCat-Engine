@@ -3,14 +3,15 @@
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "App/Loader/bcHeightMapLoaderDx11.h"
 #include "BoX/Application/bxApplicationHookFunctions.h"
-#include "BoX/Application/bxPlayerUIService.h"
+#include "BoX/Application/bxPlayerService.h"
 #include "BoX/Game/bxPlayerActorController.h"
+#include "BoX/Game/bxNetworkPlayerActorController.h"
 
 namespace box
 {
 	void bx_start_game_services(game::bc_engine_application_parameter& p_parameters)
 	{
-		core::bc_register_service(core::bc_make_service<bx_player_ui_service>());
+		core::bc_register_service(core::bc_make_service<bx_player_service>());
 	}
 
 	void bx_register_game_loaders(game::bc_engine_application_parameter& p_parameters)
@@ -25,7 +26,8 @@ namespace box
 	{
 		game::bc_register_actor_controller_types
 		(
-			game::bc_actor_controller_register<bx_player_actor_controller>("box_player")
+			game::bc_actor_controller_register<bx_player_actor_controller>("box_player"),
+			game::bc_actor_controller_register<bx_player_actor_controller>("box_network_player")
 		);
 	}
 

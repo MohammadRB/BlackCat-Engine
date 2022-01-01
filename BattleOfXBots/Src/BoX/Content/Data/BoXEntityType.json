@@ -3,7 +3,7 @@
     {
       "name": "xbot_red_player",
       "inherit": "xbot_player",
-      "controller": "xbot_player",
+      "controller": "box_player",
       "parameters": {
         "threw_smoke_grenade_name": "xbot_threw_red_smoke_grenade"
       },
@@ -21,7 +21,7 @@
     {
       "name": "xbot_blue_player",
       "inherit": "xbot_player",
-      "controller": "xbot_player",
+      "controller": "box_player",
       "parameters": {
         "threw_smoke_grenade_name": "xbot_threw_blue_smoke_grenade"
       },

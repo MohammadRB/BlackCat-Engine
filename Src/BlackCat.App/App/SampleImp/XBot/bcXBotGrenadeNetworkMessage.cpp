@@ -151,7 +151,7 @@ namespace black_cat
 	game::bc_actor bc_xbot_grenade_throw_network_message::_create_actor(game::bc_network_rtt p_ping) const
 	{
 		auto l_transform = core::bc_matrix4f::identity();
-		l_transform.set_translation(m_position + m_direction * p_ping);
+		l_transform.set_translation(m_position + core::bc_vector3f::normalize(m_direction));
 		l_transform.set_rotation(bc_matrix3f_rotation_zyx(m_rotation));
 		
 		auto l_actor = m_visitor->create_actor(m_grenade_entity_name.c_str(), l_transform);
@@ -171,7 +171,7 @@ namespace black_cat
 		{
 			game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
 
-			l_rigid_body.set_linear_velocity(m_direction);
+			l_rigid_body.add_force(m_direction);
 		}
 
 		return l_actor;

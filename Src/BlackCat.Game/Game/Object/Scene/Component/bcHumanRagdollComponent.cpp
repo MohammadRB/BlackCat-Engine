@@ -19,6 +19,8 @@
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
 #include "Game/bcException.h"
 #include "Game/bcConstant.h"
 
@@ -154,6 +156,27 @@ namespace black_cat
 
 		void bc_human_ragdoll_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
+			const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event);
+			if (l_bullet_hit_event && !m_joints.empty())
+			{
+				const auto l_hit_shape = l_bullet_hit_event->get_hit_shape();
+				const auto* l_hit_shape_data = m_physics_system->get_game_shape_data(l_hit_shape);
+				const auto l_force = l_bullet_hit_event->get_bullet_direction() * l_bullet_hit_event->calculate_applied_force() * 10;
+
+				add_force(l_hit_shape_data->m_collider_entry->m_attached_mesh_name, l_force);
+				return;
+			}
+
+			const auto* l_explosion_event = core::bci_message::as<bc_explosion_actor_event>(p_context.m_event);
+			if (l_explosion_event && !m_joints.empty())
+			{
+				const auto* l_mediate_component = p_context.m_actor.get_component<bc_mediate_component>();
+				const auto l_force = l_explosion_event->calculate_applied_force(l_mediate_component->get_position());
+
+				add_force(s_body_index, l_force.first * l_force.second * 7, true);
+				return;
+			}
+
 			const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
 			if (l_scene_add_event)
 			{
@@ -187,7 +210,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_human_ragdoll_component::add_force(bc_ragdoll_body_part p_part, const core::bc_vector3f& p_force)
+		void bc_human_ragdoll_component::add_force(bc_ragdoll_body_part p_part, const core::bc_vector3f& p_force, bool p_clear_force)
 		{
 			BC_ASSERT(p_part < m_colliders_map.size());
 
@@ -200,11 +223,16 @@ namespace black_cat
 			{
 				physics::bc_scene_lock l_lock(m_px_scene);
 
+				if(p_clear_force)
+				{
+					l_actor.clear_force();
+				}
+
 				l_actor.add_force(p_force);
 			}
 		}
 
-		void bc_human_ragdoll_component::add_force(core::bc_string_view p_part_name, const core::bc_vector3f& p_force)
+		void bc_human_ragdoll_component::add_force(core::bc_string_view p_part_name, const core::bc_vector3f& p_force, bool p_clear_force)
 		{
 			const auto l_collider_ite = std::find_if(std::begin(m_colliders_map), std::end(m_colliders_map), [=](const _bc_ragdoll_collider_map& p_entry)
 			{
@@ -218,6 +246,11 @@ namespace black_cat
 
 			{
 				physics::bc_scene_lock l_lock(m_px_scene);
+
+				if (p_clear_force)
+				{
+					l_collider_ite->m_actor->clear_force();
+				}
 
 				l_collider_ite->m_actor->add_force(p_force);
 			}

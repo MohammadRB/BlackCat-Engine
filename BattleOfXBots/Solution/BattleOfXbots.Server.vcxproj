@@ -240,11 +240,15 @@
     <ClCompile Include="..\Src\BoX.Server\Application\bxServerApplication.cpp" />
     <ClCompile Include="..\Src\BoX.Server\BattleOfXbots.Server.cpp" />
     <ClCompile Include="..\Src\BoX\Application\bxApplicationHookFunctions.cpp" />
+    <ClCompile Include="..\Src\BoX\Game\bxNetworkPlayerActorController.cpp" />
+    <ClCompile Include="..\Src\BoX\Game\bxPlayerActorController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\BoX.Server\Application\bxServerScript.h" />
     <ClInclude Include="..\Src\BoX.Server\Application\bxServerApplication.h" />
     <ClInclude Include="..\Src\BoX\Application\bxApplicationHookFunctions.h" />
+    <ClInclude Include="..\Src\BoX\Game\bxNetworkPlayerActorController.h" />
+    <ClInclude Include="..\Src\BoX\Game\bxPlayerActorController.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Solution\VS\BlackCat.App.vcxproj">

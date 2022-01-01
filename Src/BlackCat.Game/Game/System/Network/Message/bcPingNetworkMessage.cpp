@@ -43,6 +43,13 @@ namespace black_cat
 
 			const auto l_remote_rtt = core::bc_stof(p_context.m_ack_data);
 			const auto l_elapsed_time = bc_elapsed_packet_time(m_serialize_time);
+
+			if(l_elapsed_time >= 1000)
+			{
+				// skip debug or scene load pauses
+				return;
+			}
+
 			p_context.m_visitor.add_rtt_sample(l_elapsed_time, l_remote_rtt);
 		}
 
@@ -56,6 +63,13 @@ namespace black_cat
 
 			const auto l_remote_rtt = core::bc_stof(p_context.m_ack_data);
 			const auto l_elapsed_time = bc_elapsed_packet_time(m_serialize_time);
+
+			if (l_elapsed_time >= 1000)
+			{
+				// skip debug or scene load pauses
+				return;
+			}
+
 			p_context.m_visitor.add_rtt_sample(p_context.m_address, l_elapsed_time, l_remote_rtt);
 		}
 

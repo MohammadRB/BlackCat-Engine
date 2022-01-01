@@ -55,7 +55,7 @@ namespace black_cat
 
 		private:
 			bc_deque<delegate_type> m_deque;
-			mutable core_platform::bc_mutex m_mutex;
+			mutable core_platform::bc_spin_mutex m_mutex;
 		};
 
 		struct bc_interrupt_flag
