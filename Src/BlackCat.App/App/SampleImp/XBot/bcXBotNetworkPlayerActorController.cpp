@@ -9,6 +9,7 @@
 #include "App/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
 #include "App/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
 #include "App/SampleImp/XBot/bcXBotGrenadeNetworkMessage.h"
+#include "App/SampleImp/XBot/bcXBotRagdollNetworkMessage.h"
 
 namespace black_cat
 {
@@ -26,7 +27,7 @@ namespace black_cat
 
 	void bc_xbot_network_player_actor_controller::start_grenade_throw(const bcCHAR* p_entity_name) noexcept
 	{
-		// Entity name parameter will be passed form network messages. To prevent endangled reference we must make a copy of it  
+		// Entity name parameter will be passed form network messages. To prevent dangling pointer we must make a copy of it  
 		m_string = p_entity_name;
 		bc_xbot_actor_controller::start_grenade_throw(m_string.c_str());
 
@@ -78,6 +79,16 @@ namespace black_cat
 		if (get_network_component().get_network_type() == game::bc_network_type::server)
 		{
 			m_network_system->send_message(bc_xbot_weapon_shoot_network_message(get_actor()));
+		}
+	}
+
+	void bc_xbot_network_player_actor_controller::enable_ragdoll(core::bc_string_view p_body_part_force, const core::bc_vector3f& p_force) noexcept
+	{
+		bc_xbot_actor_controller::enable_ragdoll(p_body_part_force, p_force);
+
+		if (get_network_component().get_network_type() == game::bc_network_type::server)
+		{
+			m_network_system->send_message(bc_xbot_ragdoll_activation_network_message(core::bc_string(p_body_part_force), p_force));
 		}
 	}
 

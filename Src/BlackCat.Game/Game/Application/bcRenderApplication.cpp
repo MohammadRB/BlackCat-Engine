@@ -224,7 +224,6 @@ namespace black_cat
 					while (l_render_thread_state.m_signal.load(core_platform::bc_memory_order::acquire) != bc_render_loop_state::signal::ready)
 					{
 						app_swap_frame_idle(l_clock);
-						core_platform::bc_thread::current_thread_yield();
 					}
 
 					l_render_thread_state.m_signal.store(bc_render_loop_state::signal::swap, core_platform::bc_memory_order::release);

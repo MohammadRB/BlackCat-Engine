@@ -14,6 +14,9 @@ namespace black_cat
 	{
 		class bc_input_system;
 		class bc_network_system;
+		class bc_skinned_mesh_component;
+		class bc_rigid_controller_component;
+		class bc_human_ragdoll_component;
 	}
 	
 	class BC_DLL bc_xbot_player_actor_controller : public bc_xbot_actor_controller
@@ -81,11 +84,11 @@ namespace black_cat
 
 		virtual void weapon_shoot(game::bc_actor& p_weapon) noexcept;
 
+		core::bc_event_listener_handle m_key_listener_handle;
+		core::bc_event_listener_handle m_pointing_listener_handle;
 		game::bc_input_system* m_input_system;
 		game::bc_network_system* m_network_system;
 		game::bc_chasing_camera* m_camera;
-		core::bc_event_listener_handle m_key_listener_handle;
-		core::bc_event_listener_handle m_pointing_listener_handle;
 
 		bcFLOAT m_camera_y_offset;
 		bcFLOAT m_camera_z_offset;

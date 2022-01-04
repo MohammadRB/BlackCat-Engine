@@ -27,7 +27,7 @@ namespace box
 		game::bc_register_actor_controller_types
 		(
 			game::bc_actor_controller_register<bx_player_actor_controller>("box_player"),
-			game::bc_actor_controller_register<bx_player_actor_controller>("box_network_player")
+			game::bc_actor_controller_register<bx_network_player_actor_controller>("box_network_player")
 		);
 	}
 

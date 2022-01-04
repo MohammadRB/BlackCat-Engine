@@ -243,6 +243,9 @@
     <ClInclude Include="..\..\Src\BlackCat.App\App\AppPCH.h">
       <Filter>BlackCat</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotRagdollNetworkMessage.h">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcComputeShaderLoader.cpp">
@@ -385,6 +388,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.App\App\AppPCH.cpp">
       <Filter>BlackCat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotRagdollNetworkMessage.cpp">
+      <Filter>BlackCat\SampleImp\XBot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

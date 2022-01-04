@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Math/bcVector3f.h"
+#include "Core/Container/bcString.h"
 #include "App/SampleImp/XBot/bcXBotActorController.h"
 #include "App/bcExport.h"
 
@@ -31,6 +32,8 @@ namespace black_cat
 		void detach_weapon() noexcept;
 
 		void shoot_weapon() noexcept;
+
+		void enable_ragdoll(core::bc_string_view p_body_part_force, const core::bc_vector3f& p_force) noexcept;
 
 	protected:
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;

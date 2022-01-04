@@ -1,7 +1,7 @@
 {
   "entities": [
     {
-      "name": "xbot_red_player",
+      "name": "box_red_player",
       "inherit": "xbot_player",
       "controller": "box_player",
       "parameters": {
@@ -15,11 +15,17 @@
               "Beta_Surface": "red"
             }
           }
+        },
+        {
+          "name": "network",
+          "parameters": {
+            "entity_name": "box_red_network_player"
+          }
         }
       ]
     },
     {
-      "name": "xbot_blue_player",
+      "name": "box_blue_player",
       "inherit": "xbot_player",
       "controller": "box_player",
       "parameters": {
@@ -32,6 +38,42 @@
             "materials": {
               "Beta_Surface": "blue"
             }
+          }
+        },
+        {
+          "name": "network",
+          "parameters": {
+            "entity_name": "box_blue_network_player"
+          }
+        }
+      ]
+    },
+    {
+      "name": "box_red_network_player",
+      "inherit": "box_red_player",
+      "controller": "box_network_player",
+      "parameters": {
+      },
+      "components": [
+        {
+          "name": "network",
+          "parameters": {
+            "data_dir": "replicate_sync_to_server_client"
+          }
+        }
+      ]
+    },
+    {
+      "name": "box_blue_network_player",
+      "inherit": "box_blue_player",
+      "controller": "box_network_player",
+      "parameters": {
+      },
+      "components": [
+        {
+          "name": "network",
+          "parameters": {
+            "data_dir": "replicate_sync_to_server_client"
           }
         }
       ]

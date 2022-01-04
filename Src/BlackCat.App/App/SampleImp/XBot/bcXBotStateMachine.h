@@ -25,6 +25,7 @@ namespace black_cat
 	class bc_xbot_running_state;
 	class bc_xbot_rifle_idle_state;
 	class bc_xbot_rifle_running_state;
+	class bc_xbot_ragdoll_state;
 
 	struct bc_xbot_state
 	{
@@ -173,12 +174,19 @@ namespace black_cat
 		core::bc_vector3f m_offset;
 	};
 
+	class bc_xbot_ragdoll_state : public core::bc_state<bc_xbot_state_machine>
+	{
+	private:
+		void on_enter() override;
+	};
+
 	class bc_xbot_state_machine : public core::bc_state_machine
 	<
 		bc_xbot_idle_state,
 		bc_xbot_running_state,
 		bc_xbot_rifle_idle_state,
-		bc_xbot_rifle_running_state
+		bc_xbot_rifle_running_state,
+		bc_xbot_ragdoll_state
 	>
 	{
 	public:
@@ -213,7 +221,7 @@ namespace black_cat
 
 		bool shoot_weapon() noexcept;
 
-		game::bci_animation_job& get_active_animation() const noexcept;
+		game::bci_animation_job* get_active_animation() const noexcept;
 
 		bc_xbot_state m_state;
 	
@@ -509,6 +517,11 @@ namespace black_cat
 		get_machine().change_animation(m_animation);
 	}
 
+	inline void bc_xbot_ragdoll_state::on_enter()
+	{
+		get_machine().m_state.m_active_animation = nullptr;
+	}
+
 	inline bc_xbot_state_machine::bc_xbot_state_machine(const core::bc_vector3f& p_local_forward,
 		bcFLOAT p_look_speed,
 		bcFLOAT p_run_speed,
@@ -520,14 +533,15 @@ namespace black_cat
 			bc_xbot_idle_state(p_animation_pipeline),
 			bc_xbot_running_state(p_animation_pipeline),
 			bc_xbot_rifle_idle_state(p_animation_pipeline),
-			bc_xbot_rifle_running_state(p_animation_pipeline)
+			bc_xbot_rifle_running_state(p_animation_pipeline),
+			bc_xbot_ragdoll_state()
 		),
+		m_look_speed(p_look_speed),
+		m_run_speed(p_run_speed),
+		m_walk_speed(p_walk_speed),
+		m_mass(p_mass),
 		m_new_active_animation(nullptr)
 	{
-		m_look_speed = p_look_speed;
-		m_run_speed = p_run_speed;
-		m_walk_speed = p_walk_speed;
-		m_mass = p_mass;
 		m_state.m_look_side = 0;
 		m_state.m_look_direction = p_local_forward;
 		m_state.m_move_direction = p_local_forward;
@@ -624,9 +638,9 @@ namespace black_cat
 		return true;
 	}
 
-	inline game::bci_animation_job& bc_xbot_state_machine::get_active_animation() const noexcept
+	inline game::bci_animation_job* bc_xbot_state_machine::get_active_animation() const noexcept
 	{
-		return *m_state.m_active_animation;
+		return m_state.m_active_animation;
 	}
 
 	inline void bc_xbot_state_machine::update_directions(const bc_xbot_state_update_params& p_update_params, bcFLOAT p_holding_mass) noexcept

@@ -53,20 +53,17 @@ namespace box
 
 	void bx_player_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
-		if(m_health > 0)
-		{
-			bc_xbot_player_actor_controller::update_origin_instance(p_context);
+		bc_xbot_player_actor_controller::update_origin_instance(p_context);
 
-			m_health = m_health > 0.f ? m_health + p_context.m_clock.m_elapsed_second * m_health_recover_per_second : m_health;
-			m_rifle_heat -= p_context.m_clock.m_elapsed_second * m_rifle_cool_per_second;
-			m_grenade_load += p_context.m_clock.m_elapsed_second * (100.f / m_grenade_load_time);
-			m_smoke_load += p_context.m_clock.m_elapsed_second * (100.f / m_smoke_load_time);
+		m_health = m_health > 0.f ? m_health + p_context.m_clock.m_elapsed_second * m_health_recover_per_second : m_health;
+		m_rifle_heat -= p_context.m_clock.m_elapsed_second * m_rifle_cool_per_second;
+		m_grenade_load += p_context.m_clock.m_elapsed_second * (100.f / m_grenade_load_time);
+		m_smoke_load += p_context.m_clock.m_elapsed_second * (100.f / m_smoke_load_time);
 
-			m_health = std::min(m_health, 100.f);
-			m_rifle_heat = std::max(m_rifle_heat, 0.f);
-			m_grenade_load = std::min(m_grenade_load, 100.f);
-			m_smoke_load = std::min(m_smoke_load, 100.f);
-		}
+		m_health = std::min(m_health, 100.f);
+		m_rifle_heat = std::max(m_rifle_heat, 0.f);
+		m_grenade_load = std::min(m_grenade_load, 100.f);
+		m_smoke_load = std::min(m_smoke_load, 100.f);
 
 		m_ui_service->set_health(m_health);
 		m_ui_service->set_weapon_heat(m_rifle_heat);
@@ -107,13 +104,10 @@ namespace box
 
 		if(l_health_hit && m_health <= 0)
 		{
-			auto* l_rigid_controller_component = p_context.m_actor.get_component<game::bc_rigid_controller_component>();
-			auto* l_ragdoll_component = p_context.m_actor.get_component<game::bc_human_ragdoll_component>();
-
-			l_rigid_controller_component->reset_controller();
-			l_ragdoll_component->set_enable(true);
+			enable_ragdoll();
 
 			// Let ragdoll component add needed force in case if has received the event before controller
+			auto* l_ragdoll_component = p_context.m_actor.get_component<game::bc_human_ragdoll_component>();
 			l_ragdoll_component->handle_event(p_context);
 		}
 	}

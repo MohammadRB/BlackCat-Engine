@@ -24,6 +24,7 @@ namespace black_cat
 		class bc_skeleton_animation;
 		class bc_skinned_mesh_component;
 		class bc_rigid_controller_component;
+		class bc_human_ragdoll_component;
 	}
 
 	struct bc_xbot_velocity
@@ -98,6 +99,8 @@ namespace black_cat
 
 		bc_xbot_weapon* get_weapon() noexcept;
 
+		bool get_ragdoll_enabled() const noexcept;
+
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
 
 		void added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
@@ -110,7 +113,7 @@ namespace black_cat
 
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 
-		physics::bc_ccontroller_ref create_px_controller(physics::bc_material p_material);
+		physics::bc_ccontroller_ref create_px_controller();
 		
 		bool start_grenade_throw(const bcCHAR* p_entity_name) noexcept;
 		
@@ -119,6 +122,12 @@ namespace black_cat
 		void detach_weapon() noexcept;
 
 		bool shoot_weapon() noexcept;
+
+		void enable_ragdoll();
+
+		void enable_ragdoll(core::bc_string_view p_body_part_force, const core::bc_vector3f& p_force);
+
+		void disable_ragdoll();
 		
 	private:
 		void on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit) override;
@@ -159,13 +168,14 @@ namespace black_cat
 			const core::bc_vector3f& p_attachment_local_up,
 			const core::bc_vector3f& p_attachment_local_forward,
 			const core::bc_vector3f& p_attachment_local_offset);
-		
+
+		physics::bc_material m_px_controller_material;
 		game::bc_physics_system* m_physics_system;
 		game::bc_scene* m_scene;
 		game::bc_actor m_actor;
 		game::bc_skinned_mesh_component* m_skinned_mesh_component;
 		game::bc_rigid_controller_component* m_rigid_controller_component;
-		bcFLOAT m_bound_box_max_side_length;
+		game::bc_human_ragdoll_component* m_human_ragdoll_component;
 		core::bc_vector3f m_local_origin;
 		core::bc_vector3f m_local_forward;
 		core::bc_vector<core::bc_string> m_upper_body_chain;
@@ -181,7 +191,8 @@ namespace black_cat
 		core::bc_vector3f m_rifle_joint_offset;
 		bcFLOAT m_grenade_anim_attach_time;
 		bcFLOAT m_grenade_anim_throw_time;
-		
+
+		bcFLOAT m_bound_box_max_side_length;
 		bcINT32 m_look_delta_x;
 		core::bc_velocity<bcFLOAT> m_look_velocity;
 		core::bc_velocity<bcFLOAT> m_forward_velocity;
@@ -190,6 +201,7 @@ namespace black_cat
 		core::bc_velocity<bcFLOAT> m_left_velocity;
 		core::bc_velocity<bcFLOAT> m_walk_velocity;
 		core::bc_vector3f m_position;
+		bool m_ragdoll_enabled;
 		
 		core::bc_unique_ptr<bc_xbot_state_machine> m_state_machine;
 		core::bc_shared_ptr<game::bci_animation_job> m_animation_pipeline;
@@ -259,5 +271,10 @@ namespace black_cat
 	inline bc_xbot_weapon* bc_xbot_actor_controller::get_weapon() noexcept
 	{
 		return m_weapon.get();
+	}
+
+	inline bool bc_xbot_actor_controller::get_ragdoll_enabled() const noexcept
+	{
+		return m_ragdoll_enabled;
 	}
 }

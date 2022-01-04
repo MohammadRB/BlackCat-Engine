@@ -15,6 +15,9 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
+#include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
+#include "Game/Object/Scene/Component/bcRigidControllerComponent.h"
+#include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "App/SampleImp/XBot/bcXBotPlayerActorController.h"
 #include "App/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
 #include "App/SampleImp/XBot/bcXBotGrenadeNetworkMessage.h"
@@ -59,12 +62,12 @@ namespace black_cat
 	bc_xbot_player_actor_controller& bc_xbot_player_actor_controller::operator=(bc_xbot_player_actor_controller&& p_other) noexcept
 	{
 		bc_xbot_actor_controller::operator=(std::move(p_other));
-		
+
+		m_key_listener_handle = std::move(p_other.m_key_listener_handle);
+		m_pointing_listener_handle = std::move(p_other.m_pointing_listener_handle);
 		m_input_system = p_other.m_input_system;
 		m_network_system = p_other.m_network_system;
 		m_camera = p_other.m_camera;
-		m_key_listener_handle = std::move(p_other.m_key_listener_handle);
-		m_pointing_listener_handle = std::move(p_other.m_pointing_listener_handle);
 
 		m_camera_y_offset = p_other.m_camera_y_offset;
 		m_camera_z_offset = p_other.m_camera_z_offset;
@@ -85,6 +88,7 @@ namespace black_cat
 		bc_xbot_actor_controller::initialize(p_context);
 		m_input_system = &p_context.m_game_system.get_input_system();
 		m_network_system = &p_context.m_game_system.get_network_system();
+
 		m_rifle_name = p_context.m_parameters.get_value_throw<core::bc_string>("rifle_name").c_str();
 		m_grenade_name = p_context.m_parameters.get_value_throw<core::bc_string>("grenade_name").c_str();
 		m_threw_grenade_name = p_context.m_parameters.get_value_throw<core::bc_string>("threw_grenade_name").c_str();

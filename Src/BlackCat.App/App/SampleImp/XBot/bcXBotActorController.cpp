@@ -16,6 +16,7 @@
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidControllerComponent.h"
+#include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/Component/bcWeaponComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
@@ -46,9 +47,10 @@ namespace black_cat
 		m_scene(nullptr),
 		m_skinned_mesh_component(nullptr),
 		m_rigid_controller_component(nullptr),
-		m_bound_box_max_side_length(0),
+		m_human_ragdoll_component(nullptr),
 		m_grenade_anim_attach_time(0),
 		m_grenade_anim_throw_time(0),
+		m_bound_box_max_side_length(0),
 		m_look_delta_x(0),
 		m_look_velocity(0, 1, 0.50f),
 		m_forward_velocity(0, 1, 0.35f),
@@ -56,6 +58,7 @@ namespace black_cat
 		m_right_velocity(m_forward_velocity),
 		m_left_velocity(m_forward_velocity),
 		m_walk_velocity(m_forward_velocity),
+		m_ragdoll_enabled(false),
 		m_weapon(nullptr)
 	{
 	}
@@ -101,7 +104,7 @@ namespace black_cat
 
 		if (m_weapon.has_value())
 		{
-			auto* l_weapon_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(m_state_machine->get_active_animation());
+			auto* l_weapon_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(*m_state_machine->get_active_animation());
 			const auto l_weapon_ik_weight = l_weapon_ik_job->get_weight();
 			core::bc_matrix4f l_weapon_transform;
 
@@ -145,6 +148,7 @@ namespace black_cat
 		m_actor = p_context.m_actor;
 		m_skinned_mesh_component = p_context.m_actor.get_component<game::bc_skinned_mesh_component>();
 		m_rigid_controller_component = p_context.m_actor.get_component<game::bc_rigid_controller_component>();
+		m_human_ragdoll_component = p_context.m_actor.get_component<game::bc_human_ragdoll_component>();
 
 		if (!m_skinned_mesh_component)
 		{
@@ -239,8 +243,8 @@ namespace black_cat
 		const auto l_bound_box_extends = l_mediate_component->get_bound_box().get_half_extends();
 		m_bound_box_max_side_length = std::max({ l_bound_box_extends.x, l_bound_box_extends.y, l_bound_box_extends.z }) * 2;
 
-		const auto l_px_controller_material = p_context.m_game_system.get_render_system().get_material_manager().get_default_collider_material().m_px_material;
-		m_rigid_controller_component->reset_controller(create_px_controller(l_px_controller_material));
+		m_px_controller_material = p_context.m_game_system.get_render_system().get_material_manager().get_default_collider_material().m_px_material;
+		m_rigid_controller_component->reset_controller(create_px_controller());
 
 		auto l_mass = 0.f;
 		{
@@ -261,7 +265,7 @@ namespace black_cat
 
 	void bc_xbot_actor_controller::update(const bc_xbot_input_update_context& p_context)
 	{
-		if (!m_scene || !m_rigid_controller_component->get_controller().is_valid()) // Has not added to scene yet
+		if (!m_scene)
 		{
 			return;
 		}
@@ -343,12 +347,15 @@ namespace black_cat
 		_update_px_move(p_context.m_clock, m_state_machine->m_state.m_move_direction * m_state_machine->m_state.m_move_amount);
 		_update_world_transform();
 
-		m_skinned_mesh_component->add_animation_job(&m_state_machine->get_active_animation());
+		if(m_state_machine->get_active_animation())
+		{
+			m_skinned_mesh_component->add_animation_job(m_state_machine->get_active_animation());
+		}
 	}
 
 	void bc_xbot_actor_controller::update(const bc_xbot_input_update_context1& p_context)
 	{
-		if (!m_scene || !m_rigid_controller_component->get_controller().is_valid()) // Has not added to scene yet
+		if (!m_scene)
 		{
 			return;
 		}
@@ -421,7 +428,10 @@ namespace black_cat
 		_update_px_position(m_position);
 		_update_world_transform();
 
-		m_skinned_mesh_component->add_animation_job(&m_state_machine->get_active_animation());
+		if(m_state_machine->get_active_animation())
+		{
+			m_skinned_mesh_component->add_animation_job(m_state_machine->get_active_animation());
+		}
 	}
 
 	void bc_xbot_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
@@ -463,14 +473,14 @@ namespace black_cat
 		}
 	}
 
-	physics::bc_ccontroller_ref bc_xbot_actor_controller::create_px_controller(physics::bc_material p_material)
+	physics::bc_ccontroller_ref bc_xbot_actor_controller::create_px_controller()
 	{
 		const auto l_px_controller_desc = physics::bc_ccontroller_desc
 		                                  (
 			                                  core::bc_vector3f(m_position + core::bc_vector3f::up() * m_bound_box_max_side_length / 2),
 			                                  m_bound_box_max_side_length * .65f,
 			                                  m_bound_box_max_side_length * .2f,
-			                                  p_material
+			                                  m_px_controller_material
 		                                  )
 		                                  .with_contact_offset(m_bound_box_max_side_length * .02f)
 		                                  .with_step_offset(m_bound_box_max_side_length * 0.f)
@@ -581,6 +591,30 @@ namespace black_cat
 		m_scene->add_bullet(l_bullet);
 
 		return true;
+	}
+
+	void bc_xbot_actor_controller::enable_ragdoll()
+	{
+		m_state_machine->transfer_state<bc_xbot_ragdoll_state>();
+		m_rigid_controller_component->reset_controller();
+		m_human_ragdoll_component->set_enable(true);
+
+		m_ragdoll_enabled = true;
+	}
+
+	void bc_xbot_actor_controller::enable_ragdoll(core::bc_string_view p_body_part_force, const core::bc_vector3f& p_force)
+	{
+		enable_ragdoll();
+		m_human_ragdoll_component->add_force(p_body_part_force, p_force);
+	}
+
+	void bc_xbot_actor_controller::disable_ragdoll()
+	{
+		m_state_machine->transfer_state<bc_xbot_idle_state>();
+		m_rigid_controller_component->reset_controller(create_px_controller());
+		m_human_ragdoll_component->set_enable(false);
+
+		m_ragdoll_enabled = false;
 	}
 
 	void bc_xbot_actor_controller::on_shape_hit(const physics::bc_ccontroller_shape_hit& p_hit)
@@ -886,8 +920,8 @@ namespace black_cat
 
 	core::bc_matrix4f bc_xbot_actor_controller::_calculate_weapon_aim_transform()
 	{
-		auto* l_model_job = game::bc_animation_job_helper::find_job<game::bc_local_to_model_animation_job>(m_state_machine->get_active_animation());
-		auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinning_animation_job>(m_state_machine->get_active_animation());
+		const auto* l_model_job = game::bc_animation_job_helper::find_job<game::bc_local_to_model_animation_job>(*m_state_machine->get_active_animation());
+		const auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinning_animation_job>(*m_state_machine->get_active_animation());
 		
 		core::bc_matrix3f l_weapon_forward_rotation_ms;
 		core::bc_matrix3f l_weapon_up_rotation_ms;
@@ -938,8 +972,8 @@ namespace black_cat
 		const core::bc_vector3f& p_attachment_local_forward,
 		const core::bc_vector3f& p_attachment_local_offset)
 	{
-		auto* l_model_job = game::bc_animation_job_helper::find_job<game::bc_local_to_model_animation_job>(m_state_machine->get_active_animation());
-		auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinning_animation_job>(m_state_machine->get_active_animation());
+		const auto* l_model_job = game::bc_animation_job_helper::find_job<game::bc_local_to_model_animation_job>(*m_state_machine->get_active_animation());
+		const auto* l_skinning_job = game::bc_animation_job_helper::find_job<game::bc_model_to_skinning_animation_job>(*m_state_machine->get_active_animation());
 
 		core::bc_matrix3f l_attachment_up_rotation_ms;
 		core::bc_matrix3f l_attachment_forward_rotation_ms;
