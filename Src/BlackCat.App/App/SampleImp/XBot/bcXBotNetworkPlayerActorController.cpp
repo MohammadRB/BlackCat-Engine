@@ -6,6 +6,8 @@
 #include "Core/Utility/bcLogger.h"
 #include "Game/System/Input/bcInputSystem.h"
 #include "Game/System/Network/bcNetworkSystem.h"
+#include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
+#include "Game/bcJsonParse.h"
 #include "App/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
 #include "App/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
 #include "App/SampleImp/XBot/bcXBotGrenadeNetworkMessage.h"
@@ -28,12 +30,12 @@ namespace black_cat
 	void bc_xbot_network_player_actor_controller::start_grenade_throw(const bcCHAR* p_entity_name) noexcept
 	{
 		// Entity name parameter will be passed form network messages. To prevent dangling pointer we must make a copy of it  
-		m_string = p_entity_name;
-		bc_xbot_actor_controller::start_grenade_throw(m_string.c_str());
+		m_grenade_name = p_entity_name;
+		bc_xbot_actor_controller::start_grenade_throw(m_grenade_name.c_str());
 
 		if (get_network_component().get_network_type() == game::bc_network_type::server)
 		{
-			m_network_system->send_message(bc_xbot_start_grenade_throw_network_message(get_actor(), m_string.c_str()));
+			m_network_system->send_message(bc_xbot_start_grenade_throw_network_message(get_actor(), m_grenade_name.c_str()));
 		}
 	}
 
@@ -88,7 +90,7 @@ namespace black_cat
 
 		if (get_network_component().get_network_type() == game::bc_network_type::server)
 		{
-			m_network_system->send_message(bc_xbot_ragdoll_activation_network_message(core::bc_string(p_body_part_force), p_force));
+			m_network_system->send_message(bc_xbot_ragdoll_activation_network_message(get_actor(), core::bc_string(p_body_part_force), p_force));
 		}
 	}
 
@@ -119,10 +121,19 @@ namespace black_cat
 
 		if(p_context.m_is_replication_load)
 		{
-			const auto l_weapon = p_context.m_parameters.find("wpn");
-			if(l_weapon != std::end(p_context.m_parameters))
+			m_network_initial_data = core::bc_make_unique<_bc_xbot_network_initial_data>();
+
+			const auto l_weapon_param = p_context.m_parameters.find("wpn");
+			if(l_weapon_param != std::end(p_context.m_parameters))
 			{
-				m_string = std::move(l_weapon->second.as_throw<core::bc_string>());
+				m_network_initial_data->m_network_weapon_name = std::move(l_weapon_param->second.as_throw<core::bc_string>());
+			}
+
+			const auto l_ragdoll_param = p_context.m_parameters.find("rag");
+			if(l_ragdoll_param != std::end(p_context.m_parameters))
+			{
+				m_network_initial_data->m_network_ragdoll_enabled = true;
+				json_parse::bc_load(p_context.m_parameters, "rag", m_network_initial_data->m_ragdoll_transforms);
 			}
 		}
 	}
@@ -158,6 +169,12 @@ namespace black_cat
 				core::bc_string l_weapon_entity_name = l_mediate_component->get_entity_name();
 				p_context.m_parameters.add("wpn", core::bc_any(l_weapon_entity_name));
 			}
+
+			if (get_ragdoll_enabled())
+			{
+				const auto* l_ragdoll_component = get_actor().get_component<game::bc_human_ragdoll_component>();
+				json_parse::bc_write(p_context.m_parameters, "rag", l_ragdoll_component->get_body_px_transforms());
+			}
 		}
 	}
 
@@ -165,13 +182,22 @@ namespace black_cat
 	{
 		bc_xbot_actor_controller::added_to_scene(p_context, p_scene);
 
-		if(!m_string.empty())
+		if(!m_network_initial_data->m_network_weapon_name.empty())
 		{
-			auto l_weapon_actor = get_scene()->create_actor(m_string.c_str(), core::bc_matrix4f::translation_matrix(get_position()));
+			auto l_weapon_actor = get_scene()->create_actor(m_network_initial_data->m_network_weapon_name.c_str(), core::bc_matrix4f::translation_matrix(get_position()));
 			bc_xbot_actor_controller::attach_weapon(l_weapon_actor);
-			
-			m_string.clear();
 		}
+
+		if(m_network_initial_data->m_network_ragdoll_enabled)
+		{
+			auto l_actor = get_actor();
+			auto* l_ragdoll_component = l_actor.get_component<game::bc_human_ragdoll_component>();
+
+			bc_xbot_actor_controller::enable_ragdoll();
+			l_ragdoll_component->set_body_px_transforms(m_network_initial_data->m_ragdoll_transforms);
+		}
+
+		m_network_initial_data.reset();
 	}
 
 	void bc_xbot_network_player_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)

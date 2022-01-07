@@ -279,7 +279,7 @@ namespace black_cat
 			auto& l_json_entry = l_json_document->m_actors.new_entry();			
 			*l_json_entry->m_entity_name = l_mediate_component->get_entity_name();
 			*l_json_entry->m_position = l_mediate_component->get_position();
-			*l_json_entry->m_rotation = bc_matrix4f_decompose_to_euler_angles(l_mediate_component->get_world_transform());
+			*l_json_entry->m_rotation = bc_matrix4f_decompose_to_angles(l_mediate_component->get_world_transform());
 
 			game::bc_actor_write_instance(l_actor_components, game::bc_actor_component_write_context(*l_json_entry->m_parameters, l_actor));
 		}

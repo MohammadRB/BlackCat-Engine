@@ -79,6 +79,7 @@
 #include "App/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
 #include "App/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
 #include "App/SampleImp/XBot/bcXBotGrenadeNetworkMessage.h"
+#include "App/SampleImp/XBot/bcXBotRagdollNetworkMessage.h"
 #include "App/SampleImp/ActorController/bcRigidDynamicNetworkActorController.h"
 #include "App/SampleImp/Particle/bcExplosionParticle.h"
 #include "App/SampleImp/Particle/bcWeaponParticle.h"
@@ -241,7 +242,8 @@ namespace black_cat
 			bc_xbot_weapon_detach_network_message,
 			bc_xbot_weapon_shoot_network_message,
 			bc_xbot_start_grenade_throw_network_message,
-			bc_xbot_grenade_throw_network_message
+			bc_xbot_grenade_throw_network_message,
+			bc_xbot_ragdoll_activation_network_message
 		>();
 	}
 	

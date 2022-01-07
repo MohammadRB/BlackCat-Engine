@@ -74,15 +74,14 @@ namespace black_cat
 
 	void bc_xbot_start_grenade_throw_network_message::deserialize_message(const game::bc_network_message_deserialization_context& p_context)
 	{
-		const auto* l_net_id = json_parse::bc_load(p_context.m_params, "net_id").second.as<game::bc_actor_network_id>();
-		if (!l_net_id)
+		const bool l_has_net_id = json_parse::bc_load(p_context.m_params, "net_id", m_actor_net_id);
+		if (!l_has_net_id)
 		{
 			core::bc_log(core::bc_log_type::error, bcL("Failed to deserialize actor network id in xbot grenade throw message"));
 			return;
 		}
 
-		m_actor_net_id = *l_net_id;
-		m_grenade_entity_name = json_parse::bc_load(p_context.m_params, "ent").second.as_throw<core::bc_string>();
+		json_parse::bc_load(p_context.m_params, "ent", m_grenade_entity_name);
 		std::tie(m_actor, m_is_self_replicate) = p_context.m_visitor.get_actor(m_actor_net_id);
 	}
 
@@ -98,7 +97,7 @@ namespace black_cat
 		: bci_network_message(message_name()),
 		m_grenade_entity_name(p_grenade_name),
 		m_position(p_transform.get_translation()),
-		m_rotation(bc_matrix4f_decompose_to_euler_angles(p_transform)),
+		m_rotation(p_transform.get_rotation()),
 		m_direction(p_direction),
 		m_visitor(nullptr)
 
@@ -140,9 +139,9 @@ namespace black_cat
 
 	void bc_xbot_grenade_throw_network_message::deserialize_message(const game::bc_network_message_deserialization_context& p_context)
 	{
-		m_grenade_entity_name = json_parse::bc_load(p_context.m_params, "ent").second.as_throw<core::bc_string>();
+		json_parse::bc_load(p_context.m_params, "ent", m_grenade_entity_name);
 		json_parse::bc_load(p_context.m_params, "pos", m_position);
-		json_parse::bc_load(p_context.m_params, "pos", m_rotation);
+		json_parse::bc_load(p_context.m_params, "rot", m_rotation);
 		json_parse::bc_load(p_context.m_params, "dir", m_direction);
 
 		m_visitor = &p_context.m_visitor;
@@ -152,7 +151,7 @@ namespace black_cat
 	{
 		auto l_transform = core::bc_matrix4f::identity();
 		l_transform.set_translation(m_position + core::bc_vector3f::normalize(m_direction));
-		l_transform.set_rotation(bc_matrix3f_rotation_zyx(m_rotation));
+		l_transform.set_rotation(m_rotation);
 		
 		auto l_actor = m_visitor->create_actor(m_grenade_entity_name.c_str(), l_transform);
 		l_actor.mark_for_double_update();

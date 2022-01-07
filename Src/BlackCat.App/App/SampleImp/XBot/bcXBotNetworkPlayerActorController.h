@@ -4,6 +4,7 @@
 
 #include "Core/Math/bcVector3f.h"
 #include "Core/Container/bcString.h"
+#include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "App/SampleImp/XBot/bcXBotActorController.h"
 #include "App/bcExport.h"
 
@@ -13,6 +14,13 @@ namespace black_cat
 	{
 		class bc_network_system;
 	}
+
+	struct _bc_xbot_network_initial_data
+	{
+		core::bc_string m_network_weapon_name;
+		bool m_network_ragdoll_enabled;
+		game::bc_human_ragdoll_transforms m_ragdoll_transforms;
+	};
 	
 	class BC_DLL bc_xbot_network_player_actor_controller : public bc_xbot_actor_controller
 	{
@@ -62,7 +70,6 @@ namespace black_cat
 		game::bc_network_system* m_network_system;
 		core::bc_velocity<bcFLOAT> m_look_velocity;
 
-		core::bc_string m_string;
 		core::bc_vector3f m_network_position;
 		core::bc_vector3f m_network_look_direction;
 		bcINT32 m_network_look_side;
@@ -71,5 +78,8 @@ namespace black_cat
 		bool m_network_right_pressed;
 		bool m_network_left_pressed;
 		bool m_network_walk_pressed;
+		core::bc_string m_grenade_name;
+
+		core::bc_unique_ptr<_bc_xbot_network_initial_data> m_network_initial_data;
 	};
 }

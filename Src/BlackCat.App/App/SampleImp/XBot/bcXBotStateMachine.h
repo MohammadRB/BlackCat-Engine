@@ -174,9 +174,11 @@ namespace black_cat
 		core::bc_vector3f m_offset;
 	};
 
-	class bc_xbot_ragdoll_state : public core::bc_state<bc_xbot_state_machine>
+	class bc_xbot_ragdoll_state : public core::bc_state<bc_xbot_state_machine, bc_xbot_update_event>
 	{
 	private:
+		state_transition handle(bc_xbot_update_event& p_event) override;
+
 		void on_enter() override;
 	};
 
@@ -194,6 +196,7 @@ namespace black_cat
 		friend class bc_xbot_running_state;
 		friend class bc_xbot_rifle_idle_state;
 		friend class bc_xbot_rifle_running_state;
+		friend class bc_xbot_ragdoll_state;
 	
 	public:
 		bc_xbot_state_machine(const core::bc_vector3f& p_local_forward,
@@ -515,6 +518,14 @@ namespace black_cat
 		}
 		
 		get_machine().change_animation(m_animation);
+	}
+
+	inline core::bc_state<bc_xbot_state_machine, bc_xbot_update_event>::state_transition bc_xbot_ragdoll_state::handle(bc_xbot_update_event& p_event)
+	{
+		auto& l_machine = get_machine();
+		l_machine.update_directions(p_event.m_update_params);
+
+		return state_transition::empty();
 	}
 
 	inline void bc_xbot_ragdoll_state::on_enter()

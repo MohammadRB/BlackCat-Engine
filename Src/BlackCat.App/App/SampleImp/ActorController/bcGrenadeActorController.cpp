@@ -20,7 +20,9 @@ namespace black_cat
 
 	void bc_grenade_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
-		if(get_network_type() == game::bc_network_type::not_started)
+		update_replicated_instance(p_context);
+
+		/*if(get_network_type() == game::bc_network_type::not_started)
 		{
 			update_replicated_instance(p_context);
 			return;
@@ -35,7 +37,7 @@ namespace black_cat
 		if(m_lifetime <= 0)
 		{
 			get_scene()->remove_actor(p_context.m_actor);
-		}
+		}*/
 	}
 
 	void bc_grenade_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
@@ -57,7 +59,9 @@ namespace black_cat
 			);
 			l_explosion_actor.mark_for_double_update();
 
-			if (get_network_type() == game::bc_network_type::not_started)
+			// actor will be removed by its network component if network has started
+			if (get_network_type() == game::bc_network_type::not_started ||
+				get_network_type() == game::bc_network_type::server)
 			{
 				get_scene()->remove_actor(p_context.m_actor);
 			}

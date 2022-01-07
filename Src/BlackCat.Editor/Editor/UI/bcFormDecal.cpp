@@ -37,7 +37,7 @@ namespace black_cat
 
 			if (m_selected_decal)
 			{
-				const auto l_euler_rotation = bc_matrix3f_decompose_to_euler_angles(p_decal->get_local_rotation());
+				const auto l_euler_rotation = bc_matrix3f_decompose_to_angles(p_decal->get_local_rotation());
 				
 				m_decal_name_label->setText(m_selected_decal->get_decal()->get_name().data());
 				m_decal_rotation_x_text->setText(QString::number(core::bc_to_degree(l_euler_rotation.x)));

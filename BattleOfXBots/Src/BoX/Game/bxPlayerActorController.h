@@ -21,6 +21,8 @@ namespace box
 		bx_player_actor_controller& operator=(bx_player_actor_controller&&) noexcept = default;
 
 	private:
+		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
+
 		void added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
 
 		void load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
@@ -54,7 +56,7 @@ namespace box
 		void weapon_attached(game::bc_actor& p_weapon) noexcept override;
 
 		void weapon_shoot(game::bc_actor& p_weapon) noexcept override;
-
+		
 		bx_player_service* m_ui_service;
 
 		bcUBYTE m_health_recover_per_second;

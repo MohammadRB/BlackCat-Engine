@@ -79,24 +79,15 @@
   </Type>
 
   <Type Name="black_cat::core::bc_handle_ptr&lt;*&gt;">
-    <DisplayString>{"$T1"}</DisplayString>
-    <Expand>
-      <Item Name="[pointer]">($T1*)m_pointer</Item>
-    </Expand>
+    <SmartPointer Usage="Minimal">($T1*)m_pointer</SmartPointer>
   </Type>
 
   <Type Name="black_cat::core::bc_unique_ptr&lt;*&gt;">
-    <DisplayString>{"$T1"}</DisplayString>
-    <Expand>
-      <Item Name="[pointer]">($T1*)m_pointer</Item>
-    </Expand>
+    <SmartPointer Usage="Minimal">($T1*)m_pointer</SmartPointer>
   </Type>
 
   <Type Name="black_cat::core::bc_shared_ptr&lt;*&gt;">
-    <DisplayString>{"$T1"}</DisplayString>
-    <Expand>
-      <Item Name="[pointer]">($T1*)m_pointer</Item>
-    </Expand>
+    <SmartPointer Usage="Minimal">($T1*)m_pointer</SmartPointer>
   </Type>
 
   <Type Name="std::atomic&lt;*&gt;">

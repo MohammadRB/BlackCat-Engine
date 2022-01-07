@@ -18,6 +18,7 @@
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidControllerComponent.h"
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
+#include "Game/bcJsonParse.h"
 #include "App/SampleImp/XBot/bcXBotPlayerActorController.h"
 #include "App/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
 #include "App/SampleImp/XBot/bcXBotGrenadeNetworkMessage.h"
@@ -145,7 +146,13 @@ namespace black_cat
 			{
 				const auto* l_mediate_component = l_weapon->m_actor.get_component<game::bc_mediate_component>();
 				core::bc_string l_weapon_entity_name = l_mediate_component->get_entity_name();
-				p_context.m_parameters.add("wpn", core::bc_any(l_weapon_entity_name));
+				p_context.m_parameters.add("wpn", core::bc_any(std::move(l_weapon_entity_name)));
+			}
+
+			if(get_ragdoll_enabled())
+			{
+				const auto* l_ragdoll_component = get_actor().get_component<game::bc_human_ragdoll_component>();
+				json_parse::bc_write(p_context.m_parameters, "rag", l_ragdoll_component->get_body_px_transforms());
 			}
 		}
 	}
@@ -211,6 +218,20 @@ namespace black_cat
 		{
 			m_grenade_throw_passed_time += p_context.m_clock.m_elapsed_second;
 		}
+
+		if (m_camera)
+		{
+			m_camera->update
+			(
+				get_position() + get_look_direction() * m_camera_z_offset + core::bc_vector3f(0, m_camera_y_offset, 0),
+				get_position() + get_look_direction() * m_camera_look_at_offset
+			);
+			/*m_camera->update
+			(
+				get_position() + core::bc_vector3f(1,0,0) * m_camera_z_offset + core::bc_vector3f(0, get_bound_box_max_side_length() * 2.5f, 0),
+				get_position()
+			);*/
+		}
 	}
 
 	void bc_xbot_player_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
@@ -231,24 +252,6 @@ namespace black_cat
 	void bc_xbot_player_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
 	{
 		bc_xbot_actor_controller::handle_event(p_context);
-		
-		const auto* l_world_transform_event = core::bci_message::as<game::bc_world_transform_actor_event>(p_context.m_event);
-		if (l_world_transform_event)
-		{
-			if(m_camera)
-			{
-				m_camera->update
-				(
-					get_position() + get_look_direction() * m_camera_z_offset + core::bc_vector3f(0, m_camera_y_offset, 0),
-					get_position() + get_look_direction() * m_camera_look_at_offset
-				);
-				/*m_camera->update
-				(
-					get_position() + core::bc_vector3f(1,0,0) * m_camera_z_offset + core::bc_vector3f(0, get_bound_box_max_side_length() * 2.5f, 0),
-					get_position()
-				);*/
-			}
-		}
 	}
 
 	void bc_xbot_player_actor_controller::_on_event(core::bci_event& p_event) noexcept

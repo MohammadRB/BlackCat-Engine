@@ -344,11 +344,11 @@ namespace black_cat
 			}
 		);
 
-		_update_px_move(p_context.m_clock, m_state_machine->m_state.m_move_direction * m_state_machine->m_state.m_move_amount);
-		_update_world_transform();
-
-		if(m_state_machine->get_active_animation())
+		if (!m_ragdoll_enabled)
 		{
+			_update_px_move(p_context.m_clock, m_state_machine->m_state.m_move_direction * m_state_machine->m_state.m_move_amount);
+			_update_world_transform();
+
 			m_skinned_mesh_component->add_animation_job(m_state_machine->get_active_animation());
 		}
 	}
@@ -360,7 +360,6 @@ namespace black_cat
 			return;
 		}
 
-		m_position = p_context.m_position;
 		m_look_delta_x = 0;
 
 		if (p_context.m_forward_pressed)
@@ -413,7 +412,7 @@ namespace black_cat
 			bc_xbot_state_update_params1
 			{
 				p_context.m_clock,
-				m_position,
+				p_context.m_position,
 				p_context.m_look_direction,
 				p_context.m_look_side,
 				p_context.m_look_velocity,
@@ -425,11 +424,11 @@ namespace black_cat
 			}
 		);
 
-		_update_px_position(m_position);
-		_update_world_transform();
-
-		if(m_state_machine->get_active_animation())
+		if(!m_ragdoll_enabled)
 		{
+			_update_px_position(p_context.m_position);
+			_update_world_transform();
+
 			m_skinned_mesh_component->add_animation_job(m_state_machine->get_active_animation());
 		}
 	}
@@ -886,7 +885,8 @@ namespace black_cat
 		{
 			physics::bc_scene_lock l_lock(&l_px_scene);
 
-			l_px_controller.set_foot_position(p_position - m_local_origin);
+			m_position = p_position - m_local_origin;
+			l_px_controller.set_foot_position(m_position);
 		}
 	}
 	

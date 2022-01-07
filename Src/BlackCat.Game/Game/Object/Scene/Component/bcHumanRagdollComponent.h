@@ -27,15 +27,17 @@ namespace black_cat
 		class bc_rigid_controller_component;
 
 		using bc_ragdoll_body_part = bcUINT32;
+		using bc_human_ragdoll_transforms = core::bc_array<physics::bc_transform, 14>;
 
 		struct _bc_ragdoll_collider_map
 		{
 			core::bc_string_view m_attached_node_name;
 			bcFLOAT m_mass_multiplier;
+			bc_ragdoll_body_part m_body_index;
 			physics::bc_rigid_dynamic_ref m_actor;
 		};
 		
-		struct _bc_ragdoll_collider_entry
+		struct _bc_ragdoll_collider_hierarchy
 		{
 			struct affected_node
 			{
@@ -88,6 +90,12 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
+			std::tuple<std::string_view, core::bc_vector3f> get_last_applied_force() const noexcept;
+
+			bc_human_ragdoll_transforms get_body_px_transforms() const noexcept;
+
+			void set_body_px_transforms(const bc_human_ragdoll_transforms& p_transforms) noexcept;
+
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
 			void initialize_entity(const bc_actor_component_initialize_entity_context& p_context) override;
@@ -105,7 +113,7 @@ namespace black_cat
 			void debug_draw(const bc_actor_component_debug_draw_context& p_context) override;
 			
 		private:
-			void _fill_joints_map(const core::bc_json_key_value& p_joint_parameters);
+			void _fill_colliders_map(const core::bc_json_key_value& p_joint_parameters);
 
 			void _validate_mesh_colliders();
 
@@ -121,10 +129,18 @@ namespace black_cat
 			bc_rigid_controller_component* m_rigid_component;
 
 			core::bc_array<_bc_ragdoll_collider_map, 14> m_colliders_map;
-			core::bc_vector<_bc_ragdoll_collider_entry> m_colliders_hierarchy;
+			core::bc_vector<_bc_ragdoll_collider_hierarchy> m_colliders_hierarchy;
 			core::bc_vector<physics::bc_joint_ref> m_joints;
 			core::bc_unique_ptr<bc_ragdoll_animation_job> m_ragdoll_animation_job;
 			core::bc_vector3f m_body_to_origin_vector;
+
+			bc_ragdoll_body_part m_last_force_body_part;
+			core::bc_vector3f m_last_force;
 		};
+
+		inline std::tuple<std::string_view, core::bc_vector3f> bc_human_ragdoll_component::get_last_applied_force() const noexcept
+		{
+			return std::make_tuple(m_colliders_map[m_last_force_body_part].m_attached_node_name, m_last_force);
+		}
 	}
 }

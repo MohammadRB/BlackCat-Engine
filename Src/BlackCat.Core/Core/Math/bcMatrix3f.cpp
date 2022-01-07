@@ -43,7 +43,7 @@ namespace black_cat
 			m_entry[i(2, 2)] = p_m33;
 		}
 		
-		bc_matrix3f& bc_matrix3f::operator= (const bc_matrix3f& p_other) noexcept
+		bc_matrix3f& bc_matrix3f::operator=(const bc_matrix3f& p_other) noexcept
 		{
 			std::memcpy(m_entry, p_other.m_entry, 9 * sizeof(bcFLOAT));
 			return *this;
@@ -635,7 +635,7 @@ namespace black_cat
 
 		constexpr bcUINT32 bc_matrix3f::i(bcUINT32 p_index)
 		{
-			if (use_column_major_storage())
+			if constexpr (use_column_major_storage())
 			{
 				return i(p_index / 3, p_index % 3);
 			}

@@ -15,7 +15,7 @@ namespace black_cat
 	public:
 		bc_xbot_ragdoll_activation_network_message() noexcept;
 
-		bc_xbot_ragdoll_activation_network_message(core::bc_string p_body_part_force, const core::bc_vector3f& p_force) noexcept;
+		bc_xbot_ragdoll_activation_network_message(const game::bc_actor& p_actor, core::bc_string p_body_part_force, const core::bc_vector3f& p_force) noexcept;
 
 		bc_xbot_ragdoll_activation_network_message(bc_xbot_ragdoll_activation_network_message&&) noexcept = default;
 
@@ -34,10 +34,11 @@ namespace black_cat
 
 		void deserialize_message(const game::bc_network_message_deserialization_context& p_context) override;
 
-		bool m_is_self_replicate;
-		game::bc_actor m_actor;
-
+		game::bc_actor_network_id m_actor_net_id;
 		core::bc_string m_body_part_force;
 		core::bc_vector3f m_force;
+
+		bool m_is_self_replicate;
+		game::bc_actor m_actor;
 	};
 }

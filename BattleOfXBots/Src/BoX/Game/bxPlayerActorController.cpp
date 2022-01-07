@@ -6,6 +6,7 @@
 #include "Game/Object/Scene/Component/bcRigidControllerComponent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
+#include "App/SampleImp/XBot/bcXBotRagdollNetworkMessage.h"
 #include "BoX/Application/bxPlayerService.h"
 #include "BoX/Game/bxPlayerActorController.h"
 
@@ -24,6 +25,11 @@ namespace box
 		m_grenade_load(100),
 		m_smoke_load(100)
 	{
+	}
+
+	void bx_player_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
+	{
+		bc_xbot_player_actor_controller::initialize(p_context);
 	}
 
 	void bx_player_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
@@ -109,6 +115,9 @@ namespace box
 			// Let ragdoll component add needed force in case if has received the event before controller
 			auto* l_ragdoll_component = p_context.m_actor.get_component<game::bc_human_ragdoll_component>();
 			l_ragdoll_component->handle_event(p_context);
+
+			auto [l_body_part, l_force] = l_ragdoll_component->get_last_applied_force();
+			p_context.m_game_system.get_network_system().send_message(bc_xbot_ragdoll_activation_network_message(get_actor(), l_body_part.data(), l_force));
 		}
 	}
 

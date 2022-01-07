@@ -49,7 +49,7 @@ namespace black_cat
 			{
 				auto* l_mediate_component = m_selected_actor.get_component<game::bc_mediate_component>();
 				const auto l_position = p_transform.get_translation();
-				const auto l_euler_rotation = bc_matrix4f_decompose_to_euler_angles(p_transform);
+				const auto l_euler_rotation = bc_matrix4f_decompose_to_angles(p_transform);
 
 				m_entity_name_label->setText(l_mediate_component->get_entity_name());
 				m_entity_update_button->setEnabled(true);

@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcMatrix3f.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/System/Network/Message/bcNetworkMessage.h"
 #include "App/bcExport.h"
@@ -70,7 +72,7 @@ namespace black_cat
 		
 		core::bc_string m_grenade_entity_name;
 		core::bc_vector3f m_position;
-		core::bc_vector3f m_rotation;
+		core::bc_matrix3f m_rotation;
 		core::bc_vector3f m_direction;
 
 		game::bci_network_message_deserialization_visitor* m_visitor;

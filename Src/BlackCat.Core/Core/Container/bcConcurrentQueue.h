@@ -84,6 +84,8 @@ namespace black_cat
 				node_pointer l_next = l_tail->m_next.load(core_platform::bc_memory_order::seqcst);
 				node_pointer l_expected_next = l_next;
 
+				BC_ASSERT(l_tail != l_node);
+
 				do
 				{
 					l_next = l_expected_next;

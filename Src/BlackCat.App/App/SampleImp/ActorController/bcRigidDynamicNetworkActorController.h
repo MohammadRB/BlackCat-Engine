@@ -12,7 +12,7 @@ namespace black_cat
 	protected:
 		const core::bc_vector3f& get_network_position() const noexcept;
 		
-		const core::bc_vector3f& get_network_rotation() const noexcept;
+		const core::bc_matrix3f& get_network_rotation() const noexcept;
 		
 	private:
 		void load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
@@ -30,7 +30,7 @@ namespace black_cat
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 
 		core::bc_vector3f m_network_position;
-		core::bc_vector3f m_network_euler_rotation;
+		core::bc_matrix3f m_network_rotation;
 	};
 
 	inline const core::bc_vector3f& bc_rigid_dynamic_network_actor_controller::get_network_position() const noexcept
@@ -38,8 +38,8 @@ namespace black_cat
 		return m_network_position;
 	}
 
-	inline const core::bc_vector3f& bc_rigid_dynamic_network_actor_controller::get_network_rotation() const noexcept
+	inline const core::bc_matrix3f& bc_rigid_dynamic_network_actor_controller::get_network_rotation() const noexcept
 	{
-		return m_network_euler_rotation;
+		return m_network_rotation;
 	}
 }

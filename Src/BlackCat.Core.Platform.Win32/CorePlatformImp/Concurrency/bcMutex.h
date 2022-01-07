@@ -15,7 +15,10 @@ namespace black_cat
 		template<>
 		struct bc_platform_spin_mutex_pack<bc_platform::win32>
 		{
-			bc_atomic_flag m_locked;
+			CRITICAL_SECTION m_critical_section;
+#ifdef BC_DEBUG
+			bc_atomic_flag m_flag;
+#endif
 		};
 		
 		template<>
@@ -71,36 +74,72 @@ namespace black_cat
 		template<>
 		inline bc_platform_spin_mutex<bc_platform::win32>::bc_platform_spin_mutex()
 		{
-			m_pack.m_locked.clear();
+			InitializeCriticalSectionAndSpinCount(&m_pack.m_critical_section, 2000U);
+#ifdef BC_DEBUG
+			m_pack.m_flag.clear(bc_memory_order::relaxed);
+#endif
 		}
 
 		template<>
-		inline bc_platform_spin_mutex<bc_platform::win32>::~bc_platform_spin_mutex() = default;
+		inline bc_platform_spin_mutex<bc_platform::win32>::bc_platform_spin_mutex(bcUINT32 p_spin_count)
+		{
+			InitializeCriticalSectionAndSpinCount(&m_pack.m_critical_section, p_spin_count);
+#ifdef BC_DEBUG
+			m_pack.m_flag.clear(bc_memory_order::relaxed);
+#endif
+		}
+
+		template<>
+		inline bc_platform_spin_mutex<bc_platform::win32>::~bc_platform_spin_mutex()
+		{
+			DeleteCriticalSection(&m_pack.m_critical_section);
+		}
+
+		template<>
+		inline void bc_platform_spin_mutex<bc_platform::win32>::change_spin_count(bcUINT32 p_spin_count)
+		{
+			SetCriticalSectionSpinCount(&m_pack.m_critical_section, p_spin_count);
+		}
 
 		template<>
 		inline void bc_platform_spin_mutex<bc_platform::win32>::lock()
 		{
-			bcUINT32 l_spin_count = 0;
-			while (m_pack.m_locked.test_and_set(bc_memory_order::acquire))
+			EnterCriticalSection(&m_pack.m_critical_section);
+
+#ifdef BC_DEBUG
+			if (m_pack.m_flag.test_and_set(bc_memory_order::relaxed))
 			{
-				if (++l_spin_count % 100 == 0)
-				{
-					l_spin_count = 0;
-					bc_thread::current_thread_yield();
-				}
+				BC_ASSERT(false, "Recursive call on non-recursive mutex");
 			}
+#endif
 		}
 
 		template<>
 		inline void bc_platform_spin_mutex<bc_platform::win32>::unlock() noexcept
 		{
-			m_pack.m_locked.clear(bc_memory_order::release);
+#ifdef BC_DEBUG
+			m_pack.m_flag.clear(bc_memory_order::relaxed);
+#endif
+
+			LeaveCriticalSection(&m_pack.m_critical_section);
 		}
 
 		template<>
 		inline bool bc_platform_spin_mutex<bc_platform::win32>::try_lock() noexcept
 		{
-			return !m_pack.m_locked.test_and_set(bc_memory_order::acquire);
+			const bool l_result = TryEnterCriticalSection(&m_pack.m_critical_section);
+
+#ifdef BC_DEBUG
+			if (l_result)
+			{
+				if (m_pack.m_flag.test_and_set(bc_memory_order::relaxed))
+				{
+					BC_ASSERT(false, "Recursive call on non-recursive mutex");
+				}
+			}
+#endif
+
+			return l_result;
 		}
 
 		template<>

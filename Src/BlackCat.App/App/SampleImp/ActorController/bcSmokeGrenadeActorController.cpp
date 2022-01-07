@@ -90,6 +90,7 @@ namespace black_cat
 			m_smoke_time -= p_context.m_clock.m_elapsed_second;
 			if (m_smoke_time <= 0)
 			{
+				// actor will be removed by its network component if network has started
 				if (get_network_type() == game::bc_network_type::not_started)
 				{
 					get_scene()->remove_actor(p_context.m_actor);

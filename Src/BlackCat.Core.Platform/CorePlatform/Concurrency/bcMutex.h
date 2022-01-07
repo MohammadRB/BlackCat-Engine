@@ -57,7 +57,11 @@ namespace black_cat
 		public:
 			bc_platform_spin_mutex();
 
+			explicit bc_platform_spin_mutex(bcUINT32 p_spin_count);
+
 			~bc_platform_spin_mutex();
+
+			void change_spin_count(bcUINT32 p_spin_count);
 
 			void lock();
 

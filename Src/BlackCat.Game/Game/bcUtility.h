@@ -140,24 +140,34 @@ namespace black_cat
 		return core::bc_vector4f(l_up, l_up_rotation);
 	}
 
-	inline core::bc_vector3f bc_matrix3f_decompose_to_euler_angles(const core::bc_matrix3f& p_transform)
+	inline core::bc_vector3f bc_matrix3f_decompose_to_angles(const core::bc_matrix3f& p_transform)
 	{
-		https://stackoverflow.com/questions/15022630/how-to-calculate-the-angle-from-rotation-matrix
+		// https://stackoverflow.com/questions/15022630/how-to-calculate-the-angle-from-rotation-matrix
 		const auto l_tx = std::atan2(p_transform(2, 1), p_transform(2, 2));
 		const auto l_ty = std::atan2(-p_transform(2, 0), std::sqrtf(std::powf(p_transform(2, 1), 2) + std::powf(p_transform(2, 2), 2)));
 		const auto l_tz = std::atan2(p_transform(1, 0), p_transform(0, 0));
+
+		if constexpr (graphic::bc_render_api_info::use_left_handed())
+		{
+			return { -l_tx, -l_ty, -l_tz };
+		}
 
 		return { l_tx, l_ty, l_tz };
 	}
 	
-	inline core::bc_vector3f bc_matrix4f_decompose_to_euler_angles(const core::bc_matrix4f& p_transform)
+	inline core::bc_vector3f bc_matrix4f_decompose_to_angles(const core::bc_matrix4f& p_transform)
 	{
-		https://stackoverflow.com/questions/15022630/how-to-calculate-the-angle-from-rotation-matrix
+		// https://stackoverflow.com/questions/15022630/how-to-calculate-the-angle-from-rotation-matrix
 		const auto l_tx = std::atan2(p_transform(2, 1), p_transform(2, 2));
 		const auto l_ty = std::atan2(-p_transform(2, 0), std::sqrtf(std::powf(p_transform(2, 1), 2) + std::powf(p_transform(2, 2), 2)));
 		const auto l_tz = std::atan2(p_transform(1, 0), p_transform(0, 0));
 
-		return {l_tx, l_ty, l_tz};
+		if constexpr (graphic::bc_render_api_info::use_left_handed())
+		{
+			return { -l_tx, -l_ty, -l_tz };
+		}
+
+		return { l_tx, l_ty, l_tz };
 	}
 
 	inline core::bc_matrix4f bc_matrix4f_from_position_and_direction(const core::bc_vector3f& p_position, const core::bc_vector3f& p_direction)

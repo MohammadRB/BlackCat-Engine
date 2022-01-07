@@ -93,13 +93,8 @@ namespace black_cat
 		const auto* l_bullet_hit_event = core::bci_message::as<game::bc_bullet_hit_actor_event>(p_context.m_event);
 		if (l_bullet_hit_event)
 		{
-			const auto l_hit_shape = l_bullet_hit_event->get_hit_shape();
-			const auto* l_hit_shape_data = m_physics_system->get_game_shape_data(l_hit_shape);
-			const auto l_force = l_bullet_hit_event->get_bullet_direction() * l_bullet_hit_event->calculate_applied_force() * 10;
-			
-			m_rigid_controller_component->reset_controller();
-			m_ragdoll_component->set_enable(true);
-			m_ragdoll_component->add_force(l_hit_shape_data->m_collider_entry->m_attached_mesh_name, l_force);
+			enable_ragdoll();
+			m_ragdoll_component->handle_event(p_context);
 			m_ragdoll_enabled = true;
 		}
 	}
