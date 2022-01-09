@@ -27,6 +27,7 @@
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Mesh/bcMeshUtility.h"
 #include "Game/Object/Animation/bcAnimationManager.h"
+#include "Game/bcEvent.h"
 
 namespace black_cat
 {
@@ -67,6 +68,7 @@ namespace black_cat
 			m_app_active_handle = std::move(p_other.m_app_active_handle);
 			m_device_reset_handle = std::move(p_other.m_device_reset_handle);
 			m_frame_render_finish_handle = std::move(p_other.m_frame_render_finish_handle);
+			m_config_change_handle = std::move(p_other.m_config_change_handle);
 
 			m_render_pass_states = std::move(p_other.m_render_pass_states);
 			m_render_states = std::move(p_other.m_render_states);
@@ -76,6 +78,7 @@ namespace black_cat
 			m_app_active_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
 			m_device_reset_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
 			m_frame_render_finish_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
+			m_config_change_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
 			
 			return *this;
 		}
@@ -422,6 +425,10 @@ namespace black_cat
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
 			);
+			m_config_change_handle = l_event_manager->register_event_listener<bc_event_global_config_changed>
+			(
+				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
+			);
 
 			bc_particle_manager::init_emitter_states();
 		}
@@ -437,6 +444,7 @@ namespace black_cat
 			m_app_active_handle.reset();
 			m_window_resize_handle.reset();
 			m_frame_render_finish_handle.reset();
+			m_config_change_handle.reset();
 
 			m_frame_renderer.reset();
 			m_shape_drawer.reset();
@@ -455,7 +463,7 @@ namespace black_cat
 		{
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
-			auto* l_window_resize_event = core::bci_message::as<platform::bc_app_event_window_resize>(p_event);
+			const auto* l_window_resize_event = core::bci_message::as<platform::bc_app_event_window_resize>(p_event);
 			if(l_window_resize_event)
 			{
 				if(!m_swap_buffer->is_valid())
@@ -487,12 +495,19 @@ namespace black_cat
 				);
 
 				// Put device reset event in render event queue
-				l_event_manager->queue_event(graphic::bc_app_event_device_reset(m_device, m_swap_buffer.get(), l_old_parameters, l_new_parameters, true), 0);
+				l_event_manager->queue_event(graphic::bc_app_event_device_reset
+				(
+					m_device,
+					m_swap_buffer.get(),
+					l_old_parameters,
+					l_new_parameters,
+					true
+				), 0);
 
 				return;
 			}
 
-			auto* l_device_reset_event = core::bci_message::as<graphic::bc_app_event_device_reset>(p_event);
+			const auto* l_device_reset_event = core::bci_message::as<graphic::bc_app_event_device_reset>(p_event);
 			if(l_device_reset_event)
 			{
 				m_device_reset_event.reset(*l_device_reset_event);
@@ -500,10 +515,25 @@ namespace black_cat
 				return;
 			}
 
-			auto* l_frame_swap_event = core::bci_message::as<core::bc_event_frame_swap>(p_event);
+			const auto* l_frame_swap_event = core::bci_message::as<core::bc_event_frame_swap>(p_event);
 			if (l_frame_swap_event)
 			{
 				m_shape_drawer->clear_swap_buffers();
+
+				return;
+			}
+
+			const auto* l_config_change_event = core::bci_message::as<bc_event_global_config_changed>(p_event);
+			if(l_config_change_event)
+			{
+				auto& l_global_config = l_config_change_event->get_config();
+				m_render_pass_manager->config_changed(bc_render_pass_config_change_context
+				(
+					*this,
+					m_device,
+					m_swap_buffer.get(),
+					l_global_config
+				));
 
 				return;
 			}

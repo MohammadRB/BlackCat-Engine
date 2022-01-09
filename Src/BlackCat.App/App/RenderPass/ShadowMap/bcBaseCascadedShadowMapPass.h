@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcSpan.h"
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
@@ -32,6 +33,8 @@ namespace black_cat
 	public:
 		const bcFLOAT m_cascade_cameras_distance = 100;
 		bcSIZE m_instance_count;
+		bcSIZE m_back_buffer_width;
+		bcSIZE m_back_buffer_height;
 		
 		game::bc_render_pass_variable_t m_output_depth_buffers_share_slot;
 		bcFLOAT m_shadow_map_multiplier;
@@ -40,7 +43,6 @@ namespace black_cat
 		core::bc_vector_program<std::tuple<bcUBYTE, bcUBYTE>> m_cascade_update_intervals;
 
 		core::bc_vector_program<_bc_cascaded_shadow_map_light_state> m_light_instance_states;
-
 		core::bc_query_result<game::bc_scene_light_query> m_lights_query;
 		core::bc_vector<game::bc_light_instance> m_lights;
 		
@@ -88,7 +90,7 @@ namespace black_cat
 	{
 	public:
 		bc_cascaded_shadow_map_pass_render_param(const game::bc_render_pass_render_context& p_render_param,
-			const core::bc_vector< game::bc_render_pass_state_ptr >& p_render_states,
+			const core::bc_vector<game::bc_render_pass_state_ptr>& p_render_states,
 			const game::bc_camera_instance& p_update_cascade_camera,
 			const game::bc_camera_instance& p_render_cascade_camera,
 			bcSIZE p_light_index,
@@ -140,6 +142,8 @@ namespace black_cat
 
 		void destroy(game::bc_render_system& p_render_system) override final;
 
+		void config_changed(const game::bc_render_pass_config_change_context& p_context) override final;
+
 		void capture_debug_shapes();
 
 	protected:
@@ -164,12 +168,14 @@ namespace black_cat
 			graphic::bc_texture2d p_depth,
 			const core::bc_vector<graphic::bc_depth_stencil_view_ref>& p_depth_views) = 0;
 
+		void _reset_cascade_sizes(bcFLOAT p_shadow_map_multiplier, core::bc_const_span<core::bc_vector2i> p_cascades);
+
 		_bc_cascaded_shadow_map_light_state _create_light_instance(game::bc_render_system& p_render_system);
 
 		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_cascades(const game::bci_camera& p_camera, const game::bc_direct_light& p_light);
 
 		core::bc_vector_frame<bc_cascaded_shadow_map_camera> _get_light_stabilized_cascades(const game::bc_camera_instance& p_camera, const game::bc_direct_light& p_light);
-
+	
 		const bcSIZE m_my_index;
 		core::bc_shared_ptr<_bc_cascaded_shadow_map_pass_state> m_state;
 	};

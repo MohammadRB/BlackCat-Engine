@@ -5,7 +5,6 @@
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/Texture/bcTextureConfig.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
-#include "Core/Messaging/bcMessageHandle.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/State/bcRenderState.h"
@@ -32,6 +31,8 @@ namespace black_cat
 
 		void after_reset(const game::bc_render_pass_reset_context& p_context) override;
 
+		void config_changed(const game::bc_render_pass_config_change_context& p_context) override;
+
 		void destroy(game::bc_render_system& p_render_system) override;
 
 		bool get_enable() const noexcept;
@@ -48,7 +49,6 @@ namespace black_cat
 		game::bc_render_pass_variable_t m_render_target_texture;
 		game::bc_render_pass_variable_t m_render_target_view;
 
-		core::bc_event_listener_handle m_config_change_handle;
 		bcFLOAT m_glow_threshold = 0;
 		bcFLOAT m_glow_intensity = 0;
 

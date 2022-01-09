@@ -110,5 +110,6 @@ namespace black_cat
 		const bcCHAR* m_threw_smoke_grenade_name;
 		bcFLOAT m_grenade_throw_time;
 		bcFLOAT m_grenade_throw_force;
+		core::bc_velocity<bcFLOAT> m_weapon_shoot_velocity;
 	};
 }

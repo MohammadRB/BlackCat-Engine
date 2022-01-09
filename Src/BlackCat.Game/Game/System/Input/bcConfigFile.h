@@ -34,26 +34,44 @@ namespace black_cat
 			bc_config_file& add_or_update_config_key(core::bc_string_view p_key, core::bc_any p_value) noexcept;
 			
 			bc_config_file& add_or_update_config_key(core::bc_string_view p_key, const core::bc_vector2f& p_value) noexcept;
+
+			bc_config_file& add_or_update_config_key(core::bc_string_view p_key, const core::bc_vector2i& p_value) noexcept;
 			
 			bc_config_file& add_or_update_config_key(core::bc_string_view p_key, const core::bc_vector3f& p_value) noexcept;
+
+			bc_config_file& add_or_update_config_key(core::bc_string_view p_key, const core::bc_vector3i& p_value) noexcept;
 			
 			bc_config_file& add_or_update_config_key(core::bc_string_view p_key, const core::bc_vector4f& p_value) noexcept;
 
-			bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_any& p_value) noexcept;
+			bc_config_file& add_or_update_config_key(core::bc_string_view p_key, const core::bc_vector4i& p_value) noexcept;
 
-			bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_any& p_value, bool& p_succeeded) noexcept;
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_any& p_value) const noexcept;
 
-			bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector2f& p_value);
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_any& p_value, bool& p_succeeded) const noexcept;
 
-			bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector2f& p_value, bool& p_succeeded) noexcept;
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector2f& p_value) const;
 
-			bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector3f& p_value);
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector2f& p_value, bool& p_succeeded) const noexcept;
 
-			bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector3f& p_value, bool& p_succeeded) noexcept;
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector2i& p_value) const;
 
-			bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector4f& p_value);
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector2i& p_value, bool& p_succeeded) const noexcept;
 
-			bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector4f& p_value, bool& p_succeeded) noexcept;
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector3f& p_value) const;
+
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector3f& p_value, bool& p_succeeded) const noexcept;
+
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector3i& p_value) const;
+
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector3i& p_value, bool& p_succeeded) const noexcept;
+
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector4f& p_value) const;
+
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector4f& p_value, bool& p_succeeded) const noexcept;
+
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector4i& p_value) const;
+
+			const bc_config_file& read_config_key(core::bc_string_view p_key, core::bc_vector4i& p_value, bool& p_succeeded) const noexcept;
 
 			void reload();
 

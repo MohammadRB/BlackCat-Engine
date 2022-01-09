@@ -126,7 +126,7 @@ namespace black_cat
 
 		inline bc_json_value_object* bci_json_value::set_json_field(bc_json_document_object& p_document, bc_json_value_object& p_json, const bcCHAR* p_name) const
 		{
-			bc_json_value_object* l_result = nullptr;
+			bc_json_value_object* l_result;
 
 			if (p_json.HasMember(p_name))
 			{
@@ -288,15 +288,15 @@ namespace black_cat
 				static_assert(std::is_default_constructible_v<T>, "T must be default constructable");
 			}
 
-			bc_json_value(const bc_json_value&) noexcept(std::is_nothrow_copy_constructible<T>::value) = delete;
+			bc_json_value(const bc_json_value&) noexcept(std::is_nothrow_copy_constructible_v<T>) = delete;
 
-			bc_json_value(bc_json_value&&) noexcept(std::is_nothrow_move_constructible<T>::value) = delete;
+			bc_json_value(bc_json_value&&) noexcept(std::is_nothrow_move_constructible_v<T>) = delete;
 
-			~bc_json_value() = default;
+			~bc_json_value() override = default;
 
-			bc_json_value& operator=(const bc_json_value&) noexcept(std::is_nothrow_copy_assignable<T>::value) = delete;
+			bc_json_value& operator=(const bc_json_value&) noexcept(std::is_nothrow_copy_assignable_v<T>) = delete;
 
-			bc_json_value& operator=(bc_json_value&&) noexcept(std::is_nothrow_move_assignable<T>::value) = delete;
+			bc_json_value& operator=(bc_json_value&&) noexcept(std::is_nothrow_move_assignable_v<T>) = delete;
 
 			void load(bc_json_value_object& p_json_value) override
 			{
@@ -381,7 +381,7 @@ namespace black_cat
 				p_value = p_json_value.GetBool();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bool& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bool& p_value)
 			{
 				p_json_value.SetBool(p_value);
 			}
@@ -396,7 +396,7 @@ namespace black_cat
 				p_value = p_json_value.GetInt();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT8& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcINT8& p_value)
 			{
 				p_json_value.SetInt(p_value);
 			}
@@ -411,7 +411,7 @@ namespace black_cat
 				p_value = p_json_value.GetUint();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT8& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcUINT8& p_value)
 			{
 				p_json_value.SetUint(p_value);
 			}
@@ -426,7 +426,7 @@ namespace black_cat
 				p_value = p_json_value.GetInt();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT16& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcINT16& p_value)
 			{
 				p_json_value.SetInt(p_value);
 			}
@@ -441,7 +441,7 @@ namespace black_cat
 				p_value = p_json_value.GetUint();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT16& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcUINT16& p_value)
 			{
 				p_json_value.SetUint(p_value);
 			}
@@ -456,7 +456,7 @@ namespace black_cat
 				p_value = p_json_value.GetInt();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT32& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcINT32& p_value)
 			{
 				p_json_value.SetInt(p_value);
 			}
@@ -471,7 +471,7 @@ namespace black_cat
 				p_value = p_json_value.GetUint();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT32& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcUINT32& p_value)
 			{
 				p_json_value.SetUint(p_value);
 			}
@@ -486,7 +486,7 @@ namespace black_cat
 				p_value = p_json_value.GetInt64();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcINT64& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcINT64& p_value)
 			{
 				p_json_value.SetInt64(p_value);
 			}
@@ -501,7 +501,7 @@ namespace black_cat
 				p_value = p_json_value.GetUint64();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcUINT64& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcUINT64& p_value)
 			{
 				p_json_value.SetUint64(p_value);
 			}
@@ -516,7 +516,7 @@ namespace black_cat
 				p_value = p_json_value.GetFloat();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcFLOAT& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcFLOAT& p_value)
 			{
 				p_json_value.SetFloat(p_value);
 			}
@@ -531,7 +531,7 @@ namespace black_cat
 				p_value = p_json_value.GetDouble();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bcDOUBLE& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcDOUBLE& p_value)
 			{
 				p_json_value.SetDouble(p_value);
 			}
@@ -546,7 +546,7 @@ namespace black_cat
 				p_value = p_json_value.GetString();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bc_string& p_value)
 			{
 				p_json_value.SetString(p_value.c_str(), p_value.length());
 			}
@@ -561,7 +561,7 @@ namespace black_cat
 				p_value = p_json_value.GetString();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string_program& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bc_string_program& p_value)
 			{
 				p_json_value.SetString(p_value.c_str(), p_value.length());
 			}
@@ -576,7 +576,7 @@ namespace black_cat
 				p_value = p_json_value.GetString();
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_string_frame& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bc_string_frame& p_value)
 			{
 				p_json_value.SetString(p_value.c_str(), p_value.length());
 			}
@@ -624,7 +624,7 @@ namespace black_cat
 				}
 				else if (p_json_value.IsArray())
 				{
-					auto l_array = p_json_value.GetArray();
+					const auto l_array = p_json_value.GetArray();
 					bc_vector<bc_any> l_values;
 
 					l_values.reserve(l_array.Size());
@@ -646,62 +646,57 @@ namespace black_cat
 				}
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_parameter_pack& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bc_parameter_pack& p_value)
 			{
-				if (p_value.is<bool>())
+				if (const auto* l_bool = p_value.as<bool>())
 				{
-					p_json_value.SetBool(*p_value.as<bool>());
+					p_json_value.SetBool(*l_bool);
 				}
-				else if (p_value.is<bcFLOAT>())
+				else if (const auto* l_float = p_value.as<bcFLOAT>())
 				{
-					p_json_value.SetFloat(*p_value.as<bcFLOAT>());
+					p_json_value.SetFloat(*l_float);
 				}
-				else if (p_value.is<bcDOUBLE>())
+				else if (const auto* l_double = p_value.as<bcDOUBLE>())
 				{
-					p_json_value.SetDouble(*p_value.as<bcDOUBLE>());
+					p_json_value.SetDouble(*l_double);
 				}
-				else if (p_value.is<bcINT32>())
+				else if (const auto* l_int32 = p_value.as<bcINT32>())
 				{
-					p_json_value.SetInt(*p_value.as<bcINT32>());
+					p_json_value.SetInt(*l_int32);
 				}
-				else if (p_value.is<bcINT64>())
+				else if (const auto* l_int64 = p_value.as<bcINT64>())
 				{
-					p_json_value.SetInt64(*p_value.as<bcINT64>());
+					p_json_value.SetInt64(*l_int64);
 				}
-				else if (p_value.is<bcUINT32>())
+				else if (const auto* l_uint32 = p_value.as<bcUINT32>())
 				{
-					p_json_value.SetUint(*p_value.as<bcUINT32>());
+					p_json_value.SetUint(*l_uint32);
 				}
-				else if (p_value.is<bcUINT64>())
+				else if (const auto* l_uint64 = p_value.as<bcUINT64>())
 				{
-					p_json_value.SetUint64(*p_value.as<bcUINT64>());
+					p_json_value.SetUint64(*l_uint64);
 				}
-				else if (p_value.is<bc_string>())
+				else if (const auto* l_string = p_value.as<bc_string>())
 				{
-					auto* l_string = p_value.as<bc_string>();
 					p_json_value.SetString(l_string->c_str(), l_string->length());
 				}
-				else if (p_value.is<bc_string_frame>())
+				else if (const auto* l_string_frame = p_value.as<bc_string_frame>())
 				{
-					auto* l_string = p_value.as<bc_string_frame>();
-					p_json_value.SetString(l_string->c_str(), l_string->length());
+					p_json_value.SetString(l_string_frame->c_str(), l_string_frame->length());
 				}
-				else if (p_value.is<bc_string_program>())
+				else if (const auto* l_string_program = p_value.as<bc_string_program>())
 				{
-					auto* l_string = p_value.as<bc_string_program>();
-					p_json_value.SetString(l_string->c_str(), l_string->length());
+					p_json_value.SetString(l_string_program->c_str(), l_string_program->length());
 				}
-				else if (p_value.is<bc_json_key_value>())
+				else if (const auto* l_key_value = p_value.as<bc_json_key_value>())
 				{
-					auto* l_value = p_value.as<bc_json_key_value>();
-					_write(p_document, p_json_value, *l_value);
+					_write(p_document, p_json_value, *l_key_value);
 				}
-				else if (p_value.is<bc_vector<bc_any>>())
+				else if (const auto* l_vector = p_value.as<bc_vector<bc_any>>())
 				{
 					p_json_value.SetArray();
 
-					bc_vector<bc_any>* l_values = p_value.as<bc_vector<bc_any>>();
-					for (auto& l_value : *l_values)
+					for (const auto& l_value : *l_vector)
 					{
 						bc_json_value_object l_json_value;
 						_write(p_document, l_json_value, l_value);
@@ -720,9 +715,9 @@ namespace black_cat
 				_load(p_json_value, static_cast<bc_parameter_pack&>(p_value));
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_any& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bc_any& p_value)
 			{
-				_write(p_document, p_json_value, static_cast<bc_parameter_pack&>(p_value));
+				_write(p_document, p_json_value, static_cast<const bc_parameter_pack&>(p_value));
 			}
 
 			void _load(const bc_json_value_object& p_json_value, bc_json_key_value& p_value)
@@ -751,7 +746,7 @@ namespace black_cat
 			{
 				p_json_value.SetObject(); // Mark json value as an object
 
-				for (std::pair< bc_string, bc_any >& l_value : p_value)
+				for (std::pair<bc_string, bc_any>& l_value : p_value)
 				{
 					auto* l_json_value = set_json_field(p_document, p_json_value, l_value.first.c_str());
 					_write(p_document, *l_json_value, l_value.second);
@@ -765,7 +760,7 @@ namespace black_cat
 			}
 
 			template<typename T1>
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, T1& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const T1& p_value)
 			{
 				json_parse::bc_write(p_document, p_json_value, p_value);
 			}
@@ -785,15 +780,15 @@ namespace black_cat
 			{
 			}
 
-			bc_json_object(const bc_json_object&) noexcept(std::is_nothrow_copy_constructible<T>::value) = delete;
+			bc_json_object(const bc_json_object&) noexcept(std::is_nothrow_copy_constructible_v<T>) = delete;
 
-			bc_json_object(bc_json_object&&) noexcept(std::is_nothrow_move_constructible<T>::value) = delete;
+			bc_json_object(bc_json_object&&) noexcept(std::is_nothrow_move_constructible_v<T>) = delete;
 
 			~bc_json_object() override = default;
 
-			bc_json_object& operator=(const bc_json_object&) noexcept(std::is_nothrow_copy_assignable<T>::value) = delete;
+			bc_json_object& operator=(const bc_json_object&) noexcept(std::is_nothrow_copy_assignable_v<T>) = delete;
 
-			bc_json_object& operator=(bc_json_object&&) noexcept(std::is_nothrow_move_assignable<T>::value) = delete;
+			bc_json_object& operator=(bc_json_object&&) noexcept(std::is_nothrow_move_assignable_v<T>) = delete;
 
 			void load(bc_json_value_object& p_json_value) override
 			{
@@ -879,10 +874,10 @@ namespace black_cat
 		};
 
 		template<typename T, typename T1 = void>
-		class bc_json_array : public bci_json_value, public bc_iterator_adapter<bc_list<bc_json_object< T >>>
+		class bc_json_array : public bci_json_value, public bc_iterator_adapter<bc_list<bc_json_object<T>>>
 		{
 		public:
-			using list_t = bc_list< bc_json_object< T > >;
+			using list_t = bc_list<bc_json_object<T>>;
 			using value_type = typename list_t::value_type;
 			using pointer = typename list_t::pointer;
 			using reference = typename list_t::reference;
@@ -900,7 +895,7 @@ namespace black_cat
 			{
 			}
 
-			bc_json_array(const bc_json_array& p_other) noexcept(std::is_nothrow_copy_constructible<T>::value)
+			bc_json_array(const bc_json_array& p_other) noexcept(std::is_nothrow_copy_constructible_v<T>)
 				: bci_json_value(p_other),
 				bc_iterator_adapter(m_value),
 				m_name(p_other.m_name),
@@ -942,7 +937,7 @@ namespace black_cat
 					throw bc_io_exception("bad json format. expected array value.");
 				}
 
-				auto l_array = l_value->GetArray();
+				const auto l_array = l_value->GetArray();
 				for (auto& l_array_value : l_array)
 				{
 					// Because json objects are non-copy and movable we emplace one in array and then load it in-place
@@ -1041,9 +1036,9 @@ namespace black_cat
 
 			~bc_json_array() override = default;
 
-			bc_json_array& operator=(const bc_json_array&) noexcept(std::is_nothrow_copy_assignable<T>::value) = delete;
+			bc_json_array& operator=(const bc_json_array&) noexcept(std::is_nothrow_copy_assignable_v<T>) = delete;
 
-			bc_json_array& operator=(bc_json_array&&) noexcept(std::is_nothrow_move_assignable<T>::value) = delete;
+			bc_json_array& operator=(bc_json_array&&) noexcept(std::is_nothrow_move_assignable_v<T>) = delete;
 
 			void load(bc_json_value_object& p_json_value) override
 			{
@@ -1115,15 +1110,15 @@ namespace black_cat
 		public:
 			bc_json_document() = default;
 
-			bc_json_document(const bc_json_document&) noexcept(std::is_nothrow_copy_constructible<T>::value) = delete;
+			bc_json_document(const bc_json_document&) noexcept(std::is_nothrow_copy_constructible_v<T>) = delete;
 
-			bc_json_document(bc_json_document&&) noexcept(std::is_nothrow_move_constructible<T>::value) = delete;
+			bc_json_document(bc_json_document&&) noexcept(std::is_nothrow_move_constructible_v<T>) = delete;
 
 			~bc_json_document() = default;
 
-			bc_json_document& operator=(const bc_json_document&) noexcept(std::is_nothrow_copy_assignable<T>::value) = delete;
+			bc_json_document& operator=(const bc_json_document&) noexcept(std::is_nothrow_copy_assignable_v<T>) = delete;
 
-			bc_json_document& operator=(bc_json_document&&) noexcept(std::is_nothrow_move_assignable<T>::value) = delete;
+			bc_json_document& operator=(bc_json_document&&) noexcept(std::is_nothrow_move_assignable_v<T>) = delete;
 
 			void load(const bcCHAR* p_json)
 			{

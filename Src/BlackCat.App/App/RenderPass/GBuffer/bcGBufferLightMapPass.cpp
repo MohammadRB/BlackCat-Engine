@@ -313,6 +313,12 @@ namespace black_cat
 		{
 			BC_ASSERT(l_shadow_map_buffer_container->size() <= m_shader_shadow_map_array_count);
 
+			// Reset all parameters
+			for(auto& l_shadow_map_parameter : m_shadow_map_parameters)
+			{
+				l_shadow_map_parameter.set_as_resource_view(graphic::bc_resource_view());
+			}
+
 			for (bcSIZE l_shadow_map_buffer_ite = 0, l_end = l_shadow_map_buffer_container->size(); l_shadow_map_buffer_ite < l_end; ++l_shadow_map_buffer_ite)
 			{
 				auto& l_shadow_map_buffer_entry = l_shadow_map_buffer_container->get(l_shadow_map_buffer_ite);
@@ -320,10 +326,15 @@ namespace black_cat
 				BC_ASSERT(l_shadow_map_buffer_entry.second.m_cascade_sizes.size() <= m_shader_shadow_map_cascade_count);
 				BC_ASSERT(l_shadow_map_buffer_entry.second.m_view_projections.size() <= m_shader_shadow_map_cascade_count);
 
-				auto l_direct_light_ite = std::find_if(std::cbegin(l_direct_lights), std::cend(l_direct_lights), [&](const _bc_direct_light_struct& p_direct_light)
+				auto l_direct_light_ite = std::find_if
+				(
+					std::cbegin(l_direct_lights), 
+					std::cend(l_direct_lights), 
+					[&](const _bc_direct_light_struct& p_direct_light)
 					{
 						return p_direct_light.m_direction == l_shadow_map_buffer_entry.first;
-					});
+					}
+				);
 
 				BC_ASSERT(l_direct_light_ite != std::cend(l_direct_lights));
 
@@ -369,7 +380,7 @@ namespace black_cat
 			(p_context.m_render_camera.get_view() * p_context.m_render_camera.get_projection()).inverse()
 		};
 
-		if(p_context.m_frame_renderer.need_matrix_transpose())
+		if (p_context.m_frame_renderer.need_matrix_transpose())
 		{
 			l_parameters_cbuffer_data.m_view_proj_inv.make_transpose();
 		}

@@ -27,6 +27,7 @@ namespace black_cat
 		class bc_default_render_thread;
 		class bc_scene;
 		class bc_render_pass_manager;
+		class bc_global_config;
 		
 		template<typename TPass>
 		struct bc_render_pass_trait
@@ -109,6 +110,26 @@ namespace black_cat
 			const graphic::bc_device_parameters& m_new_parameters;
 		};
 
+		class bc_render_pass_config_change_context
+		{
+		public:
+			bc_render_pass_config_change_context(bc_render_system& p_render_system,
+				graphic::bc_device& p_device,
+				graphic::bc_device_swap_buffer& p_device_swap_buffer,
+				const bc_global_config& p_global_config)
+				: m_render_system(p_render_system),
+				m_device(p_device),
+				m_device_swap_buffer(p_device_swap_buffer),
+				m_global_config(p_global_config)
+			{
+			}
+
+			bc_render_system& m_render_system;
+			graphic::bc_device& m_device;
+			graphic::bc_device_swap_buffer& m_device_swap_buffer;
+			const bc_global_config& m_global_config;
+		};
+
 		/**
 		 * \brief Represent a whole rendering pass that do all tasks that required to render a scene with a specified configuration 
 		 */
@@ -170,6 +191,12 @@ namespace black_cat
 			virtual void after_reset(const bc_render_pass_reset_context& p_context) = 0;
 
 			/**
+			 * \brief This function will be called when global config file changes and render pass parameters may need update
+			 * \param p_context 
+			 */
+			virtual void config_changed(const bc_render_pass_config_change_context& p_context);
+
+			/**
 			 * \brief This function will be called when pass is going to be destroy.
 			 * Before device destruction this function must be called.
 			 * \param p_render_system 
@@ -204,6 +231,10 @@ namespace black_cat
 		}
 
 		inline void bci_render_pass::cleanup_frame(const bc_render_pass_render_context& p_context)
+		{
+		}
+
+		inline void bci_render_pass::config_changed(const bc_render_pass_config_change_context& p_context)
 		{
 		}
 

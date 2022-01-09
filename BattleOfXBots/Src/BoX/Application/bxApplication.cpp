@@ -107,7 +107,7 @@ namespace box
 		l_render_system.add_render_pass(bc_gbuffer_vegetable_pass());
 		l_render_system.add_render_pass(bc_gbuffer_skinned_pass());
 		l_render_system.add_render_pass(bc_gbuffer_decal_pass());
-		l_render_system.add_render_pass(bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 2, { {30, 1}, {60, 1}, {120, 2} }));
+		l_render_system.add_render_pass(bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 3, { {50, 1}, {100, 1} }));
 		l_render_system.add_render_pass(bc_vegetable_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
 		l_render_system.add_render_pass(bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
 		l_render_system.add_render_pass(bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));

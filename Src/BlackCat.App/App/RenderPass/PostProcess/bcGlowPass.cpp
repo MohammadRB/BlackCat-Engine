@@ -2,12 +2,10 @@
 
 #include "App/AppPCH.h"
 
-#include "Core/Messaging/Event/bcEventManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/Input/bcGlobalConfig.h"
-#include "Game/bcEvent.h"
 #include "App/RenderPass/PostProcess/bcGlowPass.h"
 #include "App/bcConstant.h"
 
@@ -84,26 +82,6 @@ namespace black_cat
 			.as_buffer(1, sizeof(_bc_blur_params_struct), graphic::bc_resource_usage::gpu_rw)
 			.as_constant_buffer();
 		m_blur_params_buffer = l_device.create_buffer(l_blur_params_buffer_config, nullptr);
-
-		m_config_change_handle = core::bc_get_service<core::bc_event_manager>()->register_event_listener<game::bc_event_global_config_changed>
-		(
-			core::bc_event_manager::delegate_type([&](core::bci_event& p_event)
-			{
-				const auto* l_global_config_event = core::bci_event::as<game::bc_event_global_config_changed>(p_event);
-				auto& l_global_config = l_global_config_event->get_config();
-
-				core::bc_any l_threshold_value;
-				core::bc_any l_intensity_value;
-				l_global_config
-					.read_config_key("render_glow_threshold", l_threshold_value)
-					.read_config_key("render_glow_intensity", l_intensity_value);
-
-				if (l_threshold_value.as<bcFLOAT>() && l_intensity_value.as<bcFLOAT>())
-				{
-					p_render_system.get_render_pass<bc_glow_pass>()->update_parameters(*l_threshold_value.as<bcFLOAT>(), *l_intensity_value.as<bcFLOAT>());
-				}
-			})
-		);
 
 		after_reset
 		(
@@ -408,6 +386,21 @@ namespace black_cat
 			{
 			}
 		);
+	}
+
+	void bc_glow_pass::config_changed(const game::bc_render_pass_config_change_context& p_context)
+	{
+		core::bc_any l_threshold_value;
+		core::bc_any l_intensity_value;
+
+		p_context.m_global_config
+			.read_config_key("render_glow_threshold", l_threshold_value)
+			.read_config_key("render_glow_intensity", l_intensity_value);
+
+		if (l_threshold_value.is<bcFLOAT>() && l_intensity_value.is<bcFLOAT>())
+		{
+			update_parameters(*l_threshold_value.as<bcFLOAT>(), *l_intensity_value.as<bcFLOAT>());
+		}
 	}
 
 	void bc_glow_pass::destroy(game::bc_render_system& p_render_system)

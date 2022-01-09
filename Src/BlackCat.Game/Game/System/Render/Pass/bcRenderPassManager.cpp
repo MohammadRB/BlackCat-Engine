@@ -44,36 +44,36 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::pass_update(const bc_render_pass_update_context& p_param)
+		void bc_render_pass_manager::pass_update(const bc_render_pass_update_context& p_context)
 		{
 			for (const auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->update(p_param);
+				l_entry.m_pass->update(p_context);
 			}
 		}
 
-		void bc_render_pass_manager::pass_execute(const bc_render_pass_render_context& p_param)
+		void bc_render_pass_manager::pass_execute(const bc_render_pass_render_context& p_context)
 		{
 			auto* l_counter_value_manager = core::bc_get_service<core::bc_counter_value_manager>();
 			
 			for (const _bc_render_pass_entry& l_entry : m_passes)
 			{
 				l_entry.m_stop_watch->start();
-				l_entry.m_pass->initialize_frame(p_param);
+				l_entry.m_pass->initialize_frame(p_context);
 				l_entry.m_stop_watch->stop();
 			}
 			
 			for(const _bc_render_pass_entry& l_entry : m_passes)
 			{
 				l_entry.m_stop_watch->start();
-				l_entry.m_pass->execute(p_param);
+				l_entry.m_pass->execute(p_context);
 				l_entry.m_stop_watch->stop();
 			}
 
 			for (const _bc_render_pass_entry& l_entry : m_passes)
 			{
 				l_entry.m_stop_watch->start();
-				l_entry.m_pass->cleanup_frame(p_param);
+				l_entry.m_pass->cleanup_frame(p_context);
 				l_entry.m_stop_watch->stop();
 
 				l_entry.m_stop_watch->restart();
@@ -81,22 +81,30 @@ namespace black_cat
 			}
 		}
 
-		void bc_render_pass_manager::before_reset(const bc_render_pass_reset_context& p_param)
+		void bc_render_pass_manager::before_reset(const bc_render_pass_reset_context& p_context)
 		{
 			for (const auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->before_reset(p_param);
+				l_entry.m_pass->before_reset(p_context);
 			}
-			m_texture_manager.before_reset(p_param);
+			m_texture_manager.before_reset(p_context);
 		}
 
-		void bc_render_pass_manager::after_reset(const bc_render_pass_reset_context& p_param)
+		void bc_render_pass_manager::after_reset(const bc_render_pass_reset_context& p_context)
 		{
 			for (const auto& l_entry : m_passes)
 			{
-				l_entry.m_pass->after_reset(p_param);
+				l_entry.m_pass->after_reset(p_context);
 			}
-			m_texture_manager.after_reset(p_param);
+			m_texture_manager.after_reset(p_context);
+		}
+
+		void bc_render_pass_manager::config_changed(const bc_render_pass_config_change_context& p_context)
+		{
+			for (const auto& l_entry : m_passes)
+			{
+				l_entry.m_pass->config_changed(p_context);
+			}
 		}
 
 		void bc_render_pass_manager::pass_destroy(bc_render_system& p_render_system)

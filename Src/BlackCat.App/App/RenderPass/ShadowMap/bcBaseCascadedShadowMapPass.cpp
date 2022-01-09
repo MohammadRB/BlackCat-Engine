@@ -9,6 +9,7 @@
 #include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/Input/bcCamera.h"
 #include "Game/System/Input/bcCameraFrustum.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
@@ -39,32 +40,30 @@ namespace black_cat
 	{
 		m_state = core::bc_make_shared<_bc_cascaded_shadow_map_pass_state>(core::bc_alloc_type::program);
 		m_state->m_instance_count = 1;
+		m_state->m_back_buffer_width = 0;
+		m_state->m_back_buffer_height = 0;
 		m_state->m_output_depth_buffers_share_slot = p_output_depth_buffers;
-		m_state->m_shadow_map_multiplier = p_shadow_map_multiplier;
 		m_state->m_shadow_map_size = 1;
-		m_state->m_cascade_sizes.assign(p_cascade_sizes.size(), 0);
-		m_state->m_cascade_update_intervals.assign(p_cascade_sizes.size(), {0,0});
 
-		std::transform
-		(
-			std::cbegin(p_cascade_sizes),
-			std::cend(p_cascade_sizes),
-			std::begin(m_state->m_cascade_sizes),
-			[](const std::tuple< bcSIZE, bcUBYTE >& p_cascade_size)
-			{
-				return std::get< 0 >(p_cascade_size);
-			}
-		);
-		std::transform
-		(
-			std::cbegin(p_cascade_sizes),
-			std::cend(p_cascade_sizes),
-			std::begin(m_state->m_cascade_update_intervals),
-			[](const std::tuple< bcSIZE, bcUBYTE >& p_cascade_size)
-			{
-				return std::make_tuple(std::get< 1 >(p_cascade_size), std::get< 1 >(p_cascade_size));
-			}
-		);
+		core::bc_vector<core::bc_vector2i> l_cascade_sizes_int;
+		core::bc_vector<core::bc_any> l_cascade_sizes;
+		l_cascade_sizes_int.reserve(p_cascade_sizes.size());
+		l_cascade_sizes.reserve(p_cascade_sizes.size() * 2);
+
+		for (auto l_cascade : p_cascade_sizes)
+		{
+			l_cascade_sizes_int.push_back(core::bc_vector2i(std::get<0>(l_cascade), std::get<1>(l_cascade)));
+			l_cascade_sizes.push_back(core::bc_any(l_cascade_sizes_int.back().x));
+			l_cascade_sizes.push_back(core::bc_any(l_cascade_sizes_int.back().y));
+		}
+
+		auto& l_global_config = bc_get_global_config();
+		l_global_config
+			.add_if_not_exist_config_key("render_shadow_map_multiplier", core::bc_any(p_shadow_map_multiplier))
+			.add_if_not_exist_config_key("render_shadow_map_cascades", core::bc_any(l_cascade_sizes))
+			.flush_changes();
+
+		_reset_cascade_sizes(p_shadow_map_multiplier, core::bc_make_cspan(l_cascade_sizes_int));
 	}
 	
 	void bc_base_cascaded_shadow_map_pass::initialize_resources(game::bc_render_system& p_render_system)
@@ -147,7 +146,7 @@ namespace black_cat
 
 	void bc_base_cascaded_shadow_map_pass::execute(const game::bc_render_pass_render_context& p_context)
 	{
-		if(m_state->m_lights.empty())
+		if(m_state->m_lights.empty() || !m_state->m_cascade_sizes.size())
 		{
 			return;
 		}
@@ -305,7 +304,10 @@ namespace black_cat
 		}
 
 		const auto l_light_state_count = m_state->m_light_instance_states.size();
-		m_state->m_shadow_map_size = std::max(p_context.m_device_swap_buffer.get_back_buffer_width(), p_context.m_device_swap_buffer.get_back_buffer_height()) * m_state->m_shadow_map_multiplier;
+
+		m_state->m_back_buffer_width = p_context.m_device_swap_buffer.get_back_buffer_width();
+		m_state->m_back_buffer_height = p_context.m_device_swap_buffer.get_back_buffer_height();
+		m_state->m_shadow_map_size = (m_state->m_back_buffer_width + m_state->m_back_buffer_height) / 2 * m_state->m_shadow_map_multiplier;
 		m_state->m_light_instance_states.clear();
 
 		for(auto l_ite = 0U; l_ite < l_light_state_count; ++l_ite)
@@ -329,6 +331,44 @@ namespace black_cat
 		m_state.reset();
 	}
 
+	void bc_base_cascaded_shadow_map_pass::config_changed(const game::bc_render_pass_config_change_context& p_context)
+	{
+		if(m_my_index != 0)
+		{
+			return;
+		}
+
+		core::bc_any l_shadow_map_multiplier_param;
+		core::bc_any l_cascade_sizes_param;
+
+		p_context.m_global_config
+			.read_config_key("render_shadow_map_multiplier", l_shadow_map_multiplier_param)
+			.read_config_key("render_shadow_map_cascades", l_cascade_sizes_param);
+
+		if (!l_shadow_map_multiplier_param.is<bcFLOAT>() || !l_cascade_sizes_param.is<core::bc_vector<core::bc_any>>())
+		{
+			return;
+		}
+
+		const auto l_shadow_map_multiplier = l_shadow_map_multiplier_param.as_throw<bcFLOAT>();
+		const auto& l_cascade_sizes = l_cascade_sizes_param.as_throw<core::bc_vector<core::bc_any>>();
+
+		if(l_cascade_sizes.size() % 2 != 0)
+		{
+			return;
+		}
+			
+		core::bc_vector_frame<core::bc_vector2i> l_cascade_sizes_int;
+		l_cascade_sizes_int.reserve(l_cascade_sizes.size());
+
+		for(auto l_ite = 0U; l_ite < l_cascade_sizes.size(); l_ite += 2)
+		{
+			l_cascade_sizes_int.push_back({ l_cascade_sizes[l_ite].as_throw<bcINT32>(), l_cascade_sizes[l_ite + 1].as_throw<bcINT32>() });
+		}
+
+		_reset_cascade_sizes(l_shadow_map_multiplier, core::bc_make_cspan(l_cascade_sizes_int));
+	}
+
 	void bc_base_cascaded_shadow_map_pass::capture_debug_shapes()
 	{
 		m_state->m_capture_debug_shapes = true;
@@ -340,11 +380,39 @@ namespace black_cat
 	{
 		return m_my_index;
 	}
-	
+
+	void bc_base_cascaded_shadow_map_pass::_reset_cascade_sizes(bcFLOAT p_shadow_map_multiplier, core::bc_const_span<core::bc_vector2i> p_cascades)
+	{
+		m_state->m_shadow_map_multiplier = p_shadow_map_multiplier;
+		m_state->m_shadow_map_size = (m_state->m_back_buffer_width + m_state->m_back_buffer_height) / 2 * m_state->m_shadow_map_multiplier;
+		m_state->m_cascade_sizes.assign(p_cascades.size(), 0);
+		m_state->m_cascade_update_intervals.assign(p_cascades.size(), { 0,0 });
+		m_state->m_light_instance_states.clear();
+
+		std::transform
+		(
+			std::cbegin(p_cascades),
+			std::cend(p_cascades),
+			std::begin(m_state->m_cascade_sizes),
+			[](const core::bc_vector2i& p_cascade_size)
+			{
+				return p_cascade_size.x;
+			}
+		);
+		std::transform
+		(
+			std::cbegin(p_cascades),
+			std::cend(p_cascades),
+			std::begin(m_state->m_cascade_update_intervals),
+			[](const core::bc_vector2i& p_cascade_size)
+			{
+				return std::make_tuple(p_cascade_size.y, p_cascade_size.y);
+			}
+		);
+	}
+
 	_bc_cascaded_shadow_map_light_state bc_base_cascaded_shadow_map_pass::_create_light_instance(game::bc_render_system& p_render_system)
 	{
-		_bc_cascaded_shadow_map_light_state l_instance;
-
 		const auto l_cascade_count = m_state->m_cascade_sizes.size();
 
 		auto l_depth_buffer_config = graphic::bc_graphic_resource_builder()
@@ -371,6 +439,7 @@ namespace black_cat
 			.as_tex2d_array_shader_view(0, 1, 0, l_cascade_count)
 			.on_depth_stencil_texture2d();
 
+		_bc_cascaded_shadow_map_light_state l_instance;
 		l_instance.m_depth_buffer = p_render_system.get_device().create_texture2d(l_depth_buffer_config, nullptr);
 		l_instance.m_depth_buffer_resource_view = p_render_system.get_device().create_resource_view(l_instance.m_depth_buffer.get(), l_depth_buffer_resource_view_config);
 		l_instance.m_last_view_projections.reserve(l_cascade_count);

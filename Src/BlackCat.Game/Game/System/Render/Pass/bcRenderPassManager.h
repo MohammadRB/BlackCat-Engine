@@ -53,13 +53,15 @@ namespace black_cat
 
 			void pass_initialize_resources(bc_render_system& p_render_system);
 
-			void pass_update(const bc_render_pass_update_context& p_param);
+			void pass_update(const bc_render_pass_update_context& p_context);
 
-			void pass_execute(const bc_render_pass_render_context& p_param);
+			void pass_execute(const bc_render_pass_render_context& p_context);
 
-			void before_reset(const bc_render_pass_reset_context& p_param);
+			void before_reset(const bc_render_pass_reset_context& p_context);
 
-			void after_reset(const bc_render_pass_reset_context& p_param);
+			void after_reset(const bc_render_pass_reset_context& p_context);
+
+			void config_changed(const bc_render_pass_config_change_context& p_context);
 
 			void pass_destroy(bc_render_system& p_render_system);
 

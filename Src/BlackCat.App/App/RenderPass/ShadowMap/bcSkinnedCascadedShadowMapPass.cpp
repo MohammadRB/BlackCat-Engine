@@ -20,7 +20,7 @@ namespace black_cat
 
 	bc_skinned_cascaded_shadow_map_pass::bc_skinned_cascaded_shadow_map_pass(game::bc_render_pass_variable_t p_output_depth_buffers,
 		bcFLOAT p_shadow_map_multiplier,
-		std::initializer_list< std::tuple< bcSIZE, bcUBYTE > > p_cascade_sizes)
+		std::initializer_list<std::tuple<bcSIZE, bcUBYTE>> p_cascade_sizes)
 		: bc_base_cascaded_shadow_map_pass(p_output_depth_buffers, p_shadow_map_multiplier, p_cascade_sizes)
 	{
 	}

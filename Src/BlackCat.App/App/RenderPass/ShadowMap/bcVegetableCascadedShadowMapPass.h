@@ -22,7 +22,7 @@ namespace black_cat
 
 		bc_vegetable_cascaded_shadow_map_pass(game::bc_render_pass_variable_t p_output_depth_buffers,
 			bcFLOAT p_shadow_map_multiplier,
-			const std::initializer_list< std::tuple< bcSIZE, bcUBYTE > >& p_cascade_sizes);
+			const std::initializer_list<std::tuple<bcSIZE, bcUBYTE>>& p_cascade_sizes);
 
 	private:
 		void initialize_pass(game::bc_render_system& p_render_system) override;

@@ -6,6 +6,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcArray.h"
 #include "Core/Messaging/Event/bcEvent.h"
+#include "Core/Messaging/bcMessageHandle.h"
 #include "Core/Utility/bcInitializable.h"
 #include "Core/Utility/bcNullable.h"
 #include "Core/Utility/bcObjectPool.h"
@@ -341,6 +342,7 @@ namespace black_cat
 			core::bc_event_listener_handle m_app_active_handle;
 			core::bc_event_listener_handle m_device_reset_handle;
 			core::bc_event_listener_handle m_frame_render_finish_handle;
+			core::bc_event_listener_handle m_config_change_handle;
 		};
 
 		inline graphic::bc_device& bc_render_system::get_device() noexcept

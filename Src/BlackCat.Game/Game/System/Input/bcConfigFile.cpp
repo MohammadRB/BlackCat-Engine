@@ -58,7 +58,19 @@ namespace black_cat
 			return *this;
 		}
 
+		bc_config_file& bc_config_file::add_or_update_config_key(core::bc_string_view p_key, const core::bc_vector2i& p_value) noexcept
+		{
+			json_parse::bc_write(*m_key_values, core::bc_string(p_key), p_value);
+			return *this;
+		}
+
 		bc_config_file& bc_config_file::add_or_update_config_key(core::bc_string_view p_key, const core::bc_vector3f& p_value) noexcept
+		{
+			json_parse::bc_write(*m_key_values, core::bc_string(p_key), p_value);
+			return *this;
+		}
+
+		bc_config_file& bc_config_file::add_or_update_config_key(core::bc_string_view p_key, const core::bc_vector3i& p_value) noexcept
 		{
 			json_parse::bc_write(*m_key_values, core::bc_string(p_key), p_value);
 			return *this;
@@ -70,13 +82,19 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_any& p_value) noexcept
+		bc_config_file& bc_config_file::add_or_update_config_key(core::bc_string_view p_key, const core::bc_vector4i& p_value) noexcept
+		{
+			json_parse::bc_write(*m_key_values, core::bc_string(p_key), p_value);
+			return *this;
+		}
+
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_any& p_value) const noexcept
 		{
 			bool l_succeeded;
 			return read_config_key(p_key, p_value, l_succeeded);
 		}
 
-		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_any& p_value, bool& p_succeeded) noexcept
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_any& p_value, bool& p_succeeded) const noexcept
 		{
 			auto& l_key_values = *m_key_values;
 			const auto l_entry = l_key_values.find(p_key);
@@ -92,7 +110,7 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector2f& p_value)
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector2f& p_value) const
 		{
 			const bool l_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
 			if(!l_succeeded)
@@ -103,13 +121,30 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector2f& p_value, bool& p_succeeded) noexcept
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector2f& p_value, bool& p_succeeded) const noexcept
 		{
 			p_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector3f& p_value)
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector2i& p_value) const
+		{
+			const bool l_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
+			if (!l_succeeded)
+			{
+				throw bc_invalid_operation_exception("Cannot read config key of type vector2");
+			}
+
+			return *this;
+		}
+
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector2i& p_value, bool& p_succeeded) const noexcept
+		{
+			p_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
+			return *this;
+		}
+
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector3f& p_value) const
 		{
 			const bool l_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
 			if (!l_succeeded)
@@ -120,13 +155,30 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector3f& p_value, bool& p_succeeded) noexcept
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector3f& p_value, bool& p_succeeded) const noexcept
 		{
 			p_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector4f& p_value)
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector3i& p_value) const
+		{
+			const bool l_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
+			if (!l_succeeded)
+			{
+				throw bc_invalid_operation_exception("Cannot read config key of type vector3");
+			}
+
+			return *this;
+		}
+
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector3i& p_value, bool& p_succeeded) const noexcept
+		{
+			p_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
+			return *this;
+		}
+
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector4f& p_value) const
 		{
 			const bool l_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
 			if (!l_succeeded)
@@ -137,7 +189,24 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector4f& p_value, bool& p_succeeded) noexcept
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector4f& p_value, bool& p_succeeded) const noexcept
+		{
+			p_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
+			return *this;
+		}
+
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector4i& p_value) const
+		{
+			const bool l_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
+			if (!l_succeeded)
+			{
+				throw bc_invalid_operation_exception("Cannot read config key of type vector4");
+			}
+
+			return *this;
+		}
+
+		const bc_config_file& bc_config_file::read_config_key(core::bc_string_view p_key, core::bc_vector4i& p_value, bool& p_succeeded) const noexcept
 		{
 			p_succeeded = json_parse::bc_load(*m_key_values, p_key, p_value);
 			return *this;

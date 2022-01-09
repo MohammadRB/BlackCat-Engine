@@ -48,12 +48,14 @@ namespace black_cat
 		m_smoke_grenade_name(nullptr),
 		m_threw_smoke_grenade_name(nullptr),
 		m_grenade_throw_time(0),
-		m_grenade_throw_force(0)
+		m_grenade_throw_force(0),
+		m_weapon_shoot_velocity(0, 1, 0.3f)
 	{
 	}
 
 	bc_xbot_player_actor_controller::bc_xbot_player_actor_controller(bc_xbot_player_actor_controller&& p_other) noexcept
-		: bc_xbot_actor_controller(std::move(p_other))
+		: bc_xbot_actor_controller(std::move(p_other)),
+		m_weapon_shoot_velocity(p_other.m_weapon_shoot_velocity)
 	{
 		operator=(std::move(p_other));
 	}
@@ -77,7 +79,8 @@ namespace black_cat
 		m_pointing_last_x = p_other.m_pointing_last_x;
 
 		m_rifle_name = p_other.m_rifle_name;
-		
+		m_weapon_shoot_velocity = p_other.m_weapon_shoot_velocity;
+
 		m_key_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_xbot_player_actor_controller::_on_event));
 		m_pointing_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_xbot_player_actor_controller::_on_event));
 
@@ -209,10 +212,11 @@ namespace black_cat
 			m_backward_pressed,
 			m_right_pressed,
 			m_left_pressed,
-			m_walk_pressed
+			m_walk_pressed || m_weapon_shoot_velocity.get_value() > 0
 		});
 
 		m_pointing_delta_x = 0; // Zero previous delta
+		m_weapon_shoot_velocity.release(p_context.m_clock.m_elapsed_second);
 
 		if(m_grenade_pressed)
 		{
@@ -466,6 +470,7 @@ namespace black_cat
 		}
 
 		weapon_shoot(get_weapon()->m_actor);
+		m_weapon_shoot_velocity.set_value(1);
 	}
 
 	void bc_xbot_player_actor_controller::throw_grenade(game::bc_actor& p_grenade) noexcept
