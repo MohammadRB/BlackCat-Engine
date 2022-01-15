@@ -59,14 +59,12 @@ namespace box
 		
 		bx_player_service* m_ui_service;
 
-		bcUBYTE m_health_recover_per_second;
-		bcUBYTE m_health_damage_per_thousands_force;
 		bcUBYTE m_rifle_heat_per_shoot;
 		bcUBYTE m_rifle_cool_per_second;
 		bcUBYTE m_grenade_load_time;
 		bcUBYTE m_smoke_load_time;
 
-		bcFLOAT m_health;
+		bcFLOAT m_network_health;
 		bcFLOAT m_rifle_heat;
 		bcFLOAT m_grenade_load;
 		bcFLOAT m_smoke_load;

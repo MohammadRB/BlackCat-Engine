@@ -76,7 +76,7 @@ namespace black_cat
 			
 			void add_rtt_sample(bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept override;
 			
-			void connection_approved() override;
+			void connection_approved(core::bc_string p_error_message) override;
 			
 			void acknowledge_message(bc_network_message_id p_ack_id, core::bc_string p_ack_data) override;
 

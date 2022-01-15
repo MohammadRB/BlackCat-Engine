@@ -11,7 +11,7 @@ namespace box
 	class bx_network_player_actor_controller : public bc_xbot_network_player_actor_controller
 	{
 	public:
-		bx_network_player_actor_controller() = default;
+		bx_network_player_actor_controller() noexcept;
 
 		bx_network_player_actor_controller(bx_network_player_actor_controller&&) noexcept = default;
 
@@ -37,5 +37,9 @@ namespace box
 		void removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
 
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
+
+		bcUBYTE m_health_recover_per_second;
+		bcUBYTE m_health_damage_per_thousands_force;
+		bcFLOAT m_health;
 	};
 }

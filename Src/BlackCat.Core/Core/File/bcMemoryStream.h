@@ -105,7 +105,7 @@ namespace black_cat
 
 		inline bc_memory_stream::bc_memory_stream(bc_memory_stream&& p_other) noexcept
 			: m_alloc_type(p_other.m_alloc_type),
-			m_buffer(p_other.m_buffer),
+			m_buffer(std::move(p_other.m_buffer)),
 			m_position(p_other.m_position),
 			m_buffer_size(p_other.m_buffer_size)
 		{
@@ -212,8 +212,9 @@ namespace black_cat
 				l_new_position = m_buffer_size - p_offset;
 				break;
 			}
-			default: 
+			default:
 				BC_ASSERT(false);
+				return get_position();
 			}
 
 			if(l_new_position < 0)
@@ -265,7 +266,8 @@ namespace black_cat
 
 		inline void bc_memory_stream::close()
 		{
-			BC_ALIGNED_FREE(m_buffer);
+			auto* l_pointer = m_buffer.release();
+			BC_ALIGNED_FREE(l_pointer);
 			m_position = 0;
 			m_buffer_size = 0;
 		}

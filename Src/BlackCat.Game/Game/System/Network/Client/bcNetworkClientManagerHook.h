@@ -17,7 +17,7 @@ namespace black_cat
 		public:
 			virtual void connecting_to_server(const platform::bc_network_address& p_address) = 0;
 			
-			virtual void connected_to_server(const platform::bc_network_address& p_address) = 0;
+			virtual void connection_to_server_approved(const platform::bc_network_address& p_address, core::bc_string p_error_message) = 0;
 
 			virtual void message_packet_sent(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<bc_network_message_ptr> p_messages) = 0;
 			

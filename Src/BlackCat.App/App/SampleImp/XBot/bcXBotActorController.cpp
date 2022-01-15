@@ -594,6 +594,17 @@ namespace black_cat
 
 	void bc_xbot_actor_controller::enable_ragdoll()
 	{
+		if(m_grenade.has_value())
+		{
+			throw_grenade(m_grenade->m_actor);
+			m_grenade.reset();
+		}
+
+		if(m_weapon.has_value())
+		{
+			detach_weapon();
+		}
+
 		m_state_machine->transfer_state<bc_xbot_ragdoll_state>();
 		m_rigid_controller_component->reset_controller();
 		m_human_ragdoll_component->set_enable(true);
@@ -604,7 +615,7 @@ namespace black_cat
 	void bc_xbot_actor_controller::enable_ragdoll(core::bc_string_view p_body_part_force, const core::bc_vector3f& p_force)
 	{
 		enable_ragdoll();
-		m_human_ragdoll_component->add_force(p_body_part_force, p_force);
+		m_human_ragdoll_component->add_force(p_body_part_force, p_force, true);
 	}
 
 	void bc_xbot_actor_controller::disable_ragdoll()

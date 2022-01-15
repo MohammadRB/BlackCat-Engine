@@ -29,6 +29,7 @@
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/System/Render/bcFrameRenderer.h"
 #include "Game/System/Input/bcCamera.h"
+#include "Game/bcEvent.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -337,12 +338,13 @@ namespace black_cat
 			core::bc_unique_ptr<bc_shape_drawer> m_shape_drawer;
 			core::bc_unique_ptr<bc_frame_renderer> m_frame_renderer;
 
-			core::bc_nullable<graphic::bc_app_event_device_reset> m_device_reset_event;
 			core::bc_event_listener_handle m_window_resize_handle;
 			core::bc_event_listener_handle m_app_active_handle;
 			core::bc_event_listener_handle m_device_reset_handle;
 			core::bc_event_listener_handle m_frame_render_finish_handle;
 			core::bc_event_listener_handle m_config_change_handle;
+			core::bc_nullable<graphic::bc_app_event_device_reset> m_device_reset_event;
+			core::bc_nullable<bc_event_global_config_changed> m_config_change_event;
 		};
 
 		inline graphic::bc_device& bc_render_system::get_device() noexcept

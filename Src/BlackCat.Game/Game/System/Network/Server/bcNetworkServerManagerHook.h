@@ -16,9 +16,14 @@ namespace black_cat
 		public:
 			virtual void started_listening(bcUINT16 p_port) = 0;
 
-			virtual void client_connected() = 0;
+			/**
+			 * \brief 
+			 * \param p_client 
+			 * \return empty string if connection was approved otherwise error message
+			 */
+			virtual core::bc_string client_connected(const platform::bc_network_address& p_client) = 0;
 
-			virtual void client_disconnected() = 0;
+			virtual void client_disconnected(const platform::bc_network_address& p_client) = 0;
 
 			virtual void message_packet_sent(const platform::bc_network_address& p_client,
 				const core::bc_memory_stream& p_packet,

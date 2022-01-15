@@ -137,11 +137,12 @@ namespace box
 	{
 	}
 
-	void bx_server_application::client_connected()
+	core::bc_string bx_server_application::client_connected(const platform::bc_network_address& p_client)
 	{
+		return {};
 	}
 
-	void bx_server_application::client_disconnected()
+	void bx_server_application::client_disconnected(const platform::bc_network_address& p_client)
 	{
 	}
 

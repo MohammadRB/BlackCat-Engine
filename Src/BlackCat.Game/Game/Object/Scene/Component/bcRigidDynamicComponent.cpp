@@ -143,7 +143,11 @@ namespace black_cat
 				{
 					physics::bc_scene_lock l_lock(get_scene());
 
-					m_px_actor_ref->add_force_at_pose(l_bullet_hit_event->get_bullet_direction() * l_force, l_bullet_hit_event->get_hit_position());
+					const auto l_is_kinematic = core::bc_enum::has(m_px_actor_ref->get_rigid_body_flags(), physics::bc_rigid_body_flag::kinematic);
+					if(!l_is_kinematic)
+					{
+						m_px_actor_ref->add_force_at_pose(l_bullet_hit_event->get_bullet_direction() * l_force, l_bullet_hit_event->get_hit_position());
+					}
 				}
 			}
 
@@ -153,8 +157,12 @@ namespace black_cat
 				{
 					physics::bc_scene_lock l_lock(get_scene());
 
-					const auto l_force = l_explosion_hit_event->calculate_applied_force(m_px_actor_ref->get_global_pose().get_position());
-					m_px_actor_ref->add_force(l_force.first * l_force.second);
+					const auto l_is_kinematic = core::bc_enum::has(m_px_actor_ref->get_rigid_body_flags(), physics::bc_rigid_body_flag::kinematic);
+					if(!l_is_kinematic)
+					{
+						const auto l_force = l_explosion_hit_event->calculate_applied_force(m_px_actor_ref->get_global_pose().get_position());
+						m_px_actor_ref->add_force(l_force.first * l_force.second);
+					}
 				}
 			}
 			

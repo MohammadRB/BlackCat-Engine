@@ -87,6 +87,11 @@ namespace black_cat
 		return *this;
 	}
 
+	void bc_xbot_player_actor_controller::enable_ragdoll(core::bc_string_view p_body_part_force, const core::bc_vector3f& p_force) noexcept
+	{
+		bc_xbot_actor_controller::enable_ragdoll(p_body_part_force, p_force);
+	}
+
 	void bc_xbot_player_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		bc_xbot_actor_controller::initialize(p_context);

@@ -176,9 +176,11 @@ namespace black_cat
 			{
 				if (TAlignment <= BC_MEMORY_MIN_ALIGN)
 				{
-					return BC_FREE(p_pointer);
+					BC_FREE(p_pointer);
+					return;
 				}
-				return BC_ALIGNED_FREE(p_pointer);
+
+				BC_ALIGNED_FREE(p_pointer);
 			}
 
 			template<class TU, class... TArgs>

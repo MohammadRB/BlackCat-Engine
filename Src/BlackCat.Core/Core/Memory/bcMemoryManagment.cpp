@@ -314,7 +314,7 @@ namespace black_cat
 			return l_new_pointer;
 		}
 		
-		void* bc_memory_manager::aligned_alloc(bcSIZE p_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		void* bc_memory_manager::aligned_alloc(bcSIZE p_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 			BC_ASSERT(m_initialized);
 
@@ -419,7 +419,7 @@ namespace black_cat
 #endif
 		}
 		
-		void* bc_memory_manager::aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		void* bc_memory_manager::aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 			auto* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 

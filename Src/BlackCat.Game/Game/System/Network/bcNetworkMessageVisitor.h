@@ -56,7 +56,7 @@ namespace black_cat
 			
 			virtual void add_rtt_sample(const platform::bc_network_address& p_address, bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept = 0;
 			
-			virtual void client_connected(const platform::bc_network_address& p_address) = 0;
+			virtual core::bc_string client_connected(const platform::bc_network_address& p_address) = 0;
 
 			virtual void client_disconnected(const platform::bc_network_address& p_address) = 0;
 
@@ -81,7 +81,7 @@ namespace black_cat
 			
 			virtual void add_rtt_sample(bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept = 0;
 			
-			virtual void connection_approved() = 0;
+			virtual void connection_approved(core::bc_string p_error_message) = 0;
 
 			virtual void acknowledge_message(bc_network_message_id p_ack_id, core::bc_string p_ack_data) = 0;
 

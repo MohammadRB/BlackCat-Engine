@@ -41,9 +41,9 @@ namespace box
 
 		void started_listening(bcUINT16 p_port) override;
 		
-		void client_connected() override;
+		core::bc_string client_connected(const platform::bc_network_address& p_client) override;
 		
-		void client_disconnected() override;
+		void client_disconnected(const platform::bc_network_address& p_client) override;
 		
 		void message_packet_sent(const platform::bc_network_address& p_client,
 			const core::bc_memory_stream& p_packet,

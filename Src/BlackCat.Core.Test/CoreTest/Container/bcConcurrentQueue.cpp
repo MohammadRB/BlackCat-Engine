@@ -3,12 +3,56 @@
 #include "CoreTest/CoreTestPCH.h"
 
 #include "Core/Container/bcConcurrentQueue.h"
+#include "Core/Utility/bcStopWatch.h"
 #include "CoreTest/bcTestFixture.h"
+
+#include "concurrentqueue.h"
 
 namespace black_cat
 {
 	namespace core_test
 	{
+		template<typename T>
+		class bc_test_allocator : public std::allocator<T>
+		{
+		public:
+			using is_movable_type = std::false_type;
+
+			template<typename TOther>
+			struct rebind
+			{
+				using other = bc_test_allocator<TOther>;
+			};
+
+			bc_test_allocator() noexcept = default;
+
+			bc_test_allocator(const bc_test_allocator&) noexcept = default;
+
+			template<typename TOther>
+			bc_test_allocator(const bc_test_allocator<TOther>&) noexcept
+			{
+			}
+
+			bc_test_allocator(bc_test_allocator&&) noexcept = default;
+
+			~bc_test_allocator() = default;
+
+			bc_test_allocator& operator=(const bc_test_allocator&) noexcept = default;
+
+			template<typename TOther>
+			bc_test_allocator& operator=(const bc_test_allocator<TOther>&) noexcept
+			{
+				return *this;
+			}
+
+			bc_test_allocator& operator=(bc_test_allocator&&) noexcept = default;
+
+			void deallocate(pointer p_pointer, size_type n = 0) noexcept
+			{
+				std::allocator<T>::deallocate(p_pointer, n);
+			}
+		};
+
 		TEST(ConcurrentQueue, multiwriter_singlereader)
 		{
 			bc_test_init();
@@ -169,11 +213,15 @@ namespace black_cat
 			bc_test_init();
 
 			{
+				core::bc_stop_watch l_watch;
+				l_watch.start();
+
 				constexpr auto l_push_thread_count = 4U;
 				constexpr auto l_pop_thread_count = 4U;
-				constexpr auto l_thread_item_count = 5000U;
+				constexpr auto l_thread_item_count = 1000000U;
 
-				core::bc_concurrent_queue<unsigned> l_queue;
+				core::bc_concurrent_queue<unsigned, bc_test_allocator<unsigned>> l_queue;
+				//moodycamel::ConcurrentQueue<unsigned> l_moody_queue;
 				std::vector<std::thread> l_push_threads;
 				std::vector<std::thread> l_pop_threads;
 				std::atomic<unsigned> l_started_threads_count(0);
@@ -188,15 +236,16 @@ namespace black_cat
 						(
 							[&]()
 							{
-								++l_started_threads_count;
+								l_started_threads_count.fetch_add(1, std::memory_order_relaxed);
 
-								while (!l_start_work)
+								while (!l_start_work.load(std::memory_order_relaxed))
 								{
 								}
 
 								for (auto l_ite = 0U; l_ite < l_thread_item_count; ++l_ite)
 								{
 									l_queue.push(l_ite);
+									//l_moody_queue.enqueue(l_ite);
 								}
 							}
 						)
@@ -211,20 +260,21 @@ namespace black_cat
 						(
 							[&]()
 							{
-								++l_started_threads_count;
+								l_started_threads_count.fetch_add(1, std::memory_order_relaxed);
 
-								while (!l_start_work)
+								while (!l_start_work.load(std::memory_order_relaxed))
 								{
 								}
 
 								bool l_pop = false;
 								unsigned l_pop_item;
 
-								while (l_start_work || ((l_pop = l_queue.pop(l_pop_item))))
+								while (l_start_work.load(std::memory_order_relaxed) || ((l_pop = l_queue.pop(l_pop_item))))
+								//while (l_start_work.load(std::memory_order_relaxed) || ((l_pop = l_moody_queue.try_dequeue(l_pop_item))))
 								{
 									if(l_pop)
 									{
-										++l_work_count;
+										l_work_count.fetch_add(1, std::memory_order_relaxed);
 									}
 								}
 							}
@@ -232,26 +282,30 @@ namespace black_cat
 					);
 				}
 
-				while (l_started_threads_count != l_push_thread_count + l_pop_thread_count)
+				while (l_started_threads_count.load(std::memory_order_relaxed) != l_push_thread_count + l_pop_thread_count)
 				{
 				}
 
-				l_start_work = true;
+				l_start_work.exchange(true, std::memory_order_relaxed);
 
 				for (auto& l_thread : l_push_threads)
 				{
 					l_thread.join();
 				}
 
-				l_start_work = false;
+				l_start_work.exchange(false, std::memory_order_relaxed);
 
 				for (auto& l_thread : l_pop_threads)
 				{
 					l_thread.join();
 				}
 
+				l_watch.stop();
+
+				std::cout << "elapsed milliseconds: " << l_watch.total_elapsed() << std::endl;
 				std::cout << "number of expected value is " << l_push_thread_count * l_thread_item_count << std::endl;
 				std::cout << "output value is " << l_work_count << std::endl;
+				std::cin.get();
 
 				EXPECT_TRUE(l_work_count == l_push_thread_count * l_thread_item_count);
 			}

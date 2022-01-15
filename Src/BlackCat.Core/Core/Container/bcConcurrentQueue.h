@@ -38,14 +38,14 @@ namespace black_cat
 				: m_allocator(p_allocator)
 			{
 				static_assert(internal_allocator_type::is_movable_type::value == false, "Movable allocators are not supported");
-				static_assert(std::is_default_constructible<value_type>::value == true, "T must be default constructable");
-				static_assert(std::is_nothrow_move_assignable<value_type>::value == true, "T must be nothrow move assignable");
+				static_assert(std::is_default_constructible_v<value_type> == true, "T must be default constructable");
+				static_assert(std::is_nothrow_move_assignable_v<value_type> == true, "T must be nothrow move assignable");
 
 				node_pointer l_node = bc_allocator_traits<internal_allocator_type>::allocate(m_allocator, 1);
 				bc_allocator_traits<internal_allocator_type>::construct(m_allocator, l_node);
-				
-				m_tail.store(l_node, core_platform::bc_memory_order::relaxed);
+
 				m_head.store(l_node, core_platform::bc_memory_order::relaxed);
+				m_tail.store(l_node, core_platform::bc_memory_order::relaxed);
 			}
 
 			bc_concurrent_queue_base(const this_type&) = delete;
@@ -74,17 +74,13 @@ namespace black_cat
 			}
 
 		protected:
-			template<typename ...TArgs>
-			node_type* enqueue(TArgs&&... p_args)
+			node_type* enqueue(node_pointer p_node)
 			{
-				node_pointer l_node = bc_allocator_traits<internal_allocator_type>::allocate(m_allocator, 1);
-				bc_allocator_traits<internal_allocator_type>::construct(m_allocator, l_node, std::forward<TArgs>(p_args)...);
-
 				node_pointer l_tail = m_tail.load(core_platform::bc_memory_order::seqcst);
 				node_pointer l_next = l_tail->m_next.load(core_platform::bc_memory_order::seqcst);
 				node_pointer l_expected_next = l_next;
 
-				BC_ASSERT(l_tail != l_node);
+				BC_ASSERT(l_tail != p_node);
 
 				do
 				{
@@ -97,18 +93,23 @@ namespace black_cat
 
 					l_expected_next = nullptr;
 				}
-				while (!l_tail->m_next.compare_exchange_weak(&l_expected_next, l_node, core_platform::bc_memory_order::seqcst));
+				while (!l_tail->m_next.compare_exchange_weak(&l_expected_next, p_node, core_platform::bc_memory_order::seqcst));
 
-				BC_ASSERT(l_tail != l_node);
+				node_pointer l_hint_tail = p_node;
 
-				node_pointer l_hint_tail = l_node;
 				do
 				{
+					node_pointer l_hint_next;
+					while ((l_hint_next = l_hint_tail->m_next.load(core_platform::bc_memory_order::seqcst)) != nullptr)
+					{
+						l_hint_tail = l_hint_next;
+					}
+
 					m_tail.store(l_hint_tail, core_platform::bc_memory_order::seqcst);
 				}
 				while ((l_hint_tail = l_hint_tail->m_next.load(core_platform::bc_memory_order::seqcst)) != nullptr);
 
-				return l_node;
+				return l_hint_tail;
 			}
 
 			node_type* dequeue(reference p_result)
@@ -118,6 +119,13 @@ namespace black_cat
 
 				while (true)
 				{
+					node_pointer l_tail = m_tail.load(core_platform::bc_memory_order::seqcst);
+
+					if(l_head == l_tail)
+					{
+						return nullptr;
+					}
+
 					l_next = l_head->m_next.load(core_platform::bc_memory_order::seqcst);
 
 					if (l_next == nullptr)
@@ -136,8 +144,8 @@ namespace black_cat
 				return l_head;
 			}
 
-			core_platform::bc_atomic<node_pointer> m_tail;
 			core_platform::bc_atomic<node_pointer> m_head;
+			core_platform::bc_atomic<node_pointer> m_tail;
 			internal_allocator_type m_allocator;
 
 		private:
@@ -165,25 +173,25 @@ namespace black_cat
 		struct bc_concurrent_queue_base<T, TAllocator>::node : public bc_container_node<value_type>
 		{
 		public:
-			node(const value_type& p_value) noexcept(std::is_nothrow_copy_constructible<bc_container_node<value_type>>::value)
+			node(const value_type& p_value) noexcept(std::is_nothrow_copy_constructible_v<bc_container_node<value_type>>)
 				: bc_container_node<value_type>(p_value),
 				m_next(nullptr)
 			{
 			}
 
-			node(value_type&& p_value) noexcept(std::is_nothrow_move_constructible<bc_container_node<value_type>>::value)
+			node(value_type&& p_value) noexcept(std::is_nothrow_move_constructible_v<bc_container_node<value_type>>)
 				: bc_container_node<value_type>(std::move(p_value)),
 				m_next(nullptr)
 			{
 			}
 
-			node(const node& p_other) noexcept(std::is_nothrow_copy_constructible<bc_container_node<value_type>>::value)
+			node(const node& p_other) noexcept(std::is_nothrow_copy_constructible_v<bc_container_node<value_type>>)
 				: bc_container_node<value_type>(p_other.m_value),
 				m_next(p_other.m_next)
 			{
 			}
 
-			node(node&& p_other) noexcept(std::is_nothrow_move_constructible<bc_container_node<value_type>>::value)
+			node(node&& p_other) noexcept(std::is_nothrow_move_constructible_v<bc_container_node<value_type>>)
 				: bc_container_node<value_type>(std::move(p_other.m_value)),
 				m_next(p_other.m_next)
 			{
@@ -191,7 +199,7 @@ namespace black_cat
 			}
 
 			template<typename ...TArgs>
-			node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible<bc_container_node<value_type>, TArgs...>::value)
+			node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible_v<bc_container_node<value_type>, TArgs...>)
 				: bc_container_node<value_type>(std::forward<TArgs>(p_args)...),
 				m_next(nullptr)
 			{
@@ -280,28 +288,37 @@ namespace black_cat
 
 			void push(const value_type& p_value)
 			{
-				base_type::enqueue(p_value);
+				node_pointer l_node = bc_allocator_traits<internal_allocator_type>::allocate(base_type::m_allocator, 1);
+				bc_allocator_traits<internal_allocator_type>::construct(base_type::m_allocator, l_node, p_value);
+
+				base_type::enqueue(l_node);
 			}
 
 			void push(value_type&& p_value)
 			{
-				base_type::enqueue(std::move(p_value));
+				node_pointer l_node = bc_allocator_traits<internal_allocator_type>::allocate(base_type::m_allocator, 1);
+				bc_allocator_traits<internal_allocator_type>::construct(base_type::m_allocator, l_node, std::move(p_value));
+
+				base_type::enqueue(l_node);
 			}
 
 			template<typename ...TArgs>
 			void emplace(TArgs&&... p_args)
 			{
-				base_type::enqueue(std::forward<TArgs>(p_args)...);
+				node_pointer l_node = bc_allocator_traits<internal_allocator_type>::allocate(base_type::m_allocator, 1);
+				bc_allocator_traits<internal_allocator_type>::construct(base_type::m_allocator, l_node, std::forward<TArgs>(p_args)...);
+
+				base_type::enqueue(l_node);
 			}
 
 			bool pop(reference p_result) noexcept
 			{
-				m_memmng.enter_pop();
+				m_memmng.enter();
 
 				node_type* l_node = base_type::dequeue(p_result);
 				if (!l_node)
 				{
-					m_memmng.exist_pop_without_reclaim();
+					m_memmng.exist_without_reclaim();
 					return false;
 				}
 

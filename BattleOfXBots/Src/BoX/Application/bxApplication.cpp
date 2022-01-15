@@ -228,7 +228,7 @@ namespace box
 	{	
 	}
 
-	void bx_application::connected_to_server(const platform::bc_network_address& p_address)
+	void bx_application::connection_to_server_approved(const platform::bc_network_address& p_address, core::bc_string p_error_message)
 	{
 	}
 

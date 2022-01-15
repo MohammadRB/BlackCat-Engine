@@ -198,12 +198,13 @@ namespace black_cat
 			BC_ASSERT(l_num_alive_objects == 0);
 #endif
 
-			BC_FREE(m_blocks);
-			BC_ALIGNED_FREE(m_heap);
+			auto* l_blocks = m_blocks.release();
+			auto* l_heap = m_heap.release();
+
+			BC_FREE(l_blocks);
+			BC_ALIGNED_FREE(l_heap);
 
 			m_num_block = 0;
-			m_blocks = nullptr;
-			m_heap = nullptr;
 		}
 
 		bcINT32 bc_concurrent_memory_pool::_find_free_bit(bit_block_type p_bit_block) const noexcept

@@ -70,7 +70,7 @@ namespace black_cat
 				.with_texture(1)
 				.with_particles_color(m_color, 1)
 				.with_particle_size(4.0f, 10.0f)
-				.with_particles_rotation(10)
+				.with_particles_rotation(20)
 				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step2, 5)
 				.emit_particles(0, 20, 10, 0.1f)
 				.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up(), m_smoke_time, 0, 0)

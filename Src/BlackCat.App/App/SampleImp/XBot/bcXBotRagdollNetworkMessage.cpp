@@ -5,6 +5,7 @@
 #include "Core/Utility/bcJsonParse.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "App/SampleImp/XBot/bcXBotRagdollNetworkMessage.h"
+#include "App/SampleImp/XBot/bcXBotPlayerActorController.h"
 #include "App/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
 
 namespace black_cat
@@ -33,13 +34,13 @@ namespace black_cat
 
 	void bc_xbot_ragdoll_activation_network_message::execute(const game::bc_network_message_client_context& p_context) noexcept
 	{
-		if (m_is_self_replicate || m_actor == nullptr)
+		if (m_actor == nullptr)
 		{
 			return;
 		}
 
 		const auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
-		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
+		auto* l_xbot_controller = static_cast<bc_xbot_player_actor_controller*>(l_mediate_component->get_controller());
 
 		l_xbot_controller->enable_ragdoll(std::move(m_body_part_force), m_force);
 	}

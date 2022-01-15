@@ -276,8 +276,15 @@ namespace black_cat
 			}
 		}
 
-		void bc_network_server_manager::client_connected(const platform::bc_network_address& p_address)
+		core::bc_string bc_network_server_manager::client_connected(const platform::bc_network_address& p_address)
 		{
+			auto l_error_message = m_hook->client_connected(p_address);
+			if(!l_error_message.empty())
+			{
+				core::bc_log(core::bc_log_type::info) << "new client connection rejected " << p_address << core::bc_lend;
+				return l_error_message;
+			}
+
 			{
 				core_platform::bc_shared_mutex_guard l_clients_lock(m_clients_lock);
 				m_clients.push_back(bc_network_server_manager_client(p_address));
@@ -291,7 +298,8 @@ namespace black_cat
 			}
 
 			core::bc_log(core::bc_log_type::info) << "new client connected " << p_address << core::bc_lend;
-			m_hook->client_connected();
+
+			return {};
 		}
 
 		void bc_network_server_manager::client_disconnected(const platform::bc_network_address& p_address)
@@ -318,6 +326,7 @@ namespace black_cat
 			}
 
 			core::bc_vector_frame<bc_actor> l_client_replicated_actors;
+
 			{
 				core_platform::bc_lock_guard l_client_lock(*l_client_ite);
 
@@ -340,7 +349,7 @@ namespace black_cat
 			}
 
 			core::bc_log(core::bc_log_type::info) << "client disconnected " << p_address << core::bc_lend;
-			m_hook->client_disconnected();
+			m_hook->client_disconnected(p_address);
 		}
 
 		void bc_network_server_manager::acknowledge_message(const platform::bc_network_address& p_address, bc_network_message_id p_ack_id, core::bc_string p_ack_data)

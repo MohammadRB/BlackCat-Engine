@@ -78,7 +78,7 @@ namespace black_cat
 			
 			void add_rtt_sample(const platform::bc_network_address& p_address, bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept override;
 			
-			void client_connected(const platform::bc_network_address& p_address) override;
+			core::bc_string client_connected(const platform::bc_network_address& p_address) override;
 
 			void client_disconnected(const platform::bc_network_address& p_address) override;
 

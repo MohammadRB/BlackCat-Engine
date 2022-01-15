@@ -18,8 +18,7 @@ namespace black_cat
 				return false;
 			}
 
-			bc_memblock* l_memblock = bc_memblock::retrieve_mem_block(p_pointer);
-
+			const bc_memblock* l_memblock = bc_memblock::retrieve_mem_block(p_pointer);
 			return l_memblock->movable_pointer();
 #else
 			return false;
@@ -171,9 +170,7 @@ namespace black_cat
 		template<typename T, typename ...TArgs>
 		T* bc_mem_new(TArgs&&... p_args, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line)
 		{
-			T* l_return_pointer;
-
-			l_return_pointer = reinterpret_cast<T*>(bc_mem_alloc_throw(sizeof(T), p_alloc_type, p_file, p_line));
+			T* l_return_pointer = static_cast<T*>(bc_mem_alloc_throw(sizeof(T), p_alloc_type, p_file, p_line));
 			
 			new(l_return_pointer)T(std::forward<T>(p_args)...);
 
@@ -185,10 +182,10 @@ namespace black_cat
 		{
 			// alloc 4 byte more for array length, it will be used in last 4 byte of allocated block
 			const bcUINT32 l_size = (sizeof(T) * p_array_length) + sizeof(bcUINT32);
-			T* l_return_pointer = reinterpret_cast< T* >(bc_mem_alloc_throw(l_size, p_alloc_type, p_file, p_line));
+			T* l_return_pointer = static_cast< T* >(bc_mem_alloc_throw(l_size, p_alloc_type, p_file, p_line));
 
 			// store array length
-			bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_return_pointer);
+			const bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_return_pointer);
 			*(reinterpret_cast<bcUINT32*>(reinterpret_cast<bcUINTPTR>(l_return_pointer) - l_block->offset() + l_block->size() - sizeof(bcUINT32))) = p_array_length;
 
 			T* l_first = l_return_pointer;
@@ -223,10 +220,10 @@ namespace black_cat
 			T* l_first = p_pointer;
 
 			// Retrieve array length
-			bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_first);
-			bcUINT32 l_count = *(reinterpret_cast<bcUINT32*>(reinterpret_cast<bcUINTPTR>(p_pointer) - l_block->offset() + l_block->size() - sizeof(bcUINT32)));
+			const bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_first);
+			const bcUINT32 l_count = *(reinterpret_cast<bcUINT32*>(reinterpret_cast<bcUINTPTR>(p_pointer) - l_block->offset() + l_block->size() - sizeof(bcUINT32)));
 
-			for (register bcUINT32 i = 0; i < l_count; ++i, ++l_first)
+			for (bcUINT32 i = 0; i < l_count; ++i, ++l_first)
 			{
 				l_first->~T();
 			}
@@ -237,9 +234,7 @@ namespace black_cat
 		template<typename T, typename ...TArgs>
 		T* bc_mem_aligned_new(TArgs&&... p_args, bcUINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line)
 		{
-			T* l_return_pointer;
-
-			l_return_pointer = reinterpret_cast<T*>(bc_mem_aligned_alloc_throw(sizeof(T), p_alignment, p_alloc_type, p_file, p_line));
+			T* l_return_pointer = static_cast<T*>(bc_mem_aligned_alloc_throw(sizeof(T), p_alignment, p_alloc_type, p_file, p_line));
 
 			new(l_return_pointer)T(std::forward<T>(p_args)...);
 			
@@ -249,18 +244,16 @@ namespace black_cat
 		template<typename T>
 		T* bc_mem_aligned_new_array(bcUINT32 p_array_length, bcUINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line)
 		{
-			T* l_return_pointer;
-
 			// alloc 4 byte more for array length, it will be used in last 4 byte of allocated block
-			bcUINT32 l_size = sizeof(T)* p_array_length + sizeof(bcUINT32);
-			l_return_pointer = reinterpret_cast<T*>(bc_mem_aligned_alloc_throw(l_size, p_alignment, p_alloc_type, p_file, p_line));
+			const bcUINT32 l_size = sizeof(T)* p_array_length + sizeof(bcUINT32);
+			T* l_return_pointer = static_cast<T*>(bc_mem_aligned_alloc_throw(l_size, p_alignment, p_alloc_type, p_file, p_line));
 
 			// Store array length
-			bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_return_pointer);
+			const bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_return_pointer);
 			*(reinterpret_cast<bcUINT32*>((reinterpret_cast<bcUINTPTR>(l_return_pointer) - l_block->offset() + l_block->size() - sizeof(bcUINT32)))) = p_array_length;
 
 			T* l_first = l_return_pointer;
-			for (register bcUINT32 i = 0; i < p_array_length; ++i, ++l_first)
+			for (bcUINT32 i = 0; i < p_array_length; ++i, ++l_first)
 			{
 				new(l_first)T();
 			}
@@ -291,7 +284,7 @@ namespace black_cat
 			T* l_first = p_pointer;
 
 			// Retrieve array length
-			bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_first);
+			const bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_first);
 			const bcUINT32 l_count = *(reinterpret_cast<bcUINT32*>(reinterpret_cast<bcUINTPTR>(p_pointer) - l_block->offset() + l_block->size() - sizeof(bcUINT32)));
 
 			for (bcUINT32 i = 0; i < l_count; ++i, ++l_first)
@@ -303,10 +296,10 @@ namespace black_cat
 		}
 
 #define BC_ALLOC(p_size, p_alloc_type)											black_cat::core::bc_mem_alloc(p_size, p_alloc_type, __FILE__, __LINE__)
-#define BC_FREE(p_pointer)														black_cat::core::bc_mem_free(p_pointer); p_pointer = nullptr
+#define BC_FREE(p_pointer)														black_cat::core::bc_mem_free(p_pointer); (p_pointer) = nullptr
 #define BC_REALLOC(p_pointer, p_new_size, p_alloc_type)							black_cat::core::bc_mem_realloc(p_pointer, p_new_size, p_alloc_type, __FILE__, __LINE__)
 #define BC_ALIGNED_ALLOC(p_size, p_alignment, p_alloc_type)						black_cat::core::bc_mem_aligned_alloc(p_size, p_alignment, p_alloc_type, __FILE__, __LINE__)
-#define BC_ALIGNED_FREE(p_pointer)												black_cat::core::bc_mem_aligned_free(p_pointer); p_pointer = nullptr
+#define BC_ALIGNED_FREE(p_pointer)												black_cat::core::bc_mem_aligned_free(p_pointer); (p_pointer) = nullptr
 #define BC_ALIGNED_REALLOC(p_pointer, p_new_size, p_alignment, p_alloc_type)	black_cat::core::bc_mem_aligned_realloc(p_pointer, p_new_size, p_alignment, p_alloc_type, __FILE__, __LINE__)
 #define BC_ALLOC_THROW(p_size, p_alloc_type)									black_cat::core::bc_mem_alloc_throw(p_size, p_alloc_type, __FILE__, __LINE__)
 #define BC_ALIGNED_ALLOC_THROW(p_size, p_alignment, p_alloc_type)				black_cat::core::bc_mem_aligned_alloc_throw(p_size, p_alignment, p_alloc_type, __FILE__, __LINE__)
@@ -315,12 +308,12 @@ namespace black_cat
 		// TODO use standard routines in macros instead of calling bc_mem functions directly
 #define BC_NEW(p_type, p_alloc_type)											new (p_alloc_type, __FILE__, __LINE__) p_type
 #define BC_NEW_ARRAY(p_type, p_length, p_alloc_type)							black_cat::core::bc_mem_new_array<p_type>(p_length, p_alloc_type, __FILE__, __LINE__)
-#define BC_DELETE(p_t)															black_cat::core::bc_mem_delete(p_t); p_t = nullptr
-#define BC_DELETE_ARRAY(p_t)													black_cat::core::bc_mem_delete_array(p_t); p_t = nullptr
+#define BC_DELETE(p_pointer)													black_cat::core::bc_mem_delete(p_pointer); (p_pointer) = nullptr
+#define BC_DELETE_ARRAY(p_pointer)												black_cat::core::bc_mem_delete_array(p_pointer); (p_pointer) = nullptr
 #define BC_ALIGNED_NEW(p_type, p_alignment, p_alloc_type)						new (p_alignment, p_alloc_type, __FILE__, __LINE__) p_type
 #define BC_ALIGNED_NEW_ARRAY(p_alignment, p_length, p_alloc_type)				black_cat::core::bc_mem_aligned_new_array<p_type>(p_length, p_alignment, p_alloc_type, __FILE__, __LINE__)
-#define BC_ALIGNED_DELETE(p_t)													black_cat::core::bc_mem_aligned_delete(p_t); p_t = nullptr
-#define BC_ALIGNED_DELETE_ARRAY(p_t)											black_cat::core::bc_mem_aligned_delete_array(p_t); p_t = nullptr
+#define BC_ALIGNED_DELETE(p_pointer)											black_cat::core::bc_mem_aligned_delete(p_pointer); (p_pointer) = nullptr
+#define BC_ALIGNED_DELETE_ARRAY(p_pointer)										black_cat::core::bc_mem_aligned_delete_array(p_pointer); (p_pointer) = nullptr
 	}
 }
 

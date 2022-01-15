@@ -100,35 +100,47 @@ namespace black_cat
 
 		void bc_render_system::swap(const swap_context& p_swap_context)
 		{
-			if(!m_device_reset_event.has_value())
+			if(m_device_reset_event.has_value())
 			{
-				return;
-			}
-			
-			m_render_pass_manager->before_reset(bc_render_pass_reset_context
-			(
-				*this,
-				*m_device_reset_event->m_device,
-				m_swap_buffer.get(),
-				m_device_reset_event->m_old_parameters,
-				m_device_reset_event->m_new_parameters
-			));
+				m_render_pass_manager->before_reset(bc_render_pass_reset_context
+				(
+					*this,
+					*m_device_reset_event->m_device,
+					m_swap_buffer.get(),
+					m_device_reset_event->m_old_parameters,
+					m_device_reset_event->m_new_parameters
+				));
 
-			if(m_swap_buffer->is_valid())
+				if (m_swap_buffer->is_valid())
+				{
+					m_swap_buffer->resize_back_buffer(m_device, m_device_reset_event->m_new_parameters.m_width, m_device_reset_event->m_new_parameters.m_height);
+				}
+
+				m_render_pass_manager->after_reset(bc_render_pass_reset_context
+				(
+					*this,
+					*m_device_reset_event->m_device,
+					m_swap_buffer.get(),
+					m_device_reset_event->m_old_parameters,
+					m_device_reset_event->m_new_parameters
+				));
+
+				m_device_reset_event.reset();
+			}
+
+			if(m_config_change_event.has_value())
 			{
-				m_swap_buffer->resize_back_buffer(m_device, m_device_reset_event->m_new_parameters.m_width, m_device_reset_event->m_new_parameters.m_height);
+				const auto& l_global_config = m_config_change_event->get_config();
+				m_render_pass_manager->config_changed(bc_render_pass_config_change_context
+				(
+					*this,
+					m_device,
+					m_swap_buffer.get(),
+					l_global_config
+				));
+
+				m_config_change_event.reset();
 			}
-
-			m_render_pass_manager->after_reset(bc_render_pass_reset_context
-			(
-				*this,
-				*m_device_reset_event->m_device,
-				m_swap_buffer.get(),
-				m_device_reset_event->m_old_parameters,
-				m_device_reset_event->m_new_parameters
-			));
-
-			m_device_reset_event.reset();
 		}
 
 		void bc_render_system::add_render_task(bci_render_task& p_task)
@@ -154,7 +166,7 @@ namespace black_cat
 			bc_depth_stencil_type p_depth_stencil, 
 			bc_rasterizer_type p_rasterizer, 
 			bcUINT p_sample_mask, 
-			std::initializer_list< graphic::bc_format > p_render_target_formats, 
+			std::initializer_list<graphic::bc_format> p_render_target_formats, 
 			graphic::bc_format p_depth_stencil_format, 
 			bc_multi_sample_type p_ms_config)
 		{
@@ -526,14 +538,7 @@ namespace black_cat
 			const auto* l_config_change_event = core::bci_message::as<bc_event_global_config_changed>(p_event);
 			if(l_config_change_event)
 			{
-				auto& l_global_config = l_config_change_event->get_config();
-				m_render_pass_manager->config_changed(bc_render_pass_config_change_context
-				(
-					*this,
-					m_device,
-					m_swap_buffer.get(),
-					l_global_config
-				));
+				m_config_change_event.reset(*l_config_change_event);
 
 				return;
 			}

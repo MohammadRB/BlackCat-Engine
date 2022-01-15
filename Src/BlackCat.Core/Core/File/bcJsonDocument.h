@@ -742,11 +742,11 @@ namespace black_cat
 				}
 			}
 
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, bc_json_key_value& p_value)
+			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bc_json_key_value& p_value)
 			{
 				p_json_value.SetObject(); // Mark json value as an object
 
-				for (std::pair<bc_string, bc_any>& l_value : p_value)
+				for (const std::pair<bc_string, bc_any>& l_value : p_value)
 				{
 					auto* l_json_value = set_json_field(p_document, p_json_value, l_value.first.c_str());
 					_write(p_document, *l_json_value, l_value.second);

@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 
+#include "Core/Container/bcStringStream.h"
 #include "Core/Content/bcContentManager.h"
 #include "Core/Utility/bcCounterValueManager.h"
 #include "Core/Utility/bcLogger.h"
@@ -229,8 +230,10 @@ namespace black_cat
 
 			_receive_from_server();
 
-			auto l_ping_counter = L"In: " + core::bc_to_wstring(m_remote_rtt / 2, L"%.1f") + L" / Out: " + core::bc_to_wstring(l_rtt_time, L"%.1f");
-			core::bc_get_service<core::bc_counter_value_manager>()->add_counter("ping", std::move(l_ping_counter));
+			core::bc_wstring_stream l_rtt_counter;
+			l_rtt_counter << L"In: " << core::bc_to_wstring(m_remote_rtt / 2, L"%.1f") << L" / Out: " << core::bc_to_wstring(l_rtt_time, L"%.1f");
+
+			core::bc_get_service<core::bc_counter_value_manager>()->add_counter("ping", l_rtt_counter.str());
 		}
 
 		void bc_network_client_manager::on_enter(bc_client_socket_error_state& p_state)
@@ -290,10 +293,21 @@ namespace black_cat
 			}
 		}
 
-		void bc_network_client_manager::connection_approved()
+		void bc_network_client_manager::connection_approved(core::bc_string p_error_message)
 		{
-			core::bc_log(core::bc_log_type::info) << "connected to server" << core::bc_lend;
-			m_hook->connected_to_server(m_address);
+			if(p_error_message.empty())
+			{
+				core::bc_log(core::bc_log_type::info) << "connected to server" << core::bc_lend;
+				m_hook->connection_to_server_approved(m_address, p_error_message);
+			}
+			else
+			{
+				m_socket_is_connected = false;
+				m_socket_is_ready = false;
+
+				core::bc_log(core::bc_log_type::info) << "connection to server failed with error '" << p_error_message << "'" << core::bc_lend;
+				m_hook->connection_to_server_approved(m_address, p_error_message);
+			}
 		}
 
 		void bc_network_client_manager::acknowledge_message(bc_network_message_id p_ack_id, core::bc_string p_ack_data)

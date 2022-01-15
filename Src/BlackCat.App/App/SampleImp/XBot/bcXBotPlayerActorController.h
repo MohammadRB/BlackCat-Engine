@@ -30,6 +30,8 @@ namespace black_cat
 
 		bc_xbot_player_actor_controller& operator=(bc_xbot_player_actor_controller&&) noexcept;
 
+		void enable_ragdoll(core::bc_string_view p_body_part_force, const core::bc_vector3f& p_force) noexcept;
+
 	protected:
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
 

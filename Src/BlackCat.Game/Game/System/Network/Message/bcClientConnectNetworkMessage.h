@@ -23,6 +23,8 @@ namespace black_cat
 			bc_client_connect_network_message& operator=(bc_client_connect_network_message&&) noexcept;
 
 			bool need_acknowledgment() const noexcept override;
+
+			core::bc_string get_acknowledgment_data() const noexcept override;
 			
 			void acknowledge(const bc_network_message_client_acknowledge_context& p_context) noexcept override;
 
@@ -32,6 +34,8 @@ namespace black_cat
 			void serialize_message(const bc_network_message_serialization_context& p_context) override;
 			
 			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
+
+			core::bc_string m_error_message;
 		};
 
 		class BC_GAME_DLL bc_client_disconnect_network_message : public bci_network_message

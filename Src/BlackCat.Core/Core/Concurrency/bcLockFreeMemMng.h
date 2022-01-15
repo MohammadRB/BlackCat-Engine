@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		template< typename TContainer >
+		template<typename TContainer>
 		struct bc_lockfree_memmng_container_traits
 		{
 			using container_type = TContainer;
@@ -34,13 +34,13 @@ namespace black_cat
 			}
 		};
 
-		template< typename TContainer >
+		template<typename TContainer>
 		class bc_lockfree_memmng
 		{
 			using this_type = bc_lockfree_memmng;
 			using container_type = TContainer;
-			using node_type = typename bc_lockfree_memmng_container_traits< container_type >::node_type;
-			using node_pointer = typename bc_lockfree_memmng_container_traits< container_type >::node_pointer;
+			using node_type = typename bc_lockfree_memmng_container_traits<container_type>::node_type;
+			using node_pointer = typename bc_lockfree_memmng_container_traits<container_type>::node_pointer;
 
 		public:
 			bc_lockfree_memmng() noexcept
@@ -67,17 +67,37 @@ namespace black_cat
 				return *this;
 			}
 
-			bcUINT32 enter_pop() noexcept
+			bcUINT32 enter() noexcept
 			{
 				return m_num_thread.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1;
 			}
 
-			void exist_pop_without_reclaim() noexcept
+			void exist_without_reclaim() noexcept
 			{
 				m_num_thread.fetch_sub(1, core_platform::bc_memory_order::relaxed);
 			}
 
-			void try_reclaim(container_type& p_container, node_pointer p_node) noexcept(noexcept(_delete_nodes(p_container, p_node)))
+			void try_reclaim(container_type& p_container) noexcept(noexcept(_delete_nodes(p_container, std::declval<node_pointer>())))
+			{
+				if (m_num_thread.load(core_platform::bc_memory_order::seqcst) == 1)
+				{
+					node_pointer l_nodes_to_delete = m_to_delete.exchange(nullptr, core_platform::bc_memory_order::seqcst);
+					if (m_num_thread.fetch_sub(1, core_platform::bc_memory_order::seqcst) - 1 == 0)
+					{
+						_delete_nodes(p_container, l_nodes_to_delete);
+					}
+					else if (l_nodes_to_delete)
+					{
+						_chain_pending_nodes(p_container, l_nodes_to_delete);
+					}
+				}
+				else
+				{
+					m_num_thread.fetch_sub(1, core_platform::bc_memory_order::seqcst);
+				}
+			}
+
+			void try_reclaim(container_type& p_container, node_pointer p_node) noexcept(noexcept(_delete_nodes(p_container, std::declval<node_pointer>())))
 			{
 				if (m_num_thread.load(core_platform::bc_memory_order::seqcst) == 1)
 				{
@@ -91,7 +111,7 @@ namespace black_cat
 						_chain_pending_nodes(p_container, l_nodes_to_delete);
 					}
 
-					bc_lockfree_memmng_container_traits< container_type >::reclaim_node(p_container, p_node);
+					bc_lockfree_memmng_container_traits<container_type>::reclaim_node(p_container, p_node);
 				}
 				else
 				{
@@ -116,8 +136,6 @@ namespace black_cat
 				p_other.m_to_delete.store(l_to_delete, core_platform::bc_memory_order::relaxed);
 			}
 
-		protected:
-
 		private:
 			void _assign(this_type&& p_other)
 			{
@@ -133,12 +151,12 @@ namespace black_cat
 			}
 
 			static void _delete_nodes(container_type& p_container, node_pointer p_nodes)
-				noexcept(noexcept(bc_lockfree_memmng_container_traits< container_type >::reclaim_node(p_container, p_nodes)))
+				noexcept(noexcept(bc_lockfree_memmng_container_traits<container_type>::reclaim_node(p_container, p_nodes)))
 			{
 				while (p_nodes)
 				{
-					node_pointer l_next = bc_lockfree_memmng_container_traits< container_type >::next(p_container, p_nodes);
-					bc_lockfree_memmng_container_traits< container_type >::reclaim_node(p_container, p_nodes);
+					node_pointer l_next = bc_lockfree_memmng_container_traits<container_type>::next(p_container, p_nodes);
+					bc_lockfree_memmng_container_traits<container_type>::reclaim_node(p_container, p_nodes);
 					
 					p_nodes = l_next;
 				}
@@ -147,7 +165,7 @@ namespace black_cat
 			void _chain_pending_nodes(container_type& p_container, node_pointer p_nodes) noexcept
 			{
 				node_pointer l_last = p_nodes;
-				while (node_pointer const l_next = bc_lockfree_memmng_container_traits< container_type >::next(p_container, l_last))
+				while (node_pointer const l_next = bc_lockfree_memmng_container_traits<container_type>::next(p_container, l_last))
 				{
 					l_last = l_next;
 				}
@@ -161,7 +179,7 @@ namespace black_cat
 
 				do
 				{
-					bc_lockfree_memmng_container_traits< container_type >::next
+					bc_lockfree_memmng_container_traits<container_type>::next
 					(
 						p_container,
 						p_last,
@@ -185,8 +203,8 @@ namespace black_cat
 			core_platform::bc_atomic<node_pointer> m_to_delete;
 		};
 
-		template< typename TNodeTraits >
-		void swap(bc_lockfree_memmng< TNodeTraits >& p_first, bc_lockfree_memmng< TNodeTraits >& p_second) noexcept(noexcept(p_first.swap(p_second)))
+		template<typename TNodeTraits>
+		void swap(bc_lockfree_memmng<TNodeTraits>& p_first, bc_lockfree_memmng<TNodeTraits>& p_second) noexcept(noexcept(p_first.swap(p_second)))
 		{
 			p_first.swap(p_second);
 		}

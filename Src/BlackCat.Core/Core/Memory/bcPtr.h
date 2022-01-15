@@ -849,11 +849,12 @@ namespace black_cat
 			}
 
 			constexpr bc_handle_ptr(std::nullptr_t) noexcept
-				: m_pointer(nullptr)
+				: bc_handle_ptr()
 			{
 			}
 
 			bc_handle_ptr(T* p_pointer) noexcept
+				: bc_handle_ptr()
 			{
 				_construct(p_pointer);
 			}
@@ -865,23 +866,27 @@ namespace black_cat
 			}
 
 			bc_handle_ptr(const bc_handle_ptr<T>& p_other) noexcept
+				: bc_handle_ptr()
 			{
 				_construct(p_other.get());
 			}
 
 			bc_handle_ptr(bc_handle_ptr<T>&& p_other) noexcept
+				: bc_handle_ptr()
 			{
 				_assign(std::move(p_other));
 			}
 
 			template<typename T1>
 			bc_handle_ptr(const bc_handle_ptr<T1>& p_other) noexcept
+				: bc_handle_ptr()
 			{
 				_construct(static_cast<T*>(p_other.get()));
 			}
 
 			template<typename T1>
 			bc_handle_ptr(bc_handle_ptr<T1>&& p_other) noexcept
+				: bc_handle_ptr()
 			{
 				_assign(std::move(p_other));
 			}
