@@ -60,7 +60,7 @@ namespace black_cat
 
 	void bc_xbot_ragdoll_activation_network_message::serialize_message(const game::bc_network_message_serialization_context& p_context)
 	{
-		json_parse::bc_write(p_context.m_params, "net_id", core::bc_any(m_actor_net_id));
+		json_parse::bc_write(p_context.m_params, "nid", core::bc_any(m_actor_net_id));
 		json_parse::bc_write(p_context.m_params, "frc", m_force);
 		json_parse::bc_write(p_context.m_params, "prt", core::bc_any(m_body_part_force));
 	}
@@ -69,7 +69,7 @@ namespace black_cat
 	{
 		game::bc_actor_network_id l_actor_net_id;
 
-		json_parse::bc_load(p_context.m_params, "net_id", l_actor_net_id);
+		json_parse::bc_load(p_context.m_params, "nid", l_actor_net_id);
 		json_parse::bc_load(p_context.m_params, "prt", m_body_part_force);
 		json_parse::bc_load(p_context.m_params, "frc", m_force);
 

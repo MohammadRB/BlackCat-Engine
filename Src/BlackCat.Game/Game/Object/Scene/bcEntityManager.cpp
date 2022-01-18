@@ -126,9 +126,7 @@ namespace black_cat
 		{
 		}
 
-		bc_entity_manager::~bc_entity_manager()
-		{
-		}
+		bc_entity_manager::~bc_entity_manager() = default;
 
 		void bc_entity_manager::read_entity_file(const bcECHAR* p_json_file_path)
 		{

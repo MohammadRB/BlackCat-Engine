@@ -232,14 +232,14 @@ namespace black_cat
 			
 			if (l_client_address)
 			{
-				core::bc_log(core::bc_log_type::error) << "error occurred in client network connection " << l_client_address << ": ";
+				core::bc_log(core::bc_log_type::error) << "error occurred in client network connection " << *l_client_address;
 			}
 			else
 			{
-				core::bc_log(core::bc_log_type::error) << "error occurred in network connection: ";
+				core::bc_log(core::bc_log_type::error) << "error occurred in network connection";
 			}
 
-			core::bc_log(core::bc_log_type::error) << (p_state.get_last_exception() ? p_state.get_last_exception()->get_full_message().c_str() : "") << core::bc_lend;
+			core::bc_log(core::bc_log_type::error) << (p_state.get_last_exception() ? (": " + p_state.get_last_exception()->get_full_message()) : "") << core::bc_lend;
 			m_hook->error_occurred(p_state.get_last_client_address(), p_state.get_last_exception());
 		}
 
@@ -266,12 +266,12 @@ namespace black_cat
 				l_client->add_rtt_time(p_rtt);
 				l_client->set_remote_rtt_time(p_remote_rtt);
 
-				const auto l_rtt = l_client->get_rtt_time() / 2;
-				const auto l_remote_rtt = l_client->get_remote_rtt_time() / 2;
+				const auto l_ping = l_client->get_rtt_time() / 2;
+				const auto l_remote_ping = l_client->get_remote_rtt_time() / 2;
 				for (auto& l_actor : l_client->get_replicated_actors())
 				{
 					auto* l_network_component = l_actor.get_component<bc_network_component>();
-					l_network_component->set_ping(l_rtt, l_remote_rtt);
+					l_network_component->set_ping(l_ping, l_remote_ping);
 				}
 			}
 		}
@@ -281,7 +281,7 @@ namespace black_cat
 			auto l_error_message = m_hook->client_connected(p_address);
 			if(!l_error_message.empty())
 			{
-				core::bc_log(core::bc_log_type::info) << "new client connection rejected " << p_address << core::bc_lend;
+				core::bc_log(core::bc_log_type::info) << "new client connection " << p_address << " rejected with error: " << l_error_message << core::bc_lend;
 				return l_error_message;
 			}
 
@@ -723,12 +723,13 @@ namespace black_cat
 		{
 			for (const auto& l_message : p_messages)
 			{
-				if (!core::bci_message::is<bc_client_connect_network_message>(*l_message))
+				auto* l_client_connection_message = core::bci_message::as<bc_client_connect_network_message>(*l_message);
+				if (!l_client_connection_message)
 				{
 					continue;
 				}
 
-				l_message->execute
+				l_client_connection_message->execute
 				(
 					bc_network_message_server_context
 					{
@@ -737,15 +738,27 @@ namespace black_cat
 					}
 				);
 
-				// after message execution client should have added
-				auto* l_client = _find_client(p_address);
 				auto l_ack_data = l_message->get_acknowledgment_data();
+				auto l_ack_message = bc_make_network_message(bc_acknowledge_network_message(l_message->get_id(), l_ack_data));
 
+				// after message execution client should have been added otherwise client connection is not approved
+				auto* l_client = _find_client(p_address);
+
+				if(l_client)
 				{
 					core_platform::bc_lock_guard l_client_lock(*l_client);
-					
-					l_client->add_message(bc_make_network_message(bc_acknowledge_network_message(l_message->get_id(), l_ack_data)));
+
+					l_client->add_message(std::move(l_ack_message));
 					l_client->add_acknowledged_message(l_message->get_id(), std::move(l_ack_data));
+				}
+				else
+				{
+					const auto l_ack_message_span = core::bc_const_span<bc_network_message_ptr>(&l_ack_message, 1U);
+					const auto [l_stream_size, l_stream] = m_messages_buffer.serialize(*this, l_ack_message_span);
+
+					bc_server_socket_state_machine::update(core_platform::bc_clock::update_param(0, 0, 0));
+					bc_server_socket_send_event l_send_event{ p_address, *l_stream, l_stream_size, 0 };
+					bc_server_socket_state_machine::process_event(l_send_event);
 				}
 
 				return l_client;

@@ -140,7 +140,9 @@ namespace black_cat
 		}
 
 		void bc_particle_manager::update(const core_platform::bc_clock::update_param& p_clock)
-		{			
+		{
+			const auto l_elapsed = p_clock.m_fixed_elapsed_second;
+
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::heavy);
 				
@@ -156,7 +158,7 @@ namespace black_cat
 				
 				for (_bc_particle_emitter_instance& l_emitter : m_emitters)
 				{
-					l_emitter.m_age += p_clock.m_elapsed_second;
+					l_emitter.m_age += l_elapsed;
 
 					if(l_emitter.m_lifetime < 0) // it is external emitter
 					{
@@ -196,9 +198,8 @@ namespace black_cat
 					const bcUINT32 l_particles_to_spawn = l_particle_count_multiplier * l_emitter.m_particles_total_count;
 					
 					l_emitter.m_prev_position = l_emitter.m_position;
-					l_emitter.m_position += (l_emitter.m_direction * l_acceleration * p_clock.m_elapsed_second) +
-						(core::bc_vector3f::up() * -1 * 9.8f * l_emitter.m_mass * p_clock.m_elapsed_second);
-					l_emitter.m_force = std::max(0.f, l_emitter.m_force - l_emitter.m_mass * p_clock.m_elapsed_second);
+					l_emitter.m_position += (l_emitter.m_direction * l_acceleration * l_elapsed) + (core::bc_vector3f::up() * -1 * 9.8f * l_emitter.m_mass * l_elapsed);
+					l_emitter.m_force = std::max(0.f, l_emitter.m_force - l_emitter.m_mass * l_elapsed);
 					l_emitter.m_energy = l_energy;
 					l_emitter.m_particles_count_to_spawn = l_particles_to_spawn - l_emitter.m_spawned_particles_count;
 					l_emitter.m_spawned_particles_count += l_emitter.m_particles_count_to_spawn;

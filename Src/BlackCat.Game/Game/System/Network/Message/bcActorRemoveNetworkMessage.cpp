@@ -55,12 +55,12 @@ namespace black_cat
 
 		void bc_actor_remove_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
-			p_context.m_params.add("net_id", core::bc_any(m_net_id));
+			p_context.m_params.add("nid", core::bc_any(m_net_id));
 		}
 
 		void bc_actor_remove_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)
 		{
-			const auto* l_actor_network_id = p_context.m_params.find("net_id")->second.as<bc_actor_network_id>();
+			const auto* l_actor_network_id = p_context.m_params.find("nid")->second.as<bc_actor_network_id>();
 			if (!l_actor_network_id || *l_actor_network_id == bc_actor::invalid_id)
 			{
 				core::bc_log(core::bc_log_type::error, bcL("Failed to deserialize actor network id in remove network message"));

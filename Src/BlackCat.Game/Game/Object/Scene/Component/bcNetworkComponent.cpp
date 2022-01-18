@@ -101,7 +101,7 @@ namespace black_cat
 
 		void bc_network_component::load_network_instance(const bc_actor_component_network_load_context& p_context)
 		{
-			auto* l_net_id_param = p_context.m_parameters.find("net_id")->second.as<bc_actor_network_id>();
+			auto* l_net_id_param = p_context.m_parameters.find("nid")->second.as<bc_actor_network_id>();
 			if(!l_net_id_param)
 			{
 				m_id = bc_actor::invalid_id;
@@ -113,7 +113,7 @@ namespace black_cat
 
 		void bc_network_component::write_network_instance(const bc_actor_component_network_write_context& p_context)
 		{
-			p_context.m_parameters.add("net_id", core::bc_any(m_id));
+			p_context.m_parameters.add("nid", core::bc_any(m_id));
 		}
 
 		void bc_network_component::update(const bc_actor_component_update_content& p_context)

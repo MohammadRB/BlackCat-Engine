@@ -240,10 +240,11 @@ namespace black_cat
 		{
 			m_socket_is_connected = false;
 			m_socket_is_ready = false;
+			m_game_system->set_scene(nullptr);
 
 			core::bc_log(core::bc_log_type::error)
-				<< "error occurred in network connection: "
-				<< (p_state.get_last_exception() ? p_state.get_last_exception()->get_full_message().c_str() : "")
+				<< "error occurred in network connection"
+				<< (p_state.get_last_exception() ? (": " + p_state.get_last_exception()->get_full_message()) : "")
 				<< core::bc_lend;
 			m_hook->error_occurred(p_state.get_last_exception());
 		}
@@ -302,10 +303,8 @@ namespace black_cat
 			}
 			else
 			{
-				m_socket_is_connected = false;
-				m_socket_is_ready = false;
-
 				core::bc_log(core::bc_log_type::info) << "connection to server failed with error '" << p_error_message << "'" << core::bc_lend;
+				bc_client_socket_state_machine::transfer_state<bc_client_socket_error_state>();
 				m_hook->connection_to_server_approved(m_address, p_error_message);
 			}
 		}

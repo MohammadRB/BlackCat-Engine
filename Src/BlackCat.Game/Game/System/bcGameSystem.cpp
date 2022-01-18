@@ -25,12 +25,7 @@ namespace black_cat
 				*core::bc_get_service<core::bc_content_manager>(),
 				*core::bc_get_service<core::bc_content_stream_manager>()
 			),
-			m_input_system(),
-			m_physics_system(),
-			m_script_system(),
-			m_render_system(),
-			m_console(),
-			m_scene(),
+			m_scene_changed(false),
 			m_paused(false),
 			m_editor_mode(false)
 		{
@@ -47,9 +42,10 @@ namespace black_cat
 
 		void bc_game_system::set_scene(bc_scene_ptr p_scene) noexcept
 		{
+			m_scene_changed = true;
 			m_new_scene = std::move(p_scene);
 
-			bc_event_scene_change l_scene_change_event(m_new_scene->get_name());
+			bc_event_scene_change l_scene_change_event(m_new_scene ? m_new_scene->get_name() : nullptr);
 			m_event_manager->process_event(l_scene_change_event);
 		}
 
@@ -73,21 +69,25 @@ namespace black_cat
 
 			if(!m_editor_mode && !m_paused)
 			{
-				if (p_is_partial_update)
-				{
-					l_physics_system.update(p_clock);
-					if (l_scene)
-					{
-						l_scene->update_physics(p_clock);
-					}
-
-					return;
-				}
-
 				core::bc_task<void> l_scene_task;
 				core::bc_task<void> l_scene_task1;
 				core::bc_task<void> l_network_task;
 				core::bc_task<void> l_animation_task;
+
+				if (p_is_partial_update)
+				{
+					l_physics_system.update(p_clock);
+
+					if (l_scene)
+					{
+						l_scene_task = l_scene->update_physics_async(p_clock);
+						l_particle_manager->update(p_clock);
+
+						l_scene_task.wait();
+					}
+
+					return;
+				}
 
 				l_file_system.update(p_clock);
 				l_input_system.update(p_clock);
@@ -226,12 +226,13 @@ namespace black_cat
 			m_query_manager->process_query_queue(p_clock);
 			m_query_manager->swap_frame();
 
-			if(m_new_scene)
+			if(m_scene_changed)
 			{
+				m_scene_changed = false;
 				m_scene = std::move(m_new_scene);
 				m_new_scene = nullptr;
 
-				// Process actor events to apply initial transforms to prevent random force applied by physics engine to overlaped objects
+				// Process actor events to apply initial transforms to prevent random force applied by physics engine to overlapped objects
 				auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
 				l_actor_component_manager.process_actor_events(p_clock);
 				l_actor_component_manager.update_actors(p_clock);

@@ -7,6 +7,7 @@
 #include "Game/System/Input/bcInputSystem.h"
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
+#include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/bcJsonParse.h"
 #include "App/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
 #include "App/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
@@ -36,6 +37,37 @@ namespace black_cat
 		if (get_network_component().get_network_type() == game::bc_network_type::server)
 		{
 			m_network_system->send_message(bc_xbot_start_grenade_throw_network_message(get_actor(), m_grenade_name.c_str()));
+		}
+	}
+
+	void bc_xbot_network_player_actor_controller::throw_grenade(core::bc_string_view p_grenade_name,
+		const core::bc_vector3f& p_position,
+		const core::bc_matrix3f& p_rotation,
+		const core::bc_vector3f& p_direction)
+	{
+		auto l_transform = core::bc_matrix4f::identity();
+		l_transform.set_translation(p_position + core::bc_vector3f::normalize(p_direction));
+		l_transform.set_rotation(p_rotation);
+
+		// grenade will be replicated by its network component
+		auto l_actor = get_scene()->create_actor(p_grenade_name.data(), l_transform);
+		l_actor.mark_for_double_update();
+
+		auto* l_network_component = l_actor.get_component<game::bc_network_component>();
+		auto* l_rigid_dynamic_component = l_actor.get_component<game::bc_rigid_dynamic_component>();
+
+		if (!l_network_component || !l_rigid_dynamic_component)
+		{
+			core::bc_log(core::bc_log_type::error, bcL("grenade entity must have network and rigid dynamic component"));
+			return;
+		}
+
+		auto l_rigid_body = l_rigid_dynamic_component->get_dynamic_body();
+
+		{
+			game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
+
+			l_rigid_body.add_force(p_direction);
 		}
 	}
 

@@ -179,6 +179,7 @@ namespace black_cat
 			bc_render_system m_render_system;
 			core::bc_unique_ptr<bc_game_console> m_console;
 
+			bool m_scene_changed;
 			bc_scene_ptr m_scene;
 			bc_scene_ptr m_new_scene;
 

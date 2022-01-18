@@ -26,7 +26,7 @@ namespace black_cat
 
 		void bc_client_connect_network_message::acknowledge(const bc_network_message_client_acknowledge_context& p_context) noexcept
 		{
-			p_context.m_visitor.connection_approved(std::move(m_error_message));
+			p_context.m_visitor.connection_approved(p_context.m_ack_data);
 		}
 
 		void bc_client_connect_network_message::execute(const bc_network_message_server_context& p_context) noexcept

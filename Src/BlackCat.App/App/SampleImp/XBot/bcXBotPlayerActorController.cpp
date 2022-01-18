@@ -491,7 +491,7 @@ namespace black_cat
 
 		if (m_network_system->get_network_type() != game::bc_network_type::not_started)
 		{
-			m_network_system->send_message(bc_xbot_grenade_throw_network_message(l_threw_grenade_name, l_grenade_mediate_component->get_world_transform(), l_throw_direction));
+			m_network_system->send_message(bc_xbot_grenade_throw_network_message(get_actor(), l_threw_grenade_name, l_grenade_mediate_component->get_world_transform(), l_throw_direction));
 		}
 		else
 		{

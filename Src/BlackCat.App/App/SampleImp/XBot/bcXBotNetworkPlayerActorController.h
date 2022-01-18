@@ -35,6 +35,8 @@ namespace black_cat
 
 		void start_grenade_throw(const bcCHAR* p_entity_name) noexcept;
 
+		void throw_grenade(core::bc_string_view p_grenade_name, const core::bc_vector3f& p_position, const core::bc_matrix3f& p_rotation, const core::bc_vector3f& p_direction);
+
 		void attach_weapon(const bcCHAR* p_entity) noexcept;
 
 		void detach_weapon() noexcept;
