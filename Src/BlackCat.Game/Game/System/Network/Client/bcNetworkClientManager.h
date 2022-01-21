@@ -6,9 +6,10 @@
 #include "PlatformImp/Network/bcNonBlockSocket.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
-#include "Core/Utility/bcValueSampler.h"
 #include "Core/Concurrency/bcMutexTest.h"
 #include "Core/File/bcMemoryStream.h"
+#include "Core/Utility/bcValueSampler.h"
+#include "Core/Messaging/bcMessageHandle.h"
 #include "PlatformImp/Network/bcNetworkAddress.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/System/Network/bcNetworkManager.h"
@@ -38,7 +39,8 @@ namespace black_cat
 		public:
 			bc_network_client_manager(bc_game_system& p_game_system,
 				bc_network_system& p_network_system, 
-				bci_network_client_manager_hook& p_hook, 
+				bci_network_client_manager_hook& p_hook,
+				bci_network_message_visitor& p_message_visitor,
 				const platform::bc_network_address& p_address);
 
 			bc_network_client_manager(bc_network_client_manager&&) noexcept;
@@ -100,15 +102,19 @@ namespace black_cat
 			
 			void _receive_from_server();
 
+			void _event_handler(core::bci_event& p_event);
+
 			bc_game_system* m_game_system;
 			bool m_socket_is_connected;
 			bool m_socket_is_ready;
 			platform::bc_network_address m_address;
 			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;
 			bci_network_client_manager_hook* m_hook;
+			bci_network_message_visitor* m_message_visitor;
 			bc_network_packet_time m_last_sync_time;
 			core::bc_value_sampler<bc_network_rtt, 32> m_rtt_sampler;
 			bc_network_rtt m_remote_rtt;
+			core::bc_string_view m_client_name;
 
 			core::bc_mutex_test m_actors_lock;
 			core::bc_vector<bc_actor> m_sync_actors;
@@ -122,6 +128,8 @@ namespace black_cat
 
 			core::bc_memory_stream m_memory_buffer;
 			bc_network_message_serialization_buffer m_messages_buffer;
+
+			core::bc_event_listener_handle m_config_change_handle;
 		};
 	}
 }

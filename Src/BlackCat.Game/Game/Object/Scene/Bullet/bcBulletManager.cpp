@@ -98,6 +98,7 @@ namespace black_cat
 						l_modified_hit.has_value() ? l_modified_hit->get_position() : l_query_hit.get_position(),
 						l_modified_hit.has_value() ? l_modified_hit->get_normal() : l_query_hit.get_normal(),
 						l_modified_hit.has_value() ? l_modified_hit->get_face_index() : l_query_hit.get_face_index(),
+						l_ite->get_player_id(),
 						l_ite->get_direction(),
 						l_ite->get_speed(),
 						l_ite->get_mass()

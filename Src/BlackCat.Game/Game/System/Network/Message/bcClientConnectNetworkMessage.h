@@ -16,6 +16,8 @@ namespace black_cat
 		public:
 			bc_client_connect_network_message();
 
+			explicit bc_client_connect_network_message(core::bc_string p_client_name);
+
 			bc_client_connect_network_message(bc_client_connect_network_message&&) noexcept;
 
 			~bc_client_connect_network_message() override;
@@ -35,6 +37,7 @@ namespace black_cat
 			
 			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
 
+			core::bc_string m_client_name;
 			core::bc_string m_error_message;
 		};
 

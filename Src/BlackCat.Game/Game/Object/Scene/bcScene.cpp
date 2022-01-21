@@ -130,6 +130,26 @@ namespace black_cat
 			return l_actor;
 		}
 
+		bc_actor bc_scene::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter& p_instance_parameters)
+		{
+			auto l_actor = m_entity_manager->create_entity(*this, p_entity_name, p_instance_parameters);
+			if (!l_actor.is_valid())
+			{
+				return l_actor;
+			}
+
+			{
+				core_platform::bc_hybrid_mutex_guard l_lock_guard
+				(
+					m_changed_actors_lock, core_platform::bc_lock_operation::light
+				);
+				m_added_actors.push_back(l_actor);
+			}
+
+			l_actor.add_event(bc_world_transform_actor_event(p_world_transform));
+			return l_actor;
+		}
+
 		void bc_scene::update_actor(bc_actor& p_actor)
 		{
 			{

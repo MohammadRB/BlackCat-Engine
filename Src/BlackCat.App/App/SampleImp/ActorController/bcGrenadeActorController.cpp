@@ -16,6 +16,12 @@ namespace black_cat
 		
 		m_explosion_entity_name = p_context.m_parameters.get_value_throw<core::bc_string>("explosion_entity").c_str();
 		m_lifetime = p_context.m_parameters.get_value_throw<bcFLOAT>("lifetime");
+
+		const auto* l_player_id = p_context.m_instance_parameters.get_value<game::bc_network_client_id>(constant::g_param_player_id);
+		if(l_player_id)
+		{
+			m_player_id = *l_player_id;
+		}
 	}
 
 	void bc_grenade_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
@@ -55,7 +61,8 @@ namespace black_cat
 			auto l_explosion_actor = get_scene()->create_actor
 			(
 				m_explosion_entity_name,
-				bc_matrix4f_from_position_and_direction(l_mediate_component->get_position(), core::bc_vector3f::up())
+				bc_matrix4f_from_position_and_direction(l_mediate_component->get_position(), core::bc_vector3f::up()),
+				core::bc_data_driven_parameter(core::bc_alloc_type::frame).add_or_update(constant::g_param_player_id, m_player_id)
 			);
 			l_explosion_actor.mark_for_double_update();
 

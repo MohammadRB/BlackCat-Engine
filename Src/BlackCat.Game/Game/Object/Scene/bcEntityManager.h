@@ -84,7 +84,7 @@ namespace black_cat
 
 			bc_entity_manager(bc_entity_manager&&) noexcept = delete;
 
-			~bc_entity_manager();
+			~bc_entity_manager() override;
 
 			bc_entity_manager& operator=(bc_entity_manager&&) noexcept = delete;
 
@@ -99,6 +99,8 @@ namespace black_cat
 			 * \return Created actor or invalid actor
 			 */
 			bc_actor create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name);
+
+			bc_actor create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_data_driven_parameter& p_instance_parameters);
 
 			/**
 			 * \brief Remove actor and all of it's components
@@ -128,6 +130,9 @@ namespace black_cat
 			template<class TComponent>
 			void _actor_component_entity_initialization(const bc_actor_component_initialize_entity_context& p_context) const;
 
+			bc_actor _create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_data_driven_parameter* p_instance_parameters);
+
+			core::bc_data_driven_parameter m_empty_parameters;
 			core::bc_content_stream_manager& m_content_stream_manager;
 			bc_actor_component_manager& m_actor_component_manager;
 			bc_game_system& m_game_system;
@@ -160,11 +165,12 @@ namespace black_cat
 		template<class TComponent>
 		void bc_entity_manager::create_entity_component(bc_actor& p_actor)
 		{
-			auto* l_mediate_component = p_actor.get_component<bc_mediate_component>();
+			const auto* l_mediate_component = p_actor.get_component<bc_mediate_component>();
 			m_actor_component_manager.create_component<TComponent>(p_actor);
 			_actor_component_initialization<TComponent>(bc_actor_component_initialize_context
 			(
-				core::bc_data_driven_parameter(),
+				m_empty_parameters,
+				m_empty_parameters,
 				m_content_stream_manager,
 				m_game_system,
 				*l_mediate_component->get_scene(),
@@ -172,7 +178,8 @@ namespace black_cat
 			));
 			_actor_component_entity_initialization<TComponent>(bc_actor_component_initialize_entity_context
 			(
-				core::bc_data_driven_parameter(),
+				m_empty_parameters,
+				m_empty_parameters,
 				m_content_stream_manager,
 				m_game_system,
 				*l_mediate_component->get_scene(),

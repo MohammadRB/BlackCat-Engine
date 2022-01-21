@@ -40,6 +40,12 @@ namespace black_cat
 		m_light_flare_intensity = l_point_light->get_flare() ? l_point_light->get_flare()->get_intensity() : 0.f;
 		m_light_radius = l_point_light->get_radius();
 		m_light_rise_per_second = m_light_radius * 0.7f / m_light_lifetime_second;
+
+		const auto* l_player_id = p_context.m_instance_parameters.get_value<game::bc_network_client_id>(constant::g_param_player_id);
+		if (l_player_id)
+		{
+			m_player_id = *l_player_id;
+		}
 	}
 
 	void bc_explosion_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
@@ -182,7 +188,7 @@ namespace black_cat
 				auto l_actor = l_hit.get_actor();
 				if(l_actor.is_valid())
 				{
-					l_hit.get_actor().add_event(game::bc_explosion_actor_event(m_position, m_force_radius, m_force_amount));
+					l_hit.get_actor().add_event(game::bc_explosion_actor_event(m_position, m_force_radius, m_force_amount, m_player_id));
 				}
 			}
 		}

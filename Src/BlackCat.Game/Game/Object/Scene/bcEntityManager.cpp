@@ -180,10 +180,26 @@ namespace black_cat
 
 		bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name)
 		{
+			return _create_entity(p_scene, p_entity_name, nullptr);
+		}
+
+		bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_data_driven_parameter& p_instance_parameters)
+		{
+			return _create_entity(p_scene, p_entity_name, &p_instance_parameters);
+		}
+
+		void bc_entity_manager::remove_entity(const bc_actor& p_entity)
+		{
+			m_actor_component_manager.remove_actor(p_entity);
+		}
+
+		bc_actor bc_entity_manager::_create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_data_driven_parameter* p_instance_parameters)
+		{
 			const auto l_hash = string_hash()(p_entity_name);
 			const auto l_entity_entry = m_entities.find(l_hash);
+			const auto& l_instance_parameters = p_instance_parameters ? *p_instance_parameters : m_empty_parameters;
 			bc_actor l_actor;
-			
+
 			try
 			{
 				if (l_entity_entry == std::end(m_entities))
@@ -193,7 +209,18 @@ namespace black_cat
 
 				l_actor = m_actor_component_manager.create_actor();
 				m_actor_component_manager.create_component<bc_mediate_component>(l_actor);
-				
+
+				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
+				{
+					auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
+					if (l_entity_component_entry == std::end(m_components))
+					{
+						throw bc_key_not_found_exception("There is no component registered with specified name");
+					}
+
+					l_entity_component_entry->second.m_create_delegate(l_actor);
+				}
+
 				auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
 				l_mediate_component->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
 				l_mediate_component->initialize
@@ -201,27 +228,23 @@ namespace black_cat
 					bc_actor_component_initialize_context
 					(
 						l_entity_entry->second.m_parameters,
+						l_instance_parameters,
 						m_content_stream_manager,
 						m_game_system,
 						p_scene,
 						l_actor
 					)
 				);
-				
+
 				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
 				{
-					auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
-					if(l_entity_component_entry == std::end(m_components))
-					{
-						throw bc_key_not_found_exception("There is no component registered with specified name");
-					}
-
-					l_entity_component_entry->second.m_create_delegate(l_actor);
+					const auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
 					l_entity_component_entry->second.m_initialize_delegate
 					(
 						bc_actor_component_initialize_context
 						(
 							l_entity_component_data.m_component_parameters,
+							l_instance_parameters,
 							m_content_stream_manager,
 							m_game_system,
 							p_scene,
@@ -235,22 +258,23 @@ namespace black_cat
 					bc_actor_component_initialize_entity_context
 					(
 						l_entity_entry->second.m_parameters,
+						l_instance_parameters,
 						m_content_stream_manager,
 						m_game_system,
 						p_scene,
 						l_actor
 					)
 				);
-				
+
 				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
 				{
 					const auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
-
 					l_entity_component_entry->second.m_initialize_entity_delegate
 					(
 						bc_actor_component_initialize_entity_context
 						(
 							l_entity_component_data.m_component_parameters,
+							l_instance_parameters,
 							m_content_stream_manager,
 							m_game_system,
 							p_scene,
@@ -258,7 +282,7 @@ namespace black_cat
 						)
 					);
 				}
-				
+
 				if (!l_entity_entry->second.m_controller_name.empty())
 				{
 					const auto l_controller_hash = string_hash()(l_entity_entry->second.m_controller_name.c_str());
@@ -271,10 +295,11 @@ namespace black_cat
 					auto l_controller = l_controller_ite->second();
 					l_mediate_component->set_controller
 					(
-						std::move(l_controller), 
+						std::move(l_controller),
 						bc_actor_component_initialize_context
 						(
 							l_entity_entry->second.m_parameters,
+							l_instance_parameters,
 							m_content_stream_manager,
 							m_game_system,
 							p_scene,
@@ -283,23 +308,18 @@ namespace black_cat
 					);
 				}
 			}
-			catch (const std::exception& p_exception)
+			catch (const std::exception & p_exception)
 			{
-				if(l_actor.is_valid())
+				if (l_actor.is_valid())
 				{
 					m_actor_component_manager.remove_actor(l_actor);
 					l_actor = bc_actor();
 				}
-				
+
 				core::bc_log(core::bc_log_type::error) << "Error in creation of entity '" << p_entity_name << "': " << p_exception.what() << core::bc_lend;
 			}
 
 			return l_actor;
-		}
-
-		void bc_entity_manager::remove_entity(const bc_actor& p_entity)
-		{
-			m_actor_component_manager.remove_actor(p_entity);
 		}
 	}
 }

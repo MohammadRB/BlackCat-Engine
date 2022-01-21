@@ -49,14 +49,14 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_network_system::start_server(bci_network_server_manager_hook& p_hook, bcUINT16 p_port)
+		void bc_network_system::start_server(bci_network_server_manager_hook& p_hook, bci_network_message_visitor& p_message_visitor, bcUINT16 p_port)
 		{
-			m_manager = core::bc_make_unique<bc_network_server_manager>(bc_network_server_manager(*m_event_manager, *m_game_system, *this, p_hook, p_port));
+			m_manager = core::bc_make_unique<bc_network_server_manager>(bc_network_server_manager(*m_event_manager, *m_game_system, *this, p_hook, p_message_visitor, p_port));
 		}
 
-		void bc_network_system::start_client(bci_network_client_manager_hook& p_hook, const platform::bc_network_address& p_address)
+		void bc_network_system::start_client(bci_network_client_manager_hook& p_hook, bci_network_message_visitor& p_message_visitor, const platform::bc_network_address& p_address)
 		{
-			m_manager = core::bc_make_unique<bc_network_client_manager>(bc_network_client_manager(*m_game_system, *this, p_hook, p_address));
+			m_manager = core::bc_make_unique<bc_network_client_manager>(bc_network_client_manager(*m_game_system, *this, p_hook, p_message_visitor, p_address));
 		}
 
 		void bc_network_system::add_actor_to_sync(bc_actor& p_actor)

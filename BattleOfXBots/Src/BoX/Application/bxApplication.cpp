@@ -50,7 +50,7 @@ namespace box
 				.function(L"send", &bx_client_script::send);
 
 			auto l_client_prototype = p_context.create_prototype(l_client_prototype_builder);
-			const auto l_client_object = p_context.create_object(l_client_prototype, bx_client_script(*p_instance.m_game_system, p_instance));
+			const auto l_client_object = p_context.create_object(l_client_prototype, bx_client_script(*p_instance.m_game_system, p_instance, p_instance));
 			
 			p_instance.m_client_script_context = &p_context;
 			p_instance.m_client_script_object.reset(l_client_object);
@@ -224,27 +224,27 @@ namespace box
 		bx_close_game_services();
 	}
 
-	void bx_application::connecting_to_server(const platform::bc_network_address& p_address)
+	void bx_application::connecting_to_server(const platform::bc_network_address& p_address) noexcept
 	{
 	}
 
-	void bx_application::connection_to_server_approved(const platform::bc_network_address& p_address, core::bc_string p_error_message)
+	void bx_application::connection_to_server_approved(const platform::bc_network_address& p_address, core::bc_string p_error_message) noexcept
 	{
 	}
 
-	void bx_application::message_packet_sent(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
+	void bx_application::message_packet_sent(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept
 	{
 		/*const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
 		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet sent to server: " << l_packet << core::bc_lend;*/
 	}
 
-	void bx_application::message_packet_received(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages)
+	void bx_application::message_packet_received(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept
 	{
 		/*const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
 		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet received from server: " << l_packet << core::bc_lend;*/
 	}
 
-	void bx_application::error_occurred(const bc_network_exception* p_exception)
+	void bx_application::error_occurred(const bc_network_exception* p_exception) noexcept
 	{
 	}
 }

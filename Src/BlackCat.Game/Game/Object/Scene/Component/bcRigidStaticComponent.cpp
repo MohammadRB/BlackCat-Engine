@@ -62,10 +62,6 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		void bc_rigid_static_component::initialize(const bc_actor_component_initialize_context& p_context)
-		{
-		}
-
 		void bc_rigid_static_component::initialize_entity(const bc_actor_component_initialize_entity_context& p_context)
 		{
 			auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();

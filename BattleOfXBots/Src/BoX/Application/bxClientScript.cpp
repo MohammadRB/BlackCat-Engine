@@ -6,9 +6,12 @@
 
 namespace box
 {
-	bx_client_script::bx_client_script(game::bc_game_system& p_game_system, game::bci_network_client_manager_hook& p_network_client_hook)
+	bx_client_script::bx_client_script(game::bc_game_system& p_game_system, 
+		game::bci_network_client_manager_hook& p_network_client_hook, 
+		game::bci_network_message_visitor& p_message_visitor)
 		: m_game_system(&p_game_system),
-		m_network_client_hook(&p_network_client_hook)
+		m_network_client_hook(&p_network_client_hook),
+		m_message_visitor(&p_message_visitor)
 	{
 	}
 
@@ -25,7 +28,7 @@ namespace box
 			const auto l_ip = core::bc_to_string_frame(p_ip.as_string().data());
 			const auto l_address = platform::bc_network_address::from_ip_port(platform::bc_socket_address::inter_network, l_ip.c_str(), p_port.as_integer());
 			
-			m_game_system->get_network_system().start_client(*m_network_client_hook, l_address);
+			m_game_system->get_network_system().start_client(*m_network_client_hook, *m_message_visitor, l_address);
 		}
 		
 		return platform::bc_script_variable();

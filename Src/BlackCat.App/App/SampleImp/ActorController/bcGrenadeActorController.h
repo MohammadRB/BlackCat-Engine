@@ -20,6 +20,7 @@ namespace black_cat
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 
 		const bcCHAR* m_explosion_entity_name{ nullptr };
+		game::bc_network_client_id m_player_id{ game::bc_network_client::invalid_id };
 		bcFLOAT m_lifetime{ 0 };
 	};
 }

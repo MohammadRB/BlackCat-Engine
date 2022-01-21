@@ -455,6 +455,12 @@ namespace black_cat
 		}
 
 		template<typename T>
+		void bc_write(core::bc_json_key_value& p_key_value, core::bc_string p_key, const T& p_value) noexcept
+		{
+			bc_write(p_key_value, p_key, core::bc_any(p_value));
+		}
+
+		template<typename T>
 		bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, T& p_value) noexcept
 		{
 			const auto l_value = p_key_value.find(p_key);

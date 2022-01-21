@@ -439,6 +439,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcSceneChangeNetworkMessage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcSceneReplicateNetworkMessage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Message\bcStringNetworkMessage.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkClient.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManagerTcpClient.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkServerManagerClient.h" />

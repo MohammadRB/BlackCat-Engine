@@ -5,7 +5,7 @@
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Concurrency/bcMutexTest.h"
-#include "Core/Container/bcVector.h"
+#include "Core/Container/bcListPool.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/File/bcMemoryStream.h"
 #include "Core/Messaging/Event/bcEventListenerHandle.h"
@@ -44,7 +44,8 @@ namespace black_cat
 			bc_network_server_manager(core::bc_event_manager& p_event_manager, 
 				bc_game_system& p_game_system, 
 				bc_network_system& p_network_system, 
-				bci_network_server_manager_hook& p_hook, 
+				bci_network_server_manager_hook& p_hook,
+				bci_network_message_visitor& p_message_visitor,
 				bcUINT16 p_port);
 
 			bc_network_server_manager(bc_network_server_manager&&) noexcept;
@@ -78,7 +79,7 @@ namespace black_cat
 			
 			void add_rtt_sample(const platform::bc_network_address& p_address, bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept override;
 			
-			core::bc_string client_connected(const platform::bc_network_address& p_address) override;
+			core::bc_string client_connected(const platform::bc_network_address& p_address, core::bc_string p_name) override;
 
 			void client_disconnected(const platform::bc_network_address& p_address) override;
 
@@ -119,9 +120,10 @@ namespace black_cat
 			bool m_socket_is_listening;
 			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;
 			bci_network_server_manager_hook* m_hook;
+			bci_network_message_visitor* m_message_visitor;
 
 			core_platform::bc_shared_mutex m_clients_lock;
-			core::bc_vector<bc_network_server_manager_client> m_clients;
+			core::bc_list_pool<bc_network_server_manager_client> m_clients;
 
 			core_platform::bc_mutex m_actors_lock;
 			core_platform::bc_atomic<bc_actor_network_id> m_actor_network_id_counter;

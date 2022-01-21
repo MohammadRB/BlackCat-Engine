@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Container/bcStringStream.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Content/bcContentManager.h"
 #include "Core/Utility/bcCounterValueManager.h"
 #include "Core/Utility/bcLogger.h"
@@ -10,6 +11,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Network/Client/bcNetworkClientManager.h"
 #include "Game/System/Network/Message/bcPingNetworkMessage.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
@@ -25,7 +27,8 @@ namespace black_cat
 	{
 		bc_network_client_manager::bc_network_client_manager(bc_game_system& p_game_system,
 			bc_network_system& p_network_system, 
-			bci_network_client_manager_hook& p_hook, 
+			bci_network_client_manager_hook& p_hook,
+			bci_network_message_visitor& p_message_visitor,
 			const platform::bc_network_address& p_address)
 			: bc_client_socket_state_machine(*BC_NEW(platform::bc_non_block_socket, core::bc_alloc_type::unknown)
 				(
@@ -38,6 +41,7 @@ namespace black_cat
 			m_socket_is_ready(false),
 			m_address(p_address),
 			m_hook(&p_hook),
+			m_message_visitor(&p_message_visitor),
 			m_last_sync_time(0),
 			m_rtt_sampler(100),
 			m_remote_rtt(100),
@@ -47,6 +51,11 @@ namespace black_cat
 			m_messages_buffer(p_network_system)
 		{
 			m_socket.reset(&bc_client_socket_state_machine::get_socket());
+			m_config_change_handle = core::bc_get_service<core::bc_event_manager>()->register_event_listener<bc_event_global_config_changed>
+			(
+				core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler)
+			);
+			m_client_name = bc_get_global_config().get_network_client_name();
 
 			bc_client_socket_connect_event l_connect_event{ m_address };
 			bc_client_socket_state_machine::process_event(l_connect_event);
@@ -60,9 +69,11 @@ namespace black_cat
 			m_address(p_other.m_address),
 			m_socket(std::move(p_other.m_socket)),
 			m_hook(p_other.m_hook),
+			m_message_visitor(p_other.m_message_visitor),
 			m_last_sync_time(p_other.m_last_sync_time),
 			m_rtt_sampler(p_other.m_rtt_sampler),
 			m_remote_rtt(p_other.m_remote_rtt),
+			m_client_name(p_other.m_client_name),
 			m_sync_actors(std::move(p_other.m_sync_actors)),
 			m_network_actors(std::move(p_other.m_network_actors)),
 			m_last_executed_message_id(p_other.m_last_executed_message_id),
@@ -70,7 +81,8 @@ namespace black_cat
 			m_messages_waiting_acknowledgment(std::move(p_other.m_messages_waiting_acknowledgment)),
 			m_executed_messages(std::move(p_other.m_executed_messages)),
 			m_memory_buffer(std::move(p_other.m_memory_buffer)),
-			m_messages_buffer(std::move(p_other.m_messages_buffer))
+			m_messages_buffer(std::move(p_other.m_messages_buffer)),
+			m_config_change_handle(std::move(p_other.m_config_change_handle))
 		{
 		}
 
@@ -86,9 +98,11 @@ namespace black_cat
 			m_address = p_other.m_address;
 			m_socket = std::move(p_other.m_socket);
 			m_hook = p_other.m_hook;
+			m_message_visitor = p_other.m_message_visitor;
 			m_last_sync_time = p_other.m_last_sync_time;
 			m_rtt_sampler = p_other.m_rtt_sampler;
 			m_remote_rtt = p_other.m_remote_rtt;
+			m_client_name = p_other.m_client_name;
 
 			m_sync_actors = std::move(p_other.m_sync_actors);
 			m_network_actors = std::move(p_other.m_network_actors);
@@ -96,10 +110,14 @@ namespace black_cat
 			m_last_executed_message_id = p_other.m_last_executed_message_id;
 			m_messages = std::move(p_other.m_messages);
 			m_messages_waiting_acknowledgment = std::move(p_other.m_messages_waiting_acknowledgment);
-			m_memory_buffer = std::move(p_other.m_memory_buffer);
 			m_executed_messages = std::move(p_other.m_executed_messages);
+
+			m_memory_buffer = std::move(p_other.m_memory_buffer);
 			m_messages_buffer = std::move(p_other.m_messages_buffer);
-			
+
+			m_config_change_handle = std::move(p_other.m_config_change_handle);
+			m_config_change_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler));
+
 			return *this;
 		}
 
@@ -260,7 +278,7 @@ namespace black_cat
 			if (!m_socket_is_connected)
 			{
 				m_socket_is_connected = true;
-				send_message(bc_client_connect_network_message());
+				send_message(bc_client_connect_network_message(core::bc_string(m_client_name)));
 			}
 			m_socket_is_ready = true;
 		}
@@ -336,7 +354,15 @@ namespace black_cat
 				m_messages_waiting_acknowledgment.erase(l_message_ite);
 			}
 
-			l_message->acknowledge(bc_network_message_client_acknowledge_context{*this, std::move(p_ack_data)});
+			l_message->acknowledge
+			(
+				bc_network_message_client_acknowledge_context
+				{
+					*this,
+					*m_message_visitor,
+					std::move(p_ack_data)
+				}
+			);
 		}
 
 		void bc_network_client_manager::load_scene(const bcECHAR* p_scene_name)
@@ -595,7 +621,8 @@ namespace black_cat
 				
 				l_message->execute(bc_network_message_client_context
 				{
-					*this
+					*this,
+					*m_message_visitor,
 				});
 
 				if (l_message->need_acknowledgment())
@@ -618,6 +645,16 @@ namespace black_cat
 
 			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
 			m_hook->message_packet_received(m_memory_buffer, l_receive_event.m_bytes_received, l_messages);
+		}
+
+		void bc_network_client_manager::_event_handler(core::bci_event& p_event)
+		{
+			const auto* l_config_change_event = core::bci_message::as<bc_event_global_config_changed>(p_event);
+			if (l_config_change_event)
+			{
+				m_client_name = l_config_change_event->get_config().get_network_client_name();
+				return;
+			}
 		}
 	}
 }

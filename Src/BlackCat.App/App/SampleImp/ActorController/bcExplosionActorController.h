@@ -21,6 +21,7 @@ namespace black_cat
 
 		const bcCHAR* m_emitter_name = nullptr;
 		const bcCHAR* m_decal_name = nullptr;
+		game::bc_network_client_id m_player_id{ game::bc_network_client::invalid_id };
 		bcFLOAT m_force_amount = 0;
 		bcFLOAT m_force_radius = 0;
 		bcFLOAT m_light_intensity = 0;

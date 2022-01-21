@@ -573,7 +573,7 @@ namespace black_cat
 		m_weapon.reset();
 	}
 
-	bool bc_xbot_actor_controller::shoot_weapon() noexcept
+	bool bc_xbot_actor_controller::shoot_weapon(game::bc_network_client_id p_player_id) noexcept
 	{
 		if (!m_weapon.has_value())
 		{
@@ -586,7 +586,7 @@ namespace black_cat
 			return false;
 		}
 
-		const auto l_bullet = m_weapon->m_component->shoot(m_state_machine->m_state.m_look_direction);
+		const auto l_bullet = m_weapon->m_component->shoot(m_state_machine->m_state.m_look_direction, p_player_id);
 		m_scene->add_bullet(l_bullet);
 
 		return true;

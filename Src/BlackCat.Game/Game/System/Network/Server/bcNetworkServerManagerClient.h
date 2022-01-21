@@ -8,6 +8,7 @@
 #include "Core/File/bcMemoryStream.h"
 #include "Core/Utility/bcValueSampler.h"
 #include "PlatformImp/Network/bcNetworkAddress.h"
+#include "Game/System/Network/Server/bcNetworkClient.h"
 #include "Game/System/Network/bcNetworkMessageAcknowledgeBuffer.h"
 #include "Game/System/Network/bcNetworkMessageSerializationBuffer.h"
 
@@ -20,7 +21,7 @@ namespace black_cat
 		class bc_network_server_manager_client
 		{
 		public:
-			explicit bc_network_server_manager_client(const platform::bc_network_address& p_address);
+			bc_network_server_manager_client(const platform::bc_network_address& p_address, core::bc_string p_name);
 
 			bc_network_server_manager_client(bc_network_server_manager_client&&) noexcept;
 
@@ -33,6 +34,10 @@ namespace black_cat
 			void unlock();
 			
 			const platform::bc_network_address& get_address() const noexcept;
+
+			bc_network_client_id get_id() const noexcept;
+
+			core::bc_string_view get_name() const noexcept;
 
 			bool get_ready_for_sync() const noexcept;
 
@@ -75,10 +80,14 @@ namespace black_cat
 			void add_replicated_actor(bc_actor p_actor);
 
 			void erase_replicated_actor(bc_actor p_actor);
-		
+
+			bc_network_client to_network_client() const noexcept;
+
 		private:
 			core_platform::bc_mutex m_mutex;
 			platform::bc_network_address m_address;
+			bc_network_client_id m_id;
+			core::bc_string m_name;
 
 			bool m_ready_for_sync;
 			bc_network_packet_time m_last_sync_time;
@@ -93,8 +102,9 @@ namespace black_cat
 			core::bc_vector<bc_actor> m_replicated_actors;
 		};
 
-		inline bc_network_server_manager_client::bc_network_server_manager_client(const platform::bc_network_address& p_address)
+		inline bc_network_server_manager_client::bc_network_server_manager_client(const platform::bc_network_address& p_address, core::bc_string p_name)
 			: m_address(p_address),
+			m_name(std::move(p_name)),
 			m_ready_for_sync(false),
 			m_last_sync_time(0),
 			m_rtt_sampler(100),
@@ -102,13 +112,16 @@ namespace black_cat
 			m_last_executed_message_id(0),
 			m_executed_messages(50)
 		{
+			m_id = std::get<bcUINT16>(m_address.get_traits());
 		}
 
 		inline bc_network_server_manager_client::bc_network_server_manager_client(bc_network_server_manager_client&& p_other) noexcept
-			: m_address(std::move(p_other.m_address)),
+			: m_address(p_other.m_address),
+			m_id(p_other.m_id),
+			m_name(p_other.m_name),
 			m_ready_for_sync(p_other.m_ready_for_sync),
 			m_last_sync_time(p_other.m_last_sync_time),
-			m_rtt_sampler(std::move(p_other.m_rtt_sampler)),
+			m_rtt_sampler(p_other.m_rtt_sampler),
 			m_remote_rtt(p_other.m_remote_rtt),
 			m_last_executed_message_id(p_other.m_last_executed_message_id),
 			m_messages(std::move(p_other.m_messages)),
@@ -122,10 +135,12 @@ namespace black_cat
 
 		inline bc_network_server_manager_client& bc_network_server_manager_client::operator=(bc_network_server_manager_client&& p_other) noexcept
 		{
-			m_address = std::move(p_other.m_address);
+			m_address = p_other.m_address;
+			m_id = p_other.m_id;
+			m_name = p_other.m_name;
 			m_ready_for_sync = p_other.m_ready_for_sync;
 			m_last_sync_time = p_other.m_last_sync_time;
-			m_rtt_sampler = std::move(p_other.m_rtt_sampler);
+			m_rtt_sampler = p_other.m_rtt_sampler;
 			m_remote_rtt = p_other.m_remote_rtt;
 			m_last_executed_message_id = p_other.m_last_executed_message_id;
 			m_messages = std::move(p_other.m_messages);
@@ -149,6 +164,16 @@ namespace black_cat
 		inline const platform::bc_network_address& bc_network_server_manager_client::get_address() const noexcept
 		{
 			return m_address;
+		}
+
+		inline bc_network_client_id bc_network_server_manager_client::get_id() const noexcept
+		{
+			return m_id;
+		}
+
+		inline core::bc_string_view bc_network_server_manager_client::get_name() const noexcept
+		{
+			return core::bc_string_view(m_name);
 		}
 
 		inline bool bc_network_server_manager_client::get_ready_for_sync() const noexcept
@@ -287,6 +312,11 @@ namespace black_cat
 				}
 			);
 			m_replicated_actors.erase(l_ite);
+		}
+
+		inline bc_network_client bc_network_server_manager_client::to_network_client() const noexcept
+		{
+			return bc_network_client{ get_address(), get_id(), get_name() };
 		}
 	}	
 }

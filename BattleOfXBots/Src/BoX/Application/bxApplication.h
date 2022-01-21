@@ -10,7 +10,7 @@ namespace box
 {
 	using namespace black_cat;
 
-	class bx_application : public bc_render_application, public game::bci_network_client_manager_hook
+	class bx_application : public bc_render_application, public game::bci_network_client_manager_hook, public game::bci_network_message_visitor
 	{
 	public:
 		static void bind(platform::bc_script_context& p_context, platform::bc_script_global_prototype_builder& p_global_prototype, bx_application& p_instance);
@@ -34,15 +34,15 @@ namespace box
 
 		void application_close_engine_components() override;
 
-		void connecting_to_server(const platform::bc_network_address& p_address) override;
+		void connecting_to_server(const platform::bc_network_address& p_address) noexcept override;
 		
-		void connection_to_server_approved(const platform::bc_network_address& p_address, core::bc_string p_error_message) override;
+		void connection_to_server_approved(const platform::bc_network_address& p_address, core::bc_string p_error_message) noexcept override;
 		
-		void message_packet_sent(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
+		void message_packet_sent(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept override;
 		
-		void message_packet_received(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
+		void message_packet_received(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept override;
 		
-		void error_occurred(const bc_network_exception* p_exception) override;
+		void error_occurred(const bc_network_exception* p_exception) noexcept override;
 	
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
 		platform::bc_script_context* m_client_script_context = nullptr;

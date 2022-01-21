@@ -13,7 +13,7 @@ namespace box
 	using namespace black_cat;
 	class bx_server_script;
 
-	class bx_server_application : public bc_render_application, game::bci_network_server_manager_hook
+	class bx_server_application : public bc_render_application, game::bci_network_server_manager_hook, game::bci_network_message_visitor
 	{
 	public:
 		static void bind(platform::bc_script_context& p_context, platform::bc_script_global_prototype_builder& p_global_prototype, bx_server_application& p_instance);
@@ -39,23 +39,17 @@ namespace box
 		
 		void application_close_engine_components() override;
 
-		void started_listening(bcUINT16 p_port) override;
+		void started_listening(bcUINT16 p_port) noexcept override;
 		
-		core::bc_string client_connected(const platform::bc_network_address& p_client) override;
+		core::bc_string client_connected(const game::bc_network_client& p_client) noexcept override;
 		
-		void client_disconnected(const platform::bc_network_address& p_client) override;
+		void client_disconnected(const game::bc_network_client& p_client) noexcept override;
 		
-		void message_packet_sent(const platform::bc_network_address& p_client,
-			const core::bc_memory_stream& p_packet,
-			bcSIZE p_packet_size,
-			core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
+		void message_packet_sent(const game::bc_network_client& p_client, const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept override;
 
-		void message_packet_received(const platform::bc_network_address& p_client,
-			const core::bc_memory_stream& p_packet,
-			bcSIZE p_packet_size,
-			core::bc_const_span<game::bc_network_message_ptr> p_messages) override;
+		void message_packet_received(const game::bc_network_client& p_client, const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept override;
 		
-		void error_occurred(const platform::bc_network_address* p_client, const bc_network_exception* p_exception) override;
+		void error_occurred(const game::bc_network_client* p_client, const bc_network_exception* p_exception) noexcept override;
 
 		const bcECHAR* m_app_name{ nullptr };
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;

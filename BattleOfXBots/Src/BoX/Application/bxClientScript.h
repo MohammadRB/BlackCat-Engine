@@ -20,7 +20,9 @@ namespace box
 	class bx_client_script
 	{
 	public:
-		bx_client_script(game::bc_game_system& p_game_system, game::bci_network_client_manager_hook& p_network_client_hook);
+		bx_client_script(game::bc_game_system& p_game_system, 
+			game::bci_network_client_manager_hook& p_network_client_hook,
+			game::bci_network_message_visitor& p_message_visitor);
 
 		bx_client_script(const bx_client_script&) noexcept;
 
@@ -35,5 +37,6 @@ namespace box
 	private:
 		game::bc_game_system* m_game_system;
 		game::bci_network_client_manager_hook* m_network_client_hook;
+		game::bci_network_message_visitor* m_message_visitor;
 	};
 }

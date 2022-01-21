@@ -5,6 +5,7 @@
 #include "Core/Math/bcVector3f.h"
 #include "PhysicsImp/Shape/bcShape.h"
 #include "PhysicsImp/Body/bcRigidActor.h"
+#include "Game/System/Network/Server/bcNetworkClient.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
 
@@ -23,6 +24,7 @@ namespace black_cat
 				const core::bc_vector3f& p_position,
 				const core::bc_vector3f& p_normal,
 				bcUINT32 p_face_index,
+				bc_network_client_id p_bullet_player_id,
 				const core::bc_vector3f& p_bullet_dir,
 				bcFLOAT p_bullet_speed,
 				bcFLOAT p_bullet_mass) noexcept;
@@ -45,6 +47,8 @@ namespace black_cat
 
 			bcUINT32 get_hit_face_index() const noexcept;
 
+			bc_network_client_id get_bullet_player_id() const noexcept;
+
 			const core::bc_vector3f& get_bullet_direction() const noexcept;
 			
 			bcFLOAT get_bullet_speed() const noexcept;
@@ -60,6 +64,7 @@ namespace black_cat
 			core::bc_vector3f m_position;
 			core::bc_vector3f m_normal;
 			bcUINT32 m_face_index;
+			bc_network_client_id m_bullet_player_id;
 			core::bc_vector3f m_bullet_dir;
 			bcFLOAT m_bullet_speed;
 			bcFLOAT m_bullet_mass;
@@ -71,6 +76,7 @@ namespace black_cat
 			const core::bc_vector3f& p_position,
 			const core::bc_vector3f& p_normal,
 			bcUINT32 p_face_index,
+			bc_network_client_id p_bullet_player_id,
 			const core::bc_vector3f& p_bullet_dir,
 			bcFLOAT p_bullet_speed,
 			bcFLOAT p_bullet_mass) noexcept
@@ -81,6 +87,7 @@ namespace black_cat
 			m_position(p_position),
 			m_normal(p_normal),
 			m_face_index(p_face_index),
+			m_bullet_player_id(p_bullet_player_id),
 			m_bullet_dir(p_bullet_dir),
 			m_bullet_speed(p_bullet_speed),
 			m_bullet_mass(p_bullet_mass)
@@ -115,6 +122,11 @@ namespace black_cat
 		inline bcUINT32 bc_bullet_hit_actor_event::get_hit_face_index() const noexcept
 		{
 			return m_face_index;
+		}
+
+		inline bc_network_client_id bc_bullet_hit_actor_event::get_bullet_player_id() const noexcept
+		{
+			return m_bullet_player_id;
 		}
 
 		inline const core::bc_vector3f& bc_bullet_hit_actor_event::get_bullet_direction() const noexcept

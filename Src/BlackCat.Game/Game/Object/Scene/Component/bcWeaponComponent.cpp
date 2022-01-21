@@ -37,7 +37,7 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		bc_bullet bc_weapon_component::shoot(const core::bc_vector3f& p_aim_direction_ws)
+		bc_bullet bc_weapon_component::shoot(const core::bc_vector3f& p_aim_direction_ws, bc_network_client_id p_player_id)
 		{
 			const auto& l_transform = get_actor().get_component<bc_mediate_component>()->get_world_transform();
 			const auto l_position = (l_transform * core::bc_vector4f(m_fire_offset_ls, 1)).xyz();
@@ -54,7 +54,7 @@ namespace black_cat
 			));
 			m_light_age = 0;
 
-			return bc_bullet(l_position, p_aim_direction_ws, m_bullet_speed, m_bullet_mass);
+			return bc_bullet(l_position, p_aim_direction_ws, m_bullet_speed, m_bullet_mass, p_player_id);
 		}
 		
 		void bc_weapon_component::initialize(const bc_actor_component_initialize_context& p_context)

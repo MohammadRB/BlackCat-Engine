@@ -72,5 +72,6 @@ namespace black_cat
 		BC_PARAMETER(network_data_dir, "data_dir");
 		BC_PARAMETER(network_entity_name, "entity_name");
 		BC_PARAMETER(ragdoll_joints, "joints");
+		BC_PARAMETER(player_id, "player_id");
 	}
 }

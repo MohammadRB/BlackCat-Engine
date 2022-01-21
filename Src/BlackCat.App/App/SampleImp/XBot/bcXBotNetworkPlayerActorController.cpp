@@ -9,6 +9,7 @@
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/bcJsonParse.h"
+#include "Game/bcConstant.h"
 #include "App/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
 #include "App/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
 #include "App/SampleImp/XBot/bcXBotGrenadeNetworkMessage.h"
@@ -45,12 +46,18 @@ namespace black_cat
 		const core::bc_matrix3f& p_rotation,
 		const core::bc_vector3f& p_direction)
 	{
+		const auto l_player_id = get_network_component().get_network_client_id();
 		auto l_transform = core::bc_matrix4f::identity();
 		l_transform.set_translation(p_position + core::bc_vector3f::normalize(p_direction));
 		l_transform.set_rotation(p_rotation);
 
 		// grenade will be replicated by its network component
-		auto l_actor = get_scene()->create_actor(p_grenade_name.data(), l_transform);
+		auto l_actor = get_scene()->create_actor
+		(
+			p_grenade_name.data(),
+			l_transform,
+			core::bc_data_driven_parameter(core::bc_alloc_type::frame).add_or_update(constant::g_param_player_id, l_player_id)
+		);
 		l_actor.mark_for_double_update();
 
 		auto* l_network_component = l_actor.get_component<game::bc_network_component>();
@@ -108,7 +115,8 @@ namespace black_cat
 
 	void bc_xbot_network_player_actor_controller::shoot_weapon() noexcept
 	{
-		bc_xbot_actor_controller::shoot_weapon();
+		const auto l_player_id = get_network_component().get_network_client_id();
+		bc_xbot_actor_controller::shoot_weapon(l_player_id);
 
 		if (get_network_component().get_network_type() == game::bc_network_type::server)
 		{

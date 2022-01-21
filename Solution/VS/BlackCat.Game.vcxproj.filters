@@ -672,6 +672,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\bcJsonParse.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Network\Server\bcNetworkClient.h">
+      <Filter>Game\System\Network\Server</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">

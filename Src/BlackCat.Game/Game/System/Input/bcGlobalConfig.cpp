@@ -42,6 +42,10 @@ namespace black_cat
 			{
 				*l_json->m_scene_graph_actors_pool_capacity = 2000;
 			}
+			if (!l_json->m_network_client_name.has_value())
+			{
+				*l_json->m_network_client_name = "";
+			}
 			if(!l_json->m_bullet_reference_mass.has_value())
 			{
 				*l_json->m_bullet_reference_mass = 0.1f;

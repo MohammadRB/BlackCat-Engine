@@ -19,6 +19,7 @@ namespace black_cat
 			BC_JSON_VALUE_OP(bcUINT32, lod_culling_index);
 			BC_JSON_VALUE_OP(bool, scene_graph_debug_draw);
 			BC_JSON_VALUE_OP(bcUINT32, scene_graph_actors_pool_capacity);
+			BC_JSON_VALUE_OP(core::bc_string, network_client_name);
 			BC_JSON_VALUE_OP(bcFLOAT, bullet_reference_mass);
 			BC_JSON_ARRAY_OP(core::bc_string, counter_values);
 			BC_JSON_VALUE_OP(core::bc_json_key_value, key_values);
@@ -44,6 +45,8 @@ namespace black_cat
 			bool get_scene_graph_debug_draw() const noexcept;
 
 			bcUINT32 get_scene_graph_actors_pool_capacity() const noexcept;
+
+			core::bc_string_view get_network_client_name() const noexcept;
 
 			bcFLOAT get_bullet_reference_mass() const noexcept;
 			
@@ -89,7 +92,12 @@ namespace black_cat
 		{
 			return *(*m_json)->m_scene_graph_actors_pool_capacity;
 		}
-		
+
+		inline core::bc_string_view bc_global_config::get_network_client_name() const noexcept
+		{
+			return *(*m_json)->m_network_client_name;
+		}
+
 		inline bcFLOAT bc_global_config::get_bullet_reference_mass() const noexcept
 		{
 			return *(*m_json)->m_bullet_reference_mass;

@@ -8,9 +8,12 @@
 
 namespace box
 {
-	bx_server_script::bx_server_script(game::bc_game_system& p_game_system, game::bci_network_server_manager_hook& p_network_server_hook)
+	bx_server_script::bx_server_script(game::bc_game_system& p_game_system, 
+		game::bci_network_server_manager_hook& p_network_server_hook, 
+		game::bci_network_message_visitor& p_message_visitor)
 		: m_game_system(&p_game_system),
-		m_network_server_hook(&p_network_server_hook)
+		m_network_server_hook(&p_network_server_hook),
+		m_message_visitor(&p_message_visitor)
 	{
 	}
 
@@ -27,7 +30,7 @@ namespace box
 			return platform::bc_script_variable();
 		}
 
-		m_game_system->get_network_system().start_server(*m_network_server_hook, p_port.as_integer());
+		m_game_system->get_network_system().start_server(*m_network_server_hook, *m_message_visitor, p_port.as_integer());
 		
 		return platform::bc_script_variable();
 	}

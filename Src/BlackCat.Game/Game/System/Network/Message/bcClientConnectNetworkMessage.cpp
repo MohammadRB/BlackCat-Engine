@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 #include "Game/System/Network/Message/bcClientConnectNetworkMessage.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
+#include "Game/bcJsonParse.h"
 
 namespace black_cat
 {
@@ -10,6 +11,12 @@ namespace black_cat
 	{
 		bc_client_connect_network_message::bc_client_connect_network_message()
 			: bci_network_message(message_name())
+		{
+		}
+
+		bc_client_connect_network_message::bc_client_connect_network_message(core::bc_string p_client_name)
+			: bci_network_message(message_name()),
+			m_client_name(std::move(p_client_name))
 		{
 		}
 
@@ -31,15 +38,17 @@ namespace black_cat
 
 		void bc_client_connect_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
-			m_error_message = p_context.m_visitor.client_connected(p_context.m_address);
+			m_error_message = p_context.m_visitor.client_connected(p_context.m_address, m_client_name);
 		}
 
 		void bc_client_connect_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
+			json_parse::bc_write(p_context.m_params, "nme", m_client_name);
 		}
 
 		void bc_client_connect_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)
 		{
+			json_parse::bc_load(p_context.m_params, "nme", m_client_name);
 		}
 
 		void bc_client_disconnect_network_message::execute(const bc_network_message_server_context& p_context) noexcept

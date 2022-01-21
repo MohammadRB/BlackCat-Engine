@@ -29,6 +29,7 @@ namespace black_cat
 		};
 
 		class bc_network_system;
+		class bci_network_message_visitor;
 		class bci_network_message;
 		using bc_network_message_ptr = core::bc_shared_ptr<bci_network_message>;
 
@@ -53,27 +54,39 @@ namespace black_cat
 		struct bc_network_message_client_context
 		{
 			bci_network_message_client_visitor& m_visitor;
+			bci_network_message_visitor& m_injected_visitor;
 		};
 
 		struct bc_network_message_server_context
 		{
 			bci_network_message_server_visitor& m_visitor;
+			bci_network_message_visitor& m_injected_visitor;
 			const platform::bc_network_address& m_address;
 		};
 
 		struct bc_network_message_client_acknowledge_context
 		{
 			bci_network_message_client_visitor& m_visitor;
+			bci_network_message_visitor& m_injected_visitor;
 			core::bc_string m_ack_data;
 		};
 
 		struct bc_network_message_server_acknowledge_context
 		{
 			bci_network_message_server_visitor& m_visitor;
+			bci_network_message_visitor& m_injected_visitor;
 			const platform::bc_network_address& m_address;
 			core::bc_string m_ack_data;
 		};
-		
+
+		class bci_network_message_visitor
+		{
+		protected:
+			virtual ~bci_network_message_visitor() = 0;
+		};
+
+		inline bci_network_message_visitor::~bci_network_message_visitor() = default;
+
 		class BC_GAME_DLL bci_network_message : public core::bci_message
 		{
 		public:
