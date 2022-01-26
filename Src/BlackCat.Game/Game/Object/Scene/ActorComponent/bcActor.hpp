@@ -94,6 +94,12 @@ namespace black_cat
 		}
 
 		template<class TComponent>
+		void bc_actor::create_component(const core::bc_data_driven_parameter& p_instance_parameters)
+		{
+			_get_entity_manager().create_entity_component<TComponent>(*this, p_instance_parameters);
+		}
+
+		template<class TComponent>
 		void bc_actor::remove_component()
 		{
 			_get_manager().remove_component<TComponent>(*this);

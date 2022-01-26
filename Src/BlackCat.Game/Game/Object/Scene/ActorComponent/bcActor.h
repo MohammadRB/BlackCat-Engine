@@ -9,6 +9,14 @@
 
 namespace black_cat
 {
+	namespace core
+	{
+		class bc_data_driven_parameter;
+	}
+}
+
+namespace black_cat
+{
 	namespace game
 	{
 		class bc_actor_component_manager;
@@ -19,6 +27,7 @@ namespace black_cat
 		struct bc_actor_component_load_context;
 		struct bc_actor_component_network_write_context;
 		struct bc_actor_component_network_load_context;
+
 		using bc_actor_id = bcINT32;
 		using bc_actor_network_id = bcINT32;
 
@@ -69,6 +78,9 @@ namespace black_cat
 
 			template<class TComponent>
 			void create_component();
+
+			template<class TComponent>
+			void create_component(const core::bc_data_driven_parameter& p_instance_parameters);
 
 			template<class TComponent>
 			void remove_component();

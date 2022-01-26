@@ -16,7 +16,6 @@
 #include "Game/bcEvent.h"
 #include "Game/bcUtility.h"
 #include "App/bcConstant.h"
-#include "App/RenderPass/bcShapeDrawPass.h"
 #include "App/RenderPass/GBuffer/bcGBufferInitializePass.h"
 #include "App/RenderPass/GBuffer/bcGBufferTerrainPassDx11.h"
 #include "App/RenderPass/GBuffer/bcGBufferPass.h"
@@ -30,8 +29,10 @@
 #include "App/RenderPass/PostProcess/bcParticleSystemPassDx11.h"
 #include "App/RenderPass/PostProcess/bcLightFlarePass.h"
 #include "App/RenderPass/PostProcess/bcGlowPass.h"
-#include "App/RenderPass/bcBackBufferWritePass.h"
+#include "App/RenderPass/bcIconDrawPass.h"
+#include "App/RenderPass/bcShapeDrawPass.h"
 #include "App/RenderPass/bcTextDrawPass.h"
+#include "App/RenderPass/bcBackBufferWritePass.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
 #include "Editor/Application/bcEditorRenderApplication.h"
 #include "Editor/Application/bcUICommandService.h"
@@ -95,6 +96,15 @@ namespace black_cat
 			l_render_system.add_render_pass(bc_particle_system_pass_dx11(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Sprites.dds")));
 			l_render_system.add_render_pass(bc_light_flare_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 			l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
+			l_render_system.add_render_pass(bc_icon_draw_pass
+			(
+				constant::g_rpass_back_buffer_texture, 
+				constant::g_rpass_back_buffer_render_view, 
+				{"player", "sun", "light", "cloud", "wind"}, 
+				bcL("SpriteIcon.png"), 
+				64, 
+				64
+			));
 			l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
 			l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view));
 

@@ -9,10 +9,11 @@
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
+#include "Game/Object/Scene/Component/bcIconComponent.h"
 #include "Game/bcException.h"
 #include "Game/bcConstant.h"
 
@@ -32,26 +33,12 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		core::bc_vector3f bc_light_component::get_world_position() const noexcept
-		{
-			return m_light->get_transformation().get_translation();
-		}
-
-		const core::bc_matrix4f& bc_light_component::get_world_transform() const noexcept
-		{
-			return m_light->get_transformation();
-		}
-
-		bc_light* bc_light_component::get_light() noexcept
-		{
-			return m_light.get();
-		}
-
 		void bc_light_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();
 			auto& l_light_manager = p_context.m_scene.get_light_manager();
 			const auto& l_light_type = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_light_type);
+			const bcCHAR* l_light_icon_type;
 			
 			if(l_light_type == "direct")
 			{
@@ -67,6 +54,7 @@ namespace black_cat
 					l_ambient_color.xyz(),
 					l_ambient_color.w
 				));
+				l_light_icon_type = "sun";
 			}
 			else if(l_light_type == "point")
 			{
@@ -106,6 +94,7 @@ namespace black_cat
 					l_particle_intensity,
 					l_flare.get()
 				));
+				l_light_icon_type = "light";
 			}
 			else if(l_light_type == "spot")
 			{
@@ -145,12 +134,17 @@ namespace black_cat
 					l_color.w,
 					l_flare.get()
 				));
+				l_light_icon_type = "light";
 			}
 			else
 			{
 				BC_ASSERT(false);
 				throw bc_invalid_argument_exception("Invalid light type");
 			}
+
+			const auto l_icon_parameters = core::bc_data_driven_parameter(core::bc_alloc_type::frame)
+				.add_or_update(constant::g_param_icon_name, core::bc_string(l_light_icon_type));
+			p_context.m_actor.create_component<bc_icon_component>(l_icon_parameters);
 		}
 
 		void bc_light_component::handle_event(const bc_actor_component_event_context& p_context)
@@ -159,9 +153,10 @@ namespace black_cat
 			if(l_world_transform_event)
 			{
 				// TODO what if light is part of a mesh
-				m_light->set_transformation(l_world_transform_event->get_transform());
+				const auto& l_transform = l_world_transform_event->get_transform();
+				m_light->set_transformation(l_transform);
 
-				const auto& l_bound_box = m_light->get_bound_box();
+				const auto& l_bound_box = physics::bc_bound_box(l_transform.get_translation(), core::bc_vector3f(.5f));
 				p_context.m_actor.add_event(bc_bound_box_changed_actor_event(l_bound_box));
 
 				return;

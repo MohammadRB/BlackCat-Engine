@@ -22,7 +22,7 @@ namespace black_cat
 
 			bc_main_camera_scene_shared_query(bc_main_camera_scene_shared_query&&) noexcept;
 
-			~bc_main_camera_scene_shared_query();
+			~bc_main_camera_scene_shared_query() override;
 
 			bc_main_camera_scene_shared_query& operator=(bc_main_camera_scene_shared_query&&) noexcept;
 

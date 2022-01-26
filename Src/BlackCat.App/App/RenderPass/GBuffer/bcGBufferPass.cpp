@@ -49,13 +49,14 @@ namespace black_cat
 		{
 			m_render_states = m_render_states_query.get().get_render_state_buffer();
 		}
-		m_render_states_query = core::bc_get_service< core::bc_query_manager >()->queue_query
+		m_render_states_query = core::bc_get_service<core::bc_query_manager>()->queue_query
 		(
 			game::bc_main_camera_render_state_query
 			(
 				game::bc_actor_render_camera(p_context.m_update_camera),
 				p_context.m_frame_renderer.create_buffer()
-			).only< game::bc_simple_mesh_component >()
+			)
+			.only<game::bc_simple_mesh_component>()
 		);
 	}
 

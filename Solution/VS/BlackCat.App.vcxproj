@@ -265,6 +265,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcTextureLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcVertexShaderLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcBackBufferWritePass.h" />
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcIconDrawPass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcTextDrawPass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcShapeDrawPass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferDecalPass.h" />
@@ -326,6 +327,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcTextureLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcVertexShaderLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcBackBufferWritePass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcIconDrawPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcTextDrawPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcShapeDrawPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferDecalPass.cpp" />
@@ -404,6 +406,14 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\bcSpriteIcon.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\GBuffer\bcDecalGBuffer.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -609,6 +619,11 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </Image>
     <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Flare3.dds">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
+    </Image>
+    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\SpriteIcon.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>

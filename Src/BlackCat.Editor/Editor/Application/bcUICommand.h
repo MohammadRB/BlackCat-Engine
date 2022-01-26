@@ -151,7 +151,11 @@ namespace black_cat
 				bcUINT16 p_point_left,
 				bcUINT16 p_point_top) const;
 
-			bool query_ray_in_scene(const update_context& p_context,
+			game::bc_actor query_ray_in_scene(const update_context& p_context,
+				bcUINT16 p_point_left,
+				bcUINT16 p_point_top);
+
+			bool query_ray_in_px_scene(const update_context& p_context,
 				bcUINT16 p_point_left, 
 				bcUINT16 p_point_top,
 				game::bc_actor_group p_query_group,
@@ -162,9 +166,9 @@ namespace black_cat
 		class bci_ui_command_reversible : public bci_ui_command
 		{
 		public:
-			virtual ~bci_ui_command_reversible() = default;
+			~bci_ui_command_reversible() override = default;
 
-			bool is_reversible() const override final;
+			bool is_reversible() const final;
 
 			/**
 			 * \brief This method will be called from engine main thread.

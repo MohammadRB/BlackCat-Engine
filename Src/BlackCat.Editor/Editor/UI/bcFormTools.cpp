@@ -192,15 +192,31 @@ namespace black_cat
 
 		void bc_form_tools::mouseMoved(QMouseEvent* p_event)
 		{
-			if (m_is_mouse_pressed &&
-				m_state != state::object_select &&
-				m_state != state::object_insert)
+			if (m_is_mouse_pressed)
 			{
-				_send_ui_command(p_event);
+				if (m_state != state::object_select &&
+					m_state != state::object_insert &&
+					m_state != state::decal_select &&
+					m_state != state::decal_painter)
+				{
+					_send_ui_command(p_event);
+				}
+			}
+			else if(m_state == state::object_select)
+			{
+				bc_object_select_ui_command l_command
+				(
+					m_render_widget.width(),
+					m_render_widget.height(),
+					p_event->x(),
+					p_event->y(),
+					true
+				);
+				m_ui_command_service.queue_command(std::move(l_command));
 			}
 		}
 
-		void bc_form_tools::_send_ui_command(QMouseEvent* p_event)
+		void bc_form_tools::_send_ui_command(const QMouseEvent* p_event)
 		{
 			switch (m_state)
 			{
@@ -211,7 +227,8 @@ namespace black_cat
 						m_render_widget.width(),
 						m_render_widget.height(),
 						p_event->x(),
-						p_event->y()
+						p_event->y(),
+						false
 					);
 					m_ui_command_service.queue_command(std::move(l_command));
 					break;

@@ -18,14 +18,17 @@ namespace black_cat
 		/**
 		 * \brief This class uses frame memory
 		 */
-		class bc_scene_graph_buffer : public core::bc_iterator_adapter< core::bc_vector_frame< bc_actor > >
+		class bc_scene_graph_buffer : public core::bc_iterator_adapter<core::bc_vector_frame<bc_actor>>
 		{
 		public:
-			bc_scene_graph_buffer();
+			bc_scene_graph_buffer() noexcept;
 
 			explicit bc_scene_graph_buffer(bcSIZE p_initial_size);
 
 			bc_scene_graph_buffer(std::initializer_list<bc_actor> p_initializer);
+
+			template<typename TInputIterator>
+			bc_scene_graph_buffer(TInputIterator p_first, TInputIterator p_last);
 
 			bc_scene_graph_buffer(bc_scene_graph_buffer&&) noexcept;
 
@@ -38,7 +41,10 @@ namespace black_cat
 			const_iterator find(const bc_actor& p_actor) const noexcept;
 			
 			void add(const bc_actor& p_actor);
-			
+
+			template<typename TComponent>
+			bc_scene_graph_buffer get_actors() const;
+
 			void render_actors(const bc_actor_render_camera& p_camera, bc_render_state_buffer& p_buffer) const;
 
 			template<typename TRenderComponent>
@@ -53,7 +59,7 @@ namespace black_cat
 			container_type m_actors;
 		};
 
-		inline bc_scene_graph_buffer::bc_scene_graph_buffer()
+		inline bc_scene_graph_buffer::bc_scene_graph_buffer() noexcept
 			: bc_iterator_adapter(m_actors)
 		{	
 		}
@@ -67,6 +73,13 @@ namespace black_cat
 		inline bc_scene_graph_buffer::bc_scene_graph_buffer(std::initializer_list<bc_actor> p_initializer)
 			: bc_iterator_adapter(m_actors),
 			m_actors(p_initializer)
+		{
+		}
+
+		template<typename TInputIterator>
+		bc_scene_graph_buffer::bc_scene_graph_buffer(TInputIterator p_first, TInputIterator p_last)
+			: bc_iterator_adapter(m_actors),
+			m_actors(p_first, p_last)
 		{
 		}
 
@@ -107,6 +120,25 @@ namespace black_cat
 		{
 			m_actors.push_back(p_actor);
 		}
+		
+		template<typename TComponent>
+		bc_scene_graph_buffer bc_scene_graph_buffer::get_actors() const
+		{
+			static_assert(std::is_base_of_v<bci_actor_component, TComponent>, "TComponent must inherit from bc_render_component");
+
+			bc_scene_graph_buffer l_buffer;
+
+			for (bc_actor& l_actor : m_actors)
+			{
+				auto* l_component = l_actor.get_component<TComponent>();
+				if (l_component)
+				{
+					l_buffer.add(l_actor);
+				}
+			}
+
+			return l_buffer;
+		}
 
 		inline void bc_scene_graph_buffer::render_actors(const bc_actor_render_camera& p_camera, bc_render_state_buffer& p_buffer) const
 		{
@@ -122,7 +154,7 @@ namespace black_cat
 			}
 		}
 
-		template< typename TRenderComponent >
+		template<typename TRenderComponent>
 		void bc_scene_graph_buffer::render_actors(const bc_actor_render_camera& p_camera, bc_render_state_buffer& p_buffer) const
 		{
 			static_assert(std::is_base_of_v<bc_render_component, TRenderComponent>, "TComponent must inherit from bc_render_component");
@@ -139,7 +171,7 @@ namespace black_cat
 			}
 		}
 
-		template< typename TRenderComponent, typename ... TArgs >
+		template<typename TRenderComponent, typename ... TArgs>
 		void bc_scene_graph_buffer::render_actors(const bc_actor_render_camera& p_camera, bc_render_state_buffer& p_buffer, TArgs&&... p_args) const
 		{
 			static_assert(std::is_base_of_v<bc_render_component, TRenderComponent>, "TComponent must inherit from bc_render_component");
@@ -155,7 +187,7 @@ namespace black_cat
 				}
 			}
 		}
-
+		
 		inline void bc_scene_graph_buffer::draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const
 		{
 			for (const bc_actor& l_actor : m_actors)

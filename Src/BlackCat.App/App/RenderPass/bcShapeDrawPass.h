@@ -19,13 +19,14 @@ namespace black_cat
 		BC_QUERY(sc_dbg)
 
 	public:
-		bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer, game::bc_actor p_selected_actor, bool p_draw_scene_graph) noexcept;
+		bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer, game::bc_actor p_hovered_actor, game::bc_actor p_selected_actor, bool p_draw_scene_graph) noexcept;
 
 	protected:
 		void execute(const game::bc_scene_query_context& p_context) noexcept override;
 
 	private:
 		game::bc_shape_drawer* m_shape_drawer;
+		game::bc_actor m_hovered_actor;
 		game::bc_actor m_selected_actor;
 		bool m_draw_scene_graph;
 	};
@@ -36,6 +37,8 @@ namespace black_cat
 
 	public:
 		explicit bc_shape_draw_pass(game::bc_render_pass_variable_t p_render_target_view);
+
+		void set_hovered_actor(const game::bc_actor& p_actor);
 
 		void set_selected_actor(const game::bc_actor& p_actor);
 		
@@ -66,6 +69,7 @@ namespace black_cat
 
 		bool m_draw_scene_graph_debug = false;
 		core::bc_query_result<bc_scene_debug_shape_query> m_scene_debug_query;
+		game::bc_actor m_hovered_actor;
 		game::bc_actor m_selected_actor;
 	};
 }

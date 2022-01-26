@@ -24,7 +24,7 @@ namespace black_cat
 
 			bc_scene_graph_render_state_query(bc_scene_graph_render_state_query&&) noexcept;
 
-			~bc_scene_graph_render_state_query();
+			~bc_scene_graph_render_state_query() override;
 
 			bc_scene_graph_render_state_query& operator=(bc_scene_graph_render_state_query&&) noexcept;
 
@@ -79,13 +79,13 @@ namespace black_cat
 			return std::move(m_render_buffer);
 		}
 		
-		inline bc_scene_graph_render_state_query& bc_scene_graph_render_state_query::with(const bc_camera_frustum & p_frustum)
+		inline bc_scene_graph_render_state_query& bc_scene_graph_render_state_query::with(const bc_camera_frustum& p_frustum)
 		{
 			m_scene_query.with(p_frustum);
 			return *this;
 		}
 
-		template< class TComponent, typename ...TArgs >
+		template<class TComponent, typename ...TArgs>
 		bc_scene_graph_render_state_query& bc_scene_graph_render_state_query::only(TArgs&&... p_render_args) noexcept
 		{
 			auto l_lambda = [=](const bc_scene_graph_buffer& p_scene_buffer, const bc_actor_render_camera& p_camera, bc_render_state_buffer& p_render_buffer, auto&&... p_render_args)

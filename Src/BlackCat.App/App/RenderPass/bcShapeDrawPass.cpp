@@ -8,6 +8,7 @@
 #include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Query/bcMainCameraSceneSharedQuery.h"
 #include "Game/bcEvent.h"
 #include "App/RenderPass/bcShapeDrawPass.h"
@@ -15,9 +16,10 @@
 
 namespace black_cat
 {
-	bc_scene_debug_shape_query::bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer, game::bc_actor p_selected_actor, bool p_draw_scene_graph) noexcept
+	bc_scene_debug_shape_query::bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer, game::bc_actor p_hovered_actor, game::bc_actor p_selected_actor, bool p_draw_scene_graph) noexcept
 		: bc_query(message_name()),
 		m_shape_drawer(&p_shape_drawer),
+		m_hovered_actor(std::move(p_hovered_actor)),
 		m_selected_actor(std::move(p_selected_actor)),
 		m_draw_scene_graph(p_draw_scene_graph)
 	{
@@ -26,7 +28,17 @@ namespace black_cat
 	void bc_scene_debug_shape_query::execute(const game::bc_scene_query_context& p_context) noexcept
 	{
 		const auto& l_actors_buffer = p_context.get_shared_query<game::bc_main_camera_scene_shared_query>().get_scene_buffer();
-		
+
+		if (m_hovered_actor.is_valid())
+		{
+			const auto l_ite = l_actors_buffer.find(m_hovered_actor);
+			if (l_ite != std::end(l_actors_buffer))
+			{
+				const auto* l_mediate_component = l_ite->get_component<game::bc_mediate_component>();
+				m_shape_drawer->draw_wired_bound_box(l_mediate_component->get_bound_box());
+			}
+		}
+
 		if(m_selected_actor.is_valid())
 		{
 			const auto l_ite = l_actors_buffer.find(m_selected_actor);
@@ -45,6 +57,11 @@ namespace black_cat
 	bc_shape_draw_pass::bc_shape_draw_pass(game::bc_render_pass_variable_t p_render_target_view)
 		: m_render_target_view_variable(p_render_target_view)
 	{
+	}
+
+	void bc_shape_draw_pass::set_hovered_actor(const game::bc_actor& p_actor)
+	{
+		m_hovered_actor = p_actor;
 	}
 
 	void bc_shape_draw_pass::set_selected_actor(const game::bc_actor& p_actor)
@@ -114,7 +131,13 @@ namespace black_cat
 	{
 		m_scene_debug_query = p_context.m_query_manager.queue_query
 		(
-			bc_scene_debug_shape_query(p_context.m_render_system.get_shape_drawer(), m_selected_actor, m_draw_scene_graph_debug)
+			bc_scene_debug_shape_query
+			(
+				p_context.m_render_system.get_shape_drawer(), 
+				m_hovered_actor,
+				m_selected_actor, 
+				m_draw_scene_graph_debug
+			)
 		);
 	}
 

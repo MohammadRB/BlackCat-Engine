@@ -27,7 +27,7 @@ namespace black_cat
 			position = core::bc_enum::value(0),			// "position" member of #PxQueryHit is valid
 			normal = core::bc_enum::value(1),			// "normal" member of #PxQueryHit is valid
 			distance = core::bc_enum::value(2),			// "distance" member of #PxQueryHit is valid
-			//eASSUME_NO_INITIAL_OVERLAP = (1 <<4),	// Performance hint flag for sweeps when it is known upfront there's no initial overlap.
+			//eASSUME_NO_INITIAL_OVERLAP = (1 <<4),		// Performance hint flag for sweeps when it is known upfront there's no initial overlap.
 														// NOTE: using this flag may cause undefined results if shapes are initially overlapping.
 			mesh_multiple = core::bc_enum::value(5),	// Report all hits for meshes rather than just the first. Not applicable to sweep queries.
 			mesh_any = core::bc_enum::value(6),			// Report any first hit for meshes. If neither eMESH_MULTIPLE nor eMESH_ANY is specified, a single closest hit will be reported for meshes.
@@ -200,6 +200,21 @@ namespace black_cat
 		class bc_shape_query
 		{
 		public:
+			/**
+			 * \brief Ray-cast test against a geometry object.
+			 * \param[in] p_ray The ray to test against shape
+			 * \param[in] p_box The box object to test the ray against
+			 * \param[in] p_flags Specification of the kind of information to retrieve on hit.
+			 * \param[out] p_hits Ray-cast hits information
+			 * \param[in] p_hits_count max number of returned hits = size of 'rayHits' buffer
+			 * \return Number of hits between the ray and the geometry object
+			 */
+			static BC_PHYSICS_DLL bcUINT32 ray_cast(const bc_ray& p_ray,
+				const bc_bound_box& p_box,
+				bc_hit_flag p_flags,
+				bc_ray_hit* p_hits,
+				bcUINT32 p_hits_count);
+
 			/**
 			 * \brief Ray-cast test against a geometry object.
 			 * \param[in] p_ray The ray to test against shape

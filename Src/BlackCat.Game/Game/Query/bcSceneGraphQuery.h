@@ -22,7 +22,7 @@ namespace black_cat
 
 			bc_scene_graph_query(bc_scene_graph_query&&) noexcept;
 
-			~bc_scene_graph_query();
+			~bc_scene_graph_query() override;
 
 			bc_scene_graph_query& operator=(bc_scene_graph_query&&) noexcept;
 
@@ -34,7 +34,7 @@ namespace black_cat
 			bc_scene_graph_query& only() noexcept;
 
 			void execute(const bc_scene_query_context& p_context) noexcept override;
-
+		
 		private:
 			core::bc_nullable<bc_camera_frustum> m_frustum;
 			core::bc_delegate<bc_scene_graph_buffer(const bc_scene_query_context&, const core::bc_nullable<bc_camera_frustum>&)> m_execute_with_component;
@@ -54,7 +54,7 @@ namespace black_cat
 
 		inline bc_scene_graph_query::~bc_scene_graph_query() = default;
 
-		inline bc_scene_graph_query& bc_scene_graph_query::operator=(bc_scene_graph_query && p_other) noexcept
+		inline bc_scene_graph_query& bc_scene_graph_query::operator=(bc_scene_graph_query&& p_other) noexcept
 		{
 			bc_query::operator=(p_other);
 			m_frustum = std::move(p_other.m_frustum);
@@ -69,7 +69,7 @@ namespace black_cat
 			return std::move(m_scene_buffer);
 		}
 		
-		inline bc_scene_graph_query& bc_scene_graph_query::with(const bc_camera_frustum & p_frustum)
+		inline bc_scene_graph_query& bc_scene_graph_query::with(const bc_camera_frustum& p_frustum)
 		{
 			m_frustum = p_frustum;
 			return *this;
@@ -80,22 +80,22 @@ namespace black_cat
 		{
 			m_execute_with_component.bind
 			(
-				[&](const bc_scene_query_context& p_context, const core::bc_nullable< bc_camera_frustum >& p_frustum)
+				[&](const bc_scene_query_context& p_context, const core::bc_nullable<bc_camera_frustum>& p_frustum)
 				{
 					if (p_frustum.has_value())
 					{
-						return p_context.m_scene->get_scene_graph().get_actors< TComponent >(*p_frustum);
+						return p_context.m_scene->get_scene_graph().get_actors<TComponent>(*p_frustum);
 					}
 					else
 					{
-						return p_context.m_scene->get_scene_graph().get_actors< TComponent >();
+						return p_context.m_scene->get_scene_graph().get_actors<TComponent>();
 					}
 				}
 			);
 			return *this;
 		}
 
-		inline void bc_scene_graph_query::execute(const bc_scene_query_context & p_context) noexcept
+		inline void bc_scene_graph_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
 			if (m_execute_with_component.is_valid())
 			{

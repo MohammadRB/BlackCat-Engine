@@ -75,7 +75,7 @@ namespace black_cat
 
 			bc_octal_tree_graph_node(bc_octal_tree_graph_node&&) noexcept = default;
 
-			~bc_octal_tree_graph_node();
+			~bc_octal_tree_graph_node() override;
 
 			bc_octal_tree_graph_node& operator=(bc_octal_tree_graph_node&&) noexcept = default;
 
@@ -96,6 +96,8 @@ namespace black_cat
 			bool contains_actor(bc_actor& p_actor) const noexcept override;
 
 			bool intersects_actor(bc_actor& p_actor) const noexcept override;
+
+			void get_actor(const physics::bc_ray& p_ray, std::pair<bcFLOAT, bc_actor>& p_result) const override;
 
 			void get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const override;
 

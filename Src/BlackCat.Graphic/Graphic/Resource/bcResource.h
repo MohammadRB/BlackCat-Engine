@@ -15,7 +15,7 @@ namespace black_cat
 		class bc_subresource_data
 		{
 		public:
-			bc_subresource_data(void* p_data, bcUINT p_row_pitch, bcUINT p_depth_pitch)
+			bc_subresource_data(const void* p_data, bcUINT p_row_pitch, bcUINT p_depth_pitch)
 				: m_data(p_data), 
 				m_row_pitch(p_row_pitch),
 				m_depth_pitch(p_depth_pitch)

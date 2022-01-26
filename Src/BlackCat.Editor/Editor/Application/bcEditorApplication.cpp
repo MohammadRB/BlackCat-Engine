@@ -39,7 +39,7 @@ namespace black_cat
 			
 			m_ui_command_service = core::bc_get_service<bc_ui_command_service>();
 			m_form_main_menu = std::make_unique<bc_form_main_menu>(*m_ui.mainMenuBar, *m_ui_command_service);
-			m_form_main_tool_bar = std::make_unique<bc_form_main_tool_bar>(*m_ui_command_service, *m_ui.mainToolBar);
+			m_form_main_tool_bar = std::make_unique<bc_form_main_tool_bar>(*m_ui_command_service, *m_ui.mainToolBar, *m_d3d_widget);
 			m_form_object = std::make_unique<bc_form_object>(*m_ui.centralWidget, *m_ui_command_service);
 			m_form_object_insert = std::make_unique<bc_form_object_insert>(*m_ui.centralWidget);
 			m_form_terrain = std::make_unique<bc_form_terrain>(*m_ui.centralWidget);

@@ -30,7 +30,15 @@ namespace black_cat
 			return physics::bc_ray(l_camera.get_position(), l_pointing_ray, l_camera.get_far_clip());
 		}
 
-		bool bci_ui_command::query_ray_in_scene(const update_context& p_context,
+		game::bc_actor bci_ui_command::query_ray_in_scene(const update_context& p_context,
+			bcUINT16 p_point_left,
+			bcUINT16 p_point_top)
+		{
+			const auto l_ray = get_pointer_ray(p_context, p_point_left, p_point_top);
+			return p_context.m_game_system.get_scene()->get_scene_graph().get_actor(l_ray);
+		}
+
+		bool bci_ui_command::query_ray_in_px_scene(const update_context& p_context,
 			bcUINT16 p_point_left,
 			bcUINT16 p_point_top,
 			game::bc_actor_group p_query_group,

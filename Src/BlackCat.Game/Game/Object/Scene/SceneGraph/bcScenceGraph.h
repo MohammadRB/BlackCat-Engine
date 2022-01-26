@@ -4,10 +4,12 @@
 
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Memory/bcPtr.h"
-#include "Game/bcExport.h"
+#include "PhysicsImp/Shape/bcBoundBox.h"
+#include "PhysicsImp/Collision/bcShapeQuery.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphNode.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
@@ -74,6 +76,8 @@ namespace black_cat
 			 * \return True if the actor was removed and False if actor was not found
 			 */
 			bool remove_actor(bc_actor& p_actor);
+
+			bc_actor get_actor(const physics::bc_ray& p_ray) const;
 
 			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
 

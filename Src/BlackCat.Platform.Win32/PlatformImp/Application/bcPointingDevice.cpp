@@ -14,14 +14,16 @@ namespace black_cat
 		void _check_pointing_device_index(bcBYTE p_device_index)
 		{
 			if (p_device_index != 0)
+			{
 				throw std::runtime_error("Invalid device index");
+			}
 		}
 
 		template< >
 		BC_PLATFORMIMP_DLL
 		bc_platform_pointing_device<core_platform::g_api_win32>::bc_platform_pointing_device(bcUBYTE p_device_index)
-			: m_pack(),
-			m_device_index(p_device_index),
+			: m_device_index(p_device_index),
+			m_pack(),
 			m_event_manager(core::bc_service_manager::get().get_service< core::bc_event_manager >())
 		{
 			_check_pointing_device_index(m_device_index);
@@ -30,8 +32,8 @@ namespace black_cat
 		template< >
 		BC_PLATFORMIMP_DLL
 		bc_platform_pointing_device<core_platform::g_api_win32>::bc_platform_pointing_device(const bc_platform_pointing_device& p_other) noexcept
-			: m_pack(p_other.m_pack),
-			m_device_index(p_other.m_device_index),
+			: m_device_index(p_other.m_device_index),
+			m_pack(p_other.m_pack),
 			m_event_manager(p_other.m_event_manager)
 		{
 		}

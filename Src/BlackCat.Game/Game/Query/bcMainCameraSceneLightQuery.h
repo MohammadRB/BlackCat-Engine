@@ -25,7 +25,7 @@ namespace black_cat
 
 			bc_main_camera_scene_light_query(bc_main_camera_scene_light_query&&) noexcept;
 
-			~bc_main_camera_scene_light_query();
+			~bc_main_camera_scene_light_query() override;
 
 			bc_main_camera_scene_light_query& operator=(bc_main_camera_scene_light_query&&) noexcept;
 
@@ -36,7 +36,6 @@ namespace black_cat
 
 		private:
 			bc_light_type m_types;
-			core::bc_nullable<bc_camera_frustum> m_frustum;
 			core::bc_vector<bc_light_instance> m_lights;
 		};
 
@@ -49,7 +48,6 @@ namespace black_cat
 		inline bc_main_camera_scene_light_query::bc_main_camera_scene_light_query(bc_main_camera_scene_light_query&& p_other) noexcept
 			: bc_query(p_other),
 			m_types(p_other.m_types),
-			m_frustum(std::move(p_other.m_frustum)),
 			m_lights(std::move(p_other.m_lights))
 		{
 		}
@@ -60,7 +58,6 @@ namespace black_cat
 		{
 			bc_query::operator=(p_other);
 			m_types = p_other.m_types;
-			m_frustum = std::move(p_other.m_frustum);
 			m_lights = std::move(p_other.m_lights);
 
 			return *this;

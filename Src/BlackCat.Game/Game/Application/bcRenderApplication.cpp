@@ -180,7 +180,6 @@ namespace black_cat
 					l_total_elapsed = m_clock->get_total_elapsed();
 					l_elapsed = m_clock->get_elapsed();
 					l_average_elapsed = m_fps_sampler.average_value();
-					const auto l_clock = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed, l_average_elapsed);
 
 #ifdef BC_DEBUG
 					if (l_elapsed > 1000.0f)
@@ -188,7 +187,9 @@ namespace black_cat
 						l_elapsed = l_min_update_elapsed;
 					}
 #endif
-					
+
+					const auto l_clock = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed, l_average_elapsed);
+
 					m_app->update();
 					if(m_output_window)
 					{

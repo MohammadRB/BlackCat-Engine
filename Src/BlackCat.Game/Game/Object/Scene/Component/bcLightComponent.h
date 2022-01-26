@@ -30,7 +30,7 @@ namespace black_cat
 
 			const core::bc_matrix4f& get_world_transform() const noexcept;
 
-			bc_light* get_light() noexcept;
+			bc_light* get_light() const noexcept;
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 			
@@ -39,5 +39,20 @@ namespace black_cat
 		private:
 			bc_light_ptr m_light;
 		};
+
+		inline core::bc_vector3f bc_light_component::get_world_position() const noexcept
+		{
+			return m_light->get_transformation().get_translation();
+		}
+
+		inline const core::bc_matrix4f& bc_light_component::get_world_transform() const noexcept
+		{
+			return m_light->get_transformation();
+		}
+
+		inline bc_light* bc_light_component::get_light() const noexcept
+		{
+			return m_light.get();
+		}
 	}
 }

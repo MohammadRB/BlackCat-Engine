@@ -44,6 +44,24 @@
           "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\ShadowMap\\bcSkinnedMeshShadowMap.hlsl",
           "content_parameter": { "function": "vs" }
+        },
+        {
+          "content_title": "sprite_icon_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "content\\shader\\directx11\\bcSpriteIcon.hlsl",
+          "content_parameter": { "function": "sprite_icon_vs" }
+        },
+        {
+          "content_title": "sprite_icon_gs",
+          "content_loader": "geometry_shader",
+          "content_file": "content\\shader\\directx11\\bcSpriteIcon.hlsl",
+          "content_parameter": { "function": "sprite_icon_gs" }
+        },
+        {
+          "content_title": "sprite_icon_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "content\\shader\\directx11\\bcSpriteIcon.hlsl",
+          "content_parameter": { "function": "sprite_icon_ps" }
         }
       ]
     },

@@ -246,6 +246,9 @@
     <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotRagdollNetworkMessage.h">
       <Filter>BlackCat\SampleImp\XBot</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcIconDrawPass.h">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcComputeShaderLoader.cpp">
@@ -392,6 +395,9 @@
     <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotRagdollNetworkMessage.cpp">
       <Filter>BlackCat\SampleImp\XBot</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcIconDrawPass.cpp">
+      <Filter>BlackCat\RenderPass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\bcShapeDraw.hlsl">
@@ -466,6 +472,9 @@
     <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\PostProcess\bcGaussianBlur.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
     </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\bcSpriteIcon.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Src\BlackCat.App\App\Content\Data\ContentStream.json">
@@ -519,6 +528,9 @@
       <Filter>BlackCat\Content\Texture</Filter>
     </Image>
     <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Flare3.dds">
+      <Filter>BlackCat\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\SpriteIcon.png">
       <Filter>BlackCat\Content\Texture</Filter>
     </Image>
   </ItemGroup>

@@ -72,6 +72,9 @@ namespace black_cat
 		BC_PARAMETER(network_data_dir, "data_dir");
 		BC_PARAMETER(network_entity_name, "entity_name");
 		BC_PARAMETER(ragdoll_joints, "joints");
+		BC_PARAMETER(icon_name, "name");
+		BC_PARAMETER(icon_size, "size");
+		BC_PARAMETER(icon_type, "type");
 		BC_PARAMETER(player_id, "player_id");
 	}
 }

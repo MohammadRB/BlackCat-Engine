@@ -233,6 +233,82 @@ namespace black_cat
 			return m_bound_box.intersect(l_actor_mesh_bound_box);
 		}
 
+		void bc_octal_tree_graph_node::get_actor(const physics::bc_ray& p_ray, std::pair<bcFLOAT, bc_actor>& p_result) const
+		{
+			if (!m_actors.empty())
+			{
+				for (_bc_octal_tree_graph_node_entry& l_entry : m_actors)
+				{
+					const auto& l_bound_box = _get_actor_bound_box(l_entry.m_actor);
+
+					physics::bc_ray_hit l_ray_hit;
+					const bool l_intersects = physics::bc_shape_query::ray_cast
+					(
+						p_ray, 
+						l_bound_box,
+						core::bc_enum::mask_or({ physics::bc_hit_flag::distance }), 
+						&l_ray_hit, 
+						1
+					);
+
+					if (l_intersects)
+					{
+						const auto l_is_inside = l_bound_box.contains(p_ray.m_origin);
+						if(l_is_inside)
+						{
+							continue;
+						}
+
+						if (!p_result.second.is_valid() || l_ray_hit.get_distance() < p_result.first)
+						{
+							p_result.first = l_ray_hit.get_distance();
+							p_result.second = l_entry.m_actor;
+						}
+					}
+				}
+			}
+
+			if (is_leaf_node())
+			{
+				return;
+			}
+
+			physics::bc_ray_hit l_ray_hit;
+
+			if (physics::bc_shape_query::ray_cast(p_ray, m_top_left_back->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
+			{
+				m_top_left_back->get_actor(p_ray, p_result);
+			}
+			if (physics::bc_shape_query::ray_cast(p_ray, m_top_left_front->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
+			{
+				m_top_left_front->get_actor(p_ray, p_result);
+			}
+			if (physics::bc_shape_query::ray_cast(p_ray, m_top_right_front->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
+			{
+				m_top_right_front->get_actor(p_ray, p_result);
+			}
+			if (physics::bc_shape_query::ray_cast(p_ray, m_top_right_back->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
+			{
+				m_top_right_back->get_actor(p_ray, p_result);
+			}
+			if (physics::bc_shape_query::ray_cast(p_ray, m_bottom_left_back->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
+			{
+				m_bottom_left_back->get_actor(p_ray, p_result);
+			}
+			if (physics::bc_shape_query::ray_cast(p_ray, m_bottom_left_front->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
+			{
+				m_bottom_left_front->get_actor(p_ray, p_result);
+			}
+			if (physics::bc_shape_query::ray_cast(p_ray, m_bottom_right_front->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
+			{
+				m_bottom_right_front->get_actor(p_ray, p_result);
+			}
+			if (physics::bc_shape_query::ray_cast(p_ray, m_bottom_right_back->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
+			{
+				m_bottom_right_back->get_actor(p_ray, p_result);
+			}
+		}
+
 		void bc_octal_tree_graph_node::get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const
 		{
 			if (!m_actors.empty())

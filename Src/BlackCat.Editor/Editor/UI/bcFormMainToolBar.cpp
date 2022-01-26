@@ -11,8 +11,9 @@ namespace black_cat
 {
 	namespace editor
 	{
-		bc_form_main_tool_bar::bc_form_main_tool_bar(bc_ui_command_service& p_command_service, QToolBar& p_container)
+		bc_form_main_tool_bar::bc_form_main_tool_bar(bc_ui_command_service& p_command_service, const QToolBar& p_container, bc_widget_d3d_output& p_render_widget)
 			: m_command_service(&p_command_service),
+			m_render_widget(p_render_widget),
 			m_editor_mode(true)
 		{
 			auto* l_actions_group = new QActionGroup(this);
@@ -59,6 +60,7 @@ namespace black_cat
 			
 			m_editor_mode = false;
 			m_pause_mode_button->setEnabled(true);
+			m_render_widget.set_editor_mode(false);
 			m_command_service->queue_command(bc_editor_mode_ui_command(false));
 		}
 
@@ -80,6 +82,7 @@ namespace black_cat
 			
 			m_editor_mode = true;
 			m_pause_mode_button->setEnabled(false);
+			m_render_widget.set_editor_mode(true);
 			m_command_service->queue_command(bc_editor_mode_ui_command(true));
 		}
 	}

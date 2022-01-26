@@ -44,7 +44,7 @@ namespace black_cat
 		bool bc_object_insert_ui_command::update(update_context& p_context)
 		{
 			physics::bc_scene_ray_query_buffer l_query_buffer;
-			const bool l_query_result = query_ray_in_scene
+			const bool l_query_result = query_ray_in_px_scene
 			(
 				p_context,
 				m_point_left,

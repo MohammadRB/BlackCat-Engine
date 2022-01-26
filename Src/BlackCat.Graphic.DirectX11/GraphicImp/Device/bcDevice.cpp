@@ -503,7 +503,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_buffer_ref bc_platform_device<g_api_dx11>::create_buffer(const bc_buffer_config& p_config, const bc_subresource_data* p_data)
 		{
-			auto* l_dx_buffer = _initialize_buffer(static_cast<bc_device*>(this), &p_config, p_data);
+			auto* l_dx_buffer = _initialize_buffer(this, &p_config, p_data);
 
 			bc_buffer::platform_pack l_pack;
 			l_pack.m_resource = l_dx_buffer;

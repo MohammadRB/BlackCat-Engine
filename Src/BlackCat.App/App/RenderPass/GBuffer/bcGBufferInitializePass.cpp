@@ -69,14 +69,21 @@ namespace black_cat
 		(
 			game::bc_main_camera_scene_light_shared_query(l_frustum)
 		);
-		m_lights_query = p_context.m_query_manager.queue_query
-		(
-			game::bc_main_camera_scene_light_query(core::bc_enum::mask_or({ game::bc_light_type::direct }))
-		);
-		m_winds_query = p_context.m_query_manager.queue_query
-		(
-			game::bc_scene_wind_query()
-		);
+
+		m_light_wind_query_elapsed_ms += p_context.m_clock.m_elapsed;
+		if(m_light_wind_query_elapsed_ms >= m_light_wind_query_time_ms)
+		{
+			m_light_wind_query_elapsed_ms = 0;
+
+			m_lights_query = p_context.m_query_manager.queue_query
+			(
+				game::bc_main_camera_scene_light_query(core::bc_enum::mask_or({ game::bc_light_type::direct }))
+			);
+			m_winds_query = p_context.m_query_manager.queue_query
+			(
+				game::bc_scene_wind_query()
+			);
+		}
 	}
 
 	void bc_gbuffer_initialize_pass::execute(const game::bc_render_pass_render_context& p_context)
@@ -204,13 +211,21 @@ namespace black_cat
 			.as_tex2d_render_target_view(0);
 
 		m_depth_stencil = p_context.m_device.create_texture2d(l_depth_stencil_config, nullptr);
+		m_depth_stencil->set_debug_name("depth_stencil");
 		m_diffuse_map = p_context.m_device.create_texture2d(l_diffuse_map_config, nullptr);
+		m_diffuse_map->set_debug_name("diffuse_map");
 		m_normal_map = p_context.m_device.create_texture2d(l_normal_map_config, nullptr);
+		m_normal_map->set_debug_name("normal_map");
 		m_specular_map = p_context.m_device.create_texture2d(l_specular_map_config, nullptr);
+		m_specular_map->set_debug_name("specular_map");
 		m_depth_stencil_view = p_context.m_device.create_depth_stencil_view(m_depth_stencil.get(), l_depth_stencil_view_config);
+		m_depth_stencil_view->set_debug_name("depth_stencil_view");
 		m_diffuse_map_view = p_context.m_device.create_render_target_view(m_diffuse_map.get(), l_diffuse_map_view_config);
+		m_diffuse_map_view->set_debug_name("diffuse_map_view");
 		m_normal_map_view = p_context.m_device.create_render_target_view(m_normal_map.get(), l_normal_map_view_config);
+		m_normal_map_view->set_debug_name("normal_map_view");
 		m_specular_map_view = p_context.m_device.create_render_target_view(m_specular_map.get(), l_specular_map_view_config);
+		m_specular_map_view->set_debug_name("specular_map_view");
 
 		share_resource(constant::g_rpass_depth_stencil_texture, m_depth_stencil.get());
 		share_resource(constant::g_rpass_depth_stencil_render_view, m_depth_stencil_view.get());

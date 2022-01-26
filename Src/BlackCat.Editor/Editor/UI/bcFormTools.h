@@ -71,7 +71,7 @@ namespace black_cat
 			void mouseMoved(QMouseEvent* p_event);
 
 		private:
-			void _send_ui_command(QMouseEvent* p_event);
+			void _send_ui_command(const QMouseEvent* p_event);
 
 			game::bc_game_system& m_game_system;
 			bc_ui_command_service& m_ui_command_service;

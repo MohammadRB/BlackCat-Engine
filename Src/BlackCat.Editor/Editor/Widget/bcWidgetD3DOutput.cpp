@@ -12,11 +12,13 @@ namespace black_cat
 	{
 		bc_widget_d3d_output::bc_widget_d3d_output(QWidget* p_parent)
 			: QWidget(p_parent),
+			m_editor_mode(true),
 			m_last_mouse_x(0),
 			m_last_mouse_y(0)
 		{
 			setAttribute(Qt::WA_PaintOnScreen, true);
 			setAttribute(Qt::WA_NativeWindow, true);
+			setMouseTracking(true);
 			setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 			setFocusPolicy(Qt::ClickFocus);
 			
@@ -38,6 +40,11 @@ namespace black_cat
 		graphic::bc_device_output bc_widget_d3d_output::get_device_output() const
 		{
 			return graphic::bc_device_output(graphic::bc_device_output::platform_pack(m_win_id));
+		}
+
+		void bc_widget_d3d_output::set_editor_mode(bool p_value) noexcept
+		{
+			m_editor_mode = p_value;
 		}
 
 		void bc_widget_d3d_output::mousePressEvent(QMouseEvent* p_event)
@@ -92,6 +99,13 @@ namespace black_cat
 
 		void bc_widget_d3d_output::mouseMoveEvent(QMouseEvent* p_event)
 		{
+			// Engine pointing device will raise pointing events regardless of existence of editor render widget which is responsible
+			// for raising mouse and keyboard events, so in game mode we should not send events to prevent double pointing events.
+			if(!m_editor_mode)
+			{
+				return;
+			}
+
 			platform::bc_pointing_device_state l_pointing_state;
 			l_pointing_state.m_x = p_event->globalX();
 			l_pointing_state.m_y = p_event->globalY();

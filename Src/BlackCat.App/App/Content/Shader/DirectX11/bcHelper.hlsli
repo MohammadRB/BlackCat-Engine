@@ -25,16 +25,16 @@ float2 bc_clip_space_to_texcoord(float4 p_input)
 
 float2 bc_to_sprite_texcoord(float2 p_texcoord, uint p_sprite_index, uint p_horizontal_count, uint p_vertical_count)
 {
-	uint2 l_sprite_index = uint2(p_sprite_index % p_vertical_count, p_sprite_index / p_horizontal_count);
-	float2 l_start_texcoord = l_sprite_index * float2(1.0f / p_horizontal_count, 1.0f / p_vertical_count);
-	float2 l_local_texcoord = p_texcoord * float2(1.0f / p_horizontal_count, 1.0f / p_vertical_count);
+	const uint2 l_sprite_index = uint2(p_sprite_index % p_vertical_count, p_sprite_index / p_horizontal_count);
+	const float2 l_start_texcoord = l_sprite_index * float2(1.0f / p_horizontal_count, 1.0f / p_vertical_count);
+	const float2 l_local_texcoord = p_texcoord * float2(1.0f / p_horizontal_count, 1.0f / p_vertical_count);
 
 	return l_start_texcoord + l_local_texcoord;
 }
 
 float bc_convert_to_linear_depth(float p_depth, float p_near_plane, float p_far_plane)
 {
-    float l_depth = (p_near_plane * p_far_plane) / (p_far_plane - p_depth * (p_far_plane - p_near_plane)) / (p_far_plane - p_near_plane);
+	const float l_depth = (p_near_plane * p_far_plane) / (p_far_plane - p_depth * (p_far_plane - p_near_plane)) / (p_far_plane - p_near_plane);
     return l_depth;
 }
 

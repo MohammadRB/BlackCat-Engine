@@ -241,6 +241,18 @@ namespace black_cat
 		}
 
 		bcUINT32 BC_PHYSICSIMP_DLL bc_shape_query::ray_cast(const bc_ray& p_ray,
+			const bc_bound_box& p_box,
+			bc_hit_flag p_flags,
+			bc_ray_hit* p_hits,
+			bcUINT32 p_hits_count)
+		{
+			const bc_shape_box l_box(p_box.get_half_extends());
+			const bc_transform l_box_transform(p_box.get_center());
+
+			return ray_cast(p_ray, l_box, l_box_transform, p_flags, p_hits, p_hits_count);
+		}
+
+		bcUINT32 BC_PHYSICSIMP_DLL bc_shape_query::ray_cast(const bc_ray& p_ray,
 			const bc_shape_geometry& p_shape,
 			const bc_transform& p_shape_pose,
 			bc_hit_flag p_flags,

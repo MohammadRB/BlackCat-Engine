@@ -16,11 +16,12 @@ namespace black_cat
 			bc_object_select_ui_command(bcUINT16 p_screen_width,
 				bcUINT16 p_screen_height,
 				bcUINT16 p_point_left,
-				bcUINT16 p_point_top);
+				bcUINT16 p_point_top,
+				bool p_is_object_hover);
 
 			bc_object_select_ui_command(const bc_object_select_ui_command&);
 
-			virtual ~bc_object_select_ui_command();
+			~bc_object_select_ui_command() override;
 
 			bc_object_select_ui_command& operator=(const bc_object_select_ui_command&);
 
@@ -37,6 +38,7 @@ namespace black_cat
 			bcUINT16 m_screen_height;
 			bcUINT16 m_point_left;
 			bcUINT16 m_point_top;
+			bool m_is_object_hover;
 
 			game::bc_actor m_actor;
 			core::bc_matrix4f m_actor_transformation;

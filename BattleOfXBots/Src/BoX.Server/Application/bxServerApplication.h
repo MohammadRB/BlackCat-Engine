@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Container/bcUnorderedMap.h"
 #include "PlatformImp/Script/bcScriptContext.hpp"
 #include "PlatformImp/Script/bcScriptObject.h"
 #include "Game/System/Script/bcDefaultGameConsole.h"
@@ -11,7 +12,6 @@
 namespace box
 {
 	using namespace black_cat;
-	class bx_server_script;
 
 	class bx_server_application : public bc_render_application, game::bci_network_server_manager_hook, game::bci_network_message_visitor
 	{

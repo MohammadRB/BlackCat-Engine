@@ -49,7 +49,7 @@ namespace black_cat
 		bool bc_ui_terrain_command::update(update_context& p_context)
 		{
 			physics::bc_scene_ray_query_buffer l_buffer;
-			const bool l_px_hit_result = query_ray_in_scene
+			const bool l_px_hit_result = query_ray_in_px_scene
 			(
 				p_context,
 				m_point_left, 

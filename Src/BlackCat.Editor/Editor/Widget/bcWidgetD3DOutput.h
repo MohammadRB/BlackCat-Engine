@@ -22,11 +22,13 @@ namespace black_cat
 		public:
 			explicit bc_widget_d3d_output(QWidget* p_parent = nullptr);
 
-			~bc_widget_d3d_output();
+			~bc_widget_d3d_output() override;
 
 			QPaintEngine* paintEngine() const override;
 
 			graphic::bc_device_output get_device_output() const;
+
+			void set_editor_mode(bool p_value) noexcept;
 
 		signals:
 			void mousePressed(QMouseEvent* p_event);
@@ -56,7 +58,7 @@ namespace black_cat
 
 		private:
 			HWND m_win_id;
-
+			bool m_editor_mode;
 			int m_last_mouse_x;
 			int m_last_mouse_y;
 		};
