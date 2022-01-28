@@ -12,17 +12,19 @@ namespace black_cat
 	{
 #ifdef BC_MEMORY_ENABLE
 
-		// Represent a block of memory
+		/**
+		 * \brief Represent a block of memory
+		 */
 		struct bc_memblock
 		{
 		public:
 			bc_memblock();
 
-			bc_memblock(const bc_memblock& p_other) noexcept;
+			bc_memblock(const bc_memblock& p_other) noexcept = default;
 
-			~bc_memblock();
+			~bc_memblock() = default;
 			
-			bc_memblock& operator =(const bc_memblock& p_other) noexcept;
+			bc_memblock& operator =(const bc_memblock& p_other) noexcept = default;
 
 			bcSIZE size() const noexcept;
 
@@ -107,17 +109,13 @@ namespace black_cat
 		inline bc_memblock::bc_memblock(): m_size(0),
 			m_alignment(BC_MEMORY_MIN_ALIGN),
 			m_offset(0),
+#ifdef BC_MEMORY_DEFRAG
 			m_movable(false),
+#endif
 			m_extra(nullptr),
 			m_allocators_extra(nullptr)
 		{
 		}
-
-		inline bc_memblock::bc_memblock(const bc_memblock& p_other) noexcept = default;
-
-		inline bc_memblock::~bc_memblock() = default;
-		
-		inline bc_memblock& bc_memblock::operator=(const bc_memblock& p_other) noexcept = default;
 
 		inline bcSIZE bc_memblock::size() const noexcept
 		{
@@ -149,6 +147,7 @@ namespace black_cat
 			m_offset = p_val;
 		}
 
+#ifdef BC_MEMORY_DEFRAG
 		inline bool bc_memblock::movable_pointer() const noexcept
 		{
 			return m_movable;
@@ -158,6 +157,7 @@ namespace black_cat
 		{
 			m_movable = p_val;
 		}
+#endif
 
 		inline void* bc_memblock::extra() const noexcept
 		{
@@ -188,7 +188,7 @@ namespace black_cat
 		{
 			if (p_pointer != nullptr)
 			{
-				return reinterpret_cast< bc_memblock* >(reinterpret_cast< bcUINTPTR >(p_pointer) - sizeof(bc_memblock));
+				return reinterpret_cast<bc_memblock*>(reinterpret_cast<bcUINTPTR>(p_pointer) - sizeof(bc_memblock));
 			}
 			else
 			{
@@ -198,7 +198,7 @@ namespace black_cat
 
 		inline bcSIZE bc_memblock::get_required_size(bcSIZE p_data_size, bcSIZE p_alignment) noexcept
 		{
-			const bcSIZE l_extra_alignment = std::max(0, static_cast< bcINT32 >(p_alignment) - BC_MEMORY_MIN_ALIGN);
+			const bcSIZE l_extra_alignment = std::max(0, static_cast<bcINT32>(p_alignment) - BC_MEMORY_MIN_ALIGN);
 
 			return get_aligned_size(sizeof(bc_memblock), BC_MEMORY_MIN_ALIGN) + 
 				l_extra_alignment + 
@@ -207,7 +207,7 @@ namespace black_cat
 
 		inline bcSIZE bc_memblock::get_required_offset_for_data(const void* p_pointer, bcSIZE p_alignment) noexcept
 		{
-			bcSIZE l_mem_block_offset = reinterpret_cast< bcUINTPTR >(p_pointer) + get_aligned_size(sizeof(bc_memblock), BC_MEMORY_MIN_ALIGN);
+			bcSIZE l_mem_block_offset = reinterpret_cast<bcUINTPTR>(p_pointer) + get_aligned_size(sizeof(bc_memblock), BC_MEMORY_MIN_ALIGN);
 			const bcSIZE l_mis_alignment = l_mem_block_offset % p_alignment;
 
 			if (l_mis_alignment > 0)
@@ -215,12 +215,12 @@ namespace black_cat
 				l_mem_block_offset += (p_alignment - l_mis_alignment);
 			}
 
-			return l_mem_block_offset - reinterpret_cast< bcUINTPTR >(p_pointer);
+			return l_mem_block_offset - reinterpret_cast<bcUINTPTR>(p_pointer);
 		}
 
 		inline bcSIZE bc_memblock::get_required_offset_for_mem_block(const void* p_pointer, bcSIZE p_alignment) noexcept
 		{
-			return (get_required_offset_for_data(p_pointer, p_alignment) - sizeof(bc_memblock)) - reinterpret_cast< bcUINTPTR >(p_pointer);
+			return (get_required_offset_for_data(p_pointer, p_alignment) - sizeof(bc_memblock)) - reinterpret_cast<bcUINTPTR>(p_pointer);
 		}
 
 		inline void bc_memblock::initialize_mem_block_before_allocation(bcSIZE p_size, bcSIZE p_alignment, bc_memblock* p_block) noexcept
@@ -246,14 +246,14 @@ namespace black_cat
 #endif
 			p_block->extra(p_extra);
 
-			*p_pointer = reinterpret_cast< void* >((reinterpret_cast< bcUINTPTR >(*p_pointer) + p_block->offset()));
+			*p_pointer = reinterpret_cast<void*>((reinterpret_cast<bcUINTPTR>(*p_pointer) + p_block->offset()));
 
 			bc_memblock::store_mem_block(*p_pointer, p_block);
 		}
 
 		inline void bc_memblock::store_mem_block(const void* p_pointer, const bc_memblock* p_block) noexcept
 		{
-			*(reinterpret_cast< bc_memblock* >((reinterpret_cast< bcUINTPTR >(p_pointer) - sizeof(bc_memblock)))) = *p_block;
+			*reinterpret_cast<bc_memblock*>((reinterpret_cast<bcUINTPTR>(p_pointer) - sizeof(bc_memblock))) = *p_block;
 		}
 
 		inline void bc_memblock::free_mem_block(const void* p_pointer) noexcept

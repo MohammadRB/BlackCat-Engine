@@ -3,42 +3,35 @@
 #pragma once
 
 // C RunTime Header Files
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
 
-//// C++ Standard Library Header Files
-#include <functional>
-#include <numeric>
-#include <array>
-//#include <string>
-//#include <vector>
-//#include <list>
-#include <memory>
-//#include <map>
-#include <cmath>
-#include <sstream>
-#include <fstream>
-#include <istream>
-#include <ostream>
+// C++ Standard Library Header Files
 #include <algorithm>
+#include <array>
 #include <chrono>
+#include <cmath>
+#include <fstream>
+#include <functional>
+#include <istream>
+#include <memory>
+#include <numeric>
+#include <ostream>
+#include <sstream>
 #include <type_traits>
-
-//// MSVC COM Support
-//#include <comip.h>
-//#include <comdef.h>
 
 // == BlackCat Definitions ================================================================================= /
 
-#include "CorePlatform/CorePlatformPCH.h"
-#include "CorePlatform/bcType.h"
 #include "CorePlatform/bcPlatform.h"
+#include "CorePlatform/bcType.h"
+#include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/Utility/bcNoCopy.h"
 
 // == BlackCat Memory Definitions ========================================================================= /
+
 #ifndef BC_MEMORY_ENABLE
 #define BC_MEMORY_ENABLE
 #endif
@@ -46,7 +39,7 @@
 #ifdef BC_MEMORY_ENABLE
 
 #ifndef BC_MEMORY_DEFRAG
-#define BC_MEMORY_DEFRAG
+//#define BC_MEMORY_DEFRAG
 #endif
 
 #ifndef BC_MEMORY_MIN_ALIGN

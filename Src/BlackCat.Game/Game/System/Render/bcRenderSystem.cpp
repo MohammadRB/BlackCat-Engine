@@ -256,7 +256,7 @@ namespace black_cat
 				std::move(p_shader_buffers)
 			);
 
-			bcSIZE l_parameter_register = g_render_pass_state_sampler_min_index;
+			bcINT16 l_parameter_register = g_render_pass_state_sampler_min_index;
 
 			for (auto& l_sampler_parameter : l_render_pass_state.m_shader_samplers)
 			{
@@ -307,7 +307,7 @@ namespace black_cat
 				std::move(p_shader_buffers)
 			);
 
-			bcSIZE l_parameter_register = g_render_state_shader_view_min_index;
+			bcINT16 l_parameter_register = g_render_state_shader_view_min_index;
 
 			for (auto& l_shader_parameter : l_render_state.m_resource_views)
 			{
@@ -341,7 +341,7 @@ namespace black_cat
 				std::move(p_cbuffers)
 			);
 
-			bcSIZE l_parameter_register = g_compute_state_sampler_min_index;
+			bcINT16 l_parameter_register = g_compute_state_sampler_min_index;
 
 			for (auto& l_sampler_parameter : l_compute_state.m_samplers)
 			{
@@ -403,14 +403,14 @@ namespace black_cat
 			const auto l_alloc_type = m_device.set_allocator_alloc_type(core::bc_alloc_type::program);
 			
 			core_platform::bc_basic_hardware_info l_hw_info;
-			core_platform::bc_hardware_info::get_basic_info(&l_hw_info);
+			core_platform::bc_hardware_info::get_basic_info(l_hw_info);
 
 			m_render_pass_states.initialize(20, core::bc_alloc_type::program);
 			m_render_states.initialize(500, core::bc_alloc_type::program);
 			m_compute_states.initialize(20, core::bc_alloc_type::program);
 			
 			m_content_stream = &p_parameter.m_content_stream;
-			m_thread_manager = core::bc_make_unique<bc_render_thread_manager>(core::bc_alloc_type::program , bc_render_thread_manager(*this, std::max(1U, l_hw_info.proccessor_count / 2)));
+			m_thread_manager = core::bc_make_unique<bc_render_thread_manager>(core::bc_alloc_type::program , bc_render_thread_manager(*this, std::max(1U, l_hw_info.m_processor_count / 2)));
 			m_material_manager = core::bc_make_unique<bc_material_manager>(core::bc_alloc_type::program, bc_material_manager(*m_content_stream, *this, p_parameter.m_physics_system));
 			m_render_pass_manager = core::bc_make_unique<bc_render_pass_manager>(core::bc_alloc_type::program, bc_render_pass_manager(m_device));
 			m_animation_manager = core::bc_make_unique<bc_animation_manager>(core::bc_alloc_type::program);

@@ -248,7 +248,7 @@ namespace black_cat
 					}
 				);
 
-				return std::move(l_emitters);
+				return l_emitters;
 			}
 		}
 

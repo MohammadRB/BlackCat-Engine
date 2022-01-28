@@ -24,7 +24,7 @@ namespace black_cat
 
 			bc_scene_particle_emitter_query(bc_scene_particle_emitter_query&&) = default;
 
-			~bc_scene_particle_emitter_query() = default;
+			~bc_scene_particle_emitter_query() override = default;
 
 			bc_scene_particle_emitter_query& operator=(bc_scene_particle_emitter_query&&) = default;
 

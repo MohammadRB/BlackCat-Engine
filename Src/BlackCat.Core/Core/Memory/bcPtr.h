@@ -1,4 +1,4 @@
-//  [8/9/2013 MRB]
+//  [08/09/2013 MRB]
 
 #pragma once
 
@@ -38,7 +38,7 @@ namespace black_cat
 			}	
 		}
 
-#pragma region bcUniquePtr
+#pragma region bc_unique_ptr
 
 		template <typename T, typename TDeleter = bc_default_deleter>
 		class bc_unique_ptr : TDeleter
@@ -328,7 +328,7 @@ namespace black_cat
 
 #pragma endregion
 
-#pragma region bcSharedPtr
+#pragma region bc_shared_ptr
 		
 		template <typename T>
 		class bc_shared_ptr
@@ -822,7 +822,7 @@ namespace black_cat
 
 #pragma endregion
 
-#pragma region Ptr
+#pragma region bc_handle_ptr
 
 		/**
 		 * \brief Movable aware smart pointer.
@@ -1185,7 +1185,7 @@ namespace black_cat
 #else
 
 		template<typename T>
-		using bc_ptr = T*;
+		using bc_ptr = bc_handle_ptr<T>;
 
 #endif
 

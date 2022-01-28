@@ -12,7 +12,7 @@ int WINAPI WinMain(HINSTANCE p_instance, HINSTANCE p_prev_instance, CHAR* p_cmd_
 	std::unique_ptr<game::bc_render_application_basic_output_window> l_output_window;
 	
 	core_platform::bc_basic_hardware_info l_hardware_info;
-	core_platform::bc_hardware_info::get_basic_info(&l_hardware_info);
+	core_platform::bc_hardware_info::get_basic_info(l_hardware_info);
 
 	platform::bc_application_parameter l_app_parameters
 	(
@@ -53,8 +53,8 @@ int WINAPI WinMain(HINSTANCE p_instance, HINSTANCE p_prev_instance, CHAR* p_cmd_
 		static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
 		static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
 		static_cast<bcUINT32>(core::bc_mem_size::mb) * 128,
-		std::max(4U, l_hardware_info.proccessor_count),
-		std::max(4U, l_hardware_info.proccessor_count)
+		std::max(4U, l_hardware_info.m_processor_count),
+		std::max(4U, l_hardware_info.m_processor_count)
 	);
 	game::bc_engine_application_parameter l_engine_app_parameters
 	(

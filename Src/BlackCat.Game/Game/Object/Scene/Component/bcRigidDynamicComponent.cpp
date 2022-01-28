@@ -5,9 +5,10 @@
 #include "Core/bcUtility.h"
 #include "Core/Utility/bcJsonParse.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/Component/bcCheckPointComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
@@ -83,7 +84,9 @@ namespace black_cat
 				m_px_actor_ref->set_mass(l_mass_value);
 				
 				added_to_scene(p_context.m_scene.get_px_scene(), m_px_actor_ref.get());
-				
+
+				bc_mark_actor_for_checkpoint(p_context.m_actor);
+
 				return;
 			}
 

@@ -3,7 +3,7 @@
 #include "Game/GamePCH.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/bcSceneCheckPoint.h"
-#include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
+#include "Game/Object/Scene/Component/bcCheckPointComponent.h"
 
 namespace black_cat
 {
@@ -25,10 +25,10 @@ namespace black_cat
 			core::bc_vector_frame<bc_actor> l_result;
 			l_result.reserve(256);
 			
-			for(bc_actor& l_actor : m_scene->get_scene_graph())
+			for(const auto& l_actor : m_scene->get_scene_graph())
 			{
-				auto* l_rigid_body_component = l_actor.get_component<bc_rigid_body_component>();
-				if(l_rigid_body_component && l_rigid_body_component->get_body_type() == physics::bc_actor_type::rigid_dynamic)
+				const auto* l_component = l_actor.get_component<bc_checkpoint_component>();
+				if(l_component)
 				{
 					l_result.push_back(l_actor);
 				}
@@ -37,14 +37,13 @@ namespace black_cat
 			return l_result;
 		}
 
-		void bc_scene_check_point::remove_dynamic_actors()
+		void bc_scene_check_point::remove_dynamic_actors() const
 		{
-			for (bc_actor& l_actor : m_scene->get_scene_graph())
+			for (auto& l_actor : m_scene->get_scene_graph())
 			{
-				auto* l_rigid_body_component = l_actor.get_component<bc_rigid_body_component>();
-				if (l_rigid_body_component && l_rigid_body_component->get_body_type() == physics::bc_actor_type::rigid_dynamic)
+				const auto* l_component = l_actor.get_component<bc_checkpoint_component>();
+				if (l_component)
 				{
-					// TODO What if actor is controlled by another actor and will be removed by that actor?
 					m_scene->remove_actor(l_actor);
 				}
 			}

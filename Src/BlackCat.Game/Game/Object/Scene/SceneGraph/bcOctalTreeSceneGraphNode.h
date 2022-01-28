@@ -69,7 +69,7 @@ namespace black_cat
 			using graph_node_entry_list = _bc_octal_tree_graph_node_entry::graph_node_entry_list;
 
 		public:
-			bc_octal_tree_graph_node(physics::bc_bound_box p_box, bcSIZE p_max_actors_count, bcSIZE p_min_size);
+			bc_octal_tree_graph_node(const physics::bc_bound_box& p_box, bcSIZE p_max_actors_count, bcSIZE p_min_size);
 
 			bc_octal_tree_graph_node(bc_octal_tree_graph_node& p_parent, bc_octal_tree_node_position p_my_position);
 

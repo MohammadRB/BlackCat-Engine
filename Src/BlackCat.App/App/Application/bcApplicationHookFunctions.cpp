@@ -56,6 +56,7 @@
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "Game/Object/Scene/Component/bcIconComponent.h"
+#include "Game/Object/Scene/Component/bcCheckPointComponent.h"
 #include "Game/Object/Animation/bcSkinnedAnimation.h"
 #include "App/Application/bcApplicationHookFuncations.h"
 #include "App/Loader/bcTextureLoader.h"
@@ -203,7 +204,8 @@ namespace black_cat
 			game::bc_component_register<game::bc_weapon_component>("weapon"),
 			game::bc_component_register<game::bc_network_component>("network"),
 			game::bc_component_register<game::bc_human_ragdoll_component>("human_ragdoll"),
-			game::bc_component_register<game::bc_icon_component>("icon")
+			game::bc_component_register<game::bc_icon_component>("icon"),
+			game::bc_component_register<game::bc_checkpoint_component>("checkpoint")
 		);
 		game::bc_register_abstract_component_types
 		(

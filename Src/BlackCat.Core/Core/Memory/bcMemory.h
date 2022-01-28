@@ -69,7 +69,7 @@ namespace black_cat
 
 			virtual void unregister_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept = 0;
 
-			virtual void defragment(bcINT32 p_num_defrag, defrag_callback p_defrag_callback) noexcept = 0;
+			virtual void defrag(bcINT32 p_num_defrag, defrag_callback p_defrag_callback) noexcept = 0;
 #endif
 		};
 

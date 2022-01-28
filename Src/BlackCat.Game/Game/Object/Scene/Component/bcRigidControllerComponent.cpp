@@ -7,6 +7,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcRigidControllerComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
+#include "Game/Object/Scene/Component/bcCheckPointComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
@@ -76,9 +77,13 @@ namespace black_cat
 				const auto l_cmass_value = p_context.m_parameters.get_value_vector3f(constant::g_param_rigid_cmass);
 				m_px_body->update_mass_inertia(l_mass_value, l_cmass_value.get());
 				m_px_body->set_mass(l_mass_value);
-				
+
+				bc_mark_actor_for_checkpoint(p_context.m_actor);
+
 				return;
 			}
+
+			throw bc_invalid_operation_exception("Rigid controller component needs mesh component.");
 		}
 
 		void bc_rigid_controller_component::reset_controller(physics::bc_ccontroller_ref p_controller)

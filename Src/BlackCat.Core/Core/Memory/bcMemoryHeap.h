@@ -21,7 +21,7 @@ namespace black_cat
 		struct _bc_heap_memblock
 		{
 		public:
-			using pointer_refs = std::array< void**, 4 >;
+			using pointer_refs = std::array<void**, 4>;
 
 			_bc_heap_memblock(bcSIZE p_size, bcSIZE p_prev_size, bool p_free);
 
@@ -83,7 +83,7 @@ namespace black_cat
 
 			bc_memory_heap(this_type&& p_other) noexcept;
 
-			~bc_memory_heap() noexcept;
+			~bc_memory_heap() noexcept override;
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
@@ -104,7 +104,7 @@ namespace black_cat
 
 			void unregister_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept override;
 
-			void defragment(bcINT32 p_num_defrag, defrag_callback p_defrag_callback) noexcept override;
+			void defrag(bcINT32 p_num_defrag, defrag_callback p_defrag_callback) noexcept override;
 #endif
 
 		private:
@@ -158,10 +158,12 @@ namespace black_cat
 		inline void _bc_heap_memblock::free(bool p_val) noexcept
 		{
 			m_free = p_val;
+#ifdef BC_MEMORY_DEFRAG
 			if (p_val)
 			{
 				m_pointers = { nullptr, nullptr, nullptr, nullptr };
 			}
+#endif
 		}
 
 #ifdef BC_MEMORY_DEFRAG

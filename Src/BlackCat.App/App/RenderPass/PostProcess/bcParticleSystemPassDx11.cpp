@@ -328,9 +328,11 @@ namespace black_cat
 		
 		if(!m_emitters_query_result.empty())
 		{
+			const auto l_emitters_size_bytes = sizeof(game::bc_particle_emitter_state) * m_emitters_query_result.size();
 			const game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, m_dead_particles_initial_count, -1, -1, -1, -1, -1, -1 };
+
 			p_context.m_render_thread.bind_compute_state(*m_emission_compute, &l_initial_count);
-			p_context.m_render_thread.update_subresource(*m_emitters_buffer, 0, m_emitters_query_result.data(), m_emitters_query_result.size(), 1);
+			p_context.m_render_thread.update_subresource(*m_emitters_buffer, 0, m_emitters_query_result.data(), l_emitters_size_bytes, 0);
 			p_context.m_render_thread.dispatch(m_emitters_query_result.size(), 1, 1);
 			p_context.m_render_thread.unbind_compute_state(*m_emission_compute);
 		}
@@ -377,7 +379,7 @@ namespace black_cat
 			l_lights.m_lights[l_cbuffer_ite + 1].w = l_light.get_particle_intensity();
 		}
 
-		p_context.m_render_thread.update_subresource(m_lights_cbuffer.get(), 0, &l_lights,1, 1);
+		p_context.m_render_thread.update_subresource(m_lights_cbuffer.get(), 0, &l_lights, 0, 0);
 		
 		p_context.m_render_thread.bind_render_pass_state(*m_render_pass_state);
 		p_context.m_render_thread.get_pipeline().bind_ia_primitive_topology(graphic::bc_primitive::pointlist);
@@ -406,7 +408,7 @@ namespace black_cat
 			l_cbuffer.m_sort_array_size_mask = l_sort_array_size;
 			l_cbuffer.m_matrix_width = s_sort_transpose_matrix_width;
 			l_cbuffer.m_matrix_height = s_sort_transpose_matrix_height;
-			p_param.m_render_thread.update_subresource(m_sort_cbuffer.get(), 0, &l_cbuffer, 1, 1);
+			p_param.m_render_thread.update_subresource(m_sort_cbuffer.get(), 0, &l_cbuffer, 0, 0);
 
 			p_param.m_render_thread.dispatch(s_particles_count / s_sort_shader_group_size, 1, 1);
 		}
@@ -423,7 +425,7 @@ namespace black_cat
 			l_cbuffer.m_sort_array_size_mask = (l_bitonic_array & ~s_particles_count) / s_sort_shader_group_size;
 			l_cbuffer.m_matrix_width = s_sort_transpose_matrix_width;
 			l_cbuffer.m_matrix_height = s_sort_transpose_matrix_height;
-			p_param.m_render_thread.update_subresource(m_sort_cbuffer.get(), 0, &l_cbuffer, 1, 1);
+			p_param.m_render_thread.update_subresource(m_sort_cbuffer.get(), 0, &l_cbuffer, 0, 0);
 
 			p_param.m_render_thread.bind_compute_state(*m_sort_transpose1_compute);
 			p_param.m_render_thread.dispatch(s_sort_transpose_matrix_width / s_sort_transpose_shader_group_size, s_sort_transpose_matrix_height / s_sort_transpose_shader_group_size, 1);
@@ -438,7 +440,7 @@ namespace black_cat
 			l_cbuffer.m_sort_array_size_mask = l_bitonic_array;
 			l_cbuffer.m_matrix_width = s_sort_transpose_matrix_height;
 			l_cbuffer.m_matrix_height = s_sort_transpose_matrix_width;
-			p_param.m_render_thread.update_subresource(m_sort_cbuffer.get(), 0, &l_cbuffer, 1, 1);
+			p_param.m_render_thread.update_subresource(m_sort_cbuffer.get(), 0, &l_cbuffer, 0, 0);
 
 			p_param.m_render_thread.bind_compute_state(*m_sort_transpose2_compute);
 			p_param.m_render_thread.dispatch(s_sort_transpose_matrix_height / s_sort_transpose_shader_group_size, s_sort_transpose_matrix_width / s_sort_transpose_shader_group_size, 1);

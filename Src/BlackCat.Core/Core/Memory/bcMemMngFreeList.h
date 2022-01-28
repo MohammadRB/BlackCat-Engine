@@ -30,12 +30,12 @@ namespace black_cat
 
 			struct _freelist_item
 			{
-				_freelist_item* m_next_free; // TODO place free pointers together /
+				_freelist_item* m_next_free; // TODO place free pointers together
 				T m_data;
 			};
 
 		public:
-			bc_memmng_freelist() 
+			bc_memmng_freelist() noexcept
 				: m_alloc_size(0),
 				m_first_chunk(nullptr)
 			{
@@ -43,7 +43,7 @@ namespace black_cat
 				m_count.store(0U);
 			}
 
-			bc_memmng_freelist(bc_memmng_freelist&& p_other)
+			bc_memmng_freelist(bc_memmng_freelist&& p_other) noexcept
 			{
 				_move(std::move(p_other));
 			}
@@ -53,26 +53,26 @@ namespace black_cat
 				_cleanup();
 			}
 
-			bc_memmng_freelist& operator =(bc_memmng_freelist&& p_other)
+			bc_memmng_freelist& operator =(bc_memmng_freelist&& p_other) noexcept
 			{
 				_move(std::move(p_other));
 
 				return *this;
 			}
 
-			// Roundup allocation size to multiple size of platform page size and reserve memory /
+			// Roundup allocation size to multiple size of platform page size and reserve memory
 			void initialize(bcSIZE p_alloc_size = 4096)
 			{
 				core_platform::bc_basic_hardware_info l_hardware_info;
-				core_platform::bc_hardware_info::get_basic_info(&l_hardware_info);
+				core_platform::bc_hardware_info::get_basic_info(l_hardware_info);
 
 				// Round up allocation size to multiple of platform page size, because we use paging allocation /
-				m_alloc_size = _roundup_p2(p_alloc_size, l_hardware_info.page_size);
+				m_alloc_size = _roundup_p2(p_alloc_size, l_hardware_info.m_page_size);
 				
 				_alloc_new_block();
 			}
 
-			// Call object construction after this function /
+			// Call object construction after this function
 			T* alloc()
 			{
 				_freelist_item* l_local_free = m_free.load(core_platform::bc_memory_order::seqcst);
@@ -121,7 +121,7 @@ namespace black_cat
 				return alloc();
 			}
 
-			// Call object destructor before this function /
+			// Call object destructor before this function
 			void free(T* p_ptr)
 			{
 				_freelist_item* l_node = reinterpret_cast<_freelist_item*>(
@@ -162,7 +162,7 @@ namespace black_cat
 			}
 
 			// TODO can be removed
-			bcUINT32 count()
+			bcUINT32 count() const noexcept
 			{
 				return m_count.load(core_platform::bc_memory_order::seqcst);
 			}
@@ -175,8 +175,6 @@ namespace black_cat
 				initialize(m_alloc_size);
 			}
 
-		protected:
-			
 		private:
 			void _move(bc_memmng_freelist&& p_other)
 			{

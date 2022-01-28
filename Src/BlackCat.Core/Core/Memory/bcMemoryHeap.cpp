@@ -374,7 +374,7 @@ namespace black_cat
 			l_mem_block->unregister_pointer(p_pointer);
 		}
 
-		void bc_memory_heap::defragment(bcINT32 p_num_defrag, defrag_callback p_defrag_callback) noexcept
+		void bc_memory_heap::defrag(bcINT32 p_num_defrag, defrag_callback p_defrag_callback) noexcept
 		{
 			_bc_heap_memblock* l_last_used_block;
 			_bc_heap_memblock* l_first_used_block;

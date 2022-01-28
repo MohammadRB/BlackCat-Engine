@@ -38,7 +38,7 @@ namespace black_cat
 		void bc_editor_render_app_thread::run()
 		{
 			core_platform::bc_basic_hardware_info l_hardware_info;
-			core_platform::bc_hardware_info::get_basic_info(&l_hardware_info);
+			core_platform::bc_hardware_info::get_basic_info(l_hardware_info);
 
 			platform::bc_application_parameter l_app_parameters
 			(
@@ -72,8 +72,8 @@ namespace black_cat
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 128,
-				std::max(4U, l_hardware_info.proccessor_count),
-				std::max(4U, l_hardware_info.proccessor_count)
+				std::max(4U, l_hardware_info.m_processor_count),
+				std::max(4U, l_hardware_info.m_processor_count)
 			);
 			game::bc_engine_application_parameter l_engine_app_parameters
 			(

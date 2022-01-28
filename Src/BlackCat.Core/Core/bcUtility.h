@@ -24,14 +24,14 @@ namespace black_cat
 		return p_number && !(p_number & (p_number - 1));
 	}
 
-	inline bcFLOAT bc_noise(bcFLOAT p_frequence, bcFLOAT p_intensity)
+	inline bcFLOAT bc_noise(bcFLOAT p_frequency, bcFLOAT p_intensity)
 	{
-		return std::cos(p_frequence * core::g_pi) *
-				std::cos(p_frequence * core::g_pi) *
-				std::cos(p_frequence * 3 * core::g_pi) *
-				std::cos(p_frequence * 5 * core::g_pi) *
+		return std::cos(p_frequency * core::g_pi) *
+				std::cos(p_frequency * core::g_pi) *
+				std::cos(p_frequency * 3 * core::g_pi) *
+				std::cos(p_frequency * 5 * core::g_pi) *
 				0.5f +
-				std::sin(p_frequence * 25 * core::g_pi) *
+				std::sin(p_frequency * 25 * core::g_pi) *
 				p_intensity;
 	}
 

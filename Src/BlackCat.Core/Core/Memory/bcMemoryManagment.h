@@ -1,4 +1,4 @@
-//  [8/30/2013 MRB]
+// [08/30/2013 MRB]
 
 #pragma once
 
@@ -37,8 +37,9 @@ namespace black_cat
 		
 #ifdef BC_MEMORY_ENABLE
 
-		template< typename TMemory >
-		class bc_memory_extender; // used forward declaration duo to dependencies between bcPtr and bcDelegate
+		// used forward declaration duo to dependencies between bcPtr and bcDelegate
+		template<typename TMemory>
+		class bc_memory_extender; 
 
 		class BC_CORE_DLL bc_memory_manager : core_platform::bc_no_copy
 		{

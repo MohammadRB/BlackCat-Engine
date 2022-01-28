@@ -681,6 +681,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraSceneIconQuery.h">
       <Filter>Game\Query</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcCheckPointComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -1017,6 +1020,9 @@
       <Filter>Game\System\Render\Pass</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcIconComponent.cpp">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcCheckPointComponent.cpp">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClCompile>
   </ItemGroup>

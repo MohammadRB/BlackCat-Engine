@@ -34,7 +34,7 @@ namespace black_cat
 
 			bc_platform_device_compute_state(const bc_platform_device_compute_state&) noexcept;
 
-			~bc_platform_device_compute_state();
+			~bc_platform_device_compute_state() override;
 
 			bc_platform_device_compute_state& operator=(const bc_platform_device_compute_state&) noexcept;
 

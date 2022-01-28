@@ -52,7 +52,7 @@ namespace black_cat
 
 			template<typename ...TArgs>
 			static void construct(allocator_type& p_allocator, value_type* p_pointer, TArgs&&... p_args)
-				noexcept(std::is_nothrow_constructible<value_type, TArgs...>::value)
+				noexcept(std::is_nothrow_constructible_v<value_type, TArgs...>)
 			{
 				p_allocator.construct(p_pointer, std::forward<TArgs>(p_args)...);
 			}
@@ -120,7 +120,7 @@ namespace black_cat
 			using propagate_on_container_copy_assignment = std::false_type;
 			using propagate_on_container_move_assignment = std::false_type;
 			using propagate_on_container_swap = std::false_type;
-			using is_movable_type = typename std::conditional<TAllocType == bc_alloc_type::unknown_movable, std::true_type, std::false_type>::type;
+			using is_movable_type = std::conditional_t<TAllocType == bc_alloc_type::unknown_movable, std::true_type, std::false_type>;
 
 			template<typename TOther>
 			struct rebind
@@ -377,7 +377,7 @@ namespace black_cat
 				return static_cast<pointer>(BC_ALIGNED_ALLOC_THROW(sizeof(value_type)* p_count, m_alignment, m_alloc_type));
 			}
 
-			void deallocate(pointer p_pointer, size_type n = 0) noexcept
+			void deallocate(pointer p_pointer, size_type p_n = 0) noexcept
 			{
 				if (m_alignment <= BC_MEMORY_MIN_ALIGN)
 				{

@@ -1,4 +1,4 @@
-//  [9/2/2013 MRB]
+// [09/02/2013 MRB]
 
 #include "Core/CorePCH.h"
 #include "Core/Memory/bcMemoryManagment.h"
@@ -13,7 +13,7 @@ namespace black_cat
 #ifdef BC_MEMORY_LEAK_DETECTION
 		struct bc_mem_block_leak_information
 		{
-			static const bcUINT32 s_filename_length = 20;
+			static constexpr bcUINT32 s_filename_length = 20;
 
 			void* m_pointer;
 			bc_alloc_type m_type;
@@ -125,8 +125,10 @@ namespace black_cat
 				m_per_frame_stack = new bc_memory_stack();
 				m_per_frame_stack->initialize(p_max_num_thread, p_per_frm_heap_size, "PerFrameStack");
 
+#ifdef BC_MEMORY_DEFRAG
 				m_super_heap = new bc_memory_heap();
 				m_super_heap->initialize(p_super_heap_size, "SuperHeap");
+#endif
 
 				m_crt_allocator = new bc_memory_crt();
 				m_crt_allocator->initialize("CrtAllocator");
@@ -217,11 +219,13 @@ namespace black_cat
 				break;
 			}
 
+#ifdef BC_MEMORY_DEFRAG
 			if (!l_result && p_alloc_type == bc_alloc_type::unknown_movable)
 			{
 				l_result = m_super_heap->alloc(&l_block);
 				l_allocator = m_super_heap;
 			}
+#endif
 
 			if (!l_result)
 			{
@@ -345,13 +349,15 @@ namespace black_cat
 				l_result = m_per_program_stack->alloc(&l_block);
 				l_allocator = m_per_program_stack;
 				break;
-			};
+			}
 
+#ifdef BC_MEMORY_DEFRAG
 			if (!l_result && p_alloc_type == bc_alloc_type::unknown_movable)
 			{
 				l_result = m_super_heap->alloc(&l_block);
 				l_allocator = m_super_heap;
 			}
+#endif
 
 			if (!l_result)
 			{
@@ -455,7 +461,7 @@ namespace black_cat
 				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
 #endif
 
-				m_super_heap->defragment
+				m_super_heap->defrag
 				(
 					l_num_fragment,
 					[this](void* p_old, void* p_new)
@@ -486,7 +492,9 @@ namespace black_cat
 
 			l_total_size += m_per_program_stack->tracer().total_size();
 			l_total_size += m_per_frame_stack->tracer().total_size();
+#ifdef BC_MEMORY_DEFRAG
 			l_total_size += m_super_heap->tracer().total_size();
+#endif
 
 			return l_total_size;
 #endif
@@ -505,7 +513,9 @@ namespace black_cat
 
 			l_used_size += m_per_program_stack->tracer().used_size();
 			l_used_size += m_per_frame_stack->tracer().used_size();
+#ifdef BC_MEMORY_DEFRAG
 			l_used_size += m_super_heap->tracer().used_size();
+#endif
 
 			return l_used_size;
 #endif
@@ -524,7 +534,9 @@ namespace black_cat
 
 			l_wasted_size += m_per_program_stack->tracer().overhead_size();
 			l_wasted_size += m_per_frame_stack->tracer().overhead_size();
+#ifdef BC_MEMORY_DEFRAG
 			l_wasted_size += m_super_heap->tracer().overhead_size();
+#endif
 
 			return l_wasted_size;
 #endif
@@ -543,7 +555,9 @@ namespace black_cat
 
 			l_max_used_size += m_per_program_stack->tracer().max_used_size();
 			l_max_used_size += m_per_frame_stack->tracer().max_used_size();
+#ifdef BC_MEMORY_DEFRAG
 			l_max_used_size += m_super_heap->tracer().max_used_size();
+#endif
 
 			return l_max_used_size;
 #endif

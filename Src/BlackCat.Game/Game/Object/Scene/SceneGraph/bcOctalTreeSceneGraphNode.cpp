@@ -14,7 +14,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_octal_tree_graph_node::bc_octal_tree_graph_node(physics::bc_bound_box p_box,
+		bc_octal_tree_graph_node::bc_octal_tree_graph_node(const physics::bc_bound_box& p_box,
 			bcSIZE p_max_actors_count,
 			bcSIZE p_min_size)
 			: m_max_actors_count(p_max_actors_count),
@@ -37,9 +37,9 @@ namespace black_cat
 			m_actors(graph_node_entry_allocator(*m_actors_pool))
 		{
 			const auto l_half_extends = p_box.get_half_extends();
-			bool l_is_power_of_two = bc_is_power_of_two(l_half_extends.x) &&
-					bc_is_power_of_two(l_half_extends.y) &&
-					bc_is_power_of_two(l_half_extends.z);
+			bool l_is_power_of_two = bc_is_power_of_two(static_cast<bcUINT>(l_half_extends.x)) &&
+					bc_is_power_of_two(static_cast<bcUINT>(l_half_extends.y)) &&
+					bc_is_power_of_two(static_cast<bcUINT>(l_half_extends.z));
 			if (!l_is_power_of_two)
 			{
 				throw bc_invalid_argument_exception("size of scene bound box must be power of two");
@@ -96,7 +96,7 @@ namespace black_cat
 		{
 			core::bc_vector3f l_bound_box_center = p_parent.m_bound_box.get_center();
 			const core::bc_vector3f l_half_extends = p_parent.m_bound_box.get_half_extends() / 2;
-			const auto l_z_sign = graphic::bc_render_api_info::use_left_handed() ? +1 : -1;
+			constexpr auto l_z_sign = graphic::bc_render_api_info::use_left_handed() ? +1 : -1;
 
 			switch (p_my_position)
 			{

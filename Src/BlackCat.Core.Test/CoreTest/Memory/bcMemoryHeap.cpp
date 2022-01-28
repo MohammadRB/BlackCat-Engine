@@ -16,18 +16,17 @@ namespace black_cat
 
 			l_memory_heap.initialize(10000000, "");
 
-			std::vector<std::pair< void*, core::bc_memblock>> l_memblocks;
+			std::vector<std::pair<void*, core::bc_memblock>> l_memblocks;
 
-			for (auto i = 0U; i < 5; ++i)
+			for (auto l_ite = 0U; l_ite < 5; ++l_ite)
 			{
 				core::bc_memblock l_block;
 				l_block.size(4);
 
 				void* l_result = l_memory_heap.alloc(&l_block);
-				//void* l_result = new bcINT32;
 				auto* l_pointer = static_cast<bcINT32*>(l_result);
 
-				*l_pointer = i;
+				*l_pointer = l_ite;
 
 				l_memblocks.push_back(std::make_pair(l_result, l_block));
 			}
@@ -35,12 +34,11 @@ namespace black_cat
 			for (auto i = 4; i >= 0; --i)
 			{
 				auto& l_block = l_memblocks[i];
-				auto* l_pointer = static_cast<bcINT32*>(l_block.first);
+				const auto* l_pointer = static_cast<bcINT32*>(l_block.first);
 
 				EXPECT_TRUE(*l_pointer == i);
 
 				l_memory_heap.free(l_block.first, &l_block.second);
-				//delete l_pointer;
 			}
 
 			EXPECT_TRUE(l_memory_heap.fragmentation_count() == 0);
@@ -58,7 +56,7 @@ namespace black_cat
 
 			std::vector<std::pair<void*, core::bc_memblock>> l_memblocks;
 
-			for (auto i = 0; i < 5; ++i)
+			for (auto l_ite = 0; l_ite < 5; ++l_ite)
 			{
 				core::bc_memblock l_block;
 				l_block.size(10);
@@ -66,17 +64,17 @@ namespace black_cat
 				void* l_result = l_memory_heap.alloc(&l_block);
 				auto* l_pointer = static_cast<bcINT32*>(l_result);
 
-				*l_pointer = i;
+				*l_pointer = l_ite;
 
 				l_memblocks.push_back(std::make_pair(l_result, l_block));
 			}
 
-			auto l_pop_array = { 3, 4, 1, 0, 2 };
+			const auto l_pop_array = { 3, 4, 1, 0, 2 };
 
-			for (auto l_pop_index : l_pop_array)
+			for (const auto l_pop_index : l_pop_array)
 			{
 				auto& l_block = l_memblocks[l_pop_index];
-				auto* l_pointer = static_cast<bcINT32*>(l_block.first);
+				const auto* l_pointer = static_cast<bcINT32*>(l_block.first);
 
 				EXPECT_TRUE(*l_pointer == l_pop_index);
 
@@ -99,7 +97,7 @@ namespace black_cat
 			l_memory_heap.initialize(10000000, "");
 			l_start_flag.store(0);
 
-			for (auto ti = 0; ti < 25; ++ti)
+			for (auto l_thread_ite = 0; l_thread_ite < 25; ++l_thread_ite)
 			{
 				l_threads.push_back(std::thread([&]()
 				{
@@ -114,7 +112,6 @@ namespace black_cat
 						core::bc_memblock l_block;
 						l_block.size(4);
 
-						//void* l_result = new bcINT32;
 						void* l_result = l_memory_heap.alloc(&l_block);
 						auto* l_pointer = static_cast<bcINT32*>(l_result);
 
@@ -126,11 +123,10 @@ namespace black_cat
 					for (auto i = 999; i >= 0; --i)
 					{
 						auto& l_block = l_memblocks[i];
-						auto* l_pointer = static_cast<bcINT32*>(l_block.first);
+						const auto* l_pointer = static_cast<bcINT32*>(l_block.first);
 
 						EXPECT_TRUE(*l_pointer == i);
 
-						//delete l_block.first;
 						l_memory_heap.free(l_block.first, &l_block.second);
 					}
 
@@ -156,7 +152,8 @@ namespace black_cat
 
 		TEST(MemoryHeap, DefragmentTest)
 		{
-			const bcSIZE l_alloc_count = 10;
+#ifdef BC_MEMORY_DEFRAG
+			constexpr bcSIZE l_alloc_count = 10;
 
 			core::bc_memory_heap l_memory_heap;
 
@@ -165,7 +162,7 @@ namespace black_cat
 			std::vector<std::pair<void*, core::bc_memblock>> l_memblocks;
 			l_memblocks.reserve(l_alloc_count);
 
-			for (auto i = 0; i < l_alloc_count; ++i)
+			for (auto l_ite = 0; l_ite < l_alloc_count; ++l_ite)
 			{
 				core::bc_memblock l_block;
 				core::bc_memblock::initialize_mem_block_before_allocation(4, BC_MEMORY_MIN_ALIGN, &l_block);
@@ -175,7 +172,7 @@ namespace black_cat
 				core::bc_memblock::initialize_mem_block_after_allocation(&l_result, true, nullptr, &l_block);
 
 				auto* l_pointer = static_cast<bcINT32*>(l_result);
-				*l_pointer = i;
+				*l_pointer = l_ite;
 
 				l_memblocks.push_back(std::make_pair(l_result, l_block));
 
@@ -184,7 +181,7 @@ namespace black_cat
 
 			auto l_pop_array = { 2, 3, 5, 9 };
 
-			for (auto l_pop_index : l_pop_array)
+			for (const auto l_pop_index : l_pop_array)
 			{
 				auto& l_entry = l_memblocks[l_pop_index];
 				auto* l_pointer = l_entry.first;
@@ -196,7 +193,7 @@ namespace black_cat
 				l_memory_heap.free(l_actual_pointer, l_memblock);
 			}
 
-			l_memory_heap.defragment(10, core::bc_memory_heap::defrag_callback());
+			l_memory_heap.defrag(10, core::bc_memory_heap::defrag_callback());
 
 			for (auto l_pop_index = 0; l_pop_index < l_alloc_count; ++l_pop_index)
 			{
@@ -220,12 +217,14 @@ namespace black_cat
 			EXPECT_TRUE(l_memory_heap.tracer().used_size() == 0);
 
 			l_memory_heap.destroy();
+#endif
 		}
 
 		TEST(MemoryHeap, RandomDefragmentTest)
 		{
-			const bcSIZE l_alloc_count = 1000;
-			const bcSIZE l_free_count = 100;
+#ifdef BC_MEMORY_DEFRAG
+			constexpr bcSIZE l_alloc_count = 1000;
+			constexpr bcSIZE l_free_count = 100;
 
 			core::bc_memory_heap l_memory_heap;
 			std::vector< std::pair<void*, core::bc_memblock>> l_memblocks;
@@ -235,7 +234,7 @@ namespace black_cat
 			l_memblocks.reserve(l_alloc_count);
 			l_free_indices.reserve(l_free_count);
 
-			for (auto i = 0; i < l_alloc_count; ++i)
+			for (auto l_ite = 0; l_ite < l_alloc_count; ++l_ite)
 			{
 				core::bc_memblock l_block;
 				core::bc_memblock::initialize_mem_block_before_allocation(4, BC_MEMORY_MIN_ALIGN, &l_block);
@@ -245,7 +244,7 @@ namespace black_cat
 				core::bc_memblock::initialize_mem_block_after_allocation(&l_result, true, nullptr, &l_block);
 
 				auto* l_pointer = static_cast<bcINT32*>(l_result);
-				*l_pointer = i;
+				*l_pointer = l_ite;
 
 				l_memblocks.push_back(std::make_pair(l_result, l_block));
 
@@ -279,7 +278,7 @@ namespace black_cat
 				l_memory_heap.free(l_actual_pointer, l_memblock);
 			}
 
-			l_memory_heap.defragment(l_memory_heap.fragmentation_count(), core::bci_memory_movable::defrag_callback());
+			l_memory_heap.defrag(l_memory_heap.fragmentation_count(), core::bci_memory_movable::defrag_callback());
 
 			for (auto l_pop_index = 0; l_pop_index < l_alloc_count; ++l_pop_index)
 			{
@@ -303,6 +302,7 @@ namespace black_cat
 			EXPECT_TRUE(l_memory_heap.tracer().used_size() == 0);
 
 			l_memory_heap.destroy();
+#endif
 		}
 	}
 }

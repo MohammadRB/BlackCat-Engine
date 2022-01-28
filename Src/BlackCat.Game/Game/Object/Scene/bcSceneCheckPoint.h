@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
-#include "Core/Math/bcMatrix4f.h"
 #include "Core/Content/bcContent.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/bcExport.h"
@@ -29,7 +28,7 @@ namespace black_cat
 
 			core::bc_vector_frame<bc_actor> export_dynamic_actors() const;
 
-			void remove_dynamic_actors();
+			void remove_dynamic_actors() const;
 
 		private:
 			bc_scene* m_scene;
