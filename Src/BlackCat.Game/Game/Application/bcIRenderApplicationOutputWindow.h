@@ -46,7 +46,7 @@ namespace black_cat
 
 			bc_render_application_basic_output_window(bc_render_application_basic_output_window&&) = default;
 
-			~bc_render_application_basic_output_window() = default;
+			~bc_render_application_basic_output_window() override = default;
 
 			bc_render_application_basic_output_window& operator=(bc_render_application_basic_output_window&&) = default;
 

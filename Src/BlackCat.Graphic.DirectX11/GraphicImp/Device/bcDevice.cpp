@@ -33,9 +33,10 @@
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
-#include "GraphicImp/Device/bcDeviceTextRenderer.h"
 #include "GraphicImp/Device/bcDeviceOcclusionQuery.h"
 #include "GraphicImp/Device/bcDeviceSwapBuffer.h"
+#include "GraphicImp/Font/bcSpriteBatch.h"
+#include "GraphicImp/Font/bcSpriteFont.h"
 #include "3rdParty/DirectXTK-master/Include/DDSTextureLoader.h"
 #include "3rdParty/DirectXTK-master/Include/WICTextureLoader.h"
 #include "3rdParty/DirectXTK-master/Include/ScreenGrab.h"
@@ -1207,16 +1208,22 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_device_text_renderer bc_platform_device<g_api_dx11>::create_text_renderer()
+		bc_sprite_batch bc_platform_device<g_api_dx11>::create_sprite_batch()
 		{
-			// TODO use parameter
-			const auto l_sprite_path = core::bc_path::get_absolute_path(L"Content\\Data\\DX11.spritefont");
-			
-			bc_device_text_renderer::platform_pack l_pack;
-			l_pack.m_sprite_font = core::bc_make_unique<DirectX::SpriteFont>(DirectX::SpriteFont(m_pack.m_device.Get(), l_sprite_path.c_str()));
+			bc_sprite_batch::platform_pack l_pack;
 			l_pack.m_sprite_batch = core::bc_make_unique<DirectX::SpriteBatch>(DirectX::SpriteBatch(m_pack.m_immediate_context.Get()));
 
-			return bc_device_text_renderer(std::move(l_pack));
+			return bc_sprite_batch(std::move(l_pack));
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_sprite_font bc_platform_device<g_api_dx11>::create_sprite_font(core::bc_estring_view p_font_file)
+		{
+			bc_sprite_font::platform_pack l_pack;
+			l_pack.m_sprite_font = core::bc_make_unique<DirectX::SpriteFont>(DirectX::SpriteFont(m_pack.m_device.Get(), p_font_file.data()));
+
+			return bc_sprite_font(std::move(l_pack));
 		}
 
 		template<>

@@ -93,7 +93,7 @@ namespace black_cat
 			auto l_default_normal_map = graphic::bc_texture2d_content(m_render_system->get_device().create_texture2d(m_default_texture_config, &l_normal_map_init_data));
 			auto l_default_specular_map = graphic::bc_texture2d_content(m_render_system->get_device().create_texture2d(m_default_texture_config, &l_specular_map_init_data));
 
-			m_default_diffuse_map = l_content_manager.load< graphic::bc_texture2d_content >
+			m_default_diffuse_map = l_content_manager.load<graphic::bc_texture2d_content>
 			(
 				core::bc_alloc_type::program,
 				core::bc_get_service<bc_game_system>()->get_file_system().get_content_texture_path(bcL("Default.dds")).c_str(),

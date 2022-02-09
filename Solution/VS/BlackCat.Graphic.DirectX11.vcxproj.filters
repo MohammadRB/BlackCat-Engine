@@ -34,6 +34,9 @@
     <Filter Include="GraphicImp\Shader\Parameter">
       <UniqueIdentifier>{c8968d20-e180-447b-bd83-ed243494a300}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GraphicImp\Font">
+      <UniqueIdentifier>{35a4ca94-4827-4fbc-abc4-e94bca96fd6a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandList.cpp">
@@ -147,14 +150,17 @@
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceBuilder.cpp">
       <Filter>GraphicImp\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceTextRenderer.cpp">
-      <Filter>GraphicImp\Device</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceOcclusionQuery.cpp">
       <Filter>GraphicImp\Device</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceSwapBuffer.cpp">
       <Filter>GraphicImp\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteFont.cpp">
+      <Filter>GraphicImp\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteBatch.cpp">
+      <Filter>GraphicImp\Font</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -314,9 +320,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceBuilder.h">
       <Filter>GraphicImp\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceTextRenderer.h">
-      <Filter>GraphicImp\Device</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceOcclusionQuery.h">
       <Filter>GraphicImp\Device</Filter>
     </ClInclude>
@@ -325,6 +328,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Shader\Parameter\bcRenderTargetViewParameter.h">
       <Filter>GraphicImp\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteFont.h">
+      <Filter>GraphicImp\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteBatch.h">
+      <Filter>GraphicImp\Font</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

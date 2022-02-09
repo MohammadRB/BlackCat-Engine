@@ -10,10 +10,14 @@ namespace black_cat
 {
 	namespace editor
 	{
-		void bc_editor_render_app_thread::start(HINSTANCE p_instance, const char* p_cmd_line, game::bci_render_application_output_window* p_output_window)
+		void bc_editor_render_app_thread::start(HINSTANCE p_instance, 
+			const char* p_cmd_line, 
+			bc_editor_render_app_factory p_render_app_factory, 
+			game::bci_render_application_output_window* p_output_window)
 		{
 			m_instance = p_instance;
 			m_cmd_line = p_cmd_line;
+			m_render_app_factory = std::move(p_render_app_factory);
 			m_output_window = p_output_window;
 			m_result_code = s_default_result_code;
 
@@ -81,15 +85,14 @@ namespace black_cat
 				std::move(l_render_app_parameters)
 			);
 
-			bc_editor_render_app l_app;
-			l_app.initialize(l_engine_app_parameters);
-			l_app.set_fps(60);
+			auto* l_app = m_render_app_factory();
+			l_app->initialize(l_engine_app_parameters);
+			l_app->set_fps(60);
 
 			m_initialized.store(1);
+			m_result_code.store(l_app->run());
 
-			m_result_code.store(l_app.run());
-
-			l_app.destroy();
+			l_app->destroy();
 		}
 	}
 }

@@ -75,6 +75,7 @@ namespace box
 	{
 		auto& l_game_console = m_game_system->get_console();
 		auto& l_input_system = m_game_system->get_input_system();
+		auto& l_file_system = m_game_system->get_file_system();
 		auto& l_render_system = m_game_system->get_render_system();
 		auto& l_script_system = m_game_system->get_script_system();
 		auto& l_global_config = bc_get_global_config();
@@ -116,8 +117,8 @@ namespace box
 		l_render_system.add_render_pass(bc_light_flare_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 		l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 		l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
-		l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view));
-		l_render_system.add_render_pass(bc_player_ui_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
+		l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view, l_file_system.get_content_data_path(bcL("Dx.spritefont"))));
+		l_render_system.add_render_pass(bc_player_ui_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, l_file_system.get_content_data_path(bcL("Dx.spritefont"))));
 		
 		l_script_system.get_script_binder().bind(game::bc_script_context::app, *this);
 	}
@@ -125,18 +126,6 @@ namespace box
 	void bx_application::application_load_content(core::bc_content_stream_manager& p_stream_manager)
 	{
 		bx_load_game_resources(p_stream_manager, *m_game_system);
-
-		/*auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
-		auto& l_file_system = m_game_system->get_file_system();
-
-		auto l_scene = l_content_manager->load<game::bc_scene>
-		(
-			l_file_system.get_content_scene_path(bcL("Test.json")).c_str(),
-			nullptr,
-			core::bc_content_loader_parameter()
-		);
-
-		m_game_system->set_scene(std::move(l_scene));*/
 	}
 
 	void bx_application::application_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)

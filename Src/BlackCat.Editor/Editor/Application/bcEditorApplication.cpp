@@ -10,8 +10,8 @@ namespace black_cat
 {
 	namespace editor
 	{
-		bc_editor_app::bc_editor_app(HINSTANCE p_instance, QWidget* p_parent)
-			: QMainWindow(p_parent)
+		bc_editor_app::bc_editor_app(HINSTANCE p_instance, const bcCHAR* p_cmd_line, bc_editor_render_app_factory p_render_app_factory)
+			: QMainWindow(Q_NULLPTR)
 		{
 			setAttribute(Qt::WA_QuitOnClose);
 			m_ui.setupUi(this);
@@ -20,7 +20,7 @@ namespace black_cat
 			m_d3d_widget = new bc_widget_d3d_output(m_ui.centralWidget->findChild<QFrame*>("leftRenderFrame"));
 			m_d3d_output_window = std::make_unique<bc_render_application_d3dwidget_output_window>(m_d3d_widget);
 
-			m_render_app_thread.start(p_instance, nullptr, m_d3d_output_window.get());
+			m_render_app_thread.start(p_instance, p_cmd_line, std::move(p_render_app_factory), m_d3d_output_window.get());
 
 			m_awesome = std::make_unique<QtAwesome>(this);
 			m_awesome->initFontAwesome();

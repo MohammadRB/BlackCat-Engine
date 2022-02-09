@@ -26,6 +26,11 @@ namespace black_cat
 		
 		LRESULT CALLBACK _window_proc(HWND p_hwnd, UINT p_msg, WPARAM p_wparam, LPARAM p_lparam)
 		{
+			if(!core::bc_service_manager::get())
+			{
+				return DefWindowProc(p_hwnd, p_msg, p_wparam, p_lparam);
+			}
+
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
 			// Handle some specific messages. Note that if we handle a message, we should return 0.

@@ -318,10 +318,11 @@ namespace black_cat
 		void bc_render_application::_initialize(bc_engine_application_parameter& p_parameters)
 		{
 			m_app_name = p_parameters.m_app_parameters.m_app_name;
-			app_start_engine_components(p_parameters);
-			m_app = core::bc_make_unique<platform::bc_application>(core::bc_alloc_type::program, p_parameters.m_app_parameters);
+			m_output_window = p_parameters.m_app_parameters.m_output_window_factory(); // Make output window available before starting game components
 
-			m_output_window = p_parameters.m_app_parameters.m_output_window_factory();
+			app_start_engine_components(p_parameters);
+
+			m_app = core::bc_make_unique<platform::bc_application>(core::bc_alloc_type::program, p_parameters.m_app_parameters);
 			m_clock = core::bc_make_unique<core_platform::bc_clock>(core::bc_alloc_type::program);
 
 			m_min_update_rate = 60;

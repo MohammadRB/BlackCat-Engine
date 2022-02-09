@@ -34,6 +34,9 @@
     <Filter Include="Graphic\Resource\View">
       <UniqueIdentifier>{e68d8f99-a77b-4a59-86e1-b092ce63556e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphic\Font">
+      <UniqueIdentifier>{99c1a9ea-381c-4be9-aed6-a492abb9915c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandList.h">
@@ -222,9 +225,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\bcResourceBuilder.h">
       <Filter>Graphic\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceTextRenderer.h">
-      <Filter>Graphic\Device</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceOcclusionQuery.h">
       <Filter>Graphic\Device</Filter>
     </ClInclude>
@@ -233,6 +233,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Shader\Parameter\bcRenderTargetViewParameter.h">
       <Filter>Graphic\Shader\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Font\bcSpriteFont.h">
+      <Filter>Graphic\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Font\bcSpriteBatch.h">
+      <Filter>Graphic\Font</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

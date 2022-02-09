@@ -36,13 +36,13 @@ namespace black_cat
 
 	void bc_geometry_shader_loader::content_offline_processing(core::bc_content_loading_context& p_context) const
 	{
-		graphic::bc_device& l_device = core::bc_service_manager::get().get_service< game::bc_game_system >()->get_render_system().get_device();
-		const core::bc_string l_file_path = core::bc_to_exclusive_string(p_context.m_file_path);
-		const core::bc_string& l_function = p_context.m_parameters->get_value_throw< core::bc_string >(constant::g_param_shader_function);
-		const auto* l_macros_value = p_context.m_parameters->get_value< core::bc_json_key_value >(constant::g_param_shader_macro);
+		graphic::bc_device& l_device = core::bc_get_service<game::bc_game_system>()->get_render_system().get_device();
+		const auto l_file_path = core::bc_to_exclusive_string(p_context.m_file_path);
+		const auto& l_function = p_context.m_parameters->get_value_throw<core::bc_string>(constant::g_param_shader_function);
+		const auto* l_macros_value = p_context.m_parameters->get_value<core::bc_json_key_value>(constant::g_param_shader_macro);
 
 		core::bc_vector<graphic::bc_shader_macro> l_macros_buffer;
-		graphic::bc_shader_macro* l_macros = nullptr;
+		const graphic::bc_shader_macro* l_macros = nullptr;
 		bcUINT32 l_macros_count = 0;
 
 		if (l_macros_value)
@@ -77,14 +77,14 @@ namespace black_cat
 
 		p_context.m_file.write
 		(
-			reinterpret_cast<bcBYTE*>(l_compiled_shader->get_platform_pack().m_blob->GetBufferPointer()),
+			static_cast<bcBYTE*>(l_compiled_shader->get_platform_pack().m_blob->GetBufferPointer()),
 			l_compiled_shader->get_platform_pack().m_blob->GetBufferSize()
 		);
 	}
 
 	void bc_geometry_shader_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
-		graphic::bc_device& l_device = core::bc_service_manager::get().get_service< game::bc_game_system >()->get_render_system().get_device();
+		graphic::bc_device& l_device = core::bc_get_service<game::bc_game_system>()->get_render_system().get_device();
 		const core::bc_string& l_function = p_context.m_parameters->get_value_throw< core::bc_string >(constant::g_param_shader_function);
 
 		graphic::bc_geometry_shader_ref l_result = l_device.create_geometry_shader

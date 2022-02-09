@@ -15,7 +15,6 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/bcEvent.h"
 #include "Game/bcUtility.h"
-#include "App/bcConstant.h"
 #include "App/RenderPass/GBuffer/bcGBufferInitializePass.h"
 #include "App/RenderPass/GBuffer/bcGBufferTerrainPassDx11.h"
 #include "App/RenderPass/GBuffer/bcGBufferPass.h"
@@ -33,6 +32,7 @@
 #include "App/RenderPass/bcShapeDrawPass.h"
 #include "App/RenderPass/bcTextDrawPass.h"
 #include "App/RenderPass/bcBackBufferWritePass.h"
+#include "App/bcConstant.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
 #include "Editor/Application/bcEditorRenderApplication.h"
 #include "Editor/Application/bcUICommandService.h"
@@ -63,6 +63,7 @@ namespace black_cat
 		{
 			auto& l_render_system = m_game_system->get_render_system();
 			auto& l_input_system = m_game_system->get_input_system();
+			auto& l_file_system = m_game_system->get_file_system();
 			auto& l_global_config = bc_get_global_config();
 			
 			bool l_camera_read = false;
@@ -106,7 +107,7 @@ namespace black_cat
 				64
 			));
 			l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
-			l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view));
+			l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view, l_file_system.get_content_data_path(bcL("Dx.spritefont"))));
 
 			game::bc_event_editor_mode l_editor_mode_event(true);
 			core::bc_get_service<core::bc_event_manager>()->process_event(l_editor_mode_event);
@@ -139,92 +140,20 @@ namespace black_cat
 
 		bool bc_editor_render_app::application_event(core::bci_event& p_event)
 		{
-			auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
+			const auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
 			if (l_key_event)
 			{
-				/*if(l_key_event->get_key_state() == platform::bc_key_state::releasing && l_key_event->get_key() == platform::bc_key::kb_F)
-				{
-					m_game_system->get_render_system().get_render_pass<bc_cascaded_shadow_map_pass>()->capture_debug_shapes();
-				}*/
-
 				if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
 				{
 					auto& l_input_system = m_game_system->get_input_system();
 					auto& l_camera = *l_input_system.get_camera();
 					auto* l_scene = m_game_system->get_scene();
-
-					/*auto* l_glow_pass = m_game_system->get_render_system().get_render_pass<bc_glow_pass>();
-					l_glow_pass->set_enable(!l_glow_pass->get_enable());*/
-
-					/*game::bc_actor l_actor;
-
-					m_shape_throw_counter = m_shape_throw_counter % 4;
-					switch (m_shape_throw_counter)
-					{
-					case 0:
-						l_actor = l_entity_manager->create_entity("sphere");
-						break;
-					case 1:
-						l_actor = l_entity_manager->create_entity("box");
-						break;
-					case 2:
-						l_actor = l_entity_manager->create_entity("convex");
-						break;
-					case 3:
-						l_actor = l_entity_manager->create_entity("capsule");
-						break;
-					}
-					++m_shape_throw_counter;
-
-					const auto l_position = l_camera.get_position();
-					l_actor.add_event(game::bc_world_transform_actor_event(l_position));
-
-					auto* l_rigid_component = l_actor.get_component<game::bc_rigid_body_component>();
-					auto l_rigid = l_rigid_component->get_body();
-					if (l_rigid.is_rigid_dynamic().is_valid())
-					{
-						const auto l_direction = l_camera.get_forward();
-						l_rigid.set_linear_velocity(l_direction * 70);
-					}
-
-					l_scene->add_actor(l_actor);*/
-					//l_scene->add_bullet(game::bc_bullet(l_camera.get_position(), l_camera.get_forward(), 250, 0.2f));
-					//l_scene->create_actor("sample_rocket", bc_matrix4f_from_position_and_direction(l_camera.get_position(), l_camera.get_direction()));
-
-					//const auto l_position1 = l_camera.get_position() + l_camera.get_forward() * 3;
-					//const auto l_position2 = l_position1;// +core::bc_vector3f::right();
-					//auto l_actor1 = l_scene->create_actor("capsule", core::bc_matrix4f::translation_matrix(l_position1));
-					//auto l_actor2 = l_scene->create_actor("capsule", core::bc_matrix4f::translation_matrix(l_position2));
-					//auto l_rigid_body1 = l_actor1.get_component<game::bc_rigid_dynamic_component>()->get_body();
-					//auto l_rigid_body2 = l_actor2.get_component<game::bc_rigid_dynamic_component>()->get_body();
-
-					//{
-					//	physics::bc_scene_lock l_lock(&l_scene->get_px_scene());
-
-					//	auto l_px_joint = m_game_system->get_physics_system().get_physics().create_d6_joint
-					//	(
-					//		&l_rigid_body1,
-					//		physics::bc_transform(core::bc_vector3f(0.75, 0, 0)),
-					//		&l_rigid_body2,
-					//		physics::bc_transform(core::bc_vector3f(-0.75, 0, 0))
-					//	);
-					//	//l_px_joint->set_visualization(true);
-					//	//l_px_joint->enable_limit(physics::bc_joint_cone_limit(core::bc_to_radian(90), core::bc_to_radian(90)));
-					//	l_px_joint->set_motion(physics::bc_d6_axis::around_x, physics::bc_d6_motion::limited);
-					//	l_px_joint->set_motion(physics::bc_d6_axis::around_y, physics::bc_d6_motion::limited);
-					//	l_px_joint->set_motion(physics::bc_d6_axis::around_z, physics::bc_d6_motion::limited);
-					//	l_px_joint->set_twist_limit(physics::bc_joint_angular_limit(core::bc_to_radian(45), -core::bc_to_radian(45)));
-					//	l_px_joint->set_swing_limit(physics::bc_joint_cone_limit(core::bc_to_radian(45), core::bc_to_radian(45)));
-					//	l_px_joint.release();
-
-					//	const auto l_direction = l_camera.get_forward();
-					//	l_rigid_body1.set_linear_velocity(l_direction * 40);
 				}
 				
 				return true;
 			}
 
-			auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event);
+			const auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event);
 			if (l_exit_event)
 			{
 				auto& l_global_config = bc_get_global_config();

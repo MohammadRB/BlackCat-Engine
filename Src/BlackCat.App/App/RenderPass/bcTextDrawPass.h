@@ -5,7 +5,8 @@
 #include "Core/Memory/bcPtr.h"
 #include "Core/Math/bcVector2f.h"
 #include "Core/bcConstant.h"
-#include "GraphicImp/Device/bcDeviceTextRenderer.h"
+#include "GraphicImp/Font/bcSpriteBatch.h"
+#include "GraphicImp/Font/bcSpriteFont.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "App/bcExport.h"
 
@@ -16,7 +17,7 @@ namespace black_cat
 		BC_RENDER_PASS(txt_drw)
 
 	public:
-		explicit bc_text_draw_pass(game::bc_render_pass_variable_t p_back_buffer_view_parameter);
+		bc_text_draw_pass(game::bc_render_pass_variable_t p_back_buffer_view_parameter, core::bc_estring_view p_font_path);
 		
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 		
@@ -34,9 +35,11 @@ namespace black_cat
 
 	private:
 		game::bc_render_pass_variable_t m_back_buffer_view_parameter;
-		graphic::bc_render_target_view m_back_buffer_view;
+		core::bc_estring_view m_font_path;
 
-		core::bc_unique_ptr<graphic::bc_device_text_renderer> m_text_renderer;
+		graphic::bc_render_target_view m_back_buffer_view;
+		core::bc_unique_ptr<graphic::bc_sprite_batch> m_sprite_batch;
+		core::bc_unique_ptr<graphic::bc_sprite_font> m_sprite_font;
 		core::bc_vector2f m_text_bound;
 	};
 }

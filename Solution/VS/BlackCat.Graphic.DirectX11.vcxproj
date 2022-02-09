@@ -29,9 +29,10 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDevicePipeline.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDevicePipelineState.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceSwapBuffer.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceTextRenderer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandExecutor.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandList.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteBatch.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteFont.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\GraphicImpPCH.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\PipelineStage\bcComputeStage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\PipelineStage\bcDomainStage.h" />
@@ -80,10 +81,11 @@
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceOutput.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDevicePipeline.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceSwapBuffer.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceTextRenderer.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandExecutor.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandList.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceOcclusionQuery.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteBatch.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteFont.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\GraphicImpPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Create</PrecompiledHeader>

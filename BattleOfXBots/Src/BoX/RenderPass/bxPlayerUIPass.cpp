@@ -7,10 +7,11 @@
 
 namespace box
 {
-	bc_player_ui_pass::bc_player_ui_pass(game::bc_render_pass_variable_t p_back_buffer_texture, game::bc_render_pass_variable_t p_back_buffer_view) noexcept
+	bc_player_ui_pass::bc_player_ui_pass(game::bc_render_pass_variable_t p_back_buffer_texture, game::bc_render_pass_variable_t p_back_buffer_view, core::bc_estring_view p_font_path) noexcept
 		: m_ui_service(core::bc_get_service<bx_player_service>()),
 		m_back_buffer_texture_parameter(p_back_buffer_texture),
-		m_back_buffer_view_parameter(p_back_buffer_view)
+		m_back_buffer_view_parameter(p_back_buffer_view),
+		m_font_path(p_font_path)
 	{
 	}
 
@@ -19,11 +20,15 @@ namespace box
 		auto& l_device = p_render_system.get_device();
 		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 
-		m_text_renderer = core::bc_make_unique<graphic::bc_device_text_renderer>
+		m_sprite_batch = core::bc_make_unique<graphic::bc_sprite_batch>
 		(
-			p_render_system.get_device().create_text_renderer()
+			p_render_system.get_device().create_sprite_batch()
 		);
-		m_text_bound = m_text_renderer->measure_text(L"T");
+		m_sprite_font = core::bc_make_unique<graphic::bc_sprite_font>
+		(
+			p_render_system.get_device().create_sprite_font(m_font_path.data())
+		);
+		m_text_bound = m_sprite_font->measure_string(L"T");
 
 		after_reset(game::bc_render_pass_reset_context
 		(
@@ -69,46 +74,42 @@ namespace box
 		const auto l_grenade_load = m_ui_service->get_grenade_load();
 		const auto l_smoke_load = m_ui_service->get_smoke_load();
 
-		const core::bc_array<graphic::bc_device_text, 4> l_texts
-		{
-			graphic::bc_device_text
-			(
-				L"Health: " + core::bc_to_wstring(l_heath),
-				{l_left_offset, l_top_offset},
-				l_color_curve.sample(l_heath / 100.f),
-				l_scale
-			),
-			graphic::bc_device_text
-			(
-				L"Weapon Heat: " + core::bc_to_wstring(l_weapon_heat),
-				{l_left_offset, l_top_offset + l_line_offset * 1},
-				l_color_curve.sample(1 - (l_weapon_heat / 100.f)),
-				l_scale
-			),
-			graphic::bc_device_text
-			(
-				L"Grenade Load: " + core::bc_to_wstring(l_grenade_load),
-				{l_left_offset, l_top_offset + l_line_offset * 2},
-				l_color_curve.sample(l_grenade_load / 100.f),
-				l_scale
-			),
-			graphic::bc_device_text
-			(
-				L"Smoke Load: " + core::bc_to_wstring(l_smoke_load),
-				{l_left_offset, l_top_offset + l_line_offset * 3},
-				l_color_curve.sample(l_smoke_load / 100.f),
-				l_scale
-			)
-		};
+		m_sprite_batch->begin(p_context.m_render_system.get_device(), p_context.m_render_system.get_device_swap_buffer(), m_back_buffer_view);
 
-		m_text_renderer->draw_texts
+		m_sprite_font->draw_string
 		(
-			p_context.m_render_system.get_device(),
-			p_context.m_render_system.get_device_swap_buffer(),
-			m_back_buffer_view,
-			l_texts.data(),
-			l_texts.size()
+			*m_sprite_batch, 
+			(L"Health: " + core::bc_to_wstring(l_heath)).c_str(), 
+			{ l_left_offset, l_top_offset }, 
+			l_color_curve.sample(l_heath / 100.f), 
+			l_scale
 		);
+		m_sprite_font->draw_string
+		(
+			*m_sprite_batch,
+			(L"Weapon Heat: " + core::bc_to_wstring(l_weapon_heat)).c_str(),
+			{ l_left_offset, l_top_offset + l_line_offset * 1 },
+			l_color_curve.sample(1 - (l_weapon_heat / 100.f)),
+			l_scale
+		);
+		m_sprite_font->draw_string
+		(
+			*m_sprite_batch,
+			(L"Grenade Load: " + core::bc_to_wstring(l_grenade_load)).c_str(),
+			{ l_left_offset, l_top_offset + l_line_offset * 2 },
+			l_color_curve.sample(l_grenade_load / 100.f),
+			l_scale
+		);
+		m_sprite_font->draw_string
+		(
+			*m_sprite_batch,
+			(L"Smoke Load: " + core::bc_to_wstring(l_smoke_load)).c_str(),
+			{ l_left_offset, l_top_offset + l_line_offset * 3 },
+			l_color_curve.sample(l_smoke_load / 100.f),
+			l_scale
+		);
+
+		m_sprite_batch->end(p_context.m_render_system.get_device());
 	}
 
 	void bc_player_ui_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
@@ -123,6 +124,7 @@ namespace box
 
 	void bc_player_ui_pass::destroy(game::bc_render_system& p_render_system)
 	{
-		m_text_renderer.reset();
+		m_sprite_batch.reset();
+		m_sprite_font.reset();
 	}
 }

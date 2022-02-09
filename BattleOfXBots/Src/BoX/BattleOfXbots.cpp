@@ -25,9 +25,9 @@ int WINAPI WinMain(HINSTANCE p_instance, HINSTANCE p_prev_instance, CHAR* p_cmd_
 		l_app_parameters,
 		[&]()
 		{
-			l_output_window.reset
+			l_output_window = std::make_unique<game::bc_render_application_basic_output_window>
 			(
-				new game::bc_render_application_basic_output_window
+				game::bc_render_application_basic_output_window
 				(
 					platform::bc_basic_window(platform::bc_basic_window_parameter(p_instance, bcL("BattleOfXbots"), 1024, 700))
 				)

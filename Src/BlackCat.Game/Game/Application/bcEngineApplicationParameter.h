@@ -58,8 +58,8 @@ namespace black_cat
 		
 		struct bc_render_application_parameter : public platform::bc_application_parameter
 		{
-			bc_render_application_parameter(platform::bc_application_parameter& p_app_parameters,
-				bc_render_output_window_factory p_output_window_factory,
+			bc_render_application_parameter(const platform::bc_application_parameter& p_app_parameters, 
+				bc_render_output_window_factory p_output_window_factory, 
 				bc_scene_graph_node_factory p_scene_graph_factory)
 				: platform::bc_application_parameter(p_app_parameters),
 				m_output_window_factory(std::move(p_output_window_factory)),
@@ -79,7 +79,7 @@ namespace black_cat
 
 		struct bc_engine_application_parameter
 		{
-			bc_engine_application_parameter(bc_engine_component_parameter& p_engine_parameters,
+			bc_engine_application_parameter(const bc_engine_component_parameter& p_engine_parameters, 
 				bc_render_application_parameter&& p_app_parameters)
 				: m_engine_parameters(p_engine_parameters),
 				m_app_parameters(std::move(p_app_parameters))

@@ -142,8 +142,12 @@ namespace black_cat
 		using bc_render_target_view_ref = bc_device_ref<bc_render_target_view>;
 
 		template<bc_render_api>
-		class bc_platform_device_text_renderer;
-		using bc_device_text_renderer = bc_platform_device_text_renderer<g_current_render_api>;
+		class bc_platform_sprite_batch;
+		using bc_sprite_batch = bc_platform_sprite_batch<g_current_render_api>;
+
+		template<bc_render_api>
+		class bc_platform_sprite_font;
+		using bc_sprite_font = bc_platform_sprite_font<g_current_render_api>;
 
 		template<bc_render_api>
 		class bc_platform_device_occlusion_query;
@@ -267,7 +271,9 @@ namespace black_cat
 
 			bc_device_command_executor_ref create_command_executor();
 
-			bc_device_text_renderer create_text_renderer();
+			bc_sprite_batch create_sprite_batch();
+
+			bc_sprite_font create_sprite_font(core::bc_estring_view p_font_file);
 
 			bc_device_occlusion_query_ref create_occlusion_query();
 

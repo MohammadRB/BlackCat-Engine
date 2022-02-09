@@ -19,11 +19,11 @@ namespace black_cat
 		class bc_content_loader_result
 		{
 		public:
-			template< class TContent >
+			template<class TContent>
 			explicit bc_content_loader_result(bc_unique_ptr<TContent>&& p_result)
 				: m_result(std::move(p_result))
 			{
-				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
+				static_assert(std::is_base_of<bci_content, TContent>::value, "Content must inherit from bc_icontent");
 			}
 
 			bc_content_loader_result(bc_content_loader_result&& p_other) noexcept
@@ -40,20 +40,20 @@ namespace black_cat
 				return *this;
 			}
 
-			template< class TContent >
+			template<class TContent>
 			TContent* get_result()
 			{
-				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
+				static_assert(std::is_base_of<bci_content, TContent>::value, "Content must inherit from bc_icontent");
 				
 				BC_ASSERT(m_result != nullptr);
 				
 				return static_cast<TContent*>(m_result.get());
 			}
 			
-			template< class TContent >
-			bc_unique_ptr< TContent > release_result()
+			template<class TContent>
+			bc_unique_ptr<TContent> release_result()
 			{
-				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
+				static_assert(std::is_base_of_v<bci_content, TContent>, "Content must inherit from bc_icontent");
 
 				BC_ASSERT(m_result != nullptr);
 				
@@ -89,11 +89,11 @@ namespace black_cat
 			template
 			<
 				typename TContent,
-				typename = std::enable_if_t< !std::is_same_v< std::decay_t< TContent >, bc_io_exception > >
+				typename = std::enable_if_t<!std::is_same_v<std::decay_t<TContent>, bc_io_exception>>
 			>
 			void set_result(TContent&& p_result)
 			{
-				static_assert(std::is_base_of< bci_content, TContent >::value, "Content must inherit from bc_icontent");
+				static_assert(std::is_base_of_v<bci_content, TContent>, "Content must inherit from bc_icontent");
 
 				bc_unique_ptr<TContent> l_content_result = allocate<TContent>(std::move(p_result));
 				m_result.reset(bc_content_loader_result(std::move(l_content_result)));
@@ -106,7 +106,7 @@ namespace black_cat
 			bcSIZE m_file_buffer_size;							// Used to give loader access to file content size
 			const bc_content_loader_parameter* m_parameters;	// Used to pass constant parameters to loader
 			bc_content_loader_parameter m_instance_parameters;	// Used to pass instance parameters to loader
-			bc_nullable< bc_content_loader_result > m_result;	// Used to pass result from loader to caller
+			bc_nullable<bc_content_loader_result> m_result;		// Used to pass result from loader to caller
 		};
 
 		class bc_content_saving_context
@@ -209,7 +209,7 @@ namespace black_cat
 		class BC_CORE_DLL bc_base_content_loader : public bci_content_loader
 		{
 		public:
-			virtual ~bc_base_content_loader();
+			~bc_base_content_loader() override;
 
 			/**
 			 * \brief Read file into specified buffer
@@ -261,7 +261,7 @@ namespace black_cat
 			bc_base_content_loader& operator=(bc_base_content_loader&& p_other) noexcept;
 		};
 
-		template< class TContent >
+		template<class TContent>
 		class _bc_content_loader_guard
 		{
 		public:

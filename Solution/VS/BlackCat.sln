@@ -35,6 +35,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BattleOfXbots", "..\..\Batt
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BattleOfXbots.Server", "..\..\BattleOfXBots\Solution\BattleOfXbots.Server.vcxproj", "{D65DD291-9A3F-4EB4-8721-8B98B6561E2C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BattleOfXbots.Editor", "..\..\BattleOfXBots\Solution\BattleOfXbots.Editor.vcxproj", "{95055D73-78E5-4FAE-A3F5-03D42DD3A783}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -425,13 +427,27 @@ Global
 		{D65DD291-9A3F-4EB4-8721-8B98B6561E2C}.Release|Win32.Build.0 = Release|Win32
 		{D65DD291-9A3F-4EB4-8721-8B98B6561E2C}.Release|x64.ActiveCfg = Release|x64
 		{D65DD291-9A3F-4EB4-8721-8B98B6561E2C}.Release|x64.Build.0 = Release|x64
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Debug|Win32.ActiveCfg = Debug|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Debug|Win32.Build.0 = Debug|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Debug|x64.ActiveCfg = Debug|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Develope|Any CPU.ActiveCfg = Develope|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Develope|Mixed Platforms.ActiveCfg = Develope|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Develope|Mixed Platforms.Build.0 = Develope|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Develope|Win32.ActiveCfg = Develope|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Develope|Win32.Build.0 = Develope|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Develope|x64.ActiveCfg = Develope|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Release|Any CPU.ActiveCfg = Release|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Release|Win32.ActiveCfg = Release|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Release|Win32.Build.0 = Release|Win32
+		{95055D73-78E5-4FAE-A3F5-03D42DD3A783}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{3200478F-5D9B-4C94-81AA-25B6CBA29946} = {61BC95E9-2686-4FCC-8529-60954B1ACE4B}
-		{D65DD291-9A3F-4EB4-8721-8B98B6561E2C} = {61BC95E9-2686-4FCC-8529-60954B1ACE4B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BAD8D797-E6C9-4F73-BDE1-8E4E89421D32}

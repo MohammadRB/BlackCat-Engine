@@ -24,7 +24,7 @@ namespace black_cat
 		bc_platform_pointing_device<core_platform::g_api_win32>::bc_platform_pointing_device(bcUBYTE p_device_index)
 			: m_device_index(p_device_index),
 			m_pack(),
-			m_event_manager(core::bc_service_manager::get().get_service< core::bc_event_manager >())
+			m_event_manager(core::bc_get_service<core::bc_event_manager>())
 		{
 			_check_pointing_device_index(m_device_index);
 		}

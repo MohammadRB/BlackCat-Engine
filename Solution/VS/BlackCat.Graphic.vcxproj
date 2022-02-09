@@ -28,13 +28,14 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceComputeState.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceOcclusionQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceSwapBuffer.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceTextRenderer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceInfo.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceOutput.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDevicePipeline.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDevicePipelineState.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandExecutor.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandList.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Font\bcSpriteBatch.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Font\bcSpriteFont.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\GraphicPCH.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcComputeStage.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\PipelineStage\bcDomainStage.h" />

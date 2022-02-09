@@ -14,9 +14,13 @@ namespace black_cat
 		public:
 			bc_editor_render_app();
 
-			~bc_editor_render_app();
+			bc_editor_render_app(bc_editor_render_app&&) = delete;
+
+			~bc_editor_render_app() override;
+
+			bc_editor_render_app& operator=(bc_editor_render_app&&) = delete;
 		
-		private:
+		protected:
 			void application_start_engine_components(game::bc_engine_application_parameter& p_parameters) override;
 
 			void application_initialize(game::bc_engine_application_parameter& p_parameters) override;
@@ -34,8 +38,6 @@ namespace black_cat
 			void application_destroy() override;
 
 			void application_close_engine_components() override;
-
-			bcSIZE m_shape_throw_counter = 0;
 		};
 	}
 }

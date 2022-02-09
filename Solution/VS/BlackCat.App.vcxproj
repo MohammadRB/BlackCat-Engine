@@ -105,7 +105,7 @@
       <Command>if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 if not exist ..\..\BC_SDK\Include\App\ mkdir ..\..\BC_SDK\Include\App\
 if not exist ..\..\BC_SDK\Content\ mkdir ..\..\BC_SDK\Include\Content\
-if not exist $(Configuration)\Content\ mkdir $(Configuration)\Content\
+if not exist $(SolutionDir)\$(Configuration)\Content\ mkdir $(SolutionDir)\$(Configuration)\Content\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -117,7 +117,7 @@ copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
 
-xcopy ..\..\Src\BlackCat.App\App\Content\*.* $(Configuration)\Content\ /E /Y
+xcopy ..\..\Src\BlackCat.App\App\Content\*.* $(SolutionDir)\$(Configuration)\Content\ /E /Y
 xcopy ..\..\Src\BlackCat.App\App\*.h ..\..\BC_SDK\Include\App\ /E /Y
 xcopy ..\..\Src\BlackCat.App\App\Content\*.* ..\..\BC_SDK\Content\ /E /Y
 
@@ -162,7 +162,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
       <Command>if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 if not exist ..\..\BC_SDK\Include\App\ mkdir ..\..\BC_SDK\Include\App\
 if not exist ..\..\BC_SDK\Content\ mkdir ..\..\BC_SDK\Include\Content\
-if not exist $(Configuration)\Content\ mkdir $(Configuration)\Content\
+if not exist $(SolutionDir)\$(Configuration)\Content\ mkdir $(SolutionDir)\$(Configuration)\Content\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -174,7 +174,7 @@ copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
 
-xcopy ..\..\Src\BlackCat.App\App\Content\*.* $(Configuration)\Content\ /E /Y
+xcopy ..\..\Src\BlackCat.App\App\Content\*.* $(SolutionDir)\$(Configuration)\Content\ /E /Y
 xcopy ..\..\Src\BlackCat.App\App\*.h ..\..\BC_SDK\Include\App\ /E /Y
 xcopy ..\..\Src\BlackCat.App\App\Content\*.* ..\..\BC_SDK\Content\ /E /Y
 
@@ -220,7 +220,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
       <Command>if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
 if not exist ..\..\BC_SDK\Include\App\ mkdir ..\..\BC_SDK\Include\App\
 if not exist ..\..\BC_SDK\Content\ mkdir ..\..\BC_SDK\Include\Content\
-if not exist $(Configuration)\Content\ mkdir $(Configuration)\Content\
+if not exist $(SolutionDir)\$(Configuration)\Content\ mkdir $(SolutionDir)\$(Configuration)\Content\
 
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
@@ -232,7 +232,7 @@ copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
 
-xcopy ..\..\Src\BlackCat.App\App\Content\*.* $(Configuration)\Content\ /E /Y
+xcopy ..\..\Src\BlackCat.App\App\Content\*.* $(SolutionDir)\$(Configuration)\Content\ /E /Y
 xcopy ..\..\Src\BlackCat.App\App\*.h ..\..\BC_SDK\Include\App\ /E /Y
 xcopy ..\..\Src\BlackCat.App\App\Content\*.* ..\..\BC_SDK\Content\ /E /Y
 
@@ -570,7 +570,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <None Include="..\..\Src\BlackCat.App\App\Content\config.json" />
     <None Include="..\..\Src\BlackCat.App\App\Content\Data\ContentStream.json" />
     <None Include="..\..\Src\BlackCat.App\App\Content\Data\Decal.json" />
-    <None Include="..\..\Src\BlackCat.App\App\Content\Data\DX11.spritefont" />
+    <None Include="..\..\Src\BlackCat.App\App\Content\Data\Dx.spritefont" />
     <None Include="..\..\Src\BlackCat.App\App\Content\Data\EntityType.json" />
     <None Include="..\..\Src\BlackCat.App\App\Content\Data\Material.json" />
     <None Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\bcRegister.hlsli">

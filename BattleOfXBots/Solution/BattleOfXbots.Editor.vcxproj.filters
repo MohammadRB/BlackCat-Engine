@@ -66,6 +66,15 @@
       <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
       <Extensions>ui</Extensions>
     </Filter>
+    <Filter Include="BoX.Editor">
+      <UniqueIdentifier>{d2f2a1a4-26c8-4ff9-8e11-36b4ed58dfa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Editor\Application">
+      <UniqueIdentifier>{d7c0ca62-d36e-401b-ab1e-7eb3ac64d713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Editor\Game">
+      <UniqueIdentifier>{b16ecf90-74b3-4061-922c-ac5464e19b40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\qrc_style.cpp">
@@ -126,9 +135,6 @@
       <Filter>Editor\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\EditorPCH.cpp">
-      <Filter>Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\main.cpp">
       <Filter>Editor</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Application\bcUICommand.cpp">
@@ -269,6 +275,21 @@
     <ClCompile Include="GeneratedFiles\qrc_bcBlackCatEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\Application\bxEditorRenderApplication.cpp">
+      <Filter>BoX.Editor\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\main.cpp">
+      <Filter>BoX.Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX\Application\bxApplicationHookFunctions.cpp">
+      <Filter>BoX.Editor\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX\Game\bxNetworkPlayerActorController.cpp">
+      <Filter>BoX.Editor\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX\Game\bxPlayerActorController.cpp">
+      <Filter>BoX.Editor\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_bcBlackCatEditor.h">
@@ -355,8 +376,20 @@
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalUpdateUICommand.h">
       <Filter>Editor\UICommand</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Generated Files</Filter>
+    <ClInclude Include="..\Src\BoX.Editor\Application\bxEditorRenderApplication.h">
+      <Filter>BoX.Editor\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX\Application\bxApplicationHookFunctions.h">
+      <Filter>BoX.Editor\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX\Application\bxPlayerService.h">
+      <Filter>BoX.Editor\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX\Game\bxNetworkPlayerActorController.h">
+      <Filter>BoX.Editor\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX\Game\bxPlayerActorController.h">
+      <Filter>BoX.Editor\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -560,7 +593,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="..\..\Src\BlackCat.Editor\Editor\FormFiles\Resources\fonts\fontawesome-4.6.1.ttf">
+    <Font Include="..\..\Src\BlackCat.Editor\Editor\Resources\fonts\fontawesome-4.6.1.ttf">
       <Filter>Resource Files</Filter>
     </Font>
   </ItemGroup>

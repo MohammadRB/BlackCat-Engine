@@ -29,9 +29,13 @@ namespace black_cat
 			Q_OBJECT
 
 		public:
-			explicit bc_editor_app(HINSTANCE p_instance, QWidget* p_parent = Q_NULLPTR);
+			bc_editor_app(HINSTANCE p_instance, const bcCHAR* p_cmd_line, bc_editor_render_app_factory p_render_app_factory);
 
-			~bc_editor_app();
+			bc_editor_app(bc_editor_app&&) = delete;
+
+			~bc_editor_app() override;
+
+			bc_editor_app& operator=(bc_editor_app&&) = delete;
 
 		protected:
 			void focusInEvent(QFocusEvent* p_event) override;

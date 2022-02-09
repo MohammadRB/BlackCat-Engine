@@ -51,21 +51,11 @@ namespace black_cat
 	void bc_render_application::app_start_engine_components(game::bc_engine_application_parameter& p_parameters)
 	{
 		bc_start_engine_services(p_parameters);
+		bc_register_engine_loaders(p_parameters);
 
 		core::bc_log(core::bc_log_type::info) << "starting engine components" << core::bc_lend;
-		
-		bc_register_engine_loaders(p_parameters);
-		bc_register_engine_actor_components();
-		
-		m_game_system = core::bc_get_service<game::bc_game_system>();
-		
-		application_start_engine_components(p_parameters);
-	}
 
-	void bc_render_application::app_initialize(game::bc_engine_application_parameter& p_parameters)
-	{
-		core::bc_log(core::bc_log_type::info) << "initializing engine" << core::bc_lend;
-		
+		m_game_system = core::bc_get_service<game::bc_game_system>();
 		m_game_system->initialize
 		(
 			game::bc_game_system_parameter
@@ -73,27 +63,35 @@ namespace black_cat
 				*core::bc_get_service<core::bc_query_manager>(),
 				*core::bc_get_service<core::bc_event_manager>(),
 				game::bc_render_application::get_output_window()
-					? game::bc_render_system_parameter
-					(
-						*core::bc_get_service<core::bc_content_stream_manager>(),
-						m_game_system->get_physics_system(),
-						game::bc_render_application::get_output_window()->get_width(),
-						game::bc_render_application::get_output_window()->get_height(),
-						graphic::bc_format::R8G8B8A8_UNORM,
-						game::bc_render_application::get_output_window()->get_device_output()
-					)
-					: game::bc_render_system_parameter
-					(
-						*core::bc_get_service<core::bc_content_stream_manager>(),
-						m_game_system->get_physics_system()
-					)
+				? game::bc_render_system_parameter
+				(
+					*core::bc_get_service<core::bc_content_stream_manager>(),
+					m_game_system->get_physics_system(),
+					game::bc_render_application::get_output_window()->get_width(),
+					game::bc_render_application::get_output_window()->get_height(),
+					graphic::bc_format::R8G8B8A8_UNORM,
+					game::bc_render_application::get_output_window()->get_device_output()
+				)
+				: game::bc_render_system_parameter
+				(
+					*core::bc_get_service<core::bc_content_stream_manager>(),
+					m_game_system->get_physics_system()
+				)
 			)
 		);
 
+		bc_register_engine_actor_components();
 		bc_register_engine_network_messages(m_game_system->get_network_system());
 		bc_bind_engine_scripts(*m_game_system);
 		bc_register_engine_particle_emitters(*m_game_system);
 		bc_load_engine_shaders(*core::bc_get_service<core::bc_content_stream_manager>(), *m_game_system);
+
+		application_start_engine_components(p_parameters);
+	}
+
+	void bc_render_application::app_initialize(game::bc_engine_application_parameter& p_parameters)
+	{
+		core::bc_log(core::bc_log_type::info) << "initializing engine" << core::bc_lend;
 
 		application_initialize(p_parameters);
 	}
@@ -124,7 +122,7 @@ namespace black_cat
 
 		if (!p_is_partial_update)
 		{
-			core::bc_service_manager::get().update(p_clock);
+			core::bc_service_manager::get()->update(p_clock);
 		}
 		
 		application_update(p_clock, p_is_partial_update);

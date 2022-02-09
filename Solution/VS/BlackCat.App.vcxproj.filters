@@ -489,9 +489,6 @@
     <None Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\bcRegister.hlsli">
       <Filter>BlackCat\Content\Shader\DirectX11</Filter>
     </None>
-    <None Include="..\..\Src\BlackCat.App\App\Content\Data\DX11.spritefont">
-      <Filter>BlackCat\Content\Data</Filter>
-    </None>
     <None Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\Particle\bcParticle.hlsli">
       <Filter>BlackCat\Content\Shader\DirectX11\Particle</Filter>
     </None>
@@ -503,6 +500,9 @@
     </None>
     <None Include="..\..\Src\BlackCat.App\App\Content\config.json">
       <Filter>BlackCat\Content</Filter>
+    </None>
+    <None Include="..\..\Src\BlackCat.App\App\Content\Data\Dx.spritefont">
+      <Filter>BlackCat\Content\Data</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

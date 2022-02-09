@@ -34,7 +34,6 @@ namespace black_cat
 
 		class BC_CORE_DLL bci_service : public core_platform::bc_no_copy_move
 		{
-		private:
 			friend class bc_service_manager;
 
 		public:
@@ -109,7 +108,7 @@ namespace black_cat
 		template<class TService>
 		TService* bc_service_manager::register_service(bc_service_ptr<TService> p_service)
 		{
-			static_assert(std::is_base_of<bci_service, TService>::value, "services must inherit from bc_iservice");
+			static_assert(std::is_base_of_v<bci_service, TService>, "services must inherit from bc_iservice");
 
 			constexpr auto l_hash = bc_service_traits<TService>::service_hash();
 			constexpr auto* l_name = bc_service_traits<TService>::service_name();
@@ -125,15 +124,15 @@ namespace black_cat
 		template<class TService>
 		TService* bc_register_service(bc_service_ptr<TService> p_service)
 		{
-			static bc_service_manager& s_instance = bc_service_manager::get();
-			return s_instance.register_service(std::move(p_service));
+			static bc_service_manager* s_instance = bc_service_manager::get();
+			return s_instance->register_service(std::move(p_service));
 		}
 
 		template<class TService>
 		TService* bc_get_service()
 		{
-			static bc_service_manager& s_instance = bc_service_manager::get();
-			return s_instance.get_service<TService>();
+			static bc_service_manager* s_instance = bc_service_manager::get();
+			return s_instance->get_service<TService>();
 		}
 	}
 }
