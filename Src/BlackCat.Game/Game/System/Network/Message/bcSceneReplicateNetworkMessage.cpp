@@ -20,7 +20,7 @@ namespace black_cat
 
 		void bc_scene_replicate_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
-			p_context.m_visitor.replicate_scene(p_context.m_address);
+			p_context.m_visitor.replicate_scene(p_context.m_client.m_address);
 		}
 
 		void bc_scene_replicate_network_message::serialize_message(const bc_network_message_serialization_context& p_context)

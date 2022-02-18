@@ -66,7 +66,7 @@ namespace black_cat
 		
 		core::bc_json_document<_bc_scene_json> l_json_document;
 		core::bc_string_frame l_json_str(p_context.m_file_buffer_size + 1, '\0');
-		std::memcpy(const_cast<bcCHAR*>(l_json_str.data()), p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
+		std::memcpy(l_json_str.data(), p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
 		
 		l_json_document.load(l_json_str.data());
 
@@ -211,8 +211,9 @@ namespace black_cat
 			auto l_path = core::bc_to_estring_frame(l_decal_file->c_str());
 			l_decal_manager.read_decal_file(l_file_system.get_content_path(l_path.c_str()).c_str());
 		}
-		
+
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;
+
 		for (auto& l_json_actor : l_json_document->m_actors)
 		{
 			auto l_transform = core::bc_matrix4f::identity();
@@ -237,36 +238,36 @@ namespace black_cat
 
 		auto* l_scene = static_cast<game::bc_scene*>(p_context.m_content);
 
-		core::bc_json_document<_bc_scene_json> l_json_document;
+		core::bc_json_document<_bc_scene_json> l_json_document{};
 		*l_json_document->m_name = l_scene->get_name();
 		*l_json_document->m_scene_graph->m_center = l_scene->get_scene_graph().get_bound_box().get_center();
 		*l_json_document->m_scene_graph->m_half_extends = l_scene->get_scene_graph().get_bound_box().get_half_extends();
 
-		for (auto& l_stream_file : l_scene->get_stream_files())
+		for (const auto& l_stream_file : l_scene->get_stream_files())
 		{
 			auto& l_entry = l_json_document->m_stream_files.new_entry();
 			*l_entry = l_stream_file;
 		}
 		
-		for (auto& l_material : l_scene->get_material_files())
+		for (const auto& l_material : l_scene->get_material_files())
 		{
 			auto& l_entry = l_json_document->m_material_files.new_entry();
 			*l_entry = l_material;
 		}
 		
-		for (auto& l_decal : l_scene->get_decal_files())
+		for (const auto& l_decal : l_scene->get_decal_files())
 		{
 			auto& l_entry = l_json_document->m_decal_files.new_entry();
 			*l_entry = l_decal;
 		}
 		
-		for (auto& l_entity_file : l_scene->get_entity_files())
+		for (const auto& l_entity_file : l_scene->get_entity_files())
 		{
 			auto& l_entry = l_json_document->m_entity_files.new_entry();
 			*l_entry = l_entity_file;
 		}
 		
-		for (auto& l_stream : l_scene->get_loaded_streams())
+		for (const auto& l_stream : l_scene->get_loaded_streams())
 		{
 			auto& l_entry = l_json_document->m_streams.new_entry();
 			*l_entry = l_stream;
@@ -275,7 +276,7 @@ namespace black_cat
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;
 		for (auto& l_actor : l_scene->get_scene_graph())
 		{
-			auto* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();
+			const auto* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();
 			auto& l_json_entry = l_json_document->m_actors.new_entry();			
 			*l_json_entry->m_entity_name = l_mediate_component->get_entity_name();
 			*l_json_entry->m_position = l_mediate_component->get_position();
@@ -284,8 +285,8 @@ namespace black_cat
 			game::bc_actor_write_instance(l_actor_components, game::bc_actor_component_write_context(*l_json_entry->m_parameters, l_actor));
 		}
 
-		const auto l_json = l_json_document.write_pretty();
-		p_context.m_file.write(reinterpret_cast<const bcBYTE*>(l_json.c_str()), sizeof(decltype(l_json)::value_type) * l_json.size());
+		const auto l_json = l_json_document.write_pretty_frame();
+		p_context.m_file.write(l_json.c_str(), sizeof(decltype(l_json)::value_type) * l_json.size());
 
 		core::bc_log(core::bc_log_type::info) << "scene saved" << core::bc_lend;
 	}

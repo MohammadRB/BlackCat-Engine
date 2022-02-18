@@ -54,9 +54,9 @@ namespace black_cat
 			m_manager = core::bc_make_unique<bc_network_server_manager>(bc_network_server_manager(*m_event_manager, *m_game_system, *this, p_hook, p_message_visitor, p_port));
 		}
 
-		void bc_network_system::start_client(bci_network_client_manager_hook& p_hook, bci_network_message_visitor& p_message_visitor, const platform::bc_network_address& p_address)
+		void bc_network_system::start_client(bci_network_client_manager_hook& p_hook, bci_network_message_visitor& p_message_visitor, const platform::bc_network_address& p_server_address)
 		{
-			m_manager = core::bc_make_unique<bc_network_client_manager>(bc_network_client_manager(*m_game_system, *this, p_hook, p_message_visitor, p_address));
+			m_manager = core::bc_make_unique<bc_network_client_manager>(bc_network_client_manager(*m_game_system, *this, p_hook, p_message_visitor, p_server_address));
 		}
 
 		void bc_network_system::add_actor_to_sync(bc_actor& p_actor)
@@ -138,6 +138,26 @@ namespace black_cat
 			m_event_manager = nullptr;
 			m_game_system = nullptr;
 			platform::bc_cleanup_socket_library();
+		}
+
+		void bc_network_system::_send_message(const platform::bc_network_address& p_address, bc_network_message_ptr p_message)
+		{
+			if (get_network_type() == bc_network_type::server)
+			{
+				auto& l_server_manager = static_cast<bc_network_server_manager&>(*m_manager);
+				l_server_manager.send_message(p_address, std::move(p_message));
+			}
+			else if(get_network_type() == bc_network_type::client)
+			{
+				auto& l_client_manager = static_cast<bc_network_client_manager&>(*m_manager);
+				if(l_client_manager.get_server_address() != p_address)
+				{
+					core::bc_log(core::bc_log_type::error, bcL("Sending message to address which is not equal to server address"));
+					return;
+				}
+
+				l_client_manager.send_message(std::move(p_message));
+			}
 		}
 	}
 }

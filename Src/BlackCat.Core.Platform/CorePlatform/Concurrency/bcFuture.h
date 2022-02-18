@@ -6,6 +6,7 @@
 #include "CorePlatform/bcType.h"
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "CorePlatform/Concurrency/bcConcurrencyDef.h"
+#include "CorePlatform/bcPlatform.h"
 
 namespace black_cat
 {
@@ -26,20 +27,20 @@ namespace black_cat
 		{
 		};
 
-		template< bc_platform TPlatform, typename T >
+		template<bc_platform TPlatform, typename T>
 		class bc_platform_shared_future;
 
-		template< bc_platform TPlatform, typename T >
+		template<bc_platform TPlatform, typename T>
 		class bc_platform_promise;
 
-		template< bc_platform TPlatform, typename T >
+		template<bc_platform TPlatform, typename T>
 		class bc_platform_future : private bc_no_copy
 		{
 			using type = T;
-			using platform_pack = bc_platform_future_pack< TPlatform, T >;
-			using this_type = bc_platform_future< TPlatform, T >;
-			using shared_type = bc_platform_shared_future< TPlatform, T >;
-			using promise_type = bc_platform_promise< TPlatform, T >;
+			using platform_pack = bc_platform_future_pack<TPlatform, T>;
+			using this_type = bc_platform_future<TPlatform, T>;
+			using shared_type = bc_platform_shared_future<TPlatform, T>;
+			using promise_type = bc_platform_promise<TPlatform, T>;
 
 			friend  class promise_type;
 
@@ -72,13 +73,13 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< bc_platform TPlatform, typename T >
+		template<bc_platform TPlatform, typename T>
 		class bc_platform_shared_future
 		{
 			using type = T;
-			using platform_pack = bc_platform_shared_future_pack< TPlatform, T >;
-			using this_type = bc_platform_shared_future< TPlatform, T >;
-			using future_type = bc_platform_future< TPlatform, T >;
+			using platform_pack = bc_platform_shared_future_pack<TPlatform, T>;
+			using this_type = bc_platform_shared_future<TPlatform, T>;
+			using future_type = bc_platform_future<TPlatform, T>;
 
 			friend class future_type;
 
@@ -115,13 +116,13 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< bc_platform TPlatform, typename T >
+		template<bc_platform TPlatform, typename T>
 		class bc_platform_promise : private bc_no_copy
 		{
 			using type = T;
 			using platform_pack = bc_platform_promise_pack<TPlatform, T>;
-			using this_type = bc_platform_promise< TPlatform, T >;
-			using future_type = bc_platform_future< TPlatform, T >;
+			using this_type = bc_platform_promise<TPlatform, T>;
+			using future_type = bc_platform_future<TPlatform, T>;
 
 		public:
 			bc_platform_promise() noexcept;
@@ -150,20 +151,20 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< bc_platform TPlatform >
-		class bc_platform_promise< TPlatform, void > : private bc_no_copy
+		template<bc_platform TPlatform>
+		class bc_platform_promise<TPlatform, void> : private bc_no_copy
 		{
 			using type = void;
 			using platform_pack = bc_platform_promise_pack<TPlatform, void>;
-			using this_type = bc_platform_promise< TPlatform, void >;
-			using future_type = bc_platform_future< TPlatform, void >;
+			using this_type = bc_platform_promise<TPlatform, void>;
+			using future_type = bc_platform_future<TPlatform, void>;
 
 		public:
 			bc_platform_promise() noexcept;
 
 			// TODO: Check here
 			/*template<typename Allocator>
-			bcPromiseBase(std::allocator_arg_t, Allocator const&);*/
+			bc_platform_promise(std::allocator_arg_t, Allocator const&);*/
 
 			bc_platform_promise(this_type&& p_other) noexcept;
 
@@ -183,11 +184,11 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< typename T >
-		using bc_future = bc_platform_future< g_current_platform, T >;
-		template< typename T >
-		using bc_shared_future = bc_platform_shared_future< g_current_platform, T >;
-		template< typename T >
-		using bc_promise = bc_platform_promise< g_current_platform, T >;
+		template<typename T>
+		using bc_future = bc_platform_future<g_current_platform, T>;
+		template<typename T>
+		using bc_shared_future = bc_platform_shared_future<g_current_platform, T>;
+		template<typename T>
+		using bc_promise = bc_platform_promise<g_current_platform, T>;
 	}
 }

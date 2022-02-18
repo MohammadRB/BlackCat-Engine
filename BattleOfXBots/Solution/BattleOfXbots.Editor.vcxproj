@@ -205,21 +205,6 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(SolutionDir)\$(Configuratio
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetD3DOutput.cpp" />
     <ClCompile Include="..\Src\BoX.Editor\Application\bxEditorRenderApplication.cpp" />
     <ClCompile Include="..\Src\BoX.Editor\main.cpp" />
-    <ClCompile Include="..\Src\BoX\Application\bxApplicationHookFunctions.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Src\BoX\Game\bxNetworkPlayerActorController.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="..\Src\BoX\Game\bxPlayerActorController.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_bcEditorApplication.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -587,10 +572,6 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(SolutionDir)\$(Configuratio
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -D_WINSOCKAPI_ -DQT_NO_DEBUG -DNDEBUG -D%(PreprocessorDefinitions)  "-I.\..\..\Src\BlackCat.Editor" "-I.\..\..\Src\BlackCat.Core" "-I.\..\..\Src\BlackCat.Core.Platform" "-I.\..\..\Src\BlackCat.Core.Platform.Win32" "-I.\..\..\Src\BlackCat.Platform" "-I.\..\..\Src\BlackCat.Platform.Win32" "-I.\..\..\Src\BlackCat.Graphic" "-I.\..\..\Src\BlackCat.Graphic.DirectX11" "-I.\..\..\Src\BlackCat.Physics" "-I.\..\..\Src\BlackCat.Physics.PhysX" "-I.\..\..\Src\BlackCat.Game" "-I.\..\..\Src\BlackCat.App" "-I.\..\..\BattleOfXBots\Src" "-I.\..\..\3rdParty" "-I.\..\..\3rdParty\3rdParty\Ozz\Include" "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)" "-I." "-I$(QTDIR)\include" "-fEditor/EditorPCH.h" "-f../../../../Src/BlackCat.Editor/Editor/UI/%(Filename)%(Extension)"</Command>
     </CustomBuild>
     <ClInclude Include="..\Src\BoX.Editor\Application\bxEditorRenderApplication.h" />
-    <ClInclude Include="..\Src\BoX\Application\bxApplicationHookFunctions.h" />
-    <ClInclude Include="..\Src\BoX\Application\bxPlayerService.h" />
-    <ClInclude Include="..\Src\BoX\Game\bxNetworkPlayerActorController.h" />
-    <ClInclude Include="..\Src\BoX\Game\bxPlayerActorController.h" />
     <ClInclude Include="GeneratedFiles\ui_bcBlackCatEditor.h" />
   </ItemGroup>
   <ItemGroup>
@@ -907,6 +888,9 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(SolutionDir)\$(Configuratio
     </ProjectReference>
     <ProjectReference Include="..\..\Solution\VS\BlackCat.Platform.Win32.vcxproj">
       <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BattleOfXbots.Game.vcxproj">
+      <Project>{2e2d16b5-dc44-4cfb-88d0-da506b16df92}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

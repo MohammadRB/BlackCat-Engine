@@ -109,7 +109,7 @@ namespace black_cat
 #ifdef BC_DEBUG
 			if (m_pack.m_flag.test_and_set(bc_memory_order::relaxed))
 			{
-				BC_ASSERT(false, "Recursive call on non-recursive mutex");
+				BC_ASSERT(false);
 			}
 #endif
 		}
@@ -134,7 +134,7 @@ namespace black_cat
 			{
 				if (m_pack.m_flag.test_and_set(bc_memory_order::relaxed))
 				{
-					BC_ASSERT(false, "Recursive call on non-recursive mutex");
+					BC_ASSERT(false);
 				}
 			}
 #endif
@@ -165,7 +165,7 @@ namespace black_cat
 #ifdef BC_DEBUG
 			if (m_pack.m_flag.test_and_set(bc_memory_order::relaxed))
 			{
-				BC_ASSERT(false, "Recursive call on non-recursive mutex");
+				BC_ASSERT(false);
 			}
 #endif
 		}
@@ -190,7 +190,7 @@ namespace black_cat
 			{
 				if (m_pack.m_flag.test_and_set(bc_memory_order::relaxed))
 				{
-					BC_ASSERT(false, "Recursive call on non-recursive mutex");
+					BC_ASSERT(false);
 				}
 			}
 #endif

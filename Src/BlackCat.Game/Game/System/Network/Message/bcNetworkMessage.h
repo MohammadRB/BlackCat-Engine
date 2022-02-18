@@ -8,6 +8,7 @@
 #include "Core/File/bcJsonDocument.h"
 #include "PlatformImp/Network/bcNetworkAddress.h"
 #include "Game/System/Network/bcNetworkMessageVisitor.h"
+#include "Game/System/Network/Server/bcNetworkClient.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -61,7 +62,7 @@ namespace black_cat
 		{
 			bci_network_message_server_visitor& m_visitor;
 			bci_network_message_visitor& m_injected_visitor;
-			const platform::bc_network_address& m_address;
+			const bc_network_client& m_client;
 		};
 
 		struct bc_network_message_client_acknowledge_context
@@ -75,7 +76,7 @@ namespace black_cat
 		{
 			bci_network_message_server_visitor& m_visitor;
 			bci_network_message_visitor& m_injected_visitor;
-			const platform::bc_network_address& m_address;
+			const bc_network_client& m_client;
 			core::bc_string m_ack_data;
 		};
 

@@ -71,6 +71,7 @@ namespace black_cat
 			 * \param p_script 
 			 * \return 
 			 */
+			[[maybe_unused]]
 			platform::bc_script_variable run_script(bc_script_context p_context, const bcWCHAR* p_script);
 
 			/**
@@ -79,6 +80,7 @@ namespace black_cat
 			* \param p_script
 			* \return
 			*/
+			[[maybe_unused]]
 			platform::bc_script_variable run_script(bc_script_context p_context, platform::bc_script_bytecode& p_script);
 
 			/**
@@ -87,6 +89,7 @@ namespace black_cat
 			 * \param p_script 
 			 * \return 
 			 */
+			[[maybe_unused]]
 			platform::bc_script_variable run_script_throw(bc_script_context p_context, const bcWCHAR* p_script);
 
 			/**
@@ -95,6 +98,7 @@ namespace black_cat
 			 * \param p_script 
 			 * \return 
 			 */
+			[[maybe_unused]]
 			platform::bc_script_variable run_script_throw(bc_script_context p_context, platform::bc_script_bytecode& p_script);
 
 			core::bc_wstring stringify(platform::bc_script_variable& p_value);

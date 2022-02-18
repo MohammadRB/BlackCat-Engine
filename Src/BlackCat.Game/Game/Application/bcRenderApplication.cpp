@@ -288,10 +288,6 @@ namespace black_cat
 				core::bc_get_service<core::bc_event_manager>()->process_event(l_event);
 
 				m_termination_code = -1;
-
-#ifdef BC_MEMORY_ENABLE
-				core::bc_memory_manager::get().end_of_frame();
-#endif
 			}
 
 			l_render_thread_state.m_terminate.store(true, core_platform::bc_memory_order::relaxed);
@@ -402,8 +398,7 @@ namespace black_cat
 
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
-			const auto* l_window_state_event = core::bci_message::as<platform::bc_app_event_window_state>(p_event);
-			if(l_window_state_event)
+			if(const auto* l_window_state_event = core::bci_message::as<platform::bc_app_event_window_state>(p_event))
 			{
 				if (l_window_state_event->get_window_id() == m_output_window->get_id())
 				{
@@ -421,9 +416,8 @@ namespace black_cat
 
 				return;
 			}
-			
-			const auto* l_window_focus_event = core::bci_message::as<platform::bc_app_event_window_focus>(p_event);
-			if (l_window_focus_event)
+
+			if (const auto* l_window_focus_event = core::bci_message::as<platform::bc_app_event_window_focus>(p_event))
 			{
 				/*if(l_window_focus_event->get_focus())
 				{
@@ -439,8 +433,7 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_pause_event = core::bci_message::as<platform::bc_app_event_pause_state>(p_event);
-			if (l_pause_event)
+			if (const auto* l_pause_event = core::bci_message::as<platform::bc_app_event_pause_state>(p_event))
 			{
 				if (l_pause_event->get_state() != platform::bc_app_event_pause_state::state::paused)
 				{
@@ -458,8 +451,7 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_close_event = core::bci_message::as<platform::bc_app_event_window_close>(p_event);
-			if (l_close_event)
+			if (const auto* l_close_event = core::bci_message::as<platform::bc_app_event_window_close>(p_event))
 			{
 				if (m_output_window && m_output_window->get_id() == l_close_event->get_window_id())
 				{
@@ -470,8 +462,7 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event);
-			if (l_exit_event)
+			if (const auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event))
 			{
 				m_is_terminated = true;
 				m_termination_code = l_exit_event->exit_code();
@@ -479,8 +470,7 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_error_event = core::bci_message::as<core::bc_app_event_error>(p_event);
-			if (l_error_event)
+			if (const auto* l_error_event = core::bci_message::as<core::bc_app_event_error>(p_event))
 			{
 				core::bc_log(core::bc_log_type::error) << l_error_event->get_message() << core::bc_lend;
 

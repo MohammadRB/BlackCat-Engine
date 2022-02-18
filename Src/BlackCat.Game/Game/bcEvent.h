@@ -2,12 +2,14 @@
 
 #pragma once
 
+#include "Core/Container/bcString.h"
 #include "Platform/bcEvent.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		class bc_scene;
 		class bc_global_config;
 
 		class bc_event_global_config_changed : public core::bc_app_event
@@ -100,9 +102,9 @@ namespace black_cat
 			BC_EVENT(scn_chg)
 			
 		public:
-			explicit bc_event_scene_change(const bcCHAR* p_scene_name)
+			explicit bc_event_scene_change(bc_scene* p_scene)
 				: bc_app_event(message_name()),
-				m_scene_name(p_scene_name)
+				m_scene(p_scene)
 			{
 			}
 
@@ -112,13 +114,13 @@ namespace black_cat
 
 			bc_event_scene_change& operator=(const bc_event_scene_change&) noexcept = default;
 
-			const bcCHAR* get_scene_name() const noexcept
+			bc_scene* get_scene() const noexcept
 			{
-				return m_scene_name;
+				return m_scene;
 			}
 		
 		private:
-			const bcCHAR* m_scene_name;
+			bc_scene* m_scene;
 		};
 	}
 }

@@ -21,19 +21,19 @@ namespace black_cat
 			bc_editor_render_app& operator=(bc_editor_render_app&&) = delete;
 		
 		protected:
-			void application_start_engine_components(game::bc_engine_application_parameter& p_parameters) override;
+			void application_start_engine_components(const bc_application_start_context& p_context) override;
 
-			void application_initialize(game::bc_engine_application_parameter& p_parameters) override;
+			void application_initialize(const bc_application_initialize_context& p_context) override;
 
-			void application_load_content(core::bc_content_stream_manager& p_stream_manager) override;
+			void application_load_content(const bc_application_load_context& p_context) override;
 
-			void application_update(const core_platform::bc_clock::update_param& p_clock_update_param, bool p_is_partial_update) override;
+			void application_update(const bc_application_update_context& p_context) override;
 
-			void application_render(const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			void application_render(const bc_application_render_context& p_context) override;
 
-			bool application_event(core::bci_event& p_event) override;
+			void application_event(core::bci_event& p_event) override;
 
-			void application_unload_content(core::bc_content_stream_manager& p_stream_manager) override;
+			void application_unload_content(const bc_application_load_context& p_context) override;
 
 			void application_destroy() override;
 

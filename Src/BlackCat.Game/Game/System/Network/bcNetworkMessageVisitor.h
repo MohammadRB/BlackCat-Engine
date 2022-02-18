@@ -6,6 +6,7 @@
 #include "Core/Math/bcMatrix4f.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/System/Network/bcNetworkDefinitions.h"
+#include "Game/System/Network/Server/bcNetworkClient.h"
 
 namespace black_cat
 {
@@ -49,6 +50,12 @@ namespace black_cat
 			virtual ~bci_network_message_deserialization_visitor() = default;
 		};
 
+		struct bc_client_connect_result
+		{
+			bc_network_client_id m_client_id;
+			core::bc_string m_error_message;
+		};
+
 		class bci_network_message_server_visitor
 		{
 		public:
@@ -56,7 +63,7 @@ namespace black_cat
 			
 			virtual void add_rtt_sample(const platform::bc_network_address& p_address, bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept = 0;
 			
-			virtual core::bc_string client_connected(const platform::bc_network_address& p_address, core::bc_string p_name) = 0;
+			virtual void client_connected(const platform::bc_network_address& p_address, core::bc_string p_name, bc_client_connect_result& p_result) = 0;
 
 			virtual void client_disconnected(const platform::bc_network_address& p_address) = 0;
 
@@ -81,7 +88,7 @@ namespace black_cat
 			
 			virtual void add_rtt_sample(bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept = 0;
 			
-			virtual void connection_approved(core::bc_string p_error_message) = 0;
+			virtual void connection_approved(bc_client_connect_result p_result) = 0;
 
 			virtual void acknowledge_message(bc_network_message_id p_ack_id, core::bc_string p_ack_data) = 0;
 

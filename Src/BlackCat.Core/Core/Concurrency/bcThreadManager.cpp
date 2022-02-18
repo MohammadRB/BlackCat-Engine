@@ -6,7 +6,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		void bc_task_stealing_queue::push(delegate_type&& p_task)
+		void bc_task_stealing_queue::push(task_wrapper_type&& p_task)
 		{
 			{
 				core_platform::bc_lock_guard l_lock(m_mutex);
@@ -22,7 +22,7 @@ namespace black_cat
 			}
 		}
 
-		bool bc_task_stealing_queue::pop(delegate_type& p_task)
+		bool bc_task_stealing_queue::pop(task_wrapper_type& p_task)
 		{
 			{
 				core_platform::bc_lock_guard l_lock(m_mutex);
@@ -38,7 +38,7 @@ namespace black_cat
 			}
 		}
 
-		bool bc_task_stealing_queue::try_steal(delegate_type& p_task)
+		bool bc_task_stealing_queue::try_steal(task_wrapper_type& p_task)
 		{
 			{
 				core_platform::bc_lock_guard l_lock(m_mutex);
@@ -74,10 +74,9 @@ namespace black_cat
 			m_flag.clear(core_platform::bc_memory_order::relaxed);
 		}
 
-		bc_thread_manager::bc_thread_manager(bcSIZE p_thread_count, bcSIZE p_reserved_thread_count) noexcept
-			: m_my_data()
+		bc_thread_manager::bc_thread_manager(bcSIZE p_hardware_thread_count, bcSIZE p_reserved_thread_count) noexcept
 		{
-			_initialize(p_thread_count, p_reserved_thread_count);
+			_initialize(p_hardware_thread_count, p_reserved_thread_count);
 		}
 
 		bc_thread_manager::~bc_thread_manager()
@@ -85,20 +84,22 @@ namespace black_cat
 			_stop_workers();
 		}
 
-		bcSIZE bc_thread_manager::max_thread_count() const
+		bcUINT32 bc_thread_manager::hardware_thread_count() const
 		{
-			return m_thread_count + m_reserved_thread_count;
+			return m_hardware_thread_count;
 		}
 
-		bcSIZE bc_thread_manager::spawned_thread_count() const
+		bcUINT32 bc_thread_manager::max_thread_count() const
 		{
-			{
-				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_guard(m_threads_mutex);
-				return m_threads.size();
-			}
+			return m_hardware_thread_count + m_reserved_thread_count;
 		}
 
-		bcSIZE bc_thread_manager::task_count() const
+		bcUINT32 bc_thread_manager::spawned_thread_count() const
+		{
+			return m_spawned_thread_count.load(core_platform::bc_memory_order::relaxed);
+		}
+
+		bcUINT32 bc_thread_manager::task_count() const
 		{
 			return m_task_count.load(core_platform::bc_memory_order::seqcst);
 		}
@@ -136,19 +137,20 @@ namespace black_cat
 			l_flag.clear();
 		}
 
-		void bc_thread_manager::_initialize(bcSIZE p_thread_count, bcSIZE p_reserved_thread_count)
+		void bc_thread_manager::_initialize(bcSIZE p_hardware_thread_count, bcSIZE p_reserved_thread_count)
 		{
-			m_thread_count = std::max(p_thread_count, 4U);
-			m_reserved_thread_count = std::max(p_reserved_thread_count, m_thread_count);
+			m_hardware_thread_count = p_hardware_thread_count;
+			m_reserved_thread_count = p_reserved_thread_count;
 			m_done.store(false);
-			m_task_count.store(0, core_platform::bc_memory_order::relaxed);
+			m_spawned_thread_count.store(0, core_platform::bc_memory_order::relaxed);
 			m_num_thread_in_spin.store(0, core_platform::bc_memory_order::relaxed);
+			m_task_count.store(0, core_platform::bc_memory_order::relaxed);
 
 			try
 			{
-				m_threads.reserve(m_thread_count + m_reserved_thread_count);
+				m_threads.reserve(m_hardware_thread_count + m_reserved_thread_count);
 
-				for (bcUINT32 l_i = 0; l_i <m_thread_count; ++l_i)
+				for (bcUINT32 l_i = 0; l_i <m_hardware_thread_count; ++l_i)
 				{
 					_push_worker();
 				}
@@ -188,7 +190,7 @@ namespace black_cat
 				core_platform::bc_shared_mutex_guard l_guard(m_threads_mutex);
 
 				auto l_my_index = m_threads.size();
-				if (l_my_index>= m_thread_count + m_reserved_thread_count)
+				if (l_my_index >= m_hardware_thread_count + m_reserved_thread_count)
 				{
 					return;
 				}
@@ -201,6 +203,8 @@ namespace black_cat
 				));
 				m_threads.back()->m_thread.set_name(bcL("BC_Worker"));
 				m_threads.back()->m_thread.set_priority(core_platform::bc_thread_priority::highest);
+
+				m_spawned_thread_count.fetch_add(1);
 			}
 		}
 
@@ -219,19 +223,19 @@ namespace black_cat
 			}
 		}
 
-		bool bc_thread_manager::_pop_task_from_local_queue(task_type& p_task)
+		bool bc_thread_manager::_pop_task_from_local_queue(task_wrapper_type& p_task)
 		{
 			_thread_data* l_my_data = m_my_data.get();
 
 			return l_my_data && l_my_data->local_queue().pop(p_task);
 		}
 
-		bool bc_thread_manager::_pop_task_from_global_queue(task_type& p_task)
+		bool bc_thread_manager::_pop_task_from_global_queue(task_wrapper_type& p_task)
 		{
 			return m_global_queue.pop(p_task);
 		}
 
-		bool bc_thread_manager::_pop_task_from_others_queue(task_type& p_task)
+		bool bc_thread_manager::_pop_task_from_others_queue(task_wrapper_type& p_task)
 		{
 			_thread_data* l_my_data = m_my_data.get();
 
@@ -263,7 +267,7 @@ namespace black_cat
 			m_num_thread_in_spin.fetch_add(1);
 
 			bcUINT32 l_without_task = 0;
-			task_type l_task;
+			task_wrapper_type l_task;
 
 			while (!m_done.load())
 			{
@@ -283,7 +287,7 @@ namespace black_cat
 						m_cvariable.notify_one();
 					}
 
-					l_task(core_platform::bc_thread::current_thread_id());
+					l_task();
 					l_task.reset();
 
 					m_num_thread_in_spin.fetch_add(1);

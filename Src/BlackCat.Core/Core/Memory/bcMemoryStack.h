@@ -21,9 +21,9 @@ namespace black_cat
 		{
 		public:
 			_bc_memory_stack_block(void* p_address, bcSIZE p_size)
+				: m_address(p_address),
+				m_size(p_size)
 			{
-				m_address = p_address;
-				m_size = p_size;
 			}
 
 			void* m_address;
@@ -41,7 +41,7 @@ namespace black_cat
 
 			bc_memory_stack(this_type&& p_other) noexcept;
 
-			~bc_memory_stack() noexcept;
+			~bc_memory_stack() noexcept override;
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
@@ -73,9 +73,9 @@ namespace black_cat
 			bcSIZE m_max_num_thread;
 			bcSIZE m_size;
 			bcUBYTE* m_heap;
-			core_platform::bc_atomic< bcUBYTE* > m_top;
-			core_platform::bc_atomic< bcSIZE > m_pop_thread_count;
-			core_platform::bc_atomic< bcSIZE > m_free_block_count;
+			core_platform::bc_atomic<bcUBYTE*> m_top;
+			core_platform::bc_atomic<bcSIZE> m_pop_thread_count;
+			core_platform::bc_atomic<bcSIZE> m_free_block_count;
 			core_platform::bc_shared_mutex m_free_block_mutex;
 		};
 

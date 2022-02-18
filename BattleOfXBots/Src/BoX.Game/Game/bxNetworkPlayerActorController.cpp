@@ -1,13 +1,16 @@
 // [01/01/2022 MRB]
 
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
-#include "App/SampleImp/XBot/bcXBotRagdollNetworkMessage.h"
-#include "BoX/Game/bxNetworkPlayerActorController.h"
+#include "BoX.Game/Game/bxNetworkPlayerActorController.h"
+#include "BoX.Game/Network/bxPlayerKilledNetworkMessage.h"
+#include "BoX.Game/bxEvent.h"
 
 namespace box
 {
 	bx_network_player_actor_controller::bx_network_player_actor_controller() noexcept
-		: m_health_recover_per_second(10),
+		: m_event_manager(core::bc_get_service<core::bc_event_manager>()),
+		m_health_recover_per_second(10),
 		m_health_damage_per_thousands_force(8),
 		m_health(100)
 	{
@@ -37,6 +40,9 @@ namespace box
 	void bx_network_player_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		bc_xbot_network_player_actor_controller::added_to_scene(p_context, p_scene);
+
+		bx_player_spawned_event l_event(get_network_client_id(), p_context.m_actor);
+		m_event_manager->process_event(l_event);
 	}
 
 	void bx_network_player_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
@@ -55,6 +61,9 @@ namespace box
 	void bx_network_player_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		bc_xbot_network_player_actor_controller::removed_from_scene(p_context, p_scene);
+
+		bx_player_removed_event l_event(get_network_client_id(), p_context.m_actor);
+		m_event_manager->process_event(l_event);
 	}
 
 	void bx_network_player_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
@@ -62,21 +71,24 @@ namespace box
 		bc_xbot_network_player_actor_controller::handle_event(p_context);
 
 		bool l_health_hit = false;
+		game::bc_actor_network_id l_hit_client_id = game::bc_actor::invalid_id;
 
-		const auto* l_bullet_hit_event = core::bci_message::as<game::bc_bullet_hit_actor_event>(p_context.m_event);
-		if (l_bullet_hit_event)
+		if (const auto* l_bullet_hit_event = core::bci_message::as<game::bc_bullet_hit_actor_event>(p_context.m_event))
 		{
 			const auto l_force = l_bullet_hit_event->calculate_applied_force();
-			m_health -= l_force / 1000.f * m_health_damage_per_thousands_force;
+			m_health -= l_force / 1000.f * static_cast<bcFLOAT>(m_health_damage_per_thousands_force);
+
 			l_health_hit = true;
+			l_hit_client_id = l_bullet_hit_event->get_bullet_player_id();
 		}
 
-		const auto* l_explosion_event = core::bci_message::as<game::bc_explosion_actor_event>(p_context.m_event);
-		if (l_explosion_event)
+		if (const auto* l_explosion_event = core::bci_message::as<game::bc_explosion_actor_event>(p_context.m_event))
 		{
 			const auto l_force = l_explosion_event->calculate_applied_force(get_position());
-			m_health -= l_force.second / 1000.f * m_health_damage_per_thousands_force;
+			m_health -= l_force.second / 1000.f * static_cast<bcFLOAT>(m_health_damage_per_thousands_force);
+
 			l_health_hit = true;
+			l_hit_client_id = l_explosion_event->get_player_id();
 		}
 
 		if (l_health_hit && m_health <= 0)
@@ -88,7 +100,10 @@ namespace box
 			l_ragdoll_component->handle_event(p_context);
 
 			auto [l_body_part, l_force] = l_ragdoll_component->get_last_applied_force();
-			p_context.m_game_system.get_network_system().send_message(bc_xbot_ragdoll_activation_network_message(get_actor(), l_body_part.data(), l_force));
+			p_context.m_game_system.get_network_system().send_message(bx_player_killed_network_message(l_hit_client_id, get_actor(), l_body_part.data(), l_force));
+
+			bx_player_killed_event l_event(l_hit_client_id, get_network_client_id(), p_context.m_actor);
+			m_event_manager->process_event(l_event);
 		}
 	}
 }

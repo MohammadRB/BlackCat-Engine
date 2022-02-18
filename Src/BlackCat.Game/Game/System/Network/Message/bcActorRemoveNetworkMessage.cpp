@@ -46,7 +46,7 @@ namespace black_cat
 				return;
 			}
 			
-			p_context.m_visitor.remove_actor(p_context.m_address, m_actor);
+			p_context.m_visitor.remove_actor(p_context.m_client.m_address, m_actor);
 		}
 
 		void bc_actor_remove_network_message::acknowledge(const bc_network_message_client_acknowledge_context& p_context) noexcept

@@ -43,79 +43,9 @@
         -800.0
       ],
       "rotation": [
-        0.0,
         -0.0,
-        0.0
-      ],
-      "parameters": {}
-    },
-    {
-      "entity_name": "box",
-      "position": [
-        60.0,
-        20.0,
-        -800.0
-      ],
-      "rotation": [
         0.0,
-        -0.0,
-        0.0
-      ],
-      "parameters": {}
-    },
-    {
-      "entity_name": "box",
-      "position": [
-        55.0,
-        20.0,
-        -800.0
-      ],
-      "rotation": [
-        0.0,
-        -0.0,
-        0.0
-      ],
-      "parameters": {}
-    },
-    {
-      "entity_name": "box",
-      "position": [
-        40.0,
-        20.0,
-        -800.0
-      ],
-      "rotation": [
-        0.0,
-        -0.0,
-        0.0
-      ],
-      "parameters": {}
-    },
-    {
-      "entity_name": "box_server",
-      "position": [
-        65.0,
-        120.0,
-        -800.0
-      ],
-      "rotation": [
-        0.0,
-        -0.0,
-        0.0
-      ],
-      "parameters": {}
-    },
-    {
-      "entity_name": "box",
-      "position": [
-        50.0,
-        20.0,
-        -800.0
-      ],
-      "rotation": [
-        0.0,
-        -0.0,
-        0.0
+        -0.0
       ],
       "parameters": {}
     },
@@ -127,9 +57,37 @@
         -800.0
       ],
       "rotation": [
-        0.0,
         -0.0,
-        0.0
+        0.0,
+        -0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "box",
+      "position": [
+        60.0,
+        20.0,
+        -800.0
+      ],
+      "rotation": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "box",
+      "position": [
+        55.0,
+        20.0,
+        -800.0
+      ],
+      "rotation": [
+        -0.0,
+        0.0,
+        -0.0
       ],
       "parameters": {}
     },
@@ -141,23 +99,79 @@
         -800.0
       ],
       "rotation": [
-        0.0,
         -0.0,
-        0.0
+        0.0,
+        -0.0
       ],
       "parameters": {}
     },
     {
-      "entity_name": "box_red_player",
+      "entity_name": "box",
       "position": [
-        48.1654052,
-        0.0,
-        -803.7573242
+        40.0,
+        20.0,
+        -800.0
       ],
       "rotation": [
-        0.0,
         -0.0,
-        0.0
+        0.0,
+        -0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "box_server",
+      "position": [
+        65.0,
+        120.0,
+        -800.0
+      ],
+      "rotation": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "box",
+      "position": [
+        50.0,
+        20.0,
+        -800.0
+      ],
+      "rotation": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "box_red_seat",
+      "position": [
+        15.0,
+        1.0,
+        -800.0
+      ],
+      "rotation": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "box_blue_seat",
+      "position": [
+        85.0,
+        1.0,
+        -810.0
+      ],
+      "rotation": [
+        -0.0,
+        0.0,
+        -0.0
       ],
       "parameters": {}
     },
@@ -169,9 +183,9 @@
         0.0
       ],
       "rotation": [
-        0.0,
         -0.0,
-        0.0
+        0.0,
+        -0.0
       ],
       "parameters": {}
     },
@@ -183,9 +197,9 @@
         0.0
       ],
       "rotation": [
-        0.0,
         -0.0,
-        0.0
+        0.0,
+        -0.0
       ],
       "parameters": {}
     },
@@ -197,9 +211,9 @@
         0.0
       ],
       "rotation": [
-        0.0,
         -0.0,
-        0.0
+        0.0,
+        -0.0
       ],
       "parameters": {}
     }

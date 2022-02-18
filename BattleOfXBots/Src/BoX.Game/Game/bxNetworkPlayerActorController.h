@@ -3,12 +3,21 @@
 #pragma once
 
 #include "App/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
+#include "BoX.Game/bxExport.h"
+
+namespace black_cat
+{
+	namespace core
+	{
+		class bc_event_manager;
+	}
+}
 
 namespace box
 {
 	using namespace black_cat;
 
-	class bx_network_player_actor_controller : public bc_xbot_network_player_actor_controller
+	class BX_GAME_DLL bx_network_player_actor_controller : public bc_xbot_network_player_actor_controller
 	{
 	public:
 		bx_network_player_actor_controller() noexcept;
@@ -37,6 +46,8 @@ namespace box
 		void removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
 
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
+
+		core::bc_event_manager* m_event_manager;
 
 		bcUBYTE m_health_recover_per_second;
 		bcUBYTE m_health_damage_per_thousands_force;

@@ -231,7 +231,7 @@ namespace black_cat
 			core::bc_json_document<_bc_decal_array_json> l_json;
 			l_json.set_max_decimal_places(2);
 			
-			for(auto& l_decal : m_persistent_decals)
+			for(const auto& l_decal : m_persistent_decals)
 			{
 				auto& l_json_entry = l_json->m_decals.new_entry();
 				*l_json_entry->m_nm = l_decal->get_decal()->get_name();
@@ -241,7 +241,7 @@ namespace black_cat
 				*l_json_entry->m_ani = l_decal->get_attached_node_index();
 			}
 
-			core::bc_string l_json_str = l_json.write().c_str();
+			core::bc_string l_json_str = l_json.write();
 			p_context.m_parameters.add(constant::g_param_decal_parameters, core::bc_any(std::move(l_json_str)));
 		}
 

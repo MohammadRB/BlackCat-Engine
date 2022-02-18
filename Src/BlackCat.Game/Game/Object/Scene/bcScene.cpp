@@ -210,7 +210,7 @@ namespace black_cat
 				l_px_actors = m_px_scene->get_active_actors();
 			}
 
-			const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), l_px_actors.size() / 25U + 1);
+			const auto l_num_thread = std::min(core::bc_concurrency::hardware_worker_count(), l_px_actors.size() / 25U + 1);
 
 			core::bc_concurrency::concurrent_for_each
 			(
@@ -302,7 +302,7 @@ namespace black_cat
 
 				m_to_remove_actors.clear();
 				
-				const auto l_num_thread = std::min(core::bc_concurrency::worker_count(), m_changed_actors.size() / 10U + 1);
+				const auto l_num_thread = std::min(core::bc_concurrency::hardware_worker_count(), m_changed_actors.size() / 10U + 1);
 				core::bc_concurrency::concurrent_for_each
 				(
 					l_num_thread,
@@ -360,7 +360,7 @@ namespace black_cat
 			const bool l_added = m_scene_graph.add_actor(p_actor);
 			if (!l_added)
 			{
-				_send_actor_remove_event(_bc_scene_actor_operation::removed_from_graph, p_actor);
+				p_actor.destroy();
 				return;
 			}
 

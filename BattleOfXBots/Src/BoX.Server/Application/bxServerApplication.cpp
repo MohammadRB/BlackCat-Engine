@@ -1,15 +1,21 @@
 // [06/15/2021 MRB]
 
+#include "Core/Messaging/Event/bcEventManager.h"
+#include "Core/Content/bcContentManager.h"
 #include "Core/Utility/bcLogger.h"
 #include "Platform/bcEvent.h"
 #include "PlatformImp/Script/bcScriptGlobalPrototypeBuilder.h"
 #include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
 #include "Game/System/Script/bcScriptBinding.h"
-#include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
-#include "App/Loader/bcHeightMapLoaderDx11.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/bcSceneCheckPoint.h"
+#include "BoX.Game/Application/bxApplicationHookFunctions.h"
+#include "BoX.Game/Game/bxPlayerSeatComponent.h"
+#include "BoX.Game/Network/bxPlayerSpawnNetworkMessage.h"
+#include "BoX.Game/Network/bxGameStateNetworkMessage.h"
+#include "BoX.Game/bxEvent.h"
 #include "BoX.Server/Application/bxServerApplication.h"
 #include "BoX.Server/Application/bxServerScript.h"
-#include "BoX/Application/bxApplicationHookFunctions.h"
 
 using namespace black_cat;
 
@@ -37,19 +43,12 @@ namespace box
 		}
 	}
 	
-	void bx_server_application::application_start_engine_components(game::bc_engine_application_parameter& p_parameters)
+	void bx_server_application::application_start_engine_components(const bc_application_start_context& p_context)
 	{
-		m_app_name = p_parameters.m_app_parameters.m_app_name;
-		auto& l_game_console = m_game_system->get_console();
-
-		m_console = core::bc_make_unique<game::bc_default_game_console>(*this, l_game_console);
-		m_console->show();
-		m_console->get_console_window()->disable_close(false);
-		m_console->get_console_window()->set_caption(p_parameters.m_app_parameters.m_app_name);
-		l_game_console.set_implementation(m_console.get());
-
-		bx_start_game_services(p_parameters);
-		bx_register_game_loaders(p_parameters);
+		m_app_name = p_context.m_app_parameters.m_app_name;
+		
+		bx_start_game_services(p_context);
+		bx_register_game_loaders(p_context);
 		bx_register_game_actor_components();
 		bx_register_game_network_messages(m_game_system->get_network_system());
 		bx_bind_game_scripts(*m_game_system);
@@ -57,31 +56,66 @@ namespace box
 		bx_load_game_shaders(*core::bc_get_service<core::bc_content_stream_manager>(), *m_game_system);
 	}
 
-	void bx_server_application::application_initialize(game::bc_engine_application_parameter& p_parameters)
+	void bx_server_application::application_initialize(const bc_application_initialize_context& p_context)
 	{
-		const auto& l_script_system = m_game_system->get_script_system();
-		auto l_script_binder = l_script_system.get_script_binder();
+		m_network_system = &m_game_system->get_network_system();
+		auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
+		auto& l_game_console = m_game_system->get_console();
+
+		m_console = core::bc_make_unique<game::bc_default_game_console>(*this, l_game_console);
+		m_console->show();
+		m_console->get_console_window()->disable_close(false);
+		m_console->get_console_window()->set_caption(p_context.m_app_parameters.m_app_name);
+		l_game_console.set_implementation(m_console.get());
+
+		m_player_spawn_event_handle = l_event_manager.register_event_listener<bx_player_spawned_event>
+		(
+			core::bc_event_manager::delegate_type(*this, &bx_server_application::application_event)
+		);
+		m_player_kill_event_handle = l_event_manager.register_event_listener<bx_player_killed_event>
+		(
+			core::bc_event_manager::delegate_type(*this, &bx_server_application::application_event)
+		);
+		m_player_remove_event_handle = l_event_manager.register_event_listener<bx_player_removed_event>
+		(
+			core::bc_event_manager::delegate_type(*this, &bx_server_application::application_event)
+		);
+
+		auto l_script_binder = m_game_system->get_script_system().get_script_binder();
 		l_script_binder.bind(game::bc_script_context::app, *this);
 	}
 
-	void bx_server_application::application_load_content(core::bc_content_stream_manager& p_stream_manager)
+	void bx_server_application::application_load_content(const bc_application_load_context& p_context)
 	{
-		bx_load_game_resources(p_stream_manager, *m_game_system);
+		bx_load_game_resources(p_context.m_stream_manager, *m_game_system);
 	}
 
-	void bx_server_application::application_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
+	void bx_server_application::application_update(const bc_application_update_context& p_context)
 	{
-		if(!m_server_started)
+		if(m_state == bx_app_state::initial)
 		{
 			auto& l_script_system = m_game_system->get_script_system();
 			l_script_system.run_script_throw(game::bc_script_context::app, L"server.start(6699);");
-			l_script_system.run_script_throw(game::bc_script_context::app, L"server.load_scene(\"test\");");
-
-			m_server_started = true;
+			l_script_system.run_script_throw(game::bc_script_context::app, L"server.load_scene('Test');");
+			return;
 		}
+
+		if(m_state == bx_app_state::game_started)
+		{
+			m_current_game_time -= p_context.m_clock.m_elapsed_second;
+
+			if(m_current_game_time <= 0)
+			{
+				_reset_game(*m_scene);
+			}
+
+			_respawn_players(p_context.m_clock);
+		}
+
+		_send_game_state_to_clients(p_context.m_clock);
 	}
 
-	void bx_server_application::application_render(const core_platform::bc_clock::update_param& p_clock)
+	void bx_server_application::application_render(const bc_application_render_context& p_context)
 	{
 	}
 
@@ -92,10 +126,37 @@ namespace box
 		m_console->get_console_window()->set_caption(l_caption.c_str());
 	}
 	
-	bool bx_server_application::application_event(core::bci_event& p_event)
-	{		
-		auto* l_close_event = core::bci_message::as<platform::bc_app_event_window_close>(p_event);
-		if (l_close_event)
+	void bx_server_application::application_event(core::bci_event& p_event)
+	{
+		if(const auto* l_player_spawn_event = core::bci_message::as<bx_player_spawned_event>(p_event))
+		{
+			const auto l_client_ite = m_joined_clients.find(l_player_spawn_event->get_client_id());
+			l_client_ite->second.m_player_actor = l_player_spawn_event->get_actor();
+
+			return;
+		}
+
+		if (const auto* l_player_kill_event = core::bci_message::as<bx_player_killed_event>(p_event))
+		{
+			const auto l_client_ite = m_joined_clients.find(l_player_kill_event->get_client_id());
+			l_client_ite->second.m_is_dead = true;
+			l_client_ite->second.m_dead_passed_time = 0;
+
+			return;
+		}
+
+		if (const auto* l_player_remove_event = core::bci_message::as<bx_player_removed_event>(p_event))
+		{
+			const auto l_client_ite = m_joined_clients.find(l_player_remove_event->get_client_id());
+			if(l_client_ite != std::end(m_joined_clients)) // If event is not caused by client disconnection
+			{
+				l_client_ite->second.m_player_actor = game::bc_actor();
+			}
+
+			return;
+		}
+
+		if (const auto* l_close_event = core::bci_message::as<platform::bc_app_event_window_close>(p_event))
 		{
 			if (m_console->get_console_window()->get_id() == l_close_event->get_window_id())
 			{
@@ -104,15 +165,13 @@ namespace box
 				l_event_manager->process_event(l_exit_event);
 			}
 
-			return true;
+			return;
 		}
-		
-		return false;
 	}
 
-	void bx_server_application::application_unload_content(core::bc_content_stream_manager& p_stream_manager)
+	void bx_server_application::application_unload_content(const bc_application_load_context& p_context)
 	{
-		bx_unload_game_resources(p_stream_manager);
+		bx_unload_game_resources(p_context.m_stream_manager);
 	}
 
 	void bx_server_application::application_destroy()
@@ -126,6 +185,10 @@ namespace box
 		}
 		m_game_system->get_console().set_implementation(nullptr);
 		m_console.reset();
+
+		m_player_spawn_event_handle.reset();
+		m_player_kill_event_handle.reset();
+		m_player_remove_event_handle.reset();
 	}
 
 	void bx_server_application::application_close_engine_components()
@@ -135,15 +198,53 @@ namespace box
 
 	void bx_server_application::started_listening(bcUINT16 p_port) noexcept
 	{
+		m_state = bx_app_state::server_started;
+	}
+
+	void bx_server_application::scene_changed(game::bc_scene* p_scene) noexcept
+	{
+		m_scene = p_scene;
+		const auto l_player_seat_actors = m_scene->get_scene_graph().get_actors<bx_player_seat_component>();
+
+		for(const auto& l_actor : l_player_seat_actors)
+		{
+			const auto* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();
+			const auto* l_seat_component = l_actor.get_component<bx_player_seat_component>();
+
+			if(l_seat_component->get_team() == bx_team::red)
+			{
+				m_red_player_seats.push_back({game::bc_network_client::invalid_id, l_mediate_component->get_position() });
+			}
+			else
+			{
+				m_blue_player_seats.push_back({ game::bc_network_client::invalid_id, l_mediate_component->get_position() });
+			}
+		}
+
+		for(auto& l_joined_client : m_joined_clients)
+		{
+			l_joined_client.second.m_team = nullptr;
+		}
+
+		m_state = bx_app_state::game_started;
+		_create_scene_checkpoint(*m_scene);
 	}
 
 	core::bc_string bx_server_application::client_connected(const game::bc_network_client& p_client) noexcept
 	{
+		const auto l_scene_capacity = m_red_player_seats.size() + m_blue_player_seats.size();
+		if(m_joined_clients.size() > l_scene_capacity)
+		{
+			return "Server is full";
+		}
+
+		m_joined_clients.insert(std::make_pair(p_client.m_id, bx_client{ p_client.m_address, p_client.m_id, core::bc_string(p_client.m_name), {}, nullptr }));
 		return {};
 	}
 
 	void bx_server_application::client_disconnected(const game::bc_network_client& p_client) noexcept
 	{
+		_remove_client(p_client.m_id);
 	}
 
 	void bx_server_application::message_packet_sent(const game::bc_network_client& p_client, const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept
@@ -160,5 +261,151 @@ namespace box
 
 	void bx_server_application::error_occurred(const game::bc_network_client* p_client, const bc_network_exception* p_exception) noexcept
 	{
+		if(!p_client)
+		{
+			m_game_system->set_scene(nullptr);
+
+			m_state = bx_app_state::initial;
+		}
+	}
+
+	core::bc_string bx_server_application::change_player_team(game::bc_network_client_id p_client_id, bx_team p_team)
+	{
+		const auto l_client_ite = m_joined_clients.find(p_client_id);
+		const auto l_seat = _assign_seat(p_client_id, p_team);
+
+		if(!l_seat.first)
+		{
+			return "Team is full";
+		}
+
+		if(m_state == bx_app_state::game_started)
+		{
+			m_network_system->send_message(l_client_ite->second.m_address, bx_player_spawn_network_message(l_seat.second, p_team));
+		}
+
+		return {};
+	}
+
+	void bx_server_application::_send_game_state_to_clients(const core_platform::bc_clock::update_param& p_clock)
+	{
+		m_last_state_update_elapsed_ms += p_clock.m_elapsed;
+
+		if(m_last_state_update_elapsed_ms >= 500)
+		{
+			m_last_state_update_elapsed_ms = 0;
+
+			const bx_game_state l_game_state{ static_cast<bcUINT32>(m_current_game_time) };
+			m_network_system->send_message(bx_game_state_network_message(l_game_state));
+		}
+	}
+
+	void bx_server_application::_create_scene_checkpoint(game::bc_scene& p_scene)
+	{
+		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
+		const auto l_checkpoint_path = game::bc_scene_check_point::get_checkpoint_path(p_scene, bcL("game_checkpoint"));
+
+		game::bc_scene_check_point l_check_point(p_scene);
+		l_content_manager.save_as(l_check_point, l_checkpoint_path.get_string_frame().c_str(), nullptr);
+	}
+
+	void bx_server_application::_restore_scene_checkpoint(game::bc_scene& p_scene)
+	{
+		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
+		const auto l_checkpoint_path = game::bc_scene_check_point::get_checkpoint_path(p_scene, bcL("game_checkpoint"));
+
+		auto l_check_point = l_content_manager.load<game::bc_scene_check_point>
+		(
+			l_checkpoint_path.get_string_frame().c_str(),
+			nullptr,
+			core::bc_content_loader_parameter(),
+			core::bc_content_loader_parameter().add_or_update("scene", &p_scene)
+		);
+	}
+
+	void bx_server_application::_remove_client(game::bc_network_client_id p_id)
+	{
+		const auto l_client_ite = m_joined_clients.find(p_id);
+
+		if(l_client_ite->second.m_team.has_value())
+		{
+			auto& l_seats = *l_client_ite->second.m_team == bx_team::red ? m_red_player_seats : m_blue_player_seats;
+
+			const auto l_seat_ite = std::find_if
+			(
+				std::begin(l_seats),
+				std::end(l_seats),
+				[&](const bx_player_seat& p_seat)
+				{
+					return p_seat.m_client_id == l_client_ite->second.m_id;
+				}
+			);
+			l_seat_ite->m_client_id = game::bc_actor::invalid_id;
+		}
+
+		m_joined_clients.erase(l_client_ite);
+	}
+
+	void bx_server_application::_reset_game(game::bc_scene& p_scene)
+	{
+		m_current_game_time = m_game_time;
+
+		for (auto& l_seat : m_blue_player_seats)
+		{
+			l_seat.m_client_id = game::bc_actor::invalid_id;
+		}
+		for(auto& l_seat : m_red_player_seats)
+		{
+			l_seat.m_client_id = game::bc_actor::invalid_id;
+		}
+
+		_restore_scene_checkpoint(p_scene);
+	}
+
+	std::pair<bool, core::bc_vector3f> bx_server_application::_assign_seat(game::bc_network_client_id p_client_id, bx_team p_team)
+	{
+		auto& l_seats = p_team == bx_team::red ? m_red_player_seats : m_blue_player_seats;
+		const auto l_seat_ite = std::find_if
+		(
+			std::begin(l_seats),
+			std::end(l_seats),
+			[](const bx_player_seat& p_seat)
+			{
+				return p_seat.m_client_id == game::bc_network_client::invalid_id;
+			}
+		);
+
+		if (l_seat_ite == std::end(l_seats))
+		{
+			return { false, {} };
+		}
+
+		const auto l_client_ite = m_joined_clients.find(p_client_id);
+		l_client_ite->second.m_team.reset(p_team);
+		l_client_ite->second.m_seat = l_seat_ite->m_position;
+		l_seat_ite->m_client_id = p_client_id;
+
+		return { true, l_seat_ite->m_position };
+	}
+
+	void bx_server_application::_respawn_players(const core_platform::bc_clock::update_param& p_clock)
+	{
+		for (auto& [l_client_id, l_client] : m_joined_clients)
+		{
+			if(!l_client.m_is_dead)
+			{
+				continue;
+			}
+
+			l_client.m_dead_passed_time += p_clock.m_elapsed;
+
+			if(l_client.m_dead_passed_time >= m_respawn_time)
+			{
+				l_client.m_is_dead = false;
+				l_client.m_dead_passed_time = 0;
+
+				m_network_system->send_message(l_client.m_address, bx_player_spawn_network_message(l_client.m_seat, *l_client.m_team));
+			}
+		}
 	}
 }

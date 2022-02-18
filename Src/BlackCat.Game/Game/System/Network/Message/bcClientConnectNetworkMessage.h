@@ -38,7 +38,7 @@ namespace black_cat
 			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
 
 			core::bc_string m_client_name;
-			core::bc_string m_error_message;
+			bc_client_connect_result m_result;
 		};
 
 		class BC_GAME_DLL bc_client_disconnect_network_message : public bci_network_message

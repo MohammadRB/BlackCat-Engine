@@ -140,7 +140,8 @@
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy ..\Src\BoX\Content\*.* $(SolutionDir)\$(Configuration)\Content\ /E /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">
@@ -165,7 +166,8 @@
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy ..\Src\BoX\Content\*.* $(SolutionDir)\$(Configuration)\Content\ /E /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -222,7 +224,8 @@
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy ..\Src\BoX\Content\*.* $(SolutionDir)\$(Configuration)\Content\ /E /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -245,13 +248,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Src\BoX\Application\bxApplicationHookFunctions.cpp" />
     <ClCompile Include="..\Src\BoX\Application\bxApplication.cpp" />
     <ClCompile Include="..\Src\BoX\Application\bxClientScript.cpp" />
     <ClCompile Include="..\Src\BoX\BattleOfXbots.cpp" />
-    <ClCompile Include="..\Src\BoX\Game\bxNetworkPlayerActorController.cpp" />
-    <ClCompile Include="..\Src\BoX\Game\bxPlayerActorController.cpp" />
-    <ClCompile Include="..\Src\BoX\RenderPass\bxPlayerUIPass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Solution\VS\BlackCat.App.vcxproj">
@@ -275,26 +274,13 @@
     <ProjectReference Include="..\..\Solution\VS\BlackCat.Platform.Win32.vcxproj">
       <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
     </ProjectReference>
+    <ProjectReference Include="BattleOfXbots.Game.vcxproj">
+      <Project>{2e2d16b5-dc44-4cfb-88d0-da506b16df92}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Src\BoX\Application\bxApplicationHookFunctions.h" />
     <ClInclude Include="..\Src\BoX\Application\bxClientScript.h" />
     <ClInclude Include="..\Src\BoX\Application\bxApplication.h" />
-    <ClInclude Include="..\Src\BoX\Application\bxPlayerService.h" />
-    <ClInclude Include="..\Src\BoX\Game\bxNetworkPlayerActorController.h" />
-    <ClInclude Include="..\Src\BoX\Game\bxPlayerActorController.h" />
-    <ClInclude Include="..\Src\BoX\RenderPass\bxPlayerUIPass.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Src\BoX\Content\Data\BoXContentStream.json" />
-    <None Include="..\Src\BoX\Content\Data\BoXDecal.json" />
-    <None Include="..\Src\BoX\Content\Data\BoXEntityType.json" />
-    <None Include="..\Src\BoX\Content\Data\BoXMaterial.json" />
-    <None Include="..\Src\BoX\Content\Scene\Test.json" />
-    <None Include="..\Src\BoX\Content\Scene\TestContentStream.json" />
-    <None Include="..\Src\BoX\Content\Scene\TestDecal.json" />
-    <None Include="..\Src\BoX\Content\Scene\TestEntityType.json" />
-    <None Include="..\Src\BoX\Content\Scene\TestMaterial.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

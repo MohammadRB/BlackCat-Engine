@@ -239,16 +239,10 @@
     <ClCompile Include="..\Src\BoX.Server\Application\bxServerScript.cpp" />
     <ClCompile Include="..\Src\BoX.Server\Application\bxServerApplication.cpp" />
     <ClCompile Include="..\Src\BoX.Server\BattleOfXbots.Server.cpp" />
-    <ClCompile Include="..\Src\BoX\Application\bxApplicationHookFunctions.cpp" />
-    <ClCompile Include="..\Src\BoX\Game\bxNetworkPlayerActorController.cpp" />
-    <ClCompile Include="..\Src\BoX\Game\bxPlayerActorController.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\BoX.Server\Application\bxServerScript.h" />
     <ClInclude Include="..\Src\BoX.Server\Application\bxServerApplication.h" />
-    <ClInclude Include="..\Src\BoX\Application\bxApplicationHookFunctions.h" />
-    <ClInclude Include="..\Src\BoX\Game\bxNetworkPlayerActorController.h" />
-    <ClInclude Include="..\Src\BoX\Game\bxPlayerActorController.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Solution\VS\BlackCat.App.vcxproj">
@@ -271,6 +265,9 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Solution\VS\BlackCat.Platform.Win32.vcxproj">
       <Project>{854bd395-c225-4c15-a88f-26dfb81d8c58}</Project>
+    </ProjectReference>
+    <ProjectReference Include="BattleOfXbots.Game.vcxproj">
+      <Project>{2e2d16b5-dc44-4cfb-88d0-da506b16df92}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

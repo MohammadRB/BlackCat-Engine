@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 
+#include "Core/Utility/bcLogger.h"
 #include "Core/bcUtility.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Input/bcGlobalConfig.h"
@@ -223,14 +224,14 @@ namespace black_cat
 
 		bool bc_octal_tree_graph_node::contains_actor(bc_actor& p_actor) const noexcept
 		{
-			const auto& l_actor_mesh_bound_box = _get_actor_bound_box(p_actor);
-			return m_bound_box.contains(l_actor_mesh_bound_box);
+			const auto& l_actor_bound_box = _get_actor_bound_box(p_actor);
+			return m_bound_box.contains(l_actor_bound_box);
 		}
 
 		bool bc_octal_tree_graph_node::intersects_actor(bc_actor& p_actor) const noexcept
 		{
-			const auto& l_actor_mesh_bound_box = _get_actor_bound_box(p_actor);
-			return m_bound_box.intersect(l_actor_mesh_bound_box);
+			const auto& l_actor_bound_box = _get_actor_bound_box(p_actor);
+			return m_bound_box.intersect(l_actor_bound_box);
 		}
 
 		void bc_octal_tree_graph_node::get_actor(const physics::bc_ray& p_ray, std::pair<bcFLOAT, bc_actor>& p_result) const
@@ -369,7 +370,14 @@ namespace black_cat
 
 		bool bc_octal_tree_graph_node::add_actor(bc_actor& p_actor)
 		{
-			return _add_actor(p_actor, _get_actor_bound_box(p_actor));
+			const auto& l_actor_bound_box = _get_actor_bound_box(p_actor);
+			if(l_actor_bound_box.is_empty())
+			{
+				core::bc_log(core::bc_log_type::error, bcL("Actor with empty bound box cannot be added to scene graph"));
+				return false;
+			}
+
+			return _add_actor(p_actor, l_actor_bound_box);
 		}
 
 		bool bc_octal_tree_graph_node::update_actor(bc_actor& p_actor)
@@ -573,7 +581,7 @@ namespace black_cat
 					m_actors.push_back(_bc_octal_tree_graph_node_entry(p_actor, this));
 					l_added = true;
 
-					auto l_iterator = m_actors.rbegin();
+					const auto l_iterator = m_actors.rbegin();
 					l_iterator->set_internal_iterator(l_iterator.base());
 				}
 			}
@@ -905,10 +913,10 @@ namespace black_cat
 
 		const physics::bc_bound_box& bc_octal_tree_graph_node::_get_actor_bound_box(bc_actor& p_actor)
 		{
-			auto* l_mediate_component = p_actor.get_component<bc_mediate_component>();
+			const auto* l_mediate_component = p_actor.get_component<bc_mediate_component>();
 			const auto& l_bound_box = l_mediate_component->get_bound_box();
 
-			BC_ASSERT(!l_bound_box.is_empty());
+			//BC_ASSERT(!l_bound_box.is_empty());
 
 			return l_bound_box;
 		}

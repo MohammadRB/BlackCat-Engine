@@ -44,9 +44,6 @@ namespace black_cat
 		{
 			m_scene_changed = true;
 			m_new_scene = std::move(p_scene);
-
-			bc_event_scene_change l_scene_change_event(m_new_scene ? m_new_scene->get_name() : nullptr);
-			m_event_manager->process_event(l_scene_change_event);
 		}
 
 		void bc_game_system::update_game(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
@@ -83,7 +80,7 @@ namespace black_cat
 						l_scene_task = l_scene->update_physics_async(p_clock);
 						l_particle_manager->update(p_clock);
 
-						l_scene_task.wait();
+						core::bc_concurrency::when_all(l_scene_task);
 					}
 
 					return;
@@ -100,7 +97,7 @@ namespace black_cat
 
 				l_event_manager.process_event_queue(p_clock);
 
-				l_scene_task.wait();
+				core::bc_concurrency::when_all(l_scene_task);
 
 				l_actor_component_manager.process_actor_events(p_clock);
 				l_actor_component_manager.update_actors(p_clock);
@@ -108,7 +105,6 @@ namespace black_cat
 				l_network_task = l_network_system.update_async(p_clock);
 				l_animation_task = l_animation_manager.run_scheduled_jobs_async(p_clock);
 
-				auto* l_thread_manager = core::bc_get_service<core::bc_thread_manager>();
 				core::bc_concurrency::when_all(l_network_task, l_animation_task);
 				
 				l_actor_component_manager.double_update_actors(p_clock);
@@ -190,8 +186,6 @@ namespace black_cat
 
 				core::bc_concurrency::when_all(l_scene_task);
 			}
-
-			l_query_manager.process_query_queue(p_clock);
 		}
 		
 		void bc_game_system::render_game(const core_platform::bc_clock::update_param& p_clock)
@@ -232,11 +226,17 @@ namespace black_cat
 				m_scene = std::move(m_new_scene);
 				m_new_scene = nullptr;
 
-				// Process actor events to apply initial transforms to prevent random force applied by physics engine to overlapped objects
+				// Process actor events to apply initial transforms to prevent random force applied to overlapped objects by physics engine
 				auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
 				l_actor_component_manager.process_actor_events(p_clock);
 				l_actor_component_manager.update_actors(p_clock);
 				l_actor_component_manager.double_update_actors(p_clock);
+
+				// Pass large elapsed time to reform graph if graph uses deferred update
+				m_scene->update_graph(core_platform::bc_clock::update_param(p_clock.m_total_elapsed, 10000, 10000));
+
+				bc_event_scene_change l_scene_change_event(m_scene.get());
+				m_event_manager->process_event(l_scene_change_event);
 			}
 		}
 

@@ -74,7 +74,7 @@ namespace black_cat
 				l_command->serialize(bc_network_message_serialization_context{ p_visitor, *l_json_command->m_values });
 			}
 
-			const auto l_packet_str = l_json_packet.write();
+			const auto l_packet_str = l_json_packet.write_frame();
 			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);
 			m_memory_buffer.write(l_packet_str.c_str(), l_packet_str.size());
 			m_memory_buffer.set_position(core::bc_stream_seek::start, 0);

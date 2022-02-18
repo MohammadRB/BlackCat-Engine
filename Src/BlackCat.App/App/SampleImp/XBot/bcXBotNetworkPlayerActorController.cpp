@@ -115,7 +115,7 @@ namespace black_cat
 
 	void bc_xbot_network_player_actor_controller::shoot_weapon() noexcept
 	{
-		const auto l_player_id = get_network_component().get_network_client_id();
+		const auto l_player_id = get_network_client_id();
 		bc_xbot_actor_controller::shoot_weapon(l_player_id);
 
 		if (get_network_component().get_network_type() == game::bc_network_type::server)

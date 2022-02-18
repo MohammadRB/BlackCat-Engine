@@ -84,6 +84,7 @@ namespace black_cat
 		m_render_target_view(p_render_target_view),
 		m_sprites_content_name(p_sprites_content_name)
 	{
+		m_emitters_query_result.reserve(s_emitters_count);
 	}
 
 	void bc_particle_system_pass_dx11::initialize_resources(game::bc_render_system& p_render_system)
@@ -292,7 +293,8 @@ namespace black_cat
 	{
 		if(m_emitters_query.is_executed())
 		{
-			m_emitters_query_result = m_emitters_query.get().get_emitters();
+			const auto l_new_emitters = m_emitters_query.get().get_emitters();
+			m_emitters_query_result.assign(std::begin(l_new_emitters), std::end(l_new_emitters));
 		}
 		if(m_lights_query.is_executed())
 		{
@@ -328,11 +330,10 @@ namespace black_cat
 		
 		if(!m_emitters_query_result.empty())
 		{
-			const auto l_emitters_size_bytes = sizeof(game::bc_particle_emitter_state) * m_emitters_query_result.size();
 			const game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, m_dead_particles_initial_count, -1, -1, -1, -1, -1, -1 };
 
 			p_context.m_render_thread.bind_compute_state(*m_emission_compute, &l_initial_count);
-			p_context.m_render_thread.update_subresource(*m_emitters_buffer, 0, m_emitters_query_result.data(), l_emitters_size_bytes, 0);
+			p_context.m_render_thread.update_subresource(*m_emitters_buffer, 0, m_emitters_query_result.data(), 0, 0);
 			p_context.m_render_thread.dispatch(m_emitters_query_result.size(), 1, 1);
 			p_context.m_render_thread.unbind_compute_state(*m_emission_compute);
 		}

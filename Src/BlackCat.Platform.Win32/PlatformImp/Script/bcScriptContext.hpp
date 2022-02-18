@@ -172,7 +172,7 @@ namespace black_cat
 		template< typename T >
 		bc_script_prototype_builder< T > bc_platform_script_context< core_platform::g_api_win32 >::create_prototype_builder()
 		{
-			BC_ASSERT(bc_script_external_object<T>::get_meta_data() == nullptr, "");
+			BC_ASSERT(bc_script_external_object<T>::get_meta_data() == nullptr);
 
 			auto* l_meta_data = m_runtime->_create_external_object_meta_data< T >();
 

@@ -19,7 +19,7 @@ namespace black_cat
 		class BC_CORE_DLL bci_event : public bci_message
 		{
 		public:
-			virtual ~bci_event() = 0;
+			~bci_event() override = 0;
 
 		protected:
 			bci_event(const bcCHAR* p_name);
@@ -32,7 +32,7 @@ namespace black_cat
 		class BC_CORE_DLL bc_event : public bci_event
 		{
 		public:
-			virtual ~bc_event() = 0;
+			~bc_event() override = 0;
 
 		protected:
 			explicit bc_event(const bcCHAR* p_name) noexcept;
@@ -48,7 +48,7 @@ namespace black_cat
 		class BC_CORE_DLL bc_app_event : public bc_event
 		{
 		public:
-			virtual ~bc_app_event() = 0;
+			~bc_app_event() override = 0;
 
 		protected:
 			explicit bc_app_event(const bcCHAR* p_name) noexcept;
@@ -64,7 +64,7 @@ namespace black_cat
 		class BC_CORE_DLL bc_app_render_event : public bc_event
 		{
 		public:
-			virtual ~bc_app_render_event();
+			~bc_app_render_event() override;
 
 		protected:
 			explicit bc_app_render_event(const bcCHAR* p_name) noexcept;

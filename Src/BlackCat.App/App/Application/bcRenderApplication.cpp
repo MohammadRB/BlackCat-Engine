@@ -22,6 +22,7 @@ namespace black_cat
 {
 	bc_render_application::bc_render_application()
 		: game::bc_render_application(),
+		m_query_manager(nullptr),
 		m_game_system(nullptr)
 	{
 	}
@@ -48,13 +49,14 @@ namespace black_cat
 	{
 	}
 
-	void bc_render_application::app_start_engine_components(game::bc_engine_application_parameter& p_parameters)
+	void bc_render_application::app_start_engine_components(const game::bc_engine_application_parameter& p_parameters)
 	{
 		bc_start_engine_services(p_parameters);
 		bc_register_engine_loaders(p_parameters);
 
 		core::bc_log(core::bc_log_type::info) << "starting engine components" << core::bc_lend;
 
+		m_query_manager = core::bc_get_service<core::bc_query_manager>();
 		m_game_system = core::bc_get_service<game::bc_game_system>();
 		m_game_system->initialize
 		(
@@ -89,7 +91,7 @@ namespace black_cat
 		application_start_engine_components(p_parameters);
 	}
 
-	void bc_render_application::app_initialize(game::bc_engine_application_parameter& p_parameters)
+	void bc_render_application::app_initialize(const game::bc_engine_application_parameter& p_parameters)
 	{
 		core::bc_log(core::bc_log_type::info) << "initializing engine" << core::bc_lend;
 
@@ -103,7 +105,7 @@ namespace black_cat
 		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
 		
 		bc_load_engine_resources(*l_content_stream_manager, *m_game_system);
-		application_load_content(*l_content_stream_manager);
+		application_load_content(bc_application_load_context{ *l_content_stream_manager });
 	}
 
 	void bc_render_application::app_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
@@ -125,7 +127,13 @@ namespace black_cat
 			core::bc_service_manager::get()->update(p_clock);
 		}
 		
-		application_update(p_clock, p_is_partial_update);
+		application_update(bc_application_update_context
+		{
+			p_is_partial_update,
+			p_clock,
+			*m_query_manager,
+			*m_game_system
+		});
 
 		if(!p_is_partial_update)
 		{
@@ -146,7 +154,12 @@ namespace black_cat
 		l_event_manager->process_event(l_event_frame_start);
 		
 		m_game_system->render_game(p_clock);
-		application_render(p_clock);
+		application_render(bc_application_render_context
+		{
+			p_clock,
+			*m_query_manager,
+			m_game_system->get_render_system()
+		});
 
 		core::bc_event_frame_render_finish l_event_frame_finish;
 		l_event_manager->process_event(l_event_frame_finish);
@@ -207,9 +220,9 @@ namespace black_cat
 		m_game_system->render_swap_frame(p_clock);
 	}
 
-	bool bc_render_application::app_event(core::bci_event& p_event)
+	void bc_render_application::app_event(core::bci_event& p_event)
 	{
-		return application_event(p_event);
+		application_event(p_event);
 	}
 
 	void bc_render_application::app_unload_content()
@@ -218,7 +231,7 @@ namespace black_cat
 		
 		auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
 		
-		application_unload_content(*l_content_stream_manager);
+		application_unload_content(bc_application_load_context{ *l_content_stream_manager });
 		bc_unload_engine_resources(*l_content_stream_manager);
 	}
 

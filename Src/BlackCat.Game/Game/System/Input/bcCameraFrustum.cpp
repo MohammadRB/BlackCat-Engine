@@ -52,16 +52,11 @@ namespace black_cat
 			const physics::bc_shape_box l_box(p_box.get_half_extends());
 			const physics::bc_transform l_box_transform(p_box.get_center());
 
-			for (const auto& l_plane : m_planes)
+			return std::all_of(std::begin(m_planes), std::end(m_planes), [&](const auto& p_plane)
 			{
-				const bool l_intersects = physics::bc_shape_query::overlap(l_box, l_box_transform, l_plane, l_plane.as_transform());
-				if(!l_intersects)
-				{
-					return false;
-				}
-			}
-
-			return true;
+				const bool l_intersects = physics::bc_shape_query::overlap(l_box, l_box_transform, p_plane, p_plane.as_transform());
+				return l_intersects;
+			});
 		}
 
 		void bc_camera_frustum::_construct(const bci_camera::extend& p_extends)

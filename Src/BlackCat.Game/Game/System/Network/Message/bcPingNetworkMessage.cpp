@@ -70,7 +70,7 @@ namespace black_cat
 				return;
 			}
 
-			p_context.m_visitor.add_rtt_sample(p_context.m_address, l_elapsed_time, l_remote_rtt);
+			p_context.m_visitor.add_rtt_sample(p_context.m_client.m_address, l_elapsed_time, l_remote_rtt);
 		}
 
 		void bc_ping_network_message::execute(const bc_network_message_client_context& p_context) noexcept
@@ -86,7 +86,7 @@ namespace black_cat
 		{
 			bc_network_rtt l_rtt;
 			bc_network_rtt l_remote_rtt;
-			p_context.m_visitor.get_rtt_time(p_context.m_address, &l_rtt, &l_remote_rtt);
+			p_context.m_visitor.get_rtt_time(p_context.m_client.m_address, &l_rtt, &l_remote_rtt);
 
 			m_remote_host_rtt = l_rtt;
 		}

@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="BoX.Game">
+      <UniqueIdentifier>{6782be19-9c41-4b84-ae4a-accd1492cd33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Game\Application">
+      <UniqueIdentifier>{8d524e7a-00f8-4149-ac02-bf8bc389362e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Game\Content">
+      <UniqueIdentifier>{ccfe7342-2a80-4427-bc6b-62443a0de639}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Game\Game">
+      <UniqueIdentifier>{ff94b1a7-86e9-4b50-8630-58fa2288d170}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Game\Network">
+      <UniqueIdentifier>{e41f739f-ee27-441c-9971-eb67cc96efd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Game\RenderPass">
+      <UniqueIdentifier>{a1a657d6-4307-43a5-bed3-6ab61d7b93d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Game\Content\Data">
+      <UniqueIdentifier>{83c9a08d-f93e-4ed2-bffc-2ae1610ca2f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Game\Content\Model">
+      <UniqueIdentifier>{b9bcffe8-5daf-4985-85b7-d6282bcec5ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Game\Content\Scene">
+      <UniqueIdentifier>{1b390c5a-762e-473e-a6b4-0529bde2c49e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Game\Content\Shader">
+      <UniqueIdentifier>{ce800ad5-9d40-43ec-8951-b1d2b395be15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Game\Content\Texture">
+      <UniqueIdentifier>{3e038378-1750-4638-a88b-f1161cc38282}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Src\BoX.Game\Application\bxApplicationHookFunctions.cpp">
+      <Filter>BoX.Game\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Application\bxPlayerService.cpp">
+      <Filter>BoX.Game\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Game\bxNetworkPlayerActorController.cpp">
+      <Filter>BoX.Game\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Game\bxPlayerActorController.cpp">
+      <Filter>BoX.Game\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Game\bxPlayerSeatComponent.cpp">
+      <Filter>BoX.Game\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Network\bxGameStateNetworkMessage.cpp">
+      <Filter>BoX.Game\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Network\bxPlayerKilledNetworkMessage.cpp">
+      <Filter>BoX.Game\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Network\bxPlayerSpawnNetworkMessage.cpp">
+      <Filter>BoX.Game\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Network\bxTeamSelectNetworkMessage.cpp">
+      <Filter>BoX.Game\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\RenderPass\bxPlayerUIPass.cpp">
+      <Filter>BoX.Game\RenderPass</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Src\BoX.Game\Application\bxApplicationHookFunctions.h">
+      <Filter>BoX.Game\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Application\bxClientNetworkMessageVisitor.h">
+      <Filter>BoX.Game\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Application\bxDefinitions.h">
+      <Filter>BoX.Game\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Application\bxPlayerService.h">
+      <Filter>BoX.Game\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\bxExport.h">
+      <Filter>BoX.Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\bxEvent.h">
+      <Filter>BoX.Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Game\bxNetworkPlayerActorController.h">
+      <Filter>BoX.Game\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Game\bxPlayerActorController.h">
+      <Filter>BoX.Game\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Game\bxPlayerSeatComponent.h">
+      <Filter>BoX.Game\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Network\bxGameStateNetworkMessage.h">
+      <Filter>BoX.Game\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Network\bxPlayerKilledNetworkMessage.h">
+      <Filter>BoX.Game\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Network\bxPlayerSpawnNetworkMessage.h">
+      <Filter>BoX.Game\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Network\bxTeamSelectNetworkMessage.h">
+      <Filter>BoX.Game\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Application\bxServerNetworkMessageVisitor.h">
+      <Filter>BoX.Game\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\RenderPass\bxPlayerUIPass.h">
+      <Filter>BoX.Game\RenderPass</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Src\BoX.Game\Content\Data\BoXContentStream.json">
+      <Filter>BoX.Game\Content\Data</Filter>
+    </None>
+    <None Include="..\Src\BoX.Game\Content\Data\BoXDecal.json">
+      <Filter>BoX.Game\Content\Data</Filter>
+    </None>
+    <None Include="..\Src\BoX.Game\Content\Data\BoXEntityType.json">
+      <Filter>BoX.Game\Content\Data</Filter>
+    </None>
+    <None Include="..\Src\BoX.Game\Content\Data\BoXMaterial.json">
+      <Filter>BoX.Game\Content\Data</Filter>
+    </None>
+    <None Include="..\Src\BoX.Game\Content\Scene\Test.json">
+      <Filter>BoX.Game\Content\Scene</Filter>
+    </None>
+    <None Include="..\Src\BoX.Game\Content\Scene\TestContentStream.json">
+      <Filter>BoX.Game\Content\Scene</Filter>
+    </None>
+    <None Include="..\Src\BoX.Game\Content\Scene\TestDecal.json">
+      <Filter>BoX.Game\Content\Scene</Filter>
+    </None>
+    <None Include="..\Src\BoX.Game\Content\Scene\TestEntityType.json">
+      <Filter>BoX.Game\Content\Scene</Filter>
+    </None>
+    <None Include="..\Src\BoX.Game\Content\Scene\TestMaterial.json">
+      <Filter>BoX.Game\Content\Scene</Filter>
+    </None>
+  </ItemGroup>
+</Project>

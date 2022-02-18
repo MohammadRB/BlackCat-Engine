@@ -10,7 +10,7 @@ namespace black_cat
 {
 	class BC_DLL bc_xbot_ragdoll_activation_network_message : public game::bci_network_message
 	{
-		BC_NETWORK_MESSAGE(xbr_act)
+		BC_NETWORK_MESSAGE(xbr_acv)
 
 	public:
 		bc_xbot_ragdoll_activation_network_message() noexcept;

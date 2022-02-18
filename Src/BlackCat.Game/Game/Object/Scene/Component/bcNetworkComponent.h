@@ -91,8 +91,8 @@ namespace black_cat
 			std::pair<bool, core::bc_vector3f> get_extrapolated_value(const bcCHAR* p_name, const core_platform::bc_clock::update_param& p_clock) const noexcept;
 
 		private:
-			bc_network_client_id m_client_id;
-			bc_actor_network_id m_id;
+			bc_network_client_id m_network_client_id;
+			bc_actor_network_id m_network_id;
 			bc_network_type m_network_type;
 			bc_actor_network_data_dir m_data_dir;
 			bool m_sync_enabled;
@@ -104,22 +104,22 @@ namespace black_cat
 
 		inline bc_network_client_id bc_network_component::get_network_client_id() const noexcept
 		{
-			return m_client_id;
+			return m_network_client_id;
 		}
 
 		inline void bc_network_component::set_network_client_id(bc_network_client_id p_id) noexcept
 		{
-			m_client_id = p_id;
+			m_network_client_id = p_id;
 		}
 
 		inline bc_actor_network_id bc_network_component::get_network_id() const noexcept
 		{
-			return m_id;
+			return m_network_id;
 		}
 
 		inline void bc_network_component::set_network_id(bc_actor_network_id p_id) noexcept
 		{
-			m_id = p_id;
+			m_network_id = p_id;
 		}
 
 		inline bc_network_type bc_network_component::get_network_type() const noexcept

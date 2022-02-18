@@ -49,10 +49,12 @@ namespace black_cat
 			bc_network_system& operator=(bc_network_system&&) noexcept;
 
 			bc_network_type get_network_type() const noexcept;
-			
+
+			bc_network_state get_network_state() const noexcept;
+
 			void start_server(bci_network_server_manager_hook& p_hook, bci_network_message_visitor& p_message_visitor, bcUINT16 p_port);
 
-			void start_client(bci_network_client_manager_hook& p_hook, bci_network_message_visitor& p_message_visitor, const platform::bc_network_address& p_address);
+			void start_client(bci_network_client_manager_hook& p_hook, bci_network_message_visitor& p_message_visitor, const platform::bc_network_address& p_server_address);
 			
 			void add_actor_to_sync(bc_actor& p_actor);
 			
@@ -61,7 +63,10 @@ namespace black_cat
 			void actor_removed(bc_actor& p_actor);
 			
 			template<class TMessage>
-			void send_message(TMessage p_command);
+			void send_message(TMessage p_message);
+
+			template<class TMessage>
+			void send_message(const platform::bc_network_address& p_address, TMessage p_message);
 			
 			void update(const core_platform::bc_clock::update_param& p_clock);
 			
@@ -76,6 +81,8 @@ namespace black_cat
 			void _initialize(bc_network_system_parameter p_param) override;
 			
 			void _destroy() override;
+
+			void _send_message(const platform::bc_network_address& p_address, bc_network_message_ptr p_message);
 
 			template<class TCommand>
 			void _register_message();
@@ -92,11 +99,22 @@ namespace black_cat
 		{
 			return m_manager ? m_manager->get_network_type() : bc_network_type::not_started;
 		}
+
+		inline bc_network_state bc_network_system::get_network_state() const noexcept
+		{
+			return m_manager ? m_manager->get_network_state() : bc_network_state::error;
+		}
 		
 		template<class TMessage>
-		void bc_network_system::send_message(TMessage p_command)
+		void bc_network_system::send_message(TMessage p_message)
 		{
-			m_manager->send_message(bc_make_network_message(std::move(p_command)));
+			m_manager->send_message(bc_make_network_message(std::move(p_message)));
+		}
+
+		template<class TMessage>
+		void bc_network_system::send_message(const platform::bc_network_address& p_address, TMessage p_message)
+		{
+			_send_message(p_address, bc_make_network_message(std::move(p_message)));
 		}
 
 		template<class ...TMessage>

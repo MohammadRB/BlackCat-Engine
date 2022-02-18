@@ -18,9 +18,9 @@ namespace black_cat
 
 namespace black_cat
 {
-	void bc_start_engine_services(game::bc_engine_application_parameter& p_parameters);
+	void bc_start_engine_services(const game::bc_engine_application_parameter& p_parameters);
 
-	void bc_register_engine_loaders(game::bc_engine_application_parameter& p_parameters);
+	void bc_register_engine_loaders(const game::bc_engine_application_parameter& p_parameters);
 
 	void bc_register_engine_actor_components();
 

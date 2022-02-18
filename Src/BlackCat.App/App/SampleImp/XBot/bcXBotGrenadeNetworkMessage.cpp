@@ -68,8 +68,8 @@ namespace black_cat
 
 	void bc_xbot_start_grenade_throw_network_message::serialize_message(const game::bc_network_message_serialization_context& p_context)
 	{
-		json_parse::bc_write(p_context.m_params, "nid", core::bc_any(m_actor_net_id));
-		json_parse::bc_write(p_context.m_params, "ent", core::bc_any(m_grenade_entity_name));
+		json_parse::bc_write(p_context.m_params, "nid", m_actor_net_id);
+		json_parse::bc_write(p_context.m_params, "ent", m_grenade_entity_name);
 	}
 
 	void bc_xbot_start_grenade_throw_network_message::deserialize_message(const game::bc_network_message_deserialization_context& p_context)
@@ -130,8 +130,8 @@ namespace black_cat
 
 	void bc_xbot_grenade_throw_network_message::serialize_message(const game::bc_network_message_serialization_context& p_context)
 	{
-		json_parse::bc_write(p_context.m_params, "nid", core::bc_any(m_actor_net_id));
-		json_parse::bc_write(p_context.m_params, "ent", core::bc_any(m_grenade_entity_name));
+		json_parse::bc_write(p_context.m_params, "nid", m_actor_net_id);
+		json_parse::bc_write(p_context.m_params, "ent", m_grenade_entity_name);
 		json_parse::bc_write(p_context.m_params, "pos", m_position);
 		json_parse::bc_write(p_context.m_params, "rot", m_rotation);
 		json_parse::bc_write(p_context.m_params, "dir", m_direction);

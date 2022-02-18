@@ -19,8 +19,8 @@ namespace black_cat
 	{
 		bc_network_component::bc_network_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
 			: bci_actor_component(p_actor_index, p_index),
-			m_client_id(bc_network_client::invalid_id),
-			m_id(bc_actor::invalid_id),
+			m_network_client_id(bc_network_client::invalid_id),
+			m_network_id(bc_actor::invalid_id),
 			m_network_type(bc_network_type::not_started),
 			m_data_dir(bc_actor_network_data_dir::replicate),
 			m_sync_enabled(true),
@@ -88,8 +88,7 @@ namespace black_cat
 
 		void bc_network_component::initialize_entity(const bc_actor_component_initialize_entity_context& p_context)
 		{
-			auto* l_rigid_dynamic_component = p_context.m_actor.get_component<bc_rigid_dynamic_component>();
-			if(l_rigid_dynamic_component)
+			if (auto* l_rigid_dynamic_component = p_context.m_actor.get_component<bc_rigid_dynamic_component>())
 			{
 				{
 					bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
@@ -102,19 +101,32 @@ namespace black_cat
 
 		void bc_network_component::load_network_instance(const bc_actor_component_network_load_context& p_context)
 		{
-			auto* l_net_id_param = p_context.m_parameters.find("nid")->second.as<bc_actor_network_id>();
-			if(!l_net_id_param)
+			const auto* l_client_id_param = p_context.m_parameters.find("cid")->second.as<bc_network_client_id>();
+			const auto* l_net_id_param = p_context.m_parameters.find("nid")->second.as<bc_actor_network_id>();
+
+			if (l_client_id_param)
 			{
-				m_id = bc_actor::invalid_id;
-				return;
+				m_network_client_id = *l_client_id_param;
+			}
+			else
+			{
+				m_network_client_id = bc_network_client::invalid_id;
 			}
 
-			m_id = *l_net_id_param;
+			if(l_net_id_param)
+			{
+				m_network_id = *l_net_id_param;
+			}
+			else
+			{
+				m_network_id = bc_actor::invalid_id;
+			}
 		}
 
 		void bc_network_component::write_network_instance(const bc_actor_component_network_write_context& p_context)
 		{
-			p_context.m_parameters.add("nid", core::bc_any(m_id));
+			p_context.m_parameters.add("cid", core::bc_any(m_network_client_id));
+			p_context.m_parameters.add("nid", core::bc_any(m_network_id));
 		}
 
 		void bc_network_component::update(const bc_actor_component_update_content& p_context)
@@ -123,15 +135,13 @@ namespace black_cat
 
 		void bc_network_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_rigid_dynamic_sleep_event = core::bci_message::as<bc_rigid_dynamic_sleep_actor_event>(p_context.m_event);
-			if(l_rigid_dynamic_sleep_event)
+			if(const auto* l_rigid_dynamic_sleep_event = core::bci_message::as<bc_rigid_dynamic_sleep_actor_event>(p_context.m_event))
 			{
 				set_sync_enabled(!l_rigid_dynamic_sleep_event->get_is_sleep());
 				return;
 			}
-			
-			const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
-			if (l_scene_add_event)
+
+			if (const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event))
 			{
 				auto& l_network_system = p_context.m_game_system.get_network_system();
 				const auto l_network_type = l_network_system.get_network_type();
@@ -146,7 +156,7 @@ namespace black_cat
 					{
 						l_network_system.send_message(bc_actor_replicate_network_message(p_context.m_actor));
 					}
-					else if (m_id == bc_actor::invalid_id && (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client))
+					else if (m_network_id == bc_actor::invalid_id && (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client))
 					{
 						// we should remove network actors if they are not loaded through network, because they will be replicated by the remote host
 						l_scene_add_event->get_scene().remove_actor(p_context.m_actor);
@@ -162,7 +172,7 @@ namespace black_cat
 					{
 						l_network_system.add_actor_to_sync(p_context.m_actor);
 					}
-					else if (m_id == bc_actor::invalid_id && (m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate))
+					else if (m_network_id == bc_actor::invalid_id && (m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate))
 					{
 						// we should remove network actors if they are not loaded through network, because they will be replicated by the remote host
 						l_scene_add_event->get_scene().remove_actor(p_context.m_actor);
@@ -176,8 +186,7 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event);
-			if (l_scene_remove_event)
+			if (const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event))
 			{
 				auto& l_network_system = p_context.m_game_system.get_network_system();
 				const auto l_network_type = l_network_system.get_network_type();
@@ -188,7 +197,7 @@ namespace black_cat
 					{
 						l_network_system.remove_actor_from_sync(p_context.m_actor);
 					}
-					else if(m_id != bc_actor::invalid_id)
+					else if(m_network_id != bc_actor::invalid_id)
 					{
 						l_network_system.actor_removed(p_context.m_actor);
 					}
@@ -199,7 +208,7 @@ namespace black_cat
 					{
 						l_network_system.remove_actor_from_sync(p_context.m_actor);
 					}
-					else if (m_id != bc_actor::invalid_id)
+					else if (m_network_id != bc_actor::invalid_id)
 					{
 						l_network_system.actor_removed(p_context.m_actor);
 					}

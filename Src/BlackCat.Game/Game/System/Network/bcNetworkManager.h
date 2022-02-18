@@ -25,7 +25,9 @@ namespace black_cat
 			virtual ~bci_network_manager() = default;
 
 			virtual bc_network_type get_network_type() const noexcept = 0;
-			
+
+			virtual bc_network_state get_network_state() const noexcept = 0;
+
 			virtual void add_actor_to_sync(bc_actor& p_actor) = 0;
 
 			virtual void remove_actor_from_sync(bc_actor& p_actor) = 0;

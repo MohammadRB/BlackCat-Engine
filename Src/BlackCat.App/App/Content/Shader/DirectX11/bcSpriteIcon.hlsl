@@ -55,7 +55,7 @@ void sprite_icon_gs(point bc_vs_output p_input[1], inout TriangleStream<bc_gs_ou
 	bc_gs_output l_output_vertices[4];
 	const bc_icon_struct l_icon = g_icons[p_input[0].m_instance_index];
 
-	const float l_distance = length(l_icon.m_size - g_camera_position);
+	const float l_distance = length(l_icon.m_position - g_camera_position);
 	const float l_distance_multiplier = max(0.5f, 1 - min(1.f, l_distance / 1000.f));
 	const float l_icon_ndc_width = l_distance_multiplier * l_icon.m_size * (1. / g_screen_width);
 	const float l_icon_ndc_height = l_distance_multiplier * l_icon.m_size * (1. / g_screen_height);

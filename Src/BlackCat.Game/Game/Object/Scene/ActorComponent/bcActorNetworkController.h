@@ -22,6 +22,10 @@ namespace black_cat
 
 			bc_actor_replication_side get_replication_side() const noexcept;
 
+			bc_actor_network_id get_actor_network_id() const noexcept;
+
+			bc_network_client_id get_network_client_id() const noexcept;
+
 			bc_network_rtt get_out_ping() const noexcept;
 
 			bc_network_rtt get_in_ping() const noexcept;
@@ -135,6 +139,16 @@ namespace black_cat
 		inline bc_actor_replication_side bc_actor_network_controller::get_replication_side() const noexcept
 		{
 			return m_replication_side;
+		}
+
+		inline bc_actor_network_id bc_actor_network_controller::get_actor_network_id() const noexcept
+		{
+			return m_network_component->get_network_id();
+		}
+
+		inline bc_network_client_id bc_actor_network_controller::get_network_client_id() const noexcept
+		{
+			return m_network_component->get_network_client_id();
 		}
 
 		inline bc_network_rtt bc_actor_network_controller::get_out_ping() const noexcept

@@ -16,7 +16,7 @@ namespace black_cat
 	{
 		_bc_ui_command_entry::_bc_ui_command_entry(core::bc_unique_ptr<bci_ui_command> p_command)
 			: m_command(std::move(p_command)),
-			m_task_link(core::bc_delegate< core::bc_any() >(*this, &_bc_ui_command_entry::_execute_task)),
+			m_task_link(core::bc_delegate<core::bc_any()>(*this, &_bc_ui_command_entry::_execute_task)),
 			m_update_context(nullptr),
 			m_command_result(false)
 		{
@@ -35,7 +35,7 @@ namespace black_cat
 		bool _bc_ui_command_entry::command_update(bci_ui_command::update_context& p_context)
 		{
 			m_update_context = &p_context;
-			m_task_link(core::bc_concurrency::current_thread_id());
+			m_task_link();
 			return m_command_result;
 		}
 

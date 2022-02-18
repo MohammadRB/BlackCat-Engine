@@ -69,13 +69,13 @@ namespace black_cat
 			 * \brief Initialize required engine components
 			 * \param p_parameters
 			 */
-			virtual void app_start_engine_components(bc_engine_application_parameter& p_parameters) = 0;
+			virtual void app_start_engine_components(const bc_engine_application_parameter& p_parameters) = 0;
 
 			/**
 			 * \brief Do required initialization for app
 			 * \param p_parameters
 			 */
-			virtual void app_initialize(bc_engine_application_parameter& p_parameters) = 0;
+			virtual void app_initialize(const bc_engine_application_parameter& p_parameters) = 0;
 
 			/**
 			 * \brief Load required contents
@@ -127,7 +127,7 @@ namespace black_cat
 			 * \param p_event
 			 * \return
 			 */
-			virtual bool app_event(core::bci_event& p_event) = 0;
+			virtual void app_event(core::bci_event& p_event) = 0;
 
 			/**
 			 * \brief Cleanup loaded contents

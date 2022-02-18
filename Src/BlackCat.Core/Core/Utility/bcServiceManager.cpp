@@ -31,7 +31,7 @@ namespace black_cat
 
 		void bc_service_manager::update(const core_platform::bc_clock::update_param& p_clock_update_param)
 		{
-			for (auto* l_service : m_sorted_services)
+			for (const auto* l_service : m_sorted_services)
 			{
 				l_service->m_service->update(p_clock_update_param);
 			}

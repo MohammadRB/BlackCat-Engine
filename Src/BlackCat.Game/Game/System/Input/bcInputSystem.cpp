@@ -122,8 +122,7 @@ namespace black_cat
 				m_pointing_device.update();
 			}
 
-			auto* l_camera = get_camera();
-			if (l_camera)
+			if (auto* l_camera = get_camera())
 			{
 				l_camera->update(p_clock);
 			}

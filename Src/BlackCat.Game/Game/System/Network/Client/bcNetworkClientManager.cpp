@@ -29,7 +29,7 @@ namespace black_cat
 			bc_network_system& p_network_system, 
 			bci_network_client_manager_hook& p_hook,
 			bci_network_message_visitor& p_message_visitor,
-			const platform::bc_network_address& p_address)
+			const platform::bc_network_address& p_server_address)
 			: bc_client_socket_state_machine(*BC_NEW(platform::bc_non_block_socket, core::bc_alloc_type::unknown)
 				(
 					platform::bc_socket_address::inter_network,
@@ -39,7 +39,8 @@ namespace black_cat
 			m_game_system(&p_game_system),
 			m_socket_is_connected(false),
 			m_socket_is_ready(false),
-			m_address(p_address),
+			m_my_client_id(bc_network_client::invalid_id),
+			m_server_address(p_server_address),
 			m_hook(&p_hook),
 			m_message_visitor(&p_message_visitor),
 			m_last_sync_time(0),
@@ -51,13 +52,17 @@ namespace black_cat
 			m_messages_buffer(p_network_system)
 		{
 			m_socket.reset(&bc_client_socket_state_machine::get_socket());
+			m_scene_change_event = core::bc_get_service<core::bc_event_manager>()->register_event_listener<bc_event_scene_change>
+			(
+				core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler)
+			);
 			m_config_change_handle = core::bc_get_service<core::bc_event_manager>()->register_event_listener<bc_event_global_config_changed>
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler)
 			);
 			m_client_name = bc_get_global_config().get_network_client_name();
 
-			bc_client_socket_connect_event l_connect_event{ m_address };
+			bc_client_socket_connect_event l_connect_event{ m_server_address };
 			bc_client_socket_state_machine::process_event(l_connect_event);
 		}
 
@@ -66,7 +71,8 @@ namespace black_cat
 			m_game_system(p_other.m_game_system),
 			m_socket_is_connected(p_other.m_socket_is_connected),
 			m_socket_is_ready(p_other.m_socket_is_ready),
-			m_address(p_other.m_address),
+			m_my_client_id(p_other.m_my_client_id),
+			m_server_address(p_other.m_server_address),
 			m_socket(std::move(p_other.m_socket)),
 			m_hook(p_other.m_hook),
 			m_message_visitor(p_other.m_message_visitor),
@@ -82,8 +88,11 @@ namespace black_cat
 			m_executed_messages(std::move(p_other.m_executed_messages)),
 			m_memory_buffer(std::move(p_other.m_memory_buffer)),
 			m_messages_buffer(std::move(p_other.m_messages_buffer)),
+			m_scene_change_event(std::move(p_other.m_scene_change_event)),
 			m_config_change_handle(std::move(p_other.m_config_change_handle))
 		{
+			m_scene_change_event.reassign(core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler));
+			m_config_change_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler));
 		}
 
 		// TODO send disconnect msg
@@ -95,7 +104,8 @@ namespace black_cat
 			m_game_system = p_other.m_game_system;
 			m_socket_is_connected = p_other.m_socket_is_connected;
 			m_socket_is_ready = p_other.m_socket_is_ready;
-			m_address = p_other.m_address;
+			m_my_client_id = p_other.m_my_client_id;
+			m_server_address = p_other.m_server_address;
 			m_socket = std::move(p_other.m_socket);
 			m_hook = p_other.m_hook;
 			m_message_visitor = p_other.m_message_visitor;
@@ -115,7 +125,9 @@ namespace black_cat
 			m_memory_buffer = std::move(p_other.m_memory_buffer);
 			m_messages_buffer = std::move(p_other.m_messages_buffer);
 
+			m_scene_change_event = std::move(p_other.m_scene_change_event);
 			m_config_change_handle = std::move(p_other.m_config_change_handle);
+			m_scene_change_event.reassign(core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler));
 			m_config_change_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler));
 
 			return *this;
@@ -124,6 +136,16 @@ namespace black_cat
 		bc_network_type bc_network_client_manager::get_network_type() const noexcept
 		{
 			return bc_network_type::client;
+		}
+
+		bc_network_state bc_network_client_manager::get_network_state() const noexcept
+		{
+			return m_socket_is_connected ? bc_network_state::connected : bc_network_state::error;
+		}
+
+		const platform::bc_network_address& bc_network_client_manager::get_server_address() const noexcept
+		{
+			return m_server_address;
 		}
 
 		void bc_network_client_manager::add_actor_to_sync(bc_actor& p_actor)
@@ -152,11 +174,14 @@ namespace black_cat
 			{
 				return;
 			}
-			
+
+			l_network_component->set_network_client_id(bc_network_client::invalid_id);
+			l_network_component->set_network_id(bc_actor::invalid_id);
+
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
 
-				const auto l_net_actors_ite = m_network_actors.find(l_network_component->get_network_id());
+				const auto l_net_actors_ite = m_network_actors.find(l_network_id);
 				if (l_net_actors_ite == std::cend(m_network_actors))
 				{
 					core::bc_log(core::bc_log_type::error, bcL("actor was not found in network list to remove"));
@@ -185,10 +210,14 @@ namespace black_cat
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
 			const auto l_network_id = l_network_component->get_network_id();
+
 			if (l_network_id == bc_actor::invalid_id)
 			{
 				return;
 			}
+
+			l_network_component->set_network_client_id(bc_network_client::invalid_id);
+			l_network_component->set_network_id(bc_actor::invalid_id);
 
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
@@ -218,6 +247,12 @@ namespace black_cat
 
 		void bc_network_client_manager::send_message(bc_network_message_ptr p_message)
 		{
+			if (get_network_state() != bc_network_state::connected)
+			{
+				core::bc_log(core::bc_log_type::warning, bcL("Network is in error state. message will be discarded."));
+				return;
+			}
+
 			{
 				core_platform::bc_mutex_guard l_lock(m_messages_lock);
 				m_messages.push_back(p_message);
@@ -258,7 +293,6 @@ namespace black_cat
 		{
 			m_socket_is_connected = false;
 			m_socket_is_ready = false;
-			m_game_system->set_scene(nullptr);
 
 			core::bc_log(core::bc_log_type::error)
 				<< "error occurred in network connection"
@@ -269,8 +303,8 @@ namespace black_cat
 
 		void bc_network_client_manager::on_enter(bc_client_socket_connecting_state& p_state)
 		{
-			core::bc_log(core::bc_log_type::info) << "connecting to server " << m_address << core::bc_lend;
-			m_hook->connecting_to_server(m_address);
+			core::bc_log(core::bc_log_type::info) << "connecting to server " << m_server_address << core::bc_lend;
+			m_hook->connecting_to_server(m_server_address);
 		}
 
 		void bc_network_client_manager::on_enter(bc_client_socket_connected_state& p_state)
@@ -280,6 +314,7 @@ namespace black_cat
 				m_socket_is_connected = true;
 				send_message(bc_client_connect_network_message(core::bc_string(m_client_name)));
 			}
+
 			m_socket_is_ready = true;
 		}
 
@@ -312,18 +347,19 @@ namespace black_cat
 			}
 		}
 
-		void bc_network_client_manager::connection_approved(core::bc_string p_error_message)
+		void bc_network_client_manager::connection_approved(bc_client_connect_result p_result)
 		{
-			if(p_error_message.empty())
+			if(p_result.m_error_message.empty())
 			{
 				core::bc_log(core::bc_log_type::info) << "connected to server" << core::bc_lend;
-				m_hook->connection_to_server_approved(m_address, p_error_message);
+				m_my_client_id = p_result.m_client_id;
+				m_hook->connection_to_server_approved(m_server_address, p_result);
 			}
 			else
 			{
-				core::bc_log(core::bc_log_type::info) << "connection to server failed with error '" << p_error_message << "'" << core::bc_lend;
+				core::bc_log(core::bc_log_type::info) << "connection to server failed with error '" << p_result.m_error_message << "'" << core::bc_lend;
 				bc_client_socket_state_machine::transfer_state<bc_client_socket_error_state>();
-				m_hook->connection_to_server_approved(m_address, p_error_message);
+				m_hook->connection_to_server_approved(m_server_address, p_result);
 			}
 		}
 
@@ -368,7 +404,7 @@ namespace black_cat
 		void bc_network_client_manager::load_scene(const bcECHAR* p_scene_name)
 		{
 			auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
-			auto& l_file_system = m_game_system->get_file_system();
+			const auto& l_file_system = m_game_system->get_file_system();
 
 			try
 			{
@@ -649,8 +685,13 @@ namespace black_cat
 
 		void bc_network_client_manager::_event_handler(core::bci_event& p_event)
 		{
-			const auto* l_config_change_event = core::bci_message::as<bc_event_global_config_changed>(p_event);
-			if (l_config_change_event)
+			if (const auto* l_scene_change_event = core::bci_message::as<bc_event_scene_change>(p_event))
+			{
+				m_hook->scene_changed(l_scene_change_event->get_scene());
+				return;
+			}
+
+			if (const auto* l_config_change_event = core::bci_message::as<bc_event_global_config_changed>(p_event))
 			{
 				m_client_name = l_config_change_event->get_config().get_network_client_name();
 				return;

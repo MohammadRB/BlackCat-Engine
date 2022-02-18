@@ -1,0 +1,27 @@
+// [02/11/2022 MRB]
+
+#pragma once
+
+#include "Game/System/Network/Message/bcNetworkMessage.h"
+#include "BoX.Game/Application/bxDefinitions.h"
+#include "BoX.Game/bxExport.h"
+
+namespace box
+{
+	using namespace black_cat;
+
+	struct bx_game_state
+	{
+		bcUINT32 m_game_time;
+	};
+
+	class BX_GAME_DLL bx_client_network_message_visitor : public game::bci_network_message_visitor
+	{
+	public:
+		virtual void update_game_state(const bx_game_state& p_state) = 0;
+
+		virtual void team_change_rejected(core::bc_string p_error) = 0;
+
+		virtual void spawn_player(const core::bc_vector3f& p_position, bx_team p_team) = 0;
+	};
+}

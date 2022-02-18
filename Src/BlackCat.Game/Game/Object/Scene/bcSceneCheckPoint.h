@@ -3,7 +3,9 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcString.h"
 #include "Core/Content/bcContent.h"
+#include "Core/File/bcPath.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/bcExport.h"
 
@@ -29,6 +31,8 @@ namespace black_cat
 			core::bc_vector_frame<bc_actor> export_dynamic_actors() const;
 
 			void remove_dynamic_actors() const;
+
+			static core::bc_path get_checkpoint_path(const bc_scene& p_scene, core::bc_estring_view p_checkpoint_name);
 
 		private:
 			bc_scene* m_scene;

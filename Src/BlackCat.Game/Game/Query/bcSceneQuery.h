@@ -28,7 +28,7 @@ namespace black_cat
 			
 			/**
 			 * \brief Callable object which will be executed with an instance of bc_scene_query_context
-			 * \tparam TCallable Callable object which return bc_any and take a const bc_scene_query_context& as parameter 
+			 * \tparam TCallable bc_any(const bc_scene_query_context&) 
 			 * \param p_callable 
 			 */
 			template<typename TCallable>

@@ -30,7 +30,7 @@ namespace black_cat
 		{
 		public:
 			using this_type = bc_task_stealing_queue;
-			using delegate_type = bc_delegate<void(core_platform::bc_thread::id)>;
+			using task_wrapper_type = bc_delegate<void()>;
 
 		public:
 			bc_task_stealing_queue() = default;
@@ -45,16 +45,16 @@ namespace black_cat
 
 			this_type& operator =(this_type&&) = delete;
 
-			void push(delegate_type&& p_task);
+			void push(task_wrapper_type&& p_task);
 
 			bool empty() const;
 
-			bool pop(delegate_type& p_task);
+			bool pop(task_wrapper_type& p_task);
 
-			bool try_steal(delegate_type& p_task);
+			bool try_steal(task_wrapper_type& p_task);
 
 		private:
-			bc_deque<delegate_type> m_deque;
+			bc_deque<task_wrapper_type> m_deque;
 			mutable core_platform::bc_spin_mutex m_mutex;
 		};
 
@@ -95,11 +95,11 @@ namespace black_cat
 			BC_SERVICE(trd_mng)
 
 		private:
-			using task_type = bc_delegate<void(core_platform::bc_thread::id)>;
+			using task_wrapper_type = bc_delegate<void()>;
 			class _thread_data;
 
 		public:
-			bc_thread_manager(bcSIZE p_thread_count, bcSIZE p_reserved_thread_count) noexcept;
+			bc_thread_manager(bcUINT32 p_hardware_thread_count, bcUINT32 p_reserved_thread_count) noexcept;
 
 			bc_thread_manager(const bc_thread_manager&) = delete;
 
@@ -111,11 +111,13 @@ namespace black_cat
 
 			bc_thread_manager& operator=(bc_thread_manager&& p_other) noexcept = delete;
 
-			bcSIZE max_thread_count() const;
+			bcUINT32 hardware_thread_count() const;
 
-			bcSIZE spawned_thread_count() const;
+			bcUINT32 max_thread_count() const;
 
-			bcSIZE task_count() const;
+			bcUINT32 spawned_thread_count() const;
+
+			bcUINT32 task_count() const;
 
 			void interrupt_thread(core_platform::bc_thread::id p_thread_id);
 
@@ -125,7 +127,7 @@ namespace black_cat
 			bc_task<T> start_new_task(bc_delegate<T()> p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
 
 		private:
-			void _initialize(bcSIZE p_thread_count, bcSIZE p_reserved_thread_count);
+			void _initialize(bcSIZE p_hardware_thread_count, bcSIZE p_reserved_thread_count);
 
 			void _restart_workers();
 
@@ -135,11 +137,11 @@ namespace black_cat
 
 			void _join_workers();
 
-			bool _pop_task_from_local_queue(task_type& p_task);
+			bool _pop_task_from_local_queue(task_wrapper_type& p_task);
 
-			bool _pop_task_from_global_queue(task_type& p_task);
+			bool _pop_task_from_global_queue(task_wrapper_type& p_task);
 
-			bool _pop_task_from_others_queue(task_type& p_task);
+			bool _pop_task_from_others_queue(task_wrapper_type& p_task);
 
 			void _worker_spin(bcUINT32 p_my_index);
 
@@ -147,17 +149,18 @@ namespace black_cat
 			static constexpr bcSIZE s_new_thread_threshold = 5;
 			static constexpr bcSIZE s_num_thread_in_spin = 0;
 
-			bcSIZE m_thread_count;
-			bcSIZE m_reserved_thread_count;
+			bcUINT32 m_hardware_thread_count;
+			bcUINT32 m_reserved_thread_count;
 			core_platform::bc_atomic<bool> m_done;
-			core_platform::bc_atomic<bcUINT32> m_task_count;
+			core_platform::bc_atomic<bcUINT32> m_spawned_thread_count;
 			core_platform::bc_atomic<bcUINT32> m_num_thread_in_spin;
+			core_platform::bc_atomic<bcUINT32> m_task_count;
 			core_platform::bc_mutex m_cvariable_mutex;
 			core_platform::bc_condition_variable m_cvariable;
 
 			mutable core_platform::bc_shared_mutex m_threads_mutex;
 			bc_vector_program<bc_unique_ptr<_thread_data>> m_threads;
-			bc_concurrent_queue<task_type> m_global_queue;
+			bc_concurrent_queue<task_wrapper_type> m_global_queue;
 			core_platform::bc_thread_local<_thread_data> m_my_data;
 		};
 
@@ -230,7 +233,7 @@ namespace black_cat
 				l_policy_none = false;
 			}
 
-			task_type l_task_wrapper(task_type::make_from_big_object(l_alloc_type, std::move(l_task_link))); // TODO
+			task_wrapper_type l_task_wrapper(task_wrapper_type::make_from_big_object(l_alloc_type, std::move(l_task_link))); // TODO
 			_thread_data* l_my_data = m_my_data.get();
 
 			const auto l_task_count = m_task_count.fetch_add(1, core_platform::bc_memory_order::seqcst) + 1;
@@ -245,8 +248,9 @@ namespace black_cat
 				m_global_queue.push(std::move(l_task_wrapper));
 			}
 
-			if(s_num_thread_in_spin == 0)		// If number of steady threads in work spin method is higher than zero
-			{									// there is no need to notify a thread
+			// If number of steady threads in work spin method is higher than zero there is no need to notify a thread
+			if constexpr (s_num_thread_in_spin == 0)
+			{
 				m_cvariable.notify_one();
 			}
 

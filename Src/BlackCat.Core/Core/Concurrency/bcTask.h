@@ -14,7 +14,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		template< typename T >
+		template<typename T>
 		class bc_task_link;
 
 		class bc_thread_manager;
@@ -23,13 +23,13 @@ namespace black_cat
 		class bc_task : core_platform::bc_no_copy
 		{
 			using value_type = T;
-			using this_type = bc_task< T >;
-			friend class bc_task_link< T >;
+			using this_type = bc_task<T>;
+			friend class bc_task_link<T>;
 
 		public:
 			bc_task() = default;
 
-			bc_task(this_type&& p_other) noexcept(std::is_nothrow_move_constructible<core_platform::bc_future<value_type>>::value)
+			bc_task(this_type&& p_other) noexcept(std::is_nothrow_move_constructible_v<core_platform::bc_future<value_type>>)
 				: m_future(std::move(p_other.m_future)),
 				m_thread_id_future(std::move(p_other.m_thread_id_future))
 			{
@@ -37,7 +37,7 @@ namespace black_cat
 
 			~bc_task() = default;
 
-			this_type& operator =(this_type&& p_other) noexcept(std::is_nothrow_move_assignable<core_platform::bc_future<value_type>>::value)
+			this_type& operator =(this_type&& p_other) noexcept(std::is_nothrow_move_assignable_v<core_platform::bc_future<value_type>>)
 			{
 				m_future = std::move(p_other.m_future);
 				m_thread_id_future = std::move(p_other.m_thread_id_future);
@@ -45,7 +45,7 @@ namespace black_cat
 				return *this;
 			}
 
-			bool is_ready() const noexcept(core_platform::bc_future<value_type>::wait_for)
+			bool is_ready() const noexcept(noexcept(std::declval<core_platform::bc_future<value_type>>().wait_for(std::chrono::seconds(0))))
 			{
 				return wait_for(std::chrono::seconds(0)) == core_platform::bc_future_status::ready;
 			}
@@ -73,7 +73,7 @@ namespace black_cat
 				m_future.wait();
 			}
 			
-			core_platform::bc_future_status wait_for(const std::chrono::nanoseconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
+			core_platform::bc_future_status wait_for(const std::chrono::nanoseconds& p_duration) const noexcept(noexcept(std::declval<core_platform::bc_future<value_type>>().wait_for(p_duration)))
 			{
 				if (!m_future.valid())
 				{
@@ -83,7 +83,7 @@ namespace black_cat
 				return m_future.wait_for(p_duration);
 			}
 
-			core_platform::bc_future_status wait_for(const std::chrono::microseconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
+			core_platform::bc_future_status wait_for(const std::chrono::microseconds& p_duration) const noexcept(noexcept(std::declval<core_platform::bc_future<value_type>>().wait_for(p_duration)))
 			{
 				if (!m_future.valid())
 				{
@@ -93,7 +93,7 @@ namespace black_cat
 				return m_future.wait_for(p_duration);
 			}
 
-			core_platform::bc_future_status wait_for(const std::chrono::milliseconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
+			core_platform::bc_future_status wait_for(const std::chrono::milliseconds& p_duration) const noexcept(noexcept(std::declval<core_platform::bc_future<value_type>>().wait_for(p_duration)))
 			{
 				if (!m_future.valid())
 				{
@@ -103,7 +103,7 @@ namespace black_cat
 				return m_future.wait_for(p_duration);
 			}
 
-			core_platform::bc_future_status wait_for(const std::chrono::seconds& p_duration) const noexcept(core_platform::bc_future<value_type>::wait_for)
+			core_platform::bc_future_status wait_for(const std::chrono::seconds& p_duration) const noexcept(noexcept(std::declval<core_platform::bc_future<value_type>>().wait_for(p_duration)))
 			{
 				if (!m_future.valid())
 				{
@@ -119,7 +119,7 @@ namespace black_cat
 			void interrupt_executor_thread()
 			{
 				core_platform::bc_thread::id l_executor_thread_id = m_thread_id_future.get();
-				bc_get_service< bc_thread_manager >()->interrupt_thread(l_executor_thread_id);
+				bc_get_service<bc_thread_manager>()->interrupt_thread(l_executor_thread_id);
 			}
 
 		private:
@@ -132,16 +132,16 @@ namespace black_cat
 		{
 		private:
 			using value_type = T;
-			using task_delegate_type = bc_delegate< value_type() >;
-			using this_type = bc_task_link< value_type >;
+			using task_delegate_type = bc_delegate<value_type()>;
+			using this_type = bc_task_link<value_type>;
 
 		public:
-			explicit bc_task_link(task_delegate_type&& p_del)
+			explicit bc_task_link(task_delegate_type p_del) noexcept
 				: m_del(std::move(p_del))
 			{
 			}
 
-			bc_task_link(this_type&& p_other) noexcept(std::is_nothrow_move_constructible<core_platform::bc_promise< value_type >>::value)
+			bc_task_link(this_type&& p_other) noexcept(std::is_nothrow_move_constructible_v<core_platform::bc_promise<value_type>>)
 			{
 				m_del = std::move(p_other.m_del);
 				m_promise = std::move(p_other.m_promise);
@@ -150,7 +150,7 @@ namespace black_cat
 
 			~bc_task_link() = default;
 
-			this_type& operator=(this_type&& p_other) noexcept(std::is_nothrow_move_assignable<core_platform::bc_promise< value_type >>::value)
+			this_type& operator=(this_type&& p_other) noexcept(std::is_nothrow_move_assignable_v<core_platform::bc_promise<value_type>>)
 			{
 				m_del = std::move(p_other.m_del);
 				m_promise = std::move(p_other.m_promise);
@@ -159,22 +159,24 @@ namespace black_cat
 				return *this;
 			}
 
-			void operator()(core_platform::bc_thread::id p_thread_id)
+			void operator()()
 			{
+				const auto l_thread_id = core_platform::bc_thread::current_thread_id();
+
 				try
 				{
-					_call(p_thread_id, std::is_same< typename std::remove_reference< value_type >::type, void >::type());
+					_call(l_thread_id, std::is_same<std::remove_reference_t<value_type>, void>::type());
 				}
 				catch (const std::exception& p_exp)
 				{
-					auto l_msg = bc_string("Task with thread id " + bc_to_string(p_thread_id) + " exited with error: ") + p_exp.what();
+					auto l_msg = bc_string("Task with thread id " + bc_to_string(l_thread_id) + " exited with error: ") + p_exp.what();
 					m_promise.set_exception(std::make_exception_ptr(bc_thread_resource_exception(l_msg.c_str())));
 					bc_app_event_error l_error_event(std::move(l_msg));
 					bc_get_service<bc_event_manager>()->process_event(l_error_event);
 				}
 				catch (...)
 				{
-					auto l_msg = bc_string("Task with thread id " + bc_to_string(p_thread_id) + " exited with unknown error.");
+					auto l_msg = bc_string("Task with thread id " + bc_to_string(l_thread_id) + " exited with unknown error.");
 					m_promise.set_exception(std::make_exception_ptr(bc_thread_resource_exception(l_msg.c_str())));
 					bc_app_event_error l_error_event(std::move(l_msg));
 					bc_get_service<bc_event_manager>()->process_event(l_error_event);
@@ -209,8 +211,8 @@ namespace black_cat
 			}
 
 			task_delegate_type m_del;
-			core_platform::bc_promise< value_type > m_promise;
-			core_platform::bc_promise< core_platform::bc_thread::id > m_thread_id_promise;
+			core_platform::bc_promise<value_type> m_promise;
+			core_platform::bc_promise<core_platform::bc_thread::id> m_thread_id_promise;
 		};
 	}
 }

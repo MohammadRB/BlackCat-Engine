@@ -4,12 +4,37 @@
 
 #include "Core/bcEvent.h"
 #include "Core/Utility/bcStopWatch.h"
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/Application/bcRenderApplication.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "App/bcExport.h"
 
 namespace black_cat
 {
+	using bc_application_start_context = game::bc_engine_application_parameter;
+	using bc_application_initialize_context = game::bc_engine_application_parameter;
+
+	struct bc_application_load_context
+	{
+		core::bc_content_stream_manager& m_stream_manager;
+	};
+
+	struct bc_application_update_context
+	{
+		bool m_is_partial_update;
+		const core_platform::bc_clock::update_param& m_clock;
+		core::bc_query_manager& m_query_manager;
+		game::bc_game_system& m_game_system;
+	};
+
+	struct bc_application_render_context
+	{
+		const core_platform::bc_clock::update_param& m_clock;
+		core::bc_query_manager& m_query_manager;
+		game::bc_render_system& m_render_system;
+	};
+
 	class BC_DLL bc_render_application : public game::bc_render_application
 	{
 	public:
@@ -25,19 +50,20 @@ namespace black_cat
 
 		bc_render_application& operator=(bc_render_application&&) = delete;
 		
-	protected:		
+	protected:
+		core::bc_query_manager* m_query_manager;
 		game::bc_game_system* m_game_system;
 
 	private:
-		virtual void application_start_engine_components(game::bc_engine_application_parameter& p_parameters) = 0;
+		virtual void application_start_engine_components(const bc_application_start_context& p_context) = 0;
 
-		virtual void application_initialize(game::bc_engine_application_parameter& p_parameters) = 0;
+		virtual void application_initialize(const bc_application_initialize_context& p_context) = 0;
 
-		virtual void application_load_content(core::bc_content_stream_manager& p_stream_manager) = 0;
+		virtual void application_load_content(const bc_application_load_context& p_context) = 0;
 
-		virtual void application_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update) = 0;
+		virtual void application_update(const bc_application_update_context& p_context) = 0;
 
-		virtual void application_render(const core_platform::bc_clock::update_param& p_clock) = 0;
+		virtual void application_render(const bc_application_render_context& p_context) = 0;
 
 		virtual void application_pause_idle(const core_platform::bc_clock::update_param& p_clock);
 
@@ -49,17 +75,17 @@ namespace black_cat
 
 		virtual void application_render_swap_frame(const core_platform::bc_clock::update_param& p_clock);
 		
-		virtual bool application_event(core::bci_event& p_event) = 0;
+		virtual void application_event(core::bci_event& p_event) = 0;
 
-		virtual void application_unload_content(core::bc_content_stream_manager& p_stream_manager) = 0;
+		virtual void application_unload_content(const bc_application_load_context& p_context) = 0;
 
 		virtual void application_destroy() = 0;
 
 		virtual void application_close_engine_components() = 0;
 
-		void app_start_engine_components(game::bc_engine_application_parameter& p_parameters) override final;
+		void app_start_engine_components(const game::bc_engine_application_parameter& p_parameters) override final;
 
-		void app_initialize(game::bc_engine_application_parameter& p_parameters) override final;
+		void app_initialize(const game::bc_engine_application_parameter& p_parameters) override final;
 
 		void app_load_content() override final;
 
@@ -77,7 +103,7 @@ namespace black_cat
 
 		void app_render_swap_frame(const core_platform::bc_clock::update_param& p_clock) override final;
 		
-		bool app_event(core::bci_event& p_event) override final;
+		void app_event(core::bci_event& p_event) override final;
 
 		void app_unload_content() override final;
 

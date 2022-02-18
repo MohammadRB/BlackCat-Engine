@@ -4,7 +4,6 @@
 
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
-#include "Core/Concurrency/bcMutexTest.h"
 #include "Core/Container/bcListPool.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/File/bcMemoryStream.h"
@@ -55,7 +54,9 @@ namespace black_cat
 			bc_network_server_manager& operator=(bc_network_server_manager&&) noexcept;
 
 			bc_network_type get_network_type() const noexcept override;
-			
+
+			bc_network_state get_network_state() const noexcept override;
+
 			void add_actor_to_sync(bc_actor& p_actor) override;
 			
 			void remove_actor_from_sync(bc_actor& p_actor) override;
@@ -63,6 +64,8 @@ namespace black_cat
 			void actor_removed(bc_actor& p_actor) override;
 			
 			void send_message(bc_network_message_ptr p_message) override;
+
+			void send_message(const platform::bc_network_address& p_address, bc_network_message_ptr p_message);
 			
 			void update(const bc_network_manager_update_context& p_context) override;
 			
@@ -79,7 +82,7 @@ namespace black_cat
 			
 			void add_rtt_sample(const platform::bc_network_address& p_address, bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept override;
 			
-			core::bc_string client_connected(const platform::bc_network_address& p_address, core::bc_string p_name) override;
+			void client_connected(const platform::bc_network_address& p_address, core::bc_string p_name, bc_client_connect_result& p_result) override;
 
 			void client_disconnected(const platform::bc_network_address& p_address) override;
 

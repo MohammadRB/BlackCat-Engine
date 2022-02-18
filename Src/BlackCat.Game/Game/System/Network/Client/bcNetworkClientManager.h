@@ -8,8 +8,8 @@
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Concurrency/bcMutexTest.h"
 #include "Core/File/bcMemoryStream.h"
+#include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "Core/Utility/bcValueSampler.h"
-#include "Core/Messaging/bcMessageHandle.h"
 #include "PlatformImp/Network/bcNetworkAddress.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/System/Network/bcNetworkManager.h"
@@ -18,6 +18,7 @@
 #include "Game/System/Network/Message/bcNetworkMessage.h"
 #include "Game/System/Network/Client/bcNetworkClientManagerHook.h"
 #include "Game/System/Network/Client/bcClientSocketStateMachine.h"
+#include "Game/System/Network/Server/bcNetworkClient.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -41,7 +42,7 @@ namespace black_cat
 				bc_network_system& p_network_system, 
 				bci_network_client_manager_hook& p_hook,
 				bci_network_message_visitor& p_message_visitor,
-				const platform::bc_network_address& p_address);
+				const platform::bc_network_address& p_server_address);
 
 			bc_network_client_manager(bc_network_client_manager&&) noexcept;
 
@@ -50,6 +51,10 @@ namespace black_cat
 			bc_network_client_manager& operator=(bc_network_client_manager&&) noexcept;
 
 			bc_network_type get_network_type() const noexcept override;
+
+			bc_network_state get_network_state() const noexcept override;
+
+			const platform::bc_network_address& get_server_address() const noexcept;
 			
 			void add_actor_to_sync(bc_actor& p_actor) override;
 			
@@ -78,7 +83,7 @@ namespace black_cat
 			
 			void add_rtt_sample(bc_network_rtt p_rtt, bc_network_rtt p_remote_rtt) noexcept override;
 			
-			void connection_approved(core::bc_string p_error_message) override;
+			void connection_approved(bc_client_connect_result p_result) override;
 			
 			void acknowledge_message(bc_network_message_id p_ack_id, core::bc_string p_ack_data) override;
 
@@ -107,7 +112,8 @@ namespace black_cat
 			bc_game_system* m_game_system;
 			bool m_socket_is_connected;
 			bool m_socket_is_ready;
-			platform::bc_network_address m_address;
+			bc_network_client_id m_my_client_id;
+			platform::bc_network_address m_server_address;
 			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;
 			bci_network_client_manager_hook* m_hook;
 			bci_network_message_visitor* m_message_visitor;
@@ -129,6 +135,7 @@ namespace black_cat
 			core::bc_memory_stream m_memory_buffer;
 			bc_network_message_serialization_buffer m_messages_buffer;
 
+			core::bc_event_listener_handle m_scene_change_event;
 			core::bc_event_listener_handle m_config_change_handle;
 		};
 	}

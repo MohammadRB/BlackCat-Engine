@@ -11,6 +11,7 @@
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.hpp"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 
 namespace black_cat

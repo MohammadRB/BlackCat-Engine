@@ -226,7 +226,7 @@ namespace black_cat
 
 				if (l_item == end(m_contents))
 				{
-					BC_ASSERT(false, "Content not found");
+					BC_ASSERT(false);
 					return;
 				}
 

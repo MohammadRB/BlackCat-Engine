@@ -60,9 +60,9 @@ namespace black_cat
 
 	void bc_xbot_ragdoll_activation_network_message::serialize_message(const game::bc_network_message_serialization_context& p_context)
 	{
-		json_parse::bc_write(p_context.m_params, "nid", core::bc_any(m_actor_net_id));
+		json_parse::bc_write(p_context.m_params, "nid", m_actor_net_id);
 		json_parse::bc_write(p_context.m_params, "frc", m_force);
-		json_parse::bc_write(p_context.m_params, "prt", core::bc_any(m_body_part_force));
+		json_parse::bc_write(p_context.m_params, "prt", m_body_part_force);
 	}
 
 	void bc_xbot_ragdoll_activation_network_message::deserialize_message(const game::bc_network_message_deserialization_context& p_context)

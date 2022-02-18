@@ -4,6 +4,7 @@
 
 #include "CorePlatform/bcType.h"
 #include "Core/Container/bcString.h"
+#include "Core/Container/bcStringStream.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcList.h"
 #include "Core/Container/bcIteratorAdapter.h"
@@ -11,8 +12,8 @@
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcTemplateMetaType.h"
 #include "Core/File/bcJsonParse.h"
-#include "3rdParty/RapidJSON/include/writer.h"
-#include "3rdParty/RapidJSON/include/prettywriter.h"
+#include "3rdParty/RapidJSON/Include/writer.h"
+#include "3rdParty/RapidJSON/Include/prettywriter.h"
 
 namespace black_cat
 {
@@ -1110,31 +1111,28 @@ namespace black_cat
 		public:
 			bc_json_document() = default;
 
-			bc_json_document(const bc_json_document&) noexcept(std::is_nothrow_copy_constructible_v<T>) = delete;
+			bc_json_document(const bc_json_document&) = delete;
 
-			bc_json_document(bc_json_document&&) noexcept(std::is_nothrow_move_constructible_v<T>) = delete;
+			bc_json_document(bc_json_document&&) = delete;
 
 			~bc_json_document() = default;
 
-			bc_json_document& operator=(const bc_json_document&) noexcept(std::is_nothrow_copy_assignable_v<T>) = delete;
+			bc_json_document& operator=(const bc_json_document&) = delete;
 
-			bc_json_document& operator=(bc_json_document&&) noexcept(std::is_nothrow_move_assignable_v<T>) = delete;
+			bc_json_document& operator=(bc_json_document&&) = delete;
 
-			void load(const bcCHAR* p_json)
+			void load(bc_string_view p_json)
 			{
 				bc_json_document_object l_json_document;
-				l_json_document.Parse(p_json);
+				l_json_document.Parse(p_json.data(), p_json.size());
 
 				if (l_json_document.HasParseError())
 				{
 					const auto l_parse_error = l_json_document.GetParseError();
 					const auto l_parse_error_offset = l_json_document.GetErrorOffset();
-					const auto l_parse_error_msg = "bad json format: error: " +
-						bc_to_string_frame(l_parse_error) +
-						" error location: " +
-						bc_to_string_frame(l_parse_error_offset);
+					const auto l_parse_error_msg = bc_string_stream_frame() << "bad json format. error: " << l_parse_error << " error location: " << l_parse_error_offset;
 
-					throw bc_io_exception(l_parse_error_msg.c_str());
+					throw bc_io_exception(l_parse_error_msg.str().c_str());
 				}
 
 				if (!l_json_document.IsObject())
@@ -1145,31 +1143,27 @@ namespace black_cat
 				m_value.load(l_json_document);
 			}
 
-			bc_string_frame write_pretty()
+			bc_string write_pretty()
 			{
-				bc_json_document_object l_json_document(rapidjson::kObjectType);
-				m_value.write(l_json_document, l_json_document);
-
-				rapidjson::StringBuffer l_json_buffer;
-				rapidjson::PrettyWriter<rapidjson::StringBuffer> l_json_writer(l_json_buffer);
-				l_json_writer.SetMaxDecimalPlaces(m_max_decimal_places);
-				l_json_document.Accept(l_json_writer);
-
-				bc_string_frame l_result = l_json_buffer.GetString();
+				bc_string l_result = _write<rapidjson::PrettyWriter<rapidjson::StringBuffer>>().GetString();
 				return l_result;
 			}
 
-			bc_string_frame write()
+			bc_string_frame write_pretty_frame()
 			{
-				bc_json_document_object l_json_document(rapidjson::kObjectType);
-				m_value.write(l_json_document, l_json_document);
+				bc_string_frame l_result = _write<rapidjson::PrettyWriter<rapidjson::StringBuffer>>().GetString();
+				return l_result;
+			}
 
-				rapidjson::StringBuffer l_json_buffer;
-				rapidjson::Writer<rapidjson::StringBuffer> l_json_writer(l_json_buffer);
-				l_json_writer.SetMaxDecimalPlaces(m_max_decimal_places);
-				l_json_document.Accept(l_json_writer);
+			bc_string write()
+			{
+				bc_string l_result = _write<rapidjson::Writer<rapidjson::StringBuffer>>().GetString();
+				return l_result;
+			}
 
-				bc_string_frame l_result = l_json_buffer.GetString();
+			bc_string_frame write_frame()
+			{
+				bc_string_frame l_result = _write<rapidjson::Writer<rapidjson::StringBuffer>>().GetString();
 				return l_result;
 			}
 
@@ -1214,6 +1208,20 @@ namespace black_cat
 			}
 
 		private:
+			template<typename TWriter>
+			rapidjson::StringBuffer _write()
+			{
+				bc_json_document_object l_json_document(rapidjson::kObjectType);
+				m_value.write(l_json_document, l_json_document);
+
+				rapidjson::StringBuffer l_json_buffer;
+				TWriter l_json_writer(l_json_buffer);
+				l_json_writer.SetMaxDecimalPlaces(m_max_decimal_places);
+				l_json_document.Accept(l_json_writer);
+
+				return l_json_buffer;
+			}
+
 			T m_value;
 			bcUINT32 m_max_decimal_places{7};
 		};

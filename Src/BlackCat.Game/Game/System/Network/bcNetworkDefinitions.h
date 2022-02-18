@@ -15,6 +15,11 @@ namespace black_cat
 			not_started, server, client
 		};
 
+		enum class bc_network_state : bcUBYTE
+		{
+			error, connected
+		};
+
 		enum class bc_actor_network_data_dir : bcUBYTE
 		{
 			replicate,						// Replicate actor from server

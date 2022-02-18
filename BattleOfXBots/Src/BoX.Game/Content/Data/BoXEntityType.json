@@ -211,6 +211,28 @@
       },
       "components": [
       ]
+    },
+    {
+      "name": "box_red_seat",
+      "components": [
+        {
+          "name": "box_player_seat",
+          "parameters": {
+            "team": "red"
+          }
+        }
+      ]
+    },
+    {
+      "name": "box_blue_seat",
+      "components": [
+        {
+          "name": "box_player_seat",
+          "parameters": {
+            "team": "blue"
+          }
+        }
+      ]
     }
   ]
 }

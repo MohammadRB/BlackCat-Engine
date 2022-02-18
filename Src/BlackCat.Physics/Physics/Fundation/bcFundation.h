@@ -126,7 +126,7 @@ namespace black_cat
 
 			bcSIZE worker_count() const noexcept override
 			{
-				return core::bc_concurrency::worker_count();
+				return core::bc_concurrency::hardware_worker_count();
 			}
 		};
 	}

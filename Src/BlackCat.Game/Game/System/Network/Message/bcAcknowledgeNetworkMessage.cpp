@@ -37,7 +37,7 @@ namespace black_cat
 
 		void bc_acknowledge_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
-			p_context.m_visitor.acknowledge_message(p_context.m_address, get_acknowledged_message_id(), std::move(m_ack_data));
+			p_context.m_visitor.acknowledge_message(p_context.m_client.m_address, get_acknowledged_message_id(), std::move(m_ack_data));
 		}
 
 		void bc_acknowledge_network_message::serialize_message(const bc_network_message_serialization_context& p_context)

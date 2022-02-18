@@ -152,23 +152,7 @@ namespace black_cat
 			p_jvalue.PushBack(core::bc_json_value_object(p_value.z), p_document.GetAllocator());
 			p_jvalue.PushBack(core::bc_json_value_object(p_value.w), p_document.GetAllocator());
 		}
-
-		inline std::pair<bool, const core::bc_any&> bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key) noexcept
-		{
-			const auto l_value = p_key_value.find(p_key);
-			if (l_value == std::cend(p_key_value))
-			{
-				return std::make_pair(false, core::bc_any());
-			}
-
-			return { true, l_value->second };
-		}
-		
-		inline void bc_write(core::bc_json_key_value& p_key_value, core::bc_string p_key, core::bc_any p_value) noexcept
-		{
-			p_key_value.add(std::move(p_key), std::move(p_value));
-		}
-		
+				
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_vector2f& p_value) noexcept
 		{
 			const auto l_value = p_key_value.find(p_key);
@@ -457,7 +441,7 @@ namespace black_cat
 		template<typename T>
 		void bc_write(core::bc_json_key_value& p_key_value, core::bc_string p_key, const T& p_value) noexcept
 		{
-			bc_write(p_key_value, p_key, core::bc_any(p_value));
+			p_key_value.add(std::move(p_key), core::bc_any(p_value));
 		}
 
 		template<typename T>

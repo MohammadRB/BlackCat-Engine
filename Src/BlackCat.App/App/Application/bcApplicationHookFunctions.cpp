@@ -31,7 +31,6 @@
 #include "Game/System/Network/Message/bcSceneChangeNetworkMessage.h"
 #include "Game/System/Network/Message/bcSceneReplicateNetworkMessage.h"
 #include "Game/System/Physics/bcPhysicsSimulationCallback.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.hpp"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/bcScene.h"
@@ -88,7 +87,7 @@
 
 namespace black_cat
 {
-	void bc_start_engine_services(game::bc_engine_application_parameter& p_parameters)
+	void bc_start_engine_services(const game::bc_engine_application_parameter& p_parameters)
 	{
 #ifdef BC_MEMORY_ENABLE
 		core::bc_memory_manager::startup
@@ -142,7 +141,7 @@ namespace black_cat
 		);
 	}
 
-	void bc_register_engine_loaders(game::bc_engine_application_parameter& p_parameters)
+	void bc_register_engine_loaders(const game::bc_engine_application_parameter& p_parameters)
 	{
 		core::bc_register_loader<graphic::bc_texture2d_content, bc_texture_loader>("texture2d", core::bc_make_loader<bc_texture_loader>());
 		core::bc_register_loader<graphic::bc_vertex_shader_content, bc_vertex_shader_loader>("vertex_shader", core::bc_make_loader<bc_vertex_shader_loader>());

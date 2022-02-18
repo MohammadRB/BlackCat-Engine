@@ -45,7 +45,7 @@ namespace black_cat
 
 		bc_editor_render_app::~bc_editor_render_app() = default;
 
-		void bc_editor_render_app::application_start_engine_components(game::bc_engine_application_parameter& p_parameters)
+		void bc_editor_render_app::application_start_engine_components(const bc_application_start_context& p_context)
 		{
 			core::bc_register_service(core::bc_make_service<bc_ui_command_service>
 			(
@@ -59,7 +59,7 @@ namespace black_cat
 			);
 		}
 
-		void bc_editor_render_app::application_initialize(game::bc_engine_application_parameter& p_parameters)
+		void bc_editor_render_app::application_initialize(const bc_application_initialize_context& p_context)
 		{
 			auto& l_render_system = m_game_system->get_render_system();
 			auto& l_input_system = m_game_system->get_input_system();
@@ -113,7 +113,7 @@ namespace black_cat
 			core::bc_get_service<core::bc_event_manager>()->process_event(l_editor_mode_event);
 		}
 
-		void bc_editor_render_app::application_load_content(core::bc_content_stream_manager& p_stream_manager)
+		void bc_editor_render_app::application_load_content(const bc_application_load_context& p_context)
 		{
 			core::bc_get_service<bc_ui_command_service>()->load_content();
 
@@ -130,18 +130,17 @@ namespace black_cat
 			m_game_system->set_scene(std::move(l_scene));
 		}
 
-		void bc_editor_render_app::application_update(const core_platform::bc_clock::update_param& p_clock_update_param, bool p_is_partial_update)
+		void bc_editor_render_app::application_update(const bc_application_update_context& p_context)
 		{
 		}
 
-		void bc_editor_render_app::application_render(const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_editor_render_app::application_render(const bc_application_render_context& p_context)
 		{
 		}
 
-		bool bc_editor_render_app::application_event(core::bci_event& p_event)
+		void bc_editor_render_app::application_event(core::bci_event& p_event)
 		{
-			const auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
-			if (l_key_event)
+			if (const auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event))
 			{
 				if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
 				{
@@ -150,17 +149,16 @@ namespace black_cat
 					auto* l_scene = m_game_system->get_scene();
 				}
 				
-				return true;
+				return;
 			}
 
-			const auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event);
-			if (l_exit_event)
+			if (const auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event))
 			{
 				auto& l_global_config = bc_get_global_config();
 				auto* l_camera = m_game_system->get_input_system().get_camera();
 				if (!l_camera)
 				{
-					return true;
+					return;
 				}
 
 				const auto l_camera_position = l_camera->get_position();
@@ -169,12 +167,12 @@ namespace black_cat
 				l_global_config.add_or_update_config_key("camera_position", l_camera_position)
 					.add_or_update_config_key("camera_lookat", l_camera_target)
 					.flush_changes();
-			}
 
-			return false;
+				return;
+			}
 		}
 
-		void bc_editor_render_app::application_unload_content(core::bc_content_stream_manager& p_stream_manager)
+		void bc_editor_render_app::application_unload_content(const bc_application_load_context& p_context)
 		{
 			core::bc_get_service<bc_ui_command_service>()->unload_content();
 		}

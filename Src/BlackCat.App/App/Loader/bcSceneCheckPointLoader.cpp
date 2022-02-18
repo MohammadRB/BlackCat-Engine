@@ -34,6 +34,7 @@ namespace black_cat
 	void bc_scene_check_point_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
 		auto* l_scene = const_cast<game::bc_scene*>(p_context.m_instance_parameters.get_value_throw<game::bc_scene*>("scene"));
+		BC_ASSERT(l_scene);
 		
 		core::bc_json_document<_bc_scene_check_point_json> l_json_document;
 		const core::bc_string_frame l_json_str(p_context.m_file_buffer_size + 1, '\0');
@@ -97,7 +98,7 @@ namespace black_cat
 			l_actor_components.clear();
 		}
 
-		const auto l_json = l_json_document.write_pretty();
+		const auto l_json = l_json_document.write_pretty_frame();
 		p_context.m_file.write(l_json.c_str(), sizeof(decltype(l_json)::value_type) * l_json.size());
 	}
 }

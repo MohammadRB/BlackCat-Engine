@@ -5,13 +5,15 @@
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "Game/bcJsonParse.h"
 #include "App/SampleImp/XBot/bcXBotRagdollNetworkMessage.h"
-#include "BoX/Application/bxPlayerService.h"
-#include "BoX/Game/bxPlayerActorController.h"
+#include "BoX.Game/Application/bxPlayerService.h"
+#include "BoX.Game/Game/bxPlayerActorController.h"
+#include "BoX.Game/bxEvent.h"
 
 namespace box
 {
 	bx_player_actor_controller::bx_player_actor_controller() noexcept
-		: m_ui_service(core::bc_get_service<bx_player_service>()),
+		: m_event_manager(core::bc_get_service<core::bc_event_manager>()),
+		m_ui_service(core::bc_get_service<bx_player_service>()),
 		m_rifle_heat_per_shoot(5),
 		m_rifle_cool_per_second(10),
 		m_grenade_load_time(30),
@@ -23,6 +25,14 @@ namespace box
 	{
 	}
 
+	void bx_player_actor_controller::killed(game::bc_network_client_id p_killer_id, core::bc_string_view p_body_part_force, const core::bc_vector3f& p_force) noexcept
+	{
+		bc_xbot_actor_controller::enable_ragdoll(p_body_part_force, p_force);
+
+		bx_player_killed_event l_event(p_killer_id, get_actor());
+		m_event_manager->process_event(l_event);
+	}
+
 	void bx_player_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		bc_xbot_player_actor_controller::initialize(p_context);
@@ -31,6 +41,9 @@ namespace box
 	void bx_player_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		bc_xbot_player_actor_controller::added_to_scene(p_context, p_scene);
+
+		bx_player_spawned_event l_event(p_context.m_actor);
+		m_event_manager->process_event(l_event);
 	}
 
 	void bx_player_actor_controller::load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context)
@@ -80,6 +93,9 @@ namespace box
 	void bx_player_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		bc_xbot_player_actor_controller::removed_from_scene(p_context, p_scene);
+
+		bx_player_removed_event l_event(p_context.m_actor);
+		m_event_manager->process_event(l_event);
 	}
 
 	void bx_player_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)

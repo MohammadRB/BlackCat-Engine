@@ -18,7 +18,7 @@ namespace black_cat
 		public:
 			bc_actor_replicate_network_message();
 
-			explicit bc_actor_replicate_network_message(const bc_actor& p_actor);
+			explicit bc_actor_replicate_network_message(bc_actor p_actor);
 
 			bc_actor_replicate_network_message(bc_actor_replicate_network_message&&) noexcept;
 
@@ -47,10 +47,5 @@ namespace black_cat
 			bci_network_message_deserialization_visitor* m_deserialization_visitor;
 			core::bc_json_key_value m_deserialization_values;
 		};
-
-		inline bool bc_actor_replicate_network_message::need_acknowledgment() const noexcept
-		{
-			return true;
-		}
 	}
 }

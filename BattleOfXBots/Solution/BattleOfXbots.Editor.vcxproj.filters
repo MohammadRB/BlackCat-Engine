@@ -72,9 +72,6 @@
     <Filter Include="BoX.Editor\Application">
       <UniqueIdentifier>{d7c0ca62-d36e-401b-ab1e-7eb3ac64d713}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BoX.Editor\Game">
-      <UniqueIdentifier>{b16ecf90-74b3-4061-922c-ac5464e19b40}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GeneratedFiles\qrc_style.cpp">
@@ -281,15 +278,6 @@
     <ClCompile Include="..\Src\BoX.Editor\main.cpp">
       <Filter>BoX.Editor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Src\BoX\Application\bxApplicationHookFunctions.cpp">
-      <Filter>BoX.Editor\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\BoX\Game\bxNetworkPlayerActorController.cpp">
-      <Filter>BoX.Editor\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Src\BoX\Game\bxPlayerActorController.cpp">
-      <Filter>BoX.Editor\Game</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_bcBlackCatEditor.h">
@@ -378,18 +366,6 @@
     </ClInclude>
     <ClInclude Include="..\Src\BoX.Editor\Application\bxEditorRenderApplication.h">
       <Filter>BoX.Editor\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\BoX\Application\bxApplicationHookFunctions.h">
-      <Filter>BoX.Editor\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\BoX\Application\bxPlayerService.h">
-      <Filter>BoX.Editor\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\BoX\Game\bxNetworkPlayerActorController.h">
-      <Filter>BoX.Editor\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Src\BoX\Game\bxPlayerActorController.h">
-      <Filter>BoX.Editor\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
