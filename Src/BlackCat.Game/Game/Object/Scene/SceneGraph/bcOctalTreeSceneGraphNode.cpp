@@ -234,7 +234,7 @@ namespace black_cat
 			return m_bound_box.intersect(l_actor_bound_box);
 		}
 
-		void bc_octal_tree_graph_node::get_actor(const physics::bc_ray& p_ray, std::pair<bcFLOAT, bc_actor>& p_result) const
+		void bc_octal_tree_graph_node::get_actor(const physics::bc_ray& p_ray, std::pair<bcFLOAT, bc_actor>& p_result) const noexcept
 		{
 			if (!m_actors.empty())
 			{
@@ -310,7 +310,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_octal_tree_graph_node::get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const
+		void bc_octal_tree_graph_node::get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const noexcept
 		{
 			if (!m_actors.empty())
 			{
@@ -368,7 +368,7 @@ namespace black_cat
 			return m_top_left_back == nullptr;
 		}
 
-		bool bc_octal_tree_graph_node::add_actor(bc_actor& p_actor)
+		bool bc_octal_tree_graph_node::add_actor(bc_actor& p_actor) noexcept
 		{
 			const auto& l_actor_bound_box = _get_actor_bound_box(p_actor);
 			if(l_actor_bound_box.is_empty())
@@ -380,7 +380,7 @@ namespace black_cat
 			return _add_actor(p_actor, l_actor_bound_box);
 		}
 
-		bool bc_octal_tree_graph_node::update_actor(bc_actor& p_actor)
+		bool bc_octal_tree_graph_node::update_actor(bc_actor& p_actor) noexcept
 		{
 			auto* l_actor_mediate_component = p_actor.get_component<bc_mediate_component>();
 			const auto& l_actor_prev_bound_box = l_actor_mediate_component->get_prev_bound_box();
@@ -409,12 +409,12 @@ namespace black_cat
 			return l_added;
 		}
 
-		bool bc_octal_tree_graph_node::remove_actor(bc_actor& p_actor)
+		bool bc_octal_tree_graph_node::remove_actor(bc_actor& p_actor) noexcept
 		{
 			return _remove_actor(p_actor, _get_actor_bound_box(p_actor));
 		}
 
-		void bc_octal_tree_graph_node::update(const core_platform::bc_clock::update_param& p_clock)
+		void bc_octal_tree_graph_node::update(const core_platform::bc_clock::update_param& p_clock) noexcept
 		{
 			m_update_interval_seconds += p_clock.m_elapsed;
 			if (m_update_interval_seconds < 500)
@@ -426,7 +426,7 @@ namespace black_cat
 			_reform_graph();
 		}
 
-		void bc_octal_tree_graph_node::clear()
+		void bc_octal_tree_graph_node::clear() noexcept
 		{
 			if (!is_leaf_node())
 			{

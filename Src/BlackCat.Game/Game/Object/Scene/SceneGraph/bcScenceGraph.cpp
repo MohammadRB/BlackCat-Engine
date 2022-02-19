@@ -15,12 +15,12 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_scene_graph::bc_scene_graph(core::bc_unique_ptr<bci_scene_graph_node> p_scene_graph)
+		bc_scene_graph::bc_scene_graph(core::bc_unique_ptr<bci_scene_graph_node> p_scene_graph) noexcept
 			: m_graph_node(std::move(p_scene_graph))
 		{
 		}
 
-		bc_scene_graph::~bc_scene_graph()
+		bc_scene_graph::~bc_scene_graph() noexcept
 		{
 			if(m_graph_node)
 			{
@@ -28,7 +28,7 @@ namespace black_cat
 			}
 		}
 
-		physics::bc_bound_box bc_scene_graph::get_bound_box() const
+		physics::bc_bound_box bc_scene_graph::get_bound_box() const noexcept
 		{
 			return m_graph_node->get_bound_box();
 		}
@@ -63,22 +63,22 @@ namespace black_cat
 			return m_graph_node->cend();
 		}
 
-		bool bc_scene_graph::add_actor(bc_actor& p_actor)
+		bool bc_scene_graph::add_actor(bc_actor& p_actor) noexcept
 		{
 			return m_graph_node->add_actor(p_actor);
 		}
 
-		bool bc_scene_graph::update_actor(bc_actor& p_actor)
+		bool bc_scene_graph::update_actor(bc_actor& p_actor) noexcept
 		{
 			return m_graph_node->update_actor(p_actor);
 		}
 
-		bool bc_scene_graph::remove_actor(bc_actor& p_actor)
+		bool bc_scene_graph::remove_actor(bc_actor& p_actor) noexcept
 		{
 			return m_graph_node->remove_actor(p_actor);
 		}
 
-		bc_actor bc_scene_graph::get_actor(const physics::bc_ray& p_ray) const
+		bc_actor bc_scene_graph::get_actor(const physics::bc_ray& p_ray) const noexcept
 		{
 			std::pair<bcFLOAT, bc_actor> l_result;
 			m_graph_node->get_actor(p_ray, l_result);
@@ -86,7 +86,7 @@ namespace black_cat
 			return l_result.second;
 		}
 
-		bc_scene_graph_buffer bc_scene_graph::get_actors(const bc_camera_frustum& p_camera_frustum) const
+		bc_scene_graph_buffer bc_scene_graph::get_actors(const bc_camera_frustum& p_camera_frustum) const noexcept
 		{
 			bc_scene_graph_buffer l_result;
 			m_graph_node->get_actors(p_camera_frustum, l_result);
@@ -94,7 +94,7 @@ namespace black_cat
 			return l_result;
 		}
 
-		void bc_scene_graph::update(const core_platform::bc_clock::update_param& p_clock)
+		void bc_scene_graph::update(const core_platform::bc_clock::update_param& p_clock) noexcept
 		{
 			m_graph_node->update(p_clock);
 		}
@@ -104,7 +104,7 @@ namespace black_cat
 			m_graph_node->draw_debug_shapes(p_shape_drawer);
 		}
 
-		void bc_scene_graph::clear()
+		void bc_scene_graph::clear() noexcept
 		{
 			if(m_graph_node)
 			{

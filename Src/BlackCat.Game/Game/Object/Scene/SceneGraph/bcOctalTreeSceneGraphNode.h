@@ -97,21 +97,21 @@ namespace black_cat
 
 			bool intersects_actor(bc_actor& p_actor) const noexcept override;
 
-			void get_actor(const physics::bc_ray& p_ray, std::pair<bcFLOAT, bc_actor>& p_result) const override;
+			void get_actor(const physics::bc_ray& p_ray, std::pair<bcFLOAT, bc_actor>& p_result) const noexcept override;
 
-			void get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const override;
+			void get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const noexcept override;
 
 			bool is_leaf_node() const noexcept;
 
-			bool add_actor(bc_actor& p_actor) override;
+			bool add_actor(bc_actor& p_actor) noexcept override;
 
-			bool update_actor(bc_actor& p_actor) override;
+			bool update_actor(bc_actor& p_actor) noexcept override;
 
-			bool remove_actor(bc_actor& p_actor) override;
+			bool remove_actor(bc_actor& p_actor) noexcept override;
 
-			void update(const core_platform::bc_clock::update_param& p_clock) override;
+			void update(const core_platform::bc_clock::update_param& p_clock) noexcept override;
 			
-			void clear() override;
+			void clear() noexcept override;
 
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const override;
 

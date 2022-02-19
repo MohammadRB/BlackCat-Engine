@@ -100,7 +100,7 @@ namespace black_cat
 				}
 			}
 
-			// A free block were found
+			// Any free block were found
 			if (l_block != -1 || l_block <= m_num_block)
 			{
 				l_result = reinterpret_cast<void*>(static_cast<bcUBYTE*>(m_heap) + l_block * m_block_size);
@@ -111,23 +111,19 @@ namespace black_cat
 
 		void bc_concurrent_memory_pool::free(void* p_pointer) noexcept
 		{
-			// is this pointer in our heap?
 			BC_ASSERT(contain_pointer(p_pointer));
 
 			auto* l_pointer = static_cast<bcUBYTE*>(p_pointer);
 
-			// convert the pointer into a block index
-			const bcINT32 l_block = static_cast<bcINT32>(l_pointer - static_cast<bcUBYTE*>(m_heap)) / m_block_size;
-
-			// reset the bit in our block management array
-			const bcINT32 l_chunk_index = l_block / s_bit_block_size;
-			const bcINT32 l_bit_index = l_block % s_bit_block_size;
-
-			m_blocks[l_chunk_index].fetch_and(~(static_cast< bit_block_type >(1) << l_bit_index), core_platform::bc_memory_order::relaxed);
+			const bcUINT32 l_block = (l_pointer - m_heap) / m_block_size;
+			const bcUINT32 l_chunk_index = l_block / s_bit_block_size;
+			const bcUINT32 l_bit_index = l_block % s_bit_block_size;
 
 #ifdef BC_MEMORY_DEBUG
-			std::memset(reinterpret_cast<void*>(l_pointer), 0, m_block_size);
+			std::memset(l_pointer, 0, m_block_size);
 #endif
+
+			m_blocks[l_chunk_index].fetch_and(~(static_cast<bit_block_type>(1) << l_bit_index), core_platform::bc_memory_order::relaxed);
 		}
 
 		bool bc_concurrent_memory_pool::contain_pointer(const void* p_pointer) const noexcept
@@ -156,16 +152,16 @@ namespace black_cat
 			m_num_bit_blocks = m_num_block / s_bit_block_size;
 			m_allocated_block.store(0U);
 
-			m_blocks = static_cast< core_platform::bc_atomic< bit_block_type >* >
+			m_blocks = reinterpret_cast<core_platform::bc_atomic<bit_block_type>*>
 			(
-				BC_ALLOC(m_num_bit_blocks * sizeof(core_platform::bc_atomic< bit_block_type >), p_alloc_type)
+				BC_ALLOC(m_num_bit_blocks * sizeof(core_platform::bc_atomic<bit_block_type>), p_alloc_type)
 			);
 			if (!m_blocks)
 			{
 				throw std::bad_alloc();
 			}
 
-			m_heap = static_cast<bcUBYTE*>(BC_ALIGNED_ALLOC(m_block_size * m_num_block, BC_MEMORY_MIN_ALIGN, p_alloc_type));
+			m_heap = reinterpret_cast<bcUBYTE*>(BC_ALIGNED_ALLOC(m_block_size * m_num_block, BC_MEMORY_MIN_ALIGN, p_alloc_type));
 			if (!m_heap)
 			{
 				_aligned_free(m_blocks);
@@ -187,7 +183,7 @@ namespace black_cat
 				const auto l_current_block = m_blocks[l_i].load(core_platform::bc_memory_order::relaxed);
 				for (bcUINT32 l_j = 0; l_j < s_bit_block_size; ++l_j)
 				{
-					const bool l_is_alive = l_current_block & (static_cast< bit_block_type >(1) << l_j);
+					const bool l_is_alive = l_current_block & (static_cast<bit_block_type>(1) << l_j);
 					if (l_is_alive)
 					{
 						++l_num_alive_objects;
@@ -209,7 +205,8 @@ namespace black_cat
 
 		bcINT32 bc_concurrent_memory_pool::_find_free_bit(bit_block_type p_bit_block) const noexcept
 		{
-			if (s_bit_block_mask == p_bit_block) // No false bit
+			// No free bit
+			if (s_bit_block_mask == p_bit_block)
 			{
 				return -1;
 			}
@@ -226,7 +223,8 @@ namespace black_cat
 					const auto l_sub_block_mask = s_bit_block_mask >> ((sizeof(bit_block_type) - l_sub_block_size_bytes) * 8);
 					const auto l_sub_block = (p_bit_block >> (l_sub_block_ite * l_sub_block_size_bytes * 8 + l_sub_block_shift_bytes * 8)) & l_sub_block_mask;
 
-					if ((l_sub_block & l_sub_block_mask) == l_sub_block_mask) // No free bit
+					// No free bit
+					if ((l_sub_block & l_sub_block_mask) == l_sub_block_mask)
 					{
 						continue;
 					}

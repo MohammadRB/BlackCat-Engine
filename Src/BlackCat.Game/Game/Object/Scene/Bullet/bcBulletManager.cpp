@@ -14,7 +14,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_bullet_manager::bc_bullet_manager(bc_physics_system& p_physics_system)
+		bc_bullet_manager::bc_bullet_manager(bc_physics_system& p_physics_system) noexcept
 			: m_physics_system(&p_physics_system),
 			m_bullets(100)
 		{
@@ -35,7 +35,7 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_bullet_manager::add_bullet(const bc_bullet& p_bullet)
+		void bc_bullet_manager::add_bullet(const bc_bullet& p_bullet) noexcept
 		{
 			{
 				core_platform::bc_spin_mutex_guard l_lock(m_bullets_mutex);
@@ -43,7 +43,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_bullet_manager::update(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock)
+		void bc_bullet_manager::update(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock) noexcept
 		{
 			const auto l_scene_bound_box = p_scene.get_scene_graph().get_bound_box();
 			auto& l_px_scene = p_scene.get_px_scene();
@@ -109,7 +109,7 @@ namespace black_cat
 			}
 		}
 
-		core::bc_task<void> bc_bullet_manager::update_async(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock)
+		core::bc_task<void> bc_bullet_manager::update_async(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock) noexcept
 		{
 			return core::bc_concurrency::start_task
 			(

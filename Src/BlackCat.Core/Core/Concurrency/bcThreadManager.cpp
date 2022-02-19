@@ -1,5 +1,6 @@
 
 #include "Core/CorePCH.h"
+#include "CorePlatformImp/Utility/bcHardwareInfo.h"
 #include "Core/Concurrency/bcThreadManager.h"
 
 namespace black_cat
@@ -150,7 +151,7 @@ namespace black_cat
 			{
 				m_threads.reserve(m_hardware_thread_count + m_reserved_thread_count);
 
-				for (bcUINT32 l_i = 0; l_i <m_hardware_thread_count; ++l_i)
+				for (bcUINT32 l_i = 0; l_i < m_hardware_thread_count; ++l_i)
 				{
 					_push_worker();
 				}
@@ -160,6 +161,16 @@ namespace black_cat
 				_stop_workers();
 				throw;
 			}
+
+			core_platform::bc_basic_hardware_info l_hardware_info{};
+			core_platform::bc_hardware_info::get_basic_info(l_hardware_info);
+
+			m_tasks_pool.initialize
+			(
+				m_hardware_thread_count * 2 + m_reserved_thread_count, 
+				std::max(sizeof(bc_task_link<void>), l_hardware_info.m_cache_line_size),
+				bc_alloc_type::program
+			);
 		}
 
 		void bc_thread_manager::_restart_workers()
@@ -186,20 +197,21 @@ namespace black_cat
 
 		void bc_thread_manager::_push_worker()
 		{
+			const auto l_max_thread_count = max_thread_count();
+			const auto l_spawned_thread_count = spawned_thread_count();
+			if (l_spawned_thread_count >= l_max_thread_count)
+			{
+				return;
+			}
+
 			{
 				core_platform::bc_shared_mutex_guard l_guard(m_threads_mutex);
-
-				auto l_my_index = m_threads.size();
-				if (l_my_index >= m_hardware_thread_count + m_reserved_thread_count)
-				{
-					return;
-				}
 
 				m_threads.push_back(bc_make_unique<_thread_data>
 				(
 					bc_alloc_type::program,
-					l_my_index,
-					core_platform::bc_thread(&bc_thread_manager::_worker_spin, this, l_my_index)
+					l_spawned_thread_count,
+					core_platform::bc_thread(&bc_thread_manager::_worker_spin, this, l_spawned_thread_count)
 				));
 				m_threads.back()->m_thread.set_name(bcL("BC_Worker"));
 				m_threads.back()->m_thread.set_priority(core_platform::bc_thread_priority::highest);
@@ -213,11 +225,11 @@ namespace black_cat
 			{
 				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_guard(m_threads_mutex);
 				
-				for (auto l_begin = m_threads.begin(), l_end = m_threads.end(); l_begin != l_end; ++l_begin)
+				for (const auto& m_thread : m_threads)
 				{
-					if ((*l_begin)->thread().joinable())
+					if (m_thread->thread().joinable())
 					{
-						(*l_begin)->thread().join();
+						m_thread->thread().join();
 					}
 				}
 			}

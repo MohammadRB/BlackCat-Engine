@@ -21,11 +21,11 @@ namespace black_cat
 		class BC_GAME_DLL bc_bullet_manager
 		{
 		public:
-			explicit bc_bullet_manager(bc_physics_system& p_physics_system);
+			explicit bc_bullet_manager(bc_physics_system& p_physics_system) noexcept;
 
 			bc_bullet_manager(bc_bullet_manager&&) noexcept;
 
-			~bc_bullet_manager();
+			~bc_bullet_manager() noexcept;
 
 			bc_bullet_manager& operator=(bc_bullet_manager&&) noexcept;
 
@@ -33,11 +33,11 @@ namespace black_cat
 			 * \brief ThreadSafe
 			 * \param p_bullet 
 			 */
-			void add_bullet(const bc_bullet& p_bullet);
+			void add_bullet(const bc_bullet& p_bullet) noexcept;
 
-			void update(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock);
+			void update(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock) noexcept;
 			
-			core::bc_task<void> update_async(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock);
+			core::bc_task<void> update_async(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock) noexcept;
 			
 		private:
 			core::bc_nullable<physics::bc_ray_hit> _scene_ray_query(const physics::bc_scene& p_px_scene, 

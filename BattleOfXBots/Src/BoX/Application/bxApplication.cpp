@@ -340,7 +340,6 @@ namespace box
 
 		const bcCHAR* l_entity_name = p_team == bx_team::red ? "box_red_player" : "box_blue_player";
 		m_player_actor = m_game_system->get_scene()->create_actor(l_entity_name, core::bc_matrix4f::translation_matrix(p_position));
-		m_player_actor.mark_for_double_update();
 
 		m_state = bx_app_state::game_started;
 		m_player_service->started_playing(m_team);

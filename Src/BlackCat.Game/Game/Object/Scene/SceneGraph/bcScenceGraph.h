@@ -31,15 +31,15 @@ namespace black_cat
 			using const_iterator = bci_scene_graph_node::const_iterator;
 
 		public:
-			explicit bc_scene_graph(core::bc_unique_ptr<bci_scene_graph_node> p_scene_graph);
+			explicit bc_scene_graph(core::bc_unique_ptr<bci_scene_graph_node> p_scene_graph) noexcept;
 
 			bc_scene_graph(bc_scene_graph&&) = default;
 
-			~bc_scene_graph();
+			~bc_scene_graph() noexcept;
 
 			bc_scene_graph& operator=(bc_scene_graph&&) = default;
 
-			physics::bc_bound_box get_bound_box() const;
+			physics::bc_bound_box get_bound_box() const noexcept;
 
 			iterator begin() noexcept;
 
@@ -59,7 +59,7 @@ namespace black_cat
 			 * \param p_actor 
 			 * \return True if the actor was added and False if actor was out of bound of scene graph
 			 */
-			bool add_actor(bc_actor& p_actor);
+			bool add_actor(bc_actor& p_actor) noexcept;
 
 			/**
 			 * \brief Update actor in scene graph.
@@ -67,7 +67,7 @@ namespace black_cat
 			 * \param p_actor 
 			 * \return True if the actor was updated and False if actor went out of bound of scene graph
 			 */
-			bool update_actor(bc_actor& p_actor);
+			bool update_actor(bc_actor& p_actor) noexcept;
 
 			/**
 			 * \brief Try to remove actor from scene.
@@ -75,30 +75,30 @@ namespace black_cat
 			 * \param p_actor 
 			 * \return True if the actor was removed and False if actor was not found
 			 */
-			bool remove_actor(bc_actor& p_actor);
+			bool remove_actor(bc_actor& p_actor) noexcept;
 
-			bc_actor get_actor(const physics::bc_ray& p_ray) const;
+			bc_actor get_actor(const physics::bc_ray& p_ray) const noexcept;
 
-			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
-
-			template<typename TComponent>
-			bc_scene_graph_buffer get_actors() const;
+			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const noexcept;
 
 			template<typename TComponent>
-			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const;
+			bc_scene_graph_buffer get_actors() const noexcept;
 
-			void update(const core_platform::bc_clock::update_param& p_clock);
+			template<typename TComponent>
+			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const noexcept;
+
+			void update(const core_platform::bc_clock::update_param& p_clock) noexcept;
 			
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
-			void clear();
+			void clear() noexcept;
 
 		private:
 			core::bc_unique_ptr<bci_scene_graph_node> m_graph_node;
 		};
 
 		template<typename TComponent>
-		bc_scene_graph_buffer bc_scene_graph::get_actors() const
+		bc_scene_graph_buffer bc_scene_graph::get_actors() const noexcept
 		{
 			bc_scene_graph_buffer l_result;
 
@@ -114,7 +114,7 @@ namespace black_cat
 		}
 
 		template<typename TComponent>
-		bc_scene_graph_buffer bc_scene_graph::get_actors(const bc_camera_frustum& p_camera_frustum) const
+		bc_scene_graph_buffer bc_scene_graph::get_actors(const bc_camera_frustum& p_camera_frustum) const noexcept
 		{
 			bc_scene_graph_buffer l_in_view_actors = get_actors(p_camera_frustum);
 			bc_scene_graph_buffer l_result;

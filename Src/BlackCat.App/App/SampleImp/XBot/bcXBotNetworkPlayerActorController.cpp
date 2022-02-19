@@ -87,7 +87,7 @@ namespace black_cat
 		}
 
 		auto l_weapon_actor = get_scene()->create_actor(p_entity, core::bc_matrix4f::translation_matrix(get_position()));
-		l_weapon_actor.mark_for_double_update();
+		//l_weapon_actor.mark_for_double_update();
 
 		bc_xbot_actor_controller::attach_weapon(l_weapon_actor);
 

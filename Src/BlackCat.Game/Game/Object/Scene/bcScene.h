@@ -31,9 +31,9 @@ namespace black_cat
 	{
 		class bc_entity_manager;
 		
-		enum class _bc_scene_actor_operation
+		enum class _bc_scene_actor_state
 		{
-			add, update, remove_event, remove_from_graph, removed_from_graph
+			add, update, remove_from_graph, removed_from_graph
 		};
 
 		class BC_GAME_DLL bc_scene : public core::bci_content
@@ -94,33 +94,37 @@ namespace black_cat
 			bc_decal_manager& get_decal_manager() noexcept;
 
 			const bc_decal_manager& get_decal_manager() const noexcept;
-			
+
+			void enable_bulk_loading(bcSIZE p_hint_size) noexcept;
+
+			void disable_bulk_loading() noexcept;
+
 			/**
 			 * \brief ThreadSafe
 			 * \param p_entity_name
 			 * \param p_world_transform Initial world transform of actor
 			 */
-			bc_actor create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform);
+			bc_actor create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform) noexcept;
 
-			bc_actor create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter& p_instance_parameters);
-
-			/**
-			 * \brief ThreadSafe
-			 * \param p_actor
-			 */
-			void update_actor(bc_actor& p_actor);
+			bc_actor create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter& p_instance_parameters) noexcept;
 
 			/**
 			 * \brief ThreadSafe
 			 * \param p_actor
 			 */
-			void remove_actor(bc_actor& p_actor);
+			void update_actor(bc_actor p_actor) noexcept;
+
+			/**
+			 * \brief ThreadSafe
+			 * \param p_actor
+			 */
+			void remove_actor(bc_actor p_actor) noexcept;
 
 			/**
 			 * \brief ThreadSafe
 			 * \param p_bullet 
 			 */
-			void add_bullet(const bc_bullet& p_bullet);
+			void add_bullet(const bc_bullet& p_bullet) noexcept;
 			
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
@@ -128,22 +132,20 @@ namespace black_cat
 			
 			core::bc_task<void> update_physics_async(const core_platform::bc_clock::update_param& p_clock);
 
-			void update_bullets(const core_platform::bc_clock::update_param& p_clock);
+			void update_bullets(const core_platform::bc_clock::update_param& p_clock) noexcept;
 
-			core::bc_task<void> update_bullets_async(const core_platform::bc_clock::update_param& p_clock);
+			core::bc_task<void> update_bullets_async(const core_platform::bc_clock::update_param& p_clock) noexcept;
 			
-			void update_graph(const core_platform::bc_clock::update_param& p_clock);
+			void update_graph(const core_platform::bc_clock::update_param& p_clock) noexcept;
 			
-			core::bc_task<void> update_graph_async(const core_platform::bc_clock::update_param& p_clock);
+			core::bc_task<void> update_graph_async(const core_platform::bc_clock::update_param& p_clock) noexcept;
 			
 		private:
 			void _add_actor(bc_actor& p_actor);
 
 			void _update_actor(bc_actor& p_actor);
 			
-			void _send_actor_remove_event(_bc_scene_actor_operation p_state, bc_actor& p_actor);
-
-			void _remove_actor(_bc_scene_actor_operation p_state, bc_actor& p_actor);
+			void _remove_actor(_bc_scene_actor_state p_state, bc_actor& p_actor);
 			
 			core::bc_estring m_path;
 			core::bc_string m_name;
@@ -153,6 +155,7 @@ namespace black_cat
 			core::bc_vector<core::bc_string> m_entity_files;
 			core::bc_vector<core::bc_string> m_loaded_streams;
 
+			bool m_loading_mode;
 			bcFLOAT m_global_scale;
 			bc_entity_manager* m_entity_manager;
 			bc_physics_system* m_physics;
@@ -163,11 +166,12 @@ namespace black_cat
 			core::bc_unique_ptr<bc_particle_manager> m_particle_manager;
 			core::bc_unique_ptr<bc_decal_manager> m_decal_manager;
 
+			core_platform::bc_spin_mutex m_actors_to_add_lock;
+			core_platform::bc_spin_mutex m_actors_to_remove_lock;
 			core_platform::bc_hybrid_mutex m_changed_actors_lock;
-			core_platform::bc_spin_mutex m_to_remove_actors_lock;
-			core::bc_vector_movable<bc_actor> m_added_actors;
-			core::bc_vector_movable<std::tuple<_bc_scene_actor_operation, bc_actor>> m_changed_actors;
-			core::bc_vector_movable<std::tuple<_bc_scene_actor_operation, bc_actor>> m_to_remove_actors;
+			core::bc_vector_movable<bc_actor> m_actors_to_add;
+			core::bc_vector_movable<std::tuple<_bc_scene_actor_state, bc_actor>> m_actors_to_remove;
+			core::bc_vector_movable<std::tuple<_bc_scene_actor_state, bc_actor>> m_changed_actors;
 		};
 
 		using bc_scene_ptr = core::bc_content_ptr<bc_scene>;

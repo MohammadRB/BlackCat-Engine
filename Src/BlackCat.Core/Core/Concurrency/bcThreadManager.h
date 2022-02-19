@@ -8,10 +8,6 @@
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Concurrency/bcThread.h"
 #include "CorePlatformImp/Concurrency/bcThreadLocal.h"
-#include "Core/CorePCH.h"
-#include "Core/bcExport.h"
-#include "Core/bcConstant.h"
-#include "Core/bcException.h"
 #include "Core/Memory/bcAlloc.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
@@ -21,6 +17,9 @@
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcDelegate.hpp"
 #include "Core/Utility/bcEnumOperand.h"
+#include "Core/Utility/bcObjectPool.h"
+#include "Core/bcExport.h"
+#include "Core/bcConstant.h"
 
 namespace black_cat
 {
@@ -162,6 +161,7 @@ namespace black_cat
 			bc_vector_program<bc_unique_ptr<_thread_data>> m_threads;
 			bc_concurrent_queue<task_wrapper_type> m_global_queue;
 			core_platform::bc_thread_local<_thread_data> m_my_data;
+			bc_concurrent_memory_pool m_tasks_pool;
 		};
 
 		class bc_thread_manager::_thread_data
@@ -220,8 +220,8 @@ namespace black_cat
 			bc_task_link<T> l_task_link(std::move(p_delegate));
 			bc_task<T> l_task = l_task_link.get_task();
 
-			bc_alloc_type l_alloc_type = bc_alloc_type::frame;
 			bool l_policy_none = true;
+			bc_alloc_type l_alloc_type = bc_alloc_type::frame;
 
 			if (bc_enum::has(p_option, bc_task_creation_option::lifetime_exceed_frame))
 			{
@@ -233,10 +233,37 @@ namespace black_cat
 				l_policy_none = false;
 			}
 
-			task_wrapper_type l_task_wrapper(task_wrapper_type::make_from_big_object(l_alloc_type, std::move(l_task_link))); // TODO
-			_thread_data* l_my_data = m_my_data.get();
+			bool l_task_allocated_from_pool;
+			auto* l_allocated_task_link = static_cast<bc_task_link<T>*>(m_tasks_pool.alloc());
+
+			if(l_allocated_task_link)
+			{
+				l_task_allocated_from_pool = true;
+				new (l_allocated_task_link) bc_task_link<T>(std::move(l_task_link));
+			}
+			else
+			{
+				l_task_allocated_from_pool = false;
+				l_allocated_task_link = BC_NEW(bc_task_link<T>(std::move(l_task_link)), l_alloc_type);
+			}
+
+			task_wrapper_type l_task_wrapper([=]() mutable
+			{
+				(*l_allocated_task_link)();
+
+				if(l_task_allocated_from_pool)
+				{
+					l_allocated_task_link->~bc_task_link();
+					m_tasks_pool.free(l_allocated_task_link);
+				}
+				else
+				{
+					BC_DELETE(l_allocated_task_link);
+				}
+			});
 
 			const auto l_task_count = m_task_count.fetch_add(1, core_platform::bc_memory_order::seqcst) + 1;
+			auto* l_my_data = m_my_data.get();
 
 			// If current thread is not main thread
 			if (l_my_data && l_policy_none)
@@ -254,7 +281,7 @@ namespace black_cat
 				m_cvariable.notify_one();
 			}
 
-			if (l_task_count>= s_new_thread_threshold)
+			if (l_task_count >= s_new_thread_threshold)
 			{
 				_push_worker();
 			}

@@ -12,7 +12,7 @@ namespace black_cat
 		TEST(MemoryStream, OveralTest)
 		{
 			bc_test_init();
-			
+
 			{
 				core::bc_memory_stream l_stream;
 

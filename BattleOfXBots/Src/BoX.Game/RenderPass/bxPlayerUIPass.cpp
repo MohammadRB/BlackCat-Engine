@@ -1,5 +1,6 @@
 // [12/25/2021 MRB]
 
+#include <iomanip>
 #include "Core/Math/bcCurve.h"
 #include "Core/Container/bcStringStream.h"
 #include "Game/System/Render/bcRenderSystem.h"
@@ -168,7 +169,7 @@ namespace box
 		constexpr auto l_top_offset = 20;
 		const auto l_position = core::bc_vector2i(m_screen_center.x - m_char_bound.x * 2, l_top_offset);
 		const auto l_time = m_player_service->get_game_time();
-		const auto l_time_str = (core::bc_wstring_stream_frame() << l_time / 60 << ":" << l_time % 60).str();
+		const auto l_time_str = (core::bc_wstring_stream_frame() << std::setfill(L'0') << std::setw(2) << l_time / 60 << ":" << std::setw(2) << l_time % 60).str();
 
 		m_sprite_font->draw_string
 		(

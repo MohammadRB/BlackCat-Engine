@@ -212,6 +212,8 @@ namespace black_cat
 			l_decal_manager.read_decal_file(l_file_system.get_content_path(l_path.c_str()).c_str());
 		}
 
+		l_scene.enable_bulk_loading(l_json_document->m_actors.size());
+
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;
 
 		for (auto& l_json_actor : l_json_document->m_actors)
@@ -229,6 +231,8 @@ namespace black_cat
 			game::bc_actor_load_instance(l_actor_components, game::bc_actor_component_load_context(*l_json_actor->m_parameters, l_actor));
 		}
 
+		l_scene.disable_bulk_loading();
+
 		core::bc_log(core::bc_log_type::info) << "scene loaded" << core::bc_lend;
 	}
 
@@ -239,6 +243,7 @@ namespace black_cat
 		auto* l_scene = static_cast<game::bc_scene*>(p_context.m_content);
 
 		core::bc_json_document<_bc_scene_json> l_json_document{};
+		l_json_document.set_max_decimal_places(2);
 		*l_json_document->m_name = l_scene->get_name();
 		*l_json_document->m_scene_graph->m_center = l_scene->get_scene_graph().get_bound_box().get_center();
 		*l_json_document->m_scene_graph->m_half_extends = l_scene->get_scene_graph().get_bound_box().get_half_extends();

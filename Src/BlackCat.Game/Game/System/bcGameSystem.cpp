@@ -226,14 +226,17 @@ namespace black_cat
 				m_scene = std::move(m_new_scene);
 				m_new_scene = nullptr;
 
-				// Process actor events to apply initial transforms to prevent random force applied to overlapped objects by physics engine
-				auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
-				l_actor_component_manager.process_actor_events(p_clock);
-				l_actor_component_manager.update_actors(p_clock);
-				l_actor_component_manager.double_update_actors(p_clock);
+				if(m_scene)
+				{
+					// Process actor events to apply initial transforms to prevent random force applied to overlapped objects by physics engine
+					auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
+					l_actor_component_manager.process_actor_events(p_clock);
+					l_actor_component_manager.update_actors(p_clock);
+					l_actor_component_manager.double_update_actors(p_clock);
 
-				// Pass large elapsed time to reform graph if graph uses deferred update
-				m_scene->update_graph(core_platform::bc_clock::update_param(p_clock.m_total_elapsed, 10000, 10000));
+					// Pass large elapsed time to reform graph if graph uses deferred update
+					m_scene->update_graph(core_platform::bc_clock::update_param(p_clock.m_total_elapsed, 10000, 10000));
+				}
 
 				bc_event_scene_change l_scene_change_event(m_scene.get());
 				m_event_manager->process_event(l_scene_change_event);

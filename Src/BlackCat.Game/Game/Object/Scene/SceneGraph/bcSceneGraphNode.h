@@ -60,34 +60,34 @@ namespace black_cat
 
 			virtual bool intersects_actor(bc_actor& p_actor) const noexcept = 0;
 
-			virtual void get_actor(const physics::bc_ray& p_ray, std::pair<bcFLOAT, bc_actor>& p_result) const = 0;
+			virtual void get_actor(const physics::bc_ray& p_ray, std::pair<bcFLOAT, bc_actor>& p_result) const noexcept = 0;
 
-			virtual void get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const = 0;
-
-			/**
-			 * \brief ThreadSafe
-			 * \param p_actor 
-			 * \return 
-			 */
-			virtual bool add_actor(bc_actor& p_actor) = 0;
+			virtual void get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const noexcept = 0;
 
 			/**
 			 * \brief ThreadSafe
 			 * \param p_actor 
 			 * \return 
 			 */
-			virtual bool update_actor(bc_actor& p_actor) = 0;
+			virtual bool add_actor(bc_actor& p_actor) noexcept = 0;
 
 			/**
 			 * \brief ThreadSafe
 			 * \param p_actor 
 			 * \return 
 			 */
-			virtual bool remove_actor(bc_actor& p_actor) = 0;
+			virtual bool update_actor(bc_actor& p_actor) noexcept = 0;
 
-			virtual void update(const core_platform::bc_clock::update_param& p_clock) = 0;
+			/**
+			 * \brief ThreadSafe
+			 * \param p_actor 
+			 * \return 
+			 */
+			virtual bool remove_actor(bc_actor& p_actor) noexcept = 0;
+
+			virtual void update(const core_platform::bc_clock::update_param& p_clock) noexcept = 0;
 			
-			virtual void clear() = 0;
+			virtual void clear() noexcept = 0;
 
 			virtual void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const = 0;
 

@@ -44,12 +44,13 @@ namespace black_cat
 			m_decal_files(std::move(p_decal_files)),
 			m_entity_files(std::move(p_entity_files)),
 			m_loaded_streams(std::move(p_loaded_streams)),
+			m_loading_mode(false),
+			m_global_scale(bc_get_global_config().get_global_scale()),
 			m_entity_manager(&p_entity_manager),
 			m_physics(&p_game_system.get_physics_system()),
 			m_scene_graph(std::move(p_scene_graph)),
 			m_px_scene(std::move(p_px_scene))
 		{
-			m_global_scale = bc_get_global_config().get_global_scale();
 			m_bullet_manager = core::bc_make_unique<bc_bullet_manager>(bc_bullet_manager(*m_physics));
 			m_light_manager = core::bc_make_unique<bc_light_manager>(bc_light_manager());
 			m_particle_manager = core::bc_make_unique<bc_particle_manager>(bc_particle_manager());
@@ -60,10 +61,11 @@ namespace black_cat
 			: m_path(std::move(p_other.m_path)),
 			m_name(std::move(p_other.m_name)),
 			m_stream_files(std::move(p_other.m_stream_files)),
-			m_entity_files(std::move(p_other.m_entity_files)),
 			m_material_files(std::move(p_other.m_material_files)),
 			m_decal_files(std::move(p_other.m_decal_files)),
+			m_entity_files(std::move(p_other.m_entity_files)),
 			m_loaded_streams(std::move(p_other.m_loaded_streams)),
+			m_loading_mode(p_other.m_loading_mode),
 			m_global_scale(p_other.m_global_scale),
 			m_entity_manager(p_other.m_entity_manager),
 			m_physics(p_other.m_physics),
@@ -97,6 +99,7 @@ namespace black_cat
 			m_material_files = std::move(p_other.m_material_files);
 			m_decal_files = std::move(p_other.m_decal_files);
 			m_loaded_streams = std::move(p_other.m_loaded_streams);
+			m_loading_mode = p_other.m_loading_mode;
 			m_scene_graph = std::move(p_other.m_scene_graph);
 			m_global_scale = p_other.m_global_scale;
 			m_entity_manager = p_other.m_entity_manager;
@@ -110,27 +113,42 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_actor bc_scene::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform)
+		void bc_scene::enable_bulk_loading(bcSIZE p_hint_size) noexcept
+		{
+			m_loading_mode = true;
+			m_changed_actors.reserve(p_hint_size);
+		}
+
+		void bc_scene::disable_bulk_loading() noexcept
+		{
+			m_loading_mode = false;
+		}
+
+		bc_actor bc_scene::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform) noexcept
 		{
 			auto l_actor = m_entity_manager->create_entity(*this, p_entity_name);
 			if(!l_actor.is_valid())
 			{
 				return l_actor;
 			}
-			
+
+			if(m_loading_mode)
 			{
-				core_platform::bc_hybrid_mutex_guard l_lock_guard
-				(
-					m_changed_actors_lock, core_platform::bc_lock_operation::light
-				);
-				m_added_actors.push_back(l_actor);
+				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_state::add, l_actor));
+			}
+			else
+			{
+				{
+					core_platform::bc_spin_mutex_guard l_lock_guard(m_actors_to_add_lock);
+					m_actors_to_add.push_back(l_actor);
+				}
 			}
 
 			l_actor.add_event(bc_world_transform_actor_event(p_world_transform));
 			return l_actor;
 		}
 
-		bc_actor bc_scene::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter& p_instance_parameters)
+		bc_actor bc_scene::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter& p_instance_parameters) noexcept
 		{
 			auto l_actor = m_entity_manager->create_entity(*this, p_entity_name, p_instance_parameters);
 			if (!l_actor.is_valid())
@@ -138,25 +156,26 @@ namespace black_cat
 				return l_actor;
 			}
 
+			if (m_loading_mode)
 			{
-				core_platform::bc_hybrid_mutex_guard l_lock_guard
-				(
-					m_changed_actors_lock, core_platform::bc_lock_operation::light
-				);
-				m_added_actors.push_back(l_actor);
+				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_state::add, l_actor));
+			}
+			else
+			{
+				{
+					core_platform::bc_spin_mutex_guard l_lock_guard(m_actors_to_add_lock);
+					m_actors_to_add.push_back(l_actor);
+				}
 			}
 
 			l_actor.add_event(bc_world_transform_actor_event(p_world_transform));
 			return l_actor;
 		}
 
-		void bc_scene::update_actor(bc_actor& p_actor)
+		void bc_scene::update_actor(bc_actor p_actor) noexcept
 		{
 			{
-				core_platform::bc_hybrid_mutex_guard l_lock_guard
-				(
-					m_changed_actors_lock, core_platform::bc_lock_operation::light
-				);
+				core_platform::bc_hybrid_mutex_guard l_lock_guard(m_changed_actors_lock, core_platform::bc_lock_operation::light);
 
 				/*const auto l_to_remove_ite = std::find_if
 				(
@@ -173,22 +192,20 @@ namespace black_cat
 					m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::update, p_actor));
 				}*/
 
-				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::update, p_actor));
+				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_state::update, std::move(p_actor)));
 			}
 		}
 
-		void bc_scene::remove_actor(bc_actor& p_actor)
+		void bc_scene::remove_actor(bc_actor p_actor) noexcept
 		{
 			{
-				core_platform::bc_hybrid_mutex_guard l_lock_guard
-				(
-					m_changed_actors_lock, core_platform::bc_lock_operation::light
-				);
-				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::remove_event, p_actor));
+				core_platform::bc_spin_mutex_guard l_lock_guard(m_actors_to_remove_lock);
+
+				m_actors_to_remove.push_back(std::make_tuple(_bc_scene_actor_state::remove_from_graph, std::move(p_actor)));
 			}
 		}
 
-		void bc_scene::add_bullet(const bc_bullet& p_bullet)
+		void bc_scene::add_bullet(const bc_bullet& p_bullet) noexcept
 		{
 			m_bullet_manager->add_bullet(p_bullet);
 		}
@@ -244,12 +261,12 @@ namespace black_cat
 			return l_task;
 		}
 
-		void bc_scene::update_bullets(const core_platform::bc_clock::update_param& p_clock)
+		void bc_scene::update_bullets(const core_platform::bc_clock::update_param& p_clock) noexcept
 		{
 			m_bullet_manager->update(*this, p_clock);
 		}
 
-		core::bc_task<void> bc_scene::update_bullets_async(const core_platform::bc_clock::update_param& p_clock)
+		core::bc_task<void> bc_scene::update_bullets_async(const core_platform::bc_clock::update_param& p_clock) noexcept
 		{
 			auto l_task = core::bc_concurrency::start_task
 			(
@@ -265,42 +282,10 @@ namespace black_cat
 			return l_task;
 		}
 
-		void bc_scene::update_graph(const core_platform::bc_clock::update_param& p_clock)
+		void bc_scene::update_graph(const core_platform::bc_clock::update_param& p_clock) noexcept
 		{
 			{
 				core_platform::bc_hybrid_mutex_guard l_lock(m_changed_actors_lock, core_platform::bc_lock_operation::heavy);
-				
-				for(auto& l_added_actor : m_added_actors)
-				{
-					auto l_changed_ite = std::find_if
-					(
-						std::begin(m_changed_actors),
-						std::end(m_changed_actors),
-						[&](decltype(m_changed_actors)::reference p_entry)
-						{
-							return std::get<bc_actor>(p_entry) == l_added_actor;
-						}
-					);
-					
-					if (l_changed_ite == std::end(m_changed_actors))
-					{
-						m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::add, l_added_actor));
-					}
-					else
-					{
-						*l_changed_ite = std::make_tuple(_bc_scene_actor_operation::add, l_added_actor);
-					}
-				}
-
-				m_added_actors.clear();
-				m_added_actors.shrink_to_fit();
-
-				for (auto& l_to_removed_actor : m_to_remove_actors)
-				{
-					m_changed_actors.push_back(l_to_removed_actor);
-				}
-
-				m_to_remove_actors.clear();
 				
 				const auto l_num_thread = std::min(core::bc_concurrency::hardware_worker_count(), m_changed_actors.size() / 10U + 1);
 				core::bc_concurrency::concurrent_for_each
@@ -310,22 +295,21 @@ namespace black_cat
 					std::end(m_changed_actors),
 					[&](decltype(m_changed_actors)::reference p_actor)
 					{
-						switch (std::get<_bc_scene_actor_operation>(p_actor))
+						auto& [l_state, l_actor] = p_actor;
+
+						switch (l_state)
 						{
-						case _bc_scene_actor_operation::add:
-							_add_actor(std::get<bc_actor>(p_actor));
+						case _bc_scene_actor_state::add:
+							_add_actor(l_actor);
 							break;
-						case _bc_scene_actor_operation::update:
-							_update_actor(std::get<bc_actor>(p_actor));
+						case _bc_scene_actor_state::update:
+							_update_actor(l_actor);
 							break;
-						case _bc_scene_actor_operation::remove_event:
-							_send_actor_remove_event(_bc_scene_actor_operation::remove_from_graph, std::get<bc_actor>(p_actor));
+						case _bc_scene_actor_state::remove_from_graph:
+							_remove_actor(l_state, l_actor);
 							break;
-						case _bc_scene_actor_operation::remove_from_graph:
-							_remove_actor(_bc_scene_actor_operation::remove_from_graph, std::get<bc_actor>(p_actor));
-							break;
-						case _bc_scene_actor_operation::removed_from_graph:
-							_remove_actor(_bc_scene_actor_operation::removed_from_graph, std::get<bc_actor>(p_actor));
+						case _bc_scene_actor_state::removed_from_graph:
+							_remove_actor(l_state, l_actor);
 							break;
 						default:
 							BC_ASSERT(false);
@@ -334,12 +318,40 @@ namespace black_cat
 				);
 
 				m_changed_actors.clear();
+
+				// Before adding or removing actor we need one frame delay to process actor events which are required to add actors.
+				// This events are world transform and bound box events. To create one frame delay we have used two lists before adding
+				// actors to changed list.
+
+				{
+					core_platform::bc_spin_mutex_guard l_lock_guard(m_actors_to_add_lock);
+
+					for (auto& l_actor_to_add : m_actors_to_add)
+					{
+						m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_state::add, l_actor_to_add));
+					}
+
+					m_actors_to_add.clear();
+					m_actors_to_add.shrink_to_fit();
+				}
+
+				{
+					core_platform::bc_spin_mutex_guard l_lock_guard(m_actors_to_remove_lock);
+
+					for (auto& [l_state, l_actor] : m_actors_to_remove)
+					{
+						l_actor.add_event(bc_removed_from_scene_actor_event(*this));
+						m_changed_actors.push_back(std::make_tuple(l_state, l_actor));
+					}
+
+					m_actors_to_remove.clear();
+				}
 			}
 			
 			m_scene_graph.update(p_clock);
 		}
 
-		core::bc_task<void> bc_scene::update_graph_async(const core_platform::bc_clock::update_param& p_clock)
+		core::bc_task<void> bc_scene::update_graph_async(const core_platform::bc_clock::update_param& p_clock) noexcept
 		{
 			auto l_task = core::bc_concurrency::start_task
 			(
@@ -370,25 +382,20 @@ namespace black_cat
 		void bc_scene::_update_actor(bc_actor& p_actor)
 		{
 			const bool l_updated = m_scene_graph.update_actor(p_actor);
+
 			if (!l_updated)
 			{
-				_send_actor_remove_event(_bc_scene_actor_operation::removed_from_graph, p_actor);
+				{
+					core_platform::bc_spin_mutex_guard l_lock(m_actors_to_remove_lock);
+
+					m_actors_to_remove.push_back(std::make_tuple(_bc_scene_actor_state::removed_from_graph, p_actor));
+				}
 			}
 		}
 
-		void bc_scene::_send_actor_remove_event(_bc_scene_actor_operation p_state, bc_actor& p_actor)
+		void bc_scene::_remove_actor(_bc_scene_actor_state p_state, bc_actor& p_actor)
 		{
-			p_actor.add_event(bc_removed_from_scene_actor_event(*this));
-			
-			{
-				core_platform::bc_spin_mutex_guard l_lock(m_to_remove_actors_lock);
-				m_to_remove_actors.push_back(std::make_tuple(p_state, p_actor));
-			}
-		}
-
-		void bc_scene::_remove_actor(_bc_scene_actor_operation p_state, bc_actor& p_actor)
-		{
-			if(p_state != _bc_scene_actor_operation::removed_from_graph)
+			if(p_state == _bc_scene_actor_state::remove_from_graph)
 			{
 				const bool l_removed = m_scene_graph.remove_actor(p_actor);
 				BC_ASSERT(l_removed);
