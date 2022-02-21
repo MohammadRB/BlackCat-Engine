@@ -24,6 +24,8 @@ namespace black_cat
 
 			bc_client_connect_network_message& operator=(bc_client_connect_network_message&&) noexcept;
 
+			bool is_in_game_message() const noexcept override;
+
 			bool need_acknowledgment() const noexcept override;
 
 			core::bc_string get_acknowledgment_data() const noexcept override;
@@ -54,6 +56,8 @@ namespace black_cat
 
 			bc_client_disconnect_network_message& operator=(bc_client_disconnect_network_message&&) noexcept;
 
+			bool is_in_game_message() const noexcept override;
+
 			void execute(const bc_network_message_server_context& p_context) noexcept override;
 		
 		private:
@@ -62,9 +66,19 @@ namespace black_cat
 			void deserialize_message(const bc_network_message_deserialization_context& p_context) override;
 		};
 
+		inline bool bc_client_connect_network_message::is_in_game_message() const noexcept
+		{
+			return false;
+		}
+
 		inline bool bc_client_connect_network_message::need_acknowledgment() const noexcept
 		{
 			return true;
+		}
+
+		inline bool bc_client_disconnect_network_message::is_in_game_message() const noexcept
+		{
+			return false;
 		}
 	}
 }

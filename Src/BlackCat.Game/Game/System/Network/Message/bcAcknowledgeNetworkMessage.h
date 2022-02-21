@@ -24,6 +24,8 @@ namespace black_cat
 
 			bc_acknowledge_network_message& operator=(bc_acknowledge_network_message&&) noexcept;
 
+			bool is_in_game_message() const noexcept override;
+
 			bc_network_message_id get_acknowledged_message_id() const noexcept;
 
 			core::bc_string get_acknowledged_message_data() const noexcept;
@@ -40,6 +42,11 @@ namespace black_cat
 			bc_network_message_id m_ack_id;
 			mutable core::bc_string m_ack_data;
 		};
+
+		inline bool bc_acknowledge_network_message::is_in_game_message() const noexcept
+		{
+			return false;
+		}
 
 		inline bc_network_message_id bc_acknowledge_network_message::get_acknowledged_message_id() const noexcept
 		{

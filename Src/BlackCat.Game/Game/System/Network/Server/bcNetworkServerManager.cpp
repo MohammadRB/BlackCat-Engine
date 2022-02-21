@@ -185,7 +185,7 @@ namespace black_cat
 		{
 			if (get_network_state() != bc_network_state::connected)
 			{
-				core::bc_log(core::bc_log_type::warning, bcL("Network is in error state. message will be discarded."));
+				core::bc_log(core::bc_log_type::warning, bcL("Network is in error state. Message will be discarded."));
 				return;
 			}
 
@@ -315,6 +315,12 @@ namespace black_cat
 
 		void bc_network_server_manager::client_connected(const platform::bc_network_address& p_address, core::bc_string p_name, bc_client_connect_result& p_result)
 		{
+			if(p_name.empty())
+			{
+				auto [l_address_family, l_ip, l_port] = p_address.get_traits();
+				p_name = "NoName " + core::bc_to_string_frame(l_port);
+			}
+
 			bc_network_server_manager_client l_client(p_address, std::move(p_name));
 			bc_network_server_manager_client* l_inserted_client;
 
@@ -558,7 +564,7 @@ namespace black_cat
 				{
 					core_platform::bc_lock_guard<bc_network_server_manager_client> l_client_lock(l_client);
 					
-					if (!l_client.get_ready_for_sync())
+					if (p_message->is_in_game_message() && !l_client.get_ready_for_sync())
 					{
 						continue;
 					}
@@ -859,9 +865,10 @@ namespace black_cat
 
 					for (auto& l_client : m_clients)
 					{
-						core_platform::bc_lock_guard l_client_lock(l_client);
-
-						l_client.set_ready_for_sync(false);
+						{
+							core_platform::bc_lock_guard l_client_lock(l_client);
+							l_client.set_ready_for_sync(false);
+						}
 					}
 				}
 

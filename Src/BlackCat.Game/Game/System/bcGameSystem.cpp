@@ -77,7 +77,7 @@ namespace black_cat
 
 					if (l_scene)
 					{
-						l_scene_task = l_scene->update_physics_async(p_clock);
+						l_scene_task = l_scene->update_physics_async(p_clock, p_is_partial_update);
 						l_particle_manager->update(p_clock);
 
 						core::bc_concurrency::when_all(l_scene_task);
@@ -92,7 +92,7 @@ namespace black_cat
 
 				if (l_scene)
 				{
-					l_scene_task = l_scene->update_physics_async(p_clock);
+					l_scene_task = l_scene->update_physics_async(p_clock, p_is_partial_update);
 				}
 
 				l_event_manager.process_event_queue(p_clock);
@@ -299,8 +299,10 @@ namespace black_cat
 			const auto* l_pause_event = core::bci_message::as<bc_event_game_pause_state>(p_event);
 			if(l_pause_event)
 			{
+				const auto l_current_pause_state = m_paused;
 				m_paused = l_pause_event->get_state() == bc_event_game_pause_state::state::paused;
-				if(m_paused)
+
+				if(m_paused && !l_current_pause_state)
 				{
 					m_pause_last_total_elapsed.reset();
 				}

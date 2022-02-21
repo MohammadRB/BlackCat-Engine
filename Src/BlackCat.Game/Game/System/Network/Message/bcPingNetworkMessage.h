@@ -23,6 +23,8 @@ namespace black_cat
 
 			bc_ping_network_message& operator=(bc_ping_network_message&&) noexcept;
 
+			bool is_in_game_message() const noexcept override;
+
 			bool need_acknowledgment() const noexcept override;
 
 			core::bc_string get_acknowledgment_data() const noexcept override;

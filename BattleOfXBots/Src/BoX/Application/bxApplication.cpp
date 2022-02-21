@@ -298,8 +298,13 @@ namespace box
 
 	void bx_application::scene_changed(game::bc_scene* p_scene) noexcept
 	{
-		m_state = bx_app_state::scene_loaded;
 		m_scene = p_scene;
+		if(!m_scene)
+		{
+			return;
+		}
+
+		m_state = bx_app_state::scene_loaded;
 		m_team_select_task = m_player_service->ask_for_team();
 
 		_create_scene_checkpoint(*m_scene);
@@ -319,6 +324,7 @@ namespace box
 
 	void bx_application::error_occurred(const bc_network_exception* p_exception) noexcept
 	{
+		m_state = bx_app_state::initial;
 		m_game_system->set_scene(nullptr);
 	}
 

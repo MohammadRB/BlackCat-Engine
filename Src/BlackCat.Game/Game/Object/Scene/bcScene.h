@@ -128,9 +128,9 @@ namespace black_cat
 			
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
-			void update_physics(const core_platform::bc_clock::update_param& p_clock);
+			void update_physics(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update);
 			
-			core::bc_task<void> update_physics_async(const core_platform::bc_clock::update_param& p_clock);
+			core::bc_task<void> update_physics_async(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update);
 
 			void update_bullets(const core_platform::bc_clock::update_param& p_clock) noexcept;
 

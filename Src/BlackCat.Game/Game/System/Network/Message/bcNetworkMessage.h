@@ -108,6 +108,12 @@ namespace black_cat
 			virtual bool need_acknowledgment() const noexcept;
 
 			/**
+			 * \brief Indicate message is a game play message which would not be sent until client load game scene
+			 * \return 
+			 */
+			virtual bool is_in_game_message() const noexcept;
+
+			/**
 			 * \brief Indicates messages is sent again because acknowledge message is not received by sender
 			 * \return 
 			 */
@@ -186,6 +192,11 @@ namespace black_cat
 		inline bool bci_network_message::need_acknowledgment() const noexcept
 		{
 			return false;
+		}
+
+		inline bool bci_network_message::is_in_game_message() const noexcept
+		{
+			return true;
 		}
 
 		inline bool bci_network_message::get_is_retry() const noexcept

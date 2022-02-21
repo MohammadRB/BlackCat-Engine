@@ -109,7 +109,7 @@ namespace box
 				_reset_game(*m_scene);
 			}
 
-			_respawn_players(p_context.m_clock);
+			_respawn_dead_players(p_context.m_clock);
 		}
 
 		_send_game_state_to_clients(p_context.m_clock);
@@ -204,8 +204,12 @@ namespace box
 	void bx_server_application::scene_changed(game::bc_scene* p_scene) noexcept
 	{
 		m_scene = p_scene;
-		const auto l_player_seat_actors = m_scene->get_scene_graph().get_actors<bx_player_seat_component>();
+		if(!m_scene)
+		{
+			return;
+		}
 
+		const auto l_player_seat_actors = m_scene->get_scene_graph().get_actors<bx_player_seat_component>();
 		for(const auto& l_actor : l_player_seat_actors)
 		{
 			const auto* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();
@@ -263,9 +267,8 @@ namespace box
 	{
 		if(!p_client)
 		{
-			m_game_system->set_scene(nullptr);
-
 			m_state = bx_app_state::initial;
+			m_game_system->set_scene(nullptr);
 		}
 	}
 
@@ -359,6 +362,11 @@ namespace box
 			l_seat.m_client_id = game::bc_actor::invalid_id;
 		}
 
+		for(auto& [l_client_id, l_client] : m_joined_clients)
+		{
+			l_client.m_team.reset();
+		}
+
 		_restore_scene_checkpoint(p_scene);
 	}
 
@@ -388,7 +396,7 @@ namespace box
 		return { true, l_seat_ite->m_position };
 	}
 
-	void bx_server_application::_respawn_players(const core_platform::bc_clock::update_param& p_clock)
+	void bx_server_application::_respawn_dead_players(const core_platform::bc_clock::update_param& p_clock)
 	{
 		for (auto& [l_client_id, l_client] : m_joined_clients)
 		{

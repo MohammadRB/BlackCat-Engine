@@ -2,6 +2,7 @@
 
 #include "Game/GamePCH.h"
 #include "Game/System/Network/Message/bcSceneChangeNetworkMessage.h"
+#include "Game/bcJsonParse.h"
 
 namespace black_cat
 {
@@ -32,13 +33,12 @@ namespace black_cat
 
 		void bc_scene_change_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
-			p_context.m_params.add("scn", core::bc_any(m_scene_name));
+			json_parse::bc_write(p_context.m_params, "scn", m_scene_name);
 		}
 
 		void bc_scene_change_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)
 		{
-			auto l_ite = p_context.m_params.find("scn");
-			m_scene_name = std::move(*l_ite->second.as<core::bc_string>());
+			json_parse::bc_load(p_context.m_params, "scn", m_scene_name);
 		}
 	}	
 }

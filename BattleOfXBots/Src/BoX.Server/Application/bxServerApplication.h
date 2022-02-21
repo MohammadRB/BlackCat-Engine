@@ -109,7 +109,7 @@ namespace box
 
 		std::pair<bool, core::bc_vector3f> _assign_seat(game::bc_network_client_id p_client_id, bx_team p_team);
 
-		void _respawn_players(const core_platform::bc_clock::update_param& p_clock);
+		void _respawn_dead_players(const core_platform::bc_clock::update_param& p_clock);
 
 		const bcECHAR* m_app_name{ nullptr };
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
@@ -118,7 +118,7 @@ namespace box
 		game::bc_network_system* m_network_system{ nullptr };
 
 		bx_app_state m_state = bx_app_state::initial;
-		const bcFLOAT m_game_time = 5 * 60;
+		const bcFLOAT m_game_time = 30;
 		const bcFLOAT m_respawn_time = 5;
 		bcFLOAT m_current_game_time = m_game_time;
 		bcFLOAT m_last_state_update_elapsed_ms = 0;

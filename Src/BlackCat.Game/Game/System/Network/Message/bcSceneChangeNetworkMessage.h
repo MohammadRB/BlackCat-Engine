@@ -24,6 +24,8 @@ namespace black_cat
 
 			bc_scene_change_network_message& operator=(bc_scene_change_network_message&&) noexcept;
 
+			bool is_in_game_message() const noexcept override;
+
 			bool need_acknowledgment() const noexcept override;
 
 			void execute(const bc_network_message_client_context& p_context) noexcept override;
@@ -35,6 +37,11 @@ namespace black_cat
 
 			core::bc_string m_scene_name;
 		};
+
+		inline bool bc_scene_change_network_message::is_in_game_message() const noexcept
+		{
+			return false;
+		}
 
 		inline bool bc_scene_change_network_message::need_acknowledgment() const noexcept
 		{

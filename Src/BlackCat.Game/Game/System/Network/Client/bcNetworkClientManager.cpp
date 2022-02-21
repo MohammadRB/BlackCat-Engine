@@ -415,8 +415,6 @@ namespace black_cat
 					core::bc_content_loader_parameter()
 				);
 				m_game_system->set_scene(std::move(l_scene));
-
-				send_message(bc_scene_replicate_network_message());
 			}
 			catch (const std::exception& p_exception)
 			{
@@ -449,8 +447,6 @@ namespace black_cat
 				return;
 			}
 
-			bool l_is_self_replicate = false;
-			
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
 
@@ -470,16 +466,11 @@ namespace black_cat
 				if (l_sync_actors_ite != std::cend(m_sync_actors))
 				{
 					m_sync_actors.erase(l_sync_actors_ite);
-					l_is_self_replicate = true;
 				}
 			}
 
 			l_network_component->set_network_id(bc_actor::invalid_id); // Mark as invalid to prevent double removal via network component
 			m_game_system->get_scene()->remove_actor(p_actor);
-			//if(!l_is_self_replicate) // actors which are spawned by the current client must be removed by caller code
-			//{
-			//	m_game_system->get_scene()->remove_actor(p_actor);
-			//}
 		}
 
 		bc_actor bc_network_client_manager::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_transform)
@@ -687,6 +678,11 @@ namespace black_cat
 		{
 			if (const auto* l_scene_change_event = core::bci_message::as<bc_event_scene_change>(p_event))
 			{
+				if(l_scene_change_event->get_scene())
+				{
+					send_message(bc_scene_replicate_network_message());
+				}
+				
 				m_hook->scene_changed(l_scene_change_event->get_scene());
 				return;
 			}

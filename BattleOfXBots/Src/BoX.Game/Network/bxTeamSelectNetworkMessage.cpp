@@ -19,6 +19,11 @@ namespace box
 	{
 	}
 
+	bool bx_team_select_network_message::is_in_game_message() const noexcept
+	{
+		return false;
+	}
+
 	bool bx_team_select_network_message::need_acknowledgment() const noexcept
 	{
 		return true;

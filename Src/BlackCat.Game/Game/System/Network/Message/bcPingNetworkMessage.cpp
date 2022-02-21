@@ -23,6 +23,11 @@ namespace black_cat
 
 		bc_ping_network_message& bc_ping_network_message::operator=(bc_ping_network_message&&) noexcept = default;
 
+		bool bc_ping_network_message::is_in_game_message() const noexcept
+		{
+			return false;
+		}
+
 		bool bc_ping_network_message::need_acknowledgment() const noexcept
 		{
 			return true;

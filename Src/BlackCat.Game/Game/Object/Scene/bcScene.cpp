@@ -174,23 +174,54 @@ namespace black_cat
 
 		void bc_scene::update_actor(bc_actor p_actor) noexcept
 		{
-			{
-				core_platform::bc_hybrid_mutex_guard l_lock_guard(m_changed_actors_lock, core_platform::bc_lock_operation::light);
+			bool l_is_in_remove_list = false;
 
-				/*const auto l_to_remove_ite = std::find_if
+			{
+				core_platform::bc_spin_mutex_guard l_actors_to_remove_lock_guard(m_actors_to_remove_lock);
+
+				const auto l_to_remove_ite = std::find_if
 				(
-					std::begin(m_to_remove_actors),
-					std::end(m_to_remove_actors),
-					[&p_actor](decltype(m_to_remove_actors)::reference p_entry)
+					std::begin(m_actors_to_remove),
+					std::end(m_actors_to_remove),
+					[&p_actor](decltype(m_actors_to_remove)::reference p_entry)
 					{
 						return std::get<bc_actor>(p_entry) == p_actor;
 					}
 				);
-				
-				if (l_to_remove_ite == std::end(m_to_remove_actors))
+				if (l_to_remove_ite != std::end(m_actors_to_remove))
 				{
-					m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_operation::update, p_actor));
-				}*/
+					l_is_in_remove_list = true;
+				}
+			}
+
+			if (l_is_in_remove_list)
+			{
+				return;
+			}
+
+			{
+				core_platform::bc_hybrid_mutex_guard l_changed_actors_lock_guard(m_changed_actors_lock, core_platform::bc_lock_operation::light);
+
+				const auto l_to_remove_ite = std::find_if
+				(
+					std::begin(m_changed_actors),
+					std::end(m_changed_actors),
+					[&p_actor](decltype(m_changed_actors)::reference p_entry)
+					{
+						const auto l_actor_state = std::get<_bc_scene_actor_state>(p_entry);
+						const auto l_is_in_remove_list = l_actor_state == _bc_scene_actor_state::remove_from_graph || l_actor_state == _bc_scene_actor_state::removed_from_graph;
+						return l_is_in_remove_list && std::get<bc_actor>(p_entry) == p_actor;
+					}
+				);
+				if (l_to_remove_ite != std::end(m_changed_actors))
+				{
+					l_is_in_remove_list = true;
+				}
+
+				if(l_is_in_remove_list)
+				{
+					return;
+				}
 
 				m_changed_actors.push_back(std::make_tuple(_bc_scene_actor_state::update, std::move(p_actor)));
 			}
@@ -215,7 +246,7 @@ namespace black_cat
 			m_scene_graph.draw_debug_shapes(p_shape_drawer);
 		}
 
-		void bc_scene::update_physics(const core_platform::bc_clock::update_param& p_clock)
+		void bc_scene::update_physics(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
 		{
 			core::bc_vector_frame<physics::bc_updated_actor> l_px_actors;
 			
@@ -224,11 +255,19 @@ namespace black_cat
 
 				m_px_scene->update(p_clock);
 				m_px_scene->wait();
-				l_px_actors = m_px_scene->get_active_actors();
+
+				if(!p_is_partial_update)
+				{
+					l_px_actors = m_px_scene->get_active_actors();
+				}
+			}
+
+			if(l_px_actors.empty())
+			{
+				return;
 			}
 
 			const auto l_num_thread = std::min(core::bc_concurrency::hardware_worker_count(), l_px_actors.size() / 25U + 1);
-
 			core::bc_concurrency::concurrent_for_each
 			(
 				l_num_thread,
@@ -245,7 +284,7 @@ namespace black_cat
 			);
 		}
 
-		core::bc_task<void> bc_scene::update_physics_async(const core_platform::bc_clock::update_param& p_clock)
+		core::bc_task<void> bc_scene::update_physics_async(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
 		{
 			auto l_task = core::bc_concurrency::start_task
 			(
@@ -253,7 +292,7 @@ namespace black_cat
 				(
 					[=, &p_clock]()
 					{
-						update_physics(p_clock);
+						update_physics(p_clock, p_is_partial_update);
 					}
 				)
 			);

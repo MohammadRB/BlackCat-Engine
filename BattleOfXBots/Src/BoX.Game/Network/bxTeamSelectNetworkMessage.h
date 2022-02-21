@@ -27,6 +27,8 @@ namespace box
 		bx_team_select_network_message& operator=(bx_team_select_network_message&&) noexcept = default;
 
 	private:
+		bool is_in_game_message() const noexcept override;
+
 		bool need_acknowledgment() const noexcept override;
 
 		core::bc_string get_acknowledgment_data() const noexcept override;

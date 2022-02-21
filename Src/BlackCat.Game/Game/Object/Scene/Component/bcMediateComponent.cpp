@@ -43,7 +43,6 @@ namespace black_cat
 
 		void bc_mediate_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			m_scene = &p_context.m_scene;
 		}
 
 		void bc_mediate_component::load_instance(const bc_actor_component_load_context& p_context)
