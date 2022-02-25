@@ -66,6 +66,12 @@
     <ClCompile Include="..\Src\BoX.Game\RenderPass\bxPlayerUIPass.cpp">
       <Filter>BoX.Game\RenderPass</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Network\bxGameResetNetworkMessage.cpp">
+      <Filter>BoX.Game\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Application\bxSceneCheckPoint.cpp">
+      <Filter>BoX.Game\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\BoX.Game\Application\bxApplicationHookFunctions.h">
@@ -112,6 +118,12 @@
     </ClInclude>
     <ClInclude Include="..\Src\BoX.Game\RenderPass\bxPlayerUIPass.h">
       <Filter>BoX.Game\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Network\bxGameResetNetworkMessage.h">
+      <Filter>BoX.Game\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Application\bxSceneCheckPoint.h">
+      <Filter>BoX.Game\Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

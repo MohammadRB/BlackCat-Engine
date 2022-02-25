@@ -59,10 +59,15 @@ namespace black_cat
 			auto& l_physics_system = m_physics_system;
 			auto& l_network_system = m_network_system;
 			auto& l_console = m_console;
-			auto* l_camera = m_input_system.get_camera();
 			auto* l_scene = m_scene.get();
 			auto* l_particle_manager = l_scene ? &l_scene->get_particle_manager() : static_cast<bc_particle_manager*>(nullptr);
 			auto* l_decal_manager = l_scene ? &l_scene->get_decal_manager() : static_cast<bc_decal_manager*>(nullptr);
+			core::bc_nullable<bc_camera_instance> l_camera;
+
+			if(m_input_system.get_camera())
+			{
+				l_camera.reset(bc_camera_instance(*m_input_system.get_camera()));
+			}
 
 			if(!m_editor_mode && !m_paused)
 			{
@@ -124,7 +129,7 @@ namespace black_cat
 				l_script_system.update(p_clock);
 				l_console->update(p_clock);
 
-				if(l_camera)
+				if(l_camera.has_value())
 				{
 					l_render_system.update(bc_render_system::update_context(p_clock, *l_camera));
 				}
@@ -150,7 +155,7 @@ namespace black_cat
 
 				l_console->update(p_clock);
 
-				if (l_camera)
+				if (l_camera.has_value())
 				{
 					const auto l_paused_clock = core_platform::bc_clock::update_param(*m_pause_last_total_elapsed, 0, p_clock.m_average_elapsed);
 					l_render_system.update(bc_render_system::update_context(l_paused_clock, *l_camera));
@@ -179,7 +184,7 @@ namespace black_cat
 				l_script_system.update(p_clock);
 				l_console->update(p_clock);
 				
-				if (l_camera)
+				if (l_camera.has_value())
 				{
 					l_render_system.update(bc_render_system::update_context(p_clock, *l_camera));
 				}
@@ -228,7 +233,10 @@ namespace black_cat
 
 				if(m_scene)
 				{
+					// Process actor events to apply initial transforms and update scene graph so actors can be queryable in scene change event.
+
 					// Process actor events to apply initial transforms to prevent random force applied to overlapped objects by physics engine
+					// (not valid if we add actors to px scene after initial transform event process)
 					auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
 					l_actor_component_manager.process_actor_events(p_clock);
 					l_actor_component_manager.update_actors(p_clock);

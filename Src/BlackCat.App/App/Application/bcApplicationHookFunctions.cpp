@@ -176,11 +176,11 @@ namespace black_cat
 							)
 						);
 					},
-					std::move(p_parameters.m_app_parameters.m_scene_graph_factory)
+					p_parameters.m_app_parameters.m_scene_graph_factory
 				)
 			)
 		);
-		core::bc_register_loader<game::bc_scene_check_point, bc_scene_check_point_loader>("scene_check_point", core::bc_make_loader<bc_scene_check_point_loader>());
+		core::bc_register_loader<game::bc_scene_checkpoint, bc_scene_checkpoint_loader<>>("scene_check_point", core::bc_make_loader<bc_scene_checkpoint_loader<>>());
 	}
 
 	void bc_register_engine_actor_components()

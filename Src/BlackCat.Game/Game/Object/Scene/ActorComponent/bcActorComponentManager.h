@@ -156,7 +156,7 @@ namespace black_cat
 
 			bc_actor_component_manager(bc_actor_component_manager&&) noexcept = delete;
 
-			~bc_actor_component_manager();
+			~bc_actor_component_manager() override;
 
 			bc_actor_component_manager& operator=(bc_actor_component_manager&&) noexcept = delete;
 
@@ -358,10 +358,8 @@ namespace black_cat
 
 		inline bc_actor_component_manager::~bc_actor_component_manager()
 		{
-			BC_ASSERT
-			(
-				m_actors_bit.find_true_indices().empty()
-			);
+			const auto l_active_actors = m_actors_bit.find_true_indices();
+			BC_ASSERT(l_active_actors.empty());
 
 			m_event_pools[0].destroy();
 			m_event_pools[1].destroy();

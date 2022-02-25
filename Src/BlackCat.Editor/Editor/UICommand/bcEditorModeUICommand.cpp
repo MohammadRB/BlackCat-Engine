@@ -37,11 +37,11 @@ namespace black_cat
 			}
 
 			auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
-			const auto l_checkpoint_path = game::bc_scene_check_point::get_checkpoint_path(*l_scene, bcL("editor_checkpoint"));
+			const auto l_checkpoint_path = game::bc_scene_checkpoint::get_checkpoint_path(*l_scene, bcL("editor_checkpoint"));
 
 			if(!m_editor_mode)
 			{
-				game::bc_scene_check_point l_check_point(*l_scene);
+				game::bc_scene_checkpoint l_check_point(*l_scene);
 				l_content_manager.save_as(l_check_point, l_checkpoint_path.get_string_frame().c_str(), nullptr);
 			}
 			else
@@ -49,7 +49,7 @@ namespace black_cat
 				core::bc_content_loader_parameter l_instance_parameters;
 				l_instance_parameters.add_or_update("scene", l_scene);
 
-				auto l_check_point = l_content_manager.load<game::bc_scene_check_point>
+				auto l_check_point = l_content_manager.load<game::bc_scene_checkpoint>
 				(
 					l_checkpoint_path.get_string_frame().c_str(),
 					nullptr,

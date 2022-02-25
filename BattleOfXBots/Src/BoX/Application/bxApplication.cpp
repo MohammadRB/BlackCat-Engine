@@ -15,7 +15,6 @@
 #include "Game/Object/Mesh/bcHeightMap.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
-#include "Game/Object/Scene/bcSceneCheckPoint.h"
 #include "App/RenderPass/bcBackBufferWritePass.h"
 #include "App/RenderPass/bcShapeDrawPass.h"
 #include "App/RenderPass/bcTextDrawPass.h"
@@ -34,6 +33,7 @@
 #include "App/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"
 #include "App/bcConstant.h"
 #include "BoX.Game/Application/bxApplicationHookFunctions.h"
+#include "BoX.Game/Application/bxSceneCheckPoint.h"
 #include "BoX.Game/RenderPass/bxPlayerUIPass.h"
 #include "BoX.Game/Network/bxTeamSelectNetworkMessage.h"
 #include "BoX.Game/bxEvent.h"
@@ -189,11 +189,6 @@ namespace box
 					m_scene->remove_actor(m_player_actor);
 				}
 			}
-
-			if (m_current_game_time <= 0)
-			{
-				_reset_game(*m_scene);
-			}
 		}
 	}
 
@@ -235,7 +230,11 @@ namespace box
 
 			m_is_dead = false;
 			m_player_actor = game::bc_actor();
-			m_player_service->stopped_playing();
+
+			if(m_player_service->get_state() == bx_player_state::playing)
+			{
+				m_player_service->stopped_playing();
+			}
 			return;
 		}
 
@@ -351,21 +350,29 @@ namespace box
 		m_player_service->started_playing(m_team);
 	}
 
+	void bx_application::reset_game()
+	{
+		if(m_state >= bx_app_state::scene_loaded)
+		{
+			_reset_game(*m_scene);
+		}
+	}
+
 	void bx_application::_create_scene_checkpoint(game::bc_scene& p_scene)
 	{
 		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
-		const auto l_checkpoint_path = game::bc_scene_check_point::get_checkpoint_path(p_scene, bcL("game_checkpoint"));
+		const auto l_checkpoint_path = bx_scene_checkpoint::get_checkpoint_path(p_scene, bcL("game_checkpoint"));
 
-		game::bc_scene_check_point l_check_point(p_scene);
+		bx_scene_checkpoint l_check_point(p_scene);
 		l_content_manager.save_as(l_check_point, l_checkpoint_path.get_string_frame().c_str(), nullptr);
 	}
 
 	void bx_application::_restore_scene_checkpoint(game::bc_scene& p_scene)
 	{
 		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
-		const auto l_checkpoint_path = game::bc_scene_check_point::get_checkpoint_path(p_scene, bcL("game_checkpoint"));
+		const auto l_checkpoint_path = bx_scene_checkpoint::get_checkpoint_path(p_scene, bcL("game_checkpoint"));
 
-		auto l_check_point = l_content_manager.load<game::bc_scene_check_point>
+		auto l_check_point = l_content_manager.load<bx_scene_checkpoint>
 		(
 			l_checkpoint_path.get_string_frame().c_str(),
 			nullptr,

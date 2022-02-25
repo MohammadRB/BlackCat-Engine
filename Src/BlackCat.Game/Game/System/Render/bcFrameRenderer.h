@@ -30,29 +30,26 @@ namespace black_cat
 
 		struct bc_frame_renderer_update_context
 		{
-			bc_frame_renderer_update_context(const core_platform::bc_clock::update_param& p_clock, 
-				const bc_camera_instance& p_camera)
+			bc_frame_renderer_update_context(const core_platform::bc_clock::update_param& p_clock, const bc_camera_instance& p_camera)
 				: m_clock(p_clock),
 				m_camera(p_camera)
 			{
 			}
 
-			core_platform::bc_clock::update_param m_clock;
-			bc_camera_instance m_camera;
+			const core_platform::bc_clock::update_param& m_clock;
+			const bc_camera_instance& m_camera;
 		};
 
 		struct bc_frame_renderer_render_context
 		{
-			bc_frame_renderer_render_context(const core_platform::bc_clock::update_param& p_clock,
-				core::bc_query_manager& p_query_manager,
-				bc_render_system& p_render_system)
+			bc_frame_renderer_render_context(const core_platform::bc_clock::update_param& p_clock, core::bc_query_manager& p_query_manager, bc_render_system& p_render_system)
 				: m_clock(p_clock),
 				m_query_manager(p_query_manager),
 				m_render_system(p_render_system)
 			{
 			}
 
-			core_platform::bc_clock::update_param m_clock;
+			const core_platform::bc_clock::update_param& m_clock;
 			core::bc_query_manager& m_query_manager;
 			bc_render_system& m_render_system;
 		};

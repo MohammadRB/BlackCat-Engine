@@ -7,7 +7,6 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcRigidControllerComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
-#include "Game/Object/Scene/Component/bcCheckPointComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
@@ -57,7 +56,7 @@ namespace black_cat
 			const auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
 			if (l_mesh_component)
 			{
-				m_px_body = l_physics.create_rigid_dynamic(physics::bc_transform::identity());
+				m_px_body = l_physics.create_rigid_dynamic(physics::bc_transform(p_context.m_transform));
 				l_physics_system.set_game_actor(*m_px_body, p_context.m_actor);
 				
 				const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_collider_materials);
@@ -78,7 +77,9 @@ namespace black_cat
 				m_px_body->update_mass_inertia(l_mass_value, l_cmass_value.get());
 				m_px_body->set_mass(l_mass_value);
 
-				bc_mark_actor_for_checkpoint(p_context.m_actor);
+				added_to_scene(p_context.m_scene.get_px_scene(), *m_px_body);
+
+				bc_actor_mark_for_checkpoint(p_context.m_actor);
 
 				return;
 			}
@@ -121,12 +122,12 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
+			/*const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
 			if (l_scene_add_event)
 			{
 				added_to_scene(l_scene_add_event->get_scene().get_px_scene(), *m_px_body);
 				return;
-			}
+			}*/
 
 			const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event);
 			if (l_scene_remove_event)

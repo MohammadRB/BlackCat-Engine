@@ -126,7 +126,7 @@ namespace black_cat
 
 		bc_actor bc_scene::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform) noexcept
 		{
-			auto l_actor = m_entity_manager->create_entity(*this, p_entity_name);
+			auto l_actor = m_entity_manager->create_entity(*this, p_entity_name, p_world_transform);
 			if(!l_actor.is_valid())
 			{
 				return l_actor;
@@ -150,7 +150,7 @@ namespace black_cat
 
 		bc_actor bc_scene::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter& p_instance_parameters) noexcept
 		{
-			auto l_actor = m_entity_manager->create_entity(*this, p_entity_name, p_instance_parameters);
+			auto l_actor = m_entity_manager->create_entity(*this, p_entity_name, p_world_transform, p_instance_parameters);
 			if (!l_actor.is_valid())
 			{
 				return l_actor;

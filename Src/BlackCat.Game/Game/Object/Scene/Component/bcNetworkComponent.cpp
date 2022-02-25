@@ -75,6 +75,22 @@ namespace black_cat
 				throw bc_invalid_argument_exception("Invalid value for network data direction parameter");
 			}
 
+			if(m_network_type != bc_network_type::not_started)
+			{
+				if
+				(
+					(m_network_type == bc_network_type::server && m_data_dir == bc_actor_network_data_dir::replicate_sync) ||
+					(m_network_type == bc_network_type::client && m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
+				)
+				{
+					m_replication_side = bc_actor_replication_side::origin;
+				}
+				else
+				{
+					m_replication_side = bc_actor_replication_side::replicated;
+				}
+			}
+
 			if(l_network_entity_name_param)
 			{
 				m_network_entity_name = l_network_entity_name_param->c_str();
@@ -163,7 +179,7 @@ namespace black_cat
 					}
 					else if (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
 					{
-						p_context.m_actor.add_event(bc_network_replicate_actor_event(m_data_dir));
+						p_context.m_actor.add_event(bc_network_replicate_actor_event(m_data_dir, m_replication_side));
 					}
 				}
 				else if (l_network_type == bc_network_type::client)
@@ -179,7 +195,7 @@ namespace black_cat
 					}
 					else if (m_data_dir == bc_actor_network_data_dir::replicate_sync || m_data_dir == bc_actor_network_data_dir::replicate)
 					{
-						p_context.m_actor.add_event(bc_network_replicate_actor_event(m_data_dir));
+						p_context.m_actor.add_event(bc_network_replicate_actor_event(m_data_dir, m_replication_side));
 					}
 				}
 

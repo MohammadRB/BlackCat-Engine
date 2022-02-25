@@ -69,11 +69,10 @@ namespace black_cat
 			return;
 		}
 
-		auto l_rigid_body = l_rigid_dynamic_component->get_dynamic_body();
-
 		{
 			game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
 
+			auto l_rigid_body = l_rigid_dynamic_component->get_dynamic_body();
 			l_rigid_body.add_force(p_direction);
 		}
 	}

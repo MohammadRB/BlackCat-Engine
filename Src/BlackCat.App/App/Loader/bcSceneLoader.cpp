@@ -13,7 +13,6 @@
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/SceneGraph/bcScenceGraph.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
-#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"

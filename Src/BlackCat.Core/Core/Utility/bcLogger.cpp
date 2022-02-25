@@ -18,7 +18,7 @@ namespace black_cat
 		{
 			const bool l_file_modifier = bc_enum::has(p_types, bc_log_type::only_file);
 
-			for (auto l_type : { bc_log_type::info, bc_log_type::debug, bc_log_type::warning, bc_log_type::error })
+			for (const auto l_type : { bc_log_type::info, bc_log_type::debug, bc_log_type::warning, bc_log_type::error })
 			{
 				if (!bc_enum::has(p_types, l_type))
 				{
@@ -87,7 +87,7 @@ namespace black_cat
 			{
 				core_platform::bc_shared_mutex_shared_guard l_listeners_lock(m_listener_mutex);
 
-				for (auto& l_listener : l_entry)
+				for (const auto& l_listener : l_entry)
 				{
 					if (p_file_modifier && !l_listener->is_file())
 					{

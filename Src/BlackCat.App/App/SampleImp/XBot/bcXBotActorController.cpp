@@ -79,7 +79,7 @@ namespace black_cat
 					if (l_rigid_dynamic_component)
 					{
 						l_rigid_dynamic_component->set_enable(false);
-						game::bc_unmark_actor_for_checkpoint(m_grenade->m_actor);
+						game::bc_actor_unmark_for_checkpoint(m_grenade->m_actor);
 					}
 				}
 
@@ -543,7 +543,7 @@ namespace black_cat
 				l_weapon_mass = l_rigid_dynamic_component->get_body().get_mass();
 			}
 
-			game::bc_unmark_actor_for_checkpoint(p_weapon);
+			game::bc_actor_unmark_for_checkpoint(p_weapon);
 		}
 
 		bc_xbot_weapon l_weapon;
@@ -579,7 +579,7 @@ namespace black_cat
 				l_rigid_dynamic.set_linear_velocity(get_look_direction() * 2);
 			}
 
-			game::bc_mark_actor_for_checkpoint(m_weapon->m_actor);
+			game::bc_actor_mark_for_checkpoint(m_weapon->m_actor);
 		}
 
 		m_weapon.reset();

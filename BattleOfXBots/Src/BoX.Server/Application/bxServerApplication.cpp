@@ -8,11 +8,12 @@
 #include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
 #include "Game/System/Script/bcScriptBinding.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
-#include "Game/Object/Scene/bcSceneCheckPoint.h"
 #include "BoX.Game/Application/bxApplicationHookFunctions.h"
+#include "BoX.Game/Application/bxSceneCheckPoint.h"
 #include "BoX.Game/Game/bxPlayerSeatComponent.h"
 #include "BoX.Game/Network/bxPlayerSpawnNetworkMessage.h"
 #include "BoX.Game/Network/bxGameStateNetworkMessage.h"
+#include "BoX.Game/Network/bxGameResetNetworkMessage.h"
 #include "BoX.Game/bxEvent.h"
 #include "BoX.Server/Application/bxServerApplication.h"
 #include "BoX.Server/Application/bxServerScript.h"
@@ -306,18 +307,18 @@ namespace box
 	void bx_server_application::_create_scene_checkpoint(game::bc_scene& p_scene)
 	{
 		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
-		const auto l_checkpoint_path = game::bc_scene_check_point::get_checkpoint_path(p_scene, bcL("game_checkpoint"));
+		const auto l_checkpoint_path = bx_scene_checkpoint::get_checkpoint_path(p_scene, bcL("server_checkpoint"));
 
-		game::bc_scene_check_point l_check_point(p_scene);
+		bx_scene_checkpoint l_check_point(p_scene);
 		l_content_manager.save_as(l_check_point, l_checkpoint_path.get_string_frame().c_str(), nullptr);
 	}
 
 	void bx_server_application::_restore_scene_checkpoint(game::bc_scene& p_scene)
 	{
 		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
-		const auto l_checkpoint_path = game::bc_scene_check_point::get_checkpoint_path(p_scene, bcL("game_checkpoint"));
+		const auto l_checkpoint_path = bx_scene_checkpoint::get_checkpoint_path(p_scene, bcL("server_checkpoint"));
 
-		auto l_check_point = l_content_manager.load<game::bc_scene_check_point>
+		auto l_check_point = l_content_manager.load<bx_scene_checkpoint>
 		(
 			l_checkpoint_path.get_string_frame().c_str(),
 			nullptr,
@@ -368,6 +369,8 @@ namespace box
 		}
 
 		_restore_scene_checkpoint(p_scene);
+
+		m_network_system->send_message(bx_game_reset_network_message());
 	}
 
 	std::pair<bool, core::bc_vector3f> bx_server_application::_assign_seat(game::bc_network_client_id p_client_id, bx_team p_team)

@@ -52,7 +52,7 @@ namespace black_cat
 			virtual void update_replicated_instance(const bc_actor_component_update_content& p_context) = 0;
 
 			bc_network_component* m_network_component {nullptr};
-			bc_actor_replication_side m_replication_side {bc_actor_replication_side::origin};
+			bc_actor_replication_side m_replication_side{ bc_actor_replication_side::origin };
 		};
 
 		inline void bc_actor_network_controller::initialize(const bc_actor_component_initialize_context& p_context)
@@ -63,26 +63,7 @@ namespace black_cat
 				throw bc_invalid_operation_exception("network controller must have network component");
 			}
 
-			const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();
-			const auto l_network_data_dir = m_network_component->get_network_data_dir();
-						
-			if(l_network_type == bc_network_type::not_started)
-			{
-				return;
-			}
-			
-			if
-			(
-				(l_network_type == bc_network_type::server && l_network_data_dir == bc_actor_network_data_dir::replicate_sync) ||
-				(l_network_type == bc_network_type::client && l_network_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
-			)
-			{
-				m_replication_side = bc_actor_replication_side::origin;
-			}
-			else
-			{
-				m_replication_side = bc_actor_replication_side::replicated;
-			}
+			m_replication_side = m_network_component->get_network_replication_side();
 		}
 
 		inline void bc_actor_network_controller::load_network_instance(const bc_actor_component_network_load_context& p_context)

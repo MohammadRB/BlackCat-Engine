@@ -175,7 +175,7 @@ namespace black_cat
 
 		if(get_replication_side() == game::bc_actor_replication_side::origin)
 		{
-			auto* l_current_camera = m_input_system->get_camera();
+			const auto* l_current_camera = m_input_system->get_camera();
 			auto l_camera = core::bc_make_unique<game::bc_chasing_camera>(game::bc_chasing_camera
 			(
 				l_current_camera->get_screen_width(),

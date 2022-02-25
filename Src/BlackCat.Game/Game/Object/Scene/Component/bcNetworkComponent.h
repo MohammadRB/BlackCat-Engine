@@ -48,6 +48,8 @@ namespace black_cat
 			
 			bc_actor_network_data_dir get_network_data_dir() const noexcept;
 
+			bc_actor_replication_side get_network_replication_side() const noexcept;
+
 			const bcCHAR* get_network_entity_name() const noexcept;
 
 			bc_network_rtt get_out_ping() const noexcept;
@@ -95,6 +97,7 @@ namespace black_cat
 			bc_actor_network_id m_network_id;
 			bc_network_type m_network_type;
 			bc_actor_network_data_dir m_data_dir;
+			bc_actor_replication_side m_replication_side{ bc_actor_replication_side::origin };
 			bool m_sync_enabled;
 			const bcCHAR* m_network_entity_name;
 			bc_network_rtt m_out_ping;
@@ -130,6 +133,11 @@ namespace black_cat
 		inline bc_actor_network_data_dir bc_network_component::get_network_data_dir() const noexcept
 		{
 			return m_data_dir;
+		}
+
+		inline bc_actor_replication_side bc_network_component::get_network_replication_side() const noexcept
+		{
+			return m_replication_side;
 		}
 
 		inline const bcCHAR* bc_network_component::get_network_entity_name() const noexcept

@@ -890,7 +890,7 @@ namespace black_cat
 		public:
 			bc_json_array(const char* p_name, bci_json_structure* p_structure, bool p_optional = false)
 				: bci_json_value(p_structure, p_optional),
-				bc_iterator_adapter(m_value),
+				bc_iterator_adapter<list_t>(m_value),
 				m_name(p_name),
 				m_value()
 			{
@@ -914,9 +914,9 @@ namespace black_cat
 
 			~bc_json_array() override = default;
 
-			bc_json_array& operator=(const bc_json_array&) noexcept(std::is_nothrow_copy_assignable<T>::value) = default;
+			bc_json_array& operator=(const bc_json_array&) noexcept(std::is_nothrow_copy_assignable_v<T>) = default;
 
-			bc_json_array& operator=(bc_json_array&&) noexcept(std::is_nothrow_move_assignable<T>::value) = default;
+			bc_json_array& operator=(bc_json_array&&) noexcept(std::is_nothrow_move_assignable_v<T>) = default;
 
 			void load(bc_json_value_object& p_json_value) override
 			{
@@ -1013,7 +1013,7 @@ namespace black_cat
 		public:
 			bc_json_array(const bcCHAR* p_name, bci_json_structure* p_structure, bool p_optional = false)
 				: bci_json_value(p_structure, p_optional),
-				bc_iterator_adapter(m_value),
+				bc_iterator_adapter<list_t>(m_value),
 				m_name(p_name),
 				m_value()
 			{

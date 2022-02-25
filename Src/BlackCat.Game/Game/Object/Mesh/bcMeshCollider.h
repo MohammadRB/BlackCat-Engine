@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/Container/bcIteratorAdapter.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcSpan.h"
@@ -86,8 +85,8 @@ namespace black_cat
 		{
 			using hash_t = std::hash<core::bc_string_view>;
 
-			hash_t::result_type m_collider1;
-			hash_t::result_type m_collider2;
+			bcSIZE m_collider1;
+			bcSIZE m_collider2;
 			physics::bc_transform m_transform;
 		};
 		

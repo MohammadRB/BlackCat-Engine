@@ -2,9 +2,11 @@
 
 #include "Core/Messaging/Event/bcEventManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
+#include "App/Loader/bcSceneCheckPointLoader.h"
 #include "App/Loader/bcHeightMapLoaderDx11.h"
 #include "BoX.Game/Application/bxApplicationHookFunctions.h"
 #include "BoX.Game/Application/bxPlayerService.h"
+#include "BoX.Game/Application/bxSceneCheckPoint.h"
 #include "BoX.Game/Game/bxPlayerActorController.h"
 #include "BoX.Game/Game/bxNetworkPlayerActorController.h"
 #include "BoX.Game/Game/bxPlayerSeatComponent.h"
@@ -12,6 +14,7 @@
 #include "BoX.Game/Network/bxPlayerSpawnNetworkMessage.h"
 #include "BoX.Game/Network/bxPlayerKilledNetworkMessage.h"
 #include "BoX.Game/Network/bxGameStateNetworkMessage.h"
+#include "BoX.Game/Network/bxGameResetNetworkMessage.h"
 
 namespace box
 {
@@ -22,10 +25,8 @@ namespace box
 
 	void bx_register_game_loaders(const game::bc_engine_application_parameter& p_parameters)
 	{
-		core::bc_register_loader<game::bc_height_map, bc_height_map_loader_dx11>
-		(
-			"height_map", core::bc_make_loader<bc_height_map_loader_dx11>()
-		);
+		core::bc_register_loader<game::bc_height_map, bc_height_map_loader_dx11>("height_map", core::bc_make_loader<bc_height_map_loader_dx11>());
+		core::bc_register_loader<bx_scene_checkpoint, bc_scene_checkpoint_loader<bx_scene_checkpoint>>("scene_check_point", core::bc_make_loader<bc_scene_checkpoint_loader<bx_scene_checkpoint>>());
 	}
 
 	void bx_register_game_actor_components()
@@ -48,7 +49,8 @@ namespace box
 			bx_team_select_network_message,
 			bx_player_spawn_network_message,
 			bx_player_killed_network_message,
-			bx_game_state_network_message
+			bx_game_state_network_message,
+			bx_game_reset_network_message
 		>();
 	}
 

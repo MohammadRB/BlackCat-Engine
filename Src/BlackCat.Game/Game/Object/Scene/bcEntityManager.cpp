@@ -178,14 +178,14 @@ namespace black_cat
 			return l_result;
 		}
 
-		bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name)
+		bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform)
 		{
-			return _create_entity(p_scene, p_entity_name, nullptr);
+			return _create_entity(p_scene, p_entity_name, p_world_transform, nullptr);
 		}
 
-		bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_data_driven_parameter& p_instance_parameters)
+		bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter& p_instance_parameters)
 		{
-			return _create_entity(p_scene, p_entity_name, &p_instance_parameters);
+			return _create_entity(p_scene, p_entity_name, p_world_transform , &p_instance_parameters);
 		}
 
 		void bc_entity_manager::remove_entity(const bc_actor& p_entity)
@@ -193,7 +193,7 @@ namespace black_cat
 			m_actor_component_manager.remove_actor(p_entity);
 		}
 
-		bc_actor bc_entity_manager::_create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_data_driven_parameter* p_instance_parameters)
+		bc_actor bc_entity_manager::_create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter* p_instance_parameters)
 		{
 			const auto l_hash = string_hash()(p_entity_name);
 			const auto l_entity_entry = m_entities.find(l_hash);
@@ -232,7 +232,8 @@ namespace black_cat
 						m_content_stream_manager,
 						m_game_system,
 						p_scene,
-						l_actor
+						l_actor,
+						p_world_transform
 					)
 				);
 
@@ -248,7 +249,8 @@ namespace black_cat
 							m_content_stream_manager,
 							m_game_system,
 							p_scene,
-							l_actor
+							l_actor,
+							p_world_transform
 						)
 					);
 				}
@@ -262,7 +264,8 @@ namespace black_cat
 						m_content_stream_manager,
 						m_game_system,
 						p_scene,
-						l_actor
+						l_actor,
+						p_world_transform
 					)
 				);
 
@@ -278,7 +281,8 @@ namespace black_cat
 							m_content_stream_manager,
 							m_game_system,
 							p_scene,
-							l_actor
+							l_actor,
+							p_world_transform
 						)
 					);
 				}
@@ -303,7 +307,8 @@ namespace black_cat
 							m_content_stream_manager,
 							m_game_system,
 							p_scene,
-							l_actor
+							l_actor,
+							p_world_transform
 						)
 					);
 				}

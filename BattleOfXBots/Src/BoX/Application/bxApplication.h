@@ -71,6 +71,8 @@ namespace box
 
 		void spawn_player(const core::bc_vector3f& p_position, bx_team p_team) override;
 
+		void reset_game() override;
+
 		// Private methods
 
 		void _create_scene_checkpoint(game::bc_scene& p_scene);

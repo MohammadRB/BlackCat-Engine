@@ -6,8 +6,6 @@
 #include "Core/Utility/bcJsonParse.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/bcSceneCheckPoint.h"
-#include "Game/Object/Scene/Component/bcMediateComponent.h"
-#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/bcUtility.h"
 #include "App/Loader/bcSceneCheckPointLoader.h"
 
@@ -25,37 +23,23 @@ namespace black_cat
 	{
 		BC_JSON_ARRAY(_bc_scene_check_point_actor, actors);
 	};
-	
-	bool bc_scene_check_point_loader::support_offline_processing() const
-	{
-		return false;
-	}
 
-	void bc_scene_check_point_loader::content_processing(core::bc_content_loading_context& p_context) const
+	core::bc_vector_frame<game::bc_actor> bc_scene_checkpoint_loader_base::load_checkpoint_file(game::bc_scene& p_scene, core::bc_string_view p_file_content) const
 	{
-		auto* l_scene = const_cast<game::bc_scene*>(p_context.m_instance_parameters.get_value_throw<game::bc_scene*>("scene"));
-		BC_ASSERT(l_scene);
-		
 		core::bc_json_document<_bc_scene_check_point_json> l_json_document;
-		const core::bc_string_frame l_json_str(p_context.m_file_buffer_size + 1, '\0');
-		std::memcpy(const_cast<bcCHAR*>(l_json_str.data()), p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
-		
-		l_json_document.load(l_json_str.c_str());
-
-		game::bc_scene_check_point l_check_point(*l_scene);
-		l_check_point.remove_dynamic_actors();
+		l_json_document.load(p_file_content.data());
 
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;
 		core::bc_vector_frame<game::bc_actor> l_actors;
 		l_actors.reserve(l_json_document->m_actors.size());
-		
+
 		for (auto& l_json_actor : l_json_document->m_actors)
 		{
 			auto l_transform = core::bc_matrix4f::identity();
 			l_transform.set_translation(*l_json_actor->m_position);
 			l_transform.set_rotation(bc_matrix3f_rotation_zyx(*l_json_actor->m_rotation));
-			
-			game::bc_actor l_actor = l_scene->create_actor(l_json_actor->m_entity_name->c_str(), l_transform);
+
+			game::bc_actor l_actor = p_scene.create_actor(l_json_actor->m_entity_name->c_str(), l_transform);
 			l_actor.get_components(std::back_inserter(l_actor_components));
 
 			for (auto* l_actor_component : l_actor_components)
@@ -67,18 +51,15 @@ namespace black_cat
 			l_actor_components.clear();
 		}
 
-		p_context.set_result(std::move(l_check_point));
+		return l_actors;
 	}
 
-	void bc_scene_check_point_loader::content_processing(core::bc_content_saving_context& p_context) const
+	core::bc_string_frame bc_scene_checkpoint_loader_base::save_checkpoint_file(const core::bc_vector_frame<game::bc_actor>& p_actors) const
 	{
-		const auto* l_check_point = static_cast<game::bc_scene_check_point*>(p_context.m_content);
-		auto l_dynamic_actors = l_check_point->export_dynamic_actors();
-
 		core::bc_json_document<_bc_scene_check_point_json> l_json_document;
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;
-		
-		for (auto& l_actor : l_dynamic_actors)
+
+		for (game::bc_actor& l_actor : p_actors)
 		{
 			const auto* l_mediate_component = l_actor.get_component<game::bc_mediate_component>();
 			auto& l_json_entry = l_json_document->m_actors.new_entry();
@@ -90,7 +71,7 @@ namespace black_cat
 			}
 
 			const auto& l_world_transform = l_mediate_component->get_world_transform();
-			
+
 			*l_json_entry->m_entity_name = l_mediate_component->get_entity_name();
 			*l_json_entry->m_position = l_world_transform.get_translation();
 			*l_json_entry->m_rotation = bc_matrix4f_decompose_to_angles(l_world_transform);
@@ -98,7 +79,7 @@ namespace black_cat
 			l_actor_components.clear();
 		}
 
-		const auto l_json = l_json_document.write_pretty_frame();
-		p_context.m_file.write(l_json.c_str(), sizeof(decltype(l_json)::value_type) * l_json.size());
+		auto l_json = l_json_document.write_pretty_frame();
+		return l_json;
 	}
 }

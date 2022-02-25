@@ -168,49 +168,5 @@ namespace black_cat
 			static auto* s_manager = core::bc_get_service<bc_entity_manager>();
 			return *s_manager;
 		}
-
-		inline void bc_actor_load_instance(core::bc_vector_frame<bci_actor_component*>& p_buffer, const bc_actor_component_load_context& p_context)
-		{
-			p_buffer.clear();
-			p_context.m_actor.get_components(std::back_inserter(p_buffer));
-
-			for(auto* l_component : p_buffer)
-			{
-				l_component->load_instance(p_context);
-			}
-		}
-
-		inline void bc_actor_write_instance(core::bc_vector_frame<bci_actor_component*>& p_buffer, const bc_actor_component_write_context& p_context)
-		{
-			p_buffer.clear();
-			p_context.m_actor.get_components(std::back_inserter(p_buffer));
-
-			for (auto* l_component : p_buffer)
-			{
-				l_component->write_instance(p_context);
-			}
-		}
-
-		inline void bc_actor_load_network_instance(core::bc_vector_frame<bci_actor_component*>& p_buffer, const bc_actor_component_network_load_context& p_context)
-		{
-			p_buffer.clear();
-			p_context.m_actor.get_components(std::back_inserter(p_buffer));
-
-			for (auto* l_component : p_buffer)
-			{
-				l_component->load_network_instance(p_context);
-			}
-		}
-
-		inline void bc_actor_write_network_instance(core::bc_vector_frame<bci_actor_component*>& p_buffer, const bc_actor_component_network_write_context& p_context)
-		{
-			p_buffer.clear();
-			p_context.m_actor.get_components(std::back_inserter(p_buffer));
-
-			for (auto* l_component : p_buffer)
-			{
-				l_component->write_network_instance(p_context);
-			}
-		}
 	}
 }

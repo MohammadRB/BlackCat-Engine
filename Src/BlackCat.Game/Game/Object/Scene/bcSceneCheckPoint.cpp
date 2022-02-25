@@ -9,18 +9,18 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_scene_check_point::bc_scene_check_point(bc_scene& p_scene)
+		bc_scene_checkpoint::bc_scene_checkpoint(bc_scene& p_scene)
 			: m_scene(&p_scene)
 		{
 		}
 
-		bc_scene_check_point::bc_scene_check_point(bc_scene_check_point&&) noexcept = default;
+		bc_scene_checkpoint::bc_scene_checkpoint(bc_scene_checkpoint&&) noexcept = default;
 
-		bc_scene_check_point::~bc_scene_check_point() = default;
+		bc_scene_checkpoint::~bc_scene_checkpoint() = default;
 
-		bc_scene_check_point& bc_scene_check_point::operator=(bc_scene_check_point&&) noexcept = default;
+		bc_scene_checkpoint& bc_scene_checkpoint::operator=(bc_scene_checkpoint&&) noexcept = default;
 
-		core::bc_vector_frame<bc_actor> bc_scene_check_point::export_dynamic_actors() const
+		core::bc_vector_frame<bc_actor> bc_scene_checkpoint::export_dynamic_actors() const
 		{
 			core::bc_vector_frame<bc_actor> l_result;
 			l_result.reserve(256);
@@ -36,7 +36,7 @@ namespace black_cat
 			return l_result;
 		}
 
-		void bc_scene_check_point::remove_dynamic_actors() const
+		void bc_scene_checkpoint::remove_dynamic_actors() const
 		{
 			for (auto& l_actor : m_scene->get_scene_graph())
 			{
@@ -47,7 +47,7 @@ namespace black_cat
 			}
 		}
 
-		core::bc_path bc_scene_check_point::get_checkpoint_path(const bc_scene& p_scene, core::bc_estring_view p_checkpoint_name)
+		core::bc_path bc_scene_checkpoint::get_checkpoint_path(const bc_scene& p_scene, core::bc_estring_view p_checkpoint_name)
 		{
 			auto l_scene_path = core::bc_path(p_scene.get_path());
 			const auto l_new_file_name = l_scene_path.get_filename_without_extension() + bcL(".") + p_checkpoint_name.data() + l_scene_path.get_file_extension();

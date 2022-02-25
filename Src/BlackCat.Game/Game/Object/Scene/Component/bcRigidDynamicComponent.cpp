@@ -72,7 +72,7 @@ namespace black_cat
 				auto& l_physics_system = core::bc_get_service<bc_game_system>()->get_physics_system();
 				auto& l_physics = l_physics_system.get_physics();
 
-				m_px_actor_ref = l_physics.create_rigid_dynamic(physics::bc_transform::identity());
+				m_px_actor_ref = l_physics.create_rigid_dynamic(physics::bc_transform(p_context.m_transform));
 				l_physics_system.set_game_actor(*m_px_actor_ref, p_context.m_actor);
 
 				const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_collider_materials);
@@ -85,7 +85,7 @@ namespace black_cat
 				
 				added_to_scene(p_context.m_scene.get_px_scene(), m_px_actor_ref.get());
 
-				bc_mark_actor_for_checkpoint(p_context.m_actor);
+				bc_actor_mark_for_checkpoint(p_context.m_actor);
 
 				return;
 			}
@@ -182,14 +182,8 @@ namespace black_cat
 			const auto* l_network_replicate_event = core::bci_message::as<bc_network_replicate_actor_event>(p_context.m_event);
 			if(l_network_replicate_event)
 			{
-				const auto l_network_type = p_context.m_game_system.get_network_system().get_network_type();
-				const auto l_data_dir = l_network_replicate_event->get_data_dir();
-
-				if
-				(
-					(l_network_type == bc_network_type::server && l_data_dir == bc_actor_network_data_dir::replicate_sync_from_client) ||
-					(l_network_type == bc_network_type::client && l_data_dir == bc_actor_network_data_dir::replicate_sync)
-				)
+				const auto l_replication_side = l_network_replicate_event->get_replication_side();
+				if(l_replication_side == bc_actor_replication_side::replicated)
 				{
 					set_kinematic(true);
 				}

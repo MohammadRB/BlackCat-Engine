@@ -4,6 +4,7 @@
 
 #include "CorePlatform/bcType.h"
 #include "CorePlatformImp/Utility/bcClock.h"
+#include "Core/Math/bcMatrix4f.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcDataDrivenParameter.h"
 #include "Core/bcConstant.h"
@@ -36,13 +37,15 @@ namespace black_cat
 				const core::bc_content_stream_manager& p_stream_manager,
 				bc_game_system& p_game_system,
 				bc_scene& p_scene,
-				bc_actor& p_actor)
+				bc_actor& p_actor,
+				const core::bc_matrix4f& p_transform)
 				: m_parameters(p_parameters),
 				m_instance_parameters(p_instance_parameters),
 				m_stream_manager(p_stream_manager),
 				m_game_system(p_game_system),
 				m_scene(p_scene),
-				m_actor(p_actor)
+				m_actor(p_actor),
+				m_transform(p_transform)
 			{
 			}
 
@@ -52,6 +55,7 @@ namespace black_cat
 			bc_game_system& m_game_system;
 			bc_scene& m_scene;
 			bc_actor& m_actor;
+			const core::bc_matrix4f& m_transform;
 		};
 
 		struct bc_actor_component_initialize_entity_context
@@ -61,13 +65,15 @@ namespace black_cat
 				const core::bc_content_stream_manager& p_stream_manager,
 				bc_game_system& p_game_system,
 				bc_scene& p_scene,
-				bc_actor& p_actor)
+				bc_actor& p_actor,
+				const core::bc_matrix4f& p_transform)
 				: m_parameters(p_parameters),
 				m_instance_parameters(p_instance_parameters),
 				m_stream_manager(p_stream_manager),
 				m_game_system(p_game_system),
 				m_scene(p_scene),
-				m_actor(p_actor)
+				m_actor(p_actor),
+				m_transform(p_transform)
 			{
 			}
 
@@ -77,6 +83,7 @@ namespace black_cat
 			bc_game_system& m_game_system;
 			bc_scene& m_scene;
 			bc_actor& m_actor;
+			const core::bc_matrix4f& m_transform;
 		};
 
 		struct bc_actor_component_load_context

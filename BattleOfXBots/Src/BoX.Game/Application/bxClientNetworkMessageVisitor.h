@@ -23,5 +23,7 @@ namespace box
 		virtual void team_change_rejected(core::bc_string p_error) = 0;
 
 		virtual void spawn_player(const core::bc_vector3f& p_position, bx_team p_team) = 0;
+
+		virtual void reset_game() = 0;
 	};
 }

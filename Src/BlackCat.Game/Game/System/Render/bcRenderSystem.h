@@ -28,7 +28,7 @@
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/System/Render/bcFrameRenderer.h"
-#include "Game/System/Input/bcCamera.h"
+#include "Game/System/Input/bcCameraInstance.h"
 #include "Game/bcEvent.h"
 #include "Game/bcExport.h"
 
@@ -87,21 +87,19 @@ namespace black_cat
 
 		struct bc_render_system_update_context
 		{
-			bc_render_system_update_context(const core_platform::bc_clock::update_param& p_clock,
-				const bci_camera& p_camera)
+			bc_render_system_update_context(const core_platform::bc_clock::update_param& p_clock, const bc_camera_instance& p_camera)
 				: m_clock(p_clock),
 				m_camera(p_camera)
 			{
 			}
 
 			core_platform::bc_clock::update_param m_clock;
-			const bci_camera& m_camera;
+			const bc_camera_instance& m_camera;
 		};
 
 		struct bc_render_system_render_context
 		{
-			bc_render_system_render_context(const core_platform::bc_clock::update_param& p_clock,
-				core::bc_query_manager& p_query_manager)
+			bc_render_system_render_context(const core_platform::bc_clock::update_param& p_clock, core::bc_query_manager& p_query_manager)
 				: m_clock(p_clock),
 				m_query_manager(p_query_manager)
 			{

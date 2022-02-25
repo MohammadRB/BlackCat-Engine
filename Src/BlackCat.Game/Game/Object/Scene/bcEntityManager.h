@@ -96,12 +96,13 @@ namespace black_cat
 			/**
 			 * \brief Create an actor along with it's components. In case of any error returns invalid actor
 			 * \param p_scene
-			 * \param p_entity_name 
+			 * \param p_entity_name
+			 * \param p_world_transform 
 			 * \return Created actor or invalid actor
 			 */
-			bc_actor create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name);
+			bc_actor create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform);
 
-			bc_actor create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_data_driven_parameter& p_instance_parameters);
+			bc_actor create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter& p_instance_parameters);
 
 			/**
 			 * \brief Remove actor and all of it's components
@@ -134,7 +135,7 @@ namespace black_cat
 			template<class TComponent>
 			void _actor_component_entity_initialization(const bc_actor_component_initialize_entity_context& p_context) const;
 
-			bc_actor _create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_data_driven_parameter* p_instance_parameters);
+			bc_actor _create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter* p_instance_parameters);
 
 			core::bc_data_driven_parameter m_empty_parameters;
 			core::bc_content_stream_manager& m_content_stream_manager;
@@ -177,6 +178,7 @@ namespace black_cat
 		{
 			const auto* l_mediate_component = p_actor.get_component<bc_mediate_component>();
 			m_actor_component_manager.create_component<TComponent>(p_actor);
+
 			_actor_component_initialization<TComponent>(bc_actor_component_initialize_context
 			(
 				m_empty_parameters,
@@ -184,7 +186,8 @@ namespace black_cat
 				m_content_stream_manager,
 				m_game_system,
 				*l_mediate_component->get_scene(),
-				p_actor
+				p_actor,
+				l_mediate_component->get_world_transform()
 			));
 			_actor_component_entity_initialization<TComponent>(bc_actor_component_initialize_entity_context
 			(
@@ -193,7 +196,8 @@ namespace black_cat
 				m_content_stream_manager,
 				m_game_system,
 				*l_mediate_component->get_scene(),
-				p_actor
+				p_actor,
+				l_mediate_component->get_world_transform()
 			));
 		}
 
@@ -261,8 +265,7 @@ namespace black_cat
 		template<class TComponent>
 		void bc_entity_manager::_actor_component_initialization(const bc_actor_component_initialize_context& p_context) const
 		{
-			auto* l_component = p_context.m_actor.get_component<TComponent>();
-			if (l_component)
+			if (auto* l_component = p_context.m_actor.get_component<TComponent>())
 			{
 				l_component->initialize(p_context);
 			}
@@ -271,8 +274,7 @@ namespace black_cat
 		template<class TComponent>
 		void bc_entity_manager::_actor_component_entity_initialization(const bc_actor_component_initialize_entity_context& p_context) const
 		{
-			auto* l_component = p_context.m_actor.get_component<TComponent>();
-			if (l_component)
+			if (auto* l_component = p_context.m_actor.get_component<TComponent>())
 			{
 				l_component->initialize_entity(p_context);
 			}

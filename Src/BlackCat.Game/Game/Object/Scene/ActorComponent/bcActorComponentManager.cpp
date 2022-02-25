@@ -52,7 +52,7 @@ namespace black_cat
 				(
 					std::begin(l_components_with_event),
 					std::end(l_components_with_event),
-					[&](_bc_actor_component_entry* p_entry)
+					[&](const _bc_actor_component_entry* p_entry)
 					{
 						p_entry->m_container->handle_events(m_query_manager, m_game_system, *this);
 					}
@@ -119,7 +119,7 @@ namespace black_cat
 		{
 			auto l_task = core::bc_concurrency::start_task
 			(
-				core::bc_delegate< void() >
+				core::bc_delegate<void()>
 				(
 					[=, &p_clock]()
 					{
@@ -135,7 +135,7 @@ namespace black_cat
 		{
 			auto l_task = core::bc_concurrency::start_task
 			(
-				core::bc_delegate< void() >
+				core::bc_delegate<void()>
 				(
 					[=, &p_clock]()
 					{

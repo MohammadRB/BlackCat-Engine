@@ -27,19 +27,5 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 		};
-
-		inline void bc_mark_actor_for_checkpoint(bc_actor& p_actor)
-		{
-			p_actor.get_create_component<bc_checkpoint_component>();
-		}
-
-		inline void bc_unmark_actor_for_checkpoint(bc_actor& p_actor)
-		{
-			const auto* l_checkpoint_component = p_actor.get_component<bc_checkpoint_component>();
-			if (l_checkpoint_component)
-			{
-				p_actor.remove_component<bc_checkpoint_component>();
-			}
-		}
 	}	
 }
