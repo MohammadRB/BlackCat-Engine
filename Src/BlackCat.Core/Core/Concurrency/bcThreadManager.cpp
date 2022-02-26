@@ -7,54 +7,6 @@ namespace black_cat
 {
 	namespace core
 	{
-		void bc_task_stealing_queue::push(task_wrapper_type&& p_task)
-		{
-			{
-				core_platform::bc_lock_guard l_lock(m_mutex);
-				m_deque.push_front(std::move(p_task));
-			}
-		}
-
-		bool bc_task_stealing_queue::empty() const
-		{
-			{
-				core_platform::bc_lock_guard l_lock(m_mutex);
-				return m_deque.empty();
-			}
-		}
-
-		bool bc_task_stealing_queue::pop(task_wrapper_type& p_task)
-		{
-			{
-				core_platform::bc_lock_guard l_lock(m_mutex);
-				if (m_deque.empty())
-				{
-					return false;
-				}
-
-				p_task = std::move(m_deque.front());
-				m_deque.pop_front();
-
-				return true;
-			}
-		}
-
-		bool bc_task_stealing_queue::try_steal(task_wrapper_type& p_task)
-		{
-			{
-				core_platform::bc_lock_guard l_lock(m_mutex);
-				if (m_deque.empty())
-				{
-					return false;
-				}
-
-				p_task = std::move(m_deque.back());
-				m_deque.pop_back();
-
-				return true;
-			}
-		}
-
 		bc_interrupt_flag::bc_interrupt_flag() : m_flag(false)
 		{
 		}
@@ -235,37 +187,9 @@ namespace black_cat
 			}
 		}
 
-		bool bc_thread_manager::_pop_task_from_local_queue(task_wrapper_type& p_task)
-		{
-			_thread_data* l_my_data = m_my_data.get();
-
-			return l_my_data && l_my_data->local_queue().pop(p_task);
-		}
-
 		bool bc_thread_manager::_pop_task_from_global_queue(task_wrapper_type& p_task)
 		{
 			return m_global_queue.pop(p_task);
-		}
-
-		bool bc_thread_manager::_pop_task_from_others_queue(task_wrapper_type& p_task)
-		{
-			_thread_data* l_my_data = m_my_data.get();
-
-			{
-				core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_guard(m_threads_mutex);
-
-				for (bcUINT32 l_i = 0, l_c = m_threads.size(); l_i <l_c; ++l_i)
-				{
-					const bcUINT32 l_index = (l_my_data->index() + l_i + 1) % l_c;
-
-					if (m_threads[l_index]->local_queue().try_steal(p_task))
-					{
-						return true;
-					}
-				}
-			}
-
-			return false;
 		}
 
 		void bc_thread_manager::_worker_spin(bcUINT32 p_my_index)
@@ -283,19 +207,15 @@ namespace black_cat
 
 			while (!m_done.load())
 			{
-				if 
-				(
-					_pop_task_from_local_queue(l_task) ||
-					_pop_task_from_global_queue(l_task) ||
-					_pop_task_from_others_queue(l_task)
-				)
+				if (_pop_task_from_global_queue(l_task))
 				{
 					l_without_task = 0;
 					m_task_count.fetch_sub(1);
 					m_num_thread_in_spin.fetch_sub(1);
 
-					if constexpr (s_num_thread_in_spin != 0)	// If number of steady threads in worker spin method is zero
-					{											// there is no need to notify another thread
+					// If number of steady threads in worker spin method is zero there is no need to notify another thread
+					if constexpr (s_num_thread_in_spin != 0)
+					{
 						m_cvariable.notify_one();
 					}
 

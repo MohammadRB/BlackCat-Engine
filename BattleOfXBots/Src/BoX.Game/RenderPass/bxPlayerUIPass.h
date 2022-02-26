@@ -17,18 +17,23 @@ namespace box
 {
 	using namespace black_cat;
 
-	class BX_GAME_DLL bc_player_ui_pass : public game::bci_render_pass
+	enum class bx_text_align
+	{
+		left, center, right
+	};
+
+	class BX_GAME_DLL bx_player_ui_pass : public game::bci_render_pass
 	{
 		BC_RENDER_PASS(ply_ui)
 
 	public:
-		bc_player_ui_pass(game::bc_render_pass_variable_t p_back_buffer_texture, game::bc_render_pass_variable_t p_back_buffer_view, core::bc_estring_view p_font_path) noexcept;
+		bx_player_ui_pass(game::bc_render_pass_variable_t p_back_buffer_texture, game::bc_render_pass_variable_t p_back_buffer_view, core::bc_estring_view p_font_path) noexcept;
 
-		bc_player_ui_pass(bc_player_ui_pass&&) noexcept = default;
+		bx_player_ui_pass(bx_player_ui_pass&&) noexcept = default;
 
-		~bc_player_ui_pass() override = default;
+		~bx_player_ui_pass() override = default;
 
-		bc_player_ui_pass& operator=(bc_player_ui_pass&&) noexcept = default;
+		bx_player_ui_pass& operator=(bx_player_ui_pass&&) noexcept = default;
 
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 
@@ -51,11 +56,17 @@ namespace box
 
 		void _draw_time();
 
+		void _draw_info_messages();
+
 		void _draw_error_messages();
 
-		void _draw_messages(const core::bc_vector2i& p_position, const core::bc_vector3f& p_color, core::bc_const_span<core::bc_wstring> p_messages);
+		void _draw_kill_messages();
+
+		void _draw_messages(const core::bc_vector2i& p_position, bx_text_align p_align, const core::bc_vector3f& p_color, core::bc_const_span<core::bc_wstring> p_messages);
 
 		bx_player_service* m_player_service;
+		const core::bc_vector3f m_red_color{ 1, .65, .65 };
+		const core::bc_vector3f m_blue_color{ .65, .65, 1 };
 		const bcWCHAR* m_team_select_text = L"Select Your Team. Press R to join Red team or B to join Blue team.";
 
 		game::bc_render_pass_variable_t m_back_buffer_texture_parameter;

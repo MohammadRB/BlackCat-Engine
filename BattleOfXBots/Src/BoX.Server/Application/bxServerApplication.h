@@ -14,6 +14,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "App/Application/bcRenderApplication.h"
 #include "BoX.Game/Application/bxDefinitions.h"
+#include "BoX.Game/Application/bxGameState.h"
 #include "BoX.Game/Application/bxServerNetworkMessageVisitor.h"
 
 namespace box
@@ -118,7 +119,7 @@ namespace box
 		game::bc_network_system* m_network_system{ nullptr };
 
 		bx_app_state m_state = bx_app_state::initial;
-		const bcFLOAT m_game_time = 30;
+		const bcFLOAT m_game_time = 60;
 		const bcFLOAT m_respawn_time = 5;
 		bcFLOAT m_current_game_time = m_game_time;
 		bcFLOAT m_last_state_update_elapsed_ms = 0;
@@ -126,6 +127,9 @@ namespace box
 		core::bc_vector<bx_player_seat> m_red_player_seats;
 		core::bc_vector<bx_player_seat> m_blue_player_seats;
 		game::bc_scene* m_scene{ nullptr };
+
+		core::bc_vector<core::bc_string> m_info_messages;
+		core::bc_vector<bx_player_kill_state> m_killing_list;
 
 		core::bc_event_listener_handle m_player_spawn_event_handle;
 		core::bc_event_listener_handle m_player_kill_event_handle;

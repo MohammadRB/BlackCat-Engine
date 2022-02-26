@@ -8,7 +8,7 @@
 
 namespace box
 {
-	bc_player_ui_pass::bc_player_ui_pass(game::bc_render_pass_variable_t p_back_buffer_texture, game::bc_render_pass_variable_t p_back_buffer_view, core::bc_estring_view p_font_path) noexcept
+	bx_player_ui_pass::bx_player_ui_pass(game::bc_render_pass_variable_t p_back_buffer_texture, game::bc_render_pass_variable_t p_back_buffer_view, core::bc_estring_view p_font_path) noexcept
 		: m_player_service(core::bc_get_service<bx_player_service>()),
 		m_back_buffer_texture_parameter(p_back_buffer_texture),
 		m_back_buffer_view_parameter(p_back_buffer_view),
@@ -16,7 +16,7 @@ namespace box
 	{
 	}
 
-	void bc_player_ui_pass::initialize_resources(game::bc_render_system& p_render_system)
+	void bx_player_ui_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
 		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
@@ -52,15 +52,15 @@ namespace box
 		));
 	}
 
-	void bc_player_ui_pass::update(const game::bc_render_pass_update_context& p_context)
+	void bx_player_ui_pass::update(const game::bc_render_pass_update_context& p_context)
 	{
 	}
 
-	void bc_player_ui_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
+	void bx_player_ui_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
 	{
 	}
 
-	void bc_player_ui_pass::execute(const game::bc_render_pass_render_context& p_context)
+	void bx_player_ui_pass::execute(const game::bc_render_pass_render_context& p_context)
 	{
 		m_sprite_batch->begin(p_context.m_render_system.get_device(), p_context.m_render_system.get_device_swap_buffer(), m_back_buffer_view);
 
@@ -76,17 +76,19 @@ namespace box
 			break;
 		}
 
+		_draw_info_messages();
 		_draw_error_messages();
+		_draw_kill_messages();
 		_draw_time();
 
 		m_sprite_batch->end(p_context.m_render_system.get_device());
 	}
 
-	void bc_player_ui_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
+	void bx_player_ui_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
 	{
 	}
 
-	void bc_player_ui_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
+	void bx_player_ui_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
 		m_back_buffer_texture = *get_shared_resource<graphic::bc_texture2d>(m_back_buffer_texture_parameter);
 		m_back_buffer_view = *get_shared_resource<graphic::bc_render_target_view>(m_back_buffer_view_parameter);
@@ -97,13 +99,13 @@ namespace box
 		m_team_select_bound = m_sprite_font->measure_string(m_team_select_text);
 	}
 
-	void bc_player_ui_pass::destroy(game::bc_render_system& p_render_system)
+	void bx_player_ui_pass::destroy(game::bc_render_system& p_render_system)
 	{
 		m_sprite_batch.reset();
 		m_sprite_font.reset();
 	}
 
-	void bc_player_ui_pass::_draw_team_select_ui()
+	void bx_player_ui_pass::_draw_team_select_ui()
 	{
 		const auto l_position = m_screen_center + core::bc_vector2i(-static_cast<bcINT32>(m_team_select_bound.x) / 2, 0);
 
@@ -116,7 +118,7 @@ namespace box
 		);
 	}
 
-	void bc_player_ui_pass::_draw_player_info_ui()
+	void bx_player_ui_pass::_draw_player_info_ui()
 	{
 		constexpr bcINT32 l_left_offset = 20;
 		constexpr bcINT32 l_bottom_offset = 100;
@@ -164,7 +166,7 @@ namespace box
 		);
 	}
 
-	void bc_player_ui_pass::_draw_time()
+	void bx_player_ui_pass::_draw_time()
 	{
 		constexpr auto l_top_offset = 20;
 		const auto l_position = core::bc_vector2i(m_screen_center.x - m_char_bound.x * 2, l_top_offset);
@@ -180,32 +182,104 @@ namespace box
 		);
 	}
 
-	void bc_player_ui_pass::_draw_error_messages()
+	void bx_player_ui_pass::_draw_info_messages()
+	{
+		const auto l_info_messages = m_player_service->get_info_messages();
+		const auto l_position = m_screen_size + core::bc_vector2i(-10, -100);
+
+		_draw_messages(l_position, bx_text_align::left, { 1.f, 1.f, 1.f }, core::bc_make_cspan(l_info_messages));
+	}
+
+	void bx_player_ui_pass::_draw_error_messages()
 	{
 		const auto l_error_messages = m_player_service->get_error_messages();
 		const auto l_position = m_screen_center + core::bc_vector2i(0, 50);
 		
-		_draw_messages(l_position, { 1.f, .4f, .4f }, core::bc_make_cspan(l_error_messages));
+		_draw_messages(l_position, bx_text_align::center, m_red_color, core::bc_make_cspan(l_error_messages));
 	}
 
-	void bc_player_ui_pass::_draw_messages(const core::bc_vector2i& p_position, const core::bc_vector3f& p_color, core::bc_const_span<core::bc_wstring> p_messages)
+	void bx_player_ui_pass::_draw_kill_messages()
 	{
-		auto l_top_offset = p_position.y;
+		const auto l_kill_messages = m_player_service->get_kill_messages();
+		const auto l_position = core::bc_vector2i(m_screen_size.x, 0) + core::bc_vector2i(-10, 10);
+		const auto l_scale = 1.1f;
+		auto l_top_offset = l_position.y;
+
+		for (auto& l_kill : l_kill_messages)
+		{
+			const auto l_killer_name = core::bc_to_wstring_frame(l_kill.m_killer_name);
+			const auto l_killed_name = core::bc_to_wstring_frame(l_kill.m_killed_name);
+			const auto l_killer_bound = m_sprite_font->measure_string(l_killer_name.c_str()) * l_scale;
+			const auto l_killed_bound = m_sprite_font->measure_string(l_killed_name.c_str()) * l_scale;
+			const auto l_kill_bound = m_sprite_font->measure_string(L"killed");
+			auto l_left_offset = l_position.x - static_cast<bcINT32>(l_killer_bound.x + l_killed_bound.x + l_kill_bound.x);
+
+			m_sprite_font->draw_string
+			(
+				*m_sprite_batch,
+				l_killer_name.c_str(),
+				{ l_left_offset, l_top_offset },
+				l_kill.m_killer_team == bx_team::red ? m_red_color : m_blue_color,
+				l_scale
+			);
+
+			l_left_offset += l_killer_bound.x + 2;
+
+			m_sprite_font->draw_string
+			(
+				*m_sprite_batch,
+				L"killed",
+				{ l_left_offset, l_top_offset }
+			);
+
+			l_left_offset += l_kill_bound.x + 2;
+
+			m_sprite_font->draw_string
+			(
+				*m_sprite_batch,
+				l_killed_name.c_str(),
+				{ l_left_offset, l_top_offset },
+				l_kill.m_killed_team == bx_team::red ? m_red_color : m_blue_color,
+				l_scale
+			);
+
+			l_top_offset += static_cast<bcINT32>(l_killer_bound.y) + 5;
+		}
+	}
+
+	void bx_player_ui_pass::_draw_messages(const core::bc_vector2i& p_position, bx_text_align p_align, const core::bc_vector3f& p_color, core::bc_const_span<core::bc_wstring> p_messages)
+	{
+		auto l_top_offset = 0U;
 
 		for(auto& l_msg : p_messages)
 		{
 			const auto l_msg_bound = m_sprite_font->measure_string(l_msg.c_str());
-			const auto l_left_offset = p_position.x - static_cast<bcINT32>(l_msg_bound.x) / 2;
+			auto l_position = p_position + core::bc_vector2i(0, l_top_offset);
+
+			switch (p_align)
+			{
+			case bx_text_align::left:
+				l_position.x -= static_cast<bcINT32>(l_msg_bound.x);
+				l_position.y -= static_cast<bcINT32>(l_msg_bound.y) / 2;
+				break;
+			case bx_text_align::center:
+				l_position.x -= static_cast<bcINT32>(l_msg_bound.x) / 2;
+				l_position.y -= static_cast<bcINT32>(l_msg_bound.y) / 2;
+				break;
+			case bx_text_align::right:
+				l_position.y -= static_cast<bcINT32>(l_msg_bound.y) / 2;
+				break;
+			}
 
 			m_sprite_font->draw_string
 			(
 				*m_sprite_batch,
 				l_msg.c_str(),
-				{ l_left_offset, l_top_offset },
+				l_position,
 				p_color
 			);
 
-			l_top_offset += static_cast<bcINT32>(l_msg_bound.y) + 5;
+			l_top_offset += l_msg_bound.y + 5;
 		}
 	}
 }

@@ -25,38 +25,6 @@ namespace black_cat
 {
 	namespace core
 	{
-		class BC_CORE_DLL bc_task_stealing_queue
-		{
-		public:
-			using this_type = bc_task_stealing_queue;
-			using task_wrapper_type = bc_delegate<void()>;
-
-		public:
-			bc_task_stealing_queue() = default;
-
-			bc_task_stealing_queue(const this_type&) = delete;
-
-			bc_task_stealing_queue(this_type&&) = delete;
-
-			~bc_task_stealing_queue() = default;
-
-			this_type& operator =(const this_type&) = delete;
-
-			this_type& operator =(this_type&&) = delete;
-
-			void push(task_wrapper_type&& p_task);
-
-			bool empty() const;
-
-			bool pop(task_wrapper_type& p_task);
-
-			bool try_steal(task_wrapper_type& p_task);
-
-		private:
-			bc_deque<task_wrapper_type> m_deque;
-			mutable core_platform::bc_spin_mutex m_mutex;
-		};
-
 		struct bc_interrupt_flag
 		{
 		public:
@@ -84,9 +52,8 @@ namespace black_cat
 
 		enum class bc_task_creation_option : bcUBYTE
 		{
-			policy_none = bc_enum::value(0),					// Push task in local task queue of current thread
-			policy_fairness = bc_enum::value(1),				// Push task in global task queue
-			lifetime_exceed_frame = bc_enum::value(2)			// Lifetime of task exceed frame
+			policy_none = bc_enum::value(0),
+			lifetime_exceed_frame = bc_enum::value(1)
 		};
 
 		class BC_CORE_DLL bc_thread_manager : public bci_service
@@ -136,11 +103,7 @@ namespace black_cat
 
 			void _join_workers();
 
-			bool _pop_task_from_local_queue(task_wrapper_type& p_task);
-
 			bool _pop_task_from_global_queue(task_wrapper_type& p_task);
-
-			bool _pop_task_from_others_queue(task_wrapper_type& p_task);
 
 			void _worker_spin(bcUINT32 p_my_index);
 
@@ -171,7 +134,6 @@ namespace black_cat
 		public:
 			_thread_data(bcUINT32 p_my_index, core_platform::bc_thread&& p_thread)
 				: m_my_index(p_my_index),
-				m_local_queue(),
 				m_interrupt_flag(),
 				m_thread(std::move(p_thread))
 			{
@@ -192,11 +154,6 @@ namespace black_cat
 				return m_my_index;
 			}
 
-			bc_task_stealing_queue& local_queue()
-			{
-				return m_local_queue;
-			}
-
 			bc_interrupt_flag& interrupt_flag()
 			{
 				return m_interrupt_flag;
@@ -209,7 +166,6 @@ namespace black_cat
 
 		private:
 			bcUINT32 m_my_index;
-			bc_task_stealing_queue m_local_queue;
 			bc_interrupt_flag m_interrupt_flag;
 			core_platform::bc_thread m_thread;
 		};
@@ -219,18 +175,11 @@ namespace black_cat
 		{
 			bc_task_link<T> l_task_link(std::move(p_delegate));
 			bc_task<T> l_task = l_task_link.get_task();
-
-			bool l_policy_none = true;
 			bc_alloc_type l_alloc_type = bc_alloc_type::frame;
 
 			if (bc_enum::has(p_option, bc_task_creation_option::lifetime_exceed_frame))
 			{
 				l_alloc_type = bc_alloc_type::unknown;
-			}
-
-			if (bc_enum::has(p_option, bc_task_creation_option::policy_fairness))
-			{
-				l_policy_none = false;
 			}
 
 			bool l_task_allocated_from_pool;
@@ -262,18 +211,8 @@ namespace black_cat
 				}
 			});
 
-			const auto l_task_count = m_task_count.fetch_add(1, core_platform::bc_memory_order::seqcst) + 1;
-			auto* l_my_data = m_my_data.get();
-
-			// If current thread is not main thread
-			if (l_my_data && l_policy_none)
-			{
-				l_my_data->local_queue().push(std::move(l_task_wrapper));
-			}
-			else
-			{
-				m_global_queue.push(std::move(l_task_wrapper));
-			}
+			m_global_queue.push(std::move(l_task_wrapper));
+			const auto l_task_count = m_task_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1;
 
 			// If number of steady threads in work spin method is higher than zero there is no need to notify a thread
 			if constexpr (s_num_thread_in_spin == 0)

@@ -19,7 +19,7 @@ namespace box
 	public:
 		bx_game_state_network_message() noexcept;
 
-		explicit bx_game_state_network_message(const bx_game_state& p_state) noexcept;
+		explicit bx_game_state_network_message(bx_game_state p_state) noexcept;
 
 		bx_game_state_network_message(bx_game_state_network_message&&) noexcept = default;
 

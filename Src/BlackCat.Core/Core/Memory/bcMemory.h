@@ -43,7 +43,7 @@ namespace black_cat
 			bc_memory_tracer m_tracer;
 
 		private:
-			static const bcUINT8 s_tag_length = 15;
+			static constexpr bcUINT8 s_tag_length = 15;
 			bcCHAR m_tag[s_tag_length];
 
 			void _assign(this_type&& p_other);
@@ -60,7 +60,7 @@ namespace black_cat
 
 			bci_memory_movable(this_type&& p_other) noexcept;
 
-			virtual ~bci_memory_movable();
+			~bci_memory_movable() override;
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
@@ -92,8 +92,8 @@ namespace black_cat
 		inline void bci_memory::tag(const bcCHAR* p_tag)
 		{
 			// In allocators we call this function only in theirs Initialize method, so it is safe /
-			std::memcpy(m_tag, p_tag, std::min< bcSIZE >(bcSIZE(s_tag_length - 1), strlen(p_tag)));
-			*(m_tag + std::min< bcSIZE >(bcSIZE(s_tag_length - 1), strlen(p_tag))) = '\0';
+			std::memcpy(m_tag, p_tag, std::min<bcSIZE>(static_cast<bcSIZE>(s_tag_length - 1), strlen(p_tag)));
+			*(m_tag + std::min<bcSIZE>(static_cast<bcSIZE>(s_tag_length - 1), strlen(p_tag))) = '\0';
 		}
 
 		inline const bcCHAR* bci_memory::tag() const noexcept
@@ -109,7 +109,7 @@ namespace black_cat
 		inline void bci_memory::_assign(this_type&& p_other)
 		{
 			tag(p_other.tag());
-			m_tracer = const_cast< bc_memory_tracer& >(p_other.tracer());
+			m_tracer = p_other.tracer();
 		}
 
 		inline bci_memory_movable::bci_memory_movable() = default;

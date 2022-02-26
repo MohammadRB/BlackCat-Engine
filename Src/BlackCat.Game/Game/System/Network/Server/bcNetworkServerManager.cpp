@@ -322,7 +322,7 @@ namespace black_cat
 			if(p_name.empty())
 			{
 				auto [l_address_family, l_ip, l_port] = p_address.get_traits();
-				p_name = "NoName " + core::bc_to_string_frame(l_port);
+				p_name = "NoName" + core::bc_to_string_frame(l_port);
 			}
 
 			bc_network_server_manager_client l_client(p_address, std::move(p_name));
@@ -479,14 +479,17 @@ namespace black_cat
 				return;
 			}
 
-			auto l_actor_network_id = m_actor_network_id_counter.fetch_add(1);
-			
+			const auto l_actor_network_id = m_actor_network_id_counter.fetch_add(1);
+			const auto l_ping = l_client->get_rtt_time() / 2;
+			const auto l_remote_ping = l_client->get_remote_rtt_time() / 2;
+
+			l_network_component->set_network_client_id(l_client->get_id());
+			l_network_component->set_network_id(l_actor_network_id);
+			l_network_component->set_ping(l_ping, l_remote_ping);
+
 			{
 				core_platform::bc_mutex_guard l_lock(m_actors_lock);
 				m_network_actors.insert(std::make_pair(l_actor_network_id, p_actor));
-
-				l_network_component->set_network_client_id(l_client->get_id());
-				l_network_component->set_network_id(l_actor_network_id);
 			}
 
 			{

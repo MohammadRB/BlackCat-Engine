@@ -9,6 +9,7 @@
 #include "Core/Utility/bcServiceManager.h"
 #include "Game/bcEvent.h"
 #include "BoX.Game/Application/bxDefinitions.h"
+#include "BoX.Game/Application/bxGameState.h"
 #include "BoX.Game/bxExport.h"
 
 namespace black_cat
@@ -36,6 +37,12 @@ namespace box
 		core::bc_wstring m_message;
 	};
 
+	struct bx_player_kill_message
+	{
+		core_platform::bc_clock::small_delta_time m_lifetime;
+		bx_player_kill_state m_kill;
+	};
+
 	class BX_GAME_DLL bx_player_service : public core::bci_service
 	{
 		BC_SERVICE(ply_srv)
@@ -51,7 +58,11 @@ namespace box
 
 		bx_player_state get_state() const noexcept;
 
+		core::bc_vector_frame<core::bc_wstring> get_info_messages() const noexcept;
+
 		core::bc_vector_frame<core::bc_wstring> get_error_messages() const noexcept;
+
+		core::bc_vector_frame<bx_player_kill_state> get_kill_messages() const noexcept;
 
 		bcUINT32 get_game_time() const noexcept;
 
@@ -75,7 +86,11 @@ namespace box
 
 		core::bc_task<bx_team> ask_for_team() noexcept;
 
-		void add_error(core::bc_wstring p_error) noexcept;
+		void add_info(core::bc_wstring p_message) noexcept;
+
+		void add_error(core::bc_wstring p_message) noexcept;
+
+		void add_kill(bx_player_kill_state p_kill);
 
 		void started_playing(bx_team p_team) noexcept;
 
@@ -98,7 +113,9 @@ namespace box
 		bcINT32 m_smoke_load;
 
 		mutable core_platform::bc_mutex m_messages_lock;
+		core::bc_vector<bx_player_ui_message> m_info_messages;
 		core::bc_vector<bx_player_ui_message> m_error_messages;
+		core::bc_vector<bx_player_kill_message> m_kill_list;
 
 		core::bc_event_listener_handle m_key_handle;
 	};

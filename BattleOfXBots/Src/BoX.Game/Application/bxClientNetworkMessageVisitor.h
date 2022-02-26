@@ -4,16 +4,12 @@
 
 #include "Game/System/Network/Message/bcNetworkMessage.h"
 #include "BoX.Game/Application/bxDefinitions.h"
+#include "BoX.Game/Application/bxGameState.h"
 #include "BoX.Game/bxExport.h"
 
 namespace box
 {
 	using namespace black_cat;
-
-	struct bx_game_state
-	{
-		bcUINT32 m_game_time;
-	};
 
 	class BX_GAME_DLL bx_client_network_message_visitor : public game::bci_network_message_visitor
 	{

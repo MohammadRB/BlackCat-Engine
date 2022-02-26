@@ -333,8 +333,7 @@ namespace black_cat
 				[=]()
 				{
 					return load<TContent>(p_alloc_type, p_file, p_file_variant, p_parameters, std::move(p_instance_parameters));
-				},
-				bc_task_creation_option::policy_fairness
+				}
 			);
 
 			return l_task;
@@ -406,8 +405,7 @@ namespace black_cat
 				[=, &p_content]()
 				{
 					save<TContent>(p_content);
-				},
-				bc_task_creation_option::policy_fairness
+				}
 			);
 
 			return l_task;
@@ -421,8 +419,7 @@ namespace black_cat
 				[=, &p_content]()
 				{
 					save_as<TContent>(p_content, p_file_path, p_file_variant);
-				},
-				bc_task_creation_option::policy_fairness
+				}
 			);
 
 			return l_task;

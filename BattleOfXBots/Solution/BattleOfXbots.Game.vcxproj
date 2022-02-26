@@ -285,6 +285,7 @@
     <ClInclude Include="..\Src\BoX.Game\Application\bxApplicationHookFunctions.h" />
     <ClInclude Include="..\Src\BoX.Game\Application\bxClientNetworkMessageVisitor.h" />
     <ClInclude Include="..\Src\BoX.Game\Application\bxDefinitions.h" />
+    <ClInclude Include="..\Src\BoX.Game\Application\bxGameState.h" />
     <ClInclude Include="..\Src\BoX.Game\Application\bxPlayerService.h" />
     <ClInclude Include="..\Src\BoX.Game\Application\bxSceneCheckPoint.h" />
     <ClInclude Include="..\Src\BoX.Game\Application\bxServerNetworkMessageVisitor.h" />

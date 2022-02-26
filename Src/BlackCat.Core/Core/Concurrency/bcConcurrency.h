@@ -315,8 +315,7 @@ namespace black_cat
 
 							(*l_state.m_finalizer_func)(l_init);
 						}
-					),
-					bc_task_creation_option::policy_fairness
+					)
 				);
 			}
 

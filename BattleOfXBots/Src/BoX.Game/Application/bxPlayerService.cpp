@@ -21,6 +21,29 @@ namespace box
 		);
 	}
 
+	core::bc_vector_frame<core::bc_wstring> bx_player_service::get_info_messages() const noexcept
+	{
+		{
+			core_platform::bc_mutex_guard l_lock(m_messages_lock);
+
+			core::bc_vector_frame<core::bc_wstring> l_info_messages;
+			l_info_messages.reserve(m_info_messages.size());
+
+			std::transform
+			(
+				std::begin(m_info_messages),
+				std::end(m_info_messages),
+				std::back_inserter(l_info_messages),
+				[](bx_player_ui_message& p_message)
+				{
+					return p_message.m_message;
+				}
+			);
+
+			return l_info_messages;
+		}
+	}
+
 	core::bc_vector_frame<core::bc_wstring> bx_player_service::get_error_messages() const noexcept
 	{
 		{
@@ -44,6 +67,29 @@ namespace box
 		}
 	}
 
+	core::bc_vector_frame<bx_player_kill_state> bx_player_service::get_kill_messages() const noexcept
+	{
+		{
+			core_platform::bc_mutex_guard l_lock(m_messages_lock);
+
+			core::bc_vector_frame<bx_player_kill_state> l_kill_list;
+			l_kill_list.reserve(m_kill_list.size());
+
+			std::transform
+			(
+				std::begin(m_kill_list),
+				std::end(m_kill_list),
+				std::back_inserter(l_kill_list),
+				[](bx_player_kill_message& p_message)
+				{
+					return p_message.m_kill;
+				}
+			);
+
+			return l_kill_list;
+		}
+	}
+
 	core::bc_task<bx_team> bx_player_service::ask_for_team() noexcept
 	{
 		m_state = bx_player_state::team_select;
@@ -52,12 +98,30 @@ namespace box
 		return m_team_task.get_task();
 	}
 
-	void bx_player_service::add_error(core::bc_wstring p_error) noexcept
+	void bx_player_service::add_info(core::bc_wstring p_message) noexcept
 	{
 		{
 			core_platform::bc_mutex_guard l_lock(m_messages_lock);
 
-			m_error_messages.push_back({ 0, std::move(p_error) });
+			m_info_messages.push_back({ 0, std::move(p_message) });
+		}
+	}
+
+	void bx_player_service::add_error(core::bc_wstring p_message) noexcept
+	{
+		{
+			core_platform::bc_mutex_guard l_lock(m_messages_lock);
+
+			m_error_messages.push_back({ 0, std::move(p_message) });
+		}
+	}
+
+	void bx_player_service::add_kill(bx_player_kill_state p_kill)
+	{
+		{
+			core_platform::bc_mutex_guard l_lock(m_messages_lock);
+
+			m_kill_list.push_back({ 0, std::move(p_kill) });
 		}
 	}
 
@@ -76,6 +140,20 @@ namespace box
 		{
 			core_platform::bc_mutex_guard l_lock(m_messages_lock);
 
+			m_info_messages.erase
+			(
+				std::remove_if
+				(
+					std::begin(m_info_messages),
+					std::end(m_info_messages),
+					[&](bx_player_ui_message& l_msg)
+					{
+						l_msg.m_lifetime += p_clock.m_elapsed_second;
+						return l_msg.m_lifetime > s_msg_lifetime;
+					}
+				),
+				std::end(m_info_messages)
+			);
 			m_error_messages.erase
 			(
 				std::remove_if
@@ -89,6 +167,20 @@ namespace box
 					}
 				),
 				std::end(m_error_messages)
+			);
+			m_kill_list.erase
+			(
+				std::remove_if
+				(
+					std::begin(m_kill_list),
+					std::end(m_kill_list),
+					[&](bx_player_kill_message& l_msg)
+					{
+						l_msg.m_lifetime += p_clock.m_elapsed_second;
+						return l_msg.m_lifetime > s_msg_lifetime;
+					}
+				),
+				std::end(m_kill_list)
 			);
 		}
 	}

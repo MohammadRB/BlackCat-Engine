@@ -119,8 +119,7 @@ namespace black_cat
 					[t = std::move(p_task)]() mutable
 					{
 						t.run();
-					},
-					core::bc_task_creation_option::policy_none
+					}
 				);
 			}
 

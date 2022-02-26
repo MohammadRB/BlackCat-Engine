@@ -31,8 +31,7 @@ namespace black_cat
 
 		protected:
 			bc_scene* get_scene() const noexcept;
-		
-		private:
+					
 			virtual void initialize(const bc_actor_component_initialize_context& p_context);
 
 			virtual void load_instance(const bc_actor_component_load_context& p_context);
@@ -53,6 +52,7 @@ namespace black_cat
 
 			virtual void debug_draw(const bc_actor_component_debug_draw_context& p_context);
 
+		private:
 			bc_scene* m_scene{ nullptr };
 		};
 

@@ -334,12 +334,12 @@ namespace black_cat
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
 
-				const auto l_rtt = m_rtt_sampler.average_value() / 2;
-				const auto l_remote_rtt = m_remote_rtt / 2;
+				const auto l_ping = m_rtt_sampler.average_value() / 2;
+				const auto l_remote_ping = m_remote_rtt / 2;
 				for (auto& [l_net_id, l_actor] : m_network_actors)
 				{
 					auto* l_network_component = l_actor.get_component<bc_network_component>();
-					l_network_component->set_ping(l_rtt, l_remote_rtt);
+					l_network_component->set_ping(l_ping, l_remote_ping);
 				}
 			}
 		}
@@ -427,10 +427,13 @@ namespace black_cat
 				core::bc_log(core::bc_log_type::error, bcL("actor without network component or invalid network id cannot be added to network sync process"));
 				return;
 			}
-			
+
+			const auto l_ping = m_rtt_sampler.average_value() / 2;
+			const auto l_remote_ping = m_remote_rtt / 2;
+			l_network_component->set_ping(l_ping, l_remote_ping);
+
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
-
 				m_network_actors.insert(std::make_pair(l_network_component->get_network_id(), p_actor));
 			}
 		}

@@ -127,7 +127,7 @@ namespace box
 		l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 		l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
 		l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view, l_file_system.get_content_data_path(bcL("Dx.spritefont"))));
-		l_render_system.add_render_pass(bc_player_ui_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, l_file_system.get_content_data_path(bcL("Dx.spritefont"))));
+		l_render_system.add_render_pass(bx_player_ui_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, l_file_system.get_content_data_path(bcL("Dx.spritefont"))));
 
 		m_player_spawn_event_handle = l_event_manager.register_event_listener<bx_player_spawned_event>
 		(
@@ -152,7 +152,12 @@ namespace box
 
 	void bx_application::application_update(const bc_application_update_context& p_context)
 	{
-		if(g_client_start_time <= g_client_start_delay && !p_context.m_is_partial_update)
+		if(p_context.m_is_partial_update)
+		{
+			return;
+		}
+
+		if(g_client_start_time <= g_client_start_delay)
 		{
 			g_client_start_time += p_context.m_clock.m_elapsed_second;
 			if(g_client_start_time > g_client_start_delay)
@@ -330,6 +335,15 @@ namespace box
 	void bx_application::update_game_state(const bx_game_state& p_state)
 	{
 		m_current_game_time = p_state.m_game_time;
+
+		for (auto& l_info : p_state.m_info_messages)
+		{
+			m_player_service->add_info(core::bc_to_wstring(l_info));
+		}
+		for(auto& l_kill : p_state.m_killing_list)
+		{
+			m_player_service->add_kill(std::move(l_kill));
+		}
 	}
 
 	void bx_application::team_change_rejected(core::bc_string p_error)

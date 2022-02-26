@@ -46,7 +46,7 @@ namespace black_cat
 		const core::bc_matrix3f& p_rotation,
 		const core::bc_vector3f& p_direction)
 	{
-		const auto l_player_id = get_network_component().get_network_client_id();
+		const auto l_player_id = get_network_client_id();
 		auto l_transform = core::bc_matrix4f::identity();
 		l_transform.set_translation(p_position + core::bc_vector3f::normalize(p_direction));
 		l_transform.set_rotation(p_rotation);

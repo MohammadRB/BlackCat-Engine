@@ -93,6 +93,11 @@ namespace box
 
 	void bx_server_application::application_update(const bc_application_update_context& p_context)
 	{
+		if(p_context.m_is_partial_update)
+		{
+			return;
+		}
+
 		if(m_state == bx_app_state::initial)
 		{
 			auto& l_script_system = m_game_system->get_script_system();
@@ -140,8 +145,19 @@ namespace box
 		if (const auto* l_player_kill_event = core::bci_message::as<bx_player_killed_event>(p_event))
 		{
 			const auto l_client_ite = m_joined_clients.find(l_player_kill_event->get_client_id());
+			const auto l_killer_ite = m_joined_clients.find(l_player_kill_event->get_killer_client_id());
+
 			l_client_ite->second.m_is_dead = true;
 			l_client_ite->second.m_dead_passed_time = 0;
+
+			bx_player_kill_state l_kill_state
+			{
+				*l_killer_ite->second.m_team,
+				l_killer_ite->second.m_name,
+				*l_client_ite->second.m_team,
+				l_client_ite->second.m_name
+			};
+			m_killing_list.push_back(std::move(l_kill_state));
 
 			return;
 		}
@@ -244,11 +260,18 @@ namespace box
 		}
 
 		m_joined_clients.insert(std::make_pair(p_client.m_id, bx_client{ p_client.m_address, p_client.m_id, core::bc_string(p_client.m_name), {}, nullptr }));
+
+		const auto l_message = core::bc_string_stream() << "'" << p_client.m_name << "'" << " joined the game.";
+		m_info_messages.push_back(l_message.str());
+
 		return {};
 	}
 
 	void bx_server_application::client_disconnected(const game::bc_network_client& p_client) noexcept
 	{
+		const auto l_message = core::bc_string_stream() << "'" << p_client.m_name << "'" << " leaved the game.";
+		m_info_messages.push_back(l_message.str());
+
 		_remove_client(p_client.m_id);
 	}
 
@@ -299,7 +322,12 @@ namespace box
 		{
 			m_last_state_update_elapsed_ms = 0;
 
-			const bx_game_state l_game_state{ static_cast<bcUINT32>(m_current_game_time) };
+			const bx_game_state l_game_state
+			{
+				static_cast<bcUINT32>(m_current_game_time),
+				std::move(m_info_messages),
+				std::move(m_killing_list)
+			};
 			m_network_system->send_message(bx_game_state_network_message(l_game_state));
 		}
 	}
@@ -408,7 +436,7 @@ namespace box
 				continue;
 			}
 
-			l_client.m_dead_passed_time += p_clock.m_elapsed;
+			l_client.m_dead_passed_time += p_clock.m_elapsed_second;
 
 			if(l_client.m_dead_passed_time >= m_respawn_time)
 			{

@@ -11,7 +11,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		using bc_network_client_id = bcUINT32;
+		using bc_network_client_id = bcINT32;
 
 		struct bc_network_client
 		{

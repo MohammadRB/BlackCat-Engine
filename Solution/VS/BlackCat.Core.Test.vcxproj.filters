@@ -39,6 +39,9 @@
     <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Utility\bcParameterPack.cpp">
       <Filter>CoreTest\Utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Utility\bcObjectPool.cpp">
+      <Filter>CoreTest\Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\CoreTestPCH.h">
@@ -48,6 +51,9 @@
       <Filter>CoreTest</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\Container\concurrentqueue.h">
+      <Filter>CoreTest\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\Container\bcConcurrentQueue.h">
       <Filter>CoreTest\Container</Filter>
     </ClInclude>
   </ItemGroup>

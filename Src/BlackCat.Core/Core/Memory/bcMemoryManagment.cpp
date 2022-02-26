@@ -4,6 +4,8 @@
 #include "Core/Memory/bcMemoryManagment.h"
 #include "Core/Memory/bcMemoryExtender.h"
 
+#include "stdlib.h"
+
 namespace black_cat
 {
 	namespace core
@@ -187,12 +189,13 @@ namespace black_cat
 		
 		void* bc_memory_manager::alloc(bcSIZE p_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
+			//return std::malloc(p_size);
+
 			BC_ASSERT(m_initialized);
 
 			void* l_result = nullptr;
 			bci_memory* l_allocator = nullptr;
-			bc_memblock l_block;
-			bc_memblock::initialize_mem_block_before_allocation(p_size, BC_MEMORY_MIN_ALIGN, &l_block);
+			bc_memblock l_block(p_size, BC_MEMORY_MIN_ALIGN);
 			const bcSIZE l_size = l_block.size();
 
 			switch (p_alloc_type)
@@ -262,13 +265,16 @@ namespace black_cat
 			}
 #endif
 
-			bc_memblock::initialize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
+			l_block.initialize_after_allocation(&l_result, l_allocator == m_super_heap, l_allocator);
 			
 			return l_result;
 		}
 
 		void bc_memory_manager::free(void* p_pointer) noexcept
 		{
+			//std::free(p_pointer);
+			//return;
+
 			if (!p_pointer)
 			{
 				return;
@@ -295,7 +301,9 @@ namespace black_cat
 		
 		void* bc_memory_manager::realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
-			auto* l_block = bc_memblock::retrieve_mem_block(p_pointer);
+			//return std::realloc(p_pointer, p_new_size);
+
+			const auto* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 
 			auto* l_new_pointer = alloc(p_new_size, p_alloc_type, p_file, p_line);
 			if (!l_new_pointer) 
@@ -303,15 +311,10 @@ namespace black_cat
 				return l_new_pointer;
 			}
 
-			auto* l_new_block = bc_memblock::retrieve_mem_block(l_new_pointer);
+			const auto* l_new_block = bc_memblock::retrieve_mem_block(l_new_pointer);
 			const bcSIZE l_min_size = std::min<bcSIZE>(l_block->size() - l_block->offset(), l_new_block->size() - l_new_block->offset());
 
-			std::memcpy
-			(
-				reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(l_new_pointer)),
-				reinterpret_cast<void*>(reinterpret_cast<bcUINTPTR>(p_pointer)),
-				l_min_size
-			);
+			std::memcpy(l_new_pointer, p_pointer, l_min_size);
 
 			free(p_pointer);
 
@@ -320,12 +323,13 @@ namespace black_cat
 		
 		void* bc_memory_manager::aligned_alloc(bcSIZE p_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
+			//return _aligned_malloc(p_size, p_alignment);
+
 			BC_ASSERT(m_initialized);
 
 			void* l_result = nullptr;
 			bci_memory* l_allocator = nullptr;
-			bc_memblock l_block;
-			bc_memblock::initialize_mem_block_before_allocation(p_size, p_alignment, &l_block);
+			bc_memblock l_block(p_size, p_alignment);
 			const bcSIZE l_size = l_block.size();
 
 			switch (p_alloc_type)
@@ -394,13 +398,16 @@ namespace black_cat
 				);
 			}
 #endif
-			bc_memblock::initialize_mem_block_after_allocation(&l_result, (l_allocator == m_super_heap), l_allocator, &l_block);
+			l_block.initialize_after_allocation(&l_result, l_allocator == m_super_heap, l_allocator);
 
 			return l_result;
 		}
 		
 		void bc_memory_manager::aligned_free(void* p_pointer) noexcept
 		{
+			//_aligned_free(p_pointer);
+			//return;
+
 			if (!p_pointer) 
 			{
 				return;
@@ -427,6 +434,8 @@ namespace black_cat
 		
 		void* bc_memory_manager::aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
+			//return _aligned_realloc(p_pointer, p_new_size, p_alignment);
+
 			auto* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 
 			auto* l_new_pointer = aligned_alloc(p_new_size, p_alignment, p_alloc_type, p_file, p_line);

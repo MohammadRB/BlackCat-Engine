@@ -20,6 +20,8 @@ namespace black_cat
 		public:
 			bc_memblock();
 
+			bc_memblock(bcSIZE p_size, bcSIZE p_alignment);
+
 			bc_memblock(const bc_memblock& p_other) noexcept = default;
 
 			~bc_memblock() = default;
@@ -51,7 +53,9 @@ namespace black_cat
 
 			void allocators_extra(void* p_val) noexcept;
 
-			static constexpr bcSIZE get_aligned_size(bcSIZE p_size, bcSIZE p_alignment) noexcept;
+			void initialize_after_allocation(void** p_pointer, bool p_movable, void* p_extra) noexcept;
+
+			static bcSIZE get_aligned_size(bcSIZE p_size, bcSIZE p_alignment) noexcept;
 
 			/**
 			 * \brief Retrieve MemBlock for pointer that point to actual location of data, or null if parameter is null
@@ -71,20 +75,6 @@ namespace black_cat
 			static bcSIZE get_required_offset_for_data(const void* p_pointer, bcSIZE p_alignment) noexcept;
 
 			static bcSIZE get_required_offset_for_mem_block(const void* p_pointer, bcSIZE p_alignment) noexcept;
-
-			static void initialize_mem_block_before_allocation(bcSIZE p_size, bcSIZE p_alignment, bc_memblock* p_block) noexcept;
-
-			/**
-			 * \brief Fill MemBlock with data and shift pPointer with required offset for actual data
-			 * \param p_pointer
-			 * \param p_movable
-			 * \param p_extra
-			 * \param p_block
-			 */
-			static void initialize_mem_block_after_allocation(void** p_pointer,
-				bool p_movable,
-				void* p_extra,
-				bc_memblock* p_block) noexcept;
 
 			/**
 			 * \brief Store MemBlock for pointer that point to actual location of data
@@ -106,8 +96,21 @@ namespace black_cat
 			void* m_allocators_extra;
 		};
 
-		inline bc_memblock::bc_memblock(): m_size(0),
+		inline bc_memblock::bc_memblock()
+			: m_size(0),
 			m_alignment(BC_MEMORY_MIN_ALIGN),
+			m_offset(0),
+#ifdef BC_MEMORY_DEFRAG
+			m_movable(false),
+#endif
+			m_extra(nullptr),
+			m_allocators_extra(nullptr)
+		{
+		}
+
+		inline bc_memblock::bc_memblock(bcSIZE p_size, bcSIZE p_alignment)
+			: m_size(get_required_size(p_size, p_alignment)),
+			m_alignment(static_cast<bcUBYTE>(p_alignment)),
 			m_offset(0),
 #ifdef BC_MEMORY_DEFRAG
 			m_movable(false),
@@ -179,7 +182,20 @@ namespace black_cat
 			m_allocators_extra = p_val;
 		}
 
-		constexpr bcSIZE bc_memblock::get_aligned_size(bcSIZE p_size, bcSIZE p_alignment) noexcept
+		inline void bc_memblock::initialize_after_allocation(void** p_pointer, bool p_movable, void* p_extra) noexcept
+		{
+			offset(static_cast<bcUBYTE>(get_required_offset_for_data(*p_pointer, alignment())));
+#ifdef BC_MEMORY_DEFRAG
+			p_block->movable_pointer(p_movable);
+#endif
+			extra(p_extra);
+
+			*p_pointer = reinterpret_cast<void*>((reinterpret_cast<bcUINTPTR>(*p_pointer) + offset()));
+
+			bc_memblock::store_mem_block(*p_pointer, this);
+		}
+
+		inline bcSIZE bc_memblock::get_aligned_size(bcSIZE p_size, bcSIZE p_alignment) noexcept
 		{
 			return (p_size % p_alignment == 0) ? p_size : (p_size - (p_size % p_alignment)) + p_alignment;
 		}
@@ -221,34 +237,6 @@ namespace black_cat
 		inline bcSIZE bc_memblock::get_required_offset_for_mem_block(const void* p_pointer, bcSIZE p_alignment) noexcept
 		{
 			return (get_required_offset_for_data(p_pointer, p_alignment) - sizeof(bc_memblock)) - reinterpret_cast<bcUINTPTR>(p_pointer);
-		}
-
-		inline void bc_memblock::initialize_mem_block_before_allocation(bcSIZE p_size, bcSIZE p_alignment, bc_memblock* p_block) noexcept
-		{
-			p_block->size(get_required_size(p_size, p_alignment));
-			p_block->alignment(static_cast<bcUBYTE>(p_alignment));
-			p_block->offset(0);
-#ifdef BC_MEMORY_DEFRAG
-			p_block->movable_pointer(false);
-#endif
-			p_block->extra(nullptr);
-			p_block->allocators_extra(nullptr);
-		}
-
-		inline void bc_memblock::initialize_mem_block_after_allocation(void** p_pointer,
-			bool p_movable,
-			void* p_extra,
-			bc_memblock* p_block) noexcept
-		{
-			p_block->offset(static_cast<bcUBYTE>(get_required_offset_for_data(*p_pointer, p_block->alignment())));
-#ifdef BC_MEMORY_DEFRAG
-			p_block->movable_pointer(p_movable);
-#endif
-			p_block->extra(p_extra);
-
-			*p_pointer = reinterpret_cast<void*>((reinterpret_cast<bcUINTPTR>(*p_pointer) + p_block->offset()));
-
-			bc_memblock::store_mem_block(*p_pointer, p_block);
 		}
 
 		inline void bc_memblock::store_mem_block(const void* p_pointer, const bc_memblock* p_block) noexcept

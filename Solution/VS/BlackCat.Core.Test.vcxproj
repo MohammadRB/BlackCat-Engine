@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\bcTestFixture.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\Container\bcConcurrentQueue.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\Container\concurrentqueue.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\CoreTestPCH.h" />
   </ItemGroup>
@@ -172,6 +173,7 @@
     <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\File\bcMemoryStream.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Memory\bcMemoryHeap.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Memory\bcMemoryStack.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Utility\bcObjectPool.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core.Test\CoreTest\Utility\bcParameterPack.cpp" />
   </ItemGroup>
   <ItemGroup>

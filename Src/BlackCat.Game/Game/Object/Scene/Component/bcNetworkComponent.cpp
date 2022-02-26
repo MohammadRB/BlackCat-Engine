@@ -129,7 +129,7 @@ namespace black_cat
 				m_network_client_id = bc_network_client::invalid_id;
 			}
 
-			if(l_net_id_param)
+			if (l_net_id_param)
 			{
 				m_network_id = *l_net_id_param;
 			}
