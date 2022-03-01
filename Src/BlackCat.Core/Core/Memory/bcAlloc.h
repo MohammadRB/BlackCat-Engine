@@ -182,7 +182,7 @@ namespace black_cat
 		{
 			// alloc 4 byte more for array length, it will be used in last 4 byte of allocated block
 			const bcUINT32 l_size = (sizeof(T) * p_array_length) + sizeof(bcUINT32);
-			T* l_return_pointer = static_cast< T* >(bc_mem_alloc_throw(l_size, p_alloc_type, p_file, p_line));
+			T* l_return_pointer = static_cast<T*>(bc_mem_alloc_throw(l_size, p_alloc_type, p_file, p_line));
 
 			// store array length
 			const bc_memblock* l_block = bc_memblock::retrieve_mem_block(l_return_pointer);
@@ -206,10 +206,10 @@ namespace black_cat
 			}
 
 			p_pointer->~T();
-			bc_mem_free(static_cast< void* >(p_pointer));
+			bc_mem_free(static_cast<void*>(p_pointer));
 		}
 
-		template< typename T >
+		template<typename T>
 		void bc_mem_delete_array(T* p_pointer) noexcept
 		{
 			if (!p_pointer)
@@ -228,7 +228,7 @@ namespace black_cat
 				l_first->~T();
 			}
 
-			bc_mem_free(static_cast< void* >(p_pointer));
+			bc_mem_free(static_cast<void*>(p_pointer));
 		}
 
 		template<typename T, typename ...TArgs>

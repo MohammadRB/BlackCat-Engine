@@ -132,11 +132,6 @@ namespace black_cat
 //#endif
 		}
 
-		bool bc_memory_fixed_size::contain_pointer(void* p_pointer) const noexcept
-		{
-			return p_pointer >= m_heap && p_pointer < m_heap + (m_block_size * m_num_block);
-		}
-
 		void bc_memory_fixed_size::clear() noexcept
 		{
 			for (bcUINT32 i = 0; i < m_num_bit_blocks; ++i)

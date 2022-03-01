@@ -6,7 +6,7 @@
 #define NOMINMAX						// Suppress min-max macros
 //#define STRICT						// Use strict declarations for Windows types
 
-#include <windows.h>
+#include <Windows.h>
 
 #include "CorePlatform/CorePlatformPCH.h"
 #include "CorePlatform/bcType.h"

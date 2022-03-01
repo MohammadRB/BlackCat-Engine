@@ -22,7 +22,7 @@ namespace black_cat
 
 			bc_model_to_skinning_animation_job(bc_model_to_skinning_animation_job&&) noexcept = default;
 
-			~bc_model_to_skinning_animation_job() = default;
+			~bc_model_to_skinning_animation_job() override = default;
 
 			bc_model_to_skinning_animation_job& operator=(bc_model_to_skinning_animation_job&&) noexcept = default;
 

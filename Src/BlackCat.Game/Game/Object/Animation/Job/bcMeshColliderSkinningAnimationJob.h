@@ -19,7 +19,7 @@ namespace black_cat
 
 			bc_mesh_collider_skinning_animation_job(bc_mesh_collider_skinning_animation_job&& p_other) noexcept;
 
-			~bc_mesh_collider_skinning_animation_job();
+			~bc_mesh_collider_skinning_animation_job() override;
 
 			bc_mesh_collider_skinning_animation_job& operator=(bc_mesh_collider_skinning_animation_job&& p_other) noexcept;
 

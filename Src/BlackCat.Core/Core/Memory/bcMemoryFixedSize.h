@@ -25,15 +25,15 @@ namespace black_cat
 
 			bc_memory_fixed_size(this_type&& p_other) noexcept;
 			
-			~bc_memory_fixed_size() noexcept;
+			~bc_memory_fixed_size() noexcept override;
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
-			bcSIZE capacity() const noexcept { return block_size() * num_block(); }
-			
-			bcSIZE block_size() const noexcept { return m_block_size; }
+			bcSIZE capacity() const noexcept;
 
-			bcSIZE num_block() const noexcept { return m_num_block; }
+			bcSIZE block_size() const noexcept;
+
+			bcSIZE num_block() const noexcept;
 
 			void* alloc(bc_memblock* p_mem_block) noexcept override;
 
@@ -51,16 +51,36 @@ namespace black_cat
 			void _move(this_type&& p_other);
 
 			using bit_block_type = bcUINT32;
-			static const bit_block_type s_bit_block_mask = 0xffffffff;
-			static const bcSIZE s_bit_block_size = sizeof(bit_block_type) * 8;
+			static constexpr bit_block_type s_bit_block_mask = 0xffffffff;
+			static constexpr bcSIZE s_bit_block_size = sizeof(bit_block_type) * 8;
 
 			bcUINT32 m_num_block;
 			bcUINT32 m_block_size;
 			bcUINT32 m_num_bit_blocks;
-			core_platform::bc_atomic< bcUINT32 > m_allocated_block;		// An index that searching for free block will continue from this place
-			core_platform::bc_atomic< bit_block_type >* m_blocks;			// bit-vector indicating if a block is allocated or not
+			core_platform::bc_atomic<bcUINT32> m_allocated_block;			// An index that searching for free block will continue from this place
+			core_platform::bc_atomic<bit_block_type>* m_blocks;				// bit-vector indicating if a block is allocated or not
 			bcUBYTE* m_heap;												// block of data
 		};
+
+		inline bcSIZE bc_memory_fixed_size::capacity() const noexcept
+		{
+			return block_size() * num_block();
+		}
+
+		inline bcSIZE bc_memory_fixed_size::block_size() const noexcept
+		{
+			return m_block_size;
+		}
+
+		inline bcSIZE bc_memory_fixed_size::num_block() const noexcept
+		{
+			return m_num_block;
+		}
+
+		inline bool bc_memory_fixed_size::contain_pointer(void* p_pointer) const noexcept
+		{
+			return p_pointer >= m_heap && p_pointer < m_heap + (m_block_size * m_num_block);
+		}
 
 #endif
 	}

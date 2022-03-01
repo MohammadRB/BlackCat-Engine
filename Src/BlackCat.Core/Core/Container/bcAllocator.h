@@ -51,8 +51,7 @@ namespace black_cat
 			}
 
 			template<typename ...TArgs>
-			static void construct(allocator_type& p_allocator, value_type* p_pointer, TArgs&&... p_args)
-				noexcept(std::is_nothrow_constructible_v<value_type, TArgs...>)
+			static void construct(allocator_type& p_allocator, value_type* p_pointer, TArgs&&... p_args) noexcept(std::is_nothrow_constructible_v<value_type, TArgs...>)
 			{
 				p_allocator.construct(p_pointer, std::forward<TArgs>(p_args)...);
 			}

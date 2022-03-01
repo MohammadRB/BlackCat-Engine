@@ -1,10 +1,12 @@
 // [09/16/2016 MRB]
 
 #include "CoreTest/CoreTestPCH.h"
-#include "Core/Memory/bcMemoryHeap.h"
+
 #include <vector>
 #include <thread>
 #include <filesystem>
+#include "Core/Memory/bcMemoryHeap.h"
+#include "CoreTest/bcTestFixture.h"
 
 namespace black_cat
 {
@@ -12,13 +14,13 @@ namespace black_cat
 	{
 		TEST(MemoryHeap, AllocationTest)
 		{
-			core::bc_memory_heap l_memory_heap;
-
-			l_memory_heap.initialize(10000000, "");
-
+			constexpr bcSIZE l_alloc_count = 100;
 			std::vector<std::pair<void*, core::bc_memblock>> l_memblocks;
 
-			for (auto l_ite = 0U; l_ite < 5; ++l_ite)
+			core::bc_memory_heap l_memory_heap;
+			l_memory_heap.initialize(10'000'000, "");
+
+			for (auto l_ite = 0U; l_ite < l_alloc_count; ++l_ite)
 			{
 				core::bc_memblock l_block;
 				l_block.size(4);
@@ -31,7 +33,7 @@ namespace black_cat
 				l_memblocks.push_back(std::make_pair(l_result, l_block));
 			}
 
-			for (auto i = 4; i >= 0; --i)
+			for (bcINT32 i = l_alloc_count - 1; i >= 0; --i)
 			{
 				auto& l_block = l_memblocks[i];
 				const auto* l_pointer = static_cast<bcINT32*>(l_block.first);
@@ -51,7 +53,6 @@ namespace black_cat
 		TEST(MemoryHeap, RandomPopTest)
 		{
 			core::bc_memory_heap l_memory_heap;
-
 			l_memory_heap.initialize(1000, "");
 
 			std::vector<std::pair<void*, core::bc_memblock>> l_memblocks;
@@ -90,28 +91,26 @@ namespace black_cat
 
 		TEST(MemoryHeap, MultithreadTest)
 		{
+			constexpr bcSIZE l_thread_count = 4;
+			constexpr bcSIZE l_alloc_count = 10000;
+
 			core::bc_memory_heap l_memory_heap;
-			std::vector< std::thread > l_threads;
-			std::atomic<int> l_start_flag;
+			l_memory_heap.initialize(100'000'000, "");
 
-			l_memory_heap.initialize(10000000, "");
-			l_start_flag.store(0);
-
-			for (auto l_thread_ite = 0; l_thread_ite < 25; ++l_thread_ite)
-			{
-				l_threads.push_back(std::thread([&]()
+			bc_multi_producer_multi_consumer_test
+			(
+				l_thread_count,
+				0,
+				[&]()
 				{
-					while (l_start_flag.load() == 0)
-					{
-					}
-
 					std::vector<std::pair<void*, core::bc_memblock>> l_memblocks;
 
-					for (auto i = 0; i < 1000; ++i)
+					for (auto i = 0; i < l_alloc_count; ++i)
 					{
 						core::bc_memblock l_block;
 						l_block.size(4);
 
+						//void* l_result = new bcINT32;
 						void* l_result = l_memory_heap.alloc(&l_block);
 						auto* l_pointer = static_cast<bcINT32*>(l_result);
 
@@ -120,7 +119,7 @@ namespace black_cat
 						l_memblocks.push_back(std::make_pair(l_result, l_block));
 					}
 
-					for (auto i = 999; i >= 0; --i)
+					for (bcINT32 i = l_alloc_count - 1; i >= 0; --i)
 					{
 						auto& l_block = l_memblocks[i];
 						const auto* l_pointer = static_cast<bcINT32*>(l_block.first);
@@ -128,20 +127,11 @@ namespace black_cat
 						EXPECT_TRUE(*l_pointer == i);
 
 						l_memory_heap.free(l_block.first, &l_block.second);
+						//delete l_pointer;
 					}
-
-				}));
-			}
-
-			l_start_flag.store(1);
-
-			for (auto& l_thread : l_threads)
-			{
-				if (l_thread.joinable())
-				{
-					l_thread.join();
-				}
-			}
+				},
+				[](){}
+			);
 
 			EXPECT_TRUE(l_memory_heap.fragmentation_count() == 0);
 			EXPECT_TRUE(l_memory_heap.tracer().alloc_count() == 0);

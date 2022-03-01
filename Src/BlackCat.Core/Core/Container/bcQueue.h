@@ -16,13 +16,22 @@ namespace black_cat
 		template<typename T, template<typename> class TAllocator>
 		using bc_queue_a = bc_queue<T, TAllocator<T>>;
 
+		template<typename T, bcSIZE TAlign, template<typename, bcSIZE> class TAllocator>
+		using bc_queue_aa = bc_queue<T, TAllocator<T, TAlign>>;
+
+		template<typename T, bcSIZE TAlign>
+		using bc_queue_aligned = bc_queue_aa<T, TAlign, bc_aligned_allocator>;
+
 		template<typename T>
 		using bc_queue_program = bc_queue_a<T, bc_allocator_program>;
+
+		template<typename T, bcSIZE TAlign>
+		using bc_queue_program_aligned = bc_queue_aa<T, TAlign, bc_aligned_allocator_program>;
 
 		template<typename T>
 		using bc_queue_frame = bc_queue_a<T, bc_allocator_frame>;
 
-		/*template<typename T>
-		using bc_queue_movable = bc_queue_a<T, bc_allocator_movable>;*/
+		template<typename T, bcSIZE TAlign>
+		using bc_queue_frame_aligned = bc_queue_aa<T, TAlign, bc_aligned_allocator_frame>;
 	}
 }

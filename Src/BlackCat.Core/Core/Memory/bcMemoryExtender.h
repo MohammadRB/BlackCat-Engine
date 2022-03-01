@@ -49,8 +49,7 @@ namespace black_cat
 			{
 				m_memory_cleanup(m_memory);
 
-				auto* l_bucket = get_next();
-				if (l_bucket)
+				if (auto* l_bucket = get_next())
 				{
 					l_bucket->~bc_memory_extender_bucket();
 					core_platform::bc_mem_free(l_bucket);
@@ -118,7 +117,7 @@ namespace black_cat
 
 			bc_memory_extender(this_type&& p_other) noexcept;
 
-			~bc_memory_extender();
+			~bc_memory_extender() override;
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
@@ -242,7 +241,7 @@ namespace black_cat
 		}
 
 		template<typename TMemory>
-		const bc_memory_tracer& bc_memory_extender< TMemory >::tracer()
+		const bc_memory_tracer& bc_memory_extender<TMemory>::tracer()
 		{
 			bucket_type* l_current_bucket = m_first;
 			bcSIZE l_total_size = 0;
@@ -285,8 +284,8 @@ namespace black_cat
 			m_initializer = std::move(p_initializer);
 			m_cleanup = std::move(p_cleanup);
 
-			m_first = static_cast< bc_memory_extender_bucket< TMemory >* >(core_platform::bc_mem_alloc(sizeof(bc_memory_extender_bucket< TMemory >)));
-			new(m_first)bc_memory_extender_bucket< TMemory >(m_initializer, m_cleanup);
+			m_first = static_cast<bc_memory_extender_bucket<TMemory>* >(core_platform::bc_mem_alloc(sizeof(bc_memory_extender_bucket<TMemory>)));
+			new(m_first)bc_memory_extender_bucket<TMemory>(m_initializer, m_cleanup);
 		}
 
 		template<typename TMemory>

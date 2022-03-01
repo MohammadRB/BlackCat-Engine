@@ -45,7 +45,7 @@ namespace black_cat
 
 			this_type& operator =(this_type&& p_other) noexcept;
 
-			bcSIZE capacity() const noexcept { return m_size; }
+			bcSIZE capacity() const noexcept { return m_capacity; }
 
 			void* push(bc_memblock* p_mem_block) noexcept;
 
@@ -71,7 +71,7 @@ namespace black_cat
 			void _move(this_type&& p_other);
 
 			bcSIZE m_max_num_thread;
-			bcSIZE m_size;
+			bcSIZE m_capacity;
 			bcUBYTE* m_heap;
 			core_platform::bc_atomic<bcUBYTE*> m_top;
 			core_platform::bc_atomic<bcSIZE> m_pop_thread_count;

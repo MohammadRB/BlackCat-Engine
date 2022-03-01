@@ -2,15 +2,16 @@
 
 #pragma once
 
+#include <unordered_map>
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
+#include "CorePlatformImp/Concurrency/bcThreadLocal.h"
 #include "Core/CorePCH.h"
 #include "Core/bcExport.h"
 #include "Core/Memory/bcMemoryCRT.h"
 #include "Core/Memory/bcMemoryFixedSize.h"
-#include "Core/Memory/bcMemoryStack.h"
+#include "Core/Memory/bcMemoryStack1.h"
 #include "Core/Memory/bcMemoryHeap.h"
-#include <unordered_map>
 
 namespace black_cat
 {
@@ -50,23 +51,23 @@ namespace black_cat
 
 			void initialize(bcSIZE p_max_num_thread,
 				bcSIZE p_fsa_start_size,
-				bcSIZE p_fsa_num,
+				bcSIZE p_fsa_count,
 				bcSIZE p_fsa_step_size,
-				bcSIZE p_fsa_num_allocations,
-				bcSIZE p_per_prg_heap_size,
-				bcSIZE p_per_frm_heap_size,
-				bcSIZE p_super_heap_size);
+				bcSIZE p_fsa_capacity,
+				bcSIZE p_program_heap_capacity,
+				bcSIZE p_frame_heap_capacity,
+				bcSIZE p_super_heap_capacity);
 
 			void destroy() noexcept;
 
 			static void startup(bcSIZE p_max_num_thread,
 				bcSIZE p_fsa_start_size,
-				bcSIZE p_fsa_num,
+				bcSIZE p_fsa_count,
 				bcSIZE p_fsa_step_size,
-				bcSIZE p_fsa_num_allocations,
-				bcSIZE p_per_prg_heap_size,
-				bcSIZE p_per_frm_heap_size,
-				bcSIZE p_super_heap_size);
+				bcSIZE p_fsa_capacity,
+				bcSIZE p_program_heap_capacity,
+				bcSIZE p_frame_heap_capacity,
+				bcSIZE p_super_heap_capacity);
 
 			static void close() noexcept;
 
@@ -108,7 +109,7 @@ namespace black_cat
 #endif
 
 		private:
-			bcUINT32 _fsa_index_max_size(bcUINT32 p_index) const noexcept;
+			bcUINT32 _fsa_max_size(bcUINT32 p_index) const noexcept;
 
 			bcUINT32 _get_fsa_index(bcUINT32 p_size) const noexcept;
 
@@ -116,16 +117,23 @@ namespace black_cat
 			static bc_memory_manager m_instance;
 
 			bcSIZE m_fsa_allocators_start_size;
-			bcSIZE m_fsa_num_allocators;
+			bcSIZE m_fsa_allocators_count;
 			bcSIZE m_fsa_step_size;
+			bcUINT32 m_worker_frame_allocators_count;
 			bool m_initialized;
+
 			bc_memory_extender<bc_memory_fixed_size>* m_fsa_allocators;
-			bc_memory_stack* m_per_program_stack;
-			bc_memory_stack* m_per_frame_stack;
-			bc_memory_heap* m_super_heap;
+			bc_memory_stack1* m_program_allocator;
+			bc_memory_stack1* m_worker_frame_allocators;
+			bc_memory_stack1* m_frame_allocator;
+			bc_memory_heap* m_heap_allocator;
 			bc_memory_crt* m_crt_allocator;
+
+			core_platform::bc_atomic<bcUINT32> m_last_used_frame_allocator;
+			core_platform::bc_thread_local<bc_memory_stack1> m_my_frame_allocator;
+
 #ifdef BC_MEMORY_LEAK_DETECTION
-			core_platform::bc_atomic< bcUINT32 > m_allocation_count;
+			core_platform::bc_atomic<bcUINT32> m_allocation_count;
 			mutable core_platform::bc_mutex m_leak_allocator_mutex;
 			std::unordered_map<void*, bc_mem_block_leak_information>* m_leak_allocator;
 #endif
@@ -152,17 +160,6 @@ namespace black_cat
 			}
 		}
 #endif
-
-		inline bcUINT32 bc_memory_manager::_fsa_index_max_size(bcUINT32 p_index) const noexcept
-		{
-			return m_fsa_allocators_start_size + p_index * m_fsa_step_size;
-		}
-
-		inline bcUINT32 bc_memory_manager::_get_fsa_index(bcUINT32 p_size) const noexcept
-		{
-			return static_cast<bcUINT32>(std::ceil((p_size * 1.0f - m_fsa_allocators_start_size) / m_fsa_step_size));
-		}
-
 #endif
 	}
 }

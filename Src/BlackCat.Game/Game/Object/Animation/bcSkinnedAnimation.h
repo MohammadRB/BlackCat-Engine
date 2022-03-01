@@ -25,7 +25,7 @@ namespace black_cat
 
 			bc_skinned_animation(bc_skinned_animation&&) noexcept;
 
-			~bc_skinned_animation();
+			~bc_skinned_animation() override;
 
 			bc_skinned_animation& operator=(bc_skinned_animation&&) noexcept;
 
@@ -37,7 +37,7 @@ namespace black_cat
 			
 		private:
 			bc_animation_skeleton m_skeleton;
-			core::bc_vector< bc_skeleton_animation > m_animations;
+			core::bc_vector<bc_skeleton_animation> m_animations;
 		};
 
 		using bc_skinned_animation_ptr = core::bc_content_ptr<bc_skinned_animation>;

@@ -20,6 +20,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
@@ -140,7 +141,7 @@ namespace black_cat
 			mutable core_platform::bc_shared_mutex m_lock;
 		};
 
-		class bc_actor_component_manager : public core::bci_service
+		class BC_GAME_DLL bc_actor_component_manager : public core::bci_service
 		{
 			BC_SERVICE(ac_mng)
 
@@ -238,15 +239,16 @@ namespace black_cat
 
 			void _resize_actor_to_component_index_maps();
 
-			const bcSIZE s_events_pool_capacity = 100 * static_cast<bcSIZE>(core::bc_mem_size::kb);
-			
 			core::bc_query_manager& m_query_manager;
 			bc_game_system& m_game_system;
+			component_container_type m_components;
+			bcSIZE m_events_pool_capacity;
+
 			mutable core_platform::bc_shared_mutex m_actors_lock;
 			actor_container_type m_actors;
 			core::bc_bit_vector m_actors_bit;
 			double_update_actor_container_type m_double_update_actors;
-			component_container_type m_components;
+
 			bcUINT32 m_read_event_pool;
 			bcUINT32 m_write_event_pool;
 			core::bc_concurrent_object_stack_pool m_event_pools[2];
@@ -266,8 +268,10 @@ namespace black_cat
 		}
 
 		inline _bc_actor_entry::_bc_actor_entry(const _bc_actor_entry& p_other)
+			: m_actor_index(p_other.m_actor_index),
+			m_parent_index(p_other.m_parent_index),
+			m_events{ p_other.m_events[0], p_other.m_events[1] }
 		{
-			operator=(p_other);
 		}
 
 		inline _bc_actor_entry::~_bc_actor_entry() = default;
@@ -344,25 +348,6 @@ namespace black_cat
 			m_container = std::move(p_other.m_container);
 			m_deriveds = std::move(p_other.m_deriveds);
 			return *this;
-		}
-
-		inline bc_actor_component_manager::bc_actor_component_manager(core::bc_query_manager& p_query_manager, bc_game_system& p_game_system)
-			: m_query_manager(p_query_manager),
-			m_game_system(p_game_system)
-		{
-			m_event_pools[0].initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
-			m_event_pools[1].initialize(core::bc_get_service<core::bc_thread_manager>()->max_thread_count(), s_events_pool_capacity);
-			m_read_event_pool = 0U;
-			m_write_event_pool = 0U;
-		}
-
-		inline bc_actor_component_manager::~bc_actor_component_manager()
-		{
-			const auto l_active_actors = m_actors_bit.find_true_indices();
-			BC_ASSERT(l_active_actors.empty());
-
-			m_event_pools[0].destroy();
-			m_event_pools[1].destroy();
 		}
 
 		inline bc_actor bc_actor_component_manager::create_actor(const bc_actor* p_parent)

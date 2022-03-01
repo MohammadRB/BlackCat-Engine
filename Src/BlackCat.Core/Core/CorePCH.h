@@ -43,7 +43,7 @@
 #endif
 
 #ifndef BC_MEMORY_MIN_ALIGN
-#define BC_MEMORY_MIN_ALIGN 16
+#define BC_MEMORY_MIN_ALIGN 4
 #endif
 
 #ifndef BC_MEMORY_MAX_ALIGN

@@ -22,8 +22,7 @@ namespace black_cat
 			m_global_config_last_write_time(0),
 			m_global_config_last_check_time(0)
 		{
-			const auto l_execute_path = core::bc_path
-					(core::bc_path(core::bc_path::get_program_path().c_str()).get_directory().c_str());
+			const auto l_execute_path = core::bc_path(core::bc_path(core::bc_path::get_program_path()).get_directory());
 			m_execute_path = l_execute_path.get_string();
 
 			auto l_temp = l_execute_path;

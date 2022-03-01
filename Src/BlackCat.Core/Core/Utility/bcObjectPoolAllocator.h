@@ -109,10 +109,10 @@ namespace black_cat
 					throw bc_invalid_operation_exception("Memory pool with different size than one that is expected");
 				}
 
-				pointer l_pointer = static_cast< pointer >(m_memory_pool->alloc());
+				pointer l_pointer = static_cast<pointer>(m_memory_pool->alloc());
 				if (!l_pointer)
 				{
-					l_pointer = static_cast< pointer >(BC_ALLOC_THROW(sizeof(value_type), bc_alloc_type::unknown));
+					l_pointer = static_cast<pointer>(BC_ALLOC_THROW(sizeof(value_type), bc_alloc_type::unknown));
 				}
 
 				return l_pointer;
@@ -143,13 +143,13 @@ namespace black_cat
 				}
 			}
 
-			template< class TU, class... TArgs >
+			template<class TU, class... TArgs>
 			void construct(TU* p_pointer, TArgs&&... p_args)
 			{
 				new(p_pointer)TU(std::forward< TArgs >(p_args)...);
 			}
 
-			template< class TU >
+			template<class TU>
 			void destroy(TU* p_pointer)
 			{
 				p_pointer->~TU();

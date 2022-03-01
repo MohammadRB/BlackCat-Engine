@@ -38,7 +38,7 @@ namespace black_cat
 			
 		private:
 			core::bc_unique_ptr<ozz::animation::Skeleton> m_skeleton;
-			mutable core::bc_vector_movable< const bcCHAR* > m_joint_names;
+			mutable core::bc_vector_movable<const bcCHAR*> m_joint_names;
 		};
 
 		inline bc_animation_skeleton::bc_animation_skeleton()

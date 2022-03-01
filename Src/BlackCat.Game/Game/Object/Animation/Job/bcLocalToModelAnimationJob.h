@@ -26,7 +26,7 @@ namespace black_cat
 
 			bc_local_to_model_animation_job(bc_local_to_model_animation_job&&) noexcept = default;
 
-			~bc_local_to_model_animation_job() = default;
+			~bc_local_to_model_animation_job() override = default;
 
 			bc_local_to_model_animation_job& operator=(bc_local_to_model_animation_job&&) noexcept = default;
 
@@ -43,7 +43,7 @@ namespace black_cat
 		private:
 			const bc_sub_mesh* m_mesh;
 			core::bc_shared_ptr<bci_local_transform_animation_job> m_local_transform_job;
-			core::bc_vector_movable<ozz::math::Float4x4> m_ozz_model_transforms;
+			core::bc_vector_movable_aligned<ozz::math::Float4x4, 16> m_ozz_model_transforms;
 			bc_sub_mesh_mat4_transform* m_model_transforms;
 		};
 

@@ -4,14 +4,14 @@
 
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/bcExport.h"
-#include "Core/Memory/bcMemoryStack.h"
+#include "Core/Memory/bcMemoryStack1.h"
 #include "Core/Utility/bcInitializable.h"
 
 namespace black_cat
 {
 	namespace core
 	{
-		class BC_CORE_DLL bc_concurrent_object_stack_pool : public bc_initializable<bcSIZE, bcSIZE>
+		class BC_CORE_DLL bc_concurrent_object_stack_pool : public bc_initializable<bcSIZE>
 		{
 		public:
 			bc_concurrent_object_stack_pool() noexcept;
@@ -33,7 +33,7 @@ namespace black_cat
 			void free(T* p_object) noexcept;
 
 		private:
-			void _initialize(bcSIZE p_max_num_thread, bcSIZE p_capacity) override final;
+			void _initialize(bcSIZE p_capacity) override final;
 
 			void _destroy() override final;
 
@@ -41,18 +41,28 @@ namespace black_cat
 
 			void _free(void* p_pointer, bcSIZE p_size);
 
-			bc_memory_stack m_stack_allocator;
+			bc_memory_stack1 m_stack_allocator;
 			core_platform::bc_atomic<bcSIZE> m_size;
 		};
-		
+
+		inline bcSIZE bc_concurrent_object_stack_pool::capacity() const noexcept
+		{
+			return m_stack_allocator.capacity();
+		}
+
+		inline bcSIZE bc_concurrent_object_stack_pool::size() const noexcept
+		{
+			return m_size.load(core_platform::bc_memory_order::relaxed);
+		}
+
 		template<typename T, typename ...TArgs>
 		T* bc_concurrent_object_stack_pool::alloc(TArgs&&... p_parameters)
 		{
 			// TODO default alignment is not preserved
-			const bcSIZE l_needed_memory = sizeof(bcSIZE) + sizeof(T);
+			constexpr bcSIZE l_needed_memory = sizeof(bcSIZE) + sizeof(T);
 			void* l_allocated_memory = _alloc(l_needed_memory);
 			void* l_object_ptr = static_cast<bcBYTE*>(l_allocated_memory) + sizeof(bcSIZE);
-			bcSIZE* l_memory_size_ptr = static_cast<bcSIZE*>(l_allocated_memory);
+			auto* l_memory_size_ptr = static_cast<bcSIZE*>(l_allocated_memory);
 
 			new (l_object_ptr) T(std::forward<T>(p_parameters)...);
 			*l_memory_size_ptr = l_needed_memory;

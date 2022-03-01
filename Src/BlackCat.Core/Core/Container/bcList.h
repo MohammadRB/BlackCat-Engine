@@ -576,14 +576,29 @@ namespace black_cat
 		template<typename T, template<typename> class TAllocator>
 		using bc_list_a = bc_list<T, TAllocator<T>>;
 
+		template<typename T, bcSIZE TAlign, template<typename, bcSIZE> class TAllocator>
+		using bc_list_aa = bc_list<T, TAllocator<T, TAlign>>;
+
+		template<typename T, bcSIZE TAlign>
+		using bc_list_aligned = bc_list_aa<T, TAlign, bc_aligned_allocator>;
+
 		template<typename T>
 		using bc_list_program = bc_list_a<T, bc_allocator_program>;
+
+		template<typename T, bcSIZE TAlign>
+		using bc_list_program_aligned = bc_list_aa<T, TAlign, bc_aligned_allocator_program>;
 
 		template<typename T>
 		using bc_list_frame = bc_list_a<T, bc_allocator_frame>;
 
+		template<typename T, bcSIZE TAlign>
+		using bc_list_frame_aligned = bc_list_aa<T, TAlign, bc_aligned_allocator_frame>;
+
 		template<typename T>
-		using bc_list_movale = bc_list_a<T, bc_allocator_movable>;
+		using bc_list_movable = bc_list_a<T, bc_allocator_movable>;
+
+		template<typename T, bcSIZE TAlign>
+		using bc_list_movable_aligned = bc_list_aa<T, TAlign, bc_aligned_allocator_movable>;
 
 		template<typename T, class TAllocator>
 		bc_list<T, TAllocator>::bc_list(const allocator_type& p_allocator)

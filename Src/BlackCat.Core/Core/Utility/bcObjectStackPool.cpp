@@ -34,20 +34,10 @@ namespace black_cat
 
 			return *this;
 		}
-		
-		bcSIZE bc_concurrent_object_stack_pool::capacity() const noexcept
-		{
-			return m_stack_allocator.capacity();
-		}
 
-		bcSIZE bc_concurrent_object_stack_pool::size() const noexcept
+		void bc_concurrent_object_stack_pool::_initialize(bcSIZE p_capacity)
 		{
-			return m_size.load(core_platform::bc_memory_order::relaxed);
-		}
-
-		void bc_concurrent_object_stack_pool::_initialize(bcSIZE p_max_num_thread, bcSIZE p_capacity)
-		{
-			m_stack_allocator.initialize(p_max_num_thread, p_capacity, "bc_concurrent_object_stack_pool");
+			m_stack_allocator.initialize(p_capacity, "concurrent_object_stack_pool");
 		}
 
 		void bc_concurrent_object_stack_pool::_destroy()

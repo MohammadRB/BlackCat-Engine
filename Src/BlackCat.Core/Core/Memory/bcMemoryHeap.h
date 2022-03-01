@@ -29,9 +29,9 @@ namespace black_cat
 
 			void size(bcSIZE val) noexcept;
 
-			bcSIZE prev_size() const noexcept;
+			bcSIZE next_size() const noexcept;
 
-			void prev_size(bcSIZE p_val) noexcept;
+			void next_size(bcSIZE p_val) noexcept;
 
 			bool free() const noexcept;
 
@@ -108,12 +108,12 @@ namespace black_cat
 #endif
 
 		private:
-			void _initialize(bcSIZE p_size, const bcCHAR* p_tag) override;
+			void _initialize(bcSIZE p_capacity, const bcCHAR* p_tag) override;
 
 			void _destroy() noexcept override;
 
 			bcBYTE* m_heap;
-			bcSIZE m_heap_size;
+			bcSIZE m_capacity;
 			bcSIZE m_remaining_free_space_limit;
 			bcSIZE m_block_size;
 			_bc_heap_memblock* m_last_block;
@@ -140,12 +140,12 @@ namespace black_cat
 			m_size = val;
 		}
 
-		inline bcSIZE _bc_heap_memblock::prev_size() const noexcept
+		inline bcSIZE _bc_heap_memblock::next_size() const noexcept
 		{
 			return m_prev_size;
 		}
 
-		inline void _bc_heap_memblock::prev_size(bcSIZE p_val) noexcept
+		inline void _bc_heap_memblock::next_size(bcSIZE p_val) noexcept
 		{
 			m_prev_size = p_val;
 		}
@@ -262,7 +262,7 @@ namespace black_cat
 #endif
 		inline bcSIZE bc_memory_heap::capacity() const noexcept
 		{
-			return m_heap_size;
+			return m_capacity;
 		}
 
 		inline bcSIZE bc_memory_heap::fragmentation_count() const noexcept

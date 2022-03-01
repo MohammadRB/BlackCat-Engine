@@ -27,25 +27,6 @@ namespace black_cat
 
 				l_stop_watch.start();
 
-				for(auto l_ite = 0U; l_ite < l_pool_size; ++l_ite)
-				{
-					l_allocated_pointers.push_back(l_pool.alloc());
-				}
-
-				for(auto* l_pointer : l_allocated_pointers)
-				{
-					l_pool.free(l_pointer);
-				}
-
-				l_stop_watch.stop();
-
-				std::cout << "object pool elapsed: " << l_stop_watch.total_elapsed() << std::endl;
-
-				l_allocated_pointers.clear();
-				l_allocated_pointers.reserve(l_pool_size);
-
-				l_stop_watch.start();
-
 				for (auto l_ite = 0U; l_ite < l_pool_size; ++l_ite)
 				{
 					l_allocated_pointers.push_back(std::malloc(sizeof(int)));
@@ -58,7 +39,26 @@ namespace black_cat
 
 				l_stop_watch.stop();
 
-				std::cout << "std elapsed: " << l_stop_watch.total_elapsed() << std::endl;
+				std::cout << "std elapsed: " << l_stop_watch.restart() << std::endl;
+
+				l_allocated_pointers.clear();
+				l_allocated_pointers.reserve(l_pool_size);
+
+				l_stop_watch.start();
+
+				for (auto l_ite = 0U; l_ite < l_pool_size; ++l_ite)
+				{
+					l_allocated_pointers.push_back(l_pool.alloc());
+				}
+
+				for (auto* l_pointer : l_allocated_pointers)
+				{
+					l_pool.free(l_pointer);
+				}
+
+				l_stop_watch.stop();
+
+				std::cout << "object pool elapsed: " << l_stop_watch.restart() << std::endl;
 			}
 
 			bc_test_close();
@@ -140,8 +140,8 @@ namespace black_cat
 					}
 				);
 
-				std::cout << "pool elapsed ms: " << l_pool_elapsed << std::endl;
 				std::cout << "std elapsed ms: " << l_std_elapsed << std::endl;
+				std::cout << "pool elapsed ms: " << l_pool_elapsed << std::endl;
 				std::cout << "expected output value is " << l_push_thread_count * l_thread_item_count << std::endl;
 				std::cout << "output value is " << l_work_count << std::endl;
 				//std::cin.get();

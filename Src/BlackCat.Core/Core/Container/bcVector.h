@@ -492,15 +492,30 @@ namespace black_cat
 
 		template<typename T, template<typename> class TAllocator>
 		using bc_vector_a = bc_vector<T, TAllocator<T>>;
-		
+
+		template<typename T, bcSIZE TAlign, template<typename, bcSIZE> class TAllocator>
+		using bc_vector_aa = bc_vector<T, TAllocator<T, TAlign>>;
+
+		template<typename T, bcSIZE TAlign>
+		using bc_vector_aligned = bc_vector_aa<T, TAlign, bc_aligned_allocator>;
+
 		template<typename T>
 		using bc_vector_program = bc_vector_a<T, bc_allocator_program>;
+
+		template<typename T, bcSIZE TAlign>
+		using bc_vector_program_aligned = bc_vector_aa<T, TAlign, bc_aligned_allocator_program>;
 
 		template<typename T>
 		using bc_vector_frame = bc_vector_a<T, bc_allocator_frame>;
 
+		template<typename T, bcSIZE TAlign>
+		using bc_vector_frame_aligned = bc_vector_aa<T, TAlign, bc_aligned_allocator_frame>;
+
 		template<typename T>
 		using bc_vector_movable = bc_vector_a<T, bc_allocator_movable>;
+
+		template<typename T, bcSIZE TAlign>
+		using bc_vector_movable_aligned = bc_vector_aa<T, TAlign, bc_aligned_allocator_movable>;
 
 		template<typename T, class TAllocator>
 		bc_vector<T, TAllocator>::bc_vector(const allocator_type& p_allocator)

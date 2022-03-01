@@ -26,7 +26,7 @@ namespace black_cat
 
 		_bc_heap_memblock* _get_prev(_bc_heap_memblock* p_block)
 		{
-			const auto l_prev_block_size = p_block->prev_size();
+			const auto l_prev_block_size = p_block->next_size();
 
 			if(l_prev_block_size == 0)
 			{
@@ -41,7 +41,7 @@ namespace black_cat
 
 		bc_memory_heap::bc_memory_heap() noexcept
 			: m_heap(nullptr),
-			m_heap_size(0),
+			m_capacity(0),
 			m_remaining_free_space_limit(0),
 			m_block_size(0),
 			m_last_block(nullptr)
@@ -66,14 +66,14 @@ namespace black_cat
 		{
 			bci_memory_movable::operator=(std::move(p_other));
 			m_heap = p_other.m_heap;
-			m_heap_size = p_other.m_heap_size;
+			m_capacity = p_other.m_capacity;
 			m_remaining_free_space_limit = p_other.m_remaining_free_space_limit;
 			m_block_size = p_other.m_block_size;
 			m_last_block = p_other.m_last_block;
 			m_num_fragmentation.store(p_other.m_num_fragmentation.load(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
 
 			p_other.m_heap = nullptr;
-			p_other.m_heap_size = 0;
+			p_other.m_capacity = 0;
 			p_other.m_remaining_free_space_limit = 0;
 			p_other.m_block_size = 0;
 			p_other.m_last_block = nullptr;
@@ -82,14 +82,14 @@ namespace black_cat
 			return *this;
 		}
 
-		void bc_memory_heap::_initialize(bcSIZE p_size, const bcCHAR* p_tag)
+		void bc_memory_heap::_initialize(bcSIZE p_capacity, const bcCHAR* p_tag)
 		{
-			m_heap_size = p_size;
+			m_capacity = p_capacity;
 			m_remaining_free_space_limit = bc_memblock::get_aligned_size(sizeof(bc_memblock), BC_MEMORY_MIN_ALIGN);
 			m_block_size = bc_memblock::get_aligned_size(sizeof(_bc_heap_memblock), BC_MEMORY_MIN_ALIGN);
 
 			// We alloc m_heap by min align defined in CorePCH because we want all of our allocations have MIN_Align /
-			m_heap = static_cast<bcBYTE*>(core_platform::bc_mem_aligned_alloc(m_heap_size * sizeof(bcBYTE), BC_MEMORY_MIN_ALIGN));
+			m_heap = static_cast<bcBYTE*>(core_platform::bc_mem_aligned_alloc(m_capacity * sizeof(bcBYTE), BC_MEMORY_MIN_ALIGN));
 
 			if (!m_heap)
 			{
@@ -97,14 +97,14 @@ namespace black_cat
 			}
 
 			auto* l_first_block = reinterpret_cast<_bc_heap_memblock*>(m_heap);
-			new (l_first_block) _bc_heap_memblock(m_heap_size - m_block_size, 0, true);
+			new (l_first_block) _bc_heap_memblock(m_capacity - m_block_size, 0, true);
 
-			m_last_block = reinterpret_cast<_bc_heap_memblock*>(m_heap + m_heap_size - m_block_size);
+			m_last_block = reinterpret_cast<_bc_heap_memblock*>(m_heap + m_capacity - m_block_size);
 			new (m_last_block) _bc_heap_memblock(m_block_size, l_first_block->size(), false);
 
 			m_num_fragmentation.store(0, core_platform::bc_memory_order::relaxed);
 
-			m_tracer.initialize(p_size);
+			m_tracer.initialize(p_capacity);
 			if (p_tag)
 			{
 				bci_memory::tag(p_tag);
@@ -175,7 +175,7 @@ namespace black_cat
 				l_curr_block->size(l_require_size);
 				l_curr_block->free(false);
 
-				l_next->prev_size(l_new_heap_block->size());
+				l_next->next_size(l_new_heap_block->size());
 
 				l_next->unlock();
 				l_curr_block->unlock();
@@ -211,13 +211,13 @@ namespace black_cat
 			bool l_prev_free = false;
 
 			// We always have next block
-			l_next = _get_next(l_block, m_heap, m_heap_size);
+			l_next = _get_next(l_block, m_heap, m_capacity);
 			
 			// Try to lock next and next next block (if required) to avoid deadlock. (We lock memory blocks in reverse order)
 			while (true)
 			{
 				l_next->lock();
-				l_next_next = _get_next(l_next, m_heap, m_heap_size);
+				l_next_next = _get_next(l_next, m_heap, m_capacity);
 
 				if (l_next->free() && l_next_next)
 				{
@@ -256,7 +256,7 @@ namespace black_cat
 				
 				if(l_next_next)
 				{
-					l_next_next->prev_size(l_block->size());
+					l_next_next->next_size(l_block->size());
 				}
 			}
 
@@ -269,11 +269,11 @@ namespace black_cat
 				
 				if(l_next_free && l_next_next)
 				{
-					l_next_next->prev_size(l_prev->size());
+					l_next_next->next_size(l_prev->size());
 				}
 				else
 				{
-					l_next->prev_size(l_prev->size());
+					l_next->next_size(l_prev->size());
 				}
 			}
 
@@ -320,7 +320,7 @@ namespace black_cat
 
 		bool bc_memory_heap::contain_pointer(void* p_memory) const noexcept
 		{
-			return (p_memory >= m_heap && p_memory < m_heap + m_heap_size) ? true : false;
+			return (p_memory >= m_heap && p_memory < m_heap + m_capacity) ? true : false;
 		}
 
 		void bc_memory_heap::clear() noexcept
@@ -341,11 +341,11 @@ namespace black_cat
 			}
 
 #ifdef BC_MEMORY_DEBUG
-			std::memset(m_heap, 0, m_heap_size - m_block_size);
+			std::memset(m_heap, 0, m_capacity - m_block_size);
 #endif 
 
 			auto* l_first_block = reinterpret_cast<_bc_heap_memblock*>(m_heap);
-			new (l_first_block) _bc_heap_memblock(m_heap_size - m_block_size, 0, true);
+			new (l_first_block) _bc_heap_memblock(m_capacity - m_block_size, 0, true);
 
 			m_num_fragmentation.store(0, core_platform::bc_memory_order::relaxed);
 

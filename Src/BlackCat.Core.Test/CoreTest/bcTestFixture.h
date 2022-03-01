@@ -4,6 +4,7 @@
 
 #include "Core/Memory/bcMemoryManagment.h"
 #include "Core/Utility/bcServiceManager.h"
+#include "Core/Utility/bcStopWatch.h"
 
 namespace black_cat
 {
@@ -82,9 +83,9 @@ namespace black_cat
 		{
 		}
 
-		l_start_work.exchange(true, std::memory_order_relaxed);
-
 		l_watch.start();
+
+		l_start_work.exchange(true, std::memory_order_relaxed);
 
 		for (auto& l_thread : l_producer_threads)
 		{
@@ -100,6 +101,6 @@ namespace black_cat
 
 		l_watch.stop();
 
-		return l_watch.total_elapsed();
+		return l_watch.restart();
 	}
 }

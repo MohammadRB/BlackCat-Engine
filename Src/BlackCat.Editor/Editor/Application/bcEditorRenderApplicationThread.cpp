@@ -71,7 +71,7 @@ namespace black_cat
 			(
 				32,
 				32,
-				BC_MEMORY_MIN_ALIGN,
+				16,
 				128,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
 				static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,

@@ -28,7 +28,7 @@
 #define asm _asm
 #endif
 
-#if defined( DEBUG ) || defined( _DEBUG )
+#if defined(DEBUG) || defined(_DEBUG)
 #ifndef BC_DEBUG
 #define BC_DEBUG
 #endif

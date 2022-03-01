@@ -10,6 +10,26 @@ namespace black_cat
 {
 	namespace game
 	{
+		bc_actor_component_manager::bc_actor_component_manager(core::bc_query_manager& p_query_manager, bc_game_system& p_game_system)
+			: m_query_manager(p_query_manager),
+			m_game_system(p_game_system),
+			m_events_pool_capacity(100 * static_cast<bcSIZE>(core::bc_mem_size::kb)),
+			m_read_event_pool(0U),
+			m_write_event_pool(0U)
+		{
+			m_event_pools[0].initialize(m_events_pool_capacity);
+			m_event_pools[1].initialize(m_events_pool_capacity);
+		}
+
+		bc_actor_component_manager::~bc_actor_component_manager()
+		{
+			const auto l_active_actors = m_actors_bit.find_true_indices();
+			BC_ASSERT(l_active_actors.empty());
+
+			m_event_pools[0].destroy();
+			m_event_pools[1].destroy();
+		}
+
 		void bc_actor_component_manager::process_actor_events(const core_platform::bc_clock::update_param& p_clock)
 		{
 			core::bc_vector_frame<_bc_actor_component_entry*> l_components_with_event;

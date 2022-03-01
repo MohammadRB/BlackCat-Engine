@@ -345,6 +345,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcSboVector.h">
       <Filter>Core\Container</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryStack1.h">
+      <Filter>Core\Memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp">
@@ -466,6 +469,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Math\bcVector4f.cpp">
       <Filter>Core\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryStack1.cpp">
+      <Filter>Core\Memory</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -55,7 +55,7 @@ namespace black_cat
 			bcFLOAT m_additive_layer_weight;
 			core::bc_shared_ptr<bci_local_transform_animation_job> m_main_layer;
 			core::bc_shared_ptr<bc_sampling_animation_job> m_additive_layer;
-			core::bc_vector_movable<ozz::math::SimdFloat4> m_additive_layer_weights;
+			core::bc_vector_aligned<ozz::math::SimdFloat4, 16> m_additive_layer_weights;
 			bc_animation_local_transform m_locals;
 		};
 

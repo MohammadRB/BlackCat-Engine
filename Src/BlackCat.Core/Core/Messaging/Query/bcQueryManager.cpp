@@ -10,13 +10,13 @@ namespace black_cat
 	namespace core
 	{
 		bc_query_manager::bc_query_manager()
-			: m_executed_shared_queries(m_query_entry_pool),
+			: m_active_query_pool_swap_interval(0),
+			m_active_query_pool(0),
+			m_executed_shared_queries(m_query_entry_pool),
 			m_executed_queries(m_query_entry_pool)
 		{
-			m_active_query_pool_swap_interval = 0;
-			m_active_query_pool = 0;
-			m_query_pool[0].initialize(core::bc_get_service<bc_thread_manager>()->max_thread_count(), 2000 * static_cast<bcSIZE>(bc_mem_size::kb));
-			m_query_pool[1].initialize(core::bc_get_service<bc_thread_manager>()->max_thread_count(), 2000 * static_cast<bcSIZE>(bc_mem_size::kb));
+			m_query_pool[0].initialize(100 * static_cast<bcSIZE>(bc_mem_size::kb));
+			m_query_pool[1].initialize(100 * static_cast<bcSIZE>(bc_mem_size::kb));
 			m_query_entry_pool.initialize(1000, sizeof(query_list_t::node_type), bc_alloc_type::unknown);
 		}
 
@@ -27,7 +27,7 @@ namespace black_cat
 			{
 				core_platform::bc_lock_guard<core_platform::bc_shared_mutex> m_guard(m_providers_lock);
 
-				auto l_provider_entry = m_providers.find(p_provider_handle.m_context_hash);
+				const auto l_provider_entry = m_providers.find(p_provider_handle.m_context_hash);
 				BC_ASSERT(l_provider_entry != std::end(m_providers));
 
 				l_provider_entry->second.m_provider_delegate = std::move(p_delegate);
