@@ -52,7 +52,7 @@ namespace black_cat
 		class _bc_material_manager_material : public bc_mesh_material
 		{
 		public:
-			using hash_type = std::hash< const bcCHAR* >::result_type;
+			using hash_type = std::hash<const bcCHAR*>::result_type;
 
 		public:
 			explicit _bc_material_manager_material(hash_type p_hash, bc_mesh_material p_material)
@@ -86,10 +86,10 @@ namespace black_cat
 				)
 				.as_normal_texture();
 
-			core::bc_vector4f l_normal_map_data(.5f, .5f, 1.0f, 1.0f);
-			core::bc_vector4f l_specular_map_data(.7f, .7f, .7f, 1.0f);
-			graphic::bc_subresource_data l_normal_map_init_data(&l_normal_map_data, sizeof(core::bc_vector4f), 0);
-			graphic::bc_subresource_data l_specular_map_init_data(&l_specular_map_data, sizeof(core::bc_vector4f), 0);
+			const core::bc_vector4f l_normal_map_data(.5f, .5f, 1.0f, 1.0f);
+			const core::bc_vector4f l_specular_map_data(.7f, .7f, .7f, 1.0f);
+			const graphic::bc_subresource_data l_normal_map_init_data(&l_normal_map_data, sizeof(core::bc_vector4f), 0);
+			const graphic::bc_subresource_data l_specular_map_init_data(&l_specular_map_data, sizeof(core::bc_vector4f), 0);
 			auto l_default_normal_map = graphic::bc_texture2d_content(m_render_system->get_device().create_texture2d(m_default_texture_config, &l_normal_map_init_data));
 			auto l_default_specular_map = graphic::bc_texture2d_content(m_render_system->get_device().create_texture2d(m_default_texture_config, &l_specular_map_init_data));
 
@@ -97,11 +97,11 @@ namespace black_cat
 			(
 				core::bc_alloc_type::program,
 				core::bc_get_service<bc_game_system>()->get_file_system().get_content_texture_path(bcL("Default.dds")).c_str(),
-				nullptr,
+				{},
 				core::bc_content_loader_parameter()
 			);
-			m_default_normal_map = l_content_manager.store_content("default_material_normal_map", std::move(l_default_normal_map));
-			m_default_specular_map = l_content_manager.store_content("default_material_specular_map", std::move(l_default_specular_map));
+			m_default_normal_map = l_content_manager.store_content(bcL("default_material_normal_map"), std::move(l_default_normal_map));
+			m_default_specular_map = l_content_manager.store_content(bcL("default_material_specular_map"), std::move(l_default_specular_map));
 
 			m_collider_materials.insert(collider_material_map::value_type
 			(
@@ -149,7 +149,7 @@ namespace black_cat
 
 			core::bc_read_all_lines(l_json_file, l_json_file_buffer);
 
-			core::bc_json_document< _bc_material_json > l_material_json;
+			core::bc_json_document<_bc_material_json> l_material_json;
 			l_material_json.load(l_json_file_buffer.c_str());
 
 			for(core::bc_json_object<_bc_mesh_material_desc>& l_material_desc : l_material_json->m_mesh_materials)
@@ -168,7 +168,7 @@ namespace black_cat
 				));
 			}
 
-			for(core::bc_json_object< _bc_collider_material_desc >& l_material_desc : l_material_json->m_collider_materials)
+			for(core::bc_json_object<_bc_collider_material_desc>& l_material_desc : l_material_json->m_collider_materials)
 			{
 				auto l_px_material = m_physics_system->get_physics().create_material
 				(
@@ -222,7 +222,7 @@ namespace black_cat
 
 			if (!l_description_entry->second.m_diffuse_map_name.empty())
 			{
-				l_diffuse_map = m_content_stream_manager->find_content< graphic::bc_texture2d_content >
+				l_diffuse_map = m_content_stream_manager->find_content<graphic::bc_texture2d_content>
 				(
 					l_description_entry->second.m_diffuse_map_name.c_str()
 				);
@@ -239,7 +239,7 @@ namespace black_cat
 
 			if (!l_description_entry->second.m_normal_map_name.empty())
 			{
-				l_normal_map = m_content_stream_manager->find_content< graphic::bc_texture2d_content >
+				l_normal_map = m_content_stream_manager->find_content<graphic::bc_texture2d_content>
 				(
 					l_description_entry->second.m_normal_map_name.c_str()
 				);
@@ -256,7 +256,7 @@ namespace black_cat
 
 			if (!l_description_entry->second.m_specular_map_name.empty())
 			{
-				l_specular_map = m_content_stream_manager->find_content< graphic::bc_texture2d_content >
+				l_specular_map = m_content_stream_manager->find_content<graphic::bc_texture2d_content>
 				(
 					l_description_entry->second.m_specular_map_name.c_str()
 				);
@@ -453,10 +453,10 @@ namespace black_cat
 
 		void bc_material_manager::destroy_mesh_material(bc_mesh_material* p_material)
 		{
-			auto* l_material = static_cast< _bc_material_manager_material* >(p_material);
+			auto* l_material = static_cast<_bc_material_manager_material*>(p_material);
 
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_materials_mutex);
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_materials_mutex);
 
 				const auto l_entry = m_materials.find(l_material->m_hash);
 
@@ -515,8 +515,8 @@ namespace black_cat
 					&l_color_map_init_data
 				);
 
-				core::bc_string_frame l_content_name = "material_color_map_";
-				l_content_name += core::bc_to_string_frame(l_hash);
+				core::bc_estring_frame l_content_name = bcL("material_color_map_");
+				l_content_name += core::bc_to_estring_frame(l_hash);
 
 				auto l_color_map_texture_content = m_content_stream_manager->get_content_manager().store_content
 				(
@@ -535,7 +535,7 @@ namespace black_cat
 		{
 			auto& l_device = m_render_system->get_device();
 			auto l_hash = string_hash()(p_name);
-			auto l_material = core::bc_make_unique< _bc_material_manager_material >(p_alloc_type, l_hash, std::move(p_material));
+			auto l_material = core::bc_make_unique<_bc_material_manager_material>(p_alloc_type, l_hash, std::move(p_material));
 
 			auto l_diffuse_map = l_material->get_diffuse_map();
 			auto l_normal_map = l_material->get_normal_map();
@@ -570,7 +570,7 @@ namespace black_cat
 			l_material->m_parameter_cbuffer = l_device.create_buffer(l_parameters_cbuffer_config, &l_parameters_cbuffer_data);
 
 			{
-				core_platform::bc_lock_guard< core_platform::bc_mutex > l_guard(m_materials_mutex);
+				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_materials_mutex);
 
 				auto* l_result = m_materials.insert(mesh_material_map::value_type
 				(

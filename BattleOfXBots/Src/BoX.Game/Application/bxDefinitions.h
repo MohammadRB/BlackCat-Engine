@@ -10,7 +10,7 @@ namespace box
 
 	BC_PARAMETER(team, "team");
 
-	enum class bx_team
+	enum class bx_team : bcUBYTE
 	{
 		red, blue
 	};

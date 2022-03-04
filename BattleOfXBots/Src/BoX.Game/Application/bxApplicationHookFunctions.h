@@ -6,6 +6,7 @@
 #include "Game/Application/bcEngineApplicationParameter.h"
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/System/bcGameSystem.h"
+#include "BoX.Game/Application/bxDefinitions.h"
 #include "BoX.Game/bxExport.h"
 
 namespace box
@@ -14,7 +15,7 @@ namespace box
 
 	void BX_GAME_DLL bx_start_game_services(const game::bc_engine_application_parameter& p_parameters);
 
-	void BX_GAME_DLL bx_register_game_loaders(const game::bc_engine_application_parameter& p_parameters);
+	void BX_GAME_DLL bx_register_game_loaders(const game::bc_engine_application_parameter& p_parameters, bool p_is_editor = false);
 		 
 	void BX_GAME_DLL bx_register_game_actor_components();
 		 

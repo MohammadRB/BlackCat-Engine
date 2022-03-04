@@ -265,15 +265,13 @@ namespace black_cat
 
 	void bc_xbot_player_actor_controller::_on_event(core::bci_event& p_event) noexcept
 	{
-		const auto* l_pointing_event = core::bci_message::as<platform::bc_app_event_pointing>(p_event);
-		if (l_pointing_event)
+		if (const auto* l_pointing_event = core::bci_message::as<platform::bc_app_event_pointing>(p_event))
 		{
 			_on_pointing(*l_pointing_event);
 			return;
 		}
 
-		const auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event);
-		if (l_key_event)
+		if (const auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event))
 		{
 			_on_key(*l_key_event);
 			return;

@@ -349,7 +349,7 @@ namespace box
 		auto l_check_point = l_content_manager.load<bx_scene_checkpoint>
 		(
 			l_checkpoint_path.get_string_frame().c_str(),
-			nullptr,
+			{},
 			core::bc_content_loader_parameter(),
 			core::bc_content_loader_parameter().add_or_update("scene", &p_scene)
 		);

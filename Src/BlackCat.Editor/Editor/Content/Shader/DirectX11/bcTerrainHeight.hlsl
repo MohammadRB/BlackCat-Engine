@@ -56,17 +56,17 @@ void main(uint3 p_group_id : SV_GroupID,
     uint3 p_group_thread_id : SV_GroupThreadID,
     uint3 p_dispatch_thread_id : SV_DispatchThreadID)
 {
-    int2 l_tool_center = int2(g_tool_center_x, g_tool_center_z);
-    int2 l_circle_coord = int2(p_dispatch_thread_id.x - g_tool_radius, p_dispatch_thread_id.y - g_tool_radius);
-    int2 l_global_coord = l_tool_center + l_circle_coord;
-    float l_center_distance = length(l_tool_center - l_global_coord);
+	const int2 l_tool_center = int2(g_tool_center_x, g_tool_center_z);
+	const int2 l_circle_coord = int2(p_dispatch_thread_id.x - g_tool_radius, p_dispatch_thread_id.y - g_tool_radius);
+	const int2 l_global_coord = l_tool_center + l_circle_coord;
+	const float l_center_distance = length(l_tool_center - l_global_coord);
 
     if (l_center_distance > g_tool_radius)
     {
         return;
     }
 
-    float l_height_ratio = 1 - pow(l_center_distance / g_tool_radius, 2);
+	const float l_height_ratio = 1 - pow(l_center_distance / g_tool_radius, 2);
     float l_height = get_height(l_global_coord);
 
     l_height += l_height_ratio * g_tool_height;

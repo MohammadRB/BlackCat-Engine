@@ -116,18 +116,6 @@ namespace black_cat
 		void bc_editor_render_app::application_load_content(const bc_application_load_context& p_context)
 		{
 			core::bc_get_service<bc_ui_command_service>()->load_content();
-
-			auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
-			auto& l_file_system = m_game_system->get_file_system();
-
-			auto l_scene = l_content_manager->load<game::bc_scene>
-			(
-				l_file_system.get_content_scene_path(bcL("Test.json")).c_str(),
-				nullptr,
-				core::bc_content_loader_parameter()
-			);
-
-			m_game_system->set_scene(std::move(l_scene));
 		}
 
 		void bc_editor_render_app::application_update(const bc_application_update_context& p_context)

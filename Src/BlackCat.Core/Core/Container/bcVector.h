@@ -92,7 +92,8 @@ namespace black_cat
 
 			void _move_elements(node_type* p_dest, node_type* p_src, size_type p_count)
 			{
-				for (bcUINT32 l_i = 0; l_i <p_count; ++l_i)
+				// start from last element in case if destination and source are overlapped buffers
+				for (bcINT32 l_i = p_count - 1; l_i >= 0; --l_i)
 				{
 					bc_allocator_traits<internal_allocator_type>::construct
 					(
@@ -101,21 +102,18 @@ namespace black_cat
 						std::move(*(p_src + l_i))
 					);
 
-					//// If elements has been copied call their destruction
-					//if (!std::is_move_constructable<node_type>::value)
-					{
-						bc_allocator_traits<internal_allocator_type>::destroy
-						(
-							m_allocator,
-							p_src + l_i
-						);
-					}
+					bc_allocator_traits<internal_allocator_type>::destroy
+					(
+						m_allocator,
+						p_src + l_i
+					);
 				}
 			}
 
 			void _move_if_noexcept_elements(node_type* p_dest, node_type* p_src, size_type p_count, std::true_type)
 			{
-				for (bcUINT32 l_i = 0; l_i <p_count; ++l_i)
+				// start from last element in case if destination and source are overlapped buffers
+				for (bcINT32 l_i = p_count - 1; l_i >= 0; --l_i)
 				{
 					bc_allocator_traits<internal_allocator_type>::construct
 					(
@@ -134,7 +132,8 @@ namespace black_cat
 
 			void _move_if_noexcept_elements(node_type* p_dest, node_type* p_src, size_type p_count, std::false_type)
 			{
-				for (bcUINT32 l_i = 0; l_i <p_count; ++l_i)
+				// start from last element in case if destination and source are overlapped buffers
+				for (bcINT32 l_i = p_count - 1; l_i >= 0; --l_i)
 				{
 					bc_allocator_traits<internal_allocator_type>::construct
 					(
@@ -153,7 +152,7 @@ namespace black_cat
 
 			void _change_capacity(size_type p_new_capacity)
 			{
-				node_type* l_heap = static_cast<node_type*>(bc_allocator_traits<internal_allocator_type>::allocate
+				auto* l_heap = static_cast<node_type*>(bc_allocator_traits<internal_allocator_type>::allocate
 				(
 					m_allocator,
 					p_new_capacity
@@ -365,7 +364,7 @@ namespace black_cat
 			bc_vector(size_type p_count, const value_type& p_value, const allocator_type& p_allocator = allocator_type());
 
 			template<typename TInputIterator>
-			bc_vector(TInputIterator p_first, TInputIterator p_last, const allocator_type p_allocator = allocator_type());
+			bc_vector(TInputIterator p_first, TInputIterator p_last, const allocator_type& p_allocator = allocator_type());
 
 			bc_vector(std::initializer_list<value_type> p_initializer, const allocator_type& p_allocator = allocator_type());
 
@@ -541,7 +540,7 @@ namespace black_cat
 
 		template<typename T, class TAllocator>
 		template<typename TInputIterator>
-		bc_vector<T, TAllocator>::bc_vector(TInputIterator p_first, TInputIterator p_last, const allocator_type p_allocator)
+		bc_vector<T, TAllocator>::bc_vector(TInputIterator p_first, TInputIterator p_last, const allocator_type& p_allocator)
 			: base_type(p_allocator)
 		{
 			base_type::_new_nodes(base_type::m_first, p_first, p_last, typename std::iterator_traits<TInputIterator>::iterator_category());

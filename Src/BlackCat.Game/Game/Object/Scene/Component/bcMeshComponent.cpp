@@ -99,7 +99,7 @@ namespace black_cat
 		}
 
 		void bc_mesh_component::process_bullet_hit(const bc_physics_system& p_physics_system,
-			bc_particle_manager& p_particle_manager, 
+			bc_particle_manager_container& p_particle_manager,
 			const bc_bullet_hit_actor_event& p_event,
 			bool p_store_reference_to_bullet)
 		{

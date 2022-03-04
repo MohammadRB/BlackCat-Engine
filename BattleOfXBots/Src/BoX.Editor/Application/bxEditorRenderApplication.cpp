@@ -1,7 +1,10 @@
 // [01/29/2022 MRB]
 
 #include "Editor/EditorPCH.h"
+#include "App/RenderPass/PostProcess/bcGlowPass.h"
+#include "App/bcConstant.h"
 #include "BoX.Game/Application/bxApplicationHookFunctions.h"
+#include "BoX.Game/RenderPass/bxBulletTrailPass.h"
 #include "BoX.Editor/Application/bxEditorRenderApplication.h"
 
 namespace box
@@ -18,7 +21,7 @@ namespace box
 		bc_editor_render_app::application_start_engine_components(p_context);
 
 		bx_start_game_services(p_context);
-		bx_register_game_loaders(p_context);
+		bx_register_game_loaders(p_context, true);
 		bx_register_game_actor_components();
 		bx_bind_game_scripts(*m_game_system);
 		bx_register_game_particle_emitters(*m_game_system);
@@ -28,6 +31,19 @@ namespace box
 	void bx_editor_render_app::application_initialize(const bc_application_initialize_context& p_context)
 	{
 		bc_editor_render_app::application_initialize(p_context);
+
+		auto& l_render_system = m_game_system->get_render_system();
+		auto& l_file_system = m_game_system->get_file_system();
+
+		l_render_system.add_render_pass_before<bx_bullet_trail_pass, bc_glow_pass>
+		(
+			bx_bullet_trail_pass
+			(
+				constant::g_rpass_back_buffer_texture,
+				constant::g_rpass_back_buffer_render_view, 
+				l_file_system.get_content_texture_path(bcL("BulletTrail.dds"))
+			)
+		);
 	}
 
 	void bx_editor_render_app::application_load_content(const bc_application_load_context& p_context)
@@ -35,6 +51,17 @@ namespace box
 		bc_editor_render_app::application_load_content(p_context);
 
 		bx_load_game_resources(p_context.m_stream_manager, *m_game_system);
+
+		auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
+		auto& l_file_system = m_game_system->get_file_system();
+
+		auto l_scene = l_content_manager->load<game::bc_scene>
+		(
+			l_file_system.get_content_scene_path(bcL("Test.json")),
+			{},
+			core::bc_content_loader_parameter()
+		);
+		m_game_system->set_scene(std::move(l_scene));
 	}
 
 	void bx_editor_render_app::application_update(const bc_application_update_context& p_context)

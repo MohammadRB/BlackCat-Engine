@@ -194,9 +194,9 @@ namespace black_cat
 			 * \param p_states 
 			 */
 			bc_state_machine(TStates... p_states)
-				: m_states(std::make_tuple(std::move(p_states)...))
+				: m_states(std::make_tuple(std::move(p_states)...)),
+				m_current_state(&std::get<0>(m_states))
 			{
-				m_current_state = &std::get<0>(m_states);
 				_set_machine_pointer();
 			}
 

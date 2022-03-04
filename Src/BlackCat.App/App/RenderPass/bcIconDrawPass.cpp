@@ -106,7 +106,7 @@ namespace black_cat
 		(
 			core::bc_alloc_type::program,
 			l_sprites_texture_path.c_str(),
-			nullptr,
+			{},
 			core::bc_content_loader_parameter()
 		);
 		const auto l_sprites_texture_view_config = graphic::bc_graphic_resource_builder()

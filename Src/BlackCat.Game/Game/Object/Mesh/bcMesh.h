@@ -56,7 +56,7 @@ namespace black_cat
 
 			bc_mesh& operator=(bc_mesh&& p_other) noexcept;
 
-			core::bc_string_view get_name() const noexcept;
+			core::bc_estring_view get_name() const noexcept;
 
 			bcFLOAT get_auto_scale() const noexcept;
 			
@@ -109,7 +109,7 @@ namespace black_cat
 			
 			void _calculate_collider_absolute_transforms();
 
-			core::bc_string m_name;
+			core::bc_estring m_name;
 			bcFLOAT m_auto_scale;
 			bcFLOAT m_scale;
 			bool m_skinned;
@@ -127,11 +127,11 @@ namespace black_cat
 			core::bc_vector_movable<const bc_mesh*> m_level_of_details_map;
 		};
 
-		using bc_mesh_ptr = core::bc_content_ptr< bc_mesh >;
+		using bc_mesh_ptr = core::bc_content_ptr<bc_mesh>;
 
-		inline core::bc_string_view bc_mesh::get_name() const noexcept
+		inline core::bc_estring_view bc_mesh::get_name() const noexcept
 		{
-			return core::bc_string_view(m_name.c_str(), m_name.size());
+			return core::bc_estring_view(m_name);
 		}
 
 		inline bcFLOAT bc_mesh::get_auto_scale() const noexcept

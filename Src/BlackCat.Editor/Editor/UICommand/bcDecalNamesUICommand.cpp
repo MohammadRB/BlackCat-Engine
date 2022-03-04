@@ -30,7 +30,7 @@ namespace black_cat
 
 		bool bc_decal_names_ui_command::update(update_context& p_context)
 		{
-			const auto l_decal_names = p_context.m_game_system.get_scene()->get_decal_manager().get_decal_names();
+			const auto l_decal_names = p_context.m_game_system.get_render_system().get_decal_manager().get_decal_names();
 
 			std::transform
 			(

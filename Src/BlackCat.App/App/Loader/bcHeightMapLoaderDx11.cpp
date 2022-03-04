@@ -175,12 +175,12 @@ namespace black_cat
 		auto& l_physics = l_physics_system.get_physics();
 
 		auto l_height_map_texture = l_content_manager.load<graphic::bc_texture2d_content>
-			(
-				p_context.get_allocator_alloc_type(),
-				p_context.m_file_path,
-				nullptr,
-				*p_context.m_parameters
-				);
+		(
+			p_context.get_allocator_alloc_type(),
+			p_context.m_file_path,
+			{},
+			*p_context.m_parameters
+		);
 
 		const auto l_width = l_height_map_texture->get_resource().get_width();
 		const auto l_height = l_height_map_texture->get_resource().get_height();
@@ -303,7 +303,7 @@ namespace black_cat
 		(
 			p_context.get_allocator_alloc_type(),
 			l_texture_map_file_relative.c_str(),
-			nullptr,
+			{},
 			*p_context.m_parameters,
 			std::move
 			(

@@ -34,6 +34,7 @@
 #include "App/bcConstant.h"
 #include "BoX.Game/Application/bxApplicationHookFunctions.h"
 #include "BoX.Game/Application/bxSceneCheckPoint.h"
+#include "BoX.Game/RenderPass/bxBulletTrailPass.h"
 #include "BoX.Game/RenderPass/bxPlayerUIPass.h"
 #include "BoX.Game/Network/bxTeamSelectNetworkMessage.h"
 #include "BoX.Game/bxEvent.h"
@@ -124,6 +125,7 @@ namespace box
 		l_render_system.add_render_pass(bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
 		l_render_system.add_render_pass(bc_particle_system_pass_dx11(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Sprites.dds")));
 		l_render_system.add_render_pass(bc_light_flare_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
+		l_render_system.add_render_pass(bx_bullet_trail_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, l_file_system.get_content_texture_path(bcL("BulletTrail.dds"))));
 		l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 		l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
 		l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view, l_file_system.get_content_data_path(bcL("Dx.spritefont"))));
@@ -389,7 +391,7 @@ namespace box
 		auto l_check_point = l_content_manager.load<bx_scene_checkpoint>
 		(
 			l_checkpoint_path.get_string_frame().c_str(),
-			nullptr,
+			{},
 			core::bc_content_loader_parameter(),
 			core::bc_content_loader_parameter().add_or_update("scene", &p_scene)
 		);

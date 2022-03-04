@@ -9,9 +9,9 @@
 #include "Core/bcException.h"
 #include "Core/Container/bcAllocator.h"
 #include "Core/Container/bcString.h"
+#include "Core/Container/bcStringStream.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Utility/bcServiceManager.h"
-#include "Core/Utility/bcParameterPack.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/File/bcPath.h"
 #include "Core/File/bcStream.h"
@@ -67,13 +67,27 @@ namespace black_cat
 		public:
 			_bc_content_entry() = default;
 
-			_bc_content_entry(const bcECHAR* p_file, const bcECHAR* p_file_variant, bc_unique_ptr<bci_content>&& p_content)
-				: m_file(p_file),
-				m_file_variant(p_file_variant ? p_file_variant : bcL("")),
+			_bc_content_entry(bc_estring p_key, bc_estring p_file, bc_estring p_file_variant, bc_unique_ptr<bci_content>&& p_content)
+				: m_file(std::move(p_file)),
+				m_file_variant(std::move(p_file_variant)),
 				m_content(std::move(p_content))
 			{
+				constexpr auto l_min_key_size = sizeof(decltype(m_key)) + 1;
+
+				if(p_key.size() < l_min_key_size)
+				{
+					// because we use this string as key for our contents map which must prevent string to use SSO by forcing it
+					// to allocate memory from heap
+					m_key.reserve(l_min_key_size);
+					m_key.append(p_key);
+				}
+				else
+				{
+					m_key = std::move(p_key);
+				}
 			}
 
+			bc_estring m_key;
 			bc_estring m_file;
 			bc_estring m_file_variant;
 			bc_unique_ptr<bci_content> m_content;
@@ -88,8 +102,7 @@ namespace black_cat
 			BC_SERVICE(cnt_mng)
 
 		private:
-			using string_hash = std::hash<const bcCHAR*>;
-			using map_type = bc_unordered_map<bc_content_hash_t::result_type, _bc_content_entry>;
+			using map_type = bc_unordered_map<bc_estring_view, _bc_content_entry>;
 
 		public:
 			bc_content_manager();
@@ -114,8 +127,8 @@ namespace black_cat
 			 * \return 
 			 */
 			template<class TContent>
-			bc_content_ptr<TContent> load(const bcECHAR* p_file,
-				const bcECHAR* p_file_variant,
+			bc_content_ptr<TContent> load(bc_estring_view p_file,
+				bc_estring_view p_file_variant,
 				const bc_content_loader_parameter& p_parameters,
 				bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter(bc_alloc_type::frame));
 
@@ -132,21 +145,21 @@ namespace black_cat
 			 */
 			template<class TContent>
 			bc_content_ptr<TContent> load(bc_alloc_type p_alloc_type,
-				const bcECHAR* p_file,
-				const bcECHAR* p_file_variant,
+				bc_estring_view p_file,
+				bc_estring_view p_file_variant,
 				const bc_content_loader_parameter& p_parameters,
 				bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter(bc_alloc_type::frame));
 
 			template<class TContent>
-			bc_task<bc_content_ptr<TContent>> load_async(const bcECHAR* p_file,
-				const bcECHAR* p_file_variant,
+			bc_task<bc_content_ptr<TContent>> load_async(bc_estring_view p_file,
+				bc_estring_view p_file_variant,
 				const bc_content_loader_parameter& p_parameters,
 				bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter(bc_alloc_type::frame));
 
 			template<class TContent>
 			bc_task<bc_content_ptr<TContent>> load_async(bc_alloc_type p_alloc_type,
-				const bcECHAR* p_file,
-				const bcECHAR* p_file_variant,
+				bc_estring_view p_file,
+				bc_estring_view p_file_variant,
 				const bc_content_loader_parameter& p_parameters,
 				bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter(bc_alloc_type::frame));
 						
@@ -154,13 +167,13 @@ namespace black_cat
 			void save(TContent& p_content);
 
 			template<class TContent>
-			void save_as(TContent& p_content, const bcECHAR* p_file_path, const bcECHAR* p_file_variant);
+			void save_as(TContent& p_content, bc_estring_view p_file_path, bc_estring_view p_file_variant);
 
 			template<class TContent>
 			bc_task<void> save_async(TContent& p_content);
 
 			template<class TContent>
-			bc_task<void> save_as_async(TContent& p_content, const bcECHAR* p_file_path, const bcECHAR* p_file_variant);
+			bc_task<void> save_as_async(TContent& p_content, bc_estring_view p_file_path, bc_estring_view p_file_variant);
 
 			/**
 			 * \brief Import content to manager so a content ptr can be constructed from it.
@@ -170,7 +183,7 @@ namespace black_cat
 			 * \return 
 			 */
 			template<class TContent>
-			bc_content_ptr<TContent> store_content(const bcCHAR* p_content_name, TContent&& p_content);
+			bc_content_ptr<TContent> store_content(bc_estring_view p_content_name, TContent&& p_content);
 
 			/**
 			* \brief Import content to manager so a content ptr can be constructed from it.
@@ -181,7 +194,7 @@ namespace black_cat
 			* \return
 			*/
 			template<class TContent>
-			bc_content_ptr<TContent> store_content(bc_alloc_type p_alloc_type, const bcCHAR* p_content_name, TContent&& p_content);
+			bc_content_ptr<TContent> store_content(bc_alloc_type p_alloc_type, bc_estring_view p_content_name, TContent&& p_content);
 
 			void destroy_content(bci_content* p_content);
 
@@ -190,25 +203,25 @@ namespace black_cat
 			bci_content_loader* _get_loader();
 
 			template<class TContent>
-			bc_estring_frame _get_offline_file_path(const bcECHAR* p_file, const bcECHAR* p_file_variant);
+			bc_estring_frame _get_offline_file_path(bc_estring_view p_file, bc_estring_view p_file_variant);
 
 			template<class TContent>
 			bc_unique_ptr<TContent> _load_content(bc_alloc_type p_alloc_type,
-				const bcECHAR* p_file,
-				const bcECHAR* p_file_variant,
-				const bcECHAR* p_offline_file,
+				bc_estring_view p_file,
+				bc_estring_view p_file_variant,
+				bc_estring_view p_offline_file,
 				const bc_content_loader_parameter& p_parameter,
 				bc_content_loader_parameter p_instance_parameters,
 				bci_content_loader* p_loader);
 
 			template<class TContent>
-			bc_content_ptr<TContent> _store_new_content(bc_content_hash_t::result_type p_hash,
-				const bcECHAR* p_file,
-				const bcECHAR* p_file_variant,
+			bc_content_ptr<TContent> _store_new_content(bc_estring p_key,
+				bc_estring_view p_file,
+				bc_estring_view p_file_variant,
 				bc_unique_ptr<TContent> p_content);
 
-			map_type m_contents;
 			core_platform::bc_shared_mutex m_contents_mutex;
+			map_type m_contents;
 		};
 
 		inline bc_content_manager::bc_content_manager() = default;
@@ -221,8 +234,8 @@ namespace black_cat
 
 			{
 				core_platform::bc_shared_mutex_guard l_guard(m_contents_mutex);
-				
-				auto l_item = m_contents.find(p_content->_get_hash());
+
+				const auto l_item = m_contents.find(p_content->_get_key());
 
 				if (l_item == end(m_contents))
 				{
@@ -230,7 +243,7 @@ namespace black_cat
 					return;
 				}
 
-				// Move value from container because some times content have inner content and destroying
+				// Move value from container because contents may have inner content and destroying
 				// content while lock is acquired cause deadlock
 				l_value = std::move(l_item->second);
 				m_contents.erase(l_item);
@@ -242,8 +255,8 @@ namespace black_cat
 		template<class TContent, class TLoader>
 		void bc_content_manager::register_loader(bc_cloader_ptr<TLoader> p_loader)
 		{
-			static_assert(std::is_base_of<bci_content, TContent>::value, "Content must inherit from bc_icontent");
-			static_assert(std::is_base_of<bci_content_loader, TLoader>::value, "Content loader must inherit from bc_icontent_loader");
+			static_assert(std::is_base_of_v<bci_content, TContent>, "Content must inherit from bc_icontent");
+			static_assert(std::is_base_of_v<bci_content_loader, TLoader>, "Content loader must inherit from bc_icontent_loader");
 
 			auto* l_loader_wrapper = static_cast<_loader_wrapper<TContent>*>
 			(
@@ -264,8 +277,8 @@ namespace black_cat
 		}
 
 		template<class TContent>
-		bc_content_ptr<TContent> bc_content_manager::load(const bcECHAR* p_file,
-			const bcECHAR* p_file_variant,
+		bc_content_ptr<TContent> bc_content_manager::load(bc_estring_view p_file,
+			bc_estring_view p_file_variant,
 			const bc_content_loader_parameter& p_parameters, 
 			bc_content_loader_parameter p_instance_parameters)
 		{
@@ -274,21 +287,21 @@ namespace black_cat
 
 		template<class TContent>
 		bc_content_ptr<TContent> bc_content_manager::load(bc_alloc_type p_alloc_type,
-			const bcECHAR* p_file,
-			const bcECHAR* p_file_variant,
+			bc_estring_view p_file,
+			bc_estring_view p_file_variant,
 			const bc_content_loader_parameter& p_parameters,
 			bc_content_loader_parameter p_instance_parameters)
 		{
-			static_assert(std::is_base_of<bci_content, TContent>::value, "Content must inherit from bc_icontent");
+			static_assert(std::is_base_of_v<bci_content, TContent>, "Content must inherit from bc_icontent");
 
 			// Make hash, combination of both file path and content name because some contents like shaders load from same file
 			const bc_estring_frame l_offline_file_path = _get_offline_file_path<TContent>(p_file, p_file_variant);
-			auto l_hash = std::hash<bc_estring_frame>()(l_offline_file_path);
+			auto l_key = bc_path(l_offline_file_path).get_filename();
 
 			{
 				core_platform::bc_shared_mutex_shared_guard l_guard(m_contents_mutex);
 				
-				const auto l_content_ite = m_contents.find(l_hash);
+				const auto l_content_ite = m_contents.find(l_key);
 				if (l_content_ite != m_contents.end()) // Content has already loaded
 				{
 					return bc_content_ptr<TContent>(l_content_ite->second.m_content.get(), _bc_content_ptr_deleter(this));
@@ -309,12 +322,12 @@ namespace black_cat
 
 			BC_ASSERT(l_content != nullptr);
 
-			return _store_new_content(l_hash, p_file, p_file_variant, std::move(l_content));
+			return _store_new_content(l_key, p_file, p_file_variant, std::move(l_content));
 		}
 
 		template<class TContent>
-		bc_task<bc_content_ptr<TContent>> bc_content_manager::load_async(const bcECHAR* p_file,
-			const bcECHAR* p_file_variant,
+		bc_task<bc_content_ptr<TContent>> bc_content_manager::load_async(bc_estring_view p_file,
+			bc_estring_view p_file_variant,
 			const bc_content_loader_parameter& p_parameters, 
 			bc_content_loader_parameter p_instance_parameters)
 		{
@@ -323,8 +336,8 @@ namespace black_cat
 
 		template<class TContent>
 		bc_task<bc_content_ptr<TContent>> bc_content_manager::load_async(bc_alloc_type p_alloc_type,
-			const bcECHAR* p_file,
-			const bcECHAR* p_file_variant,
+			bc_estring_view p_file,
+			bc_estring_view p_file_variant,
 			const bc_content_loader_parameter& p_parameters, 
 			bc_content_loader_parameter p_instance_parameters)
 		{
@@ -342,38 +355,40 @@ namespace black_cat
 		template<class TContent>
 		void bc_content_manager::save(TContent& p_content)
 		{
-			static_assert(std::is_base_of<bci_content, TContent>::value, "Content must inherit from bc_icontent");
+			static_assert(std::is_base_of_v<bci_content, TContent>, "Content must inherit from bc_icontent");
 
-			const bcECHAR* l_file_path;
-			const bcECHAR* l_file_variant;
+			bc_estring_view l_file_path;
+			bc_estring_view l_file_variant;
 
 			{
 				core_platform::bc_shared_mutex_shared_guard l_guard(m_contents_mutex);
 
-				auto l_content_ite = m_contents.find(p_content._get_hash());
+				auto l_content_ite = m_contents.find(p_content._get_key());
 				if (l_content_ite == m_contents.end())
 				{
 					throw bc_invalid_argument_exception("Content not found");
 				}
 
-				l_file_path = l_content_ite->second.m_file.c_str();
-				l_file_variant = l_content_ite->second.m_file_variant.c_str();
+				l_file_path = l_content_ite->second.m_file;
+				l_file_variant = l_content_ite->second.m_file_variant;
 			}
 
 			save_as<TContent>(p_content, l_file_path, l_file_variant);
 		}
 
 		template<class TContent>
-		void bc_content_manager::save_as(TContent& p_content, const bcECHAR* p_file_path, const bcECHAR* p_file_variant)
+		void bc_content_manager::save_as(TContent& p_content, bc_estring_view p_file_path, bc_estring_view p_file_variant)
 		{
-			static_assert(std::is_base_of<bci_content, TContent>::value, "Content must inherit from bc_icontent");
+			static_assert(std::is_base_of_v<bci_content, TContent>, "Content must inherit from bc_icontent");
 
 			bci_content_loader* l_loader = _get_loader<TContent>();
 			bc_content_saving_context l_context;
 			l_context.m_file_path = p_file_path;
 			l_context.m_content = &p_content;
 
-			const bc_estring_frame l_file_to_open = l_loader->support_offline_processing() ? _get_offline_file_path<TContent>(p_file_path, p_file_variant) : p_file_path;
+			const bc_estring_frame l_file_to_open = l_loader->support_offline_processing()
+				                                        ? _get_offline_file_path<TContent>(p_file_path, p_file_variant)
+				                                        : bc_estring_frame(p_file_path);
 
 			{
 				bc_file_stream l_file_stream;
@@ -412,7 +427,7 @@ namespace black_cat
 		}
 
 		template<class TContent>
-		bc_task<void> bc_content_manager::save_as_async(TContent& p_content, const bcECHAR* p_file_path, const bcECHAR* p_file_variant)
+		bc_task<void> bc_content_manager::save_as_async(TContent& p_content, bc_estring_view p_file_path, bc_estring_view p_file_variant)
 		{
 			auto l_task = bc_concurrency::start_task<void>
 			(
@@ -426,23 +441,21 @@ namespace black_cat
 		}
 
 		template<class TContent>
-		bc_content_ptr<TContent> bc_content_manager::store_content(const bcCHAR* p_content_name, TContent&& p_content)
+		bc_content_ptr<TContent> bc_content_manager::store_content(bc_estring_view p_content_name, TContent&& p_content)
 		{
 			return store_content(bc_alloc_type::unknown, p_content_name, std::move(p_content));
 		}
 
 		template<class TContent>
-		bc_content_ptr<TContent> bc_content_manager::store_content(bc_alloc_type p_alloc_type, const bcCHAR* p_content_name, TContent&& p_content)
+		bc_content_ptr<TContent> bc_content_manager::store_content(bc_alloc_type p_alloc_type, bc_estring_view p_content_name, TContent&& p_content)
 		{
-			auto l_prev_alloc_type = bc_object_allocator::set_allocator_alloc_type(p_alloc_type);
+			const auto l_prev_alloc_type = bc_object_allocator::set_allocator_alloc_type(p_alloc_type);
 
 			bc_unique_ptr<TContent> l_content = bc_object_allocator::allocate<TContent>(std::move(p_content));
 
 			bc_object_allocator::set_allocator_alloc_type(l_prev_alloc_type);
 
-			auto l_content_hash = string_hash()(p_content_name);
-			
-			return _store_new_content(l_content_hash, bcL("non-file content"), nullptr, std::move(l_content));
+			return _store_new_content(bc_estring(p_content_name), bcL("non-file content"), bcL(""), std::move(l_content));
 		}
 
 		template<class TContent>
@@ -455,7 +468,8 @@ namespace black_cat
 
 			if (l_loader_wrapper == nullptr)
 			{
-				throw bc_invalid_argument_exception((bc_string_frame("Loader for ") + _loader_wrapper<TContent>::service_name() + " not found").c_str());
+				const auto l_msg = bc_string_stream_frame() << "Loader for " << _loader_wrapper<TContent>::service_name() << " not found";
+				throw bc_invalid_argument_exception(l_msg.str().c_str());
 			}
 
 			bci_content_loader* l_loader = l_loader_wrapper->m_loader.get();
@@ -464,12 +478,12 @@ namespace black_cat
 		}
 
 		template<class TContent>
-		bc_estring_frame bc_content_manager::_get_offline_file_path(const bcECHAR* p_file, const bcECHAR* p_file_variant)
+		bc_estring_frame bc_content_manager::_get_offline_file_path(bc_estring_view p_file, bc_estring_view p_file_variant)
 		{
 			bc_path l_file_path(p_file);
 			bc_estring_frame l_file_variant;
 
-			if(!p_file_variant)
+			if(p_file_variant.empty())
 			{
 				l_file_variant = bcL("");
 			}
@@ -479,30 +493,31 @@ namespace black_cat
 				l_file_variant += bcL(".");
 			}
 
-			const bc_estring_frame l_offline_file_name = l_file_path.get_filename_without_extension_frame() +
-				bcL(".") +
-				l_file_variant +
-				bc_to_estring_frame(bc_content_traits<TContent>::content_name()) +
-				bcL(".bcc");
+			auto l_offline_file_name = bc_estring_stream_frame()
+					<< l_file_path.get_filename_without_extension_frame()
+					<< bcL(".")
+					<< l_file_variant
+					<< bc_to_estring_frame(bc_content_traits<TContent>::content_name())
+					<< bcL(".bcc");
 
-			l_file_path.set_filename(l_offline_file_name.c_str());
+			l_file_path.set_filename(l_offline_file_name.str().c_str());
 			
 			return l_file_path.get_string_frame();
 		}
 
 		template<class TContent>
 		bc_unique_ptr<TContent> bc_content_manager::_load_content(bc_alloc_type p_alloc_type,
-			const bcECHAR* p_file, 
-			const bcECHAR* p_file_variant, 
-			const bcECHAR* p_offline_file, 
+			bc_estring_view p_file,
+			bc_estring_view p_file_variant,
+			bc_estring_view p_offline_file,
 			const bc_content_loader_parameter& p_parameter,
 			bc_content_loader_parameter p_instance_parameters,
 			bci_content_loader* p_loader)
 		{
 			core_platform::bc_basic_file_info l_file_info;
 			core_platform::bc_basic_file_info l_offline_file_info;
-			core_platform::bc_file_info::get_basic_info(p_file, &l_file_info);
-			core_platform::bc_file_info::get_basic_info(p_offline_file, &l_offline_file_info);
+			core_platform::bc_file_info::get_basic_info(p_file.data(), &l_file_info);
+			core_platform::bc_file_info::get_basic_info(p_offline_file.data(), &l_offline_file_info);
 
 			const bool l_need_offline_processing = p_loader->support_offline_processing() &&
 			(
@@ -533,7 +548,7 @@ namespace black_cat
 						l_context.m_file = bc_stream(std::move(l_file_stream));
 						p_loader->content_file_open_failed(l_context);
 						
-						auto l_file_name = bc_to_exclusive_string(p_file);
+						auto l_file_name = bc_to_exclusive_string(p_file.data());
 						auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
 
 						throw bc_io_exception(l_error_msg.c_str());
@@ -553,7 +568,7 @@ namespace black_cat
 						l_context.m_file = bc_stream(std::move(l_offline_file_stream));
 						p_loader->content_file_open_failed(l_context);
 
-						auto l_file_name = bc_to_exclusive_string(p_offline_file);
+						auto l_file_name = bc_to_exclusive_string(p_offline_file.data());
 						auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
 
 						throw bc_io_exception(l_error_msg.c_str());
@@ -572,7 +587,7 @@ namespace black_cat
 						l_offline_file.delete_path();
 
 						auto l_message = bc_string_frame("Error in loading content file: ") + 
-							bc_to_exclusive_string(p_offline_file).c_str() + 
+							bc_to_exclusive_string(p_offline_file.data()).c_str() + 
 							". " + 
 							l_exception.what();
 						throw bc_io_exception(l_message.c_str());
@@ -581,7 +596,7 @@ namespace black_cat
 					l_context.m_file.close();
 				}
 
-				const bcECHAR* l_file_to_open = p_loader->support_offline_processing() ? p_offline_file : p_file;
+				auto l_file_to_open = p_loader->support_offline_processing() ? p_offline_file : p_file;
 				bc_file_stream l_file_stream;
 
 				if (!l_file_stream.open_read(l_file_to_open))
@@ -589,7 +604,7 @@ namespace black_cat
 					l_context.m_file = bc_stream(std::move(l_file_stream));
 					p_loader->content_file_open_failed(l_context);
 					
-					auto l_file_name = bc_to_exclusive_string(l_file_to_open);
+					auto l_file_name = bc_to_exclusive_string(l_file_to_open.data());
 					auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
 
 					throw bc_io_exception(l_error_msg.c_str());
@@ -614,7 +629,7 @@ namespace black_cat
 					l_context.m_file.close();
 
 					auto l_message = bc_string_frame("Error in loading content file: ") +
-						bc_to_exclusive_string(l_file_to_open).c_str() +
+						bc_to_exclusive_string(l_file_to_open.data()).c_str() +
 						". " +
 						l_exception.what();
 					throw bc_io_exception(l_message.c_str());
@@ -629,26 +644,26 @@ namespace black_cat
 		}
 
 		template<class TContent>
-		bc_content_ptr<TContent> bc_content_manager::_store_new_content(bc_content_hash_t::result_type p_hash, 
-			const bcECHAR* p_file,
-			const bcECHAR* p_file_variant,
+		bc_content_ptr<TContent> bc_content_manager::_store_new_content(bc_estring p_key,
+			bc_estring_view p_file,
+			bc_estring_view p_file_variant,
 			bc_unique_ptr<TContent> p_content)
 		{
 			auto l_content_ptr = p_content.get();
-			auto l_pointer = bc_unique_ptr<bci_content>(std::move(p_content));
-
-			l_pointer->_set_hash(p_hash);
 
 			{
-				core_platform::bc_lock_guard<core_platform::bc_shared_mutex> l_guard(m_contents_mutex);
+				core_platform::bc_lock_guard l_guard(m_contents_mutex);
 
-				auto l_entry = _bc_content_entry(p_file, p_file_variant, std::move(l_pointer));
-				auto l_insertion_result = m_contents.insert(map_type::value_type(p_hash, std::move(l_entry)));
+				auto l_entry = _bc_content_entry(std::move(p_key), bc_estring(p_file), bc_estring(p_file_variant), bc_unique_ptr<bci_content>(std::move(p_content)));
+				auto l_entry_key = bc_estring_view(l_entry.m_key);
+				const auto l_insertion_result = m_contents.insert(map_type::value_type(l_entry_key, std::move(l_entry)));
 
 				if (!l_insertion_result.second)
 				{
 					throw bc_invalid_operation_exception("Content with the same hash already exist in the contents map");
 				}
+
+				l_content_ptr->_set_key(l_insertion_result.first->second.m_key);
 			}
 
 			return bc_content_ptr<TContent>(l_content_ptr, _bc_content_ptr_deleter(this));

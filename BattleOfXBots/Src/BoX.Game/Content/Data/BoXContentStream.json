@@ -1,6 +1,29 @@
 {
   "streams": [
     {
+      "stream_name": "game_shaders",
+      "stream_content": [
+        {
+          "content_title": "bullet_trail_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bxBulletTrail.hlsl",
+          "content_parameter": { "function": "bullet_trail_vs" }
+        },
+        {
+          "content_title": "bullet_trail_gs",
+          "content_loader": "geometry_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bxBulletTrail.hlsl",
+          "content_parameter": { "function": "bullet_trail_gs" }
+        },
+        {
+          "content_title": "bullet_trail_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bxBulletTrail.hlsl",
+          "content_parameter": { "function": "bullet_trail_ps" }
+        }
+      ]
+    },
+    {
       "stream_name": "game_assets",
       "stream_content": [
         {
@@ -31,6 +54,13 @@
             "auto_scale": 1.0,
             "collider": "smoke-grenade.fbx",
             "high_detail_query_shape": false
+          }
+        },
+        {
+          "content_title": "bullet_trail",
+          "content_loader": "texture2d",
+          "content_file": "content\\texture\\BulletTrail.dds",
+          "content_parameter": {
           }
         }
       ]

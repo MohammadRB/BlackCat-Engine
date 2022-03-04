@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcVector4f.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"

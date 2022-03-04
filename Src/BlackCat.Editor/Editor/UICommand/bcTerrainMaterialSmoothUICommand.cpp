@@ -46,7 +46,8 @@ namespace black_cat
 		{
 			auto& l_render_system = p_context.m_game_system.get_render_system();
 
-			auto l_cb_config = graphic::bc_graphic_resource_builder().as_resource()
+			const auto l_cb_config = graphic::bc_graphic_resource_builder()
+				.as_resource()
 				.as_buffer
 				(
 					1,
@@ -58,8 +59,9 @@ namespace black_cat
 
 			bc_terrain_material_smooth_ui_command_state l_state;
 			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_material_smooth_cs");;
-			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);;
 			l_state.m_device_command_list = l_render_system.get_device().create_command_list();;
+			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);;
+			l_state.m_parameter_cbuffer->set_debug_name("terrain_material_smooth_cbuffer");
 
 			return core::bc_make_unique< bc_terrain_material_smooth_ui_command_state >(std::move(l_state));
 		}

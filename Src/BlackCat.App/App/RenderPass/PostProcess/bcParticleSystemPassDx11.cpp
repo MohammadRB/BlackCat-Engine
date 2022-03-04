@@ -99,7 +99,7 @@ namespace black_cat
 		(
 			core::bc_alloc_type::program,
 			l_sprites_path.c_str(),
-			nullptr,
+			{},
 			core::bc_content_loader_parameter()
 		);
 		auto l_sprites_texture = m_sprites_texture->get_resource();
@@ -170,7 +170,7 @@ namespace black_cat
 
 		core::bc_array<bcUINT32, 4> l_draw_args = { 1,0,0,0 };
 
-		const auto& l_curves = game::bc_particle_manager::get_curves();
+		const auto& l_curves = p_render_system.get_particle_manager().get_curves();
 		_bc_curve_cbuffer_struct l_curve_cbuffer_struct;
 		for(bcSIZE l_curve_i = 0; l_curve_i < l_curves.size(); ++l_curve_i)
 		{

@@ -14,8 +14,6 @@ namespace black_cat
 		class bci_content;
 		class bc_content_manager;
 
-		using bc_content_hash_t = std::hash<const bcECHAR*>;
-
 		class BC_CORE_DLL _bc_content_ptr_deleter
 		{
 		public:
@@ -29,8 +27,8 @@ namespace black_cat
 			bc_content_manager* m_content_manager;
 		};
 
-		template< typename TContent >
-		using bc_content_ptr = bc_ref_count_ptr< TContent, _bc_content_ptr_deleter >;
+		template<typename TContent>
+		using bc_content_ptr = bc_ref_count_ptr<TContent, _bc_content_ptr_deleter>;
 
 		template< class TContent >
 		class bc_content_traits
@@ -47,9 +45,7 @@ namespace black_cat
 			}
 		};
 
-		class bci_content : 
-			public bc_ref_count,
-			public core_platform::bc_no_copy
+		class bci_content : public bc_ref_count, public core_platform::bc_no_copy
 		{
 		public:
 			friend class bc_content_manager;
@@ -65,17 +61,17 @@ namespace black_cat
 			bci_content& operator=(bci_content&&) = default;
 
 		private:
-			bc_content_hash_t::result_type _get_hash() const
+			bc_estring_view _get_key() const
 			{
-				return m_hash;
+				return m_key;
 			}
 
-			void _set_hash(bc_content_hash_t::result_type p_hash)
+			void _set_key(bc_estring_view p_key)
 			{
-				m_hash = p_hash;
+				m_key = p_key;
 			}
 
-			bc_content_hash_t::result_type m_hash = 0;
+			bc_estring_view m_key{};
 		};
 
 		using bc_icontent_ptr = bc_content_ptr<bci_content>;

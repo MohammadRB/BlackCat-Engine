@@ -3,14 +3,11 @@
 #pragma once
 
 #include "CorePlatformImp/Concurrency/bcMutex.h"
-#include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcUnorderedMap.h"
-#include "Core/Container/bcListPool.h"
-#include "Core/Concurrency/bcTask.h"
 #include "Core/Utility/bcObjectPool.h"
 #include "Game/System/Render/Decal/bcDecal.h"
 #include "Game/System/Render/Decal/bcDecalInstance.h"
-#include "Game/System/Render/Decal/bcDecalIteratorBuffer.h"
+#include "Game/System/Render/Decal/bcDecalManagerContainer.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -50,21 +47,6 @@ namespace black_cat
 
 			bcSIZE m_hash;
 		};
-
-		class _bc_decal_instance_entry : public bc_decal_instance
-		{
-		public:
-			using iterator_type = core::bc_list_pool<_bc_decal_instance_entry>::iterator;
-			
-		public:
-			_bc_decal_instance_entry(bc_decal_instance p_instance)
-				: bc_decal_instance(std::move(p_instance)),
-				m_iterator(nullptr, nullptr)
-			{
-			}
-
-			iterator_type m_iterator;
-		};
 		
 		class BC_GAME_DLL bc_decal_manager
 		{
@@ -72,11 +54,7 @@ namespace black_cat
 			using string_hash = _bc_decal_entry::string_hash;
 			using decal_desc_map = core::bc_unordered_map_program<bcSIZE, _bc_decal_desc_entry>;
 			using decal_map = core::bc_unordered_map<bcSIZE, bc_decal*>;
-			using decal_instance_container = core::bc_list_pool<_bc_decal_instance_entry>;
 
-		public:
-			using iterator_buffer = bc_decal_iterator_buffer<decal_instance_container>;
-			
 		public:
 			explicit bc_decal_manager(bc_material_manager& p_material_manager);
 
@@ -85,6 +63,8 @@ namespace black_cat
 			~bc_decal_manager();
 
 			bc_decal_manager& operator=(bc_decal_manager&&) noexcept;
+
+			bc_decal_manager_container create_container();
 
 			/**
 			 * \brief Read decal json file and load decal descriptors
@@ -112,70 +92,16 @@ namespace black_cat
 			 * \return 
 			 */
 			bc_decal_ptr load_decal_throw(core::bc_string_view p_name);
-
-			/**
-			 * \brief Create a decal without a reference to owning actor.
-			 * Decals without reference will be removed automatically.
-			 * \n ThreadSafe
-			 * \param p_name 
-			 * \param p_local_position 
-			 * \param p_local_rotation
-			 * \return 
-			 */
-			bc_decal_instance* create_decal(core::bc_string_view p_name,
-				const core::bc_vector3f& p_local_position,
-				const core::bc_matrix3f& p_local_rotation);
-
-			bc_decal_instance* create_decal(core::bc_string_view p_name,
-				const core::bc_vector3f& p_local_position,
-				const core::bc_matrix3f& p_local_rotation,
-				bc_render_group p_render_group);
-
-			/**
-			 * \brief Create a decal with a strong reference to owning actor.
-			 * Decals with strong reference will be removed when their reference count reach to zero.
-			 * \n ThreadSafe
-			 * \param p_name 
-			 * \param p_actor 
-			 * \param p_local_position 
-			 * \param p_local_rotation 
-			 * \param p_attached_node_index 
-			 * \return 
-			 */
-			bc_decal_instance_ptr create_decal(core::bc_string_view p_name,
-				const bc_actor& p_actor,
-				const core::bc_vector3f& p_local_position,
-				const core::bc_matrix3f& p_local_rotation,
-				bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index);
-
-			bc_decal_instance_ptr create_decal(core::bc_string_view p_name,
-				const bc_actor& p_actor,
-				const core::bc_vector3f& p_local_position,
-				const core::bc_matrix3f& p_local_rotation,
-				bc_render_group p_render_group,
-				bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index);
-
-			void update_decal_lifespans(const core_platform::bc_clock::update_param& p_clock) noexcept;
-			
-			core::bc_task<void> update_decal_lifespans_async(const core_platform::bc_clock::update_param& p_clock) noexcept;
-
-			iterator_buffer get_iterator_buffer() const noexcept;
 			
 			void destroy_decal(bc_decal* p_decal);
 			
-			void destroy_decal_instance(bc_decal_instance* p_instance);
-			
 		private:
 			bc_material_manager* m_material_manager;
-			bcFLOAT m_update_interval_seconds;
 
-			core::bc_concurrent_object_pool<_bc_decal_entry> m_decals_pool;
-			core_platform::bc_mutex m_decals_mutex;
 			decal_desc_map m_decal_descriptions;
+			core_platform::bc_mutex m_decals_mutex;
+			core::bc_concurrent_object_pool<_bc_decal_entry> m_decals_pool;
 			decal_map m_decals;
-
-			decal_instance_container m_decal_instances_pool;
-			mutable core_platform::bc_mutex m_decal_instances_mutex;
 		};
 	}
 }

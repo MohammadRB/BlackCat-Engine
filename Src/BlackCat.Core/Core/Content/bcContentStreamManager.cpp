@@ -42,7 +42,7 @@ namespace black_cat
 
 		bc_content_stream_manager::~bc_content_stream_manager() = default;
 
-		void bc_content_stream_manager::read_stream_file(const bcECHAR* p_json_file_path)
+		void bc_content_stream_manager::read_stream_file(bc_estring_view p_json_file_path)
 		{
 			bc_file_stream l_json_file;
 			bc_string_frame l_json_file_content;
@@ -50,7 +50,7 @@ namespace black_cat
 			if(!l_json_file.open_read(p_json_file_path))
 			{
 				bc_string_frame l_msg = "Error in reading content stream file: ";
-				l_msg += bc_to_exclusive_string(p_json_file_path);
+				l_msg += bc_to_exclusive_string(p_json_file_path.data());
 
 				throw bc_io_exception(l_msg.c_str());
 			}
@@ -62,7 +62,6 @@ namespace black_cat
 
 			for (bc_json_object<_bc_content_stream>& l_stream : l_content_stream->m_streams)
 			{
-				string_hash::result_type l_stream_hash = string_hash()(l_stream->m_stream_name->c_str());
 				bc_vector_program<_bc_content_stream_file> l_stream_files;
 
 				l_stream_files.reserve(l_stream->m_stream_content.size());
@@ -94,16 +93,15 @@ namespace black_cat
 					l_stream_files.push_back(std::move(l_stream_file));
 				}
 
-				m_streams.insert(content_stream_map_type::value_type(l_stream_hash, std::move(l_stream_files)));
+				m_stream_descriptions.insert(content_stream_map_type::value_type(*l_stream->m_stream_name, std::move(l_stream_files)));
 			}
 		}
 
-		void bc_content_stream_manager::load_content_stream(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name)
+		void bc_content_stream_manager::load_content_stream(bc_alloc_type p_alloc_type, bc_string_view p_stream_name)
 		{
-			const auto l_hash = string_hash()(p_stream_name);
-			auto l_stream_entry = m_streams.find(l_hash);
+			const auto l_stream_entry = m_stream_descriptions.find(bc_string(p_stream_name));
 
-			if(l_stream_entry == std::end(m_streams))
+			if(l_stream_entry == std::end(m_stream_descriptions))
 			{
 				bc_string_frame l_msg = "Invalid content stream name: ";
 				l_msg += p_stream_name;
@@ -121,32 +119,31 @@ namespace black_cat
 				{
 					return bc_list_frame<content_map_type::value_type>();
 				},
-				[this, p_alloc_type](bc_list_frame<content_map_type::value_type>& p_local, _bc_content_stream_file& l_content_file)
+				[this, p_alloc_type](bc_list_frame<content_map_type::value_type>& p_local, const _bc_content_stream_file& l_content_file)
 				{
-					auto l_content_hash = string_hash()(l_content_file.m_title.c_str());
 					content_map_type::iterator l_content_entry;
 					content_map_type::iterator l_content_end;
 
 					{
 						core_platform::bc_shared_mutex_shared_guard l_lock_guard(m_contents_mutex);
 
-						l_content_entry = m_contents.find(l_content_hash);
+						l_content_entry = m_contents.find(l_content_file.m_title);
 						l_content_end = std::end(m_contents);
 					}
 
 					// Content already loaded from another stream
 					if (l_content_entry != l_content_end)
 					{
-						core_platform::bc_shared_mutex_guard l_lock_guard(m_contents_mutex);
+						{
+							core_platform::bc_shared_mutex_guard l_lock_guard(m_contents_mutex);
 
-						// Make a copy of content pointer to increase it's reference counter
-						l_content_entry->second.push_back(*std::begin(l_content_entry->second));
-						return;
+							// Make a copy of content pointer to increase it's reference counter
+							l_content_entry->second.push_back(*std::begin(l_content_entry->second));
+							return;
+						}
 					}
 
-					const auto l_loader_hash = string_hash()(l_content_file.m_loader.c_str());
-					const auto l_loader_entry = m_content_loader_delegates.find(l_loader_hash);
-
+					const auto l_loader_entry = m_content_loader_delegates.find(l_content_file.m_loader);
 					if(l_loader_entry == std::end(m_content_loader_delegates))
 					{
 						const auto l_error_msg = "There isn't any registered loader for " + l_content_file.m_loader;
@@ -161,7 +158,7 @@ namespace black_cat
 						l_content_file.m_parameters
 					);
 
-					content_map_type::value_type l_new_content_entry = content_map_type::value_type(l_content_hash, content_map_type::value_type::second_type());
+					content_map_type::value_type l_new_content_entry = content_map_type::value_type(l_content_file.m_title, content_map_type::value_type::second_type());
 					l_new_content_entry.second.push_back(std::move(l_content));
 
 					p_local.push_back(std::move(l_new_content_entry));
@@ -180,7 +177,7 @@ namespace black_cat
 			);
 		}
 
-		bc_task<void> bc_content_stream_manager::load_content_stream_async(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name)
+		bc_task<void> bc_content_stream_manager::load_content_stream_async(bc_alloc_type p_alloc_type, bc_string_view p_stream_name)
 		{
 			return bc_concurrency::start_task<void>([this, p_alloc_type, p_stream_name]()
 			{
@@ -188,12 +185,10 @@ namespace black_cat
 			});
 		}
 
-		void bc_content_stream_manager::unload_content_stream(const bcCHAR* p_stream_name)
+		void bc_content_stream_manager::unload_content_stream(bc_string_view p_stream_name)
 		{
-			const auto l_hash = string_hash()(p_stream_name);
-			auto l_stream_entry = m_streams.find(l_hash);
-
-			if (l_stream_entry == std::end(m_streams))
+			const auto l_stream_entry = m_stream_descriptions.find(bc_string(p_stream_name));
+			if (l_stream_entry == std::end(m_stream_descriptions))
 			{
 				bc_string_frame l_msg = "Invalid content stream name: ";
 				l_msg += p_stream_name;
@@ -204,16 +199,13 @@ namespace black_cat
 			auto& l_contents = l_stream_entry->second;
 			for (_bc_content_stream_file& l_content_file : l_contents)
 			{
-				// TODO remove content pointer to decrease reference count or explicitly unload via content manager
-
-				auto l_content_hash = string_hash()(l_content_file.m_title.c_str());
 				content_map_type::iterator l_content_entry;
 				content_map_type::iterator l_content_end;
 
 				{
 					core_platform::bc_shared_mutex_shared_guard l_lock_guard(m_contents_mutex);
 
-					l_content_entry = m_contents.find(l_content_hash);
+					l_content_entry = m_contents.find(l_content_file.m_title);
 					l_content_end = std::end(m_contents);
 				}
 
@@ -236,16 +228,15 @@ namespace black_cat
 			}
 		}
 
-		bc_icontent_ptr bc_content_stream_manager::find_content(const bcCHAR* p_content_name) const
+		bc_icontent_ptr bc_content_stream_manager::find_content(bc_string_view p_content_name) const
 		{
-			const auto l_content_hash = string_hash()(p_content_name);
 			content_map_type::const_iterator l_content_entry;
 			content_map_type::const_iterator l_content_end;
 
 			{
 				core_platform::bc_shared_mutex_shared_guard l_lock_guard(m_contents_mutex);
 				
-				l_content_entry = m_contents.find(l_content_hash);
+				l_content_entry = m_contents.find(p_content_name);
 				l_content_end = std::end(m_contents);
 			}
 
@@ -259,13 +250,13 @@ namespace black_cat
 			return nullptr;
 		}
 
-		bc_icontent_ptr bc_content_stream_manager::find_content_throw(const bcCHAR* p_content_name) const
+		bc_icontent_ptr bc_content_stream_manager::find_content_throw(bc_string_view p_content_name) const
 		{
 			auto l_content = find_content(p_content_name);
 
 			if(!l_content)
 			{
-				throw bc_key_not_found_exception(std::string("No content was found with key ") + p_content_name);
+				throw bc_key_not_found_exception(std::string("No content was found with key ") + p_content_name.data());
 			}
 
 			return l_content;

@@ -50,7 +50,7 @@ namespace black_cat
 		{
 			auto& l_render_system = p_context.m_game_system.get_render_system();
 
-			auto l_cb_config = graphic::bc_graphic_resource_builder()
+			const auto l_cb_config = graphic::bc_graphic_resource_builder()
 				.as_resource()
 				.as_buffer
 				(
@@ -63,8 +63,9 @@ namespace black_cat
 
 			bc_terrain_height_ui_command_state l_state;
 			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_height_cs");
-			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);
 			l_state.m_device_command_list = l_render_system.get_device().create_command_list();
+			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);
+			l_state.m_parameter_cbuffer->set_debug_name("terrain_height_cbuffer");
 
 			return core::bc_make_unique<bc_terrain_height_ui_command_state>(std::move(l_state));
 		}
@@ -72,9 +73,9 @@ namespace black_cat
 		bool bc_terrain_height_ui_command::update(terrain_update_context& p_context)
 		{
 			using height_map_sample_t = std::tuple<bcINT16, physics::bc_material_index>;
-			
-			auto* l_rigid_component = p_context.m_terrain.get_component<game::bc_rigid_static_component>();
-			auto* l_height_map_component = p_context.m_terrain.get_component<game::bc_height_map_component>();
+
+			const auto* l_rigid_component = p_context.m_terrain.get_component<game::bc_rigid_static_component>();
+			const auto* l_height_map_component = p_context.m_terrain.get_component<game::bc_height_map_component>();
 			auto& l_dx11_height_map = static_cast<const bc_editor_height_map_dx11&>(l_height_map_component->get_height_map());
 			auto l_px_height_map = l_dx11_height_map.get_px_height_field();
 

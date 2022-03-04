@@ -63,7 +63,7 @@ namespace black_cat
 			const auto l_error_msg =
 				core::bc_string_frame("Content file loading error: ")
 				+
-				core::bc_to_string_frame(p_context.m_file_path)
+				core::bc_to_string_frame(p_context.m_file_path.data())
 				+
 				", "
 				+
@@ -81,7 +81,7 @@ namespace black_cat
 		
 		convert_ai_nodes(l_game_system.get_render_system(), p_context, *l_scene, l_node_mapping, *l_scene->mRootNode, l_builder);
 
-		const auto l_mesh_name = core::bc_to_exclusive_string(core::bc_path(p_context.m_file_path).get_filename());
+		const auto l_mesh_name = core::bc_path(p_context.m_file_path).get_filename();
 		const auto* l_auto_scale = p_context.m_parameters->get_value<bcFLOAT>(constant::g_param_mesh_auto_scale);
 
 		if(l_auto_scale)
@@ -158,10 +158,10 @@ namespace black_cat
 		}
 		else
 		{
-			l_mesh_collider = l_content_manager.store_content((l_mesh_name + ".collider").c_str(), game::bc_mesh_collider());
+			l_mesh_collider = l_content_manager.store_content(l_mesh_name + bcL(".collider"), game::bc_mesh_collider());
 		}
 		
-		p_context.set_result(l_builder.build(l_mesh_name.c_str(), std::move(l_mesh_collider)));
+		p_context.set_result(l_builder.build(l_mesh_name, std::move(l_mesh_collider)));
 	}
 
 	void bc_mesh_loader::fill_skinned_vertices(const aiMesh& p_ai_mesh,
@@ -218,11 +218,11 @@ namespace black_cat
 		if (p_ai_material.GetTexture(aiTextureType_DIFFUSE, 0, &l_aistr) == aiReturn_SUCCESS)
 		{
 			l_diffuse_file_name = core::bc_path(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str());
-			p_material.m_diffuse_map = l_content_manager->load< graphic::bc_texture2d_content >
+			p_material.m_diffuse_map = l_content_manager->load<graphic::bc_texture2d_content>
 			(
 				p_context.get_allocator_alloc_type(),
 				core::bc_path(l_root_path).set_filename(l_diffuse_file_name->get_string().c_str()).get_string().c_str(),
-				nullptr,
+				{},
 				*p_context.m_parameters
 			);
 		}
@@ -266,7 +266,7 @@ namespace black_cat
 			(
 				p_context.get_allocator_alloc_type(),
 				l_normal_map_path.c_str(),
-				nullptr,
+				{},
 				*p_context.m_parameters
 			);
 		}
@@ -276,7 +276,7 @@ namespace black_cat
 			(
 				p_context.get_allocator_alloc_type(),
 				l_specular_map_path.c_str(),
-				nullptr,
+				{},
 				*p_context.m_parameters
 			);
 		}

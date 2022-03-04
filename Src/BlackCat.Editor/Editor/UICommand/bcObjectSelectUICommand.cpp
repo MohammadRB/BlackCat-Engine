@@ -45,6 +45,11 @@ namespace black_cat
 
 		bool bc_object_select_ui_command::update(update_context& p_context)
 		{
+			if (!p_context.m_game_system.get_scene())
+			{
+				return false;
+			}
+
 			m_actor = query_ray_in_scene(p_context, m_point_left, m_point_top);
 
 			if (m_actor.is_valid())

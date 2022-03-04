@@ -59,6 +59,7 @@ namespace black_cat
 			m_content_stream = p_other.m_content_stream;
 			m_thread_manager = std::move(p_other.m_thread_manager);
 			m_material_manager = std::move(p_other.m_material_manager);
+			m_decal_manager = std::move(p_other.m_decal_manager);
 			m_render_pass_manager = std::move(p_other.m_render_pass_manager);
 			m_animation_manager = std::move(p_other.m_animation_manager);
 			m_shape_drawer = std::move(p_other.m_shape_drawer);
@@ -82,7 +83,7 @@ namespace black_cat
 			
 			return *this;
 		}
-		
+
 		void bc_render_system::update(const update_context& p_update_params)
 		{
 			m_frame_renderer->update(bc_frame_renderer_update_context(p_update_params.m_clock, p_update_params.m_camera));
@@ -412,6 +413,8 @@ namespace black_cat
 			m_content_stream = &p_parameter.m_content_stream;
 			m_thread_manager = core::bc_make_unique<bc_render_thread_manager>(core::bc_alloc_type::program , bc_render_thread_manager(*this, std::max(1U, l_hw_info.m_processor_count / 2)));
 			m_material_manager = core::bc_make_unique<bc_material_manager>(core::bc_alloc_type::program, bc_material_manager(*m_content_stream, *this, p_parameter.m_physics_system));
+			m_decal_manager = core::bc_make_unique<bc_decal_manager>(core::bc_alloc_type::program, bc_decal_manager(*m_material_manager));
+			m_particle_manager = core::bc_make_unique<bc_particle_manager>(core::bc_alloc_type::program);
 			m_render_pass_manager = core::bc_make_unique<bc_render_pass_manager>(core::bc_alloc_type::program, bc_render_pass_manager(m_device));
 			m_animation_manager = core::bc_make_unique<bc_animation_manager>(core::bc_alloc_type::program);
 			m_shape_drawer = core::bc_make_unique<bc_shape_drawer>(core::bc_alloc_type::program);
@@ -441,14 +444,11 @@ namespace black_cat
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
 			);
-
-			bc_particle_manager::init_emitter_states();
 		}
 
 		void bc_render_system::_destroy()
 		{
 			bc_mesh_utility::clear_mesh_render_states_cache();
-			bc_particle_manager::clear_emitter_states();
 			
 			destroy_render_passes();
 			
@@ -461,6 +461,8 @@ namespace black_cat
 			m_frame_renderer.reset();
 			m_shape_drawer.reset();
 			m_material_manager.reset();
+			m_particle_manager.reset();
+			m_decal_manager.reset();
 			m_thread_manager.reset();
 			
 			m_render_pass_states.destroy();

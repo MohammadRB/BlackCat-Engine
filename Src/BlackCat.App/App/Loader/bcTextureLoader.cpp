@@ -84,7 +84,7 @@ namespace black_cat
 		}
 		else
 		{
-			throw bc_invalid_argument_exception((core::bc_to_string(p_context.m_file_path) + " Unknown image file format").c_str());
+			throw bc_invalid_argument_exception((core::bc_to_string(p_context.m_file_path.data()) + " Unknown image file format").c_str());
 		}
 
 		graphic::bc_device& l_device = core::bc_get_service<game::bc_game_system>()->get_render_system().get_device();
@@ -111,6 +111,6 @@ namespace black_cat
 
 		p_context.m_file.close(); // Close file so DX can write to the file
 
-		l_device.save_texture2d(l_texture_content->get_resource(), graphic::bc_image_format::dds, p_context.m_file_path);
+		l_device.save_texture2d(l_texture_content->get_resource(), graphic::bc_image_format::dds, p_context.m_file_path.data());
 	}
 }

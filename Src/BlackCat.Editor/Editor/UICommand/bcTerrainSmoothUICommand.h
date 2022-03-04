@@ -36,7 +36,7 @@ namespace black_cat
 
 			bc_terrain_smooth_ui_command(const bc_terrain_smooth_ui_command&);
 
-			~bc_terrain_smooth_ui_command();
+			~bc_terrain_smooth_ui_command() override;
 
 			bc_terrain_smooth_ui_command& operator=(const bc_terrain_smooth_ui_command&);
 

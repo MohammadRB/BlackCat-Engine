@@ -68,10 +68,7 @@ namespace black_cat
 		{
 		public:
 			bc_content_loading_context()
-				: m_file_path(nullptr),
-				m_file_variant(nullptr),
-				m_file(),
-				m_file_buffer(nullptr),
+				: m_file_buffer(nullptr),
 				m_file_buffer_size(0),
 				m_parameters(nullptr),
 				m_instance_parameters(bc_alloc_type::frame),
@@ -99,8 +96,8 @@ namespace black_cat
 				m_result.reset(bc_content_loader_result(std::move(l_content_result)));
 			}
 
-			const bcECHAR* m_file_path;							// Used to give loader access to content and offline content file path
-			const bcECHAR* m_file_variant;						// Used to give loader access to content file variant
+			bc_estring_view m_file_path;						// Used to give loader access to content and offline content file path
+			bc_estring_view m_file_variant;						// Used to give loader access to content file variant
 			bc_stream m_file;									// Used to give loader access to content and offline content file
 			bc_unique_ptr<bcBYTE> m_file_buffer;				// Used to give loader access to file content
 			bcSIZE m_file_buffer_size;							// Used to give loader access to file content size
@@ -112,7 +109,10 @@ namespace black_cat
 		class bc_content_saving_context
 		{
 		public:
-			bc_content_saving_context() = default;
+			bc_content_saving_context()
+				: m_content(nullptr)
+			{
+			}
 
 			bc_content_saving_context(bc_content_saving_context&&) noexcept = default;
 
@@ -120,7 +120,7 @@ namespace black_cat
 
 			bc_content_saving_context& operator=(bc_content_saving_context&&) noexcept = default;
 
-			const bcECHAR* m_file_path;							// Used to give saver access to content file path
+			bc_estring_view m_file_path;						// Used to give saver access to content file path
 			bc_stream m_file;									// Used to give saver access to content file
 			bci_content* m_content;								// Used to give saver access to content
 		};

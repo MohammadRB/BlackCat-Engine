@@ -72,7 +72,7 @@ namespace black_cat
 		private:
 			void _add_decal_if_needed(bc_decal_instance_ptr p_decal, bool p_need_update) noexcept;
 
-			bc_decal_manager* m_decal_manager;
+			bc_decal_manager_container* m_decal_manager;
 			bcFLOAT m_mesh_scale;
 			bool m_use_hierarchy_transforms;
 

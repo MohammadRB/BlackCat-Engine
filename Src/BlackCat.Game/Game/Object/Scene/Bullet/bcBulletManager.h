@@ -5,6 +5,7 @@
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcListPool.h"
+#include "Core/Container/bcVector.h"
 #include "Core/Concurrency/bcTask.h"
 #include "Core/Utility/bcNullable.h"
 #include "PhysicsImp/Fundation/bcScene.h"
@@ -29,6 +30,8 @@ namespace black_cat
 
 			bc_bullet_manager& operator=(bc_bullet_manager&&) noexcept;
 
+			core::bc_vector_frame<bc_bullet> get_bullets() const;
+
 			/**
 			 * \brief ThreadSafe
 			 * \param p_bullet 
@@ -46,7 +49,7 @@ namespace black_cat
 				core::bc_vector_frame<physics::bc_ray_hit>& p_modified_hits_buffer);
 			
 			bc_physics_system* m_physics_system;			
-			core_platform::bc_spin_mutex m_bullets_mutex;
+			mutable core_platform::bc_spin_mutex m_bullets_mutex;
 			core::bc_list_pool<bc_bullet> m_bullets;
 		};
 	}	

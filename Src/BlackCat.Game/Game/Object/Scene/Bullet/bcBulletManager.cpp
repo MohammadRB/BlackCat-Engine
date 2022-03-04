@@ -35,6 +35,21 @@ namespace black_cat
 			return *this;
 		}
 
+		core::bc_vector_frame<bc_bullet> bc_bullet_manager::get_bullets() const
+		{
+			core::bc_vector_frame<bc_bullet> l_bullets_copy;
+
+			{
+				core_platform::bc_lock_guard l_lock(m_bullets_mutex);
+
+				l_bullets_copy.reserve(m_bullets.size());
+
+				std::copy(std::begin(m_bullets), std::end(m_bullets), std::back_inserter(l_bullets_copy));
+			}
+
+			return l_bullets_copy;
+		}
+
 		void bc_bullet_manager::add_bullet(const bc_bullet& p_bullet) noexcept
 		{
 			{

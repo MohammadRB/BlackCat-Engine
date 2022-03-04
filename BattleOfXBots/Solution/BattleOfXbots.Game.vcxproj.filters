@@ -34,6 +34,12 @@
     <Filter Include="BoX.Game\Content\Texture">
       <UniqueIdentifier>{3e038378-1750-4638-a88b-f1161cc38282}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BoX.Game\Content\Shader\DirectX11">
+      <UniqueIdentifier>{72485c9b-7424-4b49-858a-5b174306018d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BoX.Game\Content\Shader\DirectX11\PostProcess">
+      <UniqueIdentifier>{f36a5671-c312-46ec-a8af-9b9355a063ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\BoX.Game\Application\bxApplicationHookFunctions.cpp">
@@ -71,6 +77,9 @@
     </ClCompile>
     <ClCompile Include="..\Src\BoX.Game\Application\bxSceneCheckPoint.cpp">
       <Filter>BoX.Game\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\RenderPass\bxBulletTrailPass.cpp">
+      <Filter>BoX.Game\RenderPass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +137,9 @@
     <ClInclude Include="..\Src\BoX.Game\Application\bxGameState.h">
       <Filter>BoX.Game\Application</Filter>
     </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\RenderPass\bxBulletTrailPass.h">
+      <Filter>BoX.Game\RenderPass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Src\BoX.Game\Content\Data\BoXContentStream.json">
@@ -157,5 +169,15 @@
     <None Include="..\Src\BoX.Game\Content\Scene\TestMaterial.json">
       <Filter>BoX.Game\Content\Scene</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Src\BoX.Game\Content\Texture\BulletTrail.dds">
+      <Filter>BoX.Game\Content\Texture</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Src\BoX.Game\Content\Shader\DirectX11\PostProcess\bxBulletTrail.hlsl">
+      <Filter>BoX.Game\Content\Shader\DirectX11\PostProcess</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

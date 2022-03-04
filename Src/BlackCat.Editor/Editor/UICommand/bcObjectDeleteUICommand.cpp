@@ -31,6 +31,11 @@ namespace black_cat
 
 		bool bc_object_delete_ui_command::update(update_context& p_context)
 		{
+			if (!p_context.m_game_system.get_scene())
+			{
+				return false;
+			}
+
 			p_context.m_game_system.get_scene()->remove_actor(m_actor);
 			return false;
 		}

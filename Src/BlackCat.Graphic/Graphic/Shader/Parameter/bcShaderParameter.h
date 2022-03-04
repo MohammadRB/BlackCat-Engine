@@ -25,8 +25,6 @@ namespace black_cat
 
 			virtual bc_shader_parameter_type get_parameter_type() const = 0;
 
-			virtual void set_parameter_data(void* p_data) = 0;
-
 			virtual bool is_valid() const = 0;
 
 		protected:
@@ -34,7 +32,7 @@ namespace black_cat
 
 			bc_ishader_parameter(bcINT16 p_register_index, bc_shader_type p_shader_types);
 
-			bc_ishader_parameter(bcINT16 p_register_index, bc_shader_type p_shader_types, const bc_shader_parameter_link& p_link);
+			bc_ishader_parameter(bcINT16 p_register_index, bc_shader_type p_shader_types, bc_shader_parameter_link p_link);
 
 			bc_ishader_parameter(const bc_ishader_parameter& p_other) = default;
 
@@ -42,27 +40,25 @@ namespace black_cat
 
 			bcINT16 m_register_index;
 			bc_shader_type m_shader_types;
-			const bc_shader_parameter_link* m_link;
+			bc_shader_parameter_link m_link;
 		};
 
 		inline bc_ishader_parameter::bc_ishader_parameter()
 			: m_register_index(-1),
-			m_shader_types(),
-			m_link(nullptr)
+			m_shader_types()
 		{
 		}
 
 		inline bc_ishader_parameter::bc_ishader_parameter(bcINT16 p_register_index, bc_shader_type p_shader_types)
 			: m_register_index(p_register_index),
-			m_shader_types(p_shader_types),
-			m_link(nullptr)
+			m_shader_types(p_shader_types)
 		{
 		}
 
-		inline bc_ishader_parameter::bc_ishader_parameter(bcINT16 p_register_index, bc_shader_type p_shader_types, const bc_shader_parameter_link& p_link)
+		inline bc_ishader_parameter::bc_ishader_parameter(bcINT16 p_register_index, bc_shader_type p_shader_types, bc_shader_parameter_link p_link)
 			: m_register_index(p_register_index),
 			m_shader_types(p_shader_types),
-			m_link(&p_link)
+			m_link(std::move(p_link))
 		{
 		}
 

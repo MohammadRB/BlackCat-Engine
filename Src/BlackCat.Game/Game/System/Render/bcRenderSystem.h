@@ -47,6 +47,8 @@ namespace black_cat
 		class bc_physics_system;
 		class bc_render_thread_manager;
 		class bc_material_manager;
+		class bc_decal_manager;
+		class bc_particle_manager;
 		class bc_animation_manager;
 		class bc_scene;
 		
@@ -151,6 +153,14 @@ namespace black_cat
 			bc_material_manager& get_material_manager() noexcept;
 			
 			const bc_material_manager& get_material_manager() const noexcept;
+
+			bc_decal_manager& get_decal_manager() noexcept;
+
+			const bc_decal_manager& get_decal_manager() const noexcept;
+
+			bc_particle_manager& get_particle_manager() noexcept;
+
+			const bc_particle_manager& get_particle_manager() const noexcept;
 
 			bc_animation_manager& get_animation_manager() noexcept;
 			
@@ -331,6 +341,8 @@ namespace black_cat
 			core::bc_content_stream_manager* m_content_stream;
 			core::bc_unique_ptr<bc_render_thread_manager> m_thread_manager;
 			core::bc_unique_ptr<bc_material_manager> m_material_manager;
+			core::bc_unique_ptr<bc_decal_manager> m_decal_manager;
+			core::bc_unique_ptr<bc_particle_manager> m_particle_manager;
 			core::bc_unique_ptr<bc_render_pass_manager> m_render_pass_manager;
 			core::bc_unique_ptr<bc_animation_manager> m_animation_manager;
 			core::bc_unique_ptr<bc_shape_drawer> m_shape_drawer;
@@ -373,6 +385,26 @@ namespace black_cat
 		inline const bc_material_manager& bc_render_system::get_material_manager() const noexcept
 		{
 			return *m_material_manager;
+		}
+
+		inline bc_decal_manager& bc_render_system::get_decal_manager() noexcept
+		{
+			return *m_decal_manager;
+		}
+
+		inline const bc_decal_manager& bc_render_system::get_decal_manager() const noexcept
+		{
+			return *m_decal_manager;
+		}
+
+		inline bc_particle_manager& bc_render_system::get_particle_manager() noexcept
+		{
+			return *m_particle_manager;
+		}
+
+		inline const bc_particle_manager& bc_render_system::get_particle_manager() const noexcept
+		{
+			return *m_particle_manager;
 		}
 
 		inline bc_animation_manager& bc_render_system::get_animation_manager() noexcept

@@ -11,7 +11,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_particle_manager;
+		class bc_particle_manager_container;
 		struct bc_particle_emitter_trait;
 		class bc_external_particle_emitter;
 		
@@ -20,12 +20,12 @@ namespace black_cat
 		public:
 			_bc_particle_emitter_ptr_deleter();
 
-			_bc_particle_emitter_ptr_deleter(bc_particle_manager* p_manager);
+			_bc_particle_emitter_ptr_deleter(bc_particle_manager_container* p_manager);
 
 			void operator()(bc_external_particle_emitter* p_emitter);
 
 		private:
-			bc_particle_manager* m_manager;
+			bc_particle_manager_container* m_container;
 		};
 		
 		struct bc_particle_emitter_trait

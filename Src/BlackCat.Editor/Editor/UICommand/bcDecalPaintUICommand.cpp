@@ -35,6 +35,11 @@ namespace black_cat
 
 		bool bc_decal_paint_ui_command::update(update_context& p_context)
 		{
+			if(!p_context.m_game_system.get_scene())
+			{
+				return false;
+			}
+
 			physics::bc_scene_ray_query_buffer l_query_buffer;
 
 			const bool l_query_result = query_ray_in_px_scene

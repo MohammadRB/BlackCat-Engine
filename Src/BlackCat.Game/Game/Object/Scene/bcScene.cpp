@@ -53,8 +53,8 @@ namespace black_cat
 		{
 			m_bullet_manager = core::bc_make_unique<bc_bullet_manager>(bc_bullet_manager(*m_physics));
 			m_light_manager = core::bc_make_unique<bc_light_manager>(bc_light_manager());
-			m_particle_manager = core::bc_make_unique<bc_particle_manager>(bc_particle_manager());
-			m_decal_manager = core::bc_make_unique<bc_decal_manager>(bc_decal_manager(p_game_system.get_render_system().get_material_manager()));
+			m_particle_manager = core::bc_make_unique<bc_particle_manager_container>(p_game_system.get_render_system().get_particle_manager().create_container());
+			m_decal_container = core::bc_make_unique<bc_decal_manager_container>(p_game_system.get_render_system().get_decal_manager().create_container());
 		}
 
 		bc_scene::bc_scene(bc_scene&& p_other) noexcept
@@ -74,7 +74,7 @@ namespace black_cat
 			m_bullet_manager(std::move(p_other.m_bullet_manager)),
 			m_light_manager(std::move(p_other.m_light_manager)),
 			m_particle_manager(std::move(p_other.m_particle_manager)),
-			m_decal_manager(std::move(p_other.m_decal_manager))
+			m_decal_container(std::move(p_other.m_decal_container))
 		{
 		}
 
@@ -108,7 +108,7 @@ namespace black_cat
 			m_bullet_manager = std::move(p_other.m_bullet_manager);
 			m_light_manager = std::move(p_other.m_light_manager);
 			m_particle_manager = std::move(p_other.m_particle_manager);
-			m_decal_manager = std::move(p_other.m_decal_manager);
+			m_decal_container = std::move(p_other.m_decal_container);
 
 			return *this;
 		}

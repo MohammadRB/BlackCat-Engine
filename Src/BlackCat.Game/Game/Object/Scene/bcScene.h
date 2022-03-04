@@ -83,17 +83,21 @@ namespace black_cat
 
 			const physics::bc_scene& get_px_scene() const noexcept;
 
+			bc_bullet_manager& get_bullet_manager() noexcept;
+
+			const bc_bullet_manager& get_bullet_manager() const noexcept;
+
 			bc_light_manager& get_light_manager() noexcept;
 
 			const bc_light_manager& get_light_manager() const noexcept;
 
-			bc_particle_manager& get_particle_manager() noexcept;
+			bc_particle_manager_container& get_particle_manager() noexcept;
 
-			const bc_particle_manager& get_particle_manager() const noexcept;
+			const bc_particle_manager_container& get_particle_manager() const noexcept;
 
-			bc_decal_manager& get_decal_manager() noexcept;
+			bc_decal_manager_container& get_decal_manager() noexcept;
 
-			const bc_decal_manager& get_decal_manager() const noexcept;
+			const bc_decal_manager_container& get_decal_manager() const noexcept;
 
 			void enable_bulk_loading(bcSIZE p_hint_size) noexcept;
 
@@ -163,8 +167,8 @@ namespace black_cat
 			physics::bc_scene_ref m_px_scene;
 			core::bc_unique_ptr<bc_bullet_manager> m_bullet_manager;
 			core::bc_unique_ptr<bc_light_manager> m_light_manager;
-			core::bc_unique_ptr<bc_particle_manager> m_particle_manager;
-			core::bc_unique_ptr<bc_decal_manager> m_decal_manager;
+			core::bc_unique_ptr<bc_particle_manager_container> m_particle_manager;
+			core::bc_unique_ptr<bc_decal_manager_container> m_decal_container;
 
 			core_platform::bc_spin_mutex m_actors_to_add_lock;
 			core_platform::bc_spin_mutex m_actors_to_remove_lock;
@@ -236,6 +240,16 @@ namespace black_cat
 			return m_px_scene.get();
 		}
 
+		inline bc_bullet_manager& bc_scene::get_bullet_manager() noexcept
+		{
+			return *m_bullet_manager;
+		}
+
+		inline const bc_bullet_manager& bc_scene::get_bullet_manager() const noexcept
+		{
+			return *m_bullet_manager;
+		}
+
 		inline bc_light_manager& bc_scene::get_light_manager() noexcept
 		{
 			return *m_light_manager;
@@ -246,24 +260,24 @@ namespace black_cat
 			return *m_light_manager;
 		}
 
-		inline bc_particle_manager& bc_scene::get_particle_manager() noexcept
+		inline bc_particle_manager_container& bc_scene::get_particle_manager() noexcept
 		{
 			return *m_particle_manager;
 		}
 
-		inline const bc_particle_manager& bc_scene::get_particle_manager() const noexcept
+		inline const bc_particle_manager_container& bc_scene::get_particle_manager() const noexcept
 		{
 			return *m_particle_manager;
 		}
 
-		inline bc_decal_manager& bc_scene::get_decal_manager() noexcept
+		inline bc_decal_manager_container& bc_scene::get_decal_manager() noexcept
 		{
-			return *m_decal_manager;
+			return *m_decal_container;
 		}
 
-		inline const bc_decal_manager& bc_scene::get_decal_manager() const noexcept
+		inline const bc_decal_manager_container& bc_scene::get_decal_manager() const noexcept
 		{
-			return *m_decal_manager;
+			return *m_decal_container;
 		}
 	}
 }

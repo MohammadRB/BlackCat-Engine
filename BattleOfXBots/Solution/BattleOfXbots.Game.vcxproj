@@ -279,6 +279,7 @@
     <ClCompile Include="..\Src\BoX.Game\Network\bxPlayerKilledNetworkMessage.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Network\bxPlayerSpawnNetworkMessage.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Network\bxTeamSelectNetworkMessage.cpp" />
+    <ClCompile Include="..\Src\BoX.Game\RenderPass\bxBulletTrailPass.cpp" />
     <ClCompile Include="..\Src\BoX.Game\RenderPass\bxPlayerUIPass.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -299,6 +300,7 @@
     <ClInclude Include="..\Src\BoX.Game\Network\bxPlayerKilledNetworkMessage.h" />
     <ClInclude Include="..\Src\BoX.Game\Network\bxPlayerSpawnNetworkMessage.h" />
     <ClInclude Include="..\Src\BoX.Game\Network\bxTeamSelectNetworkMessage.h" />
+    <ClInclude Include="..\Src\BoX.Game\RenderPass\bxBulletTrailPass.h" />
     <ClInclude Include="..\Src\BoX.Game\RenderPass\bxPlayerUIPass.h" />
   </ItemGroup>
   <ItemGroup>
@@ -311,6 +313,16 @@
     <None Include="..\Src\BoX.Game\Content\Scene\TestDecal.json" />
     <None Include="..\Src\BoX.Game\Content\Scene\TestEntityType.json" />
     <None Include="..\Src\BoX.Game\Content\Scene\TestMaterial.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Src\BoX.Game\Content\Texture\BulletTrail.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Src\BoX.Game\Content\Shader\DirectX11\PostProcess\bxBulletTrail.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

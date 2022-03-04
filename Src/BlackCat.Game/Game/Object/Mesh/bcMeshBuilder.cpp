@@ -137,7 +137,7 @@ namespace black_cat
 			return *this;
 		}
 		
-		bc_mesh bc_mesh_builder::build(const bcCHAR* p_name, bc_mesh_collider_ptr p_collider)
+		bc_mesh bc_mesh_builder::build(core::bc_estring_view p_name, bc_mesh_collider_ptr p_collider)
 		{
 			m_name = p_name;
 			return bc_mesh(std::move(*this), std::move(p_collider));

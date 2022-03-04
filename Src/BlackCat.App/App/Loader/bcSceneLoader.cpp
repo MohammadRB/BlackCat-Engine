@@ -72,6 +72,7 @@ namespace black_cat
 		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
 		auto& l_content_stream_manager = *core::bc_get_service<core::bc_content_stream_manager>();
 		auto& l_material_manager = l_game_system.get_render_system().get_material_manager();
+		auto& l_decal_manager = l_game_system.get_render_system().get_decal_manager();
 		auto& l_entity_manager = *core::bc_get_service<game::bc_entity_manager>();
 		auto& l_file_system = l_game_system.get_file_system();
 
@@ -84,6 +85,11 @@ namespace black_cat
 		{
 			auto l_path = core::bc_to_estring_frame(l_material_file->c_str());
 			l_material_manager.read_material_file(l_file_system.get_content_path(l_path.c_str()).c_str());
+		}
+		for (core::bc_json_value<core::bc_string_frame>& l_decal_file : l_json_document->m_decal_files)
+		{
+			auto l_path = core::bc_to_estring_frame(l_decal_file->c_str());
+			l_decal_manager.read_decal_file(l_file_system.get_content_path(l_path.c_str()).c_str());
 		}
 		for (core::bc_json_value<core::bc_string_frame>& l_entity_file : l_json_document->m_entity_files)
 		{
@@ -149,7 +155,7 @@ namespace black_cat
 		);
 
 		core::bc_vector<core::bc_string> l_decal_file_names;
-		l_material_file_names.reserve(l_json_document->m_decal_files.size());
+		l_decal_file_names.reserve(l_json_document->m_decal_files.size());
 		std::transform
 		(
 			std::cbegin(l_json_document->m_decal_files),
@@ -203,14 +209,6 @@ namespace black_cat
 		));
 
 		auto& l_scene = *p_context.m_result->get_result<game::bc_scene>();
-		auto& l_decal_manager = l_scene.get_decal_manager();
-
-		for (core::bc_json_value<core::bc_string_frame>& l_decal_file : l_json_document->m_decal_files)
-		{
-			auto l_path = core::bc_to_estring_frame(l_decal_file->c_str());
-			l_decal_manager.read_decal_file(l_file_system.get_content_path(l_path.c_str()).c_str());
-		}
-
 		l_scene.enable_bulk_loading(l_json_document->m_actors.size());
 
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;

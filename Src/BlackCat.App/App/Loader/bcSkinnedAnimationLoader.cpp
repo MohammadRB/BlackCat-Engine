@@ -4,6 +4,7 @@
 
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcStringStream.h"
 #include "Core/bcUtility.h"
 #include "Graphic/bcRenderApiInfo.h"
 #include "Game/Object/Animation/bcSkinnedAnimation.h"
@@ -187,15 +188,12 @@ namespace black_cat
 
 		if (!l_ai_scene || !l_ai_scene->HasAnimations())
 		{
-			const auto l_error_msg =
-				core::bc_string_frame("Content file loading error: ")
-				+
-				core::bc_to_string_frame(p_context.m_file_path)
-				+
-				", "
-				+
-				l_importer.GetErrorString();
-			throw bc_io_exception(l_error_msg.c_str());
+			const auto l_error_msg = core::bc_string_stream_frame()
+				<< "Content file loading error: "
+				<< p_context.m_file_path
+				<< ", "
+				<< l_importer.GetErrorString();
+			throw bc_io_exception(l_error_msg.str().c_str());
 		}
 
 		ozz::animation::offline::RawSkeleton l_ozz_raw_skeleton;

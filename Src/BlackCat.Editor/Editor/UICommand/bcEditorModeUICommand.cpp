@@ -42,7 +42,7 @@ namespace black_cat
 			if(!m_editor_mode)
 			{
 				game::bc_scene_checkpoint l_check_point(*l_scene);
-				l_content_manager.save_as(l_check_point, l_checkpoint_path.get_string_frame().c_str(), nullptr);
+				l_content_manager.save_as(l_check_point, l_checkpoint_path.get_string_frame().c_str(), {});
 			}
 			else
 			{
@@ -52,7 +52,7 @@ namespace black_cat
 				auto l_check_point = l_content_manager.load<game::bc_scene_checkpoint>
 				(
 					l_checkpoint_path.get_string_frame().c_str(),
-					nullptr,
+					{},
 					core::bc_content_loader_parameter(),
 					l_instance_parameters
 				);

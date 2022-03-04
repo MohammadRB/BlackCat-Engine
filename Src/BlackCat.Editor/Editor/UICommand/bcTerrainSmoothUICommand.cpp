@@ -59,8 +59,9 @@ namespace black_cat
 
 			bc_terrain_smooth_ui_command_state l_state;
 			l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_smooth_cs");
-			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);
 			l_state.m_device_command_list = l_render_system.get_device().create_command_list();
+			l_state.m_parameter_cbuffer = l_render_system.get_device().create_buffer(l_cb_config, nullptr);
+			l_state.m_parameter_cbuffer->set_debug_name("terrain_smooth_cbuffer");
 
 			return core::bc_make_unique< bc_terrain_smooth_ui_command_state >(std::move(l_state));
 		}

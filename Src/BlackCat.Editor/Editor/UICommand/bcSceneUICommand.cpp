@@ -58,7 +58,7 @@ namespace black_cat
 				{
 					auto l_scene = p_context.m_game_system.get_file_system()
 						.get_content_manager()
-						.load<game::bc_scene>(m_scene_path.c_str(), nullptr, core::bc_content_loader_parameter());
+						.load<game::bc_scene>(m_scene_path.c_str(), {}, core::bc_content_loader_parameter());
 					p_context.m_game_system.set_scene(std::move(l_scene));
 					break;
 				}

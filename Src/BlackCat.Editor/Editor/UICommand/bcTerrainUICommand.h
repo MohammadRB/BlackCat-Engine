@@ -17,8 +17,8 @@ namespace black_cat
 		{
 		public:
 			graphic::bc_buffer_ref m_parameter_cbuffer;
-			graphic::bc_device_compute_state_ref m_device_compute_state;
 			graphic::bc_device_command_list_ref m_device_command_list;
+			graphic::bc_device_compute_state_ref m_device_compute_state;
 		};
 
 		class bc_ui_terrain_command_update_context : public bc_ui_command_update_context
@@ -50,7 +50,7 @@ namespace black_cat
 
 			bc_ui_terrain_command(const bc_ui_terrain_command&);
 
-			virtual ~bc_ui_terrain_command();
+			~bc_ui_terrain_command() override;
 
 			bc_ui_terrain_command& operator=(const bc_ui_terrain_command&);
 

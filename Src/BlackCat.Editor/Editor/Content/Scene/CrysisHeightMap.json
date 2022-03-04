@@ -1,13 +1,17 @@
 {
   "name": "CrysisHeightMap",
-  "stream_files": [ 
-    "Scene\\CrysisHeightMapContentStream.json" ],
-  "material_files": [ 
-    "Scene\\CrysisHeightMapMaterial.json" ],
-  "decal_files": [ 
-    "Data\\Decal.json", "Scene\\CrysisHeightMapDecal.json" ],
-  "entity_files": [ 
-    "Scene\\CrysisHeightMapEntityType.json" ],
+  "stream_files": [
+    "Scene\\CrysisHeightMapContentStream.json"
+  ],
+  "material_files": [
+    "Scene\\CrysisHeightMapMaterial.json"
+  ],
+  "decal_files": [
+    "Scene\\CrysisHeightMapDecal.json"
+  ],
+  "entity_files": [
+    "Scene\\CrysisHeightMapEntityType.json"
+  ],
   "streams": [
     "terrain_textures",
     "models"

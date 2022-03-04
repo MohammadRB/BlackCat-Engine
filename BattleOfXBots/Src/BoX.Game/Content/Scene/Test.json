@@ -1,24 +1,18 @@
 {
   "name": "Test",
   "stream_files": [
-    "Data\\BoXContentStream.json",
     "Scene\\TestContentStream.json"
   ],
   "material_files": [
-    "Data\\BoXMaterial.json",
     "Scene\\TestMaterial.json"
   ],
   "decal_files": [
-    "Data\\Decal.json",
-    "Data\\BoXDecal.json",
     "Scene\\TestDecal.json"
   ],
   "entity_files": [
-    "Data\\BoXEntityType.json",
     "Scene\\TestEntityType.json"
   ],
   "streams": [
-    "game_assets",
     "terrain_textures",
     "models"
   ],

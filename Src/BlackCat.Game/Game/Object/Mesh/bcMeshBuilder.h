@@ -87,10 +87,10 @@ namespace black_cat
 
 			bc_mesh_builder& with_lod(bc_mesh_ptr p_mesh);
 
-			bc_mesh build(const bcCHAR* p_name, bc_mesh_collider_ptr p_collider);
+			bc_mesh build(core::bc_estring_view p_name, bc_mesh_collider_ptr p_collider);
 			
 		private:
-			core::bc_string m_name;
+			core::bc_estring m_name;
 			core::bc_nullable<bcFLOAT> m_auto_scale;
 			bool m_skinned = false;
 			bcUINT32 m_node_count = 0;

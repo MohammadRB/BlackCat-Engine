@@ -47,18 +47,17 @@ namespace black_cat
 			BC_SERVICE(c_s_mng)
 
 		private:
-			using string_hash = std::hash<const bcCHAR*>;
 			using content_load_delegate = bc_delegate<bc_icontent_ptr(bc_alloc_type, const bcECHAR*, const bcECHAR*, const bc_content_loader_parameter&)>;
-			using content_loader_map_type = bc_unordered_map_program<string_hash::result_type, content_load_delegate>;
-			using content_stream_map_type = bc_unordered_map_program<string_hash::result_type, bc_vector_program<_bc_content_stream_file>>;
-			using content_map_type = bc_unordered_map_program<string_hash::result_type, bc_vector<bc_icontent_ptr>>;
+			using content_loader_map_type = bc_unordered_map_program<bc_string_view, content_load_delegate>;
+			using content_stream_map_type = bc_unordered_map_program<bc_string, bc_vector_program<_bc_content_stream_file>>;
+			using content_map_type = bc_unordered_map_program<bc_string_view, bc_vector<bc_icontent_ptr>>;
 
 		public:
 			bc_content_stream_manager(bc_content_manager& p_content_manager) noexcept;
 
 			bc_content_stream_manager(bc_content_stream_manager&&) noexcept = delete;
 
-			~bc_content_stream_manager();
+			~bc_content_stream_manager() override;
 
 			bc_content_stream_manager& operator=(bc_content_stream_manager&&) noexcept = delete;
 
@@ -68,13 +67,13 @@ namespace black_cat
 			}
 
 			template<class TContent, class TLoader>
-			void register_loader(const bcCHAR* p_data_driven_name, bc_cloader_ptr<TLoader>&& p_loader);
+			void register_loader(bc_string_view p_data_driven_name, bc_cloader_ptr<TLoader>&& p_loader);
 
 			/**
 			 * \brief Read content streams from a non-unicode json file
 			 * \param p_json_file_path 
 			 */
-			void read_stream_file(const bcECHAR* p_json_file_path);
+			void read_stream_file(bc_estring_view p_json_file_path);
 
 			/**
 			 * \brief Load contents in the stream concurrent
@@ -82,16 +81,16 @@ namespace black_cat
 			 * \param p_alloc_type 
 			 * \param p_stream_name 
 			 */
-			void load_content_stream(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name);
+			void load_content_stream(bc_alloc_type p_alloc_type, bc_string_view p_stream_name);
 
-			bc_task<void> load_content_stream_async(bc_alloc_type p_alloc_type, const bcCHAR* p_stream_name);
+			bc_task<void> load_content_stream_async(bc_alloc_type p_alloc_type, bc_string_view p_stream_name);
 
 			/**
 			 * \brief 
 			 * \ThreadSafe
 			 * \param p_stream_name 
 			 */
-			void unload_content_stream(const bcCHAR* p_stream_name);
+			void unload_content_stream(bc_string_view p_stream_name);
 
 			/**
 			 * \brief Return Content with specified title otherwise return nullptr
@@ -99,9 +98,9 @@ namespace black_cat
 			 * \param p_content_name 
 			 * \return 
 			 */
-			bc_icontent_ptr find_content(const bcCHAR* p_content_name) const;
+			bc_icontent_ptr find_content(bc_string_view p_content_name) const;
 
-			bc_icontent_ptr find_content_throw(const bcCHAR* p_content_name) const;
+			bc_icontent_ptr find_content_throw(bc_string_view p_content_name) const;
 
 			/**
 			 * \brief Return Content with specified title otherwise return nullptr
@@ -111,25 +110,25 @@ namespace black_cat
 			 * \return 
 			 */
 			template<class TContent>
-			bc_content_ptr<TContent> find_content(const bcCHAR* p_content_name) const;
+			bc_content_ptr<TContent> find_content(bc_string_view p_content_name) const;
 
 			template<class TContent>
-			bc_content_ptr<TContent> find_content_throw(const bcCHAR* p_content_name) const;
+			bc_content_ptr<TContent> find_content_throw(bc_string_view p_content_name) const;
 
 		private:
 			template<class TContent>
-			void _register_content_loader(const bcCHAR* p_data_driven_name);
+			void _register_content_loader(bc_string_view p_data_driven_name);
 
 			bc_content_manager& m_content_manager;
 
 			content_loader_map_type m_content_loader_delegates;
-			content_stream_map_type m_streams;
+			content_stream_map_type m_stream_descriptions;
 			mutable core_platform::bc_shared_mutex m_contents_mutex;
 			content_map_type m_contents;
 		};
 
 		template<class TContent, class TLoader>
-		void bc_content_stream_manager::register_loader(const bcCHAR* p_data_driven_name, bc_cloader_ptr<TLoader>&& p_loader)
+		void bc_content_stream_manager::register_loader(bc_string_view p_data_driven_name, bc_cloader_ptr<TLoader>&& p_loader)
 		{
 			_register_content_loader<TContent>(p_data_driven_name);
 
@@ -137,21 +136,20 @@ namespace black_cat
 		}
 
 		template<class TContent>
-		void bc_content_stream_manager::_register_content_loader(const bcCHAR* p_data_driven_name)
+		void bc_content_stream_manager::_register_content_loader(bc_string_view p_data_driven_name)
 		{
-			auto l_data_driven_hash = string_hash()(p_data_driven_name);
 			content_load_delegate l_load_delegate([this](bc_alloc_type p_alloc_type, const bcECHAR* p_file_name, const bcECHAR* p_file_variant, const bc_content_loader_parameter& p_parameters)
 			{
 				return m_content_manager.load<TContent>(p_alloc_type, p_file_name, p_file_variant, p_parameters);
 			});
 
-			m_content_loader_delegates.insert(content_loader_map_type::value_type(l_data_driven_hash, std::move(l_load_delegate)));
+			m_content_loader_delegates.insert(content_loader_map_type::value_type(p_data_driven_name, std::move(l_load_delegate)));
 		}
 
 		template<class TContent>
-		bc_content_ptr<TContent> bc_content_stream_manager::find_content(const bcCHAR* p_content_name) const
+		bc_content_ptr<TContent> bc_content_stream_manager::find_content(bc_string_view p_content_name) const
 		{
-			static_assert(std::is_base_of<bci_content, TContent>::value, "TContent must be a content type");
+			static_assert(std::is_base_of_v<bci_content, TContent>, "TContent must be a content type");
 
 			bc_icontent_ptr l_content = find_content(p_content_name);
 
@@ -164,9 +162,9 @@ namespace black_cat
 		}
 
 		template<class TContent>
-		bc_content_ptr<TContent> bc_content_stream_manager::find_content_throw(const bcCHAR* p_content_name) const
+		bc_content_ptr<TContent> bc_content_stream_manager::find_content_throw(bc_string_view p_content_name) const
 		{
-			static_assert(std::is_base_of<bci_content, TContent>::value, "TContent must be a content type");
+			static_assert(std::is_base_of_v<bci_content, TContent>, "TContent must be a content type");
 
 			bc_icontent_ptr l_content = find_content_throw(p_content_name);
 

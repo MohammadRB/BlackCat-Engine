@@ -2,7 +2,7 @@
 
 #include "Game/GamePCH.h"
 #include "Game/System/Render/Decal/bcDecalInstance.h"
-#include "Game/System/Render/Decal/bcDecalManager.h"
+#include "Game/System/Render/Decal/bcDecalManagerContainer.h"
 
 namespace black_cat
 {
@@ -10,7 +10,7 @@ namespace black_cat
 	{
 		void bc_decal_instance_deleter::operator()(bc_decal_instance* p_ptr) const
 		{
-			m_manager->destroy_decal_instance(p_ptr);
+			m_container->destroy_decal_instance(p_ptr);
 		}
 
 		void bc_decal_instance::set_local_rotation(const core::bc_matrix3f& p_rotation) noexcept

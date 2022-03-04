@@ -1,6 +1,7 @@
 // [04/11/2016 MRB]
 
 #include "Core/CorePCH.h"
+#include "Core/Container/bcStringStream.h"
 #include "Core/Content/bcContentLoader.h"
 
 namespace black_cat
@@ -33,10 +34,8 @@ namespace black_cat
 
 		void bc_base_content_loader::content_offline_processing(bc_content_loading_context& p_context) const
 		{
-			const auto l_file_name = bc_to_string_frame(p_context.m_file_path);
-			const auto l_error_msg = bc_string_frame("Content offline processing is not supported: ") + l_file_name;
-
-			throw bc_io_exception(l_error_msg.c_str());
+			const auto l_error_msg = bc_string_stream_frame() << "Content offline processing is not supported: " << p_context.m_file_path;
+			throw bc_io_exception(l_error_msg.str().c_str());
 		}
 
 		void bc_base_content_loader::content_file_open_succeeded(bc_content_loading_context& p_context) const
@@ -49,26 +48,20 @@ namespace black_cat
 
 		void bc_base_content_loader::content_file_open_failed(bc_content_loading_context& p_context) const
 		{
-			const auto l_file_name = bc_to_string_frame(p_context.m_file_path);
-			const auto l_error_msg = bc_string_frame("Cannot open content file: ") + l_file_name;
-
-			throw bc_io_exception(l_error_msg.c_str());
+			const auto l_error_msg = bc_string_stream_frame() << "Cannot open content file: " << p_context.m_file_path;
+			throw bc_io_exception(l_error_msg.str().c_str());
 		}
 
 		void bc_base_content_loader::content_file_open_failed(bc_content_saving_context& p_context) const
 		{
-			const auto l_file_name = bc_to_string_frame(p_context.m_file_path);
-			const auto l_error_msg = bc_string_frame("Cannot open content file: ") + l_file_name;
-
-			throw bc_io_exception(l_error_msg.c_str());
+			const auto l_error_msg = bc_string_stream_frame() << "Cannot open content file: " << p_context.m_file_path;
+			throw bc_io_exception(l_error_msg.str().c_str());
 		}
 
 		void bc_base_content_loader::content_processing(bc_content_saving_context& p_context) const
 		{
-			const auto l_file_name = bc_to_string_frame(p_context.m_file_path);
-			const auto l_error_msg = bc_string_frame("Content saving is not supported: ") + l_file_name;
-
-			throw bc_io_exception(l_error_msg.c_str());
+			const auto l_error_msg = bc_string_stream_frame() << "Content saving is not supported: " << p_context.m_file_path;
+			throw bc_io_exception(l_error_msg.str().c_str());
 		}
 
 		bc_content_loader_result bc_base_content_loader::finish(bc_content_loading_context& p_context) const

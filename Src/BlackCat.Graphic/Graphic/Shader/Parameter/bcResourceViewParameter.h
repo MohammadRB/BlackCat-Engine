@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include "Graphic/Resource/View/bcResourceView.h"
 #include "Graphic/Shader/Parameter/bcShaderParameter.h"
 
@@ -14,9 +16,9 @@ namespace black_cat
 		public:
 			bc_resource_view_parameter();
 
-			bc_resource_view_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_resource_view p_shader_resource);
+			bc_resource_view_parameter(bcINT16 p_register, bc_shader_type p_shader_types, bc_resource_view p_shader_resource);
 
-			bc_resource_view_parameter(bcINT p_register, bc_shader_type p_shader_types, const bc_shader_parameter_link& p_parameter_link);
+			bc_resource_view_parameter(bcINT16 p_register, bc_shader_type p_shader_types, bc_shader_parameter_link p_parameter_link);
 
 			bc_resource_view_parameter(const bc_resource_view_parameter&) = default;
 
@@ -30,8 +32,6 @@ namespace black_cat
 
 			bc_shader_parameter_type get_parameter_type() const override;
 
-			void set_parameter_data(void* p_data) override;
-
 			bool is_valid() const override;
 
 		private:
@@ -44,24 +44,20 @@ namespace black_cat
 		{
 		}
 
-		inline bc_resource_view_parameter::bc_resource_view_parameter(bcINT p_register, bc_shader_type p_shader_types, bc_resource_view p_shader_resource)
+		inline bc_resource_view_parameter::bc_resource_view_parameter(bcINT16 p_register, bc_shader_type p_shader_types, bc_resource_view p_shader_resource)
 			: bc_ishader_parameter(p_register, p_shader_types),
 			m_shader_resource(p_shader_resource)
 		{
 		}
 
-		inline bc_resource_view_parameter::bc_resource_view_parameter(bcINT p_register, bc_shader_type p_shader_types, const bc_shader_parameter_link& p_parameter_link)
-			: bc_ishader_parameter(p_register, p_shader_types, p_parameter_link)
+		inline bc_resource_view_parameter::bc_resource_view_parameter(bcINT16 p_register, bc_shader_type p_shader_types, bc_shader_parameter_link p_parameter_link)
+			: bc_ishader_parameter(p_register, p_shader_types, std::move(p_parameter_link))
 		{
 		}
 
 		inline bc_resource_view bc_resource_view_parameter::get_resource_view() const
 		{
-			return m_shader_resource.is_valid()
-				       ? m_shader_resource
-				       : m_link
-					         ? m_link->get_as_resource_view()
-					         : bc_resource_view();
+			return m_shader_resource.is_valid() ? m_shader_resource : m_link.get_as_resource_view();
 		}
 
 		inline void bc_resource_view_parameter::set_resource_view(bc_resource_view p_shader_resource)
@@ -78,11 +74,6 @@ namespace black_cat
 			}
 
 			return bc_shader_parameter_type::shader_view;
-		}
-
-		inline void bc_resource_view_parameter::set_parameter_data(void* p_data)
-		{
-			set_resource_view(*reinterpret_cast<bc_resource_view*>(p_data));
 		}
 
 		inline bool bc_resource_view_parameter::is_valid() const

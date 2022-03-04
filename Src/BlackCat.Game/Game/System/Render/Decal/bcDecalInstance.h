@@ -16,6 +16,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_decal_manager;
+		class bc_decal_manager_container;
 		class bc_decal_instance;
 		
 		class BC_GAME_DLL bc_decal_instance_deleter
@@ -23,19 +24,19 @@ namespace black_cat
 		public:
 			bc_decal_instance_deleter();
 
-			explicit bc_decal_instance_deleter(bc_decal_manager& p_manager);
+			explicit bc_decal_instance_deleter(bc_decal_manager_container& p_manager);
 
 			void operator()(bc_decal_instance* p_ptr) const;
 
 		private:
-			bc_decal_manager* m_manager;
+			bc_decal_manager_container* m_container;
 		};
 		
 		class BC_GAME_DLL bc_decal_instance : public core::bc_ref_count
 		{
 		public:
 			bc_decal_instance(bc_decal_ptr p_decal,
-				const bc_actor& p_actor,
+				bc_actor p_actor,
 				const core::bc_vector3f& p_local_position,
 				const core::bc_matrix3f& p_local_rotation,
 				bc_mesh_node::node_index_t p_attached_node_index) noexcept;
@@ -92,22 +93,22 @@ namespace black_cat
 		using bc_decal_instance_ptr = core::bc_ref_count_ptr<bc_decal_instance, bc_decal_instance_deleter>;
 
 		inline bc_decal_instance_deleter::bc_decal_instance_deleter()
-			: m_manager(nullptr)
+			: m_container(nullptr)
 		{
 		}
 
-		inline bc_decal_instance_deleter::bc_decal_instance_deleter(bc_decal_manager& p_manager)
-			: m_manager(&p_manager)
+		inline bc_decal_instance_deleter::bc_decal_instance_deleter(bc_decal_manager_container& p_manager)
+			: m_container(&p_manager)
 		{
 		}
 
 		inline bc_decal_instance::bc_decal_instance(bc_decal_ptr p_decal,
-			const bc_actor& p_actor,
+			bc_actor p_actor,
 			const core::bc_vector3f& p_local_position,
 			const core::bc_matrix3f& p_local_rotation,
 			bc_mesh_node::node_index_t p_attached_node_index) noexcept
 			: m_decal(std::move(p_decal)),
-			m_actor(p_actor),
+			m_actor(std::move(p_actor)),
 			m_local_position(p_local_position),
 			m_local_rotation(p_local_rotation),
 			m_render_group(m_decal->get_group()),
@@ -115,6 +116,15 @@ namespace black_cat
 		{
 		}
 
+		/**
+		 * \brief 
+		 * \param p_decal 
+		 * \param p_actor 
+		 * \param p_local_position 
+		 * \param p_local_rotation 
+		 * \param p_render_group 
+		 * \param p_attached_node_index 
+		 */
 		inline bc_decal_instance::bc_decal_instance(bc_decal_ptr p_decal,
 			const bc_actor& p_actor,
 			const core::bc_vector3f& p_local_position,

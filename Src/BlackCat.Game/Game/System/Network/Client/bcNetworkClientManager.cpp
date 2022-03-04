@@ -408,7 +408,7 @@ namespace black_cat
 				auto l_scene = l_content_manager->load<bc_scene>
 				(
 					l_file_system.get_content_scene_path(p_scene_name).c_str(),
-					nullptr,
+					{},
 					core::bc_content_loader_parameter()
 				);
 				m_game_system->set_scene(std::move(l_scene));

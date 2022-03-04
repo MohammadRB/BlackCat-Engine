@@ -57,6 +57,7 @@ namespace black_cat
 		{
 			friend class bc_particle_builder1;
 			friend class bc_particle_manager;
+			friend class bc_particle_manager_container;
 			
 		public:
 			const static bc_particle_curve s_curve_constant;
