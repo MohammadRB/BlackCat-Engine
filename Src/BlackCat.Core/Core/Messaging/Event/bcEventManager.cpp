@@ -25,7 +25,7 @@ namespace black_cat
 			const auto l_hash = bci_event::get_hash(p_listener_handle.m_event_name);
 
 			{
-				core_platform::bc_shared_mutex_guard l_guard(m_handlers_mutex);
+				platform::bc_shared_mutex_guard l_guard(m_handlers_mutex);
 
 				auto l_ite = m_handlers.find(l_hash);
 				BC_ASSERT(l_ite != m_handlers.end());
@@ -39,7 +39,7 @@ namespace black_cat
 			const auto l_hash = bci_event::get_hash(p_listener_handle.m_event_name);
 
 			{
-				core_platform::bc_shared_mutex_guard l_guard(m_handlers_mutex);
+				platform::bc_shared_mutex_guard l_guard(m_handlers_mutex);
 
 				auto l_ite = m_handlers.find(l_hash);
 				BC_ASSERT(l_ite != m_handlers.end());
@@ -61,7 +61,7 @@ namespace black_cat
 			bool l_handled = false;
 
 			{
-				core_platform::bc_shared_mutex_shared_guard l_guard(m_handlers_mutex);
+				platform::bc_shared_mutex_shared_guard l_guard(m_handlers_mutex);
 
 				l_ite = m_handlers.find(l_hash);
 			}
@@ -77,12 +77,12 @@ namespace black_cat
 			return l_handled;
 		}
 
-		bcUINT32 bc_event_manager::process_event_queue(const core_platform::bc_clock::update_param& p_clock)
+		bcUINT32 bc_event_manager::process_event_queue(const platform::bc_clock::update_param& p_clock)
 		{
 			return _process_events_in_queue(p_clock, m_last_elapsed, m_global_queue, m_local_queue);
 		}
 
-		bcUINT32 bc_event_manager::process_render_event_queue(const core_platform::bc_clock::update_param& p_clock)
+		bcUINT32 bc_event_manager::process_render_event_queue(const platform::bc_clock::update_param& p_clock)
 		{
 			return _process_events_in_queue(p_clock, m_render_last_elapsed, m_render_global_queue, m_render_local_queue);
 		}
@@ -93,7 +93,7 @@ namespace black_cat
 			bc_event_handler_index l_index;
 
 			{
-				core_platform::bc_shared_mutex_guard l_guard(m_handlers_mutex);
+				platform::bc_shared_mutex_guard l_guard(m_handlers_mutex);
 
 				auto& l_event_handle = m_handlers[l_hash];
 				l_index = l_event_handle.add_delegate(std::move(p_listener));
@@ -102,8 +102,8 @@ namespace black_cat
 			return bc_event_listener_handle(p_event_name, l_index);
 		}
 
-		bcUINT32 bc_event_manager::_process_events_in_queue(const core_platform::bc_clock::update_param& p_clock,
-			core_platform::bc_clock::big_clock& p_last_elapsed,
+		bcUINT32 bc_event_manager::_process_events_in_queue(const platform::bc_clock::update_param& p_clock,
+			platform::bc_clock::big_clock& p_last_elapsed,
 			bc_concurrent_queue<_bc_queued_event>& p_global_queue,
 			bc_list<_bc_queued_event, bc_memory_pool_allocator<_bc_queued_event>>& p_local_queue)
 		{

@@ -31,7 +31,7 @@ namespace black_cat
 
 			void set_look_at(const core::bc_vector3f& p_position, const core::bc_vector3f& p_look_at) noexcept;
 			
-			void update(const core_platform::bc_clock::update_param& p_clock) noexcept override;
+			void update(const platform::bc_clock::update_param& p_clock) noexcept override;
 
 		private:
 			core::bc_matrix4f create_view_matrix(const core::bc_vector3f& p_up) noexcept override;

@@ -9,7 +9,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		template<>
 		struct bc_platform_condition_variable_pack<bc_platform::win32>

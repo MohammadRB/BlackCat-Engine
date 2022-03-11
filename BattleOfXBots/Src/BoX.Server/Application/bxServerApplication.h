@@ -66,7 +66,7 @@ namespace box
 		
 		void application_render(const bc_application_render_context& p_context) override;
 
-		void application_swap_frame(const core_platform::bc_clock::update_param& p_clock) override;
+		void application_swap_frame(const platform::bc_clock::update_param& p_clock) override;
 		
 		void application_event(core::bci_event& p_event) override;
 		
@@ -98,7 +98,7 @@ namespace box
 
 		// Private methods
 
-		void _send_game_state_to_clients(const core_platform::bc_clock::update_param& p_clock);
+		void _send_game_state_to_clients(const platform::bc_clock::update_param& p_clock);
 
 		void _create_scene_checkpoint(game::bc_scene& p_scene);
 
@@ -110,7 +110,7 @@ namespace box
 
 		std::pair<bool, core::bc_vector3f> _assign_seat(game::bc_network_client_id p_client_id, bx_team p_team);
 
-		void _respawn_dead_players(const core_platform::bc_clock::update_param& p_clock);
+		void _respawn_dead_players(const platform::bc_clock::update_param& p_clock);
 
 		const bcECHAR* m_app_name{ nullptr };
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;

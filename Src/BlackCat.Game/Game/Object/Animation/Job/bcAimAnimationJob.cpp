@@ -80,7 +80,7 @@ namespace black_cat
 
 		bc_aim_animation_job& bc_aim_animation_job::operator=(bc_aim_animation_job&&) noexcept = default;
 
-		bool bc_aim_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
+		bool bc_aim_animation_job::run(const platform::bc_clock::update_param& p_clock)
 		{
 			if(m_bone_chains.size() < 2)
 			{

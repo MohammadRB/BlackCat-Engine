@@ -10,7 +10,7 @@ namespace black_cat
 	{
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_error<core_platform::g_api_win32>::bc_platform_script_error(bc_script_context& p_context, const core::bc_wstring& p_message)
+		bc_platform_script_error<platform::g_api_win32>::bc_platform_script_error(bc_script_context& p_context, const core::bc_wstring& p_message)
 		{
 			bc_chakra_call l_call(p_context);
 			JsValueRef l_error_value;
@@ -21,27 +21,27 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_error<core_platform::g_api_win32>::bc_platform_script_error()
+		bc_platform_script_error<platform::g_api_win32>::bc_platform_script_error()
 		{
 			m_pack.m_js_error = JS_INVALID_REFERENCE;
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_error<core_platform::g_api_win32>::bc_platform_script_error(const bc_platform_script_error& p_other) noexcept
+		bc_platform_script_error<platform::g_api_win32>::bc_platform_script_error(const bc_platform_script_error& p_other) noexcept
 		{
 			operator=(p_other);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_error<core_platform::g_api_win32>::~bc_platform_script_error()
+		bc_platform_script_error<platform::g_api_win32>::~bc_platform_script_error()
 		{	
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_error<core_platform::g_api_win32>& bc_platform_script_error<core_platform::g_api_win32>::operator=(const bc_platform_script_error& p_other) noexcept
+		bc_platform_script_error<platform::g_api_win32>& bc_platform_script_error<platform::g_api_win32>::operator=(const bc_platform_script_error& p_other) noexcept
 		{
 			bc_platform_script_reference::operator=(p_other);
 			m_pack.m_js_error = p_other.m_pack.m_js_error;
@@ -51,7 +51,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		core::bc_wstring bc_platform_script_error<core_platform::g_api_win32>::error_message() const
+		core::bc_wstring bc_platform_script_error<platform::g_api_win32>::error_message() const
 		{
 			bc_chakra_call l_call;
 			JsValueRef l_message_property;
@@ -90,7 +90,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_error<core_platform::g_api_win32>::is_valid() const noexcept
+		bool bc_platform_script_error<platform::g_api_win32>::is_valid() const noexcept
 		{
 			return m_pack.m_js_error != JS_INVALID_REFERENCE;
 		}

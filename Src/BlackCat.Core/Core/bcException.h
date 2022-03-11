@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CorePlatform/bcException.h"
-#include "Core/CorePCH.h"
 
 namespace black_cat
 {
@@ -24,7 +23,7 @@ namespace black_cat
 	public:
 		explicit bc_io_exception(const bcCHAR* p_message);
 
-		explicit bc_io_exception(std::string& p_message);
+		explicit bc_io_exception(const std::string& p_message);
 
 		bc_io_exception(const bc_io_exception&) = default;
 
@@ -47,7 +46,7 @@ namespace black_cat
 	{
 	}
 
-	inline bc_io_exception::bc_io_exception(std::string& p_message)
+	inline bc_io_exception::bc_io_exception(const std::string& p_message)
 		: runtime_error(p_message)
 	{
 	}

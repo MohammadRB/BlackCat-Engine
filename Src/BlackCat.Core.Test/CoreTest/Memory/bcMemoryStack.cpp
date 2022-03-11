@@ -100,7 +100,7 @@ namespace black_cat
 			{
 				l_threads.push_back(std::thread([&]()
 				{
-					std::cout << core_platform::bc_thread::current_thread_id() << std::endl;
+					std::cout << platform::bc_thread::current_thread_id() << std::endl;
 
 					while (l_start_flag.load() == 0)
 					{
@@ -118,7 +118,7 @@ namespace black_cat
 						auto* l_pointer = static_cast<bcUINT32*>(l_result);
 
 						*l_pointer = i;
-						//*l_pointer = core_platform::bc_thread::current_thread_id();
+						//*l_pointer = platform::bc_thread::current_thread_id();
 
 						l_memblocks.push_back(std::make_pair(l_result, l_block));
 					}

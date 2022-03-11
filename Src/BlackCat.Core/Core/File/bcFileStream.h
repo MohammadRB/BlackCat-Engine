@@ -12,18 +12,18 @@ namespace black_cat
 	{
 		class bc_file_stream : 
 			public bci_stream_adapter,
-			public core_platform::bc_no_copy
+			public platform::bc_no_copy
 		{
 		public:
 			bc_file_stream();
 
-			bc_file_stream(bc_file_stream&& p_other) noexcept(std::is_nothrow_move_constructible<core_platform::bc_file>::value);
+			bc_file_stream(bc_file_stream&& p_other) noexcept(std::is_nothrow_move_constructible<platform::bc_file>::value);
 
 			~bc_file_stream() override;
 
-			bc_file_stream& operator=(bc_file_stream&& p_other) noexcept(std::is_nothrow_move_assignable<core_platform::bc_file>::value);
+			bc_file_stream& operator=(bc_file_stream&& p_other) noexcept(std::is_nothrow_move_assignable<platform::bc_file>::value);
 
-			const core_platform::bc_file& get_file() const noexcept;
+			const platform::bc_file& get_file() const noexcept;
 
 			bc_stream_status get_status() const noexcept override;
 
@@ -47,9 +47,9 @@ namespace black_cat
 			 * \param p_sharing 
 			 * \return 
 			 */
-			bool open(bc_estring_view p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access, core_platform::bc_file_sharing p_sharing) noexcept;
+			bool open(bc_estring_view p_file, platform::bc_file_mode p_mode, platform::bc_file_access p_access, platform::bc_file_sharing p_sharing) noexcept;
 
-			bool open(bc_estring_view p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access) noexcept;
+			bool open(bc_estring_view p_file, platform::bc_file_mode p_mode, platform::bc_file_access p_access) noexcept;
 			
 			/**
 			 * \brief Open an existing file for reading
@@ -86,14 +86,14 @@ namespace black_cat
 			bc_stream_type get_type() const noexcept override;
 
 		private:
-			core_platform::bc_file m_file;
-			core_platform::bc_file_access m_access;
+			platform::bc_file m_file;
+			platform::bc_file_access m_access;
 			bc_estring m_path;
 		};
 
 		inline bc_file_stream::bc_file_stream() = default;
 
-		inline bc_file_stream::bc_file_stream(bc_file_stream && p_other) noexcept (std::is_nothrow_move_constructible< core_platform::bc_file >::value) = default;
+		inline bc_file_stream::bc_file_stream(bc_file_stream && p_other) noexcept (std::is_nothrow_move_constructible< platform::bc_file >::value) = default;
 
 		inline bc_file_stream::~bc_file_stream()
 		{
@@ -103,9 +103,9 @@ namespace black_cat
 			}
 		}
 
-		inline bc_file_stream& bc_file_stream::operator=(bc_file_stream && p_other) noexcept (std::is_nothrow_move_constructible< core_platform::bc_file >::value) = default;
+		inline bc_file_stream& bc_file_stream::operator=(bc_file_stream && p_other) noexcept (std::is_nothrow_move_constructible< platform::bc_file >::value) = default;
 
-		inline const core_platform::bc_file& bc_file_stream::get_file() const noexcept
+		inline const platform::bc_file& bc_file_stream::get_file() const noexcept
 		{
 			return m_file;
 		}
@@ -113,17 +113,17 @@ namespace black_cat
 		inline bc_stream_status bc_file_stream::get_status() const noexcept
 		{
 			bc_stream_status l_stream_status = bc_stream_status::error;
-			core_platform::bc_file_status l_file_status = m_file.get_status();
+			platform::bc_file_status l_file_status = m_file.get_status();
 
 			switch (l_file_status)
 			{
-			case core_platform::bc_file_status::open:
+			case platform::bc_file_status::open:
 				l_stream_status = bc_stream_status::open;
 				break;
-			case core_platform::bc_file_status::close:
+			case platform::bc_file_status::close:
 				l_stream_status = bc_stream_status::close;
 				break;
-			case core_platform::bc_file_status::error:
+			case platform::bc_file_status::error:
 				l_stream_status = bc_stream_status::error;
 				break;
 			}
@@ -133,12 +133,12 @@ namespace black_cat
 
 		inline bool bc_file_stream::can_read() const noexcept
 		{
-			return m_access == core_platform::bc_file_access::read || m_access == core_platform::bc_file_access::read_write;
+			return m_access == platform::bc_file_access::read || m_access == platform::bc_file_access::read_write;
 		}
 
 		inline bool bc_file_stream::can_write() const noexcept
 		{
-			return m_access == core_platform::bc_file_access::write || m_access == core_platform::bc_file_access::read_write;
+			return m_access == platform::bc_file_access::write || m_access == platform::bc_file_access::read_write;
 		}
 
 		inline bool bc_file_stream::can_seek() const noexcept
@@ -160,7 +160,7 @@ namespace black_cat
 		{
 		}
 
-		inline bool bc_file_stream::open(bc_estring_view p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access, core_platform::bc_file_sharing p_sharing) noexcept
+		inline bool bc_file_stream::open(bc_estring_view p_file, platform::bc_file_mode p_mode, platform::bc_file_access p_access, platform::bc_file_sharing p_sharing) noexcept
 		{
 			const bool l_result = m_file.open(p_file.data(), p_mode, p_access, p_sharing);
 			
@@ -173,7 +173,7 @@ namespace black_cat
 			return l_result;
 		}
 
-		inline bool bc_file_stream::open(bc_estring_view p_file, core_platform::bc_file_mode p_mode, core_platform::bc_file_access p_access) noexcept
+		inline bool bc_file_stream::open(bc_estring_view p_file, platform::bc_file_mode p_mode, platform::bc_file_access p_access) noexcept
 		{
 			const bool l_result = m_file.open(p_file.data(), p_mode, p_access);
 
@@ -193,7 +193,7 @@ namespace black_cat
 			if (l_result)
 			{
 				m_path.assign(p_file);
-				m_access = core_platform::bc_file_access::read;
+				m_access = platform::bc_file_access::read;
 			}
 
 			return l_result;
@@ -206,7 +206,7 @@ namespace black_cat
 			if (l_result)
 			{
 				m_path.assign(p_file);
-				m_access = core_platform::bc_file_access::write;
+				m_access = platform::bc_file_access::write;
 			}
 
 			return l_result;
@@ -219,18 +219,18 @@ namespace black_cat
 
 		inline bcUINT64 bc_file_stream::set_position(bc_stream_seek p_seek_location, bcINT64 p_offset)
 		{
-			core_platform::bc_file_seek l_file_seek = core_platform::bc_file_seek::current;
+			platform::bc_file_seek l_file_seek = platform::bc_file_seek::current;
 
 			switch (p_seek_location)
 			{
 			case bc_stream_seek::start:
-				l_file_seek = core_platform::bc_file_seek::start;
+				l_file_seek = platform::bc_file_seek::start;
 				break;
 			case bc_stream_seek::current:
-				l_file_seek = core_platform::bc_file_seek::current;
+				l_file_seek = platform::bc_file_seek::current;
 				break;
 			case bc_stream_seek::end:
-				l_file_seek = core_platform::bc_file_seek::end;
+				l_file_seek = platform::bc_file_seek::end;
 				break;
 			}
 

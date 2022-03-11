@@ -142,7 +142,7 @@ namespace black_cat
 			const auto l_hash = string_hash()(p_name);
 
 			{
-				core_platform::bc_mutex_guard l_lock(m_decals_mutex);
+				platform::bc_mutex_guard l_lock(m_decals_mutex);
 
 				const auto l_ite = m_decals.find(l_hash);
 				if (l_ite != std::end(m_decals))
@@ -182,7 +182,7 @@ namespace black_cat
 			));
 
 			{
-				core_platform::bc_mutex_guard l_lock(m_decals_mutex);
+				platform::bc_mutex_guard l_lock(m_decals_mutex);
 				
 				m_decals.insert(std::make_pair(l_hash, l_decal));
 			}
@@ -207,7 +207,7 @@ namespace black_cat
 			auto* l_entry = static_cast<_bc_decal_entry*>(p_decal);
 			
 			{
-				core_platform::bc_mutex_guard l_lock(m_decals_mutex);
+				platform::bc_mutex_guard l_lock(m_decals_mutex);
 				const auto l_ite = m_decals.find(l_entry->m_hash);
 
 				BC_ASSERT(l_ite != std::end(m_decals));

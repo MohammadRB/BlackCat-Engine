@@ -13,7 +13,7 @@ namespace black_cat
 	namespace platform
 	{
 		template<>
-		struct bc_platform_non_block_socket_pack<core_platform::g_api_win32>
+		struct bc_platform_non_block_socket_pack<platform::g_api_win32>
 		{
 			SOCKET m_socket;
 		};

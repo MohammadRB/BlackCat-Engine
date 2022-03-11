@@ -215,7 +215,7 @@ namespace black_cat
 			 * \return 
 			 */
 			bc_ccontroller_collision_flag move(const core::bc_vector3f& p_displacement,
-				const core_platform::bc_clock::update_param& p_clock,
+				const platform::bc_clock::update_param& p_clock,
 				bc_scene_query_pre_filter_callback* p_pre_filter = nullptr,
 				bc_scene_query_post_filter_callback* p_post_filter = nullptr,
 				bc_ccontroller_collision_filter_callback* p_cc_vs_cc_filter = nullptr) noexcept;

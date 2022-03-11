@@ -99,7 +99,7 @@ namespace black_cat
 			bc_material_manager* m_material_manager;
 
 			decal_desc_map m_decal_descriptions;
-			core_platform::bc_mutex m_decals_mutex;
+			platform::bc_mutex m_decals_mutex;
 			core::bc_concurrent_object_pool<_bc_decal_entry> m_decals_pool;
 			decal_map m_decals;
 		};

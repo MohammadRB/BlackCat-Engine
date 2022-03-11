@@ -14,7 +14,7 @@ namespace black_cat
 		class bc_mutex_test
 		{
 		private:
-			using id_hasher = std::hash<core_platform::bc_thread::id>;
+			using id_hasher = std::hash<platform::bc_thread::id>;
 			using id_hash_t = bcSIZE;
 			
 		public:
@@ -33,10 +33,10 @@ namespace black_cat
 			bool try_lock() noexcept;
 
 		private:
-			core_platform::bc_atomic<id_hash_t> m_thread_id;
+			platform::bc_atomic<id_hash_t> m_thread_id;
 		};
 
-		using bc_mutex_test_guard = core_platform::bc_lock_guard<bc_mutex_test>;
+		using bc_mutex_test_guard = platform::bc_lock_guard<bc_mutex_test>;
 
 		inline bc_mutex_test::bc_mutex_test()
 			: m_thread_id(0)
@@ -46,15 +46,15 @@ namespace black_cat
 		inline void bc_mutex_test::lock()
 		{
 #ifdef BC_DEBUG
-			const auto l_current_thread_id = id_hasher()(core_platform::bc_thread::current_thread_id());
+			const auto l_current_thread_id = id_hasher()(platform::bc_thread::current_thread_id());
 			auto l_expected = static_cast<id_hash_t>(0);
 
 			const auto l_locked = m_thread_id.compare_exchange_strong
 			(
 				&l_expected,
 				l_current_thread_id,
-				core_platform::bc_memory_order::relaxed,
-				core_platform::bc_memory_order::relaxed
+				platform::bc_memory_order::relaxed,
+				platform::bc_memory_order::relaxed
 			);
 
 			BC_ASSERT(l_locked);
@@ -64,12 +64,12 @@ namespace black_cat
 		inline void bc_mutex_test::unlock() noexcept
 		{
 #ifdef BC_DEBUG
-			const auto l_current_thread_id = id_hasher()(core_platform::bc_thread::current_thread_id());
-			const auto l_thread_id = m_thread_id.load(core_platform::bc_memory_order::relaxed);
+			const auto l_current_thread_id = id_hasher()(platform::bc_thread::current_thread_id());
+			const auto l_thread_id = m_thread_id.load(platform::bc_memory_order::relaxed);
 			
 			BC_ASSERT(l_current_thread_id == l_thread_id);
 			
-			m_thread_id.store(static_cast< id_hash_t >(0), core_platform::bc_memory_order::relaxed);
+			m_thread_id.store(static_cast< id_hash_t >(0), platform::bc_memory_order::relaxed);
 #endif
 		}
 

@@ -7,7 +7,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		template<>
 		BC_COREPLATFORMIMP_DLL

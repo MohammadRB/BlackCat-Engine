@@ -37,7 +37,7 @@ namespace black_cat
 		{
 			bool m_output_to_console;
 			core::bc_wstring m_script;
-			core_platform::bc_promise< platform::bc_script_variable > m_promise;
+			platform::bc_promise< platform::bc_script_variable > m_promise;
 		};
 
 		class BC_GAME_DLL bc_game_console : private core::bci_log_listener
@@ -65,9 +65,9 @@ namespace black_cat
 
 			void run_script(const bcWCHAR* p_script, bool p_output_to_console = false);
 
-			void run_script(const bcWCHAR* p_script, core_platform::bc_future<platform::bc_script_variable>* p_result, bool p_output_to_console = false);
+			void run_script(const bcWCHAR* p_script, platform::bc_future<platform::bc_script_variable>* p_result, bool p_output_to_console = false);
 
-			void update(const core_platform::bc_clock::update_param& p_clock);
+			void update(const platform::bc_clock::update_param& p_clock);
 
 			static void bind(platform::bc_script_context& p_context, platform::bc_script_global_prototype_builder& p_global_prototype, bc_game_console& p_instance);
 			
@@ -81,7 +81,7 @@ namespace black_cat
 			
 			core::bc_array<bool, static_cast<bcSIZE>(bc_console_output_type::_count)> m_log_types;
 
-			core_platform::bc_mutex m_scripts_mutex;
+			platform::bc_mutex m_scripts_mutex;
 			core::bc_vector<_bc_script_queue_entry> m_scripts;
 
 			platform::bc_script_context* m_bound_context;

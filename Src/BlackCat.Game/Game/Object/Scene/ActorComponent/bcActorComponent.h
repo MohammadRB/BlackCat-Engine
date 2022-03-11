@@ -142,7 +142,7 @@ namespace black_cat
 
 		struct bc_actor_component_update_content
 		{
-			bc_actor_component_update_content(const core_platform::bc_clock::update_param& p_clock, 
+			bc_actor_component_update_content(const platform::bc_clock::update_param& p_clock, 
 				core::bc_query_manager& p_query_manager, 
 				bc_game_system& p_game_system, 
 				bc_actor& p_actor, 
@@ -155,7 +155,7 @@ namespace black_cat
 			{
 			}
 
-			const core_platform::bc_clock::update_param& m_clock;
+			const platform::bc_clock::update_param& m_clock;
 			core::bc_query_manager& m_query_manager;
 			bc_game_system& m_game_system;
 			bc_actor& m_actor;

@@ -33,7 +33,7 @@ namespace black_cat
 			
 			const bcUINT32* get_32bit_indices() const noexcept;
 						
-			bool run(const core_platform::bc_clock::update_param& p_clock) override;
+			bool run(const platform::bc_clock::update_param& p_clock) override;
 			
 		private:
 			const bc_sub_mesh* m_sub_mesh;

@@ -110,7 +110,7 @@ namespace black_cat
 			bc_actor_id m_actor_index;
 			bc_actor_id m_parent_index;
 			bc_actor_event* m_events[2];
-			core_platform::bc_spin_mutex m_mutex;
+			platform::bc_spin_mutex m_mutex;
 		};
 
 		struct _bc_actor_component_entry
@@ -138,7 +138,7 @@ namespace black_cat
 			core::bc_vector_movable<bc_actor_component_id> m_actor_to_component_index_map;
 			core::bc_unique_ptr<bci_actor_component_container> m_container;
 			core::bc_vector_movable<deriveds_component_get_delegate> m_deriveds;
-			mutable core_platform::bc_shared_mutex m_lock;
+			mutable platform::bc_shared_mutex m_lock;
 		};
 
 		class BC_GAME_DLL bc_actor_component_manager : public core::bci_service
@@ -200,15 +200,15 @@ namespace black_cat
 			template<class TComponent>
 			bc_actor component_get_actor(const TComponent& p_component) const noexcept;
 
-			void process_actor_events(const core_platform::bc_clock::update_param& p_clock);
+			void process_actor_events(const platform::bc_clock::update_param& p_clock);
 			
-			void update_actors(const core_platform::bc_clock::update_param& p_clock);
+			void update_actors(const platform::bc_clock::update_param& p_clock);
 			
-			core::bc_task<void> process_actor_events_async(const core_platform::bc_clock::update_param& p_clock);
+			core::bc_task<void> process_actor_events_async(const platform::bc_clock::update_param& p_clock);
 			
-			core::bc_task<void> update_actors_async(const core_platform::bc_clock::update_param& p_clock);
+			core::bc_task<void> update_actors_async(const platform::bc_clock::update_param& p_clock);
 
-			void double_update_actors(const core_platform::bc_clock::update_param& p_clock);
+			void double_update_actors(const platform::bc_clock::update_param& p_clock);
 
 			template<class ...TCAdapter>
 			void register_component_types(TCAdapter... p_components);
@@ -244,7 +244,7 @@ namespace black_cat
 			component_container_type m_components;
 			bcSIZE m_events_pool_capacity;
 
-			mutable core_platform::bc_shared_mutex m_actors_lock;
+			mutable platform::bc_shared_mutex m_actors_lock;
 			actor_container_type m_actors;
 			core::bc_bit_vector m_actors_bit;
 			double_update_actor_container_type m_double_update_actors;
@@ -288,7 +288,7 @@ namespace black_cat
 		inline void _bc_actor_entry::add_event(bcUINT32 p_active_event_pool, bc_actor_event* p_event) noexcept
 		{
 			{
-				core_platform::bc_spin_mutex_guard l_lock(m_mutex);
+				platform::bc_spin_mutex_guard l_lock(m_mutex);
 
 				bc_actor_event* l_last_event = m_events[p_active_event_pool];
 
@@ -356,7 +356,7 @@ namespace black_cat
 			bool l_actor_to_component_need_resize = false;
 			
 			{
-				core_platform::bc_shared_mutex_guard l_lock(m_actors_lock);
+				platform::bc_shared_mutex_guard l_lock(m_actors_lock);
 
 				bcUINT32 l_free_slot;
 				const auto l_has_free_slot = m_actors_bit.find_first_false(l_free_slot);
@@ -381,7 +381,7 @@ namespace black_cat
 			if(l_actor_to_component_need_resize)
 			{
 				{
-					core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
+					platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
 					_resize_actor_to_component_index_maps();
 				}
 			}
@@ -404,7 +404,7 @@ namespace black_cat
 				}
 
 				{
-					core_platform::bc_shared_mutex_shared_guard l_lock(l_component_entry.m_lock);
+					platform::bc_shared_mutex_shared_guard l_lock(l_component_entry.m_lock);
 
 					const auto l_component_index = l_component_entry.m_actor_to_component_index_map[l_actor_index];
 
@@ -418,7 +418,7 @@ namespace black_cat
 			}
 
 			{
-				core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
+				platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
 
 				BC_ASSERT(m_actors_bit[l_actor_index]);
 				
@@ -444,7 +444,7 @@ namespace black_cat
 			auto* l_event = m_event_pools[m_write_event_pool].alloc<TEvent>(std::move(p_event));
 
 			{
-				core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
+				platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
 
 				auto& l_actor_entry = m_actors[p_actor.get_id()];
 				l_actor_entry.add_event(m_write_event_pool, l_event);
@@ -454,7 +454,7 @@ namespace black_cat
 		inline bc_actor_event* bc_actor_component_manager::actor_get_events(const bc_actor& p_actor) const noexcept
 		{
 			{
-				core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
+				platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
 
 				const auto& l_actor_entry = m_actors[p_actor.get_id()];
 				return l_actor_entry.get_events(m_read_event_pool);
@@ -464,7 +464,7 @@ namespace black_cat
 		inline void bc_actor_component_manager::actor_clear_events(const bc_actor& p_actor) noexcept
 		{
 			{
-				core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
+				platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
 
 				auto& l_actor_entry = m_actors[p_actor.get_id()];
 				l_actor_entry.clear_events(m_read_event_pool);
@@ -487,7 +487,7 @@ namespace black_cat
 			BC_ASSERT(l_actor_index != bc_actor::invalid_id);
 			
 			{
-				core_platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
+				platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
 				l_parent_index = m_actors[l_actor_index].m_parent_index;
 			}
 			
@@ -506,7 +506,7 @@ namespace black_cat
 			}
 
 			{
-				core_platform::bc_shared_mutex_guard l_lock(l_s_component_entry->second.m_lock);
+				platform::bc_shared_mutex_guard l_lock(l_s_component_entry->second.m_lock);
 				
 				// Cast to concrete container to avoid virtual calls
 				auto* l_concrete_container = static_cast<bc_actor_component_container<TComponent>*>(l_s_component_entry->second.m_container.get());
@@ -534,7 +534,7 @@ namespace black_cat
 			BC_ASSERT(l_actor_index != bc_actor::invalid_id);
 
 			{
-				core_platform::bc_shared_mutex_shared_guard l_lock(l_component_entry->second.m_lock);
+				platform::bc_shared_mutex_shared_guard l_lock(l_component_entry->second.m_lock);
 
 				auto l_component_index = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
 				// Actor has not this type of component
@@ -590,7 +590,7 @@ namespace black_cat
 				}
 
 				{
-					core_platform::bc_shared_mutex_shared_guard l_lock(l_component_entry.second.m_lock);
+					platform::bc_shared_mutex_shared_guard l_lock(l_component_entry.second.m_lock);
 
 					const auto l_component_index = l_component_entry.second.m_actor_to_component_index_map[l_actor_index];
 					if (l_component_index != bci_actor_component::invalid_id)
@@ -611,7 +611,7 @@ namespace black_cat
 			return bc_actor(l_actor_index);
 
 			/*{
-				core_platform::bc_shared_mutex_shared_guard l_actors_lock(m_actors_lock);
+				platform::bc_shared_mutex_shared_guard l_actors_lock(m_actors_lock);
 
 				return bc_actor(m_actors[l_actor_index].m_actor_index);
 			}*/
@@ -687,7 +687,7 @@ namespace black_cat
 			BC_ASSERT(l_actor_index != bc_actor::invalid_id);
 
 			{
-				core_platform::bc_shared_mutex_shared_guard l_lock(l_component_entry->second.m_lock);
+				platform::bc_shared_mutex_shared_guard l_lock(l_component_entry->second.m_lock);
 
 				auto l_actor_to_component = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
 				// Actor does not has this type of component
@@ -831,7 +831,7 @@ namespace black_cat
 				}
 
 				{
-					core_platform::bc_shared_mutex_guard l_lock(l_component_entry.second.m_lock);
+					platform::bc_shared_mutex_guard l_lock(l_component_entry.second.m_lock);
 
 					// If component type doesn't have enough space in index map
 					if (l_component_entry.second.m_actor_to_component_index_map.size() < m_actors.size())

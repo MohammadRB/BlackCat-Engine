@@ -52,7 +52,7 @@ namespace black_cat
 				if (auto* l_bucket = get_next())
 				{
 					l_bucket->~bc_memory_extender_bucket();
-					core_platform::bc_mem_free(l_bucket);
+					platform::bc_mem_free(l_bucket);
 				}
 			}
 
@@ -76,7 +76,7 @@ namespace black_cat
 
 			bc_memory_extender_bucket* get_next() const noexcept
 			{
-				return m_next.load(core_platform::bc_memory_order::relaxed);
+				return m_next.load(platform::bc_memory_order::relaxed);
 			}
 
 			bc_memory_extender_bucket* create_next()
@@ -85,7 +85,7 @@ namespace black_cat
 				{
 					// Because we have override global new and delete operators, we must avoid using new operator to prevent
 					// circular calls between memory management and this class
-					auto* l_result = static_cast<bc_memory_extender_bucket*>(core_platform::bc_mem_alloc(sizeof(bc_memory_extender_bucket)));
+					auto* l_result = static_cast<bc_memory_extender_bucket*>(platform::bc_mem_alloc(sizeof(bc_memory_extender_bucket)));
 					new(l_result)bc_memory_extender_bucket(m_memory_initializer, m_memory_cleanup);
 
 					return l_result;
@@ -97,8 +97,8 @@ namespace black_cat
 			initializer_type m_memory_initializer;
 			cleanup_type m_memory_cleanup;
 			memory_type* m_memory;
-			core_platform::bc_mutex m_next_mutex;
-			core_platform::bc_atomic<bc_memory_extender_bucket* > m_next;
+			platform::bc_mutex m_next_mutex;
+			platform::bc_atomic<bc_memory_extender_bucket* > m_next;
 		};
 
 		template<typename TMemory>
@@ -284,7 +284,7 @@ namespace black_cat
 			m_initializer = std::move(p_initializer);
 			m_cleanup = std::move(p_cleanup);
 
-			m_first = static_cast<bc_memory_extender_bucket<TMemory>* >(core_platform::bc_mem_alloc(sizeof(bc_memory_extender_bucket<TMemory>)));
+			m_first = static_cast<bc_memory_extender_bucket<TMemory>* >(platform::bc_mem_alloc(sizeof(bc_memory_extender_bucket<TMemory>)));
 			new(m_first)bc_memory_extender_bucket<TMemory>(m_initializer, m_cleanup);
 		}
 
@@ -292,7 +292,7 @@ namespace black_cat
 		void bc_memory_extender<TMemory>::_destroy() noexcept
 		{
 			m_first->~bc_memory_extender_bucket();
-			core_platform::bc_mem_free(m_first);
+			platform::bc_mem_free(m_first);
 			m_first = nullptr;
 		}
 

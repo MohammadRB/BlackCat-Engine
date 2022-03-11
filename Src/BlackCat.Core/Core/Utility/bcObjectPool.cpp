@@ -33,7 +33,7 @@ namespace black_cat
 		bc_concurrent_memory_pool& bc_concurrent_memory_pool::operator=(bc_concurrent_memory_pool&& p_other) noexcept
 		{
 			bc_initializable::operator=(std::move(p_other));
-			const bcUINT32 l_allocated_block = p_other.m_allocated_block.load(core_platform::bc_memory_order::acquire);
+			const bcUINT32 l_allocated_block = p_other.m_allocated_block.load(platform::bc_memory_order::acquire);
 
 			m_num_block = p_other.m_num_block;
 			m_block_size = p_other.m_block_size;
@@ -47,7 +47,7 @@ namespace black_cat
 			p_other.m_blocks = nullptr;
 			p_other.m_heap = nullptr;
 
-			m_allocated_block.store(l_allocated_block, core_platform::bc_memory_order::release);
+			m_allocated_block.store(l_allocated_block, platform::bc_memory_order::release);
 
 			return *this;
 		}
@@ -57,7 +57,7 @@ namespace black_cat
 			void* l_result = nullptr;
 			bool l_reached_end = false;
 			bcINT32 l_block = -1;
-			bcUINT32 l_allocated_block = m_allocated_block.load(core_platform::bc_memory_order::relaxed);
+			bcUINT32 l_allocated_block = m_allocated_block.load(platform::bc_memory_order::relaxed);
 
 			for (bcUINT32 l_ite = l_allocated_block; (l_ite != l_allocated_block || !l_reached_end); ++l_ite)
 			{
@@ -67,7 +67,7 @@ namespace black_cat
 					l_reached_end = true;
 				}
 				
-				auto l_current_block = m_blocks[l_ite].load(core_platform::bc_memory_order::relaxed);
+				auto l_current_block = m_blocks[l_ite].load(platform::bc_memory_order::relaxed);
 
 				while (true)
 				{
@@ -82,13 +82,13 @@ namespace black_cat
 					(
 						&l_current_block,
 						l_current_block_changed,
-						core_platform::bc_memory_order::relaxed,
-						core_platform::bc_memory_order::relaxed
+						platform::bc_memory_order::relaxed,
+						platform::bc_memory_order::relaxed
 					))
 					{
 						l_block = l_ite * s_bit_block_size + l_free_bit;
 
-						m_allocated_block.compare_exchange_strong(&l_allocated_block, l_ite, core_platform::bc_memory_order::relaxed);
+						m_allocated_block.compare_exchange_strong(&l_allocated_block, l_ite, platform::bc_memory_order::relaxed);
 
 						break;
 					}
@@ -123,7 +123,7 @@ namespace black_cat
 			std::memset(l_pointer, 0, m_block_size);
 #endif
 
-			m_blocks[l_chunk_index].fetch_and(~(static_cast<bit_block_type>(1) << l_bit_index), core_platform::bc_memory_order::relaxed);
+			m_blocks[l_chunk_index].fetch_and(~(static_cast<bit_block_type>(1) << l_bit_index), platform::bc_memory_order::relaxed);
 		}
 
 		bool bc_concurrent_memory_pool::contain_pointer(const void* p_pointer) const noexcept
@@ -135,7 +135,7 @@ namespace black_cat
 		{
 			for (bcUINT32 l_ite = 0; l_ite < m_num_bit_blocks; ++l_ite)
 			{
-				m_blocks[l_ite].store(0U, core_platform::bc_memory_order::relaxed);
+				m_blocks[l_ite].store(0U, platform::bc_memory_order::relaxed);
 			}
 		}
 
@@ -152,9 +152,9 @@ namespace black_cat
 			m_num_bit_blocks = m_num_block / s_bit_block_size;
 			m_allocated_block.store(0U);
 
-			m_blocks = reinterpret_cast<core_platform::bc_atomic<bit_block_type>*>
+			m_blocks = reinterpret_cast<platform::bc_atomic<bit_block_type>*>
 			(
-				BC_ALLOC(m_num_bit_blocks * sizeof(core_platform::bc_atomic<bit_block_type>), p_alloc_type)
+				BC_ALLOC(m_num_bit_blocks * sizeof(platform::bc_atomic<bit_block_type>), p_alloc_type)
 			);
 			if (!m_blocks)
 			{
@@ -170,7 +170,7 @@ namespace black_cat
 
 			for (bcUINT32 l_ite = 0; l_ite < m_num_bit_blocks; ++l_ite)
 			{
-				m_blocks[l_ite].store(0U, core_platform::bc_memory_order::relaxed);
+				m_blocks[l_ite].store(0U, platform::bc_memory_order::relaxed);
 			}
 		}
 
@@ -180,7 +180,7 @@ namespace black_cat
 			bcSIZE l_num_alive_objects = 0;
 			for (bcUINT32 l_i = 0; l_i < m_num_bit_blocks; ++l_i)
 			{
-				const auto l_current_block = m_blocks[l_i].load(core_platform::bc_memory_order::relaxed);
+				const auto l_current_block = m_blocks[l_i].load(platform::bc_memory_order::relaxed);
 				for (bcUINT32 l_j = 0; l_j < s_bit_block_size; ++l_j)
 				{
 					const bool l_is_alive = l_current_block & (static_cast<bit_block_type>(1) << l_j);

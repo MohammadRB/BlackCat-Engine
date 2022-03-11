@@ -9,7 +9,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		void _check_file_is_open(HANDLE p_file, DWORD p_error_code)
 		{

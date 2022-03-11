@@ -52,12 +52,12 @@ namespace black_cat
 			bcINT32 l_block = -1;
 			void* l_result = nullptr;
 
-			auto l_allocated_block = m_allocated_block.load(core_platform::bc_memory_order::relaxed);
+			auto l_allocated_block = m_allocated_block.load(platform::bc_memory_order::relaxed);
 			const auto l_end = l_allocated_block + m_num_bit_blocks;
 			for (bcUINT32 l_i = l_allocated_block; l_i < l_end; ++l_i)
 			{
 				const auto l_bit_block_ite = l_i % m_num_bit_blocks;
-				auto l_current_block = m_blocks[l_bit_block_ite].load(core_platform::bc_memory_order::relaxed);
+				auto l_current_block = m_blocks[l_bit_block_ite].load(platform::bc_memory_order::relaxed);
 
 				// any free blocks in this chunk?
 				if (s_bit_block_mask == l_current_block)
@@ -75,13 +75,13 @@ namespace black_cat
 						(
 							&l_current_block,
 							l_current_block_changed,
-							core_platform::bc_memory_order::relaxed,
-							core_platform::bc_memory_order::relaxed
+							platform::bc_memory_order::relaxed,
+							platform::bc_memory_order::relaxed
 						))
 						{
 							l_block = l_bit_block_ite * s_bit_block_size + l_bit_ite;
 
-							m_allocated_block.compare_exchange_strong(&l_allocated_block, l_bit_block_ite, core_platform::bc_memory_order::seqcst);
+							m_allocated_block.compare_exchange_strong(&l_allocated_block, l_bit_block_ite, platform::bc_memory_order::seqcst);
 
 							break;
 						}
@@ -123,7 +123,7 @@ namespace black_cat
 			const bcINT32 l_chunk_index = l_block / s_bit_block_size;
 			const bcINT32 l_bit_index = l_block % s_bit_block_size;
 
-			m_blocks[l_chunk_index].fetch_and(~(static_cast<bit_block_type>(1) << l_bit_index), core_platform::bc_memory_order::seqcst);
+			m_blocks[l_chunk_index].fetch_and(~(static_cast<bit_block_type>(1) << l_bit_index), platform::bc_memory_order::seqcst);
 
 			m_tracer.accept_free(p_mem_block->size());
 
@@ -158,9 +158,9 @@ namespace black_cat
 			}
 			m_allocated_block.store(0U);
 
-			m_blocks = static_cast< core_platform::bc_atomic< bit_block_type >* >
+			m_blocks = static_cast< platform::bc_atomic< bit_block_type >* >
 			(
-				core_platform::bc_mem_aligned_alloc(m_num_bit_blocks * sizeof(core_platform::bc_atomic< bit_block_type >), BC_MEMORY_MIN_ALIGN)
+				platform::bc_mem_aligned_alloc(m_num_bit_blocks * sizeof(platform::bc_atomic< bit_block_type >), BC_MEMORY_MIN_ALIGN)
 			);
 
 			if (!m_blocks)
@@ -176,7 +176,7 @@ namespace black_cat
 			// We alloc m_heap by min align defined in CorePCH because we want all of our allocations have MIN_Align /
 			m_heap = static_cast< bcUBYTE* >
 			(
-				core_platform::bc_mem_aligned_alloc((m_block_size * m_num_block) * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN)
+				platform::bc_mem_aligned_alloc((m_block_size * m_num_block) * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN)
 			);
 
 			if (!m_heap)
@@ -194,13 +194,13 @@ namespace black_cat
 
 		void bc_memory_fixed_size::_destroy() noexcept
 		{
-			core_platform::bc_mem_aligned_free(m_blocks);
-			core_platform::bc_mem_aligned_free(m_heap);
+			platform::bc_mem_aligned_free(m_blocks);
+			platform::bc_mem_aligned_free(m_heap);
 		}
 
 		void bc_memory_fixed_size::_move(this_type&& p_other)
 		{
-			const bcUINT32 l_allocated_block = p_other.m_allocated_block.load(core_platform::bc_memory_order::acquire);
+			const bcUINT32 l_allocated_block = p_other.m_allocated_block.load(platform::bc_memory_order::acquire);
 
 			m_num_block = p_other.m_num_block;
 			m_block_size = p_other.m_block_size;
@@ -214,7 +214,7 @@ namespace black_cat
 			p_other.m_blocks = nullptr;
 			p_other.m_heap = nullptr;
 
-			m_allocated_block.store(l_allocated_block, core_platform::bc_memory_order::release);
+			m_allocated_block.store(l_allocated_block, platform::bc_memory_order::release);
 		}
 #endif
 	}

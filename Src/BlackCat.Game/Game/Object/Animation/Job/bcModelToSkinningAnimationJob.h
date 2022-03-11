@@ -34,7 +34,7 @@ namespace black_cat
 
 			const bc_sub_mesh_mat4_transform& get_skinning_transforms() const noexcept override;
 			
-			bool run(const core_platform::bc_clock::update_param& p_clock) override;
+			bool run(const platform::bc_clock::update_param& p_clock) override;
 
 		private:
 			core::bc_shared_ptr<bc_local_to_model_animation_job> m_model_job;

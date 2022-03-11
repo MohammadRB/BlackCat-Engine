@@ -64,7 +64,7 @@ namespace black_cat
 			
 			void set_world_target(const core::bc_vector3f& p_target) noexcept;
 			
-			bool run(const core_platform::bc_clock::update_param& p_clock) override;
+			bool run(const platform::bc_clock::update_param& p_clock) override;
 			
 		private:
 			void _assign_bone_indices();

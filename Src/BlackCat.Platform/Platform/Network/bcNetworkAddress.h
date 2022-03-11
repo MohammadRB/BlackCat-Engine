@@ -20,12 +20,12 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<core_platform::bc_platform>
+		template<platform::bc_platform>
 		struct bc_platform_network_address_pack
 		{
 		};
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_network_address
 		{
 		public:
@@ -66,7 +66,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_network_address = bc_platform_network_address<core_platform::g_current_platform>;
+		using bc_network_address = bc_platform_network_address<platform::g_current_platform>;
 
 		BC_PLATFORMSHARED_DLL core::bc_logger_output_stream& operator<<(core::bc_logger_output_stream& p_stream, const bc_network_address& p_address);
 	}	

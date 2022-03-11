@@ -13,7 +13,7 @@ namespace black_cat
 
 		bci_service::~bci_service() = default;
 
-		void bci_service::update(const core_platform::bc_clock::update_param& p_clock)
+		void bci_service::update(const platform::bc_clock::update_param& p_clock)
 		{
 		}
 
@@ -29,7 +29,7 @@ namespace black_cat
 
 		bc_service_manager::~bc_service_manager() = default;
 
-		void bc_service_manager::update(const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_service_manager::update(const platform::bc_clock::update_param& p_clock_update_param)
 		{
 			for (const auto* l_service : m_sorted_services)
 			{

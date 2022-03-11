@@ -44,8 +44,8 @@ namespace black_cat
 				node_pointer l_node = bc_allocator_traits<internal_allocator_type>::allocate(m_allocator, 1);
 				bc_allocator_traits<internal_allocator_type>::construct(m_allocator, l_node);
 
-				m_head.store(l_node, core_platform::bc_memory_order::relaxed);
-				m_tail.store(l_node, core_platform::bc_memory_order::relaxed);
+				m_head.store(l_node, platform::bc_memory_order::relaxed);
+				m_tail.store(l_node, platform::bc_memory_order::relaxed);
 			}
 
 			bc_concurrent_queue_base(const this_type&) = delete;
@@ -60,7 +60,7 @@ namespace black_cat
 				bc_allocator_traits<internal_allocator_type>::deallocate
 				(
 					m_allocator, 
-					m_head.load(core_platform::bc_memory_order::relaxed)
+					m_head.load(platform::bc_memory_order::relaxed)
 				);
 			}
 
@@ -76,8 +76,8 @@ namespace black_cat
 		protected:
 			node_type* enqueue(node_pointer p_node)
 			{
-				node_pointer l_tail = m_tail.load(core_platform::bc_memory_order::seqcst);
-				node_pointer l_next = l_tail->m_next.load(core_platform::bc_memory_order::seqcst);
+				node_pointer l_tail = m_tail.load(platform::bc_memory_order::seqcst);
+				node_pointer l_next = l_tail->m_next.load(platform::bc_memory_order::seqcst);
 				node_pointer l_expected_next = l_next;
 
 				BC_ASSERT(l_tail != p_node);
@@ -88,17 +88,17 @@ namespace black_cat
 					while (l_next != nullptr)
 					{
 						l_tail = l_next;
-						l_next = l_tail->m_next.load(core_platform::bc_memory_order::seqcst);
+						l_next = l_tail->m_next.load(platform::bc_memory_order::seqcst);
 					}
 
 					l_expected_next = nullptr;
 				}
-				while (!l_tail->m_next.compare_exchange_weak(&l_expected_next, p_node, core_platform::bc_memory_order::seqcst));
+				while (!l_tail->m_next.compare_exchange_weak(&l_expected_next, p_node, platform::bc_memory_order::seqcst));
 
 				l_next = p_node;
-				while (!m_tail.compare_exchange_weak(&l_tail, l_next, core_platform::bc_memory_order::seqcst))
+				while (!m_tail.compare_exchange_weak(&l_tail, l_next, platform::bc_memory_order::seqcst))
 				{
-					l_next = l_tail->m_next.load(core_platform::bc_memory_order::seqcst);
+					l_next = l_tail->m_next.load(platform::bc_memory_order::seqcst);
 				}
 
 				return l_next;
@@ -108,33 +108,33 @@ namespace black_cat
 				do
 				{
 					node_pointer l_hint_next;
-					while ((l_hint_next = l_hint_tail->m_next.load(core_platform::bc_memory_order::seqcst)) != nullptr)
+					while ((l_hint_next = l_hint_tail->m_next.load(platform::bc_memory_order::seqcst)) != nullptr)
 					{
 						l_hint_tail = l_hint_next;
 					}
 
-					m_tail.store(l_hint_tail, core_platform::bc_memory_order::seqcst);
+					m_tail.store(l_hint_tail, platform::bc_memory_order::seqcst);
 				}
-				while ((l_hint_tail = l_hint_tail->m_next.load(core_platform::bc_memory_order::seqcst)) != nullptr);
+				while ((l_hint_tail = l_hint_tail->m_next.load(platform::bc_memory_order::seqcst)) != nullptr);
 
 				return l_hint_tail;*/
 			}
 
 			node_type* dequeue(reference p_result)
 			{
-				node_pointer l_head = m_head.load(core_platform::bc_memory_order::seqcst);
+				node_pointer l_head = m_head.load(platform::bc_memory_order::seqcst);
 				node_pointer l_next;
 
 				while (true)
 				{
-					node_pointer l_tail = m_tail.load(core_platform::bc_memory_order::seqcst);
+					node_pointer l_tail = m_tail.load(platform::bc_memory_order::seqcst);
 
 					if(l_head == l_tail)
 					{
 						return nullptr;
 					}
 
-					l_next = l_head->m_next.load(core_platform::bc_memory_order::seqcst);
+					l_next = l_head->m_next.load(platform::bc_memory_order::seqcst);
 
 					if (l_next == nullptr)
 					{
@@ -152,8 +152,8 @@ namespace black_cat
 				return l_head;
 			}
 
-			core_platform::bc_atomic<node_pointer> m_head;
-			core_platform::bc_atomic<node_pointer> m_tail;
+			platform::bc_atomic<node_pointer> m_head;
+			platform::bc_atomic<node_pointer> m_tail;
 			internal_allocator_type m_allocator;
 
 		private:
@@ -161,17 +161,17 @@ namespace black_cat
 			{
 				m_tail.store
 				(
-					p_other.m_tail.load(core_platform::bc_memory_order::relaxed), 
-					core_platform::bc_memory_order::relaxed
+					p_other.m_tail.load(platform::bc_memory_order::relaxed), 
+					platform::bc_memory_order::relaxed
 				);
 				m_head.store
 				(
-					p_other.m_head.load(core_platform::bc_memory_order::relaxed),
-					core_platform::bc_memory_order::relaxed
+					p_other.m_head.load(platform::bc_memory_order::relaxed),
+					platform::bc_memory_order::relaxed
 				);
 
-				p_other.m_tail.store(nullptr, core_platform::bc_memory_order::relaxed);
-				p_other.m_head.store(nullptr, core_platform::bc_memory_order::relaxed);
+				p_other.m_tail.store(nullptr, platform::bc_memory_order::relaxed);
+				p_other.m_head.store(nullptr, platform::bc_memory_order::relaxed);
 
 				m_allocator = std::move(p_other.m_allocator);
 			}
@@ -219,7 +219,7 @@ namespace black_cat
 
 			node& operator=(node&&) = delete;
 
-			core_platform::bc_atomic<node_pointer> m_next;
+			platform::bc_atomic<node_pointer> m_next;
 		};
 
 		template<typename T, typename TAllocator = bc_allocator<T>>
@@ -266,7 +266,7 @@ namespace black_cat
 			~bc_concurrent_queue()
 			{
 				// In case if container has move head and tail are null
-				if(!base_type::m_head.load(core_platform::bc_memory_order::relaxed))
+				if(!base_type::m_head.load(platform::bc_memory_order::relaxed))
 				{
 					return;
 				}
@@ -291,7 +291,7 @@ namespace black_cat
 
 			void empty()
 			{
-				return base_type::m_head.load(core_platform::bc_memory_order::relaxed)->m_next == nullptr;
+				return base_type::m_head.load(platform::bc_memory_order::relaxed)->m_next == nullptr;
 			}
 
 			void push(const value_type& p_value)
@@ -339,16 +339,16 @@ namespace black_cat
 			{
 				using std::swap;
 
-				node_pointer l_tail = base_type::m_tail.load(core_platform::bc_memory_order::relaxed);
-				node_pointer l_head = base_type::m_head.load(core_platform::bc_memory_order::relaxed);
+				node_pointer l_tail = base_type::m_tail.load(platform::bc_memory_order::relaxed);
+				node_pointer l_head = base_type::m_head.load(platform::bc_memory_order::relaxed);
 				base_type::m_tail.store(
-					p_other.m_tail.load(core_platform::bc_memory_order::relaxed), 
-					core_platform::bc_memory_order::relaxed);
+					p_other.m_tail.load(platform::bc_memory_order::relaxed), 
+					platform::bc_memory_order::relaxed);
 				base_type::m_head.store(
-					p_other.m_head.load(core_platform::bc_memory_order::relaxed),
-					core_platform::bc_memory_order::relaxed);
-				p_other.m_tail.store(l_tail, core_platform::bc_memory_order::relaxed);
-				p_other.m_head.store(l_head, core_platform::bc_memory_order::relaxed);
+					p_other.m_head.load(platform::bc_memory_order::relaxed),
+					platform::bc_memory_order::relaxed);
+				p_other.m_tail.store(l_tail, platform::bc_memory_order::relaxed);
+				p_other.m_head.store(l_head, platform::bc_memory_order::relaxed);
 				
 				swap(base_type::m_allocator, p_other.m_allocator);
 				swap(m_memmng, p_other.m_memmng);
@@ -363,12 +363,12 @@ namespace black_cat
 
 			node_type* next(node_type* p_node) const noexcept
 			{
-				return p_node->m_next.load(core_platform::bc_memory_order::seqcst);
+				return p_node->m_next.load(platform::bc_memory_order::seqcst);
 			}
 
 			void next(node_type* p_node, node_type* p_next) const noexcept
 			{
-				p_node->m_next.store(p_next, core_platform::bc_memory_order::seqcst);
+				p_node->m_next.store(p_next, platform::bc_memory_order::seqcst);
 			}
 
 			bc_lockfree_memmng<this_type> m_memmng;

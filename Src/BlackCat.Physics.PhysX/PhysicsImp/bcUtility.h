@@ -49,7 +49,7 @@ namespace black_cat
 
 		inline physx::PxVec3 bc_to_right_hand(const core::bc_vector3f& p_vector)
 		{
-			if(graphic::bc_render_api_info::use_left_handed())
+			if constexpr (graphic::bc_render_api_info::use_left_handed())
 			{
 				return physx::PxVec3(p_vector.x, p_vector.y, -p_vector.z);
 			}
@@ -59,7 +59,7 @@ namespace black_cat
 
 		inline core::bc_vector3f bc_to_game_hand(const physx::PxVec3& p_vector)
 		{
-			if(graphic::bc_render_api_info::use_left_handed())
+			if constexpr (graphic::bc_render_api_info::use_left_handed())
 			{
 				return core::bc_vector3f(p_vector.x, p_vector.y, -p_vector.z);
 			}
@@ -69,7 +69,7 @@ namespace black_cat
 
 		inline physx::PxMat33 bc_to_right_hand(const core::bc_matrix3f& p_mat)
 		{
-			if (graphic::bc_render_api_info::use_left_handed())
+			if constexpr (graphic::bc_render_api_info::use_left_handed())
 			{
 				return physx::PxMat33
 				(
@@ -89,7 +89,7 @@ namespace black_cat
 
 		inline core::bc_matrix3f bc_to_game_hand(const physx::PxMat33& p_mat)
 		{
-			if (graphic::bc_render_api_info::use_left_handed())
+			if constexpr (graphic::bc_render_api_info::use_left_handed())
 			{
 				return core::bc_matrix3f
 				(
@@ -109,7 +109,7 @@ namespace black_cat
 
 		inline physx::PxMat44 bc_to_right_hand(const core::bc_matrix4f& p_mat)
 		{
-			if (graphic::bc_render_api_info::use_left_handed())
+			if constexpr (graphic::bc_render_api_info::use_left_handed())
 			{
 				return physx::PxMat44
 				(
@@ -131,7 +131,7 @@ namespace black_cat
 
 		inline core::bc_matrix4f bc_to_game_hand(const physx::PxMat44& p_mat)
 		{
-			if (graphic::bc_render_api_info::use_left_handed())
+			if constexpr (graphic::bc_render_api_info::use_left_handed())
 			{
 				return core::bc_matrix4f
 				(
@@ -153,7 +153,7 @@ namespace black_cat
 
 		inline physx::PxExtendedVec3 bc_to_right_hand_ex(const core::bc_vector3f& p_vector)
 		{
-			if (graphic::bc_render_api_info::use_left_handed())
+			if constexpr (graphic::bc_render_api_info::use_left_handed())
 			{
 				return physx::PxExtendedVec3(p_vector.x, p_vector.y, -p_vector.z);
 			}
@@ -163,7 +163,7 @@ namespace black_cat
 
 		inline core::bc_vector3f bc_to_game_hand_ex(const physx::PxExtendedVec3& p_vector)
 		{
-			if (graphic::bc_render_api_info::use_left_handed())
+			if constexpr (graphic::bc_render_api_info::use_left_handed())
 			{
 				return core::bc_vector3f(p_vector.x, p_vector.y, -p_vector.z);
 			}

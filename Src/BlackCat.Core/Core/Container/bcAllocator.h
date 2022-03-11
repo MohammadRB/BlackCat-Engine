@@ -481,7 +481,7 @@ namespace black_cat
 
 			bc_alloc_type get_allocator_alloc_type() const
 			{
-				return static_cast<bc_alloc_type>(m_flags.load(core_platform::bc_memory_order::relaxed) & s_alloc_type_mask);
+				return static_cast<bc_alloc_type>(m_flags.load(platform::bc_memory_order::relaxed) & s_alloc_type_mask);
 			}
 
 			bc_alloc_type set_allocator_alloc_type(bc_alloc_type p_alloc_type)
@@ -490,14 +490,14 @@ namespace black_cat
 				const bcUINT16 l_alignment = get_allocator_alignment();
 				const bcUINT32 l_value_to_store = static_cast<bcUINT32>((l_alignment <<8) | static_cast<bcUINT32>(p_alloc_type));
 
-				m_flags.store(l_value_to_store, core_platform::bc_memory_order::relaxed);
+				m_flags.store(l_value_to_store, platform::bc_memory_order::relaxed);
 				
 				return l_alloc_type;
 			}
 
 			bcUINT16 get_allocator_alignment() const
 			{
-				return static_cast<bcUINT16>((m_flags.load(core_platform::bc_memory_order::relaxed) & s_alignment_mask)>> 8);
+				return static_cast<bcUINT16>((m_flags.load(platform::bc_memory_order::relaxed) & s_alignment_mask)>> 8);
 			}
 
 			bcUINT16 set_allocator_alignment(bcUINT16 p_alignment)
@@ -506,7 +506,7 @@ namespace black_cat
 				const bcUINT16 l_alignment = get_allocator_alignment();
 				const bcUINT32 l_value_to_store = static_cast<bcUINT32>((p_alignment <<8) | static_cast<bcUINT32>(l_alloc_type));
 
-				m_flags.store(l_value_to_store, core_platform::bc_memory_order::relaxed);
+				m_flags.store(l_value_to_store, platform::bc_memory_order::relaxed);
 
 				return l_alignment;
 			}
@@ -558,7 +558,7 @@ namespace black_cat
 			static constexpr bcUINT32 s_alloc_type_mask = 0x000000ff;
 			static constexpr bcUINT32 s_alignment_mask = 0x00ffff00;
 
-			core_platform::bc_atomic<bcUINT32> m_flags;
+			platform::bc_atomic<bcUINT32> m_flags;
 		};
 	}
 }

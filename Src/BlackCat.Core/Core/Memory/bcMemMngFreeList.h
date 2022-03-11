@@ -63,8 +63,8 @@ namespace black_cat
 			// Roundup allocation size to multiple size of platform page size and reserve memory
 			void initialize(bcSIZE p_alloc_size = 4096)
 			{
-				core_platform::bc_basic_hardware_info l_hardware_info;
-				core_platform::bc_hardware_info::get_basic_info(l_hardware_info);
+				platform::bc_basic_hardware_info l_hardware_info;
+				platform::bc_hardware_info::get_basic_info(l_hardware_info);
 
 				// Round up allocation size to multiple of platform page size, because we use paging allocation /
 				m_alloc_size = _roundup_p2(p_alloc_size, l_hardware_info.m_page_size);
@@ -75,19 +75,19 @@ namespace black_cat
 			// Call object construction after this function
 			T* alloc()
 			{
-				_freelist_item* l_local_free = m_free.load(core_platform::bc_memory_order::seqcst);
+				_freelist_item* l_local_free = m_free.load(platform::bc_memory_order::seqcst);
 				while (l_local_free != nullptr)
 				{
 					if (m_free.compare_exchange_strong(
 						&l_local_free,
 						l_local_free->m_next_free,
-						core_platform::bc_memory_order::seqcst,
-						core_platform::bc_memory_order::seqcst))
+						platform::bc_memory_order::seqcst,
+						platform::bc_memory_order::seqcst))
 					{
 						l_local_free->m_next_free = nullptr;
 						T* lResult = &l_local_free->m_data;
 
-						m_count.fetch_add(1U, core_platform::bc_memory_order::seqcst);
+						m_count.fetch_add(1U, platform::bc_memory_order::seqcst);
 
 						return lResult;
 					}
@@ -96,22 +96,22 @@ namespace black_cat
 				// to changed m_free that point to last block to new chunk /
 				if (l_local_free == nullptr)
 				{
-					core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_mutex);
+					platform::bc_lock_guard<platform::bc_mutex> l_guard(m_mutex);
 
-					_freelist_item* l_free_ptr = m_free.load(core_platform::bc_memory_order::relaxed);
+					_freelist_item* l_free_ptr = m_free.load(platform::bc_memory_order::relaxed);
 
 					if (l_free_ptr == nullptr)
 					{
 						// This function will change m_free to last block in next allocated chunk /
 						_alloc_new_block();
 
-						l_free_ptr = m_free.load(core_platform::bc_memory_order::relaxed);
-						m_free.store(l_free_ptr->m_next_free, core_platform::bc_memory_order::relaxed);
+						l_free_ptr = m_free.load(platform::bc_memory_order::relaxed);
+						m_free.store(l_free_ptr->m_next_free, platform::bc_memory_order::relaxed);
 
 						l_free_ptr->m_next_free = nullptr;
 						T* lResult = &l_free_ptr->m_data;
 
-						m_count.fetch_add(1U, core_platform::bc_memory_order::relaxed);
+						m_count.fetch_add(1U, platform::bc_memory_order::relaxed);
 
 						return lResult;
 					}
@@ -128,17 +128,17 @@ namespace black_cat
 					reinterpret_cast<bcUBYTE*>(p_ptr) - 
 					sizeof(_freelist_item*));
 
-				_freelist_item* l_local_free = m_free.load(core_platform::bc_memory_order::seqcst);
+				_freelist_item* l_local_free = m_free.load(platform::bc_memory_order::seqcst);
 				l_node->m_next_free = l_local_free;
 				while (l_local_free != nullptr)
 				{
 					if (m_free.compare_exchange_strong(
 						&l_node->m_next_free,
 						l_node,
-						core_platform::bc_memory_order::seqcst,
-						core_platform::bc_memory_order::seqcst))
+						platform::bc_memory_order::seqcst,
+						platform::bc_memory_order::seqcst))
 					{
-						m_count.fetch_sub(1U, core_platform::bc_memory_order::seqcst);
+						m_count.fetch_sub(1U, platform::bc_memory_order::seqcst);
 						return;
 					}
 					else
@@ -148,15 +148,15 @@ namespace black_cat
 				// Block any thread in alloc function, so we can free our block safely /
 				if (l_local_free == nullptr)
 				{
-					core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_mutex);
+					platform::bc_lock_guard<platform::bc_mutex> l_guard(m_mutex);
 
-					l_local_free = m_free.load(core_platform::bc_memory_order::relaxed);
+					l_local_free = m_free.load(platform::bc_memory_order::relaxed);
 					if (l_local_free == nullptr)
 					{
 						l_node->m_next_free = l_local_free;
-						m_free.store(l_node, core_platform::bc_memory_order::relaxed);
+						m_free.store(l_node, platform::bc_memory_order::relaxed);
 
-						m_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed);
+						m_count.fetch_sub(1U, platform::bc_memory_order::relaxed);
 					}
 				}
 			}
@@ -164,13 +164,13 @@ namespace black_cat
 			// TODO can be removed
 			bcUINT32 count() const noexcept
 			{
-				return m_count.load(core_platform::bc_memory_order::seqcst);
+				return m_count.load(platform::bc_memory_order::seqcst);
 			}
 
 			void clear()
 			{
 				// use lock for cache coherency
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_mutex);
+				platform::bc_lock_guard<platform::bc_mutex> l_guard(m_mutex);
 				_cleanup();
 				initialize(m_alloc_size);
 			}
@@ -178,17 +178,17 @@ namespace black_cat
 		private:
 			void _move(bc_memmng_freelist&& p_other)
 			{
-				_freelist_item* l_free = m_free.load(core_platform::bc_memory_order::acquire);
+				_freelist_item* l_free = m_free.load(platform::bc_memory_order::acquire);
 
 				m_alloc_size = p_other.m_alloc_size;
 				m_first_chunk = p_other.m_first_chunk;
-				m_count.store(p_other.m_count.load(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
+				m_count.store(p_other.m_count.load(platform::bc_memory_order::relaxed), platform::bc_memory_order::relaxed);
 
 				p_other.m_alloc_size = 0;
 				p_other.m_first_chunk = nullptr;
-				p_other.m_count.store(0, core_platform::bc_memory_order::relaxed);
+				p_other.m_count.store(0, platform::bc_memory_order::relaxed);
 
-				m_free.store(l_free, core_platform::bc_memory_order::release);
+				m_free.store(l_free, platform::bc_memory_order::release);
 			}
 
 			void _alloc_new_block()
@@ -205,7 +205,7 @@ namespace black_cat
 					l_last_block = l_last_block->m_next;
 				}
 
-				l_last_block = static_cast<_freelist_chunk*>(core_platform::bc_mem_alloc(sizeof(_freelist_chunk)));
+				l_last_block = static_cast<_freelist_chunk*>(platform::bc_mem_alloc(sizeof(_freelist_chunk)));
 				if (l_last_block == nullptr)
 				{
 					// TODO check for allocation fail here
@@ -223,8 +223,8 @@ namespace black_cat
 					m_first_chunk = l_last_block;
 				}
 				
-				void* l_chunk = core_platform::bc_mem_page_reserve(l_alloc_size);
-				l_chunk = core_platform::bc_mem_page_commit(l_chunk, l_alloc_size);
+				void* l_chunk = platform::bc_mem_page_reserve(l_alloc_size);
+				l_chunk = platform::bc_mem_page_commit(l_chunk, l_alloc_size);
 				l_last_block->m_pointer = l_chunk;
 				if (l_last_block->m_pointer == nullptr)
 				{
@@ -235,14 +235,14 @@ namespace black_cat
 				_freelist_item* l_alloc_batch = static_cast<_freelist_item*>(l_last_block->m_pointer);
 
 				// Because we protect this method with mutex we can load mFree to a local variable /
-				_freelist_item* l_local_free = m_free.load(core_platform::bc_memory_order::relaxed);
+				_freelist_item* l_local_free = m_free.load(platform::bc_memory_order::relaxed);
 				for (bcUINT32 i = 0; i < l_num_alloc_per_batch; ++i)
 				{
 					l_alloc_batch->m_next_free = l_local_free;
 					l_local_free = l_alloc_batch;
 					++l_alloc_batch;
 				}
-				m_free.store(l_local_free, core_platform::bc_memory_order::relaxed);
+				m_free.store(l_local_free, platform::bc_memory_order::relaxed);
 			}
 
 			void _cleanup()
@@ -251,17 +251,17 @@ namespace black_cat
 				while (l_current)
 				{
 					_freelist_chunk* l_temp = l_current;
-					core_platform::bc_mem_page_release(l_temp->m_pointer);
+					platform::bc_mem_page_release(l_temp->m_pointer);
 					l_current = l_temp->m_next;
-					core_platform::bc_mem_free(l_temp);
+					platform::bc_mem_free(l_temp);
 				}
 			}
 
 			bcSIZE m_alloc_size;
 			_freelist_chunk* m_first_chunk;
-			core_platform::bc_atomic< _freelist_item* > m_free;
-			core_platform::bc_atomic< bcUINT32 > m_count;
-			core_platform::bc_mutex m_mutex;
+			platform::bc_atomic< _freelist_item* > m_free;
+			platform::bc_atomic< bcUINT32 > m_count;
+			platform::bc_mutex m_mutex;
 		};
 
 #endif

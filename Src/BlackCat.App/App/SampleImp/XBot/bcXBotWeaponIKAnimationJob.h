@@ -45,7 +45,7 @@ namespace black_cat
 		 */
 		void set_weapon(bc_xbot_weapon* p_weapon) noexcept;
 
-		bool run(const core_platform::bc_clock::update_param& p_clock) override;
+		bool run(const platform::bc_clock::update_param& p_clock) override;
 		
 	private:
 		core::bc_vector3f m_local_forward;

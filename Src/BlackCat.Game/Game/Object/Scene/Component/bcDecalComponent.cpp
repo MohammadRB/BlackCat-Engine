@@ -49,7 +49,7 @@ namespace black_cat
 			m_decal_manager(p_other.m_decal_manager),
 			m_mesh_scale(p_other.m_mesh_scale),
 			m_use_hierarchy_transforms(p_other.m_use_hierarchy_transforms),
-			m_temporary_decals_slot(p_other.m_temporary_decals_slot.load(core_platform::bc_memory_order::relaxed)),
+			m_temporary_decals_slot(p_other.m_temporary_decals_slot.load(platform::bc_memory_order::relaxed)),
 			m_temporary_decals(std::move(p_other.m_temporary_decals))
 		{
 		}
@@ -63,7 +63,7 @@ namespace black_cat
 			m_decal_manager = p_other.m_decal_manager;
 			m_mesh_scale = p_other.m_mesh_scale;
 			m_use_hierarchy_transforms = p_other.m_use_hierarchy_transforms;
-			m_temporary_decals_slot.store(p_other.m_temporary_decals_slot.load(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
+			m_temporary_decals_slot.store(p_other.m_temporary_decals_slot.load(platform::bc_memory_order::relaxed), platform::bc_memory_order::relaxed);
 			m_temporary_decals = std::move(p_other.m_temporary_decals);
 			
 			return *this;
@@ -377,13 +377,13 @@ namespace black_cat
 			{
 				while (true)
 				{
-					auto l_current_slot = m_temporary_decals_slot.load(core_platform::bc_memory_order::relaxed);
+					auto l_current_slot = m_temporary_decals_slot.load(platform::bc_memory_order::relaxed);
 					const auto l_new_slot = (l_current_slot + 1) % m_temporary_decals.size();
 					const auto l_compare_result = m_temporary_decals_slot.compare_exchange_strong
 					(
 						&l_current_slot,
 						l_new_slot,
-						core_platform::bc_memory_order::relaxed
+						platform::bc_memory_order::relaxed
 					);
 
 					if (l_compare_result)

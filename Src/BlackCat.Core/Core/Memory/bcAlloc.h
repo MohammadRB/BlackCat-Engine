@@ -55,7 +55,7 @@ namespace black_cat
 
 			l_result = bc_memory_manager::get().alloc(p_size, p_alloc_type, p_file, p_line);
 #else
-			l_result = core_platform::bc_mem_alloc(p_size);
+			l_result = platform::bc_mem_alloc(p_size);
 #endif
 
 			return l_result;
@@ -66,7 +66,7 @@ namespace black_cat
 #ifdef BC_MEMORY_ENABLE
 			bc_memory_manager::get().free(p_pointer);
 #else
-			core_platform::bc_mem_free(p_pointer);
+			platform::bc_mem_free(p_pointer);
 #endif
 		}
 		 
@@ -75,7 +75,7 @@ namespace black_cat
 #ifdef BC_MEMORY_ENABLE
 			return bc_memory_manager::get().realloc(p_pointer, p_new_size, p_alloc_type, p_file, p_line);
 #else
-			return core_platform::bc_mem_realloc(p_pointer, p_new_size);
+			return platform::bc_mem_realloc(p_pointer, p_new_size);
 #endif
 		}
 		 
@@ -91,7 +91,7 @@ namespace black_cat
 
 			l_result = bc_memory_manager::get().aligned_alloc(p_size, p_alignment, p_alloc_type, p_file, p_line);
 #else
-			l_result = core_platform::bc_mem_aligned_alloc(p_size, p_alignment);
+			l_result = platform::bc_mem_aligned_alloc(p_size, p_alignment);
 #endif
 
 			return l_result;
@@ -102,7 +102,7 @@ namespace black_cat
 #ifdef BC_MEMORY_ENABLE
 			bc_memory_manager::get().aligned_free(p_pointer);
 #else
-			core_platform::bc_mem_aligned_free(p_pointer);
+			platform::bc_mem_aligned_free(p_pointer);
 #endif
 		}
 		 
@@ -111,7 +111,7 @@ namespace black_cat
 #ifdef BC_MEMORY_ENABLE
 			return bc_memory_manager::get().aligned_realloc(p_pointer, p_new_size, p_alignment, p_alloc_type, p_file, p_line);
 #else
-			return  core_platform::bc_mem_aligned_realloc(p_pointer, p_new_size, p_alignment);
+			return  platform::bc_mem_aligned_realloc(p_pointer, p_new_size, p_alignment);
 #endif
 		}
 		 

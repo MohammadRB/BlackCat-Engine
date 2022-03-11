@@ -7,7 +7,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		// TODO Write bcFutureProvider, bcSharedFutureProvider, bcPromiseProvider T& and void specialization /
 

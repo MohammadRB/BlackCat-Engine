@@ -8,7 +8,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		template< >
 		struct bc_platform_path_pack< g_api_win32 >

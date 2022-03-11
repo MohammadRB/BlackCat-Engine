@@ -15,7 +15,7 @@ namespace black_cat
 	{
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_runtime< core_platform::g_api_win32 >::bc_platform_script_runtime() noexcept
+		bc_platform_script_runtime< platform::g_api_win32 >::bc_platform_script_runtime() noexcept
 		{
 			m_pack.m_active_context = nullptr;
 			auto l_code = JsCreateRuntime(JsRuntimeAttributeDispatchSetExceptionsToDebugger, nullptr, &m_pack.m_js_runtime);
@@ -27,14 +27,14 @@ namespace black_cat
 
 		/*template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_runtime< core_platform::g_api_win32 >::bc_platform_script_runtime(bc_platform_script_runtime&& p_other) noexcept
+		bc_platform_script_runtime< platform::g_api_win32 >::bc_platform_script_runtime(bc_platform_script_runtime&& p_other) noexcept
 		{
 			operator=(std::move(p_other));
 		}*/
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_runtime< core_platform::g_api_win32 >::~bc_platform_script_runtime()
+		bc_platform_script_runtime< platform::g_api_win32 >::~bc_platform_script_runtime()
 		{
 			m_external_object_meta_data.clear();
 
@@ -47,7 +47,7 @@ namespace black_cat
 
 		/*template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_runtime< core_platform::g_api_win32 >& bc_platform_script_runtime< core_platform::g_api_win32 >::operator=(bc_platform_script_runtime&& p_other) noexcept
+		bc_platform_script_runtime< platform::g_api_win32 >& bc_platform_script_runtime< platform::g_api_win32 >::operator=(bc_platform_script_runtime&& p_other) noexcept
 		{
 			m_external_object_meta_data = std::move(p_other.m_external_object_meta_data);
 			m_pack.m_js_runtime = p_other.m_pack.m_js_runtime;
@@ -60,7 +60,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_script_context bc_platform_script_runtime< core_platform::g_api_win32 >::create_context()
+		bc_script_context bc_platform_script_runtime< platform::g_api_win32 >::create_context()
 		{
 			bc_script_context l_context(*this);
 
@@ -75,7 +75,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_runtime< core_platform::g_api_win32 >::set_active_context(bc_script_context* p_context)
+		void bc_platform_script_runtime< platform::g_api_win32 >::set_active_context(bc_script_context* p_context)
 		{
 			JsErrorCode l_code;
 			
@@ -98,14 +98,14 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_script_context* bc_platform_script_runtime< core_platform::g_api_win32 >::get_active_context() const
+		bc_script_context* bc_platform_script_runtime< platform::g_api_win32 >::get_active_context() const
 		{
 			return m_pack.m_active_context;
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_script_bytecode bc_platform_script_runtime< core_platform::g_api_win32 >::compile_script(const bcWCHAR* p_script)
+		bc_script_bytecode bc_platform_script_runtime< platform::g_api_win32 >::compile_script(const bcWCHAR* p_script)
 		{
 			bc_chakra_call l_call(*m_pack.m_active_context);
 			bc_script_bytecode l_bytecode;
@@ -129,7 +129,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_script_variable bc_platform_script_runtime< core_platform::g_api_win32 >::run_script(bc_script_bytecode& p_script)
+		bc_script_variable bc_platform_script_runtime< platform::g_api_win32 >::run_script(bc_script_bytecode& p_script)
 		{
 			bc_chakra_call l_call(*m_pack.m_active_context);
 			bc_script_variable l_result;
@@ -153,7 +153,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_runtime< core_platform::g_api_win32 >::interrupt_script_execution()
+		void bc_platform_script_runtime< platform::g_api_win32 >::interrupt_script_execution()
 		{
 			bc_chakra_call l_call(*m_pack.m_active_context);
 
@@ -163,7 +163,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_runtime< core_platform::g_api_win32 >::collect_garbage()
+		void bc_platform_script_runtime< platform::g_api_win32 >::collect_garbage()
 		{
 			bc_chakra_call l_call(*m_pack.m_active_context);
 			
@@ -172,7 +172,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bcSIZE bc_platform_script_runtime< core_platform::g_api_win32 >::memory_usage() const
+		bcSIZE bc_platform_script_runtime< platform::g_api_win32 >::memory_usage() const
 		{
 			bc_chakra_call l_call(*m_pack.m_active_context);
 			bcSIZE l_usage;

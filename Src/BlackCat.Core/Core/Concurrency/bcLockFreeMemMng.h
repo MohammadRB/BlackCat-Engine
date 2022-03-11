@@ -69,20 +69,20 @@ namespace black_cat
 
 			bcUINT32 enter() noexcept
 			{
-				return m_num_thread.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1;
+				return m_num_thread.fetch_add(1, platform::bc_memory_order::relaxed) + 1;
 			}
 
 			void exist_without_reclaim() noexcept
 			{
-				m_num_thread.fetch_sub(1, core_platform::bc_memory_order::relaxed);
+				m_num_thread.fetch_sub(1, platform::bc_memory_order::relaxed);
 			}
 
 			void try_reclaim(container_type& p_container) noexcept(noexcept(_delete_nodes(p_container, std::declval<node_pointer>())))
 			{
-				if (m_num_thread.load(core_platform::bc_memory_order::seqcst) == 1)
+				if (m_num_thread.load(platform::bc_memory_order::seqcst) == 1)
 				{
-					node_pointer l_nodes_to_delete = m_to_delete.exchange(nullptr, core_platform::bc_memory_order::seqcst);
-					if (m_num_thread.fetch_sub(1, core_platform::bc_memory_order::seqcst) - 1 == 0)
+					node_pointer l_nodes_to_delete = m_to_delete.exchange(nullptr, platform::bc_memory_order::seqcst);
+					if (m_num_thread.fetch_sub(1, platform::bc_memory_order::seqcst) - 1 == 0)
 					{
 						_delete_nodes(p_container, l_nodes_to_delete);
 					}
@@ -93,16 +93,16 @@ namespace black_cat
 				}
 				else
 				{
-					m_num_thread.fetch_sub(1, core_platform::bc_memory_order::seqcst);
+					m_num_thread.fetch_sub(1, platform::bc_memory_order::seqcst);
 				}
 			}
 
 			void try_reclaim(container_type& p_container, node_pointer p_node) noexcept(noexcept(_delete_nodes(p_container, std::declval<node_pointer>())))
 			{
-				if (m_num_thread.load(core_platform::bc_memory_order::seqcst) == 1)
+				if (m_num_thread.load(platform::bc_memory_order::seqcst) == 1)
 				{
-					node_pointer l_nodes_to_delete = m_to_delete.exchange(nullptr, core_platform::bc_memory_order::seqcst);
-					if (m_num_thread.fetch_sub(1, core_platform::bc_memory_order::seqcst) - 1 == 0)
+					node_pointer l_nodes_to_delete = m_to_delete.exchange(nullptr, platform::bc_memory_order::seqcst);
+					if (m_num_thread.fetch_sub(1, platform::bc_memory_order::seqcst) - 1 == 0)
 					{
 						_delete_nodes(p_container, l_nodes_to_delete);
 					}
@@ -116,38 +116,38 @@ namespace black_cat
 				else
 				{
 					_chain_pending_node(p_container, p_node);
-					m_num_thread.fetch_sub(1, core_platform::bc_memory_order::seqcst);
+					m_num_thread.fetch_sub(1, platform::bc_memory_order::seqcst);
 				}
 			}
 
 			void swap(this_type& p_other) noexcept
 			{
-				const bcUINT32 l_num_thread = m_num_thread.load(core_platform::bc_memory_order::relaxed);
-				node_type* l_to_delete = m_to_delete.load(core_platform::bc_memory_order::relaxed);
+				const bcUINT32 l_num_thread = m_num_thread.load(platform::bc_memory_order::relaxed);
+				node_type* l_to_delete = m_to_delete.load(platform::bc_memory_order::relaxed);
 
 				m_num_thread.store(
-					p_other.m_num_thread.load(core_platform::bc_memory_order::relaxed),
-					core_platform::bc_memory_order::relaxed);
+					p_other.m_num_thread.load(platform::bc_memory_order::relaxed),
+					platform::bc_memory_order::relaxed);
 				m_to_delete.store(
-					p_other.m_to_delete.load(core_platform::bc_memory_order::relaxed),
-					core_platform::bc_memory_order::relaxed);
+					p_other.m_to_delete.load(platform::bc_memory_order::relaxed),
+					platform::bc_memory_order::relaxed);
 
-				p_other.m_num_thread.store(l_num_thread, core_platform::bc_memory_order::relaxed);
-				p_other.m_to_delete.store(l_to_delete, core_platform::bc_memory_order::relaxed);
+				p_other.m_num_thread.store(l_num_thread, platform::bc_memory_order::relaxed);
+				p_other.m_to_delete.store(l_to_delete, platform::bc_memory_order::relaxed);
 			}
 
 		private:
 			void _assign(this_type&& p_other)
 			{
 				m_num_thread.store(
-					p_other.m_num_thread.load(core_platform::bc_memory_order::relaxed),
-					core_platform::bc_memory_order::relaxed);
+					p_other.m_num_thread.load(platform::bc_memory_order::relaxed),
+					platform::bc_memory_order::relaxed);
 				m_to_delete.store(
-					p_other.m_to_delete.load(core_platform::bc_memory_order::relaxed),
-					core_platform::bc_memory_order::relaxed);
+					p_other.m_to_delete.load(platform::bc_memory_order::relaxed),
+					platform::bc_memory_order::relaxed);
 
-				p_other.m_num_thread.store(0, core_platform::bc_memory_order::relaxed);
-				p_other.m_to_delete.store(nullptr, core_platform::bc_memory_order::relaxed);
+				p_other.m_num_thread.store(0, platform::bc_memory_order::relaxed);
+				p_other.m_to_delete.store(nullptr, platform::bc_memory_order::relaxed);
 			}
 
 			static void _delete_nodes(container_type& p_container, node_pointer p_nodes)
@@ -175,7 +175,7 @@ namespace black_cat
 
 			void _chain_pending_nodes(container_type& p_container, node_pointer p_first, node_pointer p_last) noexcept
 			{
-				node_pointer l_to_delete = m_to_delete.load(core_platform::bc_memory_order::seqcst);
+				node_pointer l_to_delete = m_to_delete.load(platform::bc_memory_order::seqcst);
 
 				do
 				{
@@ -190,7 +190,7 @@ namespace black_cat
 				(
 					&l_to_delete,
 					p_first,
-					core_platform::bc_memory_order::seqcst
+					platform::bc_memory_order::seqcst
 				));
 			}
 
@@ -199,8 +199,8 @@ namespace black_cat
 				_chain_pending_nodes(p_traits, p_node, p_node);
 			}
 
-			core_platform::bc_atomic<bcUINT32> m_num_thread;
-			core_platform::bc_atomic<node_pointer> m_to_delete;
+			platform::bc_atomic<bcUINT32> m_num_thread;
+			platform::bc_atomic<node_pointer> m_to_delete;
 		};
 
 		template<typename TNodeTraits>

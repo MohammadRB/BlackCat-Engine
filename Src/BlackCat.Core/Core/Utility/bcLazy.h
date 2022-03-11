@@ -194,7 +194,7 @@ namespace black_cat
 
 			~bc_concurrent_lazy()
 			{
-				T* l_pointer = m_pointer.load(core_platform::bc_memory_order::acquire);
+				T* l_pointer = m_pointer.load(platform::bc_memory_order::acquire);
 
 				if (l_pointer) 
 					m_cleanup(l_pointer);
@@ -246,7 +246,7 @@ namespace black_cat
 
 			bool is_set() const noexcept
 			{
-				return m_pointer.load(core_platform::bc_memory_order::relaxed);
+				return m_pointer.load(platform::bc_memory_order::relaxed);
 			}
 
 			bool operator ==(std::nullptr_t) const noexcept
@@ -319,8 +319,8 @@ namespace black_cat
 
 			initializer_type m_initializer;
 			cleanup_type m_cleanup;
-			mutable core_platform::bc_mutex m_mutex;
-			mutable core_platform::bc_atomic<T*> m_pointer;
+			mutable platform::bc_mutex m_mutex;
+			mutable platform::bc_atomic<T*> m_pointer;
 		};
 	}
 }

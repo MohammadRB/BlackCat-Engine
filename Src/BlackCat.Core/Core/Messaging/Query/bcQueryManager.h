@@ -68,9 +68,9 @@ namespace black_cat
 			template<class TQuery>
 			void queue_shared_query(TQuery&& p_query);
 
-			bcUINT32 process_query_queue(const core_platform::bc_clock::update_param& p_clock);
+			bcUINT32 process_query_queue(const platform::bc_clock::update_param& p_clock);
 
-			bc_task<bcUINT32> process_query_queue_async(const core_platform::bc_clock::update_param& p_clock);
+			bc_task<bcUINT32> process_query_queue_async(const platform::bc_clock::update_param& p_clock);
 
 			void clear_queries();
 			
@@ -90,9 +90,9 @@ namespace black_cat
 			bcUINT32 m_active_query_pool;
 			bc_concurrent_object_stack_pool m_query_pool[2];
 			bc_concurrent_memory_pool m_query_entry_pool;
-			core_platform::bc_shared_mutex m_providers_lock;
+			platform::bc_shared_mutex m_providers_lock;
 			provider_map_t m_providers;
-			core_platform::bc_mutex m_executed_queries_lock;
+			platform::bc_mutex m_executed_queries_lock;
 			query_list_t m_executed_shared_queries;
 			query_list_t m_executed_queries;
 		};
@@ -127,7 +127,7 @@ namespace black_cat
 
 			provider_delegate_t m_provider_delegate;
 			bc_query_context_ptr m_provided_context;
-			core_platform::bc_mutex m_queries_lock;
+			platform::bc_mutex m_queries_lock;
 			query_list_t m_queries;
 		};
 
@@ -183,7 +183,7 @@ namespace black_cat
 				if (bci_message::is<TQuery>(*l_shared_query.m_query))
 				{
 					// use acquire memory order so memory changes become available for calling thread
-					l_shared_query.m_state.load(core_platform::bc_memory_order::acquire);
+					l_shared_query.m_state.load(platform::bc_memory_order::acquire);
 					return static_cast<TQuery&>(*l_shared_query.m_query);
 				}
 			}

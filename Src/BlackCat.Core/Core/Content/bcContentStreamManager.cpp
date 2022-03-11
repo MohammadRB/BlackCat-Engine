@@ -125,7 +125,7 @@ namespace black_cat
 					content_map_type::iterator l_content_end;
 
 					{
-						core_platform::bc_shared_mutex_shared_guard l_lock_guard(m_contents_mutex);
+						platform::bc_shared_mutex_shared_guard l_lock_guard(m_contents_mutex);
 
 						l_content_entry = m_contents.find(l_content_file.m_title);
 						l_content_end = std::end(m_contents);
@@ -135,7 +135,7 @@ namespace black_cat
 					if (l_content_entry != l_content_end)
 					{
 						{
-							core_platform::bc_shared_mutex_guard l_lock_guard(m_contents_mutex);
+							platform::bc_shared_mutex_guard l_lock_guard(m_contents_mutex);
 
 							// Make a copy of content pointer to increase it's reference counter
 							l_content_entry->second.push_back(*std::begin(l_content_entry->second));
@@ -166,7 +166,7 @@ namespace black_cat
 				[this](bc_list_frame<content_map_type::value_type>& p_locals)
 				{
 					{
-						core_platform::bc_shared_mutex_guard l_lock_guard(m_contents_mutex);
+						platform::bc_shared_mutex_guard l_lock_guard(m_contents_mutex);
 
 						for (auto& l_content_entry : p_locals)
 						{
@@ -203,7 +203,7 @@ namespace black_cat
 				content_map_type::iterator l_content_end;
 
 				{
-					core_platform::bc_shared_mutex_shared_guard l_lock_guard(m_contents_mutex);
+					platform::bc_shared_mutex_shared_guard l_lock_guard(m_contents_mutex);
 
 					l_content_entry = m_contents.find(l_content_file.m_title);
 					l_content_end = std::end(m_contents);
@@ -219,7 +219,7 @@ namespace black_cat
 					if (l_content_entry->second.empty())
 					{
 						{
-							core_platform::bc_shared_mutex_guard l_lock_guard(m_contents_mutex);
+							platform::bc_shared_mutex_guard l_lock_guard(m_contents_mutex);
 
 							m_contents.erase(l_content_entry);
 						}
@@ -234,7 +234,7 @@ namespace black_cat
 			content_map_type::const_iterator l_content_end;
 
 			{
-				core_platform::bc_shared_mutex_shared_guard l_lock_guard(m_contents_mutex);
+				platform::bc_shared_mutex_shared_guard l_lock_guard(m_contents_mutex);
 				
 				l_content_entry = m_contents.find(p_content_name);
 				l_content_end = std::end(m_contents);

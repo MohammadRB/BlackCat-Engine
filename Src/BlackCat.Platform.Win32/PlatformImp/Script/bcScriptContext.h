@@ -14,7 +14,7 @@ namespace black_cat
 	namespace platform
 	{
 		template<>
-		struct bc_platform_script_context_pack< core_platform::g_api_win32 >
+		struct bc_platform_script_context_pack< platform::g_api_win32 >
 		{
 			JsContextRef m_js_context;
 		};

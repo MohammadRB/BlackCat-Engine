@@ -161,7 +161,7 @@ namespace black_cat
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_ccontroller_collision_flag bc_platform_ccontroller<g_api_physx>::move(const core::bc_vector3f& p_displacement,
-			const core_platform::bc_clock::update_param& p_clock,
+			const platform::bc_clock::update_param& p_clock,
 			bc_scene_query_pre_filter_callback* p_pre_filter,
 			bc_scene_query_post_filter_callback* p_post_filter,
 			bc_ccontroller_collision_filter_callback* p_cc_vs_cc_filter) noexcept

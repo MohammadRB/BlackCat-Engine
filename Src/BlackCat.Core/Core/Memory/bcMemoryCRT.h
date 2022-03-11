@@ -68,7 +68,7 @@ namespace black_cat
 
 		inline void* bc_memory_crt::alloc(bc_memblock* p_memblock) noexcept
 		{
-			void* result = core_platform::bc_mem_aligned_alloc(p_memblock->size(), BC_MEMORY_MIN_ALIGN);
+			void* result = platform::bc_mem_aligned_alloc(p_memblock->size(), BC_MEMORY_MIN_ALIGN);
 			if (result)
 			{
 				m_tracer.accept_alloc(p_memblock->size());
@@ -84,7 +84,7 @@ namespace black_cat
 		inline void bc_memory_crt::free(void* p_pointer, bc_memblock* p_memblock) noexcept
 		{
 			m_tracer.accept_free(p_memblock->size());
-			core_platform::bc_mem_aligned_free(const_cast< void* >(p_pointer));
+			platform::bc_mem_aligned_free(const_cast< void* >(p_pointer));
 		}
 
 		inline bool bc_memory_crt::contain_pointer(void* p_pointer) const noexcept

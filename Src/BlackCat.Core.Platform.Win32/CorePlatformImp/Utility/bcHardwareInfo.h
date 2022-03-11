@@ -8,7 +8,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		template<>
 		inline void bc_platform_hardware_info<bc_platform::win32>::get_basic_info(bc_basic_hardware_info& p_info)

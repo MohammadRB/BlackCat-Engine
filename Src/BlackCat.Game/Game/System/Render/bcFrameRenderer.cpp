@@ -146,7 +146,7 @@ namespace black_cat
 		}
 
 		void bc_frame_renderer::update_global_cbuffer(bc_render_thread& p_render_thread,
-			const core_platform::bc_clock::update_param& p_clock,
+			const platform::bc_clock::update_param& p_clock,
 			const bc_camera_instance& p_camera)
 		{
 			g_global_state.m_view = p_camera.get_view();
@@ -179,7 +179,7 @@ namespace black_cat
 		}
 
 		void bc_frame_renderer::update_global_cbuffer(bc_render_thread& p_render_thread,
-			const core_platform::bc_clock::update_param& p_clock,
+			const platform::bc_clock::update_param& p_clock,
 			const bc_camera_instance& p_camera,
 			const bc_direct_light& p_global_light,
 			const bc_direct_wind& p_global_wind)
@@ -364,19 +364,19 @@ namespace black_cat
 			if(m_camera_instance.has_value())
 			{
 				m_prev_camera_instance.reset(*m_camera_instance);
-				m_prev_camera.store(m_prev_camera_instance.get(), core_platform::bc_memory_order::release);
+				m_prev_camera.store(m_prev_camera_instance.get(), platform::bc_memory_order::release);
 			}
 			
 			m_camera_instance.reset(p_update_param.m_camera);
-			m_camera.store(m_camera_instance.get(), core_platform::bc_memory_order::release);
+			m_camera.store(m_camera_instance.get(), platform::bc_memory_order::release);
 			
 			m_render_pass_manager->pass_update(bc_render_pass_update_context(p_update_param.m_clock, p_update_param.m_camera));
 		}
 
 		void bc_frame_renderer::render(const render_context& p_render_param)
 		{
-			const auto* l_prev_camera = m_prev_camera.load(core_platform::bc_memory_order::consume);
-			const auto* l_camera = m_camera.load(core_platform::bc_memory_order::consume);
+			const auto* l_prev_camera = m_prev_camera.load(platform::bc_memory_order::consume);
+			const auto* l_camera = m_camera.load(platform::bc_memory_order::consume);
 
 			if(!l_prev_camera)
 			{

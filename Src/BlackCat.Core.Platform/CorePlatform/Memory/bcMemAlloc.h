@@ -6,7 +6,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		void* bc_mem_alloc(bcSIZE p_size) noexcept;
 

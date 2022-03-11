@@ -99,7 +99,7 @@ namespace black_cat
 			virtual bc_stream_type get_type() const noexcept = 0;
 		};
 
-		class bc_stream : core_platform::bc_no_copy
+		class bc_stream : platform::bc_no_copy
 		{
 		public:
 			bc_stream();

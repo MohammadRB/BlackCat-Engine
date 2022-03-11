@@ -13,7 +13,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		using path_string = bc_platform_path_pack<g_api_win32>::path_string;
 

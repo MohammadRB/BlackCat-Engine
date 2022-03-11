@@ -58,14 +58,14 @@ namespace black_cat
 			void initialize(bcSIZE p_total_size)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_total_size.store(p_total_size, core_platform::bc_memory_order::seqcst);
+				m_total_size.store(p_total_size, platform::bc_memory_order::seqcst);
 #endif
 			}
 
 			bcSIZE total_size() const
 			{
 #ifdef BC_MEMORY_TRACING
-				return m_total_size.load(core_platform::bc_memory_order::relaxed);
+				return m_total_size.load(platform::bc_memory_order::relaxed);
 #else
 				return 0;
 #endif
@@ -74,14 +74,14 @@ namespace black_cat
 			void total_size(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_total_size.store(p_val, core_platform::bc_memory_order::relaxed);
+				m_total_size.store(p_val, platform::bc_memory_order::relaxed);
 #endif
 			}
 
 			bcSIZE used_size() const
 			{
 #ifdef BC_MEMORY_TRACING
-				return m_used_size.load(core_platform::bc_memory_order::relaxed);
+				return m_used_size.load(platform::bc_memory_order::relaxed);
 #else
 				return 0;
 #endif
@@ -90,14 +90,14 @@ namespace black_cat
 			void used_size(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_used_size.store(p_val, core_platform::bc_memory_order::relaxed);
+				m_used_size.store(p_val, platform::bc_memory_order::relaxed);
 #endif 
 			}
 
 			bcSIZE overhead_size() const
 			{
 #ifdef BC_MEMORY_TRACING
-				return m_overhead_size.load(core_platform::bc_memory_order::relaxed);
+				return m_overhead_size.load(platform::bc_memory_order::relaxed);
 #else
 				return 0;
 #endif
@@ -106,14 +106,14 @@ namespace black_cat
 			void overhead_size(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_overhead_size.store(p_val, core_platform::bc_memory_order::relaxed);
+				m_overhead_size.store(p_val, platform::bc_memory_order::relaxed);
 #endif
 			}
 
 			bcSIZE max_used_size() const
 			{
 #ifdef BC_MEMORY_TRACING
-				return m_max_used_size.load(core_platform::bc_memory_order::relaxed);
+				return m_max_used_size.load(platform::bc_memory_order::relaxed);
 #else
 				return 0;
 #endif
@@ -122,14 +122,14 @@ namespace black_cat
 			void max_used_size(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_max_used_size.store(p_val, core_platform::bc_memory_order::relaxed);
+				m_max_used_size.store(p_val, platform::bc_memory_order::relaxed);
 #endif 
 			}
 
 			bcSIZE alloc_count() const
 			{
 #ifdef BC_MEMORY_TRACING
-				return m_alloc_count.load(core_platform::bc_memory_order::relaxed);
+				return m_alloc_count.load(platform::bc_memory_order::relaxed);
 #else
 				return 0;
 #endif
@@ -138,14 +138,14 @@ namespace black_cat
 			void alloc_count(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_alloc_count.store(p_val, core_platform::bc_memory_order::relaxed);
+				m_alloc_count.store(p_val, platform::bc_memory_order::relaxed);
 #endif
 			}
 
 			bcSIZE rejected_alloc_size() const
 			{
 #ifdef BC_MEMORY_TRACING
-				return m_rejected_alloc_size.load(core_platform::bc_memory_order::relaxed);
+				return m_rejected_alloc_size.load(platform::bc_memory_order::relaxed);
 #else
 				return 0;
 #endif
@@ -154,14 +154,14 @@ namespace black_cat
 			void rejected_alloc_size(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_rejected_alloc_size.store(p_val, core_platform::bc_memory_order::relaxed);
+				m_rejected_alloc_size.store(p_val, platform::bc_memory_order::relaxed);
 #endif 
 			}
 
 			bcSIZE rejected_alloc_count() const
 			{
 #ifdef BC_MEMORY_TRACING
-				return m_rejected_alloc_count.load(core_platform::bc_memory_order::relaxed);
+				return m_rejected_alloc_count.load(platform::bc_memory_order::relaxed);
 #else
 				return 0;
 #endif
@@ -170,83 +170,83 @@ namespace black_cat
 			void rejected_alloc_count(bcSIZE p_val)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_rejected_alloc_count.store(p_val, core_platform::bc_memory_order::relaxed);
+				m_rejected_alloc_count.store(p_val, platform::bc_memory_order::relaxed);
 #endif 
 			}
 
 			void accept_alloc(bcSIZE p_size)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_used_size.fetch_add(p_size, core_platform::bc_memory_order::relaxed);
+				m_used_size.fetch_add(p_size, platform::bc_memory_order::relaxed);
 
 				while (true)
 				{
-					bcSIZE l_local_max_used_size = m_max_used_size.load(core_platform::bc_memory_order::relaxed);
-					bcSIZE l_local_used_size = m_used_size.load(core_platform::bc_memory_order::relaxed);
+					bcSIZE l_local_max_used_size = m_max_used_size.load(platform::bc_memory_order::relaxed);
+					bcSIZE l_local_used_size = m_used_size.load(platform::bc_memory_order::relaxed);
 					bcSIZE l_new_max_used_size = std::max<bcUINT32>(l_local_used_size, l_local_max_used_size);
 
 					if (m_max_used_size.compare_exchange_strong(
 						&l_local_max_used_size,
 						l_new_max_used_size,
-						core_platform::bc_memory_order::relaxed,
-						core_platform::bc_memory_order::relaxed))
+						platform::bc_memory_order::relaxed,
+						platform::bc_memory_order::relaxed))
 					{
 						break;
 					}
 				}
 
-				m_alloc_count.fetch_add(1U, core_platform::bc_memory_order::relaxed);
+				m_alloc_count.fetch_add(1U, platform::bc_memory_order::relaxed);
 #endif
 			}
 
 			void accept_free(bcSIZE p_size)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_used_size.fetch_sub(p_size, core_platform::bc_memory_order::relaxed);
-				m_alloc_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed);
+				m_used_size.fetch_sub(p_size, platform::bc_memory_order::relaxed);
+				m_alloc_count.fetch_sub(1U, platform::bc_memory_order::relaxed);
 #endif
 			}
 
 			void accept_overhead(bcSIZE p_size)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_overhead_size.fetch_add(p_size, core_platform::bc_memory_order::relaxed);
+				m_overhead_size.fetch_add(p_size, platform::bc_memory_order::relaxed);
 #endif
 			}
 
 			void accept_free_overhead(bcSIZE p_size)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_overhead_size.fetch_sub(p_size, core_platform::bc_memory_order::relaxed);
+				m_overhead_size.fetch_sub(p_size, platform::bc_memory_order::relaxed);
 #endif
 			}
 
 			void reject_alloc(bcSIZE p_size)
 			{
 #ifdef BC_MEMORY_TRACING
-				m_rejected_alloc_size.fetch_add(p_size, core_platform::bc_memory_order::relaxed);
-				m_rejected_alloc_count.fetch_add(1U, core_platform::bc_memory_order::relaxed);
+				m_rejected_alloc_size.fetch_add(p_size, platform::bc_memory_order::relaxed);
+				m_rejected_alloc_count.fetch_add(1U, platform::bc_memory_order::relaxed);
 #endif
 			}
 
 			void accept_clear()
 			{
 #ifdef BC_MEMORY_TRACING
-				m_used_size.store(0U, core_platform::bc_memory_order::relaxed);
-				m_overhead_size.store(0U, core_platform::bc_memory_order::relaxed);
-				m_alloc_count.store(0U, core_platform::bc_memory_order::relaxed);
+				m_used_size.store(0U, platform::bc_memory_order::relaxed);
+				m_overhead_size.store(0U, platform::bc_memory_order::relaxed);
+				m_alloc_count.store(0U, platform::bc_memory_order::relaxed);
 #endif
 			}
 
 		protected:
 #ifdef BC_MEMORY_TRACING
-			core_platform::bc_atomic<bcSIZE> m_total_size;
-			core_platform::bc_atomic<bcSIZE> m_alloc_count;
-			core_platform::bc_atomic<bcSIZE> m_used_size;
-			core_platform::bc_atomic<bcSIZE> m_overhead_size;
-			core_platform::bc_atomic<bcSIZE> m_max_used_size;
-			core_platform::bc_atomic<bcSIZE> m_rejected_alloc_count;
-			core_platform::bc_atomic<bcSIZE> m_rejected_alloc_size;
+			platform::bc_atomic<bcSIZE> m_total_size;
+			platform::bc_atomic<bcSIZE> m_alloc_count;
+			platform::bc_atomic<bcSIZE> m_used_size;
+			platform::bc_atomic<bcSIZE> m_overhead_size;
+			platform::bc_atomic<bcSIZE> m_max_used_size;
+			platform::bc_atomic<bcSIZE> m_rejected_alloc_count;
+			platform::bc_atomic<bcSIZE> m_rejected_alloc_size;
 #endif	
 		};
 	}

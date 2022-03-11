@@ -171,7 +171,7 @@ namespace black_cat
 		template<bc_render_api TRenderApi>
 		class bc_platform_device : public core::bc_initializable<>,
 			public core::bc_object_allocator,
-			public core_platform::bc_no_copy
+			public platform::bc_no_copy
 		{
 		public:
 			using platform_pack = bc_platform_device_pack<TRenderApi>;

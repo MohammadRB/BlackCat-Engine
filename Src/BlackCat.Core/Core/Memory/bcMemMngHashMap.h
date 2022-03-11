@@ -145,7 +145,7 @@ namespace black_cat
 			public:
 				storage_chunk* m_sub_levels;
 				storage_item* m_items;
-				core_platform::bc_hybrid_mutex m_mutext;
+				platform::bc_hybrid_mutex m_mutext;
 
 			public:
 				storage_chunk()
@@ -156,12 +156,12 @@ namespace black_cat
 
 				~storage_chunk() {}
 
-				void lock(core_platform::bc_lock_operation p_operation)
+				void lock(platform::bc_lock_operation p_operation)
 				{
 					m_mutext.lock(p_operation);
 				}
 
-				bool try_lock(core_platform::bc_lock_operation p_operation)
+				bool try_lock(platform::bc_lock_operation p_operation)
 				{
 					return m_mutext.try_lock(p_operation);
 				}
@@ -182,7 +182,7 @@ namespace black_cat
 				bcUINT32 l_key = _convert_pointer_to_key(p_pointer);
 				storage_chunk* l_target_chunk = &m_chunks[l_key % m_level_sizes[0]];
 
-				core_platform::bc_unique_lock<storage_chunk> l_gaurd(*l_target_chunk, core_platform::bc_lock_operation::light);
+				platform::bc_unique_lock<storage_chunk> l_gaurd(*l_target_chunk, platform::bc_lock_operation::light);
 
 				for (bcUINT32 l = 1; l < m_level_count; ++l)
 				{
@@ -191,7 +191,7 @@ namespace black_cat
 
 					storage_chunk* l_sub_level = &l_target_chunk->m_sub_levels[l_key % m_level_sizes[l]];
 
-					core_platform::bc_unique_lock<storage_chunk> l_gaurd_sub_level(*l_sub_level, core_platform::bc_lock_operation::light);
+					platform::bc_unique_lock<storage_chunk> l_gaurd_sub_level(*l_sub_level, platform::bc_lock_operation::light);
 					l_gaurd.unlock();
 
 					l_target_chunk = l_sub_level;
@@ -237,7 +237,7 @@ namespace black_cat
 				for (bcUINT32 c = 0; c < m_level_sizes[p_level]; ++c)
 				{
 					storage_chunk* l_chunk = &p_chunks[c];
-					core_platform::bc_unique_lock<storage_chunk> l_gaurd(*l_chunk, core_platform::bc_lock_operation::medium);
+					platform::bc_unique_lock<storage_chunk> l_gaurd(*l_chunk, platform::bc_lock_operation::medium);
 					storage_chunk* l_sub_chunks = l_chunk->m_sub_levels;
 
 					if (l_sub_chunks)

@@ -12,7 +12,7 @@ namespace black_cat
 	namespace core
 	{
 		/**
-		 * \brief Same as core_platform::bc_thread_local but provide auto initialization. if type is an integral it will initialize to zero
+		 * \brief Same as platform::bc_thread_local but provide auto initialization. if type is an integral it will initialize to zero
 		 * \tparam T 
 		 * \tparam TAllocType 
 		 */
@@ -39,14 +39,14 @@ namespace black_cat
 			}
 
 			bc_thread_local(bc_thread_local&& p_other) noexcept
-				: m_first_entry(p_other.m_first_entry.load(core_platform::bc_memory_order::relaxed)),
+				: m_first_entry(p_other.m_first_entry.load(platform::bc_memory_order::relaxed)),
 				m_local(std::move(p_other.m_local))
 			{
 			}
 
 			~bc_thread_local()
 			{
-				entry* l_first_entry = m_first_entry.load(core_platform::bc_memory_order::relaxed);
+				entry* l_first_entry = m_first_entry.load(platform::bc_memory_order::relaxed);
 				while (l_first_entry)
 				{
 					entry* l_next_entry = l_first_entry->m_next;
@@ -57,7 +57,7 @@ namespace black_cat
 
 			bc_thread_local& operator =(bc_thread_local&& p_other) noexcept
 			{
-				m_first_entry.store(p_other.m_first_entry.load(core_platform::bc_memory_order::relaxed));
+				m_first_entry.store(p_other.m_first_entry.load(platform::bc_memory_order::relaxed));
 				m_local = std::move(p_other.m_local);
 
 				return *this;
@@ -150,7 +150,7 @@ namespace black_cat
 
 			void _swap_first_entry(entry* p_entry)
 			{
-				entry* l_first_entry = m_first_entry.load(core_platform::bc_memory_order::relaxed);
+				entry* l_first_entry = m_first_entry.load(platform::bc_memory_order::relaxed);
 				while(true)
 				{
 					p_entry->m_next = l_first_entry;
@@ -159,8 +159,8 @@ namespace black_cat
 					(
 						&l_first_entry,
 						p_entry,
-						core_platform::bc_memory_order::relaxed,
-						core_platform::bc_memory_order::relaxed
+						platform::bc_memory_order::relaxed,
+						platform::bc_memory_order::relaxed
 					))
 					{
 						break;
@@ -168,8 +168,8 @@ namespace black_cat
 				}
 			}
 
-			core_platform::bc_atomic<entry*> m_first_entry; // All created instances by different threads
-			core_platform::bc_thread_local<entry> m_local;
+			platform::bc_atomic<entry*> m_first_entry; // All created instances by different threads
+			platform::bc_thread_local<entry> m_local;
 		};
 	}
 }

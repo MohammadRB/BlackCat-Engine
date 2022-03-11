@@ -40,7 +40,7 @@ namespace black_cat
 			core::bc_vector_frame<bc_bullet> l_bullets_copy;
 
 			{
-				core_platform::bc_lock_guard l_lock(m_bullets_mutex);
+				platform::bc_lock_guard l_lock(m_bullets_mutex);
 
 				l_bullets_copy.reserve(m_bullets.size());
 
@@ -53,18 +53,18 @@ namespace black_cat
 		void bc_bullet_manager::add_bullet(const bc_bullet& p_bullet) noexcept
 		{
 			{
-				core_platform::bc_spin_mutex_guard l_lock(m_bullets_mutex);
+				platform::bc_spin_mutex_guard l_lock(m_bullets_mutex);
 				m_bullets.push_back(p_bullet);
 			}
 		}
 
-		void bc_bullet_manager::update(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock) noexcept
+		void bc_bullet_manager::update(bc_scene& p_scene, const platform::bc_clock::update_param& p_clock) noexcept
 		{
 			const auto l_scene_bound_box = p_scene.get_scene_graph().get_bound_box();
 			auto& l_px_scene = p_scene.get_px_scene();
 			
 			{
-				core_platform::bc_spin_mutex_guard l_lock(m_bullets_mutex);
+				platform::bc_spin_mutex_guard l_lock(m_bullets_mutex);
 				physics::bc_scene_shared_lock l_px_lock(&l_px_scene);
 
 				physics::bc_scene_ray_query_buffer l_query_buffer;
@@ -124,7 +124,7 @@ namespace black_cat
 			}
 		}
 
-		core::bc_task<void> bc_bullet_manager::update_async(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock) noexcept
+		core::bc_task<void> bc_bullet_manager::update_async(bc_scene& p_scene, const platform::bc_clock::update_param& p_clock) noexcept
 		{
 			return core::bc_concurrency::start_task
 			(

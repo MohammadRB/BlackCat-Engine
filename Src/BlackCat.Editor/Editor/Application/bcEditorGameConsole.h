@@ -34,7 +34,7 @@ namespace black_cat
 
 			void hide() override;
 
-			void update(const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			void update(const platform::bc_clock::update_param& p_clock_update_param) override;
 
 			void update_ui();
 			

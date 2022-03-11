@@ -30,7 +30,7 @@ namespace black_cat
 			m_event_pools[1].destroy();
 		}
 
-		void bc_actor_component_manager::process_actor_events(const core_platform::bc_clock::update_param& p_clock)
+		void bc_actor_component_manager::process_actor_events(const platform::bc_clock::update_param& p_clock)
 		{
 			core::bc_vector_frame<_bc_actor_component_entry*> l_components_with_event;
 			l_components_with_event.reserve(m_components.size());
@@ -79,7 +79,7 @@ namespace black_cat
 				);
 
 				{
-					core_platform::bc_shared_mutex_shared_guard l_actors_lock(m_actors_lock);
+					platform::bc_shared_mutex_shared_guard l_actors_lock(m_actors_lock);
 
 					auto l_actor_indices = m_actors_bit.find_true_indices();
 					core::bc_concurrency::concurrent_for_each
@@ -95,7 +95,7 @@ namespace black_cat
 			} while (m_event_pools[m_write_event_pool].size());
 		}
 
-		void bc_actor_component_manager::update_actors(const core_platform::bc_clock::update_param& p_clock)
+		void bc_actor_component_manager::update_actors(const platform::bc_clock::update_param& p_clock)
 		{
 			core::bc_vector_frame<_bc_actor_component_entry*> l_components_with_update;
 			
@@ -135,7 +135,7 @@ namespace black_cat
 			);
 		}
 
-		core::bc_task<void> bc_actor_component_manager::process_actor_events_async(const core_platform::bc_clock::update_param& p_clock)
+		core::bc_task<void> bc_actor_component_manager::process_actor_events_async(const platform::bc_clock::update_param& p_clock)
 		{
 			auto l_task = core::bc_concurrency::start_task
 			(
@@ -151,7 +151,7 @@ namespace black_cat
 			return l_task;
 		}
 
-		core::bc_task<void> bc_actor_component_manager::update_actors_async(const core_platform::bc_clock::update_param& p_clock)
+		core::bc_task<void> bc_actor_component_manager::update_actors_async(const platform::bc_clock::update_param& p_clock)
 		{
 			auto l_task = core::bc_concurrency::start_task
 			(
@@ -167,7 +167,7 @@ namespace black_cat
 			return l_task;
 		}
 
-		void bc_actor_component_manager::double_update_actors(const core_platform::bc_clock::update_param& p_clock)
+		void bc_actor_component_manager::double_update_actors(const platform::bc_clock::update_param& p_clock)
 		{
 			const auto l_read_event_pool = m_read_event_pool;
 			const auto l_write_event_pool = m_write_event_pool;

@@ -2,11 +2,8 @@
 
 #pragma once
 
-#include "Core/Content/bcContent.h"
 #include "Core/Content/bcContentLoader.h"
-#include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Resource/Texture/bcTextureConfig.h"
-#include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "App/bcExport.h"
 
 namespace black_cat

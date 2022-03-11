@@ -46,7 +46,7 @@ namespace black_cat
 			 */
 			void set_local_times(const bcFLOAT* p_time) noexcept;
 			
-			bool run(const core_platform::bc_clock::update_param& p_clock) override;
+			bool run(const platform::bc_clock::update_param& p_clock) override;
 
 		private:
 			core::bc_vector<std::pair<core::bc_shared_ptr<bci_local_transform_animation_job>, bcFLOAT>> m_layers;

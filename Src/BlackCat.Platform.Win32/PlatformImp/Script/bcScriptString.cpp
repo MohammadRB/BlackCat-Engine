@@ -10,7 +10,7 @@ namespace black_cat
 	{
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_string<core_platform::g_api_win32>::bc_platform_script_string()
+		bc_platform_script_string<platform::g_api_win32>::bc_platform_script_string()
 			: bc_platform_script_reference(),
 			m_pack()
 		{
@@ -18,7 +18,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_string<core_platform::g_api_win32>::bc_platform_script_string(bc_script_context& p_context, const core::bc_wstring& p_value)
+		bc_platform_script_string<platform::g_api_win32>::bc_platform_script_string(bc_script_context& p_context, const core::bc_wstring& p_value)
 			: bc_platform_script_reference(),
 			m_pack()
 		{
@@ -27,7 +27,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_string<core_platform::g_api_win32>::bc_platform_script_string(const bc_platform_script_string& p_other) noexcept
+		bc_platform_script_string<platform::g_api_win32>::bc_platform_script_string(const bc_platform_script_string& p_other) noexcept
 			: bc_platform_script_reference(p_other),
 			m_pack(p_other.m_pack)
 		{
@@ -35,11 +35,11 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_string<core_platform::g_api_win32>::~bc_platform_script_string() = default;
+		bc_platform_script_string<platform::g_api_win32>::~bc_platform_script_string() = default;
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_string<core_platform::g_api_win32>& bc_platform_script_string<core_platform::g_api_win32>::operator=(const bc_platform_script_string& p_other) noexcept
+		bc_platform_script_string<platform::g_api_win32>& bc_platform_script_string<platform::g_api_win32>::operator=(const bc_platform_script_string& p_other) noexcept
 		{
 			bc_platform_script_reference::operator=(p_other);
 			m_pack.m_js_string = p_other.m_pack.m_js_string;
@@ -49,7 +49,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bcSIZE bc_platform_script_string<core_platform::g_api_win32>::length() const noexcept
+		bcSIZE bc_platform_script_string<platform::g_api_win32>::length() const noexcept
 		{
 			bcINT l_length;
 
@@ -60,7 +60,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		core::bc_wstring bc_platform_script_string<core_platform::g_api_win32>::data() const
+		core::bc_wstring bc_platform_script_string<platform::g_api_win32>::data() const
 		{
 			bcSIZE l_length;
 			const bcWCHAR* l_string;
@@ -77,7 +77,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_string<core_platform::g_api_win32>::is_valid() const noexcept
+		bool bc_platform_script_string<platform::g_api_win32>::is_valid() const noexcept
 		{
 			return m_pack.m_js_string != JS_INVALID_REFERENCE;
 		}

@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		core_platform::bc_atomic<bc_network_message_id> bci_network_message::s_id_counter(1);
+		platform::bc_atomic<bc_network_message_id> bci_network_message::s_id_counter(1);
 
 		core::bc_string bci_network_message::get_acknowledgment_data() const noexcept
 		{
@@ -20,7 +20,7 @@ namespace black_cat
 		{
 			if(m_id == 0)
 			{
-				m_id = s_id_counter.fetch_add(1, core_platform::bc_memory_order::relaxed);
+				m_id = s_id_counter.fetch_add(1, platform::bc_memory_order::relaxed);
 			}
 
 			p_context.m_params.add("msg_id", core::bc_any(m_id));

@@ -53,7 +53,7 @@ namespace black_cat
 
 			bcSIZE receive(core::bc_memory_stream& p_stream) noexcept;
 
-			void update(const core_platform::bc_clock::update_param& p_clock);
+			void update(const platform::bc_clock::update_param& p_clock);
 
 		private:
 			void on_enter(bc_server_tcp_client_socket_connected_state& p_state) override;
@@ -150,7 +150,7 @@ namespace black_cat
 			return l_receive_event.m_bytes_received;
 		}
 
-		inline void bc_network_server_manager_tcp_client::update(const core_platform::bc_clock::update_param& p_clock)
+		inline void bc_network_server_manager_tcp_client::update(const platform::bc_clock::update_param& p_clock)
 		{
 			bc_server_tcp_client_socket_update_event l_update_event{ p_clock };
 			bc_server_tcp_client_socket_state_machine::process_event(l_update_event);

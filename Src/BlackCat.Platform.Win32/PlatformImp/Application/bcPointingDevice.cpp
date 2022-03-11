@@ -21,7 +21,7 @@ namespace black_cat
 
 		template< >
 		BC_PLATFORMIMP_DLL
-		bc_platform_pointing_device<core_platform::g_api_win32>::bc_platform_pointing_device(bcUBYTE p_device_index)
+		bc_platform_pointing_device<platform::g_api_win32>::bc_platform_pointing_device(bcUBYTE p_device_index)
 			: m_device_index(p_device_index),
 			m_pack(),
 			m_event_manager(core::bc_get_service<core::bc_event_manager>())
@@ -31,7 +31,7 @@ namespace black_cat
 
 		template< >
 		BC_PLATFORMIMP_DLL
-		bc_platform_pointing_device<core_platform::g_api_win32>::bc_platform_pointing_device(const bc_platform_pointing_device& p_other) noexcept
+		bc_platform_pointing_device<platform::g_api_win32>::bc_platform_pointing_device(const bc_platform_pointing_device& p_other) noexcept
 			: m_device_index(p_other.m_device_index),
 			m_pack(p_other.m_pack),
 			m_event_manager(p_other.m_event_manager)
@@ -40,13 +40,13 @@ namespace black_cat
 
 		template< >
 		BC_PLATFORMIMP_DLL
-		bc_platform_pointing_device<core_platform::g_api_win32>::~bc_platform_pointing_device()
+		bc_platform_pointing_device<platform::g_api_win32>::~bc_platform_pointing_device()
 		{
 		}
 
 		template< >
 		BC_PLATFORMIMP_DLL
-		bc_platform_pointing_device<core_platform::g_api_win32>& bc_platform_pointing_device<core_platform::g_api_win32>::operator=(const bc_platform_pointing_device& p_other) noexcept
+		bc_platform_pointing_device<platform::g_api_win32>& bc_platform_pointing_device<platform::g_api_win32>::operator=(const bc_platform_pointing_device& p_other) noexcept
 		{
 			m_pack = p_other.m_pack;
 			m_device_index = p_other.m_device_index;
@@ -57,10 +57,10 @@ namespace black_cat
 
 		template< >
 		BC_PLATFORMIMP_DLL
-		void bc_platform_pointing_device<core_platform::g_api_win32>::update()
+		void bc_platform_pointing_device<platform::g_api_win32>::update()
 		{
 			POINT l_point;
-			core_platform::win_call(GetCursorPos(&l_point) != 0);
+			platform::win_call(GetCursorPos(&l_point) != 0);
 
 			const bcINT16 l_x = m_pack.m_state.m_x;
 			const bcINT16 l_y = m_pack.m_state.m_y;
@@ -79,7 +79,7 @@ namespace black_cat
 
 		template< >
 		BC_PLATFORMIMP_DLL
-		bc_pointing_device_state bc_platform_pointing_device<core_platform::g_api_win32>::get_state() const noexcept
+		bc_pointing_device_state bc_platform_pointing_device<platform::g_api_win32>::get_state() const noexcept
 		{
 			return m_pack.m_state;
 		}

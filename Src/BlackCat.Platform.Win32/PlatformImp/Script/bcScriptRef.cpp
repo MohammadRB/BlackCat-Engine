@@ -16,88 +16,88 @@ namespace black_cat
 {
 	namespace platform
 	{
-		void _inc_ref(bc_platform_script_context< core_platform::g_api_win32 >& p_context)
+		void _inc_ref(bc_platform_script_context< platform::g_api_win32 >& p_context)
 		{
 			bc_chakra_call l_call = JsAddRef(p_context.get_platform_pack().m_js_context, nullptr);
 		}
 
-		void _dec_ref(bc_platform_script_context< core_platform::g_api_win32 >& p_context)
+		void _dec_ref(bc_platform_script_context< platform::g_api_win32 >& p_context)
 		{
 			bc_chakra_call l_call = JsRelease(p_context.get_platform_pack().m_js_context, nullptr);
 		}
 
-		void _inc_ref(bc_platform_script_bytecode< core_platform::g_api_win32 >& p_byte_code)
+		void _inc_ref(bc_platform_script_bytecode< platform::g_api_win32 >& p_byte_code)
 		{
 			bc_chakra_call l_call = JsAddRef(p_byte_code.get_platform_pack().m_js_parsed_script, nullptr);
 		}
 
-		void _dec_ref(bc_platform_script_bytecode< core_platform::g_api_win32 >& p_byte_code)
+		void _dec_ref(bc_platform_script_bytecode< platform::g_api_win32 >& p_byte_code)
 		{
 			bc_chakra_call l_call = JsRelease(p_byte_code.get_platform_pack().m_js_parsed_script, nullptr);
 		}
 
-		void _inc_ref(bc_platform_script_variable< core_platform::g_api_win32 >& p_variable)
+		void _inc_ref(bc_platform_script_variable< platform::g_api_win32 >& p_variable)
 		{
 			bc_chakra_call l_call = JsAddRef(p_variable.get_platform_pack().m_js_value, nullptr);
 		}
 
-		void _dec_ref(bc_platform_script_variable< core_platform::g_api_win32 >& p_variable)
+		void _dec_ref(bc_platform_script_variable< platform::g_api_win32 >& p_variable)
 		{
 			bc_chakra_call l_call = JsRelease(p_variable.get_platform_pack().m_js_value, nullptr);
 		}
 
-		void _inc_ref(bc_platform_script_object< core_platform::g_api_win32 >& p_object)
+		void _inc_ref(bc_platform_script_object< platform::g_api_win32 >& p_object)
 		{
 			bc_chakra_call l_call = JsAddRef(p_object.get_platform_pack().m_js_object, nullptr);
 		}
 
-		void _dec_ref(bc_platform_script_object< core_platform::g_api_win32 >& p_object)
+		void _dec_ref(bc_platform_script_object< platform::g_api_win32 >& p_object)
 		{
 			bc_chakra_call l_call = JsRelease(p_object.get_platform_pack().m_js_object, nullptr);
 		}
 
-		void _inc_ref(bc_platform_script_string< core_platform::g_api_win32 >& p_string)
+		void _inc_ref(bc_platform_script_string< platform::g_api_win32 >& p_string)
 		{
 			bc_chakra_call l_call = JsAddRef(p_string.get_platform_pack().m_js_string, nullptr);
 		}
 
-		void _dec_ref(bc_platform_script_string< core_platform::g_api_win32 >& p_string)
+		void _dec_ref(bc_platform_script_string< platform::g_api_win32 >& p_string)
 		{
 			bc_chakra_call l_call = JsRelease(p_string.get_platform_pack().m_js_string, nullptr);
 		}
 
-		void _inc_ref(bc_platform_script_function< core_platform::g_api_win32 >& p_function)
+		void _inc_ref(bc_platform_script_function< platform::g_api_win32 >& p_function)
 		{
 			bc_chakra_call l_call = JsAddRef(p_function.get_platform_pack().m_js_function, nullptr);
 		}
 
-		void _dec_ref(bc_platform_script_function< core_platform::g_api_win32 >& p_function)
+		void _dec_ref(bc_platform_script_function< platform::g_api_win32 >& p_function)
 		{
 			bc_chakra_call l_call = JsRelease(p_function.get_platform_pack().m_js_function, nullptr);
 		}
 
-		void _inc_ref(bc_platform_script_array< core_platform::g_api_win32 >& p_array)
+		void _inc_ref(bc_platform_script_array< platform::g_api_win32 >& p_array)
 		{
 			_inc_ref(static_cast< bc_script_object& >(p_array));
 		}
 
-		void _dec_ref(bc_platform_script_array< core_platform::g_api_win32 >& p_array)
+		void _dec_ref(bc_platform_script_array< platform::g_api_win32 >& p_array)
 		{
 			_dec_ref(static_cast< bc_script_object& >(p_array));
 		}
 
-		void _inc_ref(bc_platform_script_error< core_platform::g_api_win32 >& p_error)
+		void _inc_ref(bc_platform_script_error< platform::g_api_win32 >& p_error)
 		{
 			bc_chakra_call l_call = JsAddRef(p_error.get_platform_pack().m_js_error, nullptr);
 		}
 
-		void _dec_ref(bc_platform_script_error< core_platform::g_api_win32 >& p_error)
+		void _dec_ref(bc_platform_script_error< platform::g_api_win32 >& p_error)
 		{
 			bc_chakra_call l_call = JsRelease(p_error.get_platform_pack().m_js_error, nullptr);
 		}
 
 		template< typename T >
-		void _inc_ref(bc_platform_script_prototype< core_platform::g_api_win32, T >& p_prototype)
+		void _inc_ref(bc_platform_script_prototype< platform::g_api_win32, T >& p_prototype)
 		{
 			bc_chakra_call l_call;
 			l_call = JsAddRef(p_prototype.get_platform_pack().m_js_ctor_function, nullptr);
@@ -105,7 +105,7 @@ namespace black_cat
 		}
 
 		template< typename T >
-		void _dec_ref(bc_platform_script_prototype< core_platform::g_api_win32, T >& p_prototype)
+		void _dec_ref(bc_platform_script_prototype< platform::g_api_win32, T >& p_prototype)
 		{
 			bc_chakra_call l_call;
 			l_call = JsRelease(p_prototype.get_platform_pack().m_js_ctor_function, nullptr);

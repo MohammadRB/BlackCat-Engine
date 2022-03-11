@@ -10,7 +10,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		template<>
 		struct bc_platform_spin_mutex_pack<bc_platform::win32>

@@ -68,9 +68,9 @@ namespace black_cat
 			template<class TMessage>
 			void send_message(const platform::bc_network_address& p_address, TMessage p_message);
 			
-			void update(const core_platform::bc_clock::update_param& p_clock);
+			void update(const platform::bc_clock::update_param& p_clock);
 			
-			core::bc_task<void> update_async(const core_platform::bc_clock::update_param& p_clock);
+			core::bc_task<void> update_async(const platform::bc_clock::update_param& p_clock);
 
 			bc_network_message_ptr create_message_instance(bc_network_message_hash p_hash);
 			
@@ -92,7 +92,7 @@ namespace black_cat
 			message_factory_container m_message_factories;
 			core::bc_unique_ptr<bci_network_manager> m_manager;
 
-			core_platform::bc_clock::small_delta_time m_last_rtt_test;
+			platform::bc_clock::small_delta_time m_last_rtt_test;
 		};
 
 		inline bc_network_type bc_network_system::get_network_type() const noexcept

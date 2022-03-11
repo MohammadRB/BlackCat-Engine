@@ -11,7 +11,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		class bci_memory : private core_platform::bc_no_copy
+		class bci_memory : private platform::bc_no_copy
 		{
 		public:
 			using this_type = bci_memory;

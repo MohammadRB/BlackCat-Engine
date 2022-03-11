@@ -48,7 +48,7 @@ namespace black_cat
 			
 			void set_weights(bcFLOAT p_layer1_weight, bcFLOAT p_layer2_weight) noexcept;
 			
-			bool run(const core_platform::bc_clock::update_param& p_clock) override;
+			bool run(const platform::bc_clock::update_param& p_clock) override;
 
 		private:
 			bcFLOAT m_layer1_weight;

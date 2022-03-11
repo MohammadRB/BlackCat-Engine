@@ -21,7 +21,7 @@ namespace black_cat
 
 		struct bc_server_tcp_socket_update_event
 		{
-			core_platform::bc_clock::update_param m_clock;
+			platform::bc_clock::update_param m_clock;
 		};
 
 		struct bc_server_tcp_socket_bind_event

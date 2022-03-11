@@ -13,11 +13,11 @@ namespace black_cat
 	namespace platform
 	{
 		template<>
-		struct bc_platform_basic_window_parameter_pack<core_platform::bc_platform::win32> 
-			: public bc_platform_basic_window_parameter_pack<core_platform::bc_platform::unknown>
+		struct bc_platform_basic_window_parameter_pack<platform::bc_platform::win32> 
+			: public bc_platform_basic_window_parameter_pack<platform::bc_platform::unknown>
 		{
 		private:
-			using base_type = bc_platform_basic_window_parameter_pack<core_platform::bc_platform::unknown>;
+			using base_type = bc_platform_basic_window_parameter_pack<platform::bc_platform::unknown>;
 
 		public:
 			bc_platform_basic_window_parameter_pack(HINSTANCE p_instance, 
@@ -33,7 +33,7 @@ namespace black_cat
 		};
 
 		template<>
-		struct bc_platform_basic_window_pack<core_platform::bc_platform::win32>
+		struct bc_platform_basic_window_pack<platform::bc_platform::win32>
 		{
 			HINSTANCE m_instance;
 			HWND m_handle;

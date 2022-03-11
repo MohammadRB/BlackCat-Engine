@@ -71,7 +71,7 @@ namespace black_cat
 		{
 			{
 				auto l_iterator = p_context.m_scene->get_light_manager().get_iterator_buffer();
-				core_platform::bc_lock_guard<bc_light_manager::iterator_buffer> l_lock(l_iterator);
+				platform::bc_lock_guard<bc_light_manager::iterator_buffer> l_lock(l_iterator);
 
 				for (auto& l_light : l_iterator)
 				{

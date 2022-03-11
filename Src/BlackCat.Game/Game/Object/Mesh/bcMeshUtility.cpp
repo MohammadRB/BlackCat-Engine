@@ -332,7 +332,7 @@ namespace black_cat
 				l_skinned_mesh_component->get_mesh(),
 				l_skinned_mesh_component->get_model_transforms()
 			);
-			l_skinning_job.run(core_platform::bc_clock::update_param(0, 0, 0));
+			l_skinning_job.run(platform::bc_clock::update_param(0, 0, 0));
 
 			const physics::bc_triangle_mesh_desc l_triangle_mesh_desc
 			(

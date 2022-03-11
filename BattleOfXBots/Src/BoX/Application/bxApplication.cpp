@@ -44,7 +44,7 @@
 namespace box
 {
 	constexpr bcFLOAT g_client_start_delay = 1.0f;
-	core_platform::bc_clock::small_delta_time g_client_start_time = 0;
+	platform::bc_clock::small_delta_time g_client_start_time = 0;
 
 	void bx_application::bind(platform::bc_script_context& p_context, platform::bc_script_global_prototype_builder& p_global_prototype, bx_application& p_instance)
 	{
@@ -380,7 +380,7 @@ namespace box
 		const auto l_checkpoint_path = bx_scene_checkpoint::get_checkpoint_path(p_scene, bcL("game_checkpoint"));
 
 		bx_scene_checkpoint l_check_point(p_scene);
-		l_content_manager.save_as(l_check_point, l_checkpoint_path.get_string_frame().c_str(), nullptr);
+		l_content_manager.save_as(l_check_point, l_checkpoint_path.get_string_frame().c_str(), {});
 	}
 
 	void bx_application::_restore_scene_checkpoint(game::bc_scene& p_scene)

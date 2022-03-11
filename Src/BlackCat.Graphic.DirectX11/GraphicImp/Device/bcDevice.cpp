@@ -163,7 +163,7 @@ namespace black_cat
 		void _save_texture(bc_device* p_device, const bc_texture2d* p_texture, bc_image_format p_format, const bcECHAR* p_file_name)
 		{
 			{
-				core_platform::bc_mutex_guard l_guard(p_device->get_platform_pack().m_immediate_context_mutex);
+				platform::bc_mutex_guard l_guard(p_device->get_platform_pack().m_immediate_context_mutex);
 
 				if (p_format == bc_image_format::dds)
 				{
@@ -241,7 +241,7 @@ namespace black_cat
 				if (FAILED(l_hr))
 				{
 					DWORD l_error_code;
-					core_platform::win32_from_hresult(l_hr, &l_error_code);
+					platform::win32_from_hresult(l_hr, &l_error_code);
 					core::bc_string l_full_message = "Error compiling shader file \"";
 
 					if (l_error_messages)
@@ -1273,7 +1273,7 @@ namespace black_cat
 			if (FAILED(l_result))
 			{
 				DWORD l_error_code;
-				core_platform::win32_from_hresult(l_result, &l_error_code);
+				platform::win32_from_hresult(l_result, &l_error_code);
 				throw bc_graphic_exception(static_cast<bcINT>(l_error_code), "Failed to create DirectX11 SwapChain");
 			}
 
@@ -1292,7 +1292,7 @@ namespace black_cat
 			D3D11_MAPPED_SUBRESOURCE l_mapped_resource;
 
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_pack.m_immediate_context_mutex);
+				platform::bc_lock_guard<platform::bc_mutex> l_guard(m_pack.m_immediate_context_mutex);
 
 				dx_call(m_pack.m_immediate_context->Map
 				(
@@ -1316,7 +1316,7 @@ namespace black_cat
 		void bc_platform_device<g_api_dx11>::unmap_resource(bci_resource& p_resource, bcUINT p_subresource)
 		{
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_pack.m_immediate_context_mutex);
+				platform::bc_lock_guard<platform::bc_mutex> l_guard(m_pack.m_immediate_context_mutex);
 
 				m_pack.m_immediate_context->Unmap(p_resource.get_resource_platform_pack().m_resource, p_subresource);
 			}
@@ -1496,7 +1496,7 @@ namespace black_cat
 			if (FAILED(l_result))
 			{
 				DWORD l_error_code;
-				core_platform::win32_from_hresult(l_result, &l_error_code);
+				platform::win32_from_hresult(l_result, &l_error_code);
 				throw bc_graphic_exception(static_cast<bcINT>(l_error_code), "Can not found an adapter compatible with DirectX11");
 			}
 

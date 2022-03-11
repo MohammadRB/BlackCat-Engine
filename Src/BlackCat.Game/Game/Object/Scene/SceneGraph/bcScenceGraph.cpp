@@ -94,7 +94,7 @@ namespace black_cat
 			return l_result;
 		}
 
-		void bc_scene_graph::update(const core_platform::bc_clock::update_param& p_clock) noexcept
+		void bc_scene_graph::update(const platform::bc_clock::update_param& p_clock) noexcept
 		{
 			m_graph_node->update(p_clock);
 		}

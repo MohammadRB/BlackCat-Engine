@@ -7,9 +7,6 @@
     <Filter Include="Platform\Application">
       <UniqueIdentifier>{fa865c9e-deb1-4c7d-9162-ac8a22226c2f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Platform\File">
-      <UniqueIdentifier>{686ecfeb-6ebc-47df-aafe-3ee6cfdb037d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Platform\Script">
       <UniqueIdentifier>{600c2e28-6ac0-4e48-aa40-29a23d3883ba}</UniqueIdentifier>
     </Filter>
@@ -38,9 +35,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Application\bcWindow.h">
       <Filter>Platform\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\File\bcPath.h">
-      <Filter>Platform\File</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Platform\Platform\Script\bcScriptArray.h">
       <Filter>Platform\Script</Filter>

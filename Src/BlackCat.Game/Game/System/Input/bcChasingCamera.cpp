@@ -28,7 +28,7 @@ namespace black_cat
 			set_look_at(p_position, p_look_at);
 		}
 
-		void bc_chasing_camera::update(const core_platform::bc_clock::update_param& p_clock) noexcept
+		void bc_chasing_camera::update(const platform::bc_clock::update_param& p_clock) noexcept
 		{
 		}
 	}

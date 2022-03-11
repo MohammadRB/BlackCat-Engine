@@ -28,7 +28,7 @@ namespace black_cat
 
 			virtual void set_enabled(bool p_enabled) noexcept;
 
-			virtual bool run(const core_platform::bc_clock::update_param& p_clock) = 0;
+			virtual bool run(const platform::bc_clock::update_param& p_clock) = 0;
 
 		protected:
 			explicit bci_animation_job(bc_animation_skeleton& p_skeleton);

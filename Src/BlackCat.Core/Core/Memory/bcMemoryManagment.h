@@ -42,7 +42,7 @@ namespace black_cat
 		template<typename TMemory>
 		class bc_memory_extender; 
 
-		class BC_CORE_DLL bc_memory_manager : core_platform::bc_no_copy
+		class BC_CORE_DLL bc_memory_manager : platform::bc_no_copy
 		{
 		public:
 			bc_memory_manager() noexcept;
@@ -129,12 +129,12 @@ namespace black_cat
 			bc_memory_heap* m_heap_allocator;
 			bc_memory_crt* m_crt_allocator;
 
-			core_platform::bc_atomic<bcUINT32> m_last_used_frame_allocator;
-			core_platform::bc_thread_local<bc_memory_stack1> m_my_frame_allocator;
+			platform::bc_atomic<bcUINT32> m_last_used_frame_allocator;
+			platform::bc_thread_local<bc_memory_stack1> m_my_frame_allocator;
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			core_platform::bc_atomic<bcUINT32> m_allocation_count;
-			mutable core_platform::bc_mutex m_leak_allocator_mutex;
+			platform::bc_atomic<bcUINT32> m_allocation_count;
+			mutable platform::bc_mutex m_leak_allocator_mutex;
 			std::unordered_map<void*, bc_mem_block_leak_information>* m_leak_allocator;
 #endif
 		};

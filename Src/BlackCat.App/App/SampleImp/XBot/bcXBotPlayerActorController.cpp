@@ -172,27 +172,6 @@ namespace black_cat
 	void bc_xbot_player_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		bc_xbot_actor_controller::added_to_scene(p_context, p_scene);
-
-		if(get_replication_side() == game::bc_actor_replication_side::origin)
-		{
-			const auto* l_current_camera = m_input_system->get_camera();
-			auto l_camera = core::bc_make_unique<game::bc_chasing_camera>(game::bc_chasing_camera
-			(
-				l_current_camera->get_screen_width(),
-				l_current_camera->get_screen_height(),
-				1.2f,
-				l_current_camera->get_near_clip(),
-				l_current_camera->get_far_clip()
-			));
-			m_camera = static_cast<game::bc_chasing_camera*>(m_input_system->add_camera(std::move(l_camera)));
-
-			const auto* l_mediate_component = p_context.m_actor.get_component<game::bc_mediate_component>();
-			const auto l_bound_box_extends = l_mediate_component->get_bound_box().get_half_extends();
-			const auto l_max_side_length = std::max(std::max(l_bound_box_extends.x, l_bound_box_extends.y), l_bound_box_extends.z) * 2;
-			m_camera_y_offset = l_max_side_length * 3.5f;
-			m_camera_z_offset = l_max_side_length * -1.5f;
-			m_camera_look_at_offset = l_max_side_length * 1.25f;
-		}
 	}
 
 	void bc_xbot_player_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
@@ -235,11 +214,6 @@ namespace black_cat
 				get_position() + get_look_direction() * m_camera_z_offset + core::bc_vector3f(0, m_camera_y_offset, 0),
 				get_position() + get_look_direction() * m_camera_look_at_offset
 			);
-			/*m_camera->update
-			(
-				get_position() + core::bc_vector3f(1,0,0) * m_camera_z_offset + core::bc_vector3f(0, get_bound_box_max_side_length() * 2.5f, 0),
-				get_position()
-			);*/
 		}
 	}
 
@@ -251,7 +225,7 @@ namespace black_cat
 	{
 		bc_xbot_actor_controller::removed_from_scene(p_context, p_scene);
 
-		if (get_replication_side() == game::bc_actor_replication_side::origin)
+		if (get_replication_side() == game::bc_actor_replication_side::origin && m_camera)
 		{
 			m_input_system->remove_camera(m_camera);
 			m_camera = nullptr;
@@ -261,6 +235,100 @@ namespace black_cat
 	void bc_xbot_player_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
 	{
 		bc_xbot_actor_controller::handle_event(p_context);
+	}
+
+	void bc_xbot_player_actor_controller::set_camera_offsets(bcFLOAT p_camera_y_offset, bcFLOAT p_camera_z_offset, bcFLOAT p_camera_look_at_offset) noexcept
+	{
+		if(get_replication_side() == game::bc_actor_replication_side::origin && !m_camera)
+		{
+			const auto* l_current_camera = m_input_system->get_camera();
+			auto l_camera = core::bc_make_unique<game::bc_chasing_camera>(game::bc_chasing_camera
+			(
+				l_current_camera->get_screen_width(),
+				l_current_camera->get_screen_height(),
+				1.2f,
+				l_current_camera->get_near_clip(),
+				l_current_camera->get_far_clip()
+			));
+			m_camera = static_cast<game::bc_chasing_camera*>(m_input_system->add_camera(std::move(l_camera)));
+		}
+
+		m_camera_y_offset = p_camera_y_offset;
+		m_camera_z_offset = p_camera_z_offset;
+		m_camera_look_at_offset = p_camera_look_at_offset;
+	}
+
+	void bc_xbot_player_actor_controller::throw_grenade(game::bc_actor& p_grenade) noexcept
+	{
+		auto* l_scene = get_scene();
+		const auto* l_grenade_mediate_component = p_grenade.get_component<game::bc_mediate_component>();
+		const auto l_grenade_throw_power = std::max(0.3f, std::min(1.0f, m_grenade_throw_passed_time / m_grenade_throw_time)) *
+			m_grenade_throw_force *
+			get_bound_box_max_side_length();
+		const auto l_throw_direction = core::bc_vector3f::normalize(get_look_direction() + core::bc_vector3f(0, 0.2f, 0)) * l_grenade_throw_power;
+
+		const bcCHAR* l_threw_grenade_name = std::strcmp(l_grenade_mediate_component->get_entity_name(), m_grenade_name) == 0 ? m_threw_grenade_name : m_threw_smoke_grenade_name;
+
+		if (m_network_system->get_network_type() != game::bc_network_type::not_started)
+		{
+			m_network_system->send_message(bc_xbot_grenade_throw_network_message(get_actor(), l_threw_grenade_name, l_grenade_mediate_component->get_world_transform(), l_throw_direction));
+		}
+		else
+		{
+			auto l_threw_grenade = l_scene->create_actor(l_threw_grenade_name, l_grenade_mediate_component->get_world_transform());
+			l_threw_grenade.mark_for_double_update();
+
+			auto* l_rigid_dynamic_component = l_threw_grenade.get_component<game::bc_rigid_dynamic_component>();
+			auto l_rigid_body = l_rigid_dynamic_component->get_dynamic_body();
+
+			{
+				game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
+
+				l_rigid_body.add_force(l_throw_direction);
+			}
+		}
+
+		l_scene->remove_actor(p_grenade);
+		m_grenade_throw_passed_time = 0;
+
+		grenade_thrown(l_threw_grenade_name);
+	}
+
+	bool bc_xbot_player_actor_controller::can_look() noexcept
+	{
+		return true;
+	}
+
+	bool bc_xbot_player_actor_controller::can_move() noexcept
+	{
+		return true;
+	}
+
+	bool bc_xbot_player_actor_controller::can_throw_grenade(core::bc_string_view p_entity)  noexcept
+	{
+		return true;
+	}
+
+	bool bc_xbot_player_actor_controller::can_attach_weapon(core::bc_string_view p_entity)  noexcept
+	{
+		return true;
+	}
+
+	bool bc_xbot_player_actor_controller::can_shoot_weapon()  noexcept
+	{
+		return true;
+	}
+
+	void bc_xbot_player_actor_controller::grenade_thrown(core::bc_string_view p_entity) noexcept
+	{
+	}
+
+	void bc_xbot_player_actor_controller::weapon_attached(game::bc_actor& p_weapon) noexcept
+	{
+	}
+
+	void bc_xbot_player_actor_controller::weapon_shoot(game::bc_actor& p_weapon) noexcept
+	{
 	}
 
 	void bc_xbot_player_actor_controller::_on_event(core::bci_event& p_event) noexcept
@@ -344,7 +412,7 @@ namespace black_cat
 
 		if (p_key_event.get_key() == platform::bc_key::kb_G)
 		{
-			if(p_key_event.get_key_state() == platform::bc_key_state::pressing && m_grenade_throw_passed_time <= 0)
+			if (p_key_event.get_key_state() == platform::bc_key_state::pressing && m_grenade_throw_passed_time <= 0)
 			{
 				m_grenade_pressed = true;
 			}
@@ -367,7 +435,7 @@ namespace black_cat
 				_start_grenade_throw(m_smoke_grenade_name);
 			}
 		}
-		
+
 		if (p_key_event.get_key() == platform::bc_key::kb_d1)
 		{
 			if (p_key_event.get_key_state() == platform::bc_key_state::pressing)
@@ -395,13 +463,13 @@ namespace black_cat
 	void bc_xbot_player_actor_controller::_start_grenade_throw(const bcCHAR* p_entity)
 	{
 		const bool l_can_throw = can_throw_grenade(p_entity);
-		if(!l_can_throw)
+		if (!l_can_throw)
 		{
 			return;
 		}
 
 		const bool l_threw = bc_xbot_actor_controller::start_grenade_throw(p_entity);
-		if(!l_threw)
+		if (!l_threw)
 		{
 			return;
 		}
@@ -415,13 +483,13 @@ namespace black_cat
 	void bc_xbot_player_actor_controller::_attach_weapon(const bcCHAR* p_entity)
 	{
 		const bool l_can_attach = can_attach_weapon(p_entity);
-		if(!l_can_attach)
+		if (!l_can_attach)
 		{
 			return;
 		}
 
 		const auto* l_weapon = get_weapon();
-		if(l_weapon)
+		if (l_weapon)
 		{
 			bc_xbot_actor_controller::detach_weapon();
 		}
@@ -429,7 +497,7 @@ namespace black_cat
 		auto l_weapon_actor = get_scene()->create_actor(p_entity, core::bc_matrix4f::translation_matrix(get_position()));
 		bc_xbot_actor_controller::attach_weapon(l_weapon_actor);
 
-		if(m_network_system->get_network_type() != game::bc_network_type::not_started)
+		if (m_network_system->get_network_type() != game::bc_network_type::not_started)
 		{
 			m_network_system->send_message(bc_xbot_weapon_attach_network_message(get_actor(), l_weapon_actor));
 		}
@@ -444,7 +512,7 @@ namespace black_cat
 		{
 			return;
 		}
-		
+
 		bc_xbot_actor_controller::detach_weapon();
 
 		if (m_network_system->get_network_type() != game::bc_network_type::not_started)
@@ -456,13 +524,13 @@ namespace black_cat
 	void bc_xbot_player_actor_controller::_shoot_weapon()
 	{
 		const bool l_can_shoot = can_shoot_weapon();
-		if(!l_can_shoot)
+		if (!l_can_shoot)
 		{
 			return;
 		}
 
 		const bool l_shoot = bc_xbot_actor_controller::shoot_weapon();
-		if(!l_shoot)
+		if (!l_shoot)
 		{
 			return;
 		}
@@ -474,78 +542,5 @@ namespace black_cat
 
 		weapon_shoot(get_weapon()->m_actor);
 		m_weapon_shoot_velocity.set_value(1);
-	}
-
-	void bc_xbot_player_actor_controller::throw_grenade(game::bc_actor& p_grenade) noexcept
-	{
-		auto* l_scene = get_scene();
-		const auto* l_grenade_mediate_component = p_grenade.get_component<game::bc_mediate_component>();
-		const auto l_grenade_throw_power = std::max(0.3f, std::min(1.0f, m_grenade_throw_passed_time / m_grenade_throw_time)) *
-			m_grenade_throw_force *
-			get_bound_box_max_side_length();
-		const auto l_throw_direction = core::bc_vector3f::normalize(get_look_direction() + core::bc_vector3f(0, 0.2f, 0)) * l_grenade_throw_power;
-
-		const bcCHAR* l_threw_grenade_name = std::strcmp(l_grenade_mediate_component->get_entity_name(), m_grenade_name) == 0 ? m_threw_grenade_name : m_threw_smoke_grenade_name;
-
-		if (m_network_system->get_network_type() != game::bc_network_type::not_started)
-		{
-			m_network_system->send_message(bc_xbot_grenade_throw_network_message(get_actor(), l_threw_grenade_name, l_grenade_mediate_component->get_world_transform(), l_throw_direction));
-		}
-		else
-		{
-			auto l_threw_grenade = l_scene->create_actor(l_threw_grenade_name, l_grenade_mediate_component->get_world_transform());
-			l_threw_grenade.mark_for_double_update();
-
-			auto* l_rigid_dynamic_component = l_threw_grenade.get_component<game::bc_rigid_dynamic_component>();
-			auto l_rigid_body = l_rigid_dynamic_component->get_dynamic_body();
-
-			{
-				game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
-
-				l_rigid_body.add_force(l_throw_direction);
-			}
-		}
-
-		l_scene->remove_actor(p_grenade);
-		m_grenade_throw_passed_time = 0;
-
-		grenade_thrown(l_threw_grenade_name);
-	}
-
-	bool bc_xbot_player_actor_controller::can_look() noexcept
-	{
-		return true;
-	}
-
-	bool bc_xbot_player_actor_controller::can_move() noexcept
-	{
-		return true;
-	}
-
-	bool bc_xbot_player_actor_controller::can_throw_grenade(core::bc_string_view p_entity)  noexcept
-	{
-		return true;
-	}
-
-	bool bc_xbot_player_actor_controller::can_attach_weapon(core::bc_string_view p_entity)  noexcept
-	{
-		return true;
-	}
-
-	bool bc_xbot_player_actor_controller::can_shoot_weapon()  noexcept
-	{
-		return true;
-	}
-
-	void bc_xbot_player_actor_controller::grenade_thrown(core::bc_string_view p_entity) noexcept
-	{
-	}
-
-	void bc_xbot_player_actor_controller::weapon_attached(game::bc_actor& p_weapon) noexcept
-	{
-	}
-
-	void bc_xbot_player_actor_controller::weapon_shoot(game::bc_actor& p_weapon) noexcept
-	{
 	}
 }

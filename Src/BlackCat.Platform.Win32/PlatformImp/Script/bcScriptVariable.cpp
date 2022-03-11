@@ -15,83 +15,83 @@ namespace black_cat
 	{
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_variable< core_platform::g_api_win32 >::bc_platform_script_variable() noexcept
+		bc_platform_script_variable< platform::g_api_win32 >::bc_platform_script_variable() noexcept
 		{
 			m_pack.m_js_value = JS_INVALID_REFERENCE;
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_variable< core_platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bool p_bool)
+		bc_platform_script_variable< platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bool p_bool)
 		{
 			as_boolean(p_bool);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_variable< core_platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bcINT p_int)
+		bc_platform_script_variable< platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bcINT p_int)
 		{
 			as_integer(p_int);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_variable< core_platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bcDOUBLE p_double)
+		bc_platform_script_variable< platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bcDOUBLE p_double)
 		{
 			as_double(p_double);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_variable< core_platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bc_script_string& p_string)
+		bc_platform_script_variable< platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bc_script_string& p_string)
 		{
 			as_string(p_string);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_variable<core_platform::g_api_win32>::bc_platform_script_variable(bc_script_context& p_context, bc_script_array& p_array)
+		bc_platform_script_variable<platform::g_api_win32>::bc_platform_script_variable(bc_script_context& p_context, bc_script_array& p_array)
 		{
 			as_array(p_array);
 		}
 		
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_variable< core_platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bc_script_object& p_object)
+		bc_platform_script_variable< platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bc_script_object& p_object)
 		{
 			as_object(p_object);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_variable<core_platform::g_api_win32>::bc_platform_script_variable(bc_script_context& p_context, bc_script_function& p_function)
+		bc_platform_script_variable<platform::g_api_win32>::bc_platform_script_variable(bc_script_context& p_context, bc_script_function& p_function)
 		{
 			as_function(p_function);
 		}
 		
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_variable< core_platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bc_script_error& p_error)
+		bc_platform_script_variable< platform::g_api_win32 >::bc_platform_script_variable(bc_script_context& p_context, bc_script_error& p_error)
 		{
 			as_error(p_error);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_variable< core_platform::g_api_win32 >::bc_platform_script_variable(const bc_platform_script_variable& p_other) noexcept
+		bc_platform_script_variable< platform::g_api_win32 >::bc_platform_script_variable(const bc_platform_script_variable& p_other) noexcept
 		{
 			operator=(p_other);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_variable< core_platform::g_api_win32 >::~bc_platform_script_variable()
+		bc_platform_script_variable< platform::g_api_win32 >::~bc_platform_script_variable()
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_variable< core_platform::g_api_win32 >& bc_platform_script_variable< core_platform::g_api_win32 >::operator=(const bc_platform_script_variable& p_other) noexcept
+		bc_platform_script_variable< platform::g_api_win32 >& bc_platform_script_variable< platform::g_api_win32 >::operator=(const bc_platform_script_variable& p_other) noexcept
 		{
 			bc_platform_script_reference::operator=(p_other);
 			m_pack.m_js_value = p_other.m_pack.m_js_value;
@@ -101,7 +101,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_script_value_type bc_platform_script_variable< core_platform::g_api_win32 >::get_type() const noexcept
+		bc_script_value_type bc_platform_script_variable< platform::g_api_win32 >::get_type() const noexcept
 		{
 			bc_script_value_type l_type;
 			JsValueType l_js_type;
@@ -147,7 +147,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_variable< core_platform::g_api_win32 >::is_boolean() const noexcept
+		bool bc_platform_script_variable< platform::g_api_win32 >::is_boolean() const noexcept
 		{
 			JsValueType l_js_type;
 
@@ -158,7 +158,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_variable< core_platform::g_api_win32 >::is_number() const noexcept
+		bool bc_platform_script_variable< platform::g_api_win32 >::is_number() const noexcept
 		{
 			JsValueType l_js_type;
 
@@ -169,7 +169,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_variable< core_platform::g_api_win32 >::is_string() const noexcept
+		bool bc_platform_script_variable< platform::g_api_win32 >::is_string() const noexcept
 		{
 			JsValueType l_js_type;
 
@@ -180,7 +180,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_variable< core_platform::g_api_win32 >::is_object() const noexcept
+		bool bc_platform_script_variable< platform::g_api_win32 >::is_object() const noexcept
 		{
 			JsValueType l_js_type;
 
@@ -191,7 +191,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_variable< core_platform::g_api_win32 >::is_function() const noexcept
+		bool bc_platform_script_variable< platform::g_api_win32 >::is_function() const noexcept
 		{
 			JsValueType l_js_type;
 
@@ -202,7 +202,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_variable< core_platform::g_api_win32 >::is_array() const noexcept
+		bool bc_platform_script_variable< platform::g_api_win32 >::is_array() const noexcept
 		{
 			JsValueType l_js_type;
 
@@ -213,7 +213,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_variable< core_platform::g_api_win32 >::is_error() const noexcept
+		bool bc_platform_script_variable< platform::g_api_win32 >::is_error() const noexcept
 		{
 			JsValueType l_js_type;
 
@@ -224,7 +224,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_variable< core_platform::g_api_win32 >::is_null() const noexcept
+		bool bc_platform_script_variable< platform::g_api_win32 >::is_null() const noexcept
 		{
 			JsValueType l_js_type;
 
@@ -235,7 +235,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_variable< core_platform::g_api_win32 >::is_undefined() const noexcept
+		bool bc_platform_script_variable< platform::g_api_win32 >::is_undefined() const noexcept
 		{
 			JsValueType l_js_type;
 
@@ -246,7 +246,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable< core_platform::g_api_win32 >::as_boolean(bc_script_bool p_bool)
+		void bc_platform_script_variable< platform::g_api_win32 >::as_boolean(bc_script_bool p_bool)
 		{
 			//JsConvertValueToBoolean(m_pack.m_js_value, &m_pack.m_js_value);
 			JsBoolToBoolean(p_bool, &m_pack.m_js_value);
@@ -254,7 +254,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_script_bool bc_platform_script_variable< core_platform::g_api_win32 >::as_boolean() const
+		bc_script_bool bc_platform_script_variable< platform::g_api_win32 >::as_boolean() const
 		{
 			BC_ASSERT(is_boolean());
 
@@ -267,7 +267,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable< core_platform::g_api_win32 >::as_integer(bc_script_int p_int)
+		void bc_platform_script_variable< platform::g_api_win32 >::as_integer(bc_script_int p_int)
 		{
 			//JsConvertValueToNumber(m_pack.m_js_value, &m_pack.m_js_value);
 			JsIntToNumber(p_int, &m_pack.m_js_value);
@@ -275,7 +275,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_script_int bc_platform_script_variable< core_platform::g_api_win32 >::as_integer() const
+		bc_script_int bc_platform_script_variable< platform::g_api_win32 >::as_integer() const
 		{
 			BC_ASSERT(is_number());
 
@@ -288,7 +288,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable< core_platform::g_api_win32 >::as_double(bc_script_double p_value)
+		void bc_platform_script_variable< platform::g_api_win32 >::as_double(bc_script_double p_value)
 		{
 			//JsConvertValueToNumber(m_pack.m_js_value, &m_pack.m_js_value);
 			JsDoubleToNumber(p_value, &m_pack.m_js_value);
@@ -296,7 +296,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_script_double bc_platform_script_variable< core_platform::g_api_win32 >::as_double() const
+		bc_script_double bc_platform_script_variable< platform::g_api_win32 >::as_double() const
 		{
 			BC_ASSERT(is_number());
 
@@ -309,14 +309,14 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable< core_platform::g_api_win32 >::as_string(const bc_script_string& p_string)
+		void bc_platform_script_variable< platform::g_api_win32 >::as_string(const bc_script_string& p_string)
 		{
 			m_pack.m_js_value = const_cast< bc_script_string& >(p_string).get_platform_pack().m_js_string;
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_script_string bc_platform_script_variable< core_platform::g_api_win32 >::as_string() const
+		bc_script_string bc_platform_script_variable< platform::g_api_win32 >::as_string() const
 		{
 			BC_ASSERT(is_string());
 
@@ -329,14 +329,14 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable< core_platform::g_api_win32 >::as_object(const bc_script_object& p_object)
+		void bc_platform_script_variable< platform::g_api_win32 >::as_object(const bc_script_object& p_object)
 		{
 			m_pack.m_js_value = const_cast< bc_script_object& >(p_object).get_platform_pack().m_js_object;
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_script_object bc_platform_script_variable< core_platform::g_api_win32 >::as_object() const
+		bc_script_object bc_platform_script_variable< platform::g_api_win32 >::as_object() const
 		{
 			BC_ASSERT(is_object());
 
@@ -349,14 +349,14 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable<core_platform::g_api_win32>::as_function(const bc_script_function& p_function)
+		void bc_platform_script_variable<platform::g_api_win32>::as_function(const bc_script_function& p_function)
 		{
 			m_pack.m_js_value = const_cast<bc_script_function&>(p_function).get_platform_pack().m_js_function;
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_script_function bc_platform_script_variable<core_platform::g_api_win32>::as_function() const
+		bc_script_function bc_platform_script_variable<platform::g_api_win32>::as_function() const
 		{
 			BC_ASSERT(is_function());
 
@@ -369,14 +369,14 @@ namespace black_cat
 		
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable<core_platform::g_api_win32>::as_array(const bc_script_array& p_array)
+		void bc_platform_script_variable<platform::g_api_win32>::as_array(const bc_script_array& p_array)
 		{
 			as_object(p_array);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_script_array bc_platform_script_variable<core_platform::g_api_win32>::as_array() const
+		bc_script_array bc_platform_script_variable<platform::g_api_win32>::as_array() const
 		{
 			BC_ASSERT(is_array());
 
@@ -389,14 +389,14 @@ namespace black_cat
 		
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_script_variable< core_platform::g_api_win32 >::as_error(const bc_script_error& p_error)
+		void bc_platform_script_variable< platform::g_api_win32 >::as_error(const bc_script_error& p_error)
 		{
 			m_pack.m_js_value = const_cast< bc_script_error& >(p_error).get_platform_pack().m_js_error;
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_script_error bc_platform_script_variable< core_platform::g_api_win32 >::as_error() const
+		bc_script_error bc_platform_script_variable< platform::g_api_win32 >::as_error() const
 		{
 			BC_ASSERT(is_error());
 
@@ -409,7 +409,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_variable< core_platform::g_api_win32 >::equals(const bc_script_variable& p_other) const noexcept
+		bool bc_platform_script_variable< platform::g_api_win32 >::equals(const bc_script_variable& p_other) const noexcept
 		{
 			bc_chakra_call l_call;
 			bool l_result;
@@ -421,7 +421,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_variable< core_platform::g_api_win32 >::strict_equals(const bc_script_variable& p_other) const noexcept
+		bool bc_platform_script_variable< platform::g_api_win32 >::strict_equals(const bc_script_variable& p_other) const noexcept
 		{
 			bc_chakra_call l_call;
 			bool l_result;
@@ -433,7 +433,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_variable< core_platform::g_api_win32 >::is_valid() const noexcept
+		bool bc_platform_script_variable< platform::g_api_win32 >::is_valid() const noexcept
 		{
 			return m_pack.m_js_value != JS_INVALID_REFERENCE;
 		}

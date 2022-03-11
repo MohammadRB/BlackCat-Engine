@@ -131,7 +131,7 @@ namespace black_cat
 				l_message += l_error_string;
 
 				DWORD l_win32_code;
-				core_platform::win32_from_hresult(p_hr, &l_win32_code);
+				platform::win32_from_hresult(p_hr, &l_win32_code);
 
 				BC_ASSERT(false);
 				throw bc_graphic_exception(static_cast<bcINT>(l_win32_code),l_message);

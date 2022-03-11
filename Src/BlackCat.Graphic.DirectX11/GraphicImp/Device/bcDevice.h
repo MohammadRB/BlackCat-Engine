@@ -19,7 +19,7 @@ namespace black_cat
 		{
 			Microsoft::WRL::ComPtr<ID3D11Device> m_device;
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_immediate_context;
-			core_platform::bc_mutex m_immediate_context_mutex;
+			platform::bc_mutex m_immediate_context_mutex;
 		};
 	}
 }

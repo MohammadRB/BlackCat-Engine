@@ -387,7 +387,7 @@ namespace black_cat
 				NodeIterator lBegin = mNodeList.createIteratorFromReference(lChunk->mFirstItem);
 				NodeIterator lInsertedItem = mNodeList.insertAfter(lBegin, Node(lChunk, lKey, pValue));
 
-				mSize.fetch_add(1U, core_platform::bc_memory_order::seqcst);
+				mSize.fetch_add(1U, platform::bc_memory_order::seqcst);
 
 				return lInsertedItem.getNode();
 			}
@@ -400,7 +400,7 @@ namespace black_cat
 				NodeIterator lBegin = mNodeList.createIteratorFromReference(lChunk->mFirstItem);
 				NodeIterator lInsertedItem = mNodeList.insertAfter(lBegin, Node(lChunk, lKey, std::move(pValue)));
 
-				mSize.fetch_add(1U, core_platform::bc_memory_order::seqcst);
+				mSize.fetch_add(1U, platform::bc_memory_order::seqcst);
 
 				return lInsertedItem.getNode();
 			}
@@ -425,7 +425,7 @@ namespace black_cat
 					bcNullable<NodeType>* lNodeHodlerPointer = (pData) ? &lNodeHolder : nullptr;
 
 					mNodeList.erase(lBegin, lNodeHodlerPointer);
-					mSize.fetch_sub(1U, core_platform::bc_memory_order::seqcst);
+					mSize.fetch_sub(1U, platform::bc_memory_order::seqcst);
 
 					if (pData) *pData = lNodeHolder.mValue;
 
@@ -483,7 +483,7 @@ namespace black_cat
 					lCurrentChunk->mDepth = 0;
 					lCurrentChunk->mIndex = i;
 					lCurrentChunk->mParent = nullptr;
-					lCurrentChunk->mSubLevels.store((Chunk*)nullptr, core_platform::bc_memory_order::seqcst);
+					lCurrentChunk->mSubLevels.store((Chunk*)nullptr, platform::bc_memory_order::seqcst);
 					if (mLevelCount == 1)
 					{
 						lCurrentChunk->mFirstItem = mNodeList.pushBack().toReference();
@@ -498,7 +498,7 @@ namespace black_cat
 				
 				bc_atomic_flag::bcAtomicFlagTestAndSet(mFlag, bcMemoryOrder_Release);
 					
-				mSize.store(0U, core_platform::bc_memory_order::seqcst);
+				mSize.store(0U, platform::bc_memory_order::seqcst);
 			}
 
 			virtual ~bcConcurrentHashMapBase()

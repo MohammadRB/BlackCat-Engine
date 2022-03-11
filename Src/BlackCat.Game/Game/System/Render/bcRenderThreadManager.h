@@ -96,9 +96,9 @@ namespace black_cat
 		private:
 			bc_default_render_thread m_default_render_thread;
 			core::bc_vector<_bc_render_thread_entry> m_threads;
-			mutable core_platform::bc_atomic<bcUINT32> m_available_threads_count;
-			mutable core_platform::bc_mutex m_threads_mutex;
-			mutable core_platform::bc_condition_variable m_threads_cv;
+			mutable platform::bc_atomic<bcUINT32> m_available_threads_count;
+			mutable platform::bc_mutex m_threads_mutex;
+			mutable platform::bc_condition_variable m_threads_cv;
 		};
 	}
 }

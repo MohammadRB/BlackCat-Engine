@@ -15,32 +15,32 @@ namespace black_cat
 	{
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_network_address<core_platform::g_api_win32>::bc_platform_network_address()
+		bc_platform_network_address<platform::g_api_win32>::bc_platform_network_address()
 		{
 			ZeroMemory(&m_pack.m_address, sizeof(sockaddr_in));
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_network_address<core_platform::g_api_win32>::bc_platform_network_address(platform_pack& p_pack)
+		bc_platform_network_address<platform::g_api_win32>::bc_platform_network_address(platform_pack& p_pack)
 			: m_pack(p_pack)
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_network_address<core_platform::g_api_win32>::bc_platform_network_address(const bc_platform_network_address<core_platform::g_api_win32>& p_other) noexcept
+		bc_platform_network_address<platform::g_api_win32>::bc_platform_network_address(const bc_platform_network_address<platform::g_api_win32>& p_other) noexcept
 			: m_pack(p_other.m_pack)
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_network_address<core_platform::g_api_win32>::~bc_platform_network_address() = default;
+		bc_platform_network_address<platform::g_api_win32>::~bc_platform_network_address() = default;
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_network_address<core_platform::g_api_win32>& bc_platform_network_address<core_platform::g_api_win32>::operator=(const bc_platform_network_address<core_platform::g_api_win32>& p_other) noexcept
+		bc_platform_network_address<platform::g_api_win32>& bc_platform_network_address<platform::g_api_win32>::operator=(const bc_platform_network_address<platform::g_api_win32>& p_other) noexcept
 		{
 			m_pack = p_other.m_pack;
 			return *this;
@@ -48,7 +48,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		std::tuple<bc_socket_address, core::bc_string_frame, bcUINT16> bc_platform_network_address<core_platform::g_api_win32>::get_traits() const noexcept
+		std::tuple<bc_socket_address, core::bc_string_frame, bcUINT16> bc_platform_network_address<platform::g_api_win32>::get_traits() const noexcept
 		{
 			char l_ip[INET_ADDRSTRLEN];
 
@@ -61,14 +61,14 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_network_address<core_platform::g_api_win32>::is_valid() const noexcept
+		bool bc_platform_network_address<platform::g_api_win32>::is_valid() const noexcept
 		{
 			return m_pack.m_address.sin_port != 0;
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_network_address<core_platform::g_api_win32>::operator==(const bc_platform_network_address<core_platform::g_api_win32>& p_other) const noexcept
+		bool bc_platform_network_address<platform::g_api_win32>::operator==(const bc_platform_network_address<platform::g_api_win32>& p_other) const noexcept
 		{
 			return m_pack.m_address.sin_family == p_other.m_pack.m_address.sin_family &&
 					m_pack.m_address.sin_port == p_other.m_pack.m_address.sin_port &&
@@ -77,14 +77,14 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_network_address<core_platform::g_api_win32>::operator!=(const bc_platform_network_address<core_platform::g_api_win32>& p_other) const noexcept
+		bool bc_platform_network_address<platform::g_api_win32>::operator!=(const bc_platform_network_address<platform::g_api_win32>& p_other) const noexcept
 		{
 			return !(*this == p_other);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_network_address<core_platform::g_api_win32> bc_platform_network_address<core_platform::g_api_win32>::from_ip_port(bc_socket_address p_address_family, const bcCHAR* p_ip, bcUINT16 p_port) noexcept
+		bc_platform_network_address<platform::g_api_win32> bc_platform_network_address<platform::g_api_win32>::from_ip_port(bc_socket_address p_address_family, const bcCHAR* p_ip, bcUINT16 p_port) noexcept
 		{
 			platform_pack l_pack;
 

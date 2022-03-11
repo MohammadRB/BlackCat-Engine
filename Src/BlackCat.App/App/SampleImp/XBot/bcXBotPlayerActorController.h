@@ -53,21 +53,9 @@ namespace black_cat
 
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 
+		void set_camera_offsets(bcFLOAT p_camera_y_offset, bcFLOAT p_camera_z_offset, bcFLOAT p_camera_look_at_offset) noexcept;
+
 	private:
-		void _on_event(core::bci_event& p_event) noexcept;
-
-		void _on_pointing(const platform::bc_app_event_pointing& p_pointing_event) noexcept;
-
-		void _on_key(const platform::bc_app_event_key& p_key_event) noexcept;
-
-		void _start_grenade_throw(const bcCHAR* p_entity);
-		
-		void _attach_weapon(const bcCHAR* p_entity);
-
-		void _detach_weapon();
-
-		void _shoot_weapon();
-
 		void throw_grenade(game::bc_actor& p_grenade) noexcept override final;
 
 		virtual bool can_look() noexcept;
@@ -85,6 +73,20 @@ namespace black_cat
 		virtual void weapon_attached(game::bc_actor& p_weapon) noexcept;
 
 		virtual void weapon_shoot(game::bc_actor& p_weapon) noexcept;
+
+		void _on_event(core::bci_event& p_event) noexcept;
+
+		void _on_pointing(const platform::bc_app_event_pointing& p_pointing_event) noexcept;
+
+		void _on_key(const platform::bc_app_event_key& p_key_event) noexcept;
+
+		void _start_grenade_throw(const bcCHAR* p_entity);
+
+		void _attach_weapon(const bcCHAR* p_entity);
+
+		void _detach_weapon();
+
+		void _shoot_weapon();
 
 		core::bc_event_listener_handle m_key_listener_handle;
 		core::bc_event_listener_handle m_pointing_listener_handle;

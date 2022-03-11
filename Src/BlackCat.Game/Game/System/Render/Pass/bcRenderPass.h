@@ -47,21 +47,21 @@ namespace black_cat
 		class bc_render_pass_update_context
 		{
 		public:
-			bc_render_pass_update_context(const core_platform::bc_clock::update_param& p_clock,
+			bc_render_pass_update_context(const platform::bc_clock::update_param& p_clock,
 				const bc_camera_instance& p_camera)
 				: m_clock(p_clock),
 				m_camera(p_camera)
 			{
 			}
 
-			core_platform::bc_clock::update_param m_clock;
+			platform::bc_clock::update_param m_clock;
 			bc_camera_instance m_camera;
 		};
 
 		class bc_render_pass_render_context
 		{
 		public:
-			bc_render_pass_render_context(const core_platform::bc_clock::update_param& p_clock,
+			bc_render_pass_render_context(const platform::bc_clock::update_param& p_clock,
 				core::bc_query_manager& p_query_manager,
 				const bc_camera_instance& p_update_camera,
 				const bc_camera_instance& p_render_camera,
@@ -78,7 +78,7 @@ namespace black_cat
 			{
 			}
 
-			core_platform::bc_clock::update_param m_clock;
+			platform::bc_clock::update_param m_clock;
 			core::bc_query_manager& m_query_manager;
 			bc_camera_instance m_update_camera;
 			bc_camera_instance m_render_camera;
@@ -133,7 +133,7 @@ namespace black_cat
 		/**
 		 * \brief Represent a whole rendering pass that do all tasks that required to render a scene with a specified configuration 
 		 */
-		class bci_render_pass : public core_platform::bc_no_copy
+		class bci_render_pass : public platform::bc_no_copy
 		{
 			friend class bc_render_pass_manager;
 			

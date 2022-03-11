@@ -171,7 +171,7 @@ namespace black_cat
 			 * This function run simulation async and return immediately.
 			 * \param p_clock Amount of time to advance simulation by.
 			 */
-			void update(const core_platform::bc_clock::update_param& p_clock);
+			void update(const platform::bc_clock::update_param& p_clock);
 
 			/**
 			 * \brief Check if simulation has been done.

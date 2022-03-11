@@ -8,7 +8,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		template<bc_platform TPlatform>
 		struct bc_platform_condition_variable_pack
@@ -16,7 +16,7 @@ namespace black_cat
 			
 		};
 
-		template< bc_platform TPlatform >
+		template<bc_platform TPlatform>
 		class bc_platform_condition_variable : private bc_no_copy
 		{
 		public:
@@ -27,28 +27,26 @@ namespace black_cat
 
 			~bc_platform_condition_variable();
 
-			BC_INLINE void notify_one();
+			void notify_one();
 
-			BC_INLINE void notify_all() noexcept(true);
+			void notify_all() noexcept(true);
 
 			template< typename Lockable >
-			BC_INLINE void wait(Lockable& p_lock);
+			void wait(Lockable& p_lock);
 
 			template < typename Lockable, typename Predicate >
-			BC_INLINE void wait(Lockable& p_lock, Predicate p_pred);
+			void wait(Lockable& p_lock, Predicate p_pred);
 
 			template < typename Lockable >
-			BC_INLINE bool wait_for(Lockable& p_lock, const bcUINT64 p_nano);
+			bool wait_for(Lockable& p_lock, bcUINT64 p_nano);
 
 			template < typename Lockable, typename Predicate >
-			BC_INLINE bool wait_for(Lockable& p_lock, const bcUINT64 p_nano, Predicate p_pred);
-
-		protected:
+			bool wait_for(Lockable& p_lock, bcUINT64 p_nano, Predicate p_pred);
 
 		private:
 			platform_pack m_pack;
 		};
 
-		using bc_condition_variable = bc_platform_condition_variable< g_current_platform >;
+		using bc_condition_variable = bc_platform_condition_variable<g_current_platform>;
 	}
 }

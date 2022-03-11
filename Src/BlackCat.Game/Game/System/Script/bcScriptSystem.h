@@ -109,7 +109,7 @@ namespace black_cat
 
 			bcSIZE memory_usage() const;
 
-			void update(core_platform::bc_clock::update_param p_clock_update_param);
+			void update(platform::bc_clock::update_param p_clock_update_param);
 
 		protected:
 			void _initialize(bool) override;

@@ -75,7 +75,7 @@ namespace black_cat
 			}
 
 			{
-				core_platform::bc_mutex_guard l_lock(m_decal_instances_mutex);
+				platform::bc_mutex_guard l_lock(m_decal_instances_mutex);
 
 				m_decal_instances_pool.push_back(_bc_decal_instance_entry(bc_decal_instance
 				(
@@ -103,7 +103,7 @@ namespace black_cat
 			}
 
 			{
-				core_platform::bc_mutex_guard l_lock(m_decal_instances_mutex);
+				platform::bc_mutex_guard l_lock(m_decal_instances_mutex);
 
 				m_decal_instances_pool.push_back(_bc_decal_instance_entry(bc_decal_instance
 				(
@@ -117,7 +117,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_decal_manager_container::update_decal_lifespans(const core_platform::bc_clock::update_param& p_clock) noexcept
+		void bc_decal_manager_container::update_decal_lifespans(const platform::bc_clock::update_param& p_clock) noexcept
 		{
 			m_update_interval_seconds += p_clock.m_elapsed;
 			if (m_update_interval_seconds < 500)
@@ -128,7 +128,7 @@ namespace black_cat
 			m_update_interval_seconds = 0;
 
 			{
-				core_platform::bc_mutex_guard l_lock(m_decal_instances_mutex);
+				platform::bc_mutex_guard l_lock(m_decal_instances_mutex);
 
 				const bcUINT32 l_threshold_size = m_decal_instances_pool.get_memory_pool().capacity() * 0.9f;
 				if (m_decal_instances_pool.size() < l_threshold_size)
@@ -165,7 +165,7 @@ namespace black_cat
 			}
 		}
 
-		core::bc_task<void> bc_decal_manager_container::update_decal_lifespans_async(const core_platform::bc_clock::update_param& p_clock) noexcept
+		core::bc_task<void> bc_decal_manager_container::update_decal_lifespans_async(const platform::bc_clock::update_param& p_clock) noexcept
 		{
 			auto l_task = core::bc_concurrency::start_task
 			(
@@ -191,7 +191,7 @@ namespace black_cat
 			//}
 
 			{
-				core_platform::bc_mutex_guard l_lock(m_decal_instances_mutex);
+				platform::bc_mutex_guard l_lock(m_decal_instances_mutex);
 				m_decal_instances_pool.erase(l_entry->m_iterator);
 			}
 		}

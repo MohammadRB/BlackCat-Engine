@@ -41,16 +41,16 @@ namespace black_cat
 
 			bool is_visible() override;
 
-			void update(const core_platform::bc_clock::update_param& p_clock_update_param) override;
+			void update(const platform::bc_clock::update_param& p_clock_update_param) override;
 
 		private:
 			void _input_spin();
 
 			bc_render_application* m_application;
-			core_platform::bc_mutex m_console_mutex;
+			platform::bc_mutex m_console_mutex;
 			core::bc_nullable<platform::bc_console_window> m_console;
 			core::bc_task<void> m_input_spin_task;
-			core_platform::bc_mutex m_input_mutex;
+			platform::bc_mutex m_input_mutex;
 			core::bc_string m_input_line;
 		};
 	}

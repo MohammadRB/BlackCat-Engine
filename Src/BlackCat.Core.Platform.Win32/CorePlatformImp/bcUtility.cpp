@@ -6,7 +6,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		// https://blogs.msdn.microsoft.com/oldnewthing/20061103-07/?p=29133
 		BOOL win32_from_hresult(HRESULT p_hr, OUT DWORD *p_Win32)

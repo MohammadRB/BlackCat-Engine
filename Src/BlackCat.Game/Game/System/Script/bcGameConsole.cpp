@@ -96,31 +96,31 @@ namespace black_cat
 		void bc_game_console::run_script(const bcWCHAR* p_script, bool p_output_to_console)
 		{
 			{
-				core_platform::bc_mutex_guard l_guard(m_scripts_mutex);
+				platform::bc_mutex_guard l_guard(m_scripts_mutex);
 
 				_bc_script_queue_entry l_item
 				{
 					p_output_to_console,
 					core::bc_wstring(p_script),
-					core_platform::bc_promise<platform::bc_script_variable>()
+					platform::bc_promise<platform::bc_script_variable>()
 				};
 
 				m_scripts.push_back(std::move(l_item));
 			}
 		}
 
-		void bc_game_console::run_script(const bcWCHAR* p_script, core_platform::bc_future<platform::bc_script_variable>* p_result, bool p_output_to_console)
+		void bc_game_console::run_script(const bcWCHAR* p_script, platform::bc_future<platform::bc_script_variable>* p_result, bool p_output_to_console)
 		{
 			BC_ASSERT(p_result);
 
 			{
-				core_platform::bc_mutex_guard l_guard(m_scripts_mutex);
+				platform::bc_mutex_guard l_guard(m_scripts_mutex);
 
 				_bc_script_queue_entry l_item
 				{
 					p_output_to_console,
 					core::bc_wstring(p_script),
-					core_platform::bc_promise<platform::bc_script_variable>()
+					platform::bc_promise<platform::bc_script_variable>()
 				};
 				*p_result = l_item.m_promise.get_future();
 
@@ -128,7 +128,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_game_console::update(const core_platform::bc_clock::update_param& p_clock)
+		void bc_game_console::update(const platform::bc_clock::update_param& p_clock)
 		{
 			if (m_imp)
 			{
@@ -139,7 +139,7 @@ namespace black_cat
 			core::bc_estring_frame l_result_string;
 
 			{
-				core_platform::bc_mutex_guard l_guard(m_scripts_mutex);
+				platform::bc_mutex_guard l_guard(m_scripts_mutex);
 
 				if (!m_scripts.empty())
 				{

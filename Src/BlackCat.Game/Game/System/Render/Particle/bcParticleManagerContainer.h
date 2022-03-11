@@ -51,7 +51,7 @@ namespace black_cat
 
 			bc_particle_emitter_ptr add_emitter(const bc_particle_builder& p_builder);
 
-			void update(const core_platform::bc_clock::update_param& p_clock);
+			void update(const platform::bc_clock::update_param& p_clock);
 
 			core::bc_vector_movable<bc_particle_emitter_state> get_emitter_states() const noexcept;
 
@@ -65,7 +65,7 @@ namespace black_cat
 			const bc_particle_manager* m_manager;
 			core::bc_random m_random;
 
-			mutable core_platform::bc_hybrid_mutex m_emitters_lock;
+			mutable platform::bc_hybrid_mutex m_emitters_lock;
 			emitters_container m_emitters;
 			external_emitters_container m_external_emitters;
 		};

@@ -104,13 +104,13 @@ namespace black_cat
 			l_message.append(p_msg);
 
 			{
-				core_platform::bc_mutex_guard l_input_guard(m_input_mutex);
+				platform::bc_mutex_guard l_input_guard(m_input_mutex);
 
 				const auto l_input_line_size = m_input_line.size();
 				if(l_input_line_size> 0)
 				{
 					{
-						core_platform::bc_mutex_guard l_console_guard(m_console_mutex);
+						platform::bc_mutex_guard l_console_guard(m_console_mutex);
 						
 						// Clear current line if any content is entered by user
 						std::cout <<'\r';
@@ -136,7 +136,7 @@ namespace black_cat
 				else
 				{
 					{
-						core_platform::bc_mutex_guard l_console_guard(m_console_mutex);
+						platform::bc_mutex_guard l_console_guard(m_console_mutex);
 						
 						m_console->set_text_color(l_color);
 #ifdef BC_UNICODE
@@ -154,7 +154,7 @@ namespace black_cat
 		{
 			if(is_visible())
 			{
-				core_platform::bc_mutex_guard l_guard(m_console_mutex);
+				platform::bc_mutex_guard l_guard(m_console_mutex);
 				m_console->clear();
 			}
 		}
@@ -191,7 +191,7 @@ namespace black_cat
 			return m_console.has_value();
 		}
 
-		void bc_default_game_console::update(const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_default_game_console::update(const platform::bc_clock::update_param& p_clock_update_param)
 		{
 			if(is_visible())
 			{
@@ -212,7 +212,7 @@ namespace black_cat
 				core::bc_concurrency::check_for_interruption();
 
 				{
-					core_platform::bc_mutex_guard l_guard(m_input_mutex);
+					platform::bc_mutex_guard l_guard(m_input_mutex);
 
 					if (l_char != '\n')
 					{

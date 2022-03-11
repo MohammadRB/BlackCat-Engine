@@ -62,7 +62,7 @@ namespace black_cat
 			bcSIZE m_size;
 			bcSIZE m_prev_size;
 			bool m_free;
-			core_platform::bc_spin_mutex m_mutex;
+			platform::bc_spin_mutex m_mutex;
 #ifdef BC_MEMORY_DEFRAG
 			pointer_refs m_pointers;
 #endif
@@ -117,7 +117,7 @@ namespace black_cat
 			bcSIZE m_remaining_free_space_limit;
 			bcSIZE m_block_size;
 			_bc_heap_memblock* m_last_block;
-			core_platform::bc_atomic< bcINT32 > m_num_fragmentation;
+			platform::bc_atomic< bcINT32 > m_num_fragmentation;
 		};
 
 		inline _bc_heap_memblock::_bc_heap_memblock(bcSIZE p_size, bcSIZE p_prev_size, bool p_free)
@@ -222,7 +222,7 @@ namespace black_cat
 			bool l_has_set = false;
 
 			{
-				core_platform::bc_spin_mutex_guard l_lock(m_mutex);
+				platform::bc_spin_mutex_guard l_lock(m_mutex);
 
 				for (void**& l_ptr : m_pointers)
 				{
@@ -243,7 +243,7 @@ namespace black_cat
 			bool l_found = false;
 
 			{
-				core_platform::bc_spin_mutex_guard l_lock(m_mutex);
+				platform::bc_spin_mutex_guard l_lock(m_mutex);
 
 				for (void**& l_ptr : m_pointers)
 				{
@@ -267,7 +267,7 @@ namespace black_cat
 
 		inline bcSIZE bc_memory_heap::fragmentation_count() const noexcept
 		{
-			return m_num_fragmentation.load(core_platform::bc_memory_order::relaxed);
+			return m_num_fragmentation.load(platform::bc_memory_order::relaxed);
 		}
 #endif
 	}

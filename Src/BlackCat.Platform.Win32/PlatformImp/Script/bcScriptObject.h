@@ -23,14 +23,14 @@ namespace black_cat
 		}
 
 		template<>
-		struct bc_platform_script_object_pack<core_platform::g_api_win32>
+		struct bc_platform_script_object_pack<platform::g_api_win32>
 		{
 			JsValueRef m_js_object;
 		};
 
 		template<>
 		template<typename T>
-		bc_platform_script_object< core_platform::g_api_win32 >::bc_platform_script_object(bc_script_context& p_context, bc_script_prototype< T >& p_prototype, T&& p_native_object) noexcept
+		bc_platform_script_object< platform::g_api_win32 >::bc_platform_script_object(bc_script_context& p_context, bc_script_prototype< T >& p_prototype, T&& p_native_object) noexcept
 		{
 			bc_chakra_call l_call(p_context);
 

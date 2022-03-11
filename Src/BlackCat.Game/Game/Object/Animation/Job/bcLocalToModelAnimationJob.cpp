@@ -27,12 +27,12 @@ namespace black_cat
 			}
 		}
 
-		bool bc_local_to_model_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
+		bool bc_local_to_model_animation_job::run(const platform::bc_clock::update_param& p_clock)
 		{
 			return run(p_clock, ozz::animation::Skeleton::kNoParent);
 		}
 
-		bool bc_local_to_model_animation_job::run(const core_platform::bc_clock::update_param& p_clock, bcINT32 p_from)
+		bool bc_local_to_model_animation_job::run(const platform::bc_clock::update_param& p_clock, bcINT32 p_from)
 		{
 			if (!m_enabled)
 			{

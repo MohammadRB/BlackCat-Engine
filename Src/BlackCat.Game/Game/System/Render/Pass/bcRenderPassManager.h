@@ -28,7 +28,7 @@ namespace black_cat
 			core::bc_unique_ptr<core::bc_stop_watch> m_stop_watch;
 		};
 
-		class BC_GAME_DLL bc_render_pass_manager : public core_platform::bc_no_copy
+		class BC_GAME_DLL bc_render_pass_manager : public platform::bc_no_copy
 		{
 		public:
 			explicit bc_render_pass_manager(graphic::bc_device& p_device) noexcept;

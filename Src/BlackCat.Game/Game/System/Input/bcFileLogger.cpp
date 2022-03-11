@@ -86,11 +86,11 @@ namespace black_cat
 
 			core::bc_write_line(m_file, l_log.c_str(), l_log.size());
 			
-			const auto l_buffer_length = m_buffer_length.fetch_add(l_log.size(), core_platform::bc_memory_order::relaxed);
+			const auto l_buffer_length = m_buffer_length.fetch_add(l_log.size(), platform::bc_memory_order::relaxed);
 			if(l_buffer_length >= static_cast<bcSIZE>(core::bc_mem_size::kb))
 			{
 				m_file.flush();
-				m_buffer_length.store(0, core_platform::bc_memory_order::relaxed);
+				m_buffer_length.store(0, platform::bc_memory_order::relaxed);
 			}
 		}
 	}

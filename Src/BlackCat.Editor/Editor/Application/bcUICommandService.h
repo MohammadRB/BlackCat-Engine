@@ -82,7 +82,7 @@ namespace black_cat
 
 			void undo();
 
-			void update(const core_platform::bc_clock::update_param& p_elapsed) override;
+			void update(const platform::bc_clock::update_param& p_elapsed) override;
 
 			void update_ui(bci_ui_command::update_ui_context& p_context);
 
@@ -97,9 +97,9 @@ namespace black_cat
 			core::bc_event_listener_handle m_editor_mode_event_handle;
 			command_state_container m_command_states;
 			
-			mutable core_platform::bc_mutex m_commands_lock;
-			core_platform::bc_clock::big_clock m_last_update_clock;
-			core_platform::bc_clock::big_clock m_last_execute_clock;
+			mutable platform::bc_mutex m_commands_lock;
+			platform::bc_clock::big_clock m_last_update_clock;
+			platform::bc_clock::big_clock m_last_execute_clock;
 			core::bc_queue<core::bc_shared_ptr<_bc_ui_command_entry>> m_commands_to_execute;
 			core::bc_queue<core::bc_shared_ptr<_bc_ui_command_entry>> m_executed_commands;
 			core::bc_queue<core::bc_shared_ptr<_bc_ui_command_entry>> m_reversible_commands;
@@ -119,7 +119,7 @@ namespace black_cat
 			}
 			
 			{
-				core_platform::bc_mutex_guard l_lock(m_commands_lock);
+				platform::bc_mutex_guard l_lock(m_commands_lock);
 				
 				if(m_last_execute_clock == m_last_update_clock) // Only allow one command per frame
 				{

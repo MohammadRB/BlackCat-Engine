@@ -73,10 +73,10 @@ namespace black_cat
 			bcSIZE m_max_num_thread;
 			bcSIZE m_capacity;
 			bcUBYTE* m_heap;
-			core_platform::bc_atomic<bcUBYTE*> m_top;
-			core_platform::bc_atomic<bcSIZE> m_pop_thread_count;
-			core_platform::bc_atomic<bcSIZE> m_free_block_count;
-			core_platform::bc_shared_mutex m_free_block_mutex;
+			platform::bc_atomic<bcUBYTE*> m_top;
+			platform::bc_atomic<bcSIZE> m_pop_thread_count;
+			platform::bc_atomic<bcSIZE> m_free_block_count;
+			platform::bc_shared_mutex m_free_block_mutex;
 		};
 
 #endif

@@ -10,14 +10,14 @@ namespace black_cat
 	{
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_array<core_platform::g_api_win32>::bc_platform_script_array()
+		bc_platform_script_array<platform::g_api_win32>::bc_platform_script_array()
 			: bc_platform_script_object()
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_array<core_platform::g_api_win32>::bc_platform_script_array(bc_script_context& p_context, bcSIZE p_length)
+		bc_platform_script_array<platform::g_api_win32>::bc_platform_script_array(bc_script_context& p_context, bcSIZE p_length)
 		{
 			bc_chakra_call l_call(p_context);
 
@@ -26,7 +26,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_array<core_platform::g_api_win32>::bc_platform_script_array(bc_script_context& p_context, std::initializer_list< bc_script_variable > p_array)
+		bc_platform_script_array<platform::g_api_win32>::bc_platform_script_array(bc_script_context& p_context, std::initializer_list< bc_script_variable > p_array)
 			: bc_platform_script_array(p_context, p_array.size())
 		{
 			bcSIZE l_index = 0;
@@ -39,20 +39,20 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_array<core_platform::g_api_win32>::bc_platform_script_array(const bc_platform_script_array& p_other) noexcept
+		bc_platform_script_array<platform::g_api_win32>::bc_platform_script_array(const bc_platform_script_array& p_other) noexcept
 		{
 			operator=(std::move(p_other));
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_array<core_platform::g_api_win32>::~bc_platform_script_array()
+		bc_platform_script_array<platform::g_api_win32>::~bc_platform_script_array()
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_array<core_platform::g_api_win32>& bc_platform_script_array<core_platform::g_api_win32>::operator=(const bc_platform_script_array& p_other) noexcept
+		bc_platform_script_array<platform::g_api_win32>& bc_platform_script_array<platform::g_api_win32>::operator=(const bc_platform_script_array& p_other) noexcept
 		{
 			bc_platform_script_object::operator=(std::move(p_other));
 
@@ -61,7 +61,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bcSIZE bc_platform_script_array< core_platform::g_api_win32 >::size() const noexcept
+		bcSIZE bc_platform_script_array< platform::g_api_win32 >::size() const noexcept
 		{
 			const auto l_length = bc_platform_script_object::get_property(L"length").as_integer();
 
@@ -70,21 +70,21 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_array<core_platform::g_api_win32>::element bc_platform_script_array<core_platform::g_api_win32>::operator[](bcINT p_index)
+		bc_platform_script_array<platform::g_api_win32>::element bc_platform_script_array<platform::g_api_win32>::operator[](bcINT p_index)
 		{
 			return element(*this, p_index);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_array_element<core_platform::g_api_win32>::bc_platform_script_array_element(bc_platform_script_array<core_platform::g_api_win32>& p_array, bcINT p_index)
+		bc_platform_script_array_element<platform::g_api_win32>::bc_platform_script_array_element(bc_platform_script_array<platform::g_api_win32>& p_array, bcINT p_index)
 			: m_pack(p_array, bc_script_variable::_pack_arg(p_index))
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_array_element<core_platform::g_api_win32>& bc_platform_script_array_element<core_platform::g_api_win32>::operator=(bc_script_variable p_value)
+		bc_platform_script_array_element<platform::g_api_win32>& bc_platform_script_array_element<platform::g_api_win32>::operator=(bc_script_variable p_value)
 		{
 			bc_chakra_call l_call;
 
@@ -100,7 +100,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_array_element<core_platform::g_api_win32>::operator bc_script_variable()
+		bc_platform_script_array_element<platform::g_api_win32>::operator bc_script_variable()
 		{
 			bc_chakra_call l_call;
 			bc_script_variable l_value;

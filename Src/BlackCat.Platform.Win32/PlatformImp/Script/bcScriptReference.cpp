@@ -10,25 +10,25 @@ namespace black_cat
 	{
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_reference< core_platform::g_api_win32 >::bc_platform_script_reference()
+		bc_platform_script_reference< platform::g_api_win32 >::bc_platform_script_reference()
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_reference< core_platform::g_api_win32 >::bc_platform_script_reference(const bc_platform_script_reference& p_other) noexcept
+		bc_platform_script_reference< platform::g_api_win32 >::bc_platform_script_reference(const bc_platform_script_reference& p_other) noexcept
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_reference< core_platform::g_api_win32 >::~bc_platform_script_reference()
+		bc_platform_script_reference< platform::g_api_win32 >::~bc_platform_script_reference()
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_script_reference< core_platform::g_api_win32 >& bc_platform_script_reference< core_platform::g_api_win32 >::operator=(const bc_platform_script_reference&) noexcept
+		bc_platform_script_reference< platform::g_api_win32 >& bc_platform_script_reference< platform::g_api_win32 >::operator=(const bc_platform_script_reference&) noexcept
 		{
 			return *this;
 		}

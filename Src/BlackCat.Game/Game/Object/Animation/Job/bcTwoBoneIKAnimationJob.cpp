@@ -49,7 +49,7 @@ namespace black_cat
 
 		bc_two_bone_ik_animation_job& bc_two_bone_ik_animation_job::operator=(bc_two_bone_ik_animation_job&&) noexcept = default;
 
-		bool bc_two_bone_ik_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
+		bool bc_two_bone_ik_animation_job::run(const platform::bc_clock::update_param& p_clock)
 		{
 			if(!m_enabled)
 			{

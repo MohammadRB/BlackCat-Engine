@@ -75,7 +75,7 @@ namespace black_cat
 			bcSIZE m_capacity;
 			bcUBYTE* m_heap;
 			bcUBYTE* m_top;
-			core_platform::bc_spin_mutex m_mutex;
+			platform::bc_spin_mutex m_mutex;
 		};
 
 		inline bcSIZE bc_memory_stack1::capacity() const noexcept

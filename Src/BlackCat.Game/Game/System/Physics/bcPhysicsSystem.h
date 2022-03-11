@@ -88,7 +88,7 @@ namespace black_cat
 
 			void clear_px_shapes_data(const physics::bc_rigid_body& p_px_actor);
 			
-			void update(const core_platform::bc_clock::update_param& p_clock_update_param);
+			void update(const platform::bc_clock::update_param& p_clock_update_param);
 
 		protected:
 			void _initialize() override;

@@ -251,7 +251,7 @@ namespace black_cat
 			}
 
 			{
-				core_platform::bc_mutex_guard l_lock(m_messages_lock);
+				platform::bc_mutex_guard l_lock(m_messages_lock);
 				m_messages.push_back(p_message);
 			}
 		}
@@ -365,7 +365,7 @@ namespace black_cat
 			bc_network_message_ptr l_message;
 
 			{
-				core_platform::bc_mutex_guard l_lock(m_messages_lock);
+				platform::bc_mutex_guard l_lock(m_messages_lock);
 
 				const auto l_message_ite = std::find_if
 				(
@@ -502,7 +502,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_network_client_manager::_retry_messages_waiting_acknowledgment(const core_platform::bc_clock::update_param& p_clock)
+		void bc_network_client_manager::_retry_messages_waiting_acknowledgment(const platform::bc_clock::update_param& p_clock)
 		{
 			const auto l_rtt_time = m_rtt_sampler.average_value();
 			auto l_rtt_multiplier = 2;
@@ -534,10 +534,10 @@ namespace black_cat
 			}
 		}
 
-		void bc_network_client_manager::_send_to_server(const core_platform::bc_clock::update_param& p_clock)
+		void bc_network_client_manager::_send_to_server(const platform::bc_clock::update_param& p_clock)
 		{
 			{
-				core_platform::bc_mutex_guard l_lock(m_messages_lock);
+				platform::bc_mutex_guard l_lock(m_messages_lock);
 
 				for (auto& l_actor : m_sync_actors)
 				{

@@ -38,7 +38,7 @@ namespace black_cat
 			spot = 4
 		};
 
-		class BC_GAME_DLL bc_light : public core::bc_ref_count, core_platform::bc_no_copy
+		class BC_GAME_DLL bc_light : public core::bc_ref_count, platform::bc_no_copy
 		{
 			friend class bc_light_manager;
 

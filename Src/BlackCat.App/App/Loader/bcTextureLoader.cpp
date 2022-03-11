@@ -5,7 +5,9 @@
 #include "Core/bcException.h"
 #include "Core/Container/bcVector.h"
 #include "Core/File/bcPath.h"
+#include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "Game/System/bcGameSystem.h"
 #include "App/bcConstant.h"
 #include "App/Loader/bcTextureLoader.h"
@@ -52,8 +54,8 @@ namespace black_cat
 
 	void bc_texture_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
-		const core::bc_path l_path(p_context.m_file_path);
-		core::bc_estring l_extension = l_path.get_file_extension();
+		const auto l_path = core::bc_path(p_context.m_file_path);
+		auto l_extension = l_path.get_file_extension();
 		graphic::bc_image_format l_format;
 
 		std::transform(std::begin(l_extension), std::end(l_extension), std::begin(l_extension), towlower);
@@ -87,12 +89,12 @@ namespace black_cat
 			throw bc_invalid_argument_exception((core::bc_to_string(p_context.m_file_path.data()) + " Unknown image file format").c_str());
 		}
 
-		graphic::bc_device& l_device = core::bc_get_service<game::bc_game_system>()->get_render_system().get_device();
-		const graphic::bc_texture_config* l_config = p_context.m_instance_parameters.get_value<graphic::bc_texture_config>(constant::g_param_texture_config);
+		auto& l_device = core::bc_get_service<game::bc_game_system>()->get_render_system().get_device();
+		const auto* l_config = p_context.m_instance_parameters.get_value<graphic::bc_texture_config>(constant::g_param_texture_config);
 
 		l_config = l_config ? l_config : &s_default_config;
 
-		graphic::bc_texture2d_ref l_result = l_device.create_texture2d
+		auto l_result = l_device.create_texture2d
 		(
 			*const_cast<graphic::bc_texture_config*>(l_config),
 			p_context.m_file_buffer.get(),

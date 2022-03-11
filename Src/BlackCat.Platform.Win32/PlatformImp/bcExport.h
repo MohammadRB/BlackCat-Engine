@@ -11,7 +11,6 @@
 #define BC_PLATFORMIMP_DLL __declspec(dllexport)
 #define BC_PLATFORMSHARED_DLL __declspec(dllexport)
 
-#else
 #endif
 
 #else
@@ -21,7 +20,6 @@
 #define BC_PLATFORMIMP_DLL __declspec(dllimport)
 #define BC_PLATFORMSHARED_DLL __declspec(dllimport)
 
-#else
 #endif
 
 #endif

@@ -38,9 +38,9 @@ namespace black_cat
 			 */
 			void add_bullet(const bc_bullet& p_bullet) noexcept;
 
-			void update(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock) noexcept;
+			void update(bc_scene& p_scene, const platform::bc_clock::update_param& p_clock) noexcept;
 			
-			core::bc_task<void> update_async(bc_scene& p_scene, const core_platform::bc_clock::update_param& p_clock) noexcept;
+			core::bc_task<void> update_async(bc_scene& p_scene, const platform::bc_clock::update_param& p_clock) noexcept;
 			
 		private:
 			core::bc_nullable<physics::bc_ray_hit> _scene_ray_query(const physics::bc_scene& p_px_scene, 
@@ -49,7 +49,7 @@ namespace black_cat
 				core::bc_vector_frame<physics::bc_ray_hit>& p_modified_hits_buffer);
 			
 			bc_physics_system* m_physics_system;			
-			mutable core_platform::bc_spin_mutex m_bullets_mutex;
+			mutable platform::bc_spin_mutex m_bullets_mutex;
 			core::bc_list_pool<bc_bullet> m_bullets;
 		};
 	}	

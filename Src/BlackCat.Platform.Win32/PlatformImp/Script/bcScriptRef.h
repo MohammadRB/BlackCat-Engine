@@ -12,73 +12,73 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_script_context;
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_script_bytecode;
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_script_variable;
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_script_object;
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_script_string;
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_script_function;
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_script_array;
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_script_error;
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		class bc_platform_script_prototype;
 
-		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_context<core_platform::g_api_win32>& p_context);
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_context<platform::g_api_win32>& p_context);
 
-		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_context<core_platform::g_api_win32>& p_context);
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_context<platform::g_api_win32>& p_context);
 
-		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_bytecode<core_platform::g_api_win32>& p_byte_code);
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_bytecode<platform::g_api_win32>& p_byte_code);
 
-		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_bytecode<core_platform::g_api_win32>& p_byte_code);
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_bytecode<platform::g_api_win32>& p_byte_code);
 
-		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_variable<core_platform::g_api_win32>& p_variable);
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_variable<platform::g_api_win32>& p_variable);
 
-		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_variable<core_platform::g_api_win32>& p_variable);
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_variable<platform::g_api_win32>& p_variable);
 
-		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_object<core_platform::g_api_win32>& p_object);
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_object<platform::g_api_win32>& p_object);
 
-		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_object<core_platform::g_api_win32>& p_object);
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_object<platform::g_api_win32>& p_object);
 
-		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_string<core_platform::g_api_win32>& p_string);
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_string<platform::g_api_win32>& p_string);
 
-		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_string<core_platform::g_api_win32>& p_string);
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_string<platform::g_api_win32>& p_string);
 
-		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_function<core_platform::g_api_win32>& p_function);
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_function<platform::g_api_win32>& p_function);
 
-		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_function<core_platform::g_api_win32>& p_function);
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_function<platform::g_api_win32>& p_function);
 
-		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_array<core_platform::g_api_win32>& p_array);
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_array<platform::g_api_win32>& p_array);
 
-		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_array<core_platform::g_api_win32>& p_array);
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_array<platform::g_api_win32>& p_array);
 
-		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_error<core_platform::g_api_win32>& p_error);
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_error<platform::g_api_win32>& p_error);
 
-		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_error<core_platform::g_api_win32>& p_error);
-
-		template<typename T>
-		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_prototype<core_platform::g_api_win32, T>& p_prototype);
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_error<platform::g_api_win32>& p_error);
 
 		template<typename T>
-		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_prototype<core_platform::g_api_win32, T>& p_prototype);
+		void BC_PLATFORMIMP_DLL _inc_ref(bc_platform_script_prototype<platform::g_api_win32, T>& p_prototype);
 
 		template<typename T>
-		struct bc_platform_script_ref_pack<core_platform::g_api_win32, T>
+		void BC_PLATFORMIMP_DLL _dec_ref(bc_platform_script_prototype<platform::g_api_win32, T>& p_prototype);
+
+		template<typename T>
+		struct bc_platform_script_ref_pack<platform::g_api_win32, T>
 		{
 			void add_reference()
 			{
@@ -93,31 +93,31 @@ namespace black_cat
 			T m_value;
 		};
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		bc_platform_script_ref<TPlatform, T>::bc_platform_script_ref()
 		{
 		}
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		template<typename>
 		bc_platform_script_ref<TPlatform, T>::bc_platform_script_ref(const type& p_object)
 		{
 			reset(p_object);
 		}
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		bc_platform_script_ref<TPlatform, T>::bc_platform_script_ref(bc_platform_script_ref&& p_other) noexcept
 			: m_pack(std::move(p_other.m_pack))
 		{
 		}
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		bc_platform_script_ref<TPlatform, T>::~bc_platform_script_ref()
 		{
 			reset();
 		}
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		bc_platform_script_ref<TPlatform, T>& bc_platform_script_ref<TPlatform, T>::operator=(bc_platform_script_ref&& p_other) noexcept
 		{
 			reset();
@@ -127,7 +127,7 @@ namespace black_cat
 			return *this;
 		}
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		bc_platform_script_ref<TPlatform, T>& bc_platform_script_ref<TPlatform, T>::operator=(const type& p_object)
 		{
 			reset(p_object);
@@ -135,31 +135,31 @@ namespace black_cat
 			return *this;
 		}
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		typename bc_platform_script_ref<TPlatform, T>::type* bc_platform_script_ref<TPlatform, T>::operator->() noexcept
 		{
 			return &m_pack.m_value;
 		}
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		typename bc_platform_script_ref<TPlatform, T>::type& bc_platform_script_ref<TPlatform, T>::operator*()
 		{
 			return m_pack.m_value;
 		}
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		typename bc_platform_script_ref<TPlatform, T>::type& bc_platform_script_ref<TPlatform, T>::get()
 		{
 			return m_pack.m_value;
 		}
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		const typename bc_platform_script_ref<TPlatform, T>::type& bc_platform_script_ref<TPlatform, T>::get() const
 		{
 			return m_pack.m_value;
 		}
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		void bc_platform_script_ref<TPlatform, T>::reset()
 		{
 			if(m_pack.m_value.is_valid())
@@ -169,7 +169,7 @@ namespace black_cat
 			}
 		}
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		void bc_platform_script_ref<TPlatform, T>::reset(const type& p_object)
 		{
 			if (m_pack.m_value.is_valid())

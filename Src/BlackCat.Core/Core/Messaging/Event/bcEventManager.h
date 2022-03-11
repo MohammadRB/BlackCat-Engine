@@ -39,7 +39,7 @@ namespace black_cat
 			{
 			}
 
-			_bc_queued_event(bc_event_ptr<bci_event>&& p_event, core_platform::bc_clock::big_delta_time p_process_time) noexcept
+			_bc_queued_event(bc_event_ptr<bci_event>&& p_event, platform::bc_clock::big_delta_time p_process_time) noexcept
 				: m_event(std::move(p_event)),
 				m_process_time(p_process_time)
 			{
@@ -62,7 +62,7 @@ namespace black_cat
 			}
 
 			bc_event_ptr<bci_event> m_event;
-			core_platform::bc_clock::big_delta_time m_process_time;
+			platform::bc_clock::big_delta_time m_process_time;
 		};
 
 		class BC_CORE_DLL bc_event_manager : public bci_service
@@ -106,21 +106,21 @@ namespace black_cat
 			 * \param p_millisecond
 			 */
 			template<class TEvent>
-			void queue_event(TEvent&& p_event, core_platform::bc_clock::small_delta_time p_millisecond);
+			void queue_event(TEvent&& p_event, platform::bc_clock::small_delta_time p_millisecond);
 
-			bcUINT32 process_event_queue(const core_platform::bc_clock::update_param& p_clock);
+			bcUINT32 process_event_queue(const platform::bc_clock::update_param& p_clock);
 
-			bcUINT32 process_render_event_queue(const core_platform::bc_clock::update_param& p_clock);
+			bcUINT32 process_render_event_queue(const platform::bc_clock::update_param& p_clock);
 			
 		private:
 			bc_event_listener_handle _register_event_listener(const bcCHAR* p_event_name, delegate_type&& p_listener);
 
-			bcUINT32 _process_events_in_queue(const core_platform::bc_clock::update_param& p_clock,
-				core_platform::bc_clock::big_clock& p_last_elapsed,
+			bcUINT32 _process_events_in_queue(const platform::bc_clock::update_param& p_clock,
+				platform::bc_clock::big_clock& p_last_elapsed,
 				bc_concurrent_queue<_bc_queued_event>& p_global_queue,
 				bc_list<_bc_queued_event, bc_memory_pool_allocator<_bc_queued_event>>& p_local_queue);
 
-			core_platform::bc_shared_mutex m_handlers_mutex;
+			platform::bc_shared_mutex m_handlers_mutex;
 			handler_map_t m_handlers;
 
 			bc_concurrent_memory_pool m_queue_pool;
@@ -128,8 +128,8 @@ namespace black_cat
 			bc_list<_bc_queued_event, bc_memory_pool_allocator<_bc_queued_event>> m_render_local_queue;
 			bc_concurrent_queue<_bc_queued_event> m_global_queue;
 			bc_concurrent_queue<_bc_queued_event> m_render_global_queue;
-			core_platform::bc_clock::big_clock m_last_elapsed;
-			core_platform::bc_clock::big_clock m_render_last_elapsed;
+			platform::bc_clock::big_clock m_last_elapsed;
+			platform::bc_clock::big_clock m_render_last_elapsed;
 		};
 
 		template<class TEvent>
@@ -139,7 +139,7 @@ namespace black_cat
 		}
 
 		template<class TEvent>
-		void bc_event_manager::queue_event(TEvent&& p_event, core_platform::bc_clock::small_delta_time p_millisecond)
+		void bc_event_manager::queue_event(TEvent&& p_event, platform::bc_clock::small_delta_time p_millisecond)
 		{
 			auto l_event = static_cast<bc_event_ptr<bci_event>>(bc_make_event(std::forward<TEvent>(p_event)));
 			constexpr bool l_is_app_event = std::is_base_of_v<bc_app_event, std::decay_t<TEvent>>;

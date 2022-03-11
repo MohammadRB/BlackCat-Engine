@@ -42,7 +42,7 @@ namespace black_cat
 			void _free(void* p_pointer, bcSIZE p_size);
 
 			bc_memory_stack1 m_stack_allocator;
-			core_platform::bc_atomic<bcSIZE> m_size;
+			platform::bc_atomic<bcSIZE> m_size;
 		};
 
 		inline bcSIZE bc_concurrent_object_stack_pool::capacity() const noexcept
@@ -52,7 +52,7 @@ namespace black_cat
 
 		inline bcSIZE bc_concurrent_object_stack_pool::size() const noexcept
 		{
-			return m_size.load(core_platform::bc_memory_order::relaxed);
+			return m_size.load(platform::bc_memory_order::relaxed);
 		}
 
 		template<typename T, typename ...TArgs>
@@ -67,7 +67,7 @@ namespace black_cat
 			new (l_object_ptr) T(std::forward<T>(p_parameters)...);
 			*l_memory_size_ptr = l_needed_memory;
 
-			m_size.fetch_add(1, core_platform::bc_memory_order::relaxed);
+			m_size.fetch_add(1, platform::bc_memory_order::relaxed);
 			
 			return static_cast<T*>(l_object_ptr);
 		}
@@ -82,7 +82,7 @@ namespace black_cat
 
 			_free(l_allocated_memory, l_memory_size);
 
-			m_size.fetch_sub(1, core_platform::bc_memory_order::relaxed);
+			m_size.fetch_sub(1, platform::bc_memory_order::relaxed);
 		}
 	}
 }

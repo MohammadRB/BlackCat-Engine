@@ -234,9 +234,9 @@ namespace black_cat
 			m_stream.open
 			(
 				m_stream.get_path().c_str(),
-				core_platform::bc_file_mode::create_overwrite,
-				core_platform::bc_file_access::write,
-				core_platform::bc_file_sharing::read
+				platform::bc_file_mode::create_overwrite,
+				platform::bc_file_access::write,
+				platform::bc_file_sharing::read
 			);
 			m_stream.write
 			(
@@ -253,9 +253,9 @@ namespace black_cat
 			if (!m_stream.open
 			(
 				m_path.c_str(),
-				core_platform::bc_file_mode::open_create,
-				core_platform::bc_file_access::read_write,
-				core_platform::bc_file_sharing::read
+				platform::bc_file_mode::open_create,
+				platform::bc_file_access::read_write,
+				platform::bc_file_sharing::read
 			))
 			{
 				const auto l_error_message = "Cannot open config file: " + core::bc_to_string_frame(p_path.get_string().c_str());

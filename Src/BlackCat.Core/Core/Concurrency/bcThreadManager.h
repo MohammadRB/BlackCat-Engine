@@ -47,7 +47,7 @@ namespace black_cat
 			void clear();
 
 		private:
-			core_platform::bc_atomic_flag m_flag;
+			platform::bc_atomic_flag m_flag;
 		};
 
 		enum class bc_task_creation_option : bcUBYTE
@@ -85,7 +85,7 @@ namespace black_cat
 
 			bcUINT32 task_count() const;
 
-			void interrupt_thread(core_platform::bc_thread::id p_thread_id);
+			void interrupt_thread(platform::bc_thread::id p_thread_id);
 
 			void check_for_interruption();
 
@@ -113,17 +113,17 @@ namespace black_cat
 
 			bcUINT32 m_hardware_thread_count;
 			bcUINT32 m_reserved_thread_count;
-			core_platform::bc_atomic<bool> m_done;
-			core_platform::bc_atomic<bcUINT32> m_spawned_thread_count;
-			core_platform::bc_atomic<bcUINT32> m_num_thread_in_spin;
-			core_platform::bc_atomic<bcUINT32> m_task_count;
-			core_platform::bc_mutex m_cvariable_mutex;
-			core_platform::bc_condition_variable m_cvariable;
+			platform::bc_atomic<bool> m_done;
+			platform::bc_atomic<bcUINT32> m_spawned_thread_count;
+			platform::bc_atomic<bcUINT32> m_num_thread_in_spin;
+			platform::bc_atomic<bcUINT32> m_task_count;
+			platform::bc_mutex m_cvariable_mutex;
+			platform::bc_condition_variable m_cvariable;
 
-			mutable core_platform::bc_shared_mutex m_threads_mutex;
+			mutable platform::bc_shared_mutex m_threads_mutex;
 			bc_vector_program<bc_unique_ptr<_thread_data>> m_threads;
 			bc_concurrent_queue<task_wrapper_type> m_global_queue;
-			core_platform::bc_thread_local<_thread_data> m_my_data;
+			platform::bc_thread_local<_thread_data> m_my_data;
 			bc_concurrent_memory_pool m_tasks_pool;
 		};
 
@@ -132,7 +132,7 @@ namespace black_cat
 			friend class bc_thread_manager;
 
 		public:
-			_thread_data(bcUINT32 p_my_index, core_platform::bc_thread&& p_thread)
+			_thread_data(bcUINT32 p_my_index, platform::bc_thread&& p_thread)
 				: m_my_index(p_my_index),
 				m_interrupt_flag(),
 				m_thread(std::move(p_thread))
@@ -159,7 +159,7 @@ namespace black_cat
 				return m_interrupt_flag;
 			}
 
-			core_platform::bc_thread& thread()
+			platform::bc_thread& thread()
 			{
 				return m_thread;
 			}
@@ -167,7 +167,7 @@ namespace black_cat
 		private:
 			bcUINT32 m_my_index;
 			bc_interrupt_flag m_interrupt_flag;
-			core_platform::bc_thread m_thread;
+			platform::bc_thread m_thread;
 		};
 
 		template<typename T>
@@ -212,7 +212,7 @@ namespace black_cat
 			});
 
 			m_global_queue.push(std::move(l_task_wrapper));
-			const auto l_task_count = m_task_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1;
+			const auto l_task_count = m_task_count.fetch_add(1, platform::bc_memory_order::relaxed) + 1;
 
 			// If number of steady threads in work spin method is higher than zero there is no need to notify a thread
 			if constexpr (s_num_thread_in_spin == 0)

@@ -28,7 +28,7 @@ namespace black_cat
 
 		private:
 			core::bc_file_stream m_file;
-			core_platform::bc_atomic<bcSIZE> m_buffer_length;
+			platform::bc_atomic<bcSIZE> m_buffer_length;
 		};
 	}
 }

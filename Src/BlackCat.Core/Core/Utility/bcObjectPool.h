@@ -61,8 +61,8 @@ namespace black_cat
 			bcUINT32 m_num_block;
 			bcUINT32 m_block_size;
 			bcUINT32 m_num_bit_blocks;
-			core_platform::bc_atomic<bcUINT32> m_allocated_block;	// An index that searching for free block will continue from this place
-			bc_ptr<core_platform::bc_atomic<bit_block_type>> m_blocks;
+			platform::bc_atomic<bcUINT32> m_allocated_block;	// An index that searching for free block will continue from this place
+			bc_ptr<platform::bc_atomic<bit_block_type>> m_blocks;
 			bc_ptr<bcUBYTE> m_heap;
 		};
 
@@ -223,7 +223,7 @@ namespace black_cat
 		{
 			for (bcUINT32 l_i = 0; l_i <m_memory_pool.m_num_bit_blocks; ++l_i)
 			{
-				const auto l_current_block = m_memory_pool.m_blocks[l_i].load(core_platform::bc_memory_order::relaxed);
+				const auto l_current_block = m_memory_pool.m_blocks[l_i].load(platform::bc_memory_order::relaxed);
 				for (bcUINT32 l_j = 0; l_j <bc_concurrent_memory_pool::s_bit_block_size; ++l_j)
 				{
 					const bool l_is_alive = l_current_block & (bc_concurrent_memory_pool::bit_block_type(1) <<l_j);

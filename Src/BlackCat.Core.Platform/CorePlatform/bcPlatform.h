@@ -4,7 +4,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		enum class bc_platform
 		{

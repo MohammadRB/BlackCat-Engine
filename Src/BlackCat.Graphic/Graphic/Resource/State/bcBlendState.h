@@ -58,7 +58,7 @@ namespace black_cat
 		};
 
 		template<bc_platform_render_api TRenderApi>
-		class bc_platform_blend_state : public core_platform::bc_no_copy
+		class bc_platform_blend_state : public platform::bc_no_copy
 		{
 		public:
 			using platform_pack = bc_platform_blend_state_pack<TRenderApi>;

@@ -28,23 +28,23 @@ namespace black_cat
 
 			void stop() noexcept;
 
-			core_platform::bc_clock::small_delta_time restart() noexcept;
+			platform::bc_clock::small_delta_time restart() noexcept;
 
-			core_platform::bc_clock::small_delta_time total_elapsed() const noexcept;
+			platform::bc_clock::small_delta_time total_elapsed() const noexcept;
 			
-			core_platform::bc_clock::small_delta_time average_total_elapsed() const noexcept;
+			platform::bc_clock::small_delta_time average_total_elapsed() const noexcept;
 
 		private:
-			bc_value_sampler<core_platform::bc_clock::small_delta_time, 64> m_sampler;
+			bc_value_sampler<platform::bc_clock::small_delta_time, 64> m_sampler;
 			
-			core_platform::bc_clock::big_clock m_clock_per_milliseconds;
-			core_platform::bc_clock::big_clock m_start_clock;
-			core_platform::bc_clock::small_delta_time m_elapsed_milliseconds;
+			platform::bc_clock::big_clock m_clock_per_milliseconds;
+			platform::bc_clock::big_clock m_start_clock;
+			platform::bc_clock::small_delta_time m_elapsed_milliseconds;
 		};
 
 		inline bc_stop_watch::bc_stop_watch() noexcept
 			: m_sampler(0),
-			m_clock_per_milliseconds(core_platform::bc_clock::query_clock_per_millisecond()),
+			m_clock_per_milliseconds(platform::bc_clock::query_clock_per_millisecond()),
 			m_start_clock(0),
 			m_elapsed_milliseconds(0)
 		{
@@ -52,20 +52,20 @@ namespace black_cat
 
 		inline void bc_stop_watch::start() noexcept
 		{
-			m_start_clock = core_platform::bc_clock::query_elapsed_clocks();
+			m_start_clock = platform::bc_clock::query_elapsed_clocks();
 		}
 
 		inline void bc_stop_watch::stop() noexcept
 		{
 			BC_ASSERT(m_start_clock != 0);
 			
-			const auto l_current_clock = core_platform::bc_clock::query_elapsed_clocks();
-			const core_platform::bc_clock::big_delta_time l_elapsed_clocks = l_current_clock - m_start_clock;
+			const auto l_current_clock = platform::bc_clock::query_elapsed_clocks();
+			const platform::bc_clock::big_delta_time l_elapsed_clocks = l_current_clock - m_start_clock;
 			
 			m_elapsed_milliseconds += l_elapsed_clocks / m_clock_per_milliseconds;
 		}
 
-		inline core_platform::bc_clock::small_delta_time bc_stop_watch::restart() noexcept
+		inline platform::bc_clock::small_delta_time bc_stop_watch::restart() noexcept
 		{
 			const auto l_elapsed_milliseconds = m_elapsed_milliseconds;
 			
@@ -76,12 +76,12 @@ namespace black_cat
 			return l_elapsed_milliseconds;
 		}
 
-		inline core_platform::bc_clock::small_delta_time bc_stop_watch::total_elapsed() const noexcept
+		inline platform::bc_clock::small_delta_time bc_stop_watch::total_elapsed() const noexcept
 		{
 			return m_elapsed_milliseconds;
 		}
 
-		inline core_platform::bc_clock::small_delta_time bc_stop_watch::average_total_elapsed() const noexcept
+		inline platform::bc_clock::small_delta_time bc_stop_watch::average_total_elapsed() const noexcept
 		{
 			return m_sampler.average_value();
 		}

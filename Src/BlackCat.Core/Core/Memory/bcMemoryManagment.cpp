@@ -96,8 +96,8 @@ namespace black_cat
 			bcSIZE p_frame_heap_capacity,
 			bcSIZE p_super_heap_capacity)
 		{
-			core_platform::bc_basic_hardware_info l_hardware_info{};
-			core_platform::bc_hardware_info::get_basic_info(l_hardware_info);
+			platform::bc_basic_hardware_info l_hardware_info{};
+			platform::bc_hardware_info::get_basic_info(l_hardware_info);
 
 			m_fsa_allocators_start_size = p_fsa_start_size;
 			m_fsa_allocators_count = p_fsa_count;
@@ -160,7 +160,7 @@ namespace black_cat
 				m_crt_allocator->initialize("CrtAllocator");
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-				m_allocation_count.store(0, core_platform::bc_memory_order::relaxed);
+				m_allocation_count.store(0, platform::bc_memory_order::relaxed);
 				m_leak_allocator = new std::unordered_map<void*, bc_mem_block_leak_information>();
 #endif
 			}
@@ -227,7 +227,7 @@ namespace black_cat
 				auto* l_frame_allocator = m_my_frame_allocator.get();
 				if (l_frame_allocator == nullptr)
 				{
-					const auto l_fsa_index = m_last_used_frame_allocator.fetch_add(1U, core_platform::bc_memory_order::relaxed) % m_worker_frame_allocators_count;
+					const auto l_fsa_index = m_last_used_frame_allocator.fetch_add(1U, platform::bc_memory_order::relaxed) % m_worker_frame_allocators_count;
 					l_frame_allocator = &m_worker_frame_allocators[l_fsa_index];
 					m_my_frame_allocator.set(l_frame_allocator);
 				}
@@ -275,10 +275,10 @@ namespace black_cat
 			}
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			const auto l_alloc_number = m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1;
+			const auto l_alloc_number = m_allocation_count.fetch_add(1, platform::bc_memory_order::relaxed) + 1;
 
 			{
-				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
+				platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
 				m_leak_allocator->insert
 				(
 					std::make_pair
@@ -322,7 +322,7 @@ namespace black_cat
 
 #ifdef BC_MEMORY_LEAK_DETECTION
 			{
-				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
+				platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
 
 				const auto l_num_erased = m_leak_allocator->erase(l_pointer);
 			}
@@ -364,7 +364,7 @@ namespace black_cat
 				auto* l_frame_allocator = m_my_frame_allocator.get();
 				if (l_frame_allocator == nullptr)
 				{
-					const auto l_fsa_index = core_platform::bc_thread::current_thread_id() % m_worker_frame_allocators_count;
+					const auto l_fsa_index = platform::bc_thread::current_thread_id() % m_worker_frame_allocators_count;
 					l_frame_allocator = &m_worker_frame_allocators[l_fsa_index];
 					m_my_frame_allocator.set(l_frame_allocator);
 				}
@@ -412,10 +412,10 @@ namespace black_cat
 			}
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			const auto l_alloc_number = m_allocation_count.fetch_add(1, core_platform::bc_memory_order::relaxed) + 1;
+			const auto l_alloc_number = m_allocation_count.fetch_add(1, platform::bc_memory_order::relaxed) + 1;
 
 			{
-				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
+				platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
 
 				m_leak_allocator->insert
 				(
@@ -459,7 +459,7 @@ namespace black_cat
 
 #ifdef BC_MEMORY_LEAK_DETECTION
 			{
-				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
+				platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
 
 				const auto l_num_erased = m_leak_allocator->erase(l_pointer);
 			}
@@ -494,7 +494,7 @@ namespace black_cat
 
 			{
 #ifdef BC_MEMORY_LEAK_DETECTION
-				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
+				platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
 #endif
 
 				m_super_heap->defrag
@@ -615,7 +615,7 @@ namespace black_cat
 		bcUINT32 bc_memory_manager::report_memory_leaks() const noexcept
 		{
 			{
-				core_platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
+				platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
 
 				const bcSIZE l_leak_count = m_leak_allocator->size();
 				auto l_leak_array = std::vector<bc_mem_block_leak_information*>(l_leak_count);

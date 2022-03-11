@@ -2,7 +2,6 @@
 
 #include "GraphicImp/GraphicImpPCH.h"
 #include "GraphicImp/bcExport.h"
-#include "PlatformImp/File/bcPath.h"
 #include "GraphicImp/Resource/bcResource.h"
 #include "GraphicImp/Resource/Texture/bcTextureConfig.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"

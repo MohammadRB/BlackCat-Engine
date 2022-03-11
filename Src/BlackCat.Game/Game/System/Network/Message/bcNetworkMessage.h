@@ -178,7 +178,7 @@ namespace black_cat
 
 			virtual void deserialize_message(const bc_network_message_deserialization_context& p_context) = 0;
 
-			static core_platform::bc_atomic<bc_network_message_id> s_id_counter;
+			static platform::bc_atomic<bc_network_message_id> s_id_counter;
 			
 			mutable bc_network_message_id m_id;
 			bool m_is_retry;

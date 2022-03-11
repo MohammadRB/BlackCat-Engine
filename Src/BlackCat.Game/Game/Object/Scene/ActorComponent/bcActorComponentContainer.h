@@ -40,7 +40,7 @@ namespace black_cat
 			virtual void update(core::bc_query_manager& p_query_manager, 
 				bc_game_system& p_game_system, 
 				bc_actor_component_manager& p_manager, 
-				const core_platform::bc_clock::update_param& p_clock) = 0;
+				const platform::bc_clock::update_param& p_clock) = 0;
 
 			virtual bcSIZE size() = 0;
 
@@ -82,7 +82,7 @@ namespace black_cat
 			void update(core::bc_query_manager& p_query_manager,
 				bc_game_system& p_game_system,
 				bc_actor_component_manager& p_manager,
-				const core_platform::bc_clock::update_param& p_clock) override;
+				const platform::bc_clock::update_param& p_clock) override;
 
 			bcSIZE size() override;
 

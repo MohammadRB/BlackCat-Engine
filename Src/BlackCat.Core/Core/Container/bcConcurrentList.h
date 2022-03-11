@@ -31,49 +31,49 @@ namespace black_cat
 					static const bcINT32 dMask = 1;
 					static const bcINT32 ptrMask = ~dMask;
 
-					Link() noexcept(true) { mPointer.store((Node*)nullptr, core_platform::bc_memory_order::seqcst); }
+					Link() noexcept(true) { mPointer.store((Node*)nullptr, platform::bc_memory_order::seqcst); }
 					Link(const Node* pPointer, bool pDel = false) noexcept(true)
 					{
 						Node* lPointer = reinterpret_cast<Node*>(reinterpret_cast<bcINT32>(pPointer)& ptrMask); // Reset pointer flags
 						mPointer.store(reinterpret_cast<Node*>((reinterpret_cast<bcINT32>(lPointer) | (bcINT32)pDel)),
-							core_platform::bc_memory_order::seqcst);
+							platform::bc_memory_order::seqcst);
 					}
 
 					Link(const Link& pOther)
 					{
-						mPointer.store(pOther.mPointer.load(core_platform::bc_memory_order::seqcst),
-							core_platform::bc_memory_order::seqcst);
+						mPointer.store(pOther.mPointer.load(platform::bc_memory_order::seqcst),
+							platform::bc_memory_order::seqcst);
 					}
 
 					BC_INLINE Node* pointer() const noexcept(true)
 					{
 						return reinterpret_cast<Node*>(
-							reinterpret_cast<bcINT32>(mPointer.load(core_platform::bc_memory_order::seqcst)) & ptrMask);
+							reinterpret_cast<bcINT32>(mPointer.load(platform::bc_memory_order::seqcst)) & ptrMask);
 					}
 					BC_INLINE bool del() const noexcept(true)
 					{
-						return reinterpret_cast<bcINT32>(mPointer.load(core_platform::bc_memory_order::seqcst)) & dMask;
+						return reinterpret_cast<bcINT32>(mPointer.load(platform::bc_memory_order::seqcst)) & dMask;
 					}
 					BC_INLINE NodeType* getNode() noexcept(true) override
 					{
 						return reinterpret_cast<Node*>(
-							reinterpret_cast<bcINT32>(mPointer.load(core_platform::bc_memory_order::seqcst)) & ptrMask);
+							reinterpret_cast<bcINT32>(mPointer.load(platform::bc_memory_order::seqcst)) & ptrMask);
 					}
 
 					BC_INLINE bool compareAndSwap(const Link& pExpected, const Link& pNew) noexcept(true)
 					{
-						Node* lExpected = pExpected.mPointer.load(core_platform::bc_memory_order::seqcst);
-						Node* lNew = pNew.mPointer.load(core_platform::bc_memory_order::seqcst);
+						Node* lExpected = pExpected.mPointer.load(platform::bc_memory_order::seqcst);
+						Node* lNew = pNew.mPointer.load(platform::bc_memory_order::seqcst);
 
 						if (mPointer.compare_exchange_strong(
 							&lExpected,
 							lNew,
-							core_platform::bc_memory_order::seqcst,
-							core_platform::bc_memory_order::seqcst))
+							platform::bc_memory_order::seqcst,
+							platform::bc_memory_order::seqcst))
 						{
 							//TODO check here
-							Node* lNewExpected = pExpected.mPointer.load(core_platform::bc_memory_order::seqcst);
-							Node* lNewNew = pNew.mPointer.load(core_platform::bc_memory_order::seqcst);
+							Node* lNewExpected = pExpected.mPointer.load(platform::bc_memory_order::seqcst);
+							Node* lNewNew = pNew.mPointer.load(platform::bc_memory_order::seqcst);
 
 							BC_ASSERT(lNewExpected == lExpected && lNewNew == lNew);
 
@@ -85,8 +85,8 @@ namespace black_cat
 
 					bool operator==(const Link& pOther) noexcept(true)
 					{
-						return mPointer.load(core_platform::bc_memory_order::seqcst) ==
-							pOther.mPointer.load(core_platform::bc_memory_order::seqcst);
+						return mPointer.load(platform::bc_memory_order::seqcst) ==
+							pOther.mPointer.load(platform::bc_memory_order::seqcst);
 					}
 					bool operator!=(const Link& pOther) noexcept(true)
 					{
@@ -203,15 +203,15 @@ namespace black_cat
 			{
 				/*while(true)
 				{
-				Node* lValue = (bcAtomicOperation::bcAtomicLoad(*pLink->getAtomicNode(), core_platform::bc_memory_order::relaxed));
+				Node* lValue = (bcAtomicOperation::bcAtomicLoad(*pLink->getAtomicNode(), platform::bc_memory_order::relaxed));
 				Node* lResult = reinterpret_cast< Node* >(reinterpret_cast<bcINT32>(lValue) | dMask);
 
 				if(bcAtomicOperation::bcAtomicCompareExchangeStrong(
 				*pLink->getAtomicNode(),
 				lValue,
 				lResult,
-				core_platform::bc_memory_order::relaxed,
-				core_platform::bc_memory_order::relaxed))
+				platform::bc_memory_order::relaxed,
+				platform::bc_memory_order::relaxed))
 				break;
 				}*/
 
@@ -498,7 +498,7 @@ namespace black_cat
 				_insertBefore(pNext, lNode);
 				mMemMng.releaseRef(lNode);
 
-				mSize.fetch_add(1U, core_platform::bc_memory_order::seqcst);
+				mSize.fetch_add(1U, platform::bc_memory_order::seqcst);
 
 				return lNode;
 			}
@@ -508,7 +508,7 @@ namespace black_cat
 				_insertBefore(pNext, lNode);
 				mMemMng.releaseRef(lNode);
 
-				mSize.fetch_add(1U, core_platform::bc_memory_order::seqcst);
+				mSize.fetch_add(1U, platform::bc_memory_order::seqcst);
 
 				return lNode;
 			}
@@ -518,7 +518,7 @@ namespace black_cat
 				_insertAfter(pPrev, lNode);
 				mMemMng.releaseRef(lNode);
 
-				mSize.fetch_add(1U, core_platform::bc_memory_order::seqcst);
+				mSize.fetch_add(1U, platform::bc_memory_order::seqcst);
 
 				return lNode;
 			}
@@ -528,7 +528,7 @@ namespace black_cat
 				_insertAfter(pPrev, lNode);
 				mMemMng.releaseRef(lNode);
 
-				mSize.fetch_add(1U, core_platform::bc_memory_order::seqcst);
+				mSize.fetch_add(1U, platform::bc_memory_order::seqcst);
 
 				return lNode;
 			}
@@ -537,7 +537,7 @@ namespace black_cat
 			{
 				bool lDeleted = _delete(pNode, pData);
 				if (lDeleted)
-					mSize.fetch_sub(1U, core_platform::bc_memory_order::seqcst);
+					mSize.fetch_sub(1U, platform::bc_memory_order::seqcst);
 
 				return lDeleted;
 			}

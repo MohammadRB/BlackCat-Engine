@@ -32,8 +32,8 @@ namespace black_cat
 		public:
 			bc_vector_base(const allocator_type& p_allocator = allocator_type())
 				:m_capacity(0),
-				 m_first(nullptr),
-				 m_allocator(p_allocator)
+				m_first(nullptr),
+				m_allocator(p_allocator)
 			{
 			}
 
@@ -47,12 +47,12 @@ namespace black_cat
 		protected:
 			bool iterator_validate(const node_type* p_node) const noexcept
 			{
-				return p_node && p_node>= m_first - 1 && p_node <= _get_end();
+				return p_node && p_node >= m_first - 1 && p_node <= _get_end();
 			}
 
 			bcINT32 iterator_compare(const node_type* p_first, const node_type* p_second) const noexcept
 			{
-				return p_first == p_second ? 0 : p_first> p_second ? 1 : -1;
+				return p_first == p_second ? 0 : p_first > p_second ? 1 : -1;
 			}
 
 			value_type* iterator_dereference(node_type* p_node) const noexcept
@@ -92,61 +92,37 @@ namespace black_cat
 
 			void _move_elements(node_type* p_dest, node_type* p_src, size_type p_count)
 			{
-				// start from last element in case if destination and source are overlapped buffers
-				for (bcINT32 l_i = p_count - 1; l_i >= 0; --l_i)
+				const auto l_move = [=](bcUINT32 p_index)
 				{
 					bc_allocator_traits<internal_allocator_type>::construct
 					(
 						m_allocator,
-						p_dest + l_i,
-						std::move(*(p_src + l_i))
+						p_dest + p_index,
+						std::move(*(p_src + p_index))
 					);
 
 					bc_allocator_traits<internal_allocator_type>::destroy
 					(
 						m_allocator,
-						p_src + l_i
+						p_src + p_index
 					);
+				};
+
+				// If we are moving from left to right we must start from last element in case of overlapped buffers,
+				// otherwise we must move elements from first element
+				if (p_dest > p_src)
+				{
+					for (bcINT32 l_ite = p_count - 1; l_ite >= 0; --l_ite)
+					{
+						l_move(l_ite);
+					}
 				}
-			}
-
-			void _move_if_noexcept_elements(node_type* p_dest, node_type* p_src, size_type p_count, std::true_type)
-			{
-				// start from last element in case if destination and source are overlapped buffers
-				for (bcINT32 l_i = p_count - 1; l_i >= 0; --l_i)
+				else
 				{
-					bc_allocator_traits<internal_allocator_type>::construct
-					(
-						m_allocator,
-						p_dest + l_i,
-						std::move_if_noexcept(*(p_src + l_i))
-					);
-
-					bc_allocator_traits<internal_allocator_type>::destroy
-					(
-						m_allocator,
-						p_src + l_i
-					);
-				}
-			}
-
-			void _move_if_noexcept_elements(node_type* p_dest, node_type* p_src, size_type p_count, std::false_type)
-			{
-				// start from last element in case if destination and source are overlapped buffers
-				for (bcINT32 l_i = p_count - 1; l_i >= 0; --l_i)
-				{
-					bc_allocator_traits<internal_allocator_type>::construct
-					(
-						m_allocator,
-						p_dest + l_i,
-						std::move(*(p_src + l_i))
-					);
-
-					bc_allocator_traits<internal_allocator_type>::destroy
-					(
-						m_allocator,
-						p_src + l_i
-					);
+					for (bcUINT32 l_ite = 0; l_ite < p_count; ++l_ite)
+					{
+						l_move(l_ite);
+					}
 				}
 			}
 
@@ -157,25 +133,47 @@ namespace black_cat
 					m_allocator,
 					p_new_capacity
 				));
-				
+
 				if (m_first)
 				{
 					try
 					{
-						_move_if_noexcept_elements
-						(
-							l_heap,
-							m_first,
-							std::min<size_type>(base_type::m_size, p_new_capacity),
-							typename std::is_copy_constructible<value_type>::type()
-						);
+						const auto l_move_count = std::min<size_type>(base_type::m_size, p_new_capacity);
+
+						for (bcUINT32 l_i = 0; l_i < l_move_count; ++l_i)
+						{
+							if constexpr (typename std::is_copy_constructible<value_type>::type())
+							{
+								bc_allocator_traits<internal_allocator_type>::construct
+								(
+									m_allocator,
+									l_heap + l_i,
+									std::move_if_noexcept(*(m_first + l_i))
+								);
+							}
+							else
+							{
+								bc_allocator_traits<internal_allocator_type>::construct
+								(
+									m_allocator,
+									l_heap + l_i,
+									std::move(*(m_first + l_i))
+								);
+							}
+
+							bc_allocator_traits<internal_allocator_type>::destroy
+							(
+								m_allocator,
+								m_first + l_i
+							);
+						}
 					}
 					catch (...)
 					{
 						bc_allocator_traits<internal_allocator_type>::deallocate(m_allocator, l_heap);
 						throw;
 					}
-					
+
 					bc_allocator_traits<internal_allocator_type>::deallocate(m_allocator, m_first);
 				}
 
@@ -188,21 +186,21 @@ namespace black_cat
 			{
 				size_type l_reserved_count = m_capacity - base_type::m_size;
 
-				if(p_count_to_add <= l_reserved_count)
+				if (p_count_to_add <= l_reserved_count)
 				{
 					return;
 				}
 
 				size_type l_new_capacity = std::pow(2, std::ceil(std::log2(std::max(m_capacity + p_count_to_add, 2U))));
-				
+
 				_change_capacity(l_new_capacity);
 			}
 
 			void _decrease_capacity()
 			{
-				if (m_capacity> base_type::m_size)
+				if (m_capacity > base_type::m_size)
 				{
-					if(base_type::m_size != 0)
+					if (base_type::m_size != 0)
 					{
 						_change_capacity(base_type::m_size);
 					}
@@ -220,7 +218,7 @@ namespace black_cat
 			template<typename ...TArgs>
 			node_type* _new_node(node_type* p_position, size_type p_count, TArgs&&... p_args)
 			{
-				BC_ASSERT(p_position>= m_first && p_position <= _get_end());
+				BC_ASSERT(p_position >= m_first && p_position <= _get_end());
 				node_type* l_first = m_first;
 
 				_increase_capacity(p_count);
@@ -235,7 +233,7 @@ namespace black_cat
 					_move_elements(l_position + p_count, l_position, (_get_end() - l_position));
 				}
 
-				for (; l_count> 0; --l_count, ++l_position)
+				for (; l_count > 0; --l_count, ++l_position)
 				{
 					bc_allocator_traits<internal_allocator_type>::template construct(m_allocator, l_position, std::forward<TArgs>(p_args)...);
 				}
@@ -250,7 +248,7 @@ namespace black_cat
 			{
 				using input_iterator_reference = typename std::iterator_traits<TInputIterator>::reference;
 
-				BC_ASSERT(p_position>= m_first && p_position <= _get_end());
+				BC_ASSERT(p_position >= m_first && p_position <= _get_end());
 
 				base_type::template check_iterator<TInputIterator>();
 
@@ -258,11 +256,11 @@ namespace black_cat
 				node_type* l_last_inserted = p_position;
 
 				std::for_each(p_first, p_last, [=, &l_last_inserted, &l_count](input_iterator_reference p_value)
-				{
-					l_last_inserted = _new_node(l_last_inserted, 1, std::forward<input_iterator_reference>(p_value));
-					++l_last_inserted;
-					++l_count;
-				});
+					{
+						l_last_inserted = _new_node(l_last_inserted, 1, std::forward<input_iterator_reference>(p_value));
+						++l_last_inserted;
+						++l_count;
+					});
 
 				base_type::m_size += l_count;
 
@@ -274,7 +272,7 @@ namespace black_cat
 			{
 				using input_iterator_reference = typename std::iterator_traits<TInputIterator>::reference;
 
-				BC_ASSERT(p_position>= m_first && p_position <= _get_end());
+				BC_ASSERT(p_position >= m_first && p_position <= _get_end());
 
 				base_type::template check_iterator<TInputIterator>();
 
@@ -293,12 +291,12 @@ namespace black_cat
 				}
 
 				std::for_each(p_first, p_last, [=, &l_position](input_iterator_reference p_value)
-				{
-					bc_allocator_traits<internal_allocator_type>::template construct
-					(
-						m_allocator, l_position++, std::forward<input_iterator_reference>(p_value)
-					);
-				});
+					{
+						bc_allocator_traits<internal_allocator_type>::template construct
+						(
+							m_allocator, l_position++, std::forward<input_iterator_reference>(p_value)
+						);
+					});
 
 				base_type::m_size += l_count;
 
@@ -307,10 +305,10 @@ namespace black_cat
 
 			node_type* _free_node(node_type* p_position, size_type p_count)
 			{
-				BC_ASSERT(p_position>= m_first && p_position + p_count <= _get_end());
+				BC_ASSERT(p_position >= m_first && p_position + p_count <= _get_end());
 
 				size_type l_count = p_count;
-				while (l_count--> 0)
+				while (l_count-- > 0)
 				{
 					bc_allocator_traits<internal_allocator_type>::destroy(m_allocator, p_position + l_count);
 				}
@@ -460,7 +458,7 @@ namespace black_cat
 			iterator erase(const_iterator p_position);
 
 			iterator erase(const_iterator p_first, const_iterator p_last);
-			
+
 			void push_back(const value_type& p_value);
 
 			void push_back(value_type&& p_value);
@@ -483,7 +481,7 @@ namespace black_cat
 
 			node_type& _get_node(size_type p_position) const
 			{
-				BC_ASSERT(p_position>= 0 && p_position <= base_type::m_size);
+				BC_ASSERT(p_position >= 0 && p_position <= base_type::m_size);
 
 				return *(base_type::m_first + p_position);
 			}
@@ -660,7 +658,7 @@ namespace black_cat
 		template<typename T, class TAllocator>
 		typename bc_vector<T, TAllocator>::reference bc_vector<T, TAllocator>::at(size_type p_position)
 		{
-			if (p_position <0 || p_position>= base_type::size())
+			if (p_position < 0 || p_position >= base_type::size())
 			{
 				throw std::out_of_range("Index out of range");
 			}
@@ -671,7 +669,7 @@ namespace black_cat
 		template<typename T, class TAllocator>
 		typename bc_vector<T, TAllocator>::const_reference bc_vector<T, TAllocator>::at(size_type p_position) const
 		{
-			if (p_position <0 || p_position>= base_type::size())
+			if (p_position < 0 || p_position >= base_type::size())
 			{
 				throw std::out_of_range("Index out of range");
 			}
@@ -762,7 +760,7 @@ namespace black_cat
 		{
 			return const_iterator(this, base_type::_get_end());
 		}
-		
+
 		template<typename T, class TAllocator>
 		typename bc_vector<T, TAllocator>::reverse_iterator bc_vector<T, TAllocator>::rbegin()
 		{
@@ -850,7 +848,7 @@ namespace black_cat
 		template<typename T, class TAllocator>
 		void bc_vector<T, TAllocator>::reserve(size_type p_new_capacity)
 		{
-			if(p_new_capacity> base_type::capacity())
+			if (p_new_capacity > base_type::capacity())
 			{
 				base_type::_increase_capacity(p_new_capacity - base_type::capacity());
 			}
@@ -865,7 +863,7 @@ namespace black_cat
 		template<typename T, class TAllocator>
 		void bc_vector<T, TAllocator>::clear()
 		{
-			if (base_type::m_size> 0)
+			if (base_type::m_size > 0)
 			{
 				base_type::_free_node(base_type::m_first, base_type::size());
 			}
@@ -898,8 +896,8 @@ namespace black_cat
 		{
 			node_type* l_node = base_type::_new_nodes
 			(
-				static_cast<node_type*>(p_position.get_node()), 
-				p_first, 
+				static_cast<node_type*>(p_position.get_node()),
+				p_first,
 				p_last,
 				typename std::iterator_traits<TInputIterator>::iterator_category()
 			);
@@ -971,12 +969,12 @@ namespace black_cat
 		template<typename T, class TAllocator>
 		void bc_vector<T, TAllocator>::resize(size_type p_count)
 		{
-			if (p_count <base_type::size())
+			if (p_count < base_type::size())
 			{
 				base_type::_free_node(base_type::m_first + p_count, base_type::size() - p_count);
 				shrink_to_fit();
 			}
-			else if (p_count> base_type::size())
+			else if (p_count > base_type::size())
 			{
 				base_type::_change_capacity(p_count);
 				base_type::_new_node(base_type::m_first + base_type::size(), p_count - base_type::size());
@@ -986,12 +984,12 @@ namespace black_cat
 		template<typename T, class TAllocator>
 		void bc_vector<T, TAllocator>::resize(size_type p_count, const value_type& p_value)
 		{
-			if (p_count <base_type::size())
+			if (p_count < base_type::size())
 			{
 				base_type::_free_node(base_type::m_first + p_count, base_type::size() - p_count);
 				shrink_to_fit();
 			}
-			else if (p_count> base_type::size())
+			else if (p_count > base_type::size())
 			{
 				base_type::_change_capacity(p_count);
 				base_type::_new_node(base_type::m_first + base_type::size(), p_count - base_type::size(), p_value);
@@ -1043,7 +1041,7 @@ namespace black_cat
 				base_type::m_allocator = std::move(p_other.m_allocator);
 			}
 
-			if(p_other.m_first)
+			if (p_other.m_first)
 			{
 				bc_allocator_traits<internal_allocator_type>::unregister_pointer(p_other.m_allocator, &p_other.m_first);
 			}
@@ -1052,7 +1050,7 @@ namespace black_cat
 			base_type::m_capacity = p_other.m_capacity;
 			base_type::m_first = std::move(p_other.m_first);
 
-			if(base_type::m_first)
+			if (base_type::m_first)
 			{
 				bc_allocator_traits<internal_allocator_type>::register_pointer(base_type::m_allocator, &(base_type::m_first));
 			}

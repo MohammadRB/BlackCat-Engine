@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		struct bc_platform_script_ref_pack
 		{
 		};
@@ -19,7 +19,7 @@ namespace black_cat
 		 * \brief Store a strong reference to given script object
 		 * \tparam T 
 		 */
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		class bc_platform_script_ref
 		{
 		public:
@@ -68,6 +68,6 @@ namespace black_cat
 		};
 
 		template<typename T>
-		using bc_script_ref = bc_platform_script_ref<core_platform::g_current_platform, T>;
+		using bc_script_ref = bc_platform_script_ref<platform::g_current_platform, T>;
 	}
 }

@@ -47,7 +47,7 @@ namespace black_cat
 
 		bc_platform_exception(bc_platform_exception&&) = default;
 
-		~bc_platform_exception() = default;
+		~bc_platform_exception() override = default;
 
 		bc_platform_exception& operator=(const bc_platform_exception&) = default;
 
@@ -69,7 +69,7 @@ namespace black_cat
 
 		bc_thread_resource_exception(const bc_thread_resource_exception&) = default;
 
-		~bc_thread_resource_exception() = default;
+		~bc_thread_resource_exception() override = default;
 
 		bc_thread_resource_exception& operator=(const bc_thread_resource_exception&) = default;
 	};
@@ -89,7 +89,7 @@ namespace black_cat
 
 		bc_invalid_operation_exception(const bc_invalid_operation_exception& p_other) = default;
 
-		~bc_invalid_operation_exception() = default;
+		~bc_invalid_operation_exception() override = default;
 
 		bc_invalid_operation_exception& operator=(const bc_invalid_operation_exception&) = default;
 	};

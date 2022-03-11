@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_application;
 
 		enum class bc_console_window_text_color
@@ -23,7 +23,7 @@ namespace black_cat
 			yellow
 		};
 
-		template<core_platform::bc_platform>
+		template<platform::bc_platform>
 		struct bc_platform_console_window_parameter_pack
 		{
 			bc_platform_console_window_parameter_pack(const bcECHAR* p_caption)
@@ -34,14 +34,14 @@ namespace black_cat
 			const bcECHAR* m_caption;
 		};
 
-		using bc_console_window_parameter = bc_platform_console_window_parameter_pack<core_platform::g_current_platform>;
+		using bc_console_window_parameter = bc_platform_console_window_parameter_pack<platform::g_current_platform>;
 
-		template<core_platform::bc_platform>
+		template<platform::bc_platform>
 		struct bc_platform_console_window_pack
 		{
 		};
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_console_window : public bc_platform_window<TPlatform>
 		{
 		public:
@@ -84,6 +84,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_console_window = bc_platform_console_window<core_platform::g_current_platform>;
+		using bc_console_window = bc_platform_console_window<platform::g_current_platform>;
 	}
 }

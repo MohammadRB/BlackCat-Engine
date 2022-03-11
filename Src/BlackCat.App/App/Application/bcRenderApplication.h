@@ -23,14 +23,14 @@ namespace black_cat
 	struct bc_application_update_context
 	{
 		bool m_is_partial_update;
-		const core_platform::bc_clock::update_param& m_clock;
+		const platform::bc_clock::update_param& m_clock;
 		core::bc_query_manager& m_query_manager;
 		game::bc_game_system& m_game_system;
 	};
 
 	struct bc_application_render_context
 	{
-		const core_platform::bc_clock::update_param& m_clock;
+		const platform::bc_clock::update_param& m_clock;
 		core::bc_query_manager& m_query_manager;
 		game::bc_render_system& m_render_system;
 	};
@@ -65,15 +65,15 @@ namespace black_cat
 
 		virtual void application_render(const bc_application_render_context& p_context) = 0;
 
-		virtual void application_pause_idle(const core_platform::bc_clock::update_param& p_clock);
+		virtual void application_pause_idle(const platform::bc_clock::update_param& p_clock);
 
-		virtual void application_render_pause_idle(const core_platform::bc_clock::update_param& p_clock);
+		virtual void application_render_pause_idle(const platform::bc_clock::update_param& p_clock);
 
-		virtual void application_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock);
+		virtual void application_swap_frame_idle(const platform::bc_clock::update_param& p_clock);
 
-		virtual void application_swap_frame(const core_platform::bc_clock::update_param& p_clock);
+		virtual void application_swap_frame(const platform::bc_clock::update_param& p_clock);
 
-		virtual void application_render_swap_frame(const core_platform::bc_clock::update_param& p_clock);
+		virtual void application_render_swap_frame(const platform::bc_clock::update_param& p_clock);
 		
 		virtual void application_event(core::bci_event& p_event) = 0;
 
@@ -89,19 +89,19 @@ namespace black_cat
 
 		void app_load_content() override final;
 
-		void app_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update) override final;
+		void app_update(const platform::bc_clock::update_param& p_clock, bool p_is_partial_update) override final;
 
-		void app_render(const core_platform::bc_clock::update_param& p_clock) override final;
+		void app_render(const platform::bc_clock::update_param& p_clock) override final;
 
-		void app_pause_idle(const core_platform::bc_clock::update_param& p_clock) override final;
+		void app_pause_idle(const platform::bc_clock::update_param& p_clock) override final;
 
-		void app_render_pause_idle(const core_platform::bc_clock::update_param& p_clock) override final;
+		void app_render_pause_idle(const platform::bc_clock::update_param& p_clock) override final;
 		
-		void app_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock) override final;
+		void app_swap_frame_idle(const platform::bc_clock::update_param& p_clock) override final;
 		
-		void app_swap_frame(const core_platform::bc_clock::update_param& p_clock) override final;
+		void app_swap_frame(const platform::bc_clock::update_param& p_clock) override final;
 
-		void app_render_swap_frame(const core_platform::bc_clock::update_param& p_clock) override final;
+		void app_render_swap_frame(const platform::bc_clock::update_param& p_clock) override final;
 		
 		void app_event(core::bci_event& p_event) override final;
 

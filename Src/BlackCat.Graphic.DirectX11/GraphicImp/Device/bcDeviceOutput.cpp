@@ -48,7 +48,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_device_output<g_api_dx11> bc_platform_device_output<g_api_dx11>::from_window(platform::bc_platform_basic_window<core_platform::g_api_win32>& p_render_window)
+		bc_platform_device_output<g_api_dx11> bc_platform_device_output<g_api_dx11>::from_window(platform::bc_platform_basic_window<platform::g_api_win32>& p_render_window)
 		{
 			bc_platform_device_output l_device_output(platform_pack(p_render_window.get_platform_pack().m_handle));
 

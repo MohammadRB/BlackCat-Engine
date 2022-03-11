@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		using core_platform::bc_path_info;
+		using platform::bc_path_info;
 
 		class BC_CORE_DLL bc_path
 		{
@@ -95,7 +95,7 @@ namespace black_cat
 			static bc_path_info get_path_info();
 
 		private:
-			core_platform::bc_path m_path;
+			platform::bc_path m_path;
 		};
 	}
 }

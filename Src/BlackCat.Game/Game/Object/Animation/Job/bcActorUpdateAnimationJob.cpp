@@ -27,7 +27,7 @@ namespace black_cat
 
 		inline bc_actor_update_animation_job& bc_actor_update_animation_job::operator=(bc_actor_update_animation_job&&) noexcept = default;
 
-		inline bool bc_actor_update_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
+		inline bool bc_actor_update_animation_job::run(const platform::bc_clock::update_param& p_clock)
 		{
 			if(!m_enabled)
 			{

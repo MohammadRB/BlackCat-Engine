@@ -21,7 +21,7 @@ namespace black_cat
 
 		struct bc_client_socket_update_event
 		{
-			core_platform::bc_clock::update_param m_clock;
+			platform::bc_clock::update_param m_clock;
 		};
 		
 		struct bc_client_socket_connect_event
@@ -301,7 +301,7 @@ namespace black_cat
 				return *m_socket;
 			}
 
-			void update(const core_platform::bc_clock::update_param& p_clock)
+			void update(const platform::bc_clock::update_param& p_clock)
 			{
 				bc_client_socket_update_event l_update{ p_clock };
 				process_event(l_update);

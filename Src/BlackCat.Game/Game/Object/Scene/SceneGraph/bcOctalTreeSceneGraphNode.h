@@ -109,7 +109,7 @@ namespace black_cat
 
 			bool remove_actor(bc_actor& p_actor) noexcept override;
 
-			void update(const core_platform::bc_clock::update_param& p_clock) noexcept override;
+			void update(const platform::bc_clock::update_param& p_clock) noexcept override;
 			
 			void clear() noexcept override;
 
@@ -154,7 +154,7 @@ namespace black_cat
 			bcSIZE m_max_actors_count;
 			bcSIZE m_min_size;
 			bcFLOAT m_update_interval_seconds;
-			core_platform::bc_atomic<bcSIZE> m_actors_count;
+			platform::bc_atomic<bcSIZE> m_actors_count;
 
 			bc_octal_tree_graph_node* m_parent;
 			bc_octal_tree_graph_node* m_top_left_back;
@@ -171,7 +171,7 @@ namespace black_cat
 			core::bc_concurrent_object_pool<bc_octal_tree_graph_node>* m_child_nodes_pool;
 			core::bc_concurrent_memory_pool* m_actors_pool;
 			graph_node_entry_list m_actors;
-			mutable core_platform::bc_mutex m_actors_lock;
+			mutable platform::bc_mutex m_actors_lock;
 		};
 	}
 }

@@ -11,15 +11,15 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_script_array_element;
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		struct bc_platform_script_array_pack
 		{
 		};
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_script_array : public bc_platform_script_object<TPlatform>
 		{
 		public:
@@ -53,12 +53,12 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		struct bc_platform_script_array_element_pack
 		{
 		};
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_script_array_element
 		{
 		public:
@@ -75,10 +75,10 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		class bc_platform_script_array_wrapper_element;
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		class bc_platform_script_array_wrapper : public bc_platform_script_array<TPlatform>
 		{
 		public:
@@ -101,7 +101,7 @@ namespace black_cat
 			element operator[](bcINT p_index);
 		};
 
-		template<core_platform::bc_platform TPlatform, typename T>
+		template<platform::bc_platform TPlatform, typename T>
 		class bc_platform_script_array_wrapper_element : public bc_platform_script_array_element<TPlatform>
 		{
 		public:
@@ -112,11 +112,11 @@ namespace black_cat
 			operator T();
 		};
 
-		using bc_script_array = bc_platform_script_array<core_platform::g_current_platform>;
+		using bc_script_array = bc_platform_script_array<platform::g_current_platform>;
 		using bc_script_array_ref = bc_script_ref<bc_script_array>;
 
 		template<typename T>
-		using bc_script_array_wrapper = bc_platform_script_array_wrapper<core_platform::g_current_platform, T>;
+		using bc_script_array_wrapper = bc_platform_script_array_wrapper<platform::g_current_platform, T>;
 		template<typename T>
 		using bc_script_array_wrapper_ref = bc_script_ref<bc_script_array_wrapper<T>>;
 	}

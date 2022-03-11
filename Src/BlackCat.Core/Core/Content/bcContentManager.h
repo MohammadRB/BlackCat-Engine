@@ -220,7 +220,7 @@ namespace black_cat
 				bc_estring_view p_file_variant,
 				bc_unique_ptr<TContent> p_content);
 
-			core_platform::bc_shared_mutex m_contents_mutex;
+			platform::bc_shared_mutex m_contents_mutex;
 			map_type m_contents;
 		};
 
@@ -233,7 +233,7 @@ namespace black_cat
 			map_type::value_type::second_type l_value;
 
 			{
-				core_platform::bc_shared_mutex_guard l_guard(m_contents_mutex);
+				platform::bc_shared_mutex_guard l_guard(m_contents_mutex);
 
 				const auto l_item = m_contents.find(p_content->_get_key());
 
@@ -299,7 +299,7 @@ namespace black_cat
 			auto l_key = bc_path(l_offline_file_path).get_filename();
 
 			{
-				core_platform::bc_shared_mutex_shared_guard l_guard(m_contents_mutex);
+				platform::bc_shared_mutex_shared_guard l_guard(m_contents_mutex);
 				
 				const auto l_content_ite = m_contents.find(l_key);
 				if (l_content_ite != m_contents.end()) // Content has already loaded
@@ -361,7 +361,7 @@ namespace black_cat
 			bc_estring_view l_file_variant;
 
 			{
-				core_platform::bc_shared_mutex_shared_guard l_guard(m_contents_mutex);
+				platform::bc_shared_mutex_shared_guard l_guard(m_contents_mutex);
 
 				auto l_content_ite = m_contents.find(p_content._get_key());
 				if (l_content_ite == m_contents.end())
@@ -514,10 +514,10 @@ namespace black_cat
 			bc_content_loader_parameter p_instance_parameters,
 			bci_content_loader* p_loader)
 		{
-			core_platform::bc_basic_file_info l_file_info;
-			core_platform::bc_basic_file_info l_offline_file_info;
-			core_platform::bc_file_info::get_basic_info(p_file.data(), &l_file_info);
-			core_platform::bc_file_info::get_basic_info(p_offline_file.data(), &l_offline_file_info);
+			platform::bc_basic_file_info l_file_info;
+			platform::bc_basic_file_info l_offline_file_info;
+			platform::bc_file_info::get_basic_info(p_file.data(), &l_file_info);
+			platform::bc_file_info::get_basic_info(p_offline_file.data(), &l_offline_file_info);
 
 			const bool l_need_offline_processing = p_loader->support_offline_processing() &&
 			(
@@ -560,9 +560,9 @@ namespace black_cat
 					if (!l_offline_file_stream.open
 						(
 							p_offline_file,
-							core_platform::bc_file_mode::create_overwrite,
-							core_platform::bc_file_access::write,
-							core_platform::bc_file_sharing::none
+							platform::bc_file_mode::create_overwrite,
+							platform::bc_file_access::write,
+							platform::bc_file_sharing::none
 						))
 					{
 						l_context.m_file = bc_stream(std::move(l_offline_file_stream));
@@ -652,7 +652,7 @@ namespace black_cat
 			auto l_content_ptr = p_content.get();
 
 			{
-				core_platform::bc_lock_guard l_guard(m_contents_mutex);
+				platform::bc_lock_guard l_guard(m_contents_mutex);
 
 				auto l_entry = _bc_content_entry(std::move(p_key), bc_estring(p_file), bc_estring(p_file_variant), bc_unique_ptr<bci_content>(std::move(p_content)));
 				auto l_entry_key = bc_estring_view(l_entry.m_key);

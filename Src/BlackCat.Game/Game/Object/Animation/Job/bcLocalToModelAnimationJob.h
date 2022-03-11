@@ -36,9 +36,9 @@ namespace black_cat
 
 			core::bc_span<ozz::math::Float4x4> get_native_transforms() noexcept;
 			
-			bool run(const core_platform::bc_clock::update_param& p_clock) override;
+			bool run(const platform::bc_clock::update_param& p_clock) override;
 			
-			bool run(const core_platform::bc_clock::update_param& p_clock, bcINT32 p_from);
+			bool run(const platform::bc_clock::update_param& p_clock, bcINT32 p_from);
 			
 		private:
 			const bc_sub_mesh* m_mesh;

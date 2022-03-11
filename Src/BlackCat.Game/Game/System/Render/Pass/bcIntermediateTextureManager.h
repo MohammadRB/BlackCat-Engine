@@ -66,7 +66,7 @@ namespace black_cat
 			
 		private:
 			graphic::bc_device* m_device;
-			core_platform::bc_shared_mutex m_mutex;
+			platform::bc_shared_mutex m_mutex;
 			core::bc_vector<_bc_intermediate_texture_entry> m_textures;
 		};
 

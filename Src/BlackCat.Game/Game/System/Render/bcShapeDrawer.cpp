@@ -52,7 +52,7 @@ namespace black_cat
 		void bc_shape_drawer::draw_point_list(core::bc_span<core::bc_vector3f> p_vertices, core::bc_span<bcUINT32> p_indices)
 		{
 			{
-				core_platform::bc_mutex_guard l_guard(m_mutex);
+				platform::bc_mutex_guard l_guard(m_mutex);
 
 				auto& l_vertices = m_vertices[m_buffer_write_index];
 				auto& l_indices = m_indices[m_buffer_write_index];
@@ -73,7 +73,7 @@ namespace black_cat
 		void bc_shape_drawer::draw_wired_bound_box(const physics::bc_bound_box& p_box)
 		{
 			{
-				core_platform::bc_mutex_guard l_guard(m_mutex);
+				platform::bc_mutex_guard l_guard(m_mutex);
 
 				bc_shape_generator_buffer l_buffer(m_vertices[m_buffer_write_index], m_indices[m_buffer_write_index]);
 				bc_shape_generator::create_wired_bound_box(l_buffer, p_box);
@@ -83,7 +83,7 @@ namespace black_cat
 		void bc_shape_drawer::draw_wired_box(const physics::bc_shape_box& p_box, const physics::bc_transform& p_transform)
 		{
 			{
-				core_platform::bc_mutex_guard l_guard(m_mutex);
+				platform::bc_mutex_guard l_guard(m_mutex);
 
 				bc_shape_generator_buffer l_buffer(m_vertices[m_buffer_write_index], m_indices[m_buffer_write_index]);
 				bc_shape_generator::create_wired_box(l_buffer, p_box, p_transform);
@@ -93,7 +93,7 @@ namespace black_cat
 		void bc_shape_drawer::draw_wired_sphere(const physics::bc_shape_sphere& p_sphere, const physics::bc_transform& p_transform)
 		{
 			{
-				core_platform::bc_mutex_guard l_guard(m_mutex);
+				platform::bc_mutex_guard l_guard(m_mutex);
 
 				bc_shape_generator_buffer l_buffer(m_vertices[m_buffer_write_index], m_indices[m_buffer_write_index]);
 				bc_shape_generator::create_wired_sphere(l_buffer, p_sphere, p_transform);
@@ -103,7 +103,7 @@ namespace black_cat
 		void bc_shape_drawer::draw_wired_capsule(const physics::bc_shape_capsule& p_capsule, const physics::bc_transform& p_transform)
 		{
 			{
-				core_platform::bc_mutex_guard l_guard(m_mutex);
+				platform::bc_mutex_guard l_guard(m_mutex);
 
 				bc_shape_generator_buffer l_buffer(m_vertices[m_buffer_write_index], m_indices[m_buffer_write_index]);
 				bc_shape_generator::create_wired_capsule(l_buffer, p_capsule, p_transform);
@@ -113,7 +113,7 @@ namespace black_cat
 		void bc_shape_drawer::draw_wired_frustum(const bci_camera::extend& p_camera_extend)
 		{
 			{
-				core_platform::bc_mutex_guard l_guard(m_mutex);
+				platform::bc_mutex_guard l_guard(m_mutex);
 
 				bc_shape_generator_buffer l_buffer(m_vertices[m_buffer_write_index], m_indices[m_buffer_write_index]);
 				bc_shape_generator::create_wired_frustum(l_buffer, p_camera_extend);
@@ -123,7 +123,7 @@ namespace black_cat
 		void bc_shape_drawer::draw_wired_skeleton(const bc_sub_mesh& p_mesh, const core::bc_matrix4f& p_world, const bc_sub_mesh_mat4_transform& p_mesh_transforms)
 		{
 			{
-				core_platform::bc_mutex_guard l_guard(m_mutex);
+				platform::bc_mutex_guard l_guard(m_mutex);
 
 				bc_shape_generator_buffer l_buffer(m_vertices[m_buffer_write_index], m_indices[m_buffer_write_index]);
 				bc_shape_generator::create_wired_skeleton(l_buffer, p_mesh, p_world, p_mesh_transforms);
@@ -163,7 +163,7 @@ namespace black_cat
 			bcUINT32* l_indices_data;
 
 			{
-				//core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_mutex);
+				//platform::bc_lock_guard<platform::bc_mutex> l_guard(m_mutex);
 
 				l_vertices_count = m_vertices[m_buffer_read_index].size();
 				l_indices_count = m_indices[m_buffer_read_index].size();

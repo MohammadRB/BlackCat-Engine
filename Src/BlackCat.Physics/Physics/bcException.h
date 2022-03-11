@@ -27,18 +27,18 @@ namespace black_cat
 			static bc_physics_error_category s_physics_category;
 
 			return s_physics_category;
-		};
+		}
 
 		class bc_physics_exception : public std::system_error
 		{
 		public:
-			explicit bc_physics_exception(bcINT p_code, const bcCHAR* p_message);
+			bc_physics_exception(bcINT p_code, const bcCHAR* p_message);
 
 			bc_physics_exception(const bc_physics_exception&) = default;
 
 			bc_physics_exception(bc_physics_exception&&) = default;
 
-			~bc_physics_exception() = default;
+			~bc_physics_exception() override = default;
 
 			bc_physics_exception& operator=(const bc_physics_exception&) = default;
 

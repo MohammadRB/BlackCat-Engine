@@ -7,11 +7,7 @@
 #ifdef _MSC_VER
 
 #define BC_PLATFORM_DLL __declspec(dllexport)
-//#ifdef BC_PLATFORMIMP_DLL
 #define BC_PLATFORMSHARED_DLL __declspec(dllexport)
-//#endif
-
-#else
 
 #endif
 
@@ -20,11 +16,7 @@
 #ifdef _MSC_VER
 
 #define BC_PLATFORM_DLL __declspec(dllimport)
-//#ifdef BC_PLATFORMIMP_DLL
 #define BC_PLATFORMSHARED_DLL __declspec(dllimport)
-//#endif
-
-#else
 
 #endif
 

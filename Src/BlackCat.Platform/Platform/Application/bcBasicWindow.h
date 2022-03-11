@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_application;
 
 		enum class bc_messagebox_type
@@ -38,7 +38,7 @@ namespace black_cat
 			no
 		};
 
-		template<core_platform::bc_platform>
+		template<platform::bc_platform>
 		struct bc_platform_basic_window_parameter_pack
 		{
 		public:
@@ -54,14 +54,14 @@ namespace black_cat
 			bcUINT32 m_height;
 		};
 
-		using bc_basic_window_parameter = bc_platform_basic_window_parameter_pack<core_platform::g_current_platform>;
+		using bc_basic_window_parameter = bc_platform_basic_window_parameter_pack<platform::g_current_platform>;
 
-		template<core_platform::bc_platform>
+		template<platform::bc_platform>
 		struct bc_platform_basic_window_pack
 		{
 		};
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_basic_window : public bc_platform_window<TPlatform>
 		{
 		public:
@@ -126,6 +126,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_basic_window = bc_platform_basic_window<core_platform::g_current_platform>;
+		using bc_basic_window = bc_platform_basic_window<platform::g_current_platform>;
 	}
 }

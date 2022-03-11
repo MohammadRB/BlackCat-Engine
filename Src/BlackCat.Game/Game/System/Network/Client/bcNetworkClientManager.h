@@ -101,9 +101,9 @@ namespace black_cat
 
 			// Private methods
 			
-			void _retry_messages_waiting_acknowledgment(const core_platform::bc_clock::update_param& p_clock);
+			void _retry_messages_waiting_acknowledgment(const platform::bc_clock::update_param& p_clock);
 			
-			void _send_to_server(const core_platform::bc_clock::update_param& p_clock);
+			void _send_to_server(const platform::bc_clock::update_param& p_clock);
 			
 			void _receive_from_server();
 
@@ -126,7 +126,7 @@ namespace black_cat
 			core::bc_vector<bc_actor> m_sync_actors;
 			core::bc_unordered_map<bc_actor_network_id, bc_actor> m_network_actors;
 
-			core_platform::bc_mutex m_messages_lock;
+			platform::bc_mutex m_messages_lock;
 			bc_network_message_id m_last_executed_message_id;
 			core::bc_vector<bc_network_message_ptr> m_messages;
 			core::bc_vector<bc_retry_message> m_messages_waiting_acknowledgment;

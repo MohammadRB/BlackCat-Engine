@@ -11,7 +11,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		template<bc_platform TP>
 		struct bc_platform_spin_mutex_pack
@@ -292,13 +292,13 @@ namespace black_cat
 				m_lock = &p_lockable;
 				switch (p_lock_properties)
 				{
-				case core_platform::bc_lock_property::adapt:
+				case platform::bc_lock_property::adapt:
 					m_owns = true;
 					break;
-				case core_platform::bc_lock_property::defer:
+				case platform::bc_lock_property::defer:
 					m_owns = false;
 					break;
-				case core_platform::bc_lock_property::Try:
+				case platform::bc_lock_property::Try:
 					m_owns = m_lock->try_lock();
 					break;
 				default:
@@ -311,13 +311,13 @@ namespace black_cat
 				m_lock = &p_lockable;
 				switch (p_lock_properties)
 				{
-				case core_platform::bc_lock_property::adapt:
+				case platform::bc_lock_property::adapt:
 					m_owns = true;
 					break;
-				case core_platform::bc_lock_property::defer:
+				case platform::bc_lock_property::defer:
 					m_owns = false;
 					break;
-				case core_platform::bc_lock_property::Try:
+				case platform::bc_lock_property::Try:
 					m_owns = m_lock->try_lock(p_lock_operation);
 					break;
 				default:

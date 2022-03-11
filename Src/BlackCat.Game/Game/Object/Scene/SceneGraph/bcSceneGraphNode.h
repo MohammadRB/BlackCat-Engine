@@ -85,7 +85,7 @@ namespace black_cat
 			 */
 			virtual bool remove_actor(bc_actor& p_actor) noexcept = 0;
 
-			virtual void update(const core_platform::bc_clock::update_param& p_clock) noexcept = 0;
+			virtual void update(const platform::bc_clock::update_param& p_clock) noexcept = 0;
 			
 			virtual void clear() noexcept = 0;
 

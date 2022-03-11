@@ -36,7 +36,7 @@ namespace black_cat
 		void bc_actor_component_container<TComponent>::update(core::bc_query_manager& p_query_manager,
 			bc_game_system& p_game_system,
 			bc_actor_component_manager& p_manager,
-			const core_platform::bc_clock::update_param& p_clock)
+			const platform::bc_clock::update_param& p_clock)
 		{
 			const auto l_used_slots = m_bit_block.find_true_indices();
 

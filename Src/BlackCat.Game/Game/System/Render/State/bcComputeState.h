@@ -33,7 +33,7 @@ namespace black_cat
 		 */
 		class BC_GAME_DLL bc_compute_state
 			: public core::bc_ref_count,
-			core_platform::bc_no_copy
+			platform::bc_no_copy
 		{
 		public:
 			template< class T, class TDeleter >

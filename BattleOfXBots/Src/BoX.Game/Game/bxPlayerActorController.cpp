@@ -42,6 +42,15 @@ namespace box
 	{
 		bc_xbot_player_actor_controller::added_to_scene(p_context, p_scene);
 
+		const auto* l_mediate_component = p_context.m_actor.get_component<game::bc_mediate_component>();
+		const auto l_bound_box_extends = l_mediate_component->get_bound_box().get_half_extends();
+		const auto l_max_side_length = std::max(std::max(l_bound_box_extends.x, l_bound_box_extends.y), l_bound_box_extends.z) * 2;
+		const auto l_camera_y_offset = l_max_side_length * 3.5f;
+		const auto l_camera_z_offset = l_max_side_length * -1.5f;
+		const auto l_camera_look_at_offset = l_max_side_length * 1.25f;
+
+		set_camera_offsets(l_camera_y_offset, l_camera_z_offset, l_camera_look_at_offset);
+
 		bx_player_spawned_event l_event(p_context.m_actor);
 		m_event_manager->process_event(l_event);
 	}

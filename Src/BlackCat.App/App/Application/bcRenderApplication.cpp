@@ -29,23 +29,23 @@ namespace black_cat
 
 	bc_render_application::~bc_render_application() = default;
 	
-	void bc_render_application::application_pause_idle(const core_platform::bc_clock::update_param& p_clock)
+	void bc_render_application::application_pause_idle(const platform::bc_clock::update_param& p_clock)
 	{
 	}
 
-	void bc_render_application::application_render_pause_idle(const core_platform::bc_clock::update_param& p_clock)
+	void bc_render_application::application_render_pause_idle(const platform::bc_clock::update_param& p_clock)
 	{
 	}
 
-	void bc_render_application::application_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock)
+	void bc_render_application::application_swap_frame_idle(const platform::bc_clock::update_param& p_clock)
 	{
 	}
 
-	void bc_render_application::application_swap_frame(const core_platform::bc_clock::update_param& p_clock)
+	void bc_render_application::application_swap_frame(const platform::bc_clock::update_param& p_clock)
 	{
 	}
 
-	void bc_render_application::application_render_swap_frame(const core_platform::bc_clock::update_param& p_clock)
+	void bc_render_application::application_render_swap_frame(const platform::bc_clock::update_param& p_clock)
 	{
 	}
 
@@ -60,7 +60,7 @@ namespace black_cat
 		m_game_system = core::bc_get_service<game::bc_game_system>();
 		m_game_system->initialize
 		(
-			game::bc_game_system_parameter
+			game::bc_game_system_init_params
 			(
 				*core::bc_get_service<core::bc_query_manager>(),
 				*core::bc_get_service<core::bc_event_manager>(),
@@ -108,7 +108,7 @@ namespace black_cat
 		application_load_content(bc_application_load_context{ *l_content_stream_manager });
 	}
 
-	void bc_render_application::app_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
+	void bc_render_application::app_update(const platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
 	{
 		m_update_watch.start();
 		
@@ -144,7 +144,7 @@ namespace black_cat
 		m_update_watch.stop();
 	}
 
-	void bc_render_application::app_render(const core_platform::bc_clock::update_param& p_clock)
+	void bc_render_application::app_render(const platform::bc_clock::update_param& p_clock)
 	{
 		m_render_watch.start();
 		
@@ -167,7 +167,7 @@ namespace black_cat
 		m_render_watch.stop();
 	}
 
-	void bc_render_application::app_pause_idle(const core_platform::bc_clock::update_param& p_clock)
+	void bc_render_application::app_pause_idle(const platform::bc_clock::update_param& p_clock)
 	{
 		platform::bc_app_event_pause_state l_pause_event(platform::bc_app_event_pause_state::state::paused);
 		core::bc_get_service<core::bc_event_manager>()->process_event(l_pause_event);
@@ -176,19 +176,19 @@ namespace black_cat
 		application_pause_idle(p_clock);
 	}
 
-	void bc_render_application::app_render_pause_idle(const core_platform::bc_clock::update_param& p_clock)
+	void bc_render_application::app_render_pause_idle(const platform::bc_clock::update_param& p_clock)
 	{
 		core::bc_get_service<core::bc_event_manager>()->process_render_event_queue(p_clock);
 		application_render_pause_idle(p_clock);
 	}
 
-	void bc_render_application::app_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock)
+	void bc_render_application::app_swap_frame_idle(const platform::bc_clock::update_param& p_clock)
 	{
 		m_game_system->swap_frame_idle(p_clock);
 		application_swap_frame_idle(p_clock);
 	}
 
-	void bc_render_application::app_swap_frame(const core_platform::bc_clock::update_param& p_clock)
+	void bc_render_application::app_swap_frame(const platform::bc_clock::update_param& p_clock)
 	{
 		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 		auto* l_counter_value_manager = core::bc_get_service<core::bc_counter_value_manager>();
@@ -215,7 +215,7 @@ namespace black_cat
 		l_counter_value_manager->add_counter("swap_time", m_swap_watch.average_total_elapsed());
 	}
 
-	void bc_render_application::app_render_swap_frame(const core_platform::bc_clock::update_param& p_clock)
+	void bc_render_application::app_render_swap_frame(const platform::bc_clock::update_param& p_clock)
 	{
 		m_game_system->render_swap_frame(p_clock);
 	}

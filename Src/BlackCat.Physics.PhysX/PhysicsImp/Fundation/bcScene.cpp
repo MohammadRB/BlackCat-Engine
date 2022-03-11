@@ -217,7 +217,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_scene<g_api_physx>::update(const core_platform::bc_clock::update_param& p_clock)
+		void bc_platform_scene<g_api_physx>::update(const platform::bc_clock::update_param& p_clock)
 		{
 			constexpr bcUINT32 l_block_size = 16 * 1024;
 			constexpr bcUINT32 l_num_block_to_alloc = 10;

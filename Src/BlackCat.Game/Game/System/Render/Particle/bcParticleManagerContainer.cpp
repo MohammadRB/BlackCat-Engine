@@ -57,7 +57,7 @@ namespace black_cat
 			BC_ASSERT(!l_definition.empty());
 
 			{
-				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::light);
+				platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, platform::bc_lock_operation::light);
 
 				for (auto& l_emitter : l_definition)
 				{
@@ -92,7 +92,7 @@ namespace black_cat
 		bc_particle_emitter_ptr bc_particle_manager_container::add_emitter(const bc_particle_builder& p_builder)
 		{
 			{
-				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::light);
+				platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, platform::bc_lock_operation::light);
 
 				emitters_container::iterator l_first_emitter = std::end(m_emitters);
 				for (auto& l_emitter : p_builder.m_emitters)
@@ -127,12 +127,12 @@ namespace black_cat
 			}
 		}
 
-		void bc_particle_manager_container::update(const core_platform::bc_clock::update_param& p_clock)
+		void bc_particle_manager_container::update(const platform::bc_clock::update_param& p_clock)
 		{
 			const auto l_elapsed = p_clock.m_fixed_elapsed_second;
 
 			{
-				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::heavy);
+				platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, platform::bc_lock_operation::heavy);
 
 				m_emitters.remove_if
 				(
@@ -198,7 +198,7 @@ namespace black_cat
 		core::bc_vector_movable<bc_particle_emitter_state> bc_particle_manager_container::get_emitter_states() const noexcept
 		{
 			{
-				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::heavy);
+				platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, platform::bc_lock_operation::heavy);
 
 				core::bc_vector_movable<bc_particle_emitter_state> l_emitters;
 				l_emitters.reserve(m_emitters.size());
@@ -243,7 +243,7 @@ namespace black_cat
 		void bc_particle_manager_container::_destroy_emitter(bc_external_particle_emitter* p_emitter)
 		{
 			{
-				core_platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, core_platform::bc_lock_operation::light);
+				platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, platform::bc_lock_operation::light);
 
 				const auto l_external_emitter_entry = std::find_if
 				(

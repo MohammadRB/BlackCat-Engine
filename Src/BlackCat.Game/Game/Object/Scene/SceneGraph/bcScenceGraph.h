@@ -87,7 +87,7 @@ namespace black_cat
 			template<typename TComponent>
 			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const noexcept;
 
-			void update(const core_platform::bc_clock::update_param& p_clock) noexcept;
+			void update(const platform::bc_clock::update_param& p_clock) noexcept;
 			
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 

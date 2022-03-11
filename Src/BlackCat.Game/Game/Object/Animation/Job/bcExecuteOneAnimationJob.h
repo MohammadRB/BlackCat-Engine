@@ -47,7 +47,7 @@ namespace black_cat
 				return get_active_job().get_local_transforms();
 			}
 			
-			bool run(const core_platform::bc_clock::update_param& p_clock) override
+			bool run(const platform::bc_clock::update_param& p_clock) override
 			{
 				return m_jobs[m_active_index]->run(p_clock);
 			}

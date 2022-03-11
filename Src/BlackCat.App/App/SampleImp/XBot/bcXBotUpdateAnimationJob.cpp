@@ -21,7 +21,7 @@ namespace black_cat
 
 	bc_xbot_update_animation_job& bc_xbot_update_animation_job::operator=(bc_xbot_update_animation_job&&) noexcept = default;
 
-	bool bc_xbot_update_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
+	bool bc_xbot_update_animation_job::run(const platform::bc_clock::update_param& p_clock)
 	{
 		bc_actor_update_animation_job::run(p_clock);
 		m_xbot_controller->update_attachment_transforms();

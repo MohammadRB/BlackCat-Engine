@@ -224,7 +224,7 @@ namespace black_cat
 			return l_path.get_string();
 		}
 
-		void bc_file_system::update(const core_platform::bc_clock::update_param& p_clock)
+		void bc_file_system::update(const platform::bc_clock::update_param& p_clock)
 		{
 			m_global_config_last_check_time += p_clock.m_elapsed;
 			if(m_global_config_last_check_time <= 1000)
@@ -234,8 +234,8 @@ namespace black_cat
 
 			m_global_config_last_check_time = 0;
 			
-			core_platform::bc_basic_file_info l_global_config_file_info;
-			core_platform::bc_file_info::get_basic_info(m_global_config->get_path().data(), &l_global_config_file_info);
+			platform::bc_basic_file_info l_global_config_file_info;
+			platform::bc_file_info::get_basic_info(m_global_config->get_path().data(), &l_global_config_file_info);
 
 			const bool l_global_config_has_changed = l_global_config_file_info.m_last_write_time.m_total_milliseconds > m_global_config_last_write_time;
 			if(l_global_config_has_changed)

@@ -74,7 +74,7 @@ namespace black_cat
 			m_manager->actor_removed(p_actor);
 		}
 
-		void bc_network_system::update(const core_platform::bc_clock::update_param& p_clock)
+		void bc_network_system::update(const platform::bc_clock::update_param& p_clock)
 		{
 			if(!m_manager)
 			{
@@ -92,7 +92,7 @@ namespace black_cat
 			}
 		}
 
-		core::bc_task<void> bc_network_system::update_async(const core_platform::bc_clock::update_param& p_clock)
+		core::bc_task<void> bc_network_system::update_async(const platform::bc_clock::update_param& p_clock)
 		{
 			auto l_task = core::bc_concurrency::start_task
 			(

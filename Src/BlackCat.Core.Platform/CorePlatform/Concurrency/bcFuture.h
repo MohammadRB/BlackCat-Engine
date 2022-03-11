@@ -10,7 +10,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		template<bc_platform TPlatform, typename T>
 		struct bc_platform_future_pack

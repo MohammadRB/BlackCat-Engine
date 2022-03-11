@@ -33,7 +33,7 @@ namespace black_cat
 		};
 
 		template<bc_platform_render_api TRenderApi>
-		class bc_platform_input_layout : public core_platform::bc_no_copy
+		class bc_platform_input_layout : public platform::bc_no_copy
 		{
 		public:
 			using platform_pack = bc_platform_input_layout_pack<TRenderApi>;

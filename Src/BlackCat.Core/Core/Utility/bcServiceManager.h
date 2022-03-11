@@ -32,7 +32,7 @@ namespace black_cat
 
 		class bc_service_manager;
 
-		class BC_CORE_DLL bci_service : public core_platform::bc_no_copy_move
+		class BC_CORE_DLL bci_service : public platform::bc_no_copy_move
 		{
 			friend class bc_service_manager;
 
@@ -43,13 +43,13 @@ namespace black_cat
 			bci_service() = default;
 
 		private:
-			virtual void update(const core_platform::bc_clock::update_param& p_clock);
+			virtual void update(const platform::bc_clock::update_param& p_clock);
 		};
 
 		template<class TService>
 		using bc_service_ptr = bc_unique_ptr<TService>;
 
-		class BC_CORE_DLL _bc_service_container : private core_platform::bc_no_copy
+		class BC_CORE_DLL _bc_service_container : private platform::bc_no_copy
 		{
 		public:
 			_bc_service_container(bcUINT32 p_hash, const bcCHAR* p_name, bcSIZE p_priority, bc_service_ptr< bci_service > p_service);
@@ -83,7 +83,7 @@ namespace black_cat
 			template<class TService>
 			TService* register_service(bc_service_ptr<TService> p_service);
 
-			void update(const core_platform::bc_clock::update_param& p_clock_update_param);
+			void update(const platform::bc_clock::update_param& p_clock_update_param);
 
 		private:
 			void _initialize() override;

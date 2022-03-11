@@ -6,7 +6,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		enum class bc_lock_operation
 		{

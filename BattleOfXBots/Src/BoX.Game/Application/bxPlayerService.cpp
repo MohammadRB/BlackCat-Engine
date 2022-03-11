@@ -24,7 +24,7 @@ namespace box
 	core::bc_vector_frame<core::bc_wstring> bx_player_service::get_info_messages() const noexcept
 	{
 		{
-			core_platform::bc_mutex_guard l_lock(m_messages_lock);
+			platform::bc_mutex_guard l_lock(m_messages_lock);
 
 			core::bc_vector_frame<core::bc_wstring> l_info_messages;
 			l_info_messages.reserve(m_info_messages.size());
@@ -47,7 +47,7 @@ namespace box
 	core::bc_vector_frame<core::bc_wstring> bx_player_service::get_error_messages() const noexcept
 	{
 		{
-			core_platform::bc_mutex_guard l_lock(m_messages_lock);
+			platform::bc_mutex_guard l_lock(m_messages_lock);
 
 			core::bc_vector_frame<core::bc_wstring> l_error_messages;
 			l_error_messages.reserve(m_error_messages.size());
@@ -70,7 +70,7 @@ namespace box
 	core::bc_vector_frame<bx_player_kill_state> bx_player_service::get_kill_messages() const noexcept
 	{
 		{
-			core_platform::bc_mutex_guard l_lock(m_messages_lock);
+			platform::bc_mutex_guard l_lock(m_messages_lock);
 
 			core::bc_vector_frame<bx_player_kill_state> l_kill_list;
 			l_kill_list.reserve(m_kill_list.size());
@@ -101,7 +101,7 @@ namespace box
 	void bx_player_service::add_info(core::bc_wstring p_message) noexcept
 	{
 		{
-			core_platform::bc_mutex_guard l_lock(m_messages_lock);
+			platform::bc_mutex_guard l_lock(m_messages_lock);
 
 			m_info_messages.push_back({ 0, std::move(p_message) });
 		}
@@ -110,7 +110,7 @@ namespace box
 	void bx_player_service::add_error(core::bc_wstring p_message) noexcept
 	{
 		{
-			core_platform::bc_mutex_guard l_lock(m_messages_lock);
+			platform::bc_mutex_guard l_lock(m_messages_lock);
 
 			m_error_messages.push_back({ 0, std::move(p_message) });
 		}
@@ -119,7 +119,7 @@ namespace box
 	void bx_player_service::add_kill(bx_player_kill_state p_kill)
 	{
 		{
-			core_platform::bc_mutex_guard l_lock(m_messages_lock);
+			platform::bc_mutex_guard l_lock(m_messages_lock);
 
 			m_kill_list.push_back({ 0, std::move(p_kill) });
 		}
@@ -135,10 +135,10 @@ namespace box
 		m_state = bx_player_state::ghost;
 	}
 
-	void bx_player_service::update(const core_platform::bc_clock::update_param& p_clock)
+	void bx_player_service::update(const platform::bc_clock::update_param& p_clock)
 	{
 		{
-			core_platform::bc_mutex_guard l_lock(m_messages_lock);
+			platform::bc_mutex_guard l_lock(m_messages_lock);
 
 			m_info_messages.erase
 			(

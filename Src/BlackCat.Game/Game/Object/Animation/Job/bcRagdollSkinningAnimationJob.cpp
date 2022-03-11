@@ -22,7 +22,7 @@ namespace black_cat
 		{
 		}
 
-		bool bc_ragdoll_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
+		bool bc_ragdoll_animation_job::run(const platform::bc_clock::update_param& p_clock)
 		{
 			const auto& l_mesh = m_mesh_component->get_mesh();
 			const auto& l_model_transforms = m_mesh_component->get_model_transforms();

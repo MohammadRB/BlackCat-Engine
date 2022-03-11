@@ -201,7 +201,7 @@ namespace black_cat
 			const auto l_hash = string_hash()(p_name);
 
 			{
-				core_platform::bc_mutex_guard l_guard(m_materials_mutex);
+				platform::bc_mutex_guard l_guard(m_materials_mutex);
 
 				const auto l_entry = m_materials.find(l_hash);
 				if (l_entry != std::cend(m_materials))
@@ -389,7 +389,7 @@ namespace black_cat
 			bool l_was_found = true;
 
 			{
-				core_platform::bc_mutex_guard l_guard(m_materials_mutex);
+				platform::bc_mutex_guard l_guard(m_materials_mutex);
 
 				l_ite = m_collider_materials.find(p_hash);
 				if (l_ite == std::cend(m_collider_materials))
@@ -420,7 +420,7 @@ namespace black_cat
 		bc_collider_material_description bc_material_manager::find_collider_material_throw(bc_collider_material_description::hash_t p_hash) const
 		{
 			{
-				core_platform::bc_mutex_guard l_guard(m_materials_mutex);
+				platform::bc_mutex_guard l_guard(m_materials_mutex);
 
 				const auto l_ite = m_collider_materials.find(p_hash);
 				if (l_ite == std::cend(m_collider_materials))
@@ -438,7 +438,7 @@ namespace black_cat
 			const auto l_hash = string_hash()(p_name);
 			
 			{
-				core_platform::bc_mutex_guard l_guard(m_materials_mutex);
+				platform::bc_mutex_guard l_guard(m_materials_mutex);
 
 				const auto l_ite = m_collider_materials.find(l_hash);
 				if (l_ite == std::cend(m_collider_materials))
@@ -456,7 +456,7 @@ namespace black_cat
 			auto* l_material = static_cast<_bc_material_manager_material*>(p_material);
 
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_materials_mutex);
+				platform::bc_lock_guard<platform::bc_mutex> l_guard(m_materials_mutex);
 
 				const auto l_entry = m_materials.find(l_material->m_hash);
 
@@ -498,7 +498,7 @@ namespace black_cat
 			{
 				// We need to put all of these operations in one mutex block because after we found out that we do not
 				// have this texture, creation and storing of texture must occur atomically
-				core_platform::bc_mutex_guard l_guard(m_materials_mutex);
+				platform::bc_mutex_guard l_guard(m_materials_mutex);
 
 				default_diffuse_map::iterator l_color_map_entry = m_default_color_textures.find(l_hash);
 				if (l_color_map_entry != std::cend(m_default_color_textures))
@@ -570,7 +570,7 @@ namespace black_cat
 			l_material->m_parameter_cbuffer = l_device.create_buffer(l_parameters_cbuffer_config, &l_parameters_cbuffer_data);
 
 			{
-				core_platform::bc_lock_guard<core_platform::bc_mutex> l_guard(m_materials_mutex);
+				platform::bc_lock_guard<platform::bc_mutex> l_guard(m_materials_mutex);
 
 				auto* l_result = m_materials.insert(mesh_material_map::value_type
 				(

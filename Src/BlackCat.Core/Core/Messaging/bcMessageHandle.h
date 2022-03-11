@@ -10,7 +10,7 @@ namespace black_cat
 	namespace core
 	{
 		template< class THandle, class TDelegate >
-		class bc_message_handle : core_platform::bc_no_copy
+		class bc_message_handle : platform::bc_no_copy
 		{
 		public:
 			using handle_t = THandle;

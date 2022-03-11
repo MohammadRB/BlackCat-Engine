@@ -45,9 +45,9 @@ namespace black_cat
 			
 			void change_animation(bc_skeleton_animation& p_animation) noexcept;
 
-			bcFLOAT advance_time(const core_platform::bc_clock::update_param& p_clock);
+			bcFLOAT advance_time(const platform::bc_clock::update_param& p_clock);
 			
-			bool run(const core_platform::bc_clock::update_param& p_clock) override;
+			bool run(const platform::bc_clock::update_param& p_clock) override;
 
 		private:			
 			bc_skeleton_animation* m_animation;

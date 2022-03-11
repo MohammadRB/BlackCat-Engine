@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_script_binding : core_platform::bc_no_copy
+		class bc_script_binding : platform::bc_no_copy
 		{
 		private:
 			using context_array_t = core::bc_vector<std::pair<std::reference_wrapper<platform::bc_script_context>, platform::bc_script_global_prototype_builder>>;

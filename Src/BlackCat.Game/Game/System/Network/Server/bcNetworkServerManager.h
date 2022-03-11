@@ -104,9 +104,9 @@ namespace black_cat
 			
 			void _add_message_to_clients(bc_network_message_ptr p_message, const platform::bc_network_address* p_exclude_client = nullptr);
 			
-			void _retry_messages_waiting_acknowledgment(const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client);
+			void _retry_messages_waiting_acknowledgment(const platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client);
 			
-			void _send_to_client(const core_platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client);
+			void _send_to_client(const platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client);
 
 			bcSIZE _receive_from_clients();
 
@@ -125,11 +125,11 @@ namespace black_cat
 			bci_network_server_manager_hook* m_hook;
 			bci_network_message_visitor* m_message_visitor;
 
-			core_platform::bc_shared_mutex m_clients_lock;
+			platform::bc_shared_mutex m_clients_lock;
 			core::bc_list_pool<bc_network_server_manager_client> m_clients;
 
-			core_platform::bc_mutex m_actors_lock;
-			core_platform::bc_atomic<bc_actor_network_id> m_actor_network_id_counter;
+			platform::bc_mutex m_actors_lock;
+			platform::bc_atomic<bc_actor_network_id> m_actor_network_id_counter;
 			core::bc_unordered_map<bc_actor_network_id, bc_actor> m_network_actors;
 			
 			core::bc_memory_stream m_memory_buffer;

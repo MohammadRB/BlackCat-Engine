@@ -276,7 +276,7 @@ namespace black_cat
 			return std::make_pair(false, core::bc_vector3f());
 		}
 
-		std::pair<bool, core::bc_vector3f> bc_network_component::get_extrapolated_value(const bcCHAR* p_name, const core_platform::bc_clock::update_param& p_clock) const noexcept
+		std::pair<bool, core::bc_vector3f> bc_network_component::get_extrapolated_value(const bcCHAR* p_name, const platform::bc_clock::update_param& p_clock) const noexcept
 		{
 			const auto l_ite = std::find_if
 			(
@@ -295,7 +295,7 @@ namespace black_cat
 			auto& l_extrapolator = std::get<1>(*l_ite);
 			auto& l_extrapolator_elapsed = std::get<2>(*l_ite);
 			
-			const auto l_extrapolation_ratio = p_clock.m_average_elapsed / static_cast<core_platform::bc_clock::small_delta_time>(m_in_ping);
+			const auto l_extrapolation_ratio = p_clock.m_average_elapsed / static_cast<platform::bc_clock::small_delta_time>(m_in_ping);
 			auto l_extrapolated_value = l_extrapolator.change_rate();
 			l_extrapolated_value *= l_extrapolation_ratio;
 

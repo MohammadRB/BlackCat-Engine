@@ -239,7 +239,7 @@ namespace black_cat
 			const auto l_conventional_normal_map_name = l_diffuse_file_name->get_filename_without_extension() + L".nrm" + l_diffuse_file_name->get_file_extension();
 			auto l_normal_map = core::bc_path(l_root_path).set_filename(l_conventional_normal_map_name.c_str()).get_string();
 
-			if (core_platform::bc_file_info::exist(l_normal_map.c_str()))
+			if (platform::bc_file_info::exist(l_normal_map.c_str()))
 			{
 				l_normal_map_path = std::move(l_normal_map);
 			}
@@ -254,7 +254,7 @@ namespace black_cat
 			const auto l_conventional_specular_map_name = l_diffuse_file_name->get_filename_without_extension() + L".spec" + l_diffuse_file_name->get_file_extension();
 			auto l_specular_map = core::bc_path(l_root_path).set_filename(l_conventional_specular_map_name.c_str()).get_string();
 
-			if (core_platform::bc_file_info::exist(l_specular_map.c_str()))
+			if (platform::bc_file_info::exist(l_specular_map.c_str()))
 			{
 				l_specular_map_path = std::move(l_specular_map);
 			}

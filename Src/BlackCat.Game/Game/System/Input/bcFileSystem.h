@@ -15,7 +15,7 @@ namespace black_cat
 	{
 		class bc_global_config;
 		
-		class BC_GAME_DLL bc_file_system : public core_platform::bc_no_copy
+		class BC_GAME_DLL bc_file_system : public platform::bc_no_copy
 		{
 		public:
 			bc_file_system(core::bc_content_manager& p_content_manager, core::bc_content_stream_manager& p_content_stream_manager);
@@ -66,7 +66,7 @@ namespace black_cat
 
 			const bc_global_config& get_global_config() const noexcept;
 
-			void update(const core_platform::bc_clock::update_param& p_clock);
+			void update(const platform::bc_clock::update_param& p_clock);
 			
 		private:
 			core::bc_content_manager* m_content_manager;

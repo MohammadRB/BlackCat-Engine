@@ -12,12 +12,12 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		struct bc_platform_script_string_pack
 		{
 		};
 
-		template<core_platform::bc_platform TPlatform>
+		template<platform::bc_platform TPlatform>
 		class bc_platform_script_string : public bc_platform_script_reference<TPlatform>
 		{
 		public:
@@ -50,7 +50,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_script_string = bc_platform_script_string<core_platform::g_current_platform>;
+		using bc_script_string = bc_platform_script_string<platform::g_current_platform>;
 		using bc_script_string_ref = bc_script_ref<bc_script_string>;
 	}
 }

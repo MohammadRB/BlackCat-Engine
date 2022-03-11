@@ -24,10 +24,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcWindow.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcExport.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcIDELogger.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\bcPath.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcNetworkAddress.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcNetworkDefinitions.h" />
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcNonBlockSocket.h" />
@@ -61,10 +57,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcWindow.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcIDELogger.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\bcUtility.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\bcPath.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcNetworkAddress.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcNetworkDefinitions.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Network\bcNonBlockSocket.cpp" />

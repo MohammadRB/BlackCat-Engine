@@ -53,7 +53,7 @@ namespace black_cat
 			bcUBYTE* l_result;
 
 			{
-				core_platform::bc_lock_guard l_lock(m_mutex);
+				platform::bc_lock_guard l_lock(m_mutex);
 
 				auto* l_new_top = m_top + l_required_size;
 				if (l_new_top > m_heap + m_capacity)
@@ -81,7 +81,7 @@ namespace black_cat
 			bool l_freed = false;
 
 			{
-				core_platform::bc_lock_guard l_lock(m_mutex);
+				platform::bc_lock_guard l_lock(m_mutex);
 
 				auto* l_new_top = m_top - l_required_size;
 				const bool l_is_freeing_top = l_new_top == p_pointer;

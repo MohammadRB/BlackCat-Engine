@@ -95,7 +95,7 @@ namespace black_cat
 			bci_camera::set_look_at(p_position, p_look_at);
 		}
 
-		void bc_free_camera::update(const core_platform::bc_clock::update_param& p_clock) noexcept
+		void bc_free_camera::update(const platform::bc_clock::update_param& p_clock) noexcept
 		{
 			_update_pointing();
 			_update_movement();

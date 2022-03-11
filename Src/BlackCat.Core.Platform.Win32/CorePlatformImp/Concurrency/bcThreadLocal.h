@@ -8,7 +8,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		template<>
 		struct bc_platform_thread_local_pack<bc_platform::win32>

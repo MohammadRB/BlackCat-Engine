@@ -36,7 +36,7 @@ namespace black_cat
 
 			bc_light_ptr add_light(const bc_spot_light& p_light);
 
-			void update(const core_platform::bc_clock::update_param& p_clock);
+			void update(const platform::bc_clock::update_param& p_clock);
 
 			iterator_buffer get_iterator_buffer() const noexcept;
 			
@@ -44,7 +44,7 @@ namespace black_cat
 
 		private:
 			container_t m_lights;
-			mutable core_platform::bc_shared_mutex m_lights_lock;
+			mutable platform::bc_shared_mutex m_lights_lock;
 		};
 	}
 }

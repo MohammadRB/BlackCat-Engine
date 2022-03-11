@@ -107,7 +107,7 @@ namespace black_cat
 		};
 
 		template<bc_render_api TRenderApi>
-		class bc_platform_output_merger_stage : public core_platform::bc_no_copy
+		class bc_platform_output_merger_stage : public platform::bc_no_copy
 		{
 		public:
 			using platform_pack = bc_platform_output_merger_stage_pack<TRenderApi>;

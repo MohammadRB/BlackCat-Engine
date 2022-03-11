@@ -84,7 +84,7 @@ namespace black_cat
 			bc_network_client to_network_client() const noexcept;
 
 		private:
-			core_platform::bc_mutex m_mutex;
+			platform::bc_mutex m_mutex;
 			platform::bc_network_address m_address;
 			bc_network_client_id m_id;
 			core::bc_string m_name;
@@ -98,7 +98,7 @@ namespace black_cat
 			core::bc_vector<bc_network_message_ptr> m_messages;
 			core::bc_vector<bc_retry_message> m_messages_waiting_acknowledgment;
 			bc_network_message_acknowledge_buffer m_executed_messages;
-
+			
 			core::bc_vector<bc_actor> m_replicated_actors;
 		};
 

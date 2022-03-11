@@ -30,7 +30,7 @@ namespace black_cat
 
 			_bc_query_shared_state& operator=(_bc_query_shared_state&&) noexcept;
 			
-			core_platform::bc_atomic<state> m_state;
+			platform::bc_atomic<state> m_state;
 			bci_query* m_query;
 		};
 
@@ -41,7 +41,7 @@ namespace black_cat
 		}
 
 		inline _bc_query_shared_state::_bc_query_shared_state(_bc_query_shared_state&& p_other) noexcept
-			: m_state(p_other.m_state.load(core_platform::bc_memory_order::relaxed)),
+			: m_state(p_other.m_state.load(platform::bc_memory_order::relaxed)),
 			m_query(p_other.m_query)
 		{
 			p_other.m_query = nullptr;
@@ -51,7 +51,7 @@ namespace black_cat
 
 		inline _bc_query_shared_state& _bc_query_shared_state::operator=(_bc_query_shared_state&& p_other) noexcept
 		{
-			m_state.store(p_other.m_state.load(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
+			m_state.store(p_other.m_state.load(platform::bc_memory_order::relaxed), platform::bc_memory_order::relaxed);
 			m_query = p_other.m_query;
 			p_other.m_query = nullptr;
 						
@@ -177,7 +177,7 @@ namespace black_cat
 		bool bc_query_result<TQuery>::is_executed() const noexcept
 		{
 			// use acquire memory order so memory changes become available for calling thread
-			return m_shared_state && m_shared_state->m_state.load(core_platform::bc_memory_order::acquire) == _bc_query_shared_state::state::executed;
+			return m_shared_state && m_shared_state->m_state.load(platform::bc_memory_order::acquire) == _bc_query_shared_state::state::executed;
 		}
 
 		template<class TQuery>

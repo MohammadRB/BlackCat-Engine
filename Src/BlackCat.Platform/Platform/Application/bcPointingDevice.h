@@ -24,13 +24,13 @@ namespace black_cat
 			bcINT16 m_dy;
 		};
 
-		template< core_platform::bc_platform TPlatform >
+		template< platform::bc_platform TPlatform >
 		struct bc_platform_pointing_device_pack
 		{
 
 		};
 
-		template< core_platform::bc_platform TPlatform >
+		template< platform::bc_platform TPlatform >
 		class bc_platform_pointing_device
 		{
 		public:
@@ -56,6 +56,6 @@ namespace black_cat
 			core::bc_event_manager* m_event_manager;
 		};
 
-		using bc_pointing_device = bc_platform_pointing_device<core_platform::g_current_platform>;
+		using bc_pointing_device = bc_platform_pointing_device<platform::g_current_platform>;
 	}
 }

@@ -13,7 +13,7 @@ namespace black_cat
 	{
 		class bc_mesh;
 		
-		class BC_GAME_DLL bc_mesh_node : public core_platform::bc_no_copy
+		class BC_GAME_DLL bc_mesh_node : public platform::bc_no_copy
 		{
 		public:
 			friend class bc_mesh;

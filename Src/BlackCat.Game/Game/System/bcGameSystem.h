@@ -28,9 +28,11 @@ namespace black_cat
 	
 	namespace game
 	{
-		struct bc_game_system_parameter
+		class bc_sound_system;
+
+		struct bc_game_system_init_params
 		{
-			explicit bc_game_system_parameter(core::bc_query_manager& p_query_manager,
+			explicit bc_game_system_init_params(core::bc_query_manager& p_query_manager,
 				core::bc_event_manager& p_event_manager,
 				bc_render_system_parameter p_render_system_parameter)
 				: m_query_manager(&p_query_manager),
@@ -44,7 +46,7 @@ namespace black_cat
 			bc_render_system_parameter m_render_system_parameter;
 		};
 
-		class BC_GAME_DLL bc_game_system : public core::bci_service, public core::bc_initializable<bc_game_system_parameter>
+		class BC_GAME_DLL bc_game_system : public core::bci_service, public core::bc_initializable<bc_game_system_init_params>
 		{
 			BC_SERVICE(gme_sys)
 
@@ -116,7 +118,17 @@ namespace black_cat
 			{
 				return m_render_system;
 			}
-			
+
+			bc_sound_system& get_sound_system() noexcept
+			{
+				return *m_sound_system;
+			}
+
+			const bc_sound_system& get_sound_system() const noexcept
+			{
+				return *m_sound_system;
+			}
+
 			bc_game_console& get_console() noexcept
 			{
 				return *m_console;
@@ -144,26 +156,26 @@ namespace black_cat
 			 * \param p_clock
 			 * \param p_is_partial_update 
 			 */
-			void update_game(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update);
+			void update_game(const platform::bc_clock::update_param& p_clock, bool p_is_partial_update);
 			
 			/**
 			 * \brief Start rendering game core logic
 			 * \param p_clock 
 			 */
-			void render_game(const core_platform::bc_clock::update_param& p_clock);
+			void render_game(const platform::bc_clock::update_param& p_clock);
 
 			/**
 			 * \brief Time before swap frame which main thread is idle 
 			 * \param p_clock 
 			 */
-			void swap_frame_idle(const core_platform::bc_clock::update_param& p_clock);
+			void swap_frame_idle(const platform::bc_clock::update_param& p_clock);
 			
-			void swap_frame(const core_platform::bc_clock::update_param& p_clock);
+			void swap_frame(const platform::bc_clock::update_param& p_clock);
 
-			void render_swap_frame(const core_platform::bc_clock::update_param& p_clock);
+			void render_swap_frame(const platform::bc_clock::update_param& p_clock);
 
 		private:
-			void _initialize(bc_game_system_parameter) override;
+			void _initialize(bc_game_system_init_params) override;
 
 			void _destroy() override;
 
@@ -177,6 +189,7 @@ namespace black_cat
 			bc_network_system m_network_system;
 			bc_script_system m_script_system;
 			bc_render_system m_render_system;
+			core::bc_unique_ptr<bc_sound_system> m_sound_system;
 			core::bc_unique_ptr<bc_game_console> m_console;
 
 			bool m_scene_changed;
@@ -189,7 +202,7 @@ namespace black_cat
 
 			bool m_paused;
 			bool m_editor_mode;
-			core::bc_nullable<core_platform::bc_clock::big_delta_time> m_pause_last_total_elapsed;
+			core::bc_nullable<platform::bc_clock::big_delta_time> m_pause_last_total_elapsed;
 		};
 	}
 }

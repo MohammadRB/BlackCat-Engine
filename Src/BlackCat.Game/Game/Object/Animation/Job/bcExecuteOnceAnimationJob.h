@@ -25,7 +25,7 @@ namespace black_cat
 
 			bc_execute_once_animation_job& operator=(bc_execute_once_animation_job&&) noexcept = default;
 
-			bool run(const core_platform::bc_clock::update_param& p_clock) override
+			bool run(const platform::bc_clock::update_param& p_clock) override
 			{
 				if(m_total_elapsed == p_clock.m_total_elapsed)
 				{
@@ -37,7 +37,7 @@ namespace black_cat
 			}
 
 		private:
-			core_platform::bc_clock::big_delta_time m_total_elapsed;
+			platform::bc_clock::big_delta_time m_total_elapsed;
 		};
 	}
 }

@@ -94,9 +94,9 @@ namespace black_cat
 				bc_render_group p_render_group,
 				bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index);
 
-			void update_decal_lifespans(const core_platform::bc_clock::update_param& p_clock) noexcept;
+			void update_decal_lifespans(const platform::bc_clock::update_param& p_clock) noexcept;
 
-			core::bc_task<void> update_decal_lifespans_async(const core_platform::bc_clock::update_param& p_clock) noexcept;
+			core::bc_task<void> update_decal_lifespans_async(const platform::bc_clock::update_param& p_clock) noexcept;
 
 			void destroy_decal_instance(bc_decal_instance* p_instance);
 
@@ -105,7 +105,7 @@ namespace black_cat
 			bcFLOAT m_update_interval_seconds;
 
 			decal_instance_container m_decal_instances_pool;
-			mutable core_platform::bc_mutex m_decal_instances_mutex;
+			mutable platform::bc_mutex m_decal_instances_mutex;
 		};
 	}	
 }

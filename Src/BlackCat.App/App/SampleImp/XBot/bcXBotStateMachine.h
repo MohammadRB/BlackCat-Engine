@@ -42,7 +42,7 @@ namespace black_cat
 
 	struct bc_xbot_state_update_params
 	{
-		const core_platform::bc_clock::update_param& m_clock;
+		const platform::bc_clock::update_param& m_clock;
 		const core::bc_vector3f& m_position;
 		bcINT32 m_look_delta_x;
 		bcFLOAT m_look_velocity;
@@ -55,7 +55,7 @@ namespace black_cat
 
 	struct bc_xbot_state_update_params1
 	{
-		const core_platform::bc_clock::update_param& m_clock;
+		const platform::bc_clock::update_param& m_clock;
 		const core::bc_vector3f& m_position;
 		const core::bc_vector3f& m_look_direction;
 		bcINT32 m_look_side;

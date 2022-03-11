@@ -42,7 +42,7 @@ namespace black_cat
 		bc_intermediate_texture bc_intermediate_texture_manager::get_texture(const graphic::bc_texture_config& p_config)
 		{
 			{
-				core_platform::bc_shared_mutex_shared_guard l_lock(m_mutex);
+				platform::bc_shared_mutex_shared_guard l_lock(m_mutex);
 
 				for(auto& l_entry : m_textures)
 				{
@@ -95,7 +95,7 @@ namespace black_cat
 			}
 
 			{
-				core_platform::bc_shared_mutex_guard l_lock(m_mutex);
+				platform::bc_shared_mutex_guard l_lock(m_mutex);
 
 				m_textures.push_back(_bc_intermediate_texture_entry
 				{
@@ -121,7 +121,7 @@ namespace black_cat
 		void bc_intermediate_texture_manager::free_texture(const bc_intermediate_texture& p_texture)
 		{
 			{
-				core_platform::bc_shared_mutex_shared_guard l_lock(m_mutex);
+				platform::bc_shared_mutex_shared_guard l_lock(m_mutex);
 
 				const auto l_ite = std::find_if(std::begin(m_textures), std::end(m_textures), [&](const _bc_intermediate_texture_entry& p_entry)
 				{

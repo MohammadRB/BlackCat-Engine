@@ -53,7 +53,7 @@ namespace black_cat
 			}
 		}
 
-		bool bc_blending_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
+		bool bc_blending_animation_job::run(const platform::bc_clock::update_param& p_clock)
 		{
 			if (!m_enabled)
 			{

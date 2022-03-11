@@ -98,7 +98,7 @@ namespace black_cat
 			
 			void _destroy_buffers();
 			
-			core_platform::bc_mutex m_mutex;
+			platform::bc_mutex m_mutex;
 			bcUINT32 m_buffer_write_index, m_buffer_read_index;
 			core::bc_vector_movable<core::bc_vector3f> m_vertices[2];
 			core::bc_vector_movable<bcUINT32> m_indices[2];

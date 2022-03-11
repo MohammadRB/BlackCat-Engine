@@ -27,7 +27,7 @@ namespace black_cat
 
 			bc_actor_update_animation_job& operator=(bc_actor_update_animation_job&&) noexcept;
 
-			bool run(const core_platform::bc_clock::update_param& p_clock) override;
+			bool run(const platform::bc_clock::update_param& p_clock) override;
 			
 		private:
 			bc_actor m_actor;

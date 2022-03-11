@@ -87,40 +87,40 @@ namespace black_cat
 			 * \param p_clock
 			 * \param p_is_partial_update
 			 */
-			virtual void app_update(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update) = 0;
+			virtual void app_update(const platform::bc_clock::update_param& p_clock, bool p_is_partial_update) = 0;
 
 			/**
 			 * \brief Render app
 			 * \param p_clock
 			 */
-			virtual void app_render(const core_platform::bc_clock::update_param& p_clock) = 0;
+			virtual void app_render(const platform::bc_clock::update_param& p_clock) = 0;
 
 			/**
 			 * \brief Called when main thread is paused
 			 * \param p_clock 
 			 */
-			virtual void app_pause_idle(const core_platform::bc_clock::update_param& p_clock) = 0;
+			virtual void app_pause_idle(const platform::bc_clock::update_param& p_clock) = 0;
 
 			/**
 			 * \brief Called when render thread is paused 
 			 * \param p_clock 
 			 */
-			virtual void app_render_pause_idle(const core_platform::bc_clock::update_param& p_clock) = 0;
+			virtual void app_render_pause_idle(const platform::bc_clock::update_param& p_clock) = 0;
 			
 			/**
 			 * \brief Called when main thread is idle before swap frame
 			 */
-			virtual void app_swap_frame_idle(const core_platform::bc_clock::update_param& p_clock) = 0;
+			virtual void app_swap_frame_idle(const platform::bc_clock::update_param& p_clock) = 0;
 			
 			/**
 			 * \brief Called when both update and render are executed and ready to start next frame
 			 */
-			virtual void app_swap_frame(const core_platform::bc_clock::update_param& p_clock) = 0;
+			virtual void app_swap_frame(const platform::bc_clock::update_param& p_clock) = 0;
 
 			/**
 			 * \brief Called when both update and render are executed and ready to start next frame
 			 */
-			virtual void app_render_swap_frame(const core_platform::bc_clock::update_param& p_clock) = 0;
+			virtual void app_render_swap_frame(const platform::bc_clock::update_param& p_clock) = 0;
 			
 			/**
 			 * \brief Handle app events
@@ -153,10 +153,10 @@ namespace black_cat
 			const bcECHAR* m_app_name;
 			core::bc_unique_ptr<platform::bc_application> m_app;
 			bci_render_application_output_window* m_output_window;
-			core::bc_unique_ptr<core_platform::bc_clock> m_clock;
+			core::bc_unique_ptr<platform::bc_clock> m_clock;
 			core::bc_stop_watch m_frame_watch;
-			core::bc_value_sampler<core_platform::bc_clock::small_delta_time, 64> m_fps_sampler;
-			core_platform::bc_clock::small_delta_time m_fps;
+			core::bc_value_sampler<platform::bc_clock::small_delta_time, 64> m_fps_sampler;
+			platform::bc_clock::small_delta_time m_fps;
 			bcUINT32 m_min_update_rate;
 			bcINT32 m_render_rate;
 

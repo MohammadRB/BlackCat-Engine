@@ -175,7 +175,7 @@ namespace black_cat
 			const auto l_max_path = get_path_info().m_max_path_length;
 			bc_estring_frame l_buffer(l_max_path, ' ');
 			
-			core_platform::bc_path::get_program_path(&l_buffer[0], l_max_path);
+			platform::bc_path::get_program_path(&l_buffer[0], l_max_path);
 
 			return bc_estring(l_buffer.c_str());
 		}
@@ -185,14 +185,14 @@ namespace black_cat
 			const auto l_max_path = get_path_info().m_max_path_length;
 			bc_estring_frame l_buffer(l_max_path, ' ');
 
-			core_platform::bc_path::get_absolute_path(p_relative_path, &l_buffer[0], l_max_path);
+			platform::bc_path::get_absolute_path(p_relative_path, &l_buffer[0], l_max_path);
 
 			return bc_estring(l_buffer.c_str());
 		}
 
 		bc_path_info bc_path::get_path_info()
 		{
-			return core_platform::bc_path::get_path_info();
+			return platform::bc_path::get_path_info();
 		}
 	}
 }

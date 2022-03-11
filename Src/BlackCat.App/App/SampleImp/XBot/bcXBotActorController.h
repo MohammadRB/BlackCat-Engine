@@ -40,7 +40,7 @@ namespace black_cat
 	
 	struct bc_xbot_input_update_context
 	{
-		const core_platform::bc_clock::update_param& m_clock;
+		const platform::bc_clock::update_param& m_clock;
 		bcINT32 m_look_delta_x;
 		bool m_forward_pressed;
 		bool m_backward_pressed;
@@ -51,7 +51,7 @@ namespace black_cat
 
 	struct bc_xbot_input_update_context1
 	{
-		const core_platform::bc_clock::update_param& m_clock;
+		const platform::bc_clock::update_param& m_clock;
 		core::bc_vector3f m_position;
 		core::bc_vector3f m_look_direction;
 		bcINT32 m_look_side;
@@ -153,7 +153,7 @@ namespace black_cat
 			const bcCHAR* p_grenade_throw_animation,
 			const bcCHAR* p_weapon_shoot_animation);
 		
-		void _update_px_move(const core_platform::bc_clock::update_param& p_clock, const core::bc_vector3f& p_move_vector);
+		void _update_px_move(const platform::bc_clock::update_param& p_clock, const core::bc_vector3f& p_move_vector);
 		
 		void _update_px_position(const core::bc_vector3f& p_position);
 		

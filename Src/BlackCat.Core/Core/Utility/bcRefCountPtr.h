@@ -38,20 +38,20 @@ namespace black_cat
 
 			bc_ref_count& operator=(bc_ref_count&& p_other) noexcept
 			{
-				m_ref_count.store(p_other.m_ref_count.load(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
-				p_other.m_ref_count.store(0, core_platform::bc_memory_order::relaxed);
+				m_ref_count.store(p_other.m_ref_count.load(platform::bc_memory_order::relaxed), platform::bc_memory_order::relaxed);
+				p_other.m_ref_count.store(0, platform::bc_memory_order::relaxed);
 
 				return *this;
 			}
 
 			bcUINT32 get_ref_count() const noexcept
 			{
-				return m_ref_count.load(core_platform::bc_memory_order::relaxed);
+				return m_ref_count.load(platform::bc_memory_order::relaxed);
 			}
 			
 			void add_ref() noexcept
 			{
-				m_ref_count.fetch_add(1U, core_platform::bc_memory_order::relaxed);
+				m_ref_count.fetch_add(1U, platform::bc_memory_order::relaxed);
 			}
 
 			/**
@@ -60,14 +60,14 @@ namespace black_cat
 			 */
 			bool dec_ref() noexcept
 			{
-				const auto l_ref_count = m_ref_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed) - 1;
+				const auto l_ref_count = m_ref_count.fetch_sub(1U, platform::bc_memory_order::relaxed) - 1;
 				BC_ASSERT(l_ref_count >= 0);
 
 				return l_ref_count == 0;
 			}
 			
 		private:
-			core_platform::bc_atomic<bcINT32> m_ref_count;
+			platform::bc_atomic<bcINT32> m_ref_count;
 		};
 
 		/**

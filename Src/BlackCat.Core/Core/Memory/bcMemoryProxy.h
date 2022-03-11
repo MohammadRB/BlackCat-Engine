@@ -11,7 +11,7 @@ namespace black_cat
 	namespace core
 	{
 		template< typename TMemory >
-		class bc_memory_proxy : core_platform::bc_no_copy
+		class bc_memory_proxy : platform::bc_no_copy
 		{
 		public:
 			using this_type = bc_memory_proxy;

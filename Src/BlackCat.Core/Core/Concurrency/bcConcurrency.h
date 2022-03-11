@@ -16,7 +16,7 @@ namespace black_cat
 		class bc_concurrency
 		{
 		public:
-			static core_platform::bc_thread::id current_thread_id();
+			static platform::bc_thread::id current_thread_id();
 
 			static void check_for_interruption();
 
@@ -61,7 +61,7 @@ namespace black_cat
 			static void concurrent_for_each(bcUINT32 p_thread_count, TIte p_begin, TIte p_end, TBodyFunc p_body_func);
 			
 			template<typename T>
-			static T* double_check_lock(core_platform::bc_atomic<T*>& p_pointer, core_platform::bc_mutex& p_mutex, const bc_delegate<T*()>& p_initializer);
+			static T* double_check_lock(platform::bc_atomic<T*>& p_pointer, platform::bc_mutex& p_mutex, const bc_delegate<T*()>& p_initializer);
 
 		private:
 			template<typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc>
@@ -70,9 +70,9 @@ namespace black_cat
 			static bc_thread_manager* _get_thread_manager();
 		};
 
-		inline core_platform::bc_thread::id bc_concurrency::current_thread_id()
+		inline platform::bc_thread::id bc_concurrency::current_thread_id()
 		{
-			return core_platform::bc_thread::current_thread_id();
+			return platform::bc_thread::current_thread_id();
 		}
 
 		inline void bc_concurrency::check_for_interruption()
@@ -222,18 +222,18 @@ namespace black_cat
 		}
 
 		template<typename T>
-		T* bc_concurrency::double_check_lock(core_platform::bc_atomic<T*>& p_pointer, core_platform::bc_mutex& p_mutex, const bc_delegate<T*()>& p_initializer)
+		T* bc_concurrency::double_check_lock(platform::bc_atomic<T*>& p_pointer, platform::bc_mutex& p_mutex, const bc_delegate<T*()>& p_initializer)
 		{
 			T* l_pointer;
 
-			if ((l_pointer = p_pointer.load(core_platform::bc_memory_order::acquire)) == nullptr)
+			if ((l_pointer = p_pointer.load(platform::bc_memory_order::acquire)) == nullptr)
 			{
-				core_platform::bc_mutex_guard l_guard(p_mutex);
+				platform::bc_mutex_guard l_guard(p_mutex);
 
-				if ((l_pointer = p_pointer.load(core_platform::bc_memory_order::relaxed)) == nullptr)
+				if ((l_pointer = p_pointer.load(platform::bc_memory_order::relaxed)) == nullptr)
 				{
 					l_pointer = p_initializer();
-					p_pointer.store(l_pointer, core_platform::bc_memory_order::release);
+					p_pointer.store(l_pointer, platform::bc_memory_order::release);
 				}
 			}
 

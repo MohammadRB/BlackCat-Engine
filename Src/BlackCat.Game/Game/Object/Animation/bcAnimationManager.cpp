@@ -28,16 +28,16 @@ namespace black_cat
 		void bc_animation_manager::schedule_job(bci_animation_job& p_job)
 		{
 			{
-				core_platform::bc_hybrid_mutex_guard l_lock(m_jobs_lock, core_platform::bc_lock_operation::light);
+				platform::bc_hybrid_mutex_guard l_lock(m_jobs_lock, platform::bc_lock_operation::light);
 				
 				m_jobs.push_back(&p_job);
 			}
 		}
 
-		void bc_animation_manager::run_scheduled_jobs(const core_platform::bc_clock::update_param& p_clock)
+		void bc_animation_manager::run_scheduled_jobs(const platform::bc_clock::update_param& p_clock)
 		{
 			{
-				core_platform::bc_hybrid_mutex_guard l_lock(m_jobs_lock, core_platform::bc_lock_operation::heavy);
+				platform::bc_hybrid_mutex_guard l_lock(m_jobs_lock, platform::bc_lock_operation::heavy);
 
 				core::bc_concurrency::concurrent_for_each
 				(
@@ -54,7 +54,7 @@ namespace black_cat
 			}
 		}
 
-		core::bc_task<void> bc_animation_manager::run_scheduled_jobs_async(const core_platform::bc_clock::update_param& p_clock)
+		core::bc_task<void> bc_animation_manager::run_scheduled_jobs_async(const platform::bc_clock::update_param& p_clock)
 		{
 			auto l_task = core::bc_concurrency::start_task
 			(

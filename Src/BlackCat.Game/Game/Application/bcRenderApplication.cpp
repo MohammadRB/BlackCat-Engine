@@ -25,9 +25,9 @@ namespace black_cat
 				pause = 3
 			};
 			
-			using render_func = void (bc_render_application::*)(const core_platform::bc_clock::update_param& p_clock);
-			using pause_func = void (bc_render_application::*)(const core_platform::bc_clock::update_param& p_clock);
-			using swap_func = void (bc_render_application::*)(const core_platform::bc_clock::update_param& p_clock);
+			using render_func = void (bc_render_application::*)(const platform::bc_clock::update_param& p_clock);
+			using pause_func = void (bc_render_application::*)(const platform::bc_clock::update_param& p_clock);
+			using swap_func = void (bc_render_application::*)(const platform::bc_clock::update_param& p_clock);
 			
 			bc_render_loop_state(bc_render_application* p_app, 
 				render_func p_render_function,
@@ -47,10 +47,10 @@ namespace black_cat
 			render_func m_render_function;
 			pause_func m_pause_function;
 			swap_func m_swap_function;
-			core_platform::bc_atomic<bool> m_terminate;
-			core_platform::bc_atomic<signal> m_signal;
+			platform::bc_atomic<bool> m_terminate;
+			platform::bc_atomic<signal> m_signal;
 
-			core_platform::bc_clock::update_param m_clock;
+			platform::bc_clock::update_param m_clock;
 		};
 		
 		bc_render_application::bc_render_application()
@@ -111,18 +111,18 @@ namespace black_cat
 				&bc_render_application::app_render_pause_idle,
 				&bc_render_application::app_render_swap_frame
 			);
-			core_platform::bc_thread l_render_thread
+			platform::bc_thread l_render_thread
 			(
 				[&](bc_render_loop_state* p_state)
 				{
 					core::bc_log(core::bc_log_type::info) << "render loop started" << core::bc_lend;
 					
-					while (!p_state->m_terminate.load(core_platform::bc_memory_order::relaxed))
+					while (!p_state->m_terminate.load(platform::bc_memory_order::relaxed))
 					{
-						const auto l_signal = p_state->m_signal.load(core_platform::bc_memory_order::acquire);
+						const auto l_signal = p_state->m_signal.load(platform::bc_memory_order::acquire);
 						if (l_signal == bc_render_loop_state::signal::ready)
 						{
-							core_platform::bc_thread::current_thread_yield();
+							platform::bc_thread::current_thread_yield();
 							continue;
 						}
 
@@ -133,40 +133,40 @@ namespace black_cat
 						else if(l_signal == bc_render_loop_state::signal::pause)
 						{
 							(p_state->m_app->*p_state->m_pause_function)(p_state->m_clock);
-							core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(l_pause_sleep_ms));
+							platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(l_pause_sleep_ms));
 							continue;
 						}
 
-						p_state->m_signal.store(bc_render_loop_state::signal::ready, core_platform::bc_memory_order::release);
+						p_state->m_signal.store(bc_render_loop_state::signal::ready, platform::bc_memory_order::release);
 						
-						while (p_state->m_signal.load(core_platform::bc_memory_order::acquire) != bc_render_loop_state::signal::swap)
+						while (p_state->m_signal.load(platform::bc_memory_order::acquire) != bc_render_loop_state::signal::swap)
 						{
-							if(p_state->m_terminate.load(core_platform::bc_memory_order::relaxed))
+							if(p_state->m_terminate.load(platform::bc_memory_order::relaxed))
 							{
 								break;
 							}
 							
-							core_platform::bc_thread::current_thread_yield();
+							platform::bc_thread::current_thread_yield();
 						}
 						
 						(p_state->m_app->*p_state->m_swap_function)(p_state->m_clock);
 						
-						p_state->m_signal.store(bc_render_loop_state::signal::ready, core_platform::bc_memory_order::release);
+						p_state->m_signal.store(bc_render_loop_state::signal::ready, platform::bc_memory_order::release);
 					}
 				},
 				&l_render_thread_state
 			);
 			l_render_thread.set_name(bcL("BC_RENDER_WORKER"));
-			l_render_thread.set_priority(core_platform::bc_thread_priority::highest);
+			l_render_thread.set_priority(platform::bc_thread_priority::highest);
 			
 			try
 			{
-				const core_platform::bc_clock::small_delta_time l_min_update_elapsed = 1000.0f / static_cast<bcFLOAT>(m_min_update_rate);
-				core_platform::bc_clock::big_delta_time l_total_elapsed = 0;
-				core_platform::bc_clock::small_delta_time l_elapsed = 0;
-				core_platform::bc_clock::small_delta_time l_average_elapsed = 0;
-				core_platform::bc_clock::small_delta_time l_local_elapsed = 0;
-				core_platform::bc_clock::small_delta_time l_sleep_time_error = 0;
+				const platform::bc_clock::small_delta_time l_min_update_elapsed = 1000.0f / static_cast<bcFLOAT>(m_min_update_rate);
+				platform::bc_clock::big_delta_time l_total_elapsed = 0;
+				platform::bc_clock::small_delta_time l_elapsed = 0;
+				platform::bc_clock::small_delta_time l_average_elapsed = 0;
+				platform::bc_clock::small_delta_time l_local_elapsed = 0;
+				platform::bc_clock::small_delta_time l_sleep_time_error = 0;
 				core::bc_stop_watch l_sleep_watch;
 				core::bc_stop_watch l_sleep_watch1;
 				
@@ -188,7 +188,7 @@ namespace black_cat
 					}
 //#endif
 
-					const auto l_clock = core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed, l_average_elapsed);
+					const auto l_clock = platform::bc_clock::update_param(l_total_elapsed, l_elapsed, l_average_elapsed);
 
 					m_app->update();
 					if(m_output_window)
@@ -199,16 +199,16 @@ namespace black_cat
 					if (m_paused)
 					{
 						l_render_thread_state.m_clock = l_clock;
-						l_render_thread_state.m_signal.store(bc_render_loop_state::signal::pause, core_platform::bc_memory_order::release);
+						l_render_thread_state.m_signal.store(bc_render_loop_state::signal::pause, platform::bc_memory_order::release);
 
 						app_pause_idle(l_clock);
 
-						core_platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(l_pause_sleep_ms));
+						platform::bc_thread::current_thread_sleep_for(std::chrono::milliseconds(l_pause_sleep_ms));
 						continue;
 					}
 
 					l_render_thread_state.m_clock = l_clock;
-					l_render_thread_state.m_signal.store(bc_render_loop_state::signal::render, core_platform::bc_memory_order::release);
+					l_render_thread_state.m_signal.store(bc_render_loop_state::signal::render, platform::bc_memory_order::release);
 
 					l_local_elapsed += l_elapsed;
 					const auto l_update_call_count = std::max(static_cast<bcUINT32>(std::floor(l_local_elapsed / l_min_update_elapsed)), 1U);
@@ -216,24 +216,24 @@ namespace black_cat
 
 					while (l_update_call_counter > 0)
 					{
-						app_update(core_platform::bc_clock::update_param(l_total_elapsed, l_elapsed, l_average_elapsed, std::min(l_elapsed, l_min_update_elapsed)), l_update_call_counter > 1);
+						app_update(platform::bc_clock::update_param(l_total_elapsed, l_elapsed, l_average_elapsed, std::min(l_elapsed, l_min_update_elapsed)), l_update_call_counter > 1);
 						--l_update_call_counter;
 					}
 
-					l_local_elapsed = std::max(l_local_elapsed - l_min_update_elapsed * l_update_call_count, static_cast<core_platform::bc_clock::small_delta_time>(0));
+					l_local_elapsed = std::max(l_local_elapsed - l_min_update_elapsed * l_update_call_count, static_cast<platform::bc_clock::small_delta_time>(0));
 					
-					while (l_render_thread_state.m_signal.load(core_platform::bc_memory_order::acquire) != bc_render_loop_state::signal::ready)
+					while (l_render_thread_state.m_signal.load(platform::bc_memory_order::acquire) != bc_render_loop_state::signal::ready)
 					{
 						app_swap_frame_idle(l_clock);
 					}
 
-					l_render_thread_state.m_signal.store(bc_render_loop_state::signal::swap, core_platform::bc_memory_order::release);
+					l_render_thread_state.m_signal.store(bc_render_loop_state::signal::swap, platform::bc_memory_order::release);
 
 					app_swap_frame(l_clock);
 
-					while (l_render_thread_state.m_signal.load(core_platform::bc_memory_order::acquire) != bc_render_loop_state::signal::ready)
+					while (l_render_thread_state.m_signal.load(platform::bc_memory_order::acquire) != bc_render_loop_state::signal::ready)
 					{
-						core_platform::bc_thread::current_thread_yield();
+						platform::bc_thread::current_thread_yield();
 					}
 
 #ifdef BC_MEMORY_ENABLE
@@ -247,7 +247,7 @@ namespace black_cat
 
 					if (m_render_rate != -1) // Fixed render rate
 					{
-						const core_platform::bc_clock::small_delta_time l_render_rate_fixed_elapsed = 1000.0f / static_cast<bcFLOAT>(m_render_rate);
+						const platform::bc_clock::small_delta_time l_render_rate_fixed_elapsed = 1000.0f / static_cast<bcFLOAT>(m_render_rate);
 
 						const auto l_sleep_time = (l_render_rate_fixed_elapsed - l_frame_elapsed) - l_sleep_time_error;
 						if (l_sleep_time <= 0)
@@ -262,7 +262,7 @@ namespace black_cat
 							
 						while(true)
 						{
-							core_platform::bc_thread::current_thread_yield_switch();
+							platform::bc_thread::current_thread_yield_switch();
 							l_sleep_watch.stop();
 
 							const auto l_sleep_elapsed = l_sleep_watch.total_elapsed();
@@ -290,7 +290,7 @@ namespace black_cat
 				m_termination_code = -1;
 			}
 
-			l_render_thread_state.m_terminate.store(true, core_platform::bc_memory_order::relaxed);
+			l_render_thread_state.m_terminate.store(true, platform::bc_memory_order::relaxed);
 			l_render_thread.join();
 			
 			return m_termination_code;
@@ -319,7 +319,7 @@ namespace black_cat
 			app_start_engine_components(p_parameters);
 
 			m_app = core::bc_make_unique<platform::bc_application>(core::bc_alloc_type::program, p_parameters.m_app_parameters);
-			m_clock = core::bc_make_unique<core_platform::bc_clock>(core::bc_alloc_type::program);
+			m_clock = core::bc_make_unique<platform::bc_clock>(core::bc_alloc_type::program);
 
 			m_min_update_rate = 60;
 			m_render_rate = m_min_update_rate;

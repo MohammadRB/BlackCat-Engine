@@ -202,8 +202,8 @@ namespace black_cat
 		l_texture_map_file_path.set_filename((l_texture_map_file_path.get_filename_without_extension() + bcL("_texture_map")).c_str()).set_file_extension(bcL("dds"));
 		auto l_texture_map_file_absolute = l_texture_map_file_path.get_string();
 
-		core_platform::bc_basic_file_info l_texture_map_file_info;
-		core_platform::bc_file_info::get_basic_info(l_texture_map_file_absolute.c_str(), &l_texture_map_file_info);
+		platform::bc_basic_file_info l_texture_map_file_info;
+		platform::bc_file_info::get_basic_info(l_texture_map_file_absolute.c_str(), &l_texture_map_file_info);
 
 		if (!l_texture_map_file_info.m_exist)
 		{

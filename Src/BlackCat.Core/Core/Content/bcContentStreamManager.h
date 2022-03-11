@@ -123,7 +123,7 @@ namespace black_cat
 
 			content_loader_map_type m_content_loader_delegates;
 			content_stream_map_type m_stream_descriptions;
-			mutable core_platform::bc_shared_mutex m_contents_mutex;
+			mutable platform::bc_shared_mutex m_contents_mutex;
 			content_map_type m_contents;
 		};
 

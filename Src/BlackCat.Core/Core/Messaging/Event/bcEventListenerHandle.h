@@ -14,7 +14,7 @@ namespace black_cat
 	{
 		class bc_event_manager;
 
-		class BC_CORE_DLL bc_event_listener_handle : core_platform::bc_no_copy_move
+		class BC_CORE_DLL bc_event_listener_handle : platform::bc_no_copy_move
 		{
 		public:
 			friend class bc_event_manager;

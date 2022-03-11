@@ -85,6 +85,9 @@
     <Filter Include="Game\System\Network\Server">
       <UniqueIdentifier>{fb38afb0-af60-401c-a8fd-5500c97a2d0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\System\Sound">
+      <UniqueIdentifier>{886c27f0-8eac-4f83-a608-61adf5a20fa3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Application\bcIRenderApplicationOutputWindow.h">
@@ -696,6 +699,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleManagerContainer.h">
       <Filter>Game\System\Render\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Sound\bcSoundSystem.h">
+      <Filter>Game\System\Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -1048,6 +1054,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Particle\bcParticleManagerContainer.cpp">
       <Filter>Game\System\Render\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Sound\bcSoundSystem.cpp">
+      <Filter>Game\System\Sound</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

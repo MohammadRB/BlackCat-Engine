@@ -42,7 +42,7 @@ namespace black_cat
 
 		bc_graphic_exception(bc_graphic_exception&&) = default;
 
-		~bc_graphic_exception() = default;
+		~bc_graphic_exception() override = default;
 
 		bc_graphic_exception& operator=(const bc_graphic_exception&) = default;
 

@@ -70,12 +70,12 @@ namespace black_cat
 		{
 			if(!p_file_modifier)
 			{
-				auto l_logs_ptr = m_logs_ptr.load(core_platform::bc_memory_order::relaxed);
+				auto l_logs_ptr = m_logs_ptr.load(platform::bc_memory_order::relaxed);
 				auto l_new_logs_ptr = l_logs_ptr;
 				do
 				{
 					l_new_logs_ptr = (l_logs_ptr + 1) % m_logs.size();
-				} while (m_logs_ptr.compare_exchange_weak(&l_logs_ptr, l_new_logs_ptr, core_platform::bc_memory_order::relaxed));
+				} while (m_logs_ptr.compare_exchange_weak(&l_logs_ptr, l_new_logs_ptr, platform::bc_memory_order::relaxed));
 
 				m_logs[l_logs_ptr].first = p_type;
 				m_logs[l_logs_ptr].second = p_log;
@@ -85,7 +85,7 @@ namespace black_cat
 			auto& l_entry = m_listeners.at(l_entry_index);
 
 			{
-				core_platform::bc_shared_mutex_shared_guard l_listeners_lock(m_listener_mutex);
+				platform::bc_shared_mutex_shared_guard l_listeners_lock(m_listener_mutex);
 
 				for (const auto& l_listener : l_entry)
 				{
@@ -104,7 +104,7 @@ namespace black_cat
 			auto* l_listener = *p_listener;
 
 			{
-				core_platform::bc_shared_mutex_guard l_listeners_lock(m_listener_mutex);
+				platform::bc_shared_mutex_guard l_listeners_lock(m_listener_mutex);
 
 				for (auto l_type : { bc_log_type::info, bc_log_type::debug, bc_log_type::warning, bc_log_type::error })
 				{
@@ -124,9 +124,9 @@ namespace black_cat
 		void bc_logger::_replicate_last_logs(bc_log_type p_types, bci_log_listener* p_listener)
 		{
 			{
-				core_platform::bc_shared_mutex_shared_guard l_listeners_lock(m_listener_mutex);
+				platform::bc_shared_mutex_shared_guard l_listeners_lock(m_listener_mutex);
 
-				auto l_logs_ptr = m_logs_ptr.load(core_platform::bc_memory_order::relaxed);
+				auto l_logs_ptr = m_logs_ptr.load(platform::bc_memory_order::relaxed);
 				for (auto l_ite = 0U; l_ite != m_logs.size(); ++l_ite, l_logs_ptr = (l_logs_ptr + 1) % m_logs.size())
 				{
 					auto& [l_type, l_log] = m_logs[l_logs_ptr];					

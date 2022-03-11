@@ -20,10 +20,6 @@
 #include <type_traits>
 #include <utility>
 
-#ifndef bcInline
-#define BC_INLINE inline
-#endif
-
 #ifndef asm
 #define asm _asm
 #endif

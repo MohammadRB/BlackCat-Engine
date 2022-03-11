@@ -125,7 +125,7 @@ namespace box
 	{
 	}
 
-	void bx_server_application::application_swap_frame(const core_platform::bc_clock::update_param& p_clock)
+	void bx_server_application::application_swap_frame(const platform::bc_clock::update_param& p_clock)
 	{
 		core::bc_estring_frame l_caption(m_app_name);
 		l_caption += bcL(" ") + core::bc_to_estring_frame(get_fps(), L"%.1f");
@@ -314,7 +314,7 @@ namespace box
 		return {};
 	}
 
-	void bx_server_application::_send_game_state_to_clients(const core_platform::bc_clock::update_param& p_clock)
+	void bx_server_application::_send_game_state_to_clients(const platform::bc_clock::update_param& p_clock)
 	{
 		m_last_state_update_elapsed_ms += p_clock.m_elapsed;
 
@@ -338,7 +338,7 @@ namespace box
 		const auto l_checkpoint_path = bx_scene_checkpoint::get_checkpoint_path(p_scene, bcL("server_checkpoint"));
 
 		bx_scene_checkpoint l_check_point(p_scene);
-		l_content_manager.save_as(l_check_point, l_checkpoint_path.get_string_frame().c_str(), nullptr);
+		l_content_manager.save_as(l_check_point, l_checkpoint_path.get_string_frame().c_str(), {});
 	}
 
 	void bx_server_application::_restore_scene_checkpoint(game::bc_scene& p_scene)
@@ -427,7 +427,7 @@ namespace box
 		return { true, l_seat_ite->m_position };
 	}
 
-	void bx_server_application::_respawn_dead_players(const core_platform::bc_clock::update_param& p_clock)
+	void bx_server_application::_respawn_dead_players(const platform::bc_clock::update_param& p_clock)
 	{
 		for (auto& [l_client_id, l_client] : m_joined_clients)
 		{

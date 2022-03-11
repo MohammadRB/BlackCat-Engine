@@ -15,7 +15,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_input_system : core_platform::bc_no_copy
+		class BC_GAME_DLL bc_input_system : platform::bc_no_copy
 		{
 		public:
 			bc_input_system();
@@ -75,7 +75,7 @@ namespace black_cat
 
 			void remove_camera(const bci_camera* p_camera);
 			
-			void update(const core_platform::bc_clock::update_param& p_clock);
+			void update(const platform::bc_clock::update_param& p_clock);
 
 		private:
 			void _event_handler(core::bci_event& p_event);

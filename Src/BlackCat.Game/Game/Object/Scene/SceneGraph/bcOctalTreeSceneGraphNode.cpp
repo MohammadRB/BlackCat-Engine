@@ -414,7 +414,7 @@ namespace black_cat
 			return _remove_actor(p_actor, _get_actor_bound_box(p_actor));
 		}
 
-		void bc_octal_tree_graph_node::update(const core_platform::bc_clock::update_param& p_clock) noexcept
+		void bc_octal_tree_graph_node::update(const platform::bc_clock::update_param& p_clock) noexcept
 		{
 			m_update_interval_seconds += p_clock.m_elapsed;
 			if (m_update_interval_seconds < 500)
@@ -459,7 +459,7 @@ namespace black_cat
 			}
 
 			m_actors.clear();
-			m_actors_count.store(0, core_platform::bc_memory_order::relaxed);
+			m_actors_count.store(0, platform::bc_memory_order::relaxed);
 		}
 
 		void bc_octal_tree_graph_node::draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const
@@ -576,7 +576,7 @@ namespace black_cat
 			if (!l_added)
 			{
 				{
-					core_platform::bc_mutex_guard l_lock(m_actors_lock);
+					platform::bc_mutex_guard l_lock(m_actors_lock);
 
 					m_actors.push_back(_bc_octal_tree_graph_node_entry(p_actor, this));
 					l_added = true;
@@ -588,7 +588,7 @@ namespace black_cat
 
 			if (l_added)
 			{
-				m_actors_count.fetch_add(1U, core_platform::bc_memory_order::relaxed);
+				m_actors_count.fetch_add(1U, platform::bc_memory_order::relaxed);
 			}
 
 			return l_added;
@@ -604,7 +604,7 @@ namespace black_cat
 			}
 
 			{
-				core_platform::bc_mutex_guard  l_lock(m_actors_lock);
+				platform::bc_mutex_guard  l_lock(m_actors_lock);
 
 				const auto l_actor_ite = std::find(std::cbegin(m_actors), std::cend(m_actors), _bc_octal_tree_graph_node_entry(p_actor, this));
 				if (l_actor_ite != std::cend(m_actors))
@@ -628,7 +628,7 @@ namespace black_cat
 
 			if (l_removed)
 			{
-				m_actors_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed);
+				m_actors_count.fetch_sub(1U, platform::bc_memory_order::relaxed);
 			}
 
 			return l_removed;
@@ -637,7 +637,7 @@ namespace black_cat
 		void bc_octal_tree_graph_node::_reform_graph()
 		{
 			const auto l_size = m_bound_box.get_half_extends().x * 2;
-			const auto l_actors_count = m_actors_count.load(core_platform::bc_memory_order::relaxed);
+			const auto l_actors_count = m_actors_count.load(platform::bc_memory_order::relaxed);
 			bool l_is_leaf = is_leaf_node();
 			
 			if (l_actors_count > m_max_actors_count && l_is_leaf && l_size > m_min_size)
@@ -712,7 +712,7 @@ namespace black_cat
 
 			graph_node_entry_list l_actors{ graph_node_entry_allocator(*m_actors_pool) };
 			m_actors.swap(l_actors);
-			m_actors_count.store(0, core_platform::bc_memory_order::relaxed);
+			m_actors_count.store(0, platform::bc_memory_order::relaxed);
 
 			for (bci_scene_graph_node_entry& l_entry : l_actors)
 			{

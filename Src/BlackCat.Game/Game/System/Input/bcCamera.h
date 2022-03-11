@@ -132,7 +132,7 @@ namespace black_cat
 
 			void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 			
-			virtual void update(const core_platform::bc_clock::update_param& p_clock) noexcept = 0;
+			virtual void update(const platform::bc_clock::update_param& p_clock) noexcept = 0;
 
 		protected:
 			bci_camera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;

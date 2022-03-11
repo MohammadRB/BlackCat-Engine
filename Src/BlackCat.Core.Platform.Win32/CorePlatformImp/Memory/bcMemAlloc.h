@@ -7,7 +7,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		inline void* bc_mem_alloc(bcSIZE p_size) noexcept
 		{
@@ -63,20 +63,20 @@ namespace black_cat
 
 inline void* operator new(black_cat::bcSIZE p_size) noexcept(false)
 {
-	return black_cat::core_platform::bc_mem_alloc(p_size);
+	return black_cat::platform::bc_mem_alloc(p_size);
 }
 
 inline void* operator new[](black_cat::bcSIZE p_size) noexcept(false)
 {
-	return black_cat::core_platform::bc_mem_alloc(p_size);
+	return black_cat::platform::bc_mem_alloc(p_size);
 }
 
 inline void operator delete(void* p_pointer) noexcept
 {
-	black_cat::core_platform::bc_mem_free(p_pointer);
+	black_cat::platform::bc_mem_free(p_pointer);
 }
 
 inline void operator delete[](void* p_pointer) noexcept
 {
-	black_cat::core_platform::bc_mem_free(p_pointer);
+	black_cat::platform::bc_mem_free(p_pointer);
 }

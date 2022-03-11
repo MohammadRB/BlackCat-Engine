@@ -8,7 +8,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		struct BC_COREPLATFORM_DLL bc_path_info
 		{

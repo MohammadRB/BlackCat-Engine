@@ -23,7 +23,7 @@ namespace black_cat
 
 		bc_xbot_update_animation_job& operator=(bc_xbot_update_animation_job&&) noexcept;
 
-		bool run(const core_platform::bc_clock::update_param& p_clock) override;
+		bool run(const platform::bc_clock::update_param& p_clock) override;
 		
 	private:
 		bc_xbot_actor_controller* m_xbot_controller;

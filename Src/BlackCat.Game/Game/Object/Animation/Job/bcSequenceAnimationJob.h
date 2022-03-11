@@ -35,7 +35,7 @@ namespace black_cat
 
 			bcSIZE size() const noexcept;
 			
-			bool run(const core_platform::bc_clock::update_param& p_clock) override;
+			bool run(const platform::bc_clock::update_param& p_clock) override;
 		
 		private:
 			core::bc_vector<bc_sequence_animation> m_jobs;
@@ -70,7 +70,7 @@ namespace black_cat
 			return m_jobs.size();
 		}
 
-		inline bool bc_sequence_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
+		inline bool bc_sequence_animation_job::run(const platform::bc_clock::update_param& p_clock)
 		{
 			if (!m_enabled)
 			{

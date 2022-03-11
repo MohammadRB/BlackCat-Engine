@@ -14,7 +14,7 @@ namespace black_cat
 
 		bc_script_interrupted_exception(const bc_script_interrupted_exception&) = default;
 
-		~bc_script_interrupted_exception() = default;
+		~bc_script_interrupted_exception() override = default;
 
 		bc_script_interrupted_exception& operator =(const bc_script_interrupted_exception&) = default;
 	};
@@ -26,7 +26,7 @@ namespace black_cat
 
 		bc_script_execute_exception(const bc_script_execute_exception&) = default;
 
-		~bc_script_execute_exception() = default;
+		~bc_script_execute_exception() override = default;
 
 		bc_script_execute_exception& operator=(const bc_script_execute_exception&) = default;
 	};
@@ -38,7 +38,7 @@ namespace black_cat
 
 		bc_script_compile_exception(const bc_script_compile_exception&) = default;
 
-		~bc_script_compile_exception() = default;
+		~bc_script_compile_exception() override = default;
 
 		bc_script_compile_exception& operator=(const bc_script_compile_exception&) = default;
 
@@ -63,7 +63,7 @@ namespace black_cat
 
 		bc_network_exception(const bc_network_exception&) = default;
 
-		~bc_network_exception() = default;
+		~bc_network_exception() override = default;
 
 		bc_network_exception& operator=(const bc_network_exception&) = default;
 

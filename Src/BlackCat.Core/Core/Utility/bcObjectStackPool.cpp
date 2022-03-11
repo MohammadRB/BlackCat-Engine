@@ -15,7 +15,7 @@ namespace black_cat
 
 		bc_concurrent_object_stack_pool::bc_concurrent_object_stack_pool(bc_concurrent_object_stack_pool&& p_other) noexcept
 			: m_stack_allocator(std::move(p_other.m_stack_allocator)),
-			m_size(p_other.m_size.load(core_platform::bc_memory_order::relaxed))
+			m_size(p_other.m_size.load(platform::bc_memory_order::relaxed))
 		{	
 		}
 
@@ -30,7 +30,7 @@ namespace black_cat
 		bc_concurrent_object_stack_pool& bc_concurrent_object_stack_pool::operator=(bc_concurrent_object_stack_pool&& p_other) noexcept
 		{
 			m_stack_allocator = std::move(p_other.m_stack_allocator);
-			m_size.store(p_other.m_size.load(core_platform::bc_memory_order::relaxed), core_platform::bc_memory_order::relaxed);
+			m_size.store(p_other.m_size.load(platform::bc_memory_order::relaxed), platform::bc_memory_order::relaxed);
 
 			return *this;
 		}
@@ -42,7 +42,7 @@ namespace black_cat
 
 		void bc_concurrent_object_stack_pool::_destroy()
 		{
-			BC_ASSERT(m_size.load(core_platform::bc_memory_order::relaxed) == 0);
+			BC_ASSERT(m_size.load(platform::bc_memory_order::relaxed) == 0);
 			m_stack_allocator.destroy();
 		}
 

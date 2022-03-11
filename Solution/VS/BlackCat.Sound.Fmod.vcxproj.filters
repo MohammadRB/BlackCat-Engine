@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SoundImp">
+      <UniqueIdentifier>{be02bb63-ade4-43b1-aee4-12253e2f555c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SoundImp\Fundation">
+      <UniqueIdentifier>{3807184e-ea48-4eeb-a88f-79fc4ff0d491}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SoundImp\Resource">
+      <UniqueIdentifier>{df4bebd2-67da-4633-9dc3-1187281517a2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\bcExport.h">
+      <Filter>SoundImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\SoundImpPCH.h">
+      <Filter>SoundImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\bcSoundReference.h">
+      <Filter>SoundImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\bcSoundRef.h">
+      <Filter>SoundImp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Fundation\bcDevice.h">
+      <Filter>SoundImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcSound.h">
+      <Filter>SoundImp\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcSoundChannel.h">
+      <Filter>SoundImp\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Fundation\bcFmodError.h">
+      <Filter>SoundImp\Fundation</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\SoundImpPCH.cpp">
+      <Filter>SoundImp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\bcSoundRef.cpp">
+      <Filter>SoundImp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Fundation\bcDevice.cpp">
+      <Filter>SoundImp\Fundation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcSound.cpp">
+      <Filter>SoundImp\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcSoundChannel.cpp">
+      <Filter>SoundImp\Resource</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

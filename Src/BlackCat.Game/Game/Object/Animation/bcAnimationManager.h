@@ -31,12 +31,12 @@ namespace black_cat
 
 			void schedule_job(bci_animation_job& p_job);
 
-			void run_scheduled_jobs(const core_platform::bc_clock::update_param& p_clock);
+			void run_scheduled_jobs(const platform::bc_clock::update_param& p_clock);
 			
-			core::bc_task<void> run_scheduled_jobs_async(const core_platform::bc_clock::update_param& p_clock);
+			core::bc_task<void> run_scheduled_jobs_async(const platform::bc_clock::update_param& p_clock);
 			
 		private:
-			core_platform::bc_hybrid_mutex m_jobs_lock;
+			platform::bc_hybrid_mutex m_jobs_lock;
 			core::bc_vector_movable<bci_animation_job*> m_jobs;
 		};
 	}

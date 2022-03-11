@@ -140,13 +140,13 @@ namespace black_cat
 			releasing = 4
 		};
 
-		template< core_platform::bc_platform TPlatform >
+		template< platform::bc_platform TPlatform >
 		struct bc_platform_key_device_pack
 		{
 			
 		};
 
-		template< core_platform::bc_platform TPlatform >
+		template< platform::bc_platform TPlatform >
 		class bc_platform_key_device
 		{
 		public:
@@ -172,6 +172,6 @@ namespace black_cat
 			core::bc_event_manager* m_event_manager;
 		};
 
-		using bc_key_device = bc_platform_key_device< core_platform::g_current_platform >;
+		using bc_key_device = bc_platform_key_device< platform::g_current_platform >;
 	}
 }

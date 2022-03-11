@@ -49,7 +49,7 @@ namespace black_cat
 		class bc_ui_command_update_context
 		{
 		public:
-			bc_ui_command_update_context(const core_platform::bc_clock::update_param& p_clock, 
+			bc_ui_command_update_context(const platform::bc_clock::update_param& p_clock, 
 				game::bc_game_system& p_game_system, 
 				bci_ui_command_state* p_state)
 				: m_clock(p_clock),
@@ -59,7 +59,7 @@ namespace black_cat
 			{
 			}
 
-			const core_platform::bc_clock::update_param& m_clock;
+			const platform::bc_clock::update_param& m_clock;
 			game::bc_game_system& m_game_system;
 			bci_ui_command_state* m_state;
 			core::bc_any m_result;
@@ -91,7 +91,7 @@ namespace black_cat
 		class bc_ui_command_undo_context
 		{
 		public:
-			bc_ui_command_undo_context(const core_platform::bc_clock::update_param& p_clock,
+			bc_ui_command_undo_context(const platform::bc_clock::update_param& p_clock,
 				game::bc_game_system& p_game_system,
 				bci_ui_command_state* p_state)
 				: m_clock(p_clock),
@@ -100,7 +100,7 @@ namespace black_cat
 			{
 			}
 
-			const core_platform::bc_clock::update_param& m_clock;
+			const platform::bc_clock::update_param& m_clock;
 			game::bc_game_system& m_game_system;
 			bci_ui_command_state* m_state;
 		};

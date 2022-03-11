@@ -19,7 +19,7 @@ namespace black_cat
 			m_sampling_cache->Resize(m_skeleton->get_num_joints());
 		}
 
-		bcFLOAT bc_sampling_animation_job::advance_time(const core_platform::bc_clock::update_param& p_clock)
+		bcFLOAT bc_sampling_animation_job::advance_time(const platform::bc_clock::update_param& p_clock)
 		{
 			m_local_time += p_clock.m_elapsed_second * m_speed;
 			const auto l_animation_duration = m_animation->get_duration();
@@ -51,7 +51,7 @@ namespace black_cat
 			return m_local_time / l_animation_duration;
 		}
 		
-		bool bc_sampling_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
+		bool bc_sampling_animation_job::run(const platform::bc_clock::update_param& p_clock)
 		{
 			if(!m_enabled)
 			{

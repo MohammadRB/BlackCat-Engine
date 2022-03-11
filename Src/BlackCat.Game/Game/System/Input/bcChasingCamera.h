@@ -26,7 +26,7 @@ namespace black_cat
 
 			void update(const core::bc_vector3f& p_position, const core::bc_vector3f& p_look_at) noexcept;
 
-			void update(const core_platform::bc_clock::update_param& p_clock) noexcept override;
+			void update(const platform::bc_clock::update_param& p_clock) noexcept override;
 		};
 	}
 }

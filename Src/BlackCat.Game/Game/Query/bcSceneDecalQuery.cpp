@@ -17,7 +17,7 @@ namespace black_cat
 			auto l_iterator = p_context.m_scene->get_decal_manager().get_iterator_buffer();
 			
 			{
-				core_platform::bc_lock_guard l_lock(l_iterator);
+				platform::bc_lock_guard l_lock(l_iterator);
 
 				for (auto& l_decal_instance : l_iterator)
 				{

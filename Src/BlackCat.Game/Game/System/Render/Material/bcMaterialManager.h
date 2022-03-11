@@ -138,7 +138,7 @@ namespace black_cat
 			bc_physics_system* m_physics_system;
 
 			mesh_material_desc_map m_mesh_material_descriptions;
-			mutable core_platform::bc_mutex m_materials_mutex;
+			mutable platform::bc_mutex m_materials_mutex;
 			collider_material_map m_collider_materials;
 			mesh_material_map m_materials;
 

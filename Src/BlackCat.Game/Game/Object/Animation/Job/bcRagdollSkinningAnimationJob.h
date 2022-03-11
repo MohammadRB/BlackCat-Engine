@@ -44,7 +44,7 @@ namespace black_cat
 
 			const bc_sub_mesh_mat4_transform& get_skinning_transforms() const noexcept override;
 			
-			bool run(const core_platform::bc_clock::update_param& p_clock) override;
+			bool run(const platform::bc_clock::update_param& p_clock) override;
 
 		private:
 			bc_actor m_actor;

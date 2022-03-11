@@ -57,8 +57,8 @@ namespace black_cat
 			bcUINT32 m_num_block;
 			bcUINT32 m_block_size;
 			bcUINT32 m_num_bit_blocks;
-			core_platform::bc_atomic<bcUINT32> m_allocated_block;			// An index that searching for free block will continue from this place
-			core_platform::bc_atomic<bit_block_type>* m_blocks;				// bit-vector indicating if a block is allocated or not
+			platform::bc_atomic<bcUINT32> m_allocated_block;			// An index that searching for free block will continue from this place
+			platform::bc_atomic<bit_block_type>* m_blocks;				// bit-vector indicating if a block is allocated or not
 			bcUBYTE* m_heap;												// block of data
 		};
 

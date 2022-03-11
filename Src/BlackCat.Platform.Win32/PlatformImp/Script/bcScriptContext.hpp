@@ -26,20 +26,20 @@ namespace black_cat
 	namespace platform
 	{
 		template<>
-		inline bc_platform_script_context< core_platform::g_api_win32 >::bc_platform_script_context()
+		inline bc_platform_script_context< platform::g_api_win32 >::bc_platform_script_context()
 		{
 			m_runtime = nullptr;
 			m_pack.m_js_context = JS_INVALID_REFERENCE;
 		}
 
 		template<>
-		inline bc_platform_script_context< core_platform::g_api_win32 >::bc_platform_script_context(bc_script_runtime& p_runtime) noexcept
+		inline bc_platform_script_context< platform::g_api_win32 >::bc_platform_script_context(bc_script_runtime& p_runtime) noexcept
 			: m_runtime(&p_runtime)
 		{
 		}
 		
 		template<>
-		inline bc_platform_script_context< core_platform::g_api_win32 >::bc_platform_script_context(const bc_platform_script_context& p_other) noexcept
+		inline bc_platform_script_context< platform::g_api_win32 >::bc_platform_script_context(const bc_platform_script_context& p_other) noexcept
 			: bc_platform_script_reference(p_other)
 		{
 			m_runtime = p_other.m_runtime;
@@ -47,12 +47,12 @@ namespace black_cat
 		}
 
 		template<>
-		inline bc_platform_script_context< core_platform::g_api_win32 >::~bc_platform_script_context()
+		inline bc_platform_script_context< platform::g_api_win32 >::~bc_platform_script_context()
 		{
 		}
 
 		template<>
-		inline bc_platform_script_context< core_platform::g_api_win32 >& bc_platform_script_context< core_platform::g_api_win32 >::operator=(const bc_platform_script_context& p_other) noexcept
+		inline bc_platform_script_context< platform::g_api_win32 >& bc_platform_script_context< platform::g_api_win32 >::operator=(const bc_platform_script_context& p_other) noexcept
 		{
 			bc_platform_script_reference::operator=(p_other);
 			m_runtime = p_other.m_runtime;
@@ -62,7 +62,7 @@ namespace black_cat
 		}
 
 		template<>
-		inline bc_script_global_prototype_builder bc_platform_script_context< core_platform::g_api_win32 >::create_global_prototype_builder()
+		inline bc_script_global_prototype_builder bc_platform_script_context< platform::g_api_win32 >::create_global_prototype_builder()
 		{
 			bc_script_global_prototype_builder l_prototype_builder(*this);
 
@@ -70,12 +70,12 @@ namespace black_cat
 		}
 
 		template<>
-		inline void bc_platform_script_context< core_platform::g_api_win32 >::register_global_prototype(bc_script_global_prototype_builder&& p_global_prototype)
+		inline void bc_platform_script_context< platform::g_api_win32 >::register_global_prototype(bc_script_global_prototype_builder&& p_global_prototype)
 		{
 		}
 
 		template<>
-		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_undefined()
+		inline bc_script_variable bc_platform_script_context< platform::g_api_win32 >::create_undefined()
 		{
 			bc_script_variable l_var;
 
@@ -85,7 +85,7 @@ namespace black_cat
 		}
 
 		template<>
-		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_null()
+		inline bc_script_variable bc_platform_script_context< platform::g_api_win32 >::create_null()
 		{
 			bc_script_variable l_var;
 
@@ -95,82 +95,82 @@ namespace black_cat
 		}
 
 		template<>
-		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_bool p_bool)
+		inline bc_script_variable bc_platform_script_context< platform::g_api_win32 >::create_variable(bc_script_bool p_bool)
 		{
 			return bc_script_variable(*this, p_bool);
 		}
 
 		template<>
-		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_int p_integer)
+		inline bc_script_variable bc_platform_script_context< platform::g_api_win32 >::create_variable(bc_script_int p_integer)
 		{
 			return bc_script_variable(*this, p_integer);
 		}
 
 		template<>
-		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_double p_double)
+		inline bc_script_variable bc_platform_script_context< platform::g_api_win32 >::create_variable(bc_script_double p_double)
 		{
 			return bc_script_variable(*this, p_double);
 		}
 
 		template<>
-		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_string& p_string)
+		inline bc_script_variable bc_platform_script_context< platform::g_api_win32 >::create_variable(bc_script_string& p_string)
 		{
 			return bc_script_variable(*this, p_string);
 		}
 
 		template<>
-		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_object& p_object)
+		inline bc_script_variable bc_platform_script_context< platform::g_api_win32 >::create_variable(bc_script_object& p_object)
 		{
 			return bc_script_variable(*this, p_object);
 		}
 
 		template<>
-		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_array& p_array)
+		inline bc_script_variable bc_platform_script_context< platform::g_api_win32 >::create_variable(bc_script_array& p_array)
 		{
 			return bc_script_variable(*this, p_array);
 		}
 
 		template<>
-		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_function& p_function)
+		inline bc_script_variable bc_platform_script_context< platform::g_api_win32 >::create_variable(bc_script_function& p_function)
 		{
 			return bc_script_variable(*this, p_function);
 		}
 
 		template<>
-		inline bc_script_variable bc_platform_script_context< core_platform::g_api_win32 >::create_variable(bc_script_error& p_error)
+		inline bc_script_variable bc_platform_script_context< platform::g_api_win32 >::create_variable(bc_script_error& p_error)
 		{
 			return bc_script_variable(*this, p_error);
 		}
 
 		template<>
-		inline bc_script_string bc_platform_script_context< core_platform::g_api_win32 >::create_string(core::bc_wstring& p_string)
+		inline bc_script_string bc_platform_script_context< platform::g_api_win32 >::create_string(core::bc_wstring& p_string)
 		{
 			return bc_script_string(*this, p_string);
 		}
 
 		template<>
 		template< typename T >
-		bc_script_object bc_platform_script_context< core_platform::g_api_win32 >::create_object(bc_script_prototype< T >& p_prototype, T&& p_native_object)
+		bc_script_object bc_platform_script_context< platform::g_api_win32 >::create_object(bc_script_prototype< T >& p_prototype, T&& p_native_object)
 		{
 			return bc_script_object(*this, p_prototype, std::move(p_native_object));
 		}
 
 		template<>
-		inline bc_script_array bc_platform_script_context< core_platform::g_api_win32 >::create_array(bcSIZE p_length)
+		inline bc_script_array bc_platform_script_context< platform::g_api_win32 >::create_array(bcSIZE p_length)
 		{
 			return bc_script_array(*this, p_length);
 		}
 
 		/*template<>
 		template< typename TR, typename ...TA >
-		bc_script_function< TR(TA ...) > bc_platform_script_context< core_platform::g_api_win32 >::create_function(typename bc_script_function< TR, TA... >::callback_t p_delegate)
+		bc_script_function< TR(TA ...) > bc_platform_script_context< platform::g_api_win32 >::create_function(typename bc_script_function< TR, TA... >::callback_t p_delegate)
 		{
 			return bc_script_function< TR(TA ...) >(*this, p_delegate);
 		}*/
 
 		template<>
 		template< typename T >
-		bc_script_prototype_builder< T > bc_platform_script_context< core_platform::g_api_win32 >::create_prototype_builder()
+		bc_script_prototype_builder< T > bc_platform_script_context< platform::g_api_win32 >::create_prototype_builder()
 		{
 			BC_ASSERT(bc_script_external_object<T>::get_meta_data() == nullptr);
 
@@ -181,7 +181,7 @@ namespace black_cat
 			return bc_script_prototype_builder< T >(*this);
 		}
 
-		template< core_platform::bc_platform TPlatform >
+		template< platform::bc_platform TPlatform >
 		template< typename T >
 		bc_script_prototype< T > bc_platform_script_context< TPlatform >::create_prototype(bc_script_prototype_builder< T >& p_prototype_builder)
 		{
@@ -195,7 +195,7 @@ namespace black_cat
 			return l_prototype;
 		}
 
-		template< core_platform::bc_platform TPlatform >
+		template< platform::bc_platform TPlatform >
 		template< typename T >
 		void bc_platform_script_context< TPlatform >::register_prototype(bcWCHAR* p_object_name, bc_script_prototype< T >& p_object_prototype)
 		{
@@ -216,14 +216,14 @@ namespace black_cat
 			l_call.throw_if_faild();
 		}
 
-		template< core_platform::bc_platform TPlatform >
+		template< platform::bc_platform TPlatform >
 		bc_script_error bc_platform_script_context< TPlatform >::create_error(const core::bc_wstring& p_message)
 		{
 			return bc_script_error(*this, p_message);
 		}
 
 		template<>
-		inline bool bc_platform_script_context< core_platform::g_api_win32 >::has_exception() const noexcept
+		inline bool bc_platform_script_context< platform::g_api_win32 >::has_exception() const noexcept
 		{
 			bc_chakra_call l_call(const_cast< bc_script_context& >(*this));
 			bool l_result;
@@ -234,7 +234,7 @@ namespace black_cat
 		}
 
 		template<>
-		inline bc_script_error bc_platform_script_context< core_platform::g_api_win32 >::get_clear_exception()
+		inline bc_script_error bc_platform_script_context< platform::g_api_win32 >::get_clear_exception()
 		{
 			bc_chakra_call l_call(*this);
 			bc_script_error l_error;
@@ -245,7 +245,7 @@ namespace black_cat
 		}
 
 		template<>
-		inline void bc_platform_script_context< core_platform::g_api_win32 >::set_exception(bc_script_error& p_error)
+		inline void bc_platform_script_context< platform::g_api_win32 >::set_exception(bc_script_error& p_error)
 		{
 			bc_chakra_call l_call(*this);
 
@@ -253,7 +253,7 @@ namespace black_cat
 		}
 
 		template<>
-		inline bc_script_object bc_platform_script_context< core_platform::g_api_win32 >::get_global() const
+		inline bc_script_object bc_platform_script_context< platform::g_api_win32 >::get_global() const
 		{
 			bc_chakra_call l_call(const_cast< bc_platform_script_context& >(*this));
 			bc_script_object l_object;
@@ -264,7 +264,7 @@ namespace black_cat
 		}
 
 		template<>
-		inline bool bc_platform_script_context< core_platform::g_api_win32 >::is_valid() const noexcept
+		inline bool bc_platform_script_context< platform::g_api_win32 >::is_valid() const noexcept
 		{
 			return m_pack.m_js_context != JS_INVALID_REFERENCE;
 		}

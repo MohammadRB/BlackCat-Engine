@@ -22,7 +22,7 @@ namespace black_cat
 
 		bc_mesh_collider_skinning_animation_job& bc_mesh_collider_skinning_animation_job::operator=(bc_mesh_collider_skinning_animation_job&& p_other) noexcept = default;
 
-		bool bc_mesh_collider_skinning_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
+		bool bc_mesh_collider_skinning_animation_job::run(const platform::bc_clock::update_param& p_clock)
 		{
 			if (!m_enabled)
 			{

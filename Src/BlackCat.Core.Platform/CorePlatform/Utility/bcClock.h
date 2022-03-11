@@ -9,7 +9,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		template<bc_platform TPlatform>
 		struct bc_platform_clock_pack

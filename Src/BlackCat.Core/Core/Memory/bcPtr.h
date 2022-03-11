@@ -654,19 +654,19 @@ namespace black_cat
 			
 			bcSIZE inc_ref_count() noexcept
 			{
-				const bcSIZE l_count = m_ref_count.fetch_add(1, core_platform::bc_memory_order::relaxed);
+				const bcSIZE l_count = m_ref_count.fetch_add(1, platform::bc_memory_order::relaxed);
 				return l_count + 1;
 			}
 
 			bcSIZE dec_ref_count() noexcept
 			{
-				const bcSIZE l_count = m_ref_count.fetch_sub(1, core_platform::bc_memory_order::relaxed);
+				const bcSIZE l_count = m_ref_count.fetch_sub(1, platform::bc_memory_order::relaxed);
 				return l_count - 1;
 			}
 
 			bcSIZE ref_count() const noexcept
 			{
-				return m_ref_count.load(core_platform::bc_memory_order::relaxed);
+				return m_ref_count.load(platform::bc_memory_order::relaxed);
 			}
 
 			bool is_shared() const noexcept
@@ -679,7 +679,7 @@ namespace black_cat
 			virtual void call_deleter_and_destruct(pointer p_pointer) const = 0;
 
 		private:
-			core_platform::bc_atomic<bcSIZE> m_ref_count;
+			platform::bc_atomic<bcSIZE> m_ref_count;
 			bool m_is_shared;
 		};
 

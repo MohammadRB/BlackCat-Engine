@@ -25,7 +25,8 @@ namespace black_cat
 		m_network_backward_pressed(false),
 		m_network_right_pressed(false),
 		m_network_left_pressed(false),
-		m_network_walk_pressed(false)
+		m_network_walk_pressed(false),
+		m_shoot_count(0)
 	{
 	}
 
@@ -114,9 +115,7 @@ namespace black_cat
 
 	void bc_xbot_network_player_actor_controller::shoot_weapon() noexcept
 	{
-		const auto l_player_id = get_network_client_id();
-		bc_xbot_actor_controller::shoot_weapon(l_player_id);
-
+		++m_shoot_count;
 		if (get_network_component().get_network_type() == game::bc_network_type::server)
 		{
 			m_network_system->send_message(bc_xbot_weapon_shoot_network_message(get_actor()));
@@ -268,6 +267,17 @@ namespace black_cat
 			m_network_left_pressed,
 			m_network_walk_pressed,
 		});
+
+		if (m_shoot_count)
+		{
+			const auto l_player_id = get_network_client_id();
+			const auto l_shoot = bc_xbot_actor_controller::shoot_weapon(l_player_id);
+
+			if (l_shoot)
+			{
+				--m_shoot_count;
+			}
+		}
 	}
 
 	void bc_xbot_network_player_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)

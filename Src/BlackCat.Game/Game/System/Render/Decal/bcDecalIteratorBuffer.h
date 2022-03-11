@@ -16,7 +16,7 @@ namespace black_cat
 			using container_type = typename core::bc_const_iterator_adapter<TContainer>::container_type;
 
 		public:
-			bc_decal_iterator_buffer(core_platform::bc_mutex& p_container_lock, const container_type& p_container);
+			bc_decal_iterator_buffer(platform::bc_mutex& p_container_lock, const container_type& p_container);
 
 			bc_decal_iterator_buffer(bc_decal_iterator_buffer&&) noexcept;
 
@@ -29,12 +29,12 @@ namespace black_cat
 			void unlock() noexcept;
 
 		private:
-			core_platform::bc_mutex* m_container_lock;
+			platform::bc_mutex* m_container_lock;
 			const container_type* m_container;
 		};
 
 		template<class TContainer>
-		bc_decal_iterator_buffer<TContainer>::bc_decal_iterator_buffer(core_platform::bc_mutex& p_container_lock, const container_type& p_container)
+		bc_decal_iterator_buffer<TContainer>::bc_decal_iterator_buffer(platform::bc_mutex& p_container_lock, const container_type& p_container)
 			: core::bc_const_iterator_adapter<TContainer>(p_container),
 			m_container_lock(&p_container_lock),
 			m_container(&p_container)

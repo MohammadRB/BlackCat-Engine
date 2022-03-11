@@ -134,7 +134,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_physics_system::update(const core_platform::bc_clock::update_param& p_clock_update_param)
+		void bc_physics_system::update(const platform::bc_clock::update_param& p_clock_update_param)
 		{
 		}
 

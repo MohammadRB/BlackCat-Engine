@@ -216,7 +216,7 @@ namespace black_cat
 			return m_script_runtime->memory_usage();
 		}
 
-		void bc_script_system::update(core_platform::bc_clock::update_param p_clock_update_param)
+		void bc_script_system::update(platform::bc_clock::update_param p_clock_update_param)
 		{
 		}
 

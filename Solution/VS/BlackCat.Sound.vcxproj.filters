@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{6f662c16-2034-4224-9a9e-321731bd097d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound\Fundation">
+      <UniqueIdentifier>{05fed798-1b04-4bc3-beac-63bb19a7778a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound\Resource">
+      <UniqueIdentifier>{ad7f580d-f33e-4818-883d-c18606c07b41}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\bcExport.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\SoundPCH.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\bcSoundApi.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Fundation\bcDevice.h">
+      <Filter>Sound\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\bcSoundReference.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\bcSoundRef.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Resource\bcSound.h">
+      <Filter>Sound\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Resource\bcSoundChannel.h">
+      <Filter>Sound\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\bcException.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Resource\bcResourceContent.h">
+      <Filter>Sound\Resource</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Sound\Sound\SoundPCH.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

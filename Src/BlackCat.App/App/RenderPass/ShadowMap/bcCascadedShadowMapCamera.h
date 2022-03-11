@@ -36,7 +36,7 @@ namespace black_cat
 			bci_camera::set_projection(get_screen_width(), get_screen_height());
 		}
 		
-		void update(const core_platform::bc_clock::update_param& p_clock_update_param) noexcept override
+		void update(const platform::bc_clock::update_param& p_clock_update_param) noexcept override
 		{
 		}
 

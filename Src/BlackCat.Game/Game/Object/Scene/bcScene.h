@@ -132,17 +132,17 @@ namespace black_cat
 			
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
-			void update_physics(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update);
+			void update_physics(const platform::bc_clock::update_param& p_clock, bool p_is_partial_update);
 			
-			core::bc_task<void> update_physics_async(const core_platform::bc_clock::update_param& p_clock, bool p_is_partial_update);
+			core::bc_task<void> update_physics_async(const platform::bc_clock::update_param& p_clock, bool p_is_partial_update);
 
-			void update_bullets(const core_platform::bc_clock::update_param& p_clock) noexcept;
+			void update_bullets(const platform::bc_clock::update_param& p_clock) noexcept;
 
-			core::bc_task<void> update_bullets_async(const core_platform::bc_clock::update_param& p_clock) noexcept;
+			core::bc_task<void> update_bullets_async(const platform::bc_clock::update_param& p_clock) noexcept;
 			
-			void update_graph(const core_platform::bc_clock::update_param& p_clock) noexcept;
+			void update_graph(const platform::bc_clock::update_param& p_clock) noexcept;
 			
-			core::bc_task<void> update_graph_async(const core_platform::bc_clock::update_param& p_clock) noexcept;
+			core::bc_task<void> update_graph_async(const platform::bc_clock::update_param& p_clock) noexcept;
 			
 		private:
 			void _add_actor(bc_actor& p_actor);
@@ -170,9 +170,9 @@ namespace black_cat
 			core::bc_unique_ptr<bc_particle_manager_container> m_particle_manager;
 			core::bc_unique_ptr<bc_decal_manager_container> m_decal_container;
 
-			core_platform::bc_spin_mutex m_actors_to_add_lock;
-			core_platform::bc_spin_mutex m_actors_to_remove_lock;
-			core_platform::bc_hybrid_mutex m_changed_actors_lock;
+			platform::bc_spin_mutex m_actors_to_add_lock;
+			platform::bc_spin_mutex m_actors_to_remove_lock;
+			platform::bc_hybrid_mutex m_changed_actors_lock;
 			core::bc_vector_movable<bc_actor> m_actors_to_add;
 			core::bc_vector_movable<std::tuple<_bc_scene_actor_state, bc_actor>> m_actors_to_remove;
 			core::bc_vector_movable<std::tuple<_bc_scene_actor_state, bc_actor>> m_changed_actors;

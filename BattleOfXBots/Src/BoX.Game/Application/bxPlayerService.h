@@ -33,13 +33,13 @@ namespace box
 
 	struct bx_player_ui_message
 	{
-		core_platform::bc_clock::small_delta_time m_lifetime;
+		platform::bc_clock::small_delta_time m_lifetime;
 		core::bc_wstring m_message;
 	};
 
 	struct bx_player_kill_message
 	{
-		core_platform::bc_clock::small_delta_time m_lifetime;
+		platform::bc_clock::small_delta_time m_lifetime;
 		bx_player_kill_state m_kill;
 	};
 
@@ -96,7 +96,7 @@ namespace box
 
 		void stopped_playing() noexcept;
 
-		void update(const core_platform::bc_clock::update_param& p_clock) override;
+		void update(const platform::bc_clock::update_param& p_clock) override;
 
 	private:
 		void _event_handler(core::bci_event& p_event);
@@ -112,7 +112,7 @@ namespace box
 		bcINT32 m_grenade_load;
 		bcINT32 m_smoke_load;
 
-		mutable core_platform::bc_mutex m_messages_lock;
+		mutable platform::bc_mutex m_messages_lock;
 		core::bc_vector<bx_player_ui_message> m_info_messages;
 		core::bc_vector<bx_player_ui_message> m_error_messages;
 		core::bc_vector<bx_player_kill_message> m_kill_list;

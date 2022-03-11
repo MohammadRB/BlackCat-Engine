@@ -8,14 +8,14 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
-		template< bc_platform TP >
+		template<bc_platform TP>
 		struct bc_platform_thread_local_pack
 		{
 		};
 
-		template< bc_platform TPlatform, typename T >
+		template<bc_platform TPlatform, typename T>
 		class bc_platform_thread_local : private bc_no_copy
 		{
 		public:
@@ -124,7 +124,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< typename T >
-		using bc_thread_local = bc_platform_thread_local< g_current_platform, T >;
+		template<typename T>
+		using bc_thread_local = bc_platform_thread_local<g_current_platform, T>;
 	}
 }

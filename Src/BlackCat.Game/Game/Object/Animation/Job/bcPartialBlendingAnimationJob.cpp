@@ -50,7 +50,7 @@ namespace black_cat
 			ozz::animation::IterateJointsDF(m_skeleton->get_native_handle(), l_weight_setter(m_layer2_weights, 1.f), l_joint.first);
 		}
 
-		bool bc_partial_blending_animation_job::run(const core_platform::bc_clock::update_param& p_clock)
+		bool bc_partial_blending_animation_job::run(const platform::bc_clock::update_param& p_clock)
 		{
 			if(!m_enabled)
 			{

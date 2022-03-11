@@ -8,23 +8,23 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
-		template< bc_platform TPlatform >
+		template<bc_platform TPlatform>
 		struct bc_platform_atomic_flag_pack
 		{
 		};
 
-		template< bc_platform TPlatform, typename T >
+		template<bc_platform TPlatform, typename T>
 		struct bc_platform_atomic_pack
 		{
 		};
 
-		template< bc_platform TPlatform >
+		template<bc_platform TPlatform>
 		class bc_platform_atomic_flag : private bc_no_copy
 		{
 		public:
-			using platform_pack = bc_platform_atomic_flag_pack< TPlatform >;
+			using platform_pack = bc_platform_atomic_flag_pack<TPlatform>;
 			using this_type = bc_platform_atomic_flag;
 
 		public:
@@ -54,11 +54,11 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template< bc_platform TPlatform, typename T >
+		template<bc_platform TPlatform, typename T>
 		class bc_platform_atomic : private bc_no_copy
 		{
 		public:
-			using platform_pack = bc_platform_atomic_pack< TPlatform, T >;
+			using platform_pack = bc_platform_atomic_pack<TPlatform, T>;
 			using this_type = bc_platform_atomic;
 
 		public:
@@ -168,10 +168,10 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_atomic_flag = bc_platform_atomic_flag< g_current_platform >;
+		using bc_atomic_flag = bc_platform_atomic_flag<g_current_platform>;
 
-		template< typename T >
-		using bc_atomic = bc_platform_atomic< g_current_platform, T >;
+		template<typename T>
+		using bc_atomic = bc_platform_atomic<g_current_platform, T>;
 
 		void atomic_thread_fence(bc_memory_order p_order) noexcept;
 	}

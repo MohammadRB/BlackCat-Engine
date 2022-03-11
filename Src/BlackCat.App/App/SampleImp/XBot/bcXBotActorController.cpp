@@ -867,7 +867,7 @@ namespace black_cat
 			.build();
 	}
 
-	void bc_xbot_actor_controller::_update_px_move(const core_platform::bc_clock::update_param& p_clock, const core::bc_vector3f& p_move_vector)
+	void bc_xbot_actor_controller::_update_px_move(const platform::bc_clock::update_param& p_clock, const core::bc_vector3f& p_move_vector)
 	{
 		auto l_px_controller_pre_filter = physics::bc_scene_query_pre_filter_callback
 		(

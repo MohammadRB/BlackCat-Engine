@@ -39,7 +39,7 @@ namespace black_cat
 
 			void set_twist_angle(bcINT32 p_angle) noexcept;
 			
-			bool run(const core_platform::bc_clock::update_param& p_clock) override;
+			bool run(const platform::bc_clock::update_param& p_clock) override;
 			
 		private:
 			core::bc_shared_ptr<bci_local_transform_animation_job> m_local_job;

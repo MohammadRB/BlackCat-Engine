@@ -7,9 +7,6 @@
     <Filter Include="PlatformImp\Application">
       <UniqueIdentifier>{c3a660fb-4679-4378-ab45-5c3091c7ad45}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PlatformImp\File">
-      <UniqueIdentifier>{027a195c-bfc6-4afe-9053-2031d31f035f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="PlatformImp\Script">
       <UniqueIdentifier>{58b88f36-d869-457f-8fd8-cabdf529528a}</UniqueIdentifier>
     </Filter>
@@ -38,9 +35,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcWindow.h">
       <Filter>PlatformImp\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\bcPath.h">
-      <Filter>PlatformImp\File</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptArray.h">
       <Filter>PlatformImp\Script</Filter>
@@ -136,9 +130,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Application\bcWindow.cpp">
       <Filter>PlatformImp\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\File\bcPath.cpp">
-      <Filter>PlatformImp\File</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Platform.Win32\PlatformImp\Script\bcScriptArray.cpp">
       <Filter>PlatformImp\Script</Filter>

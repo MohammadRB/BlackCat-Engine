@@ -83,5 +83,6 @@ namespace black_cat
 		core::bc_string m_grenade_name;
 
 		core::bc_unique_ptr<_bc_xbot_network_initial_data> m_network_initial_data;
+		bcUINT32 m_shoot_count;
 	};
 }

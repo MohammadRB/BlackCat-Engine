@@ -8,7 +8,7 @@
 
 namespace black_cat
 {
-	namespace core_platform
+	namespace platform
 	{
 		BC_COREPLATFORMIMP_DLL BOOL win32_from_hresult(HRESULT p_hr, OUT DWORD* p_Win32);
 

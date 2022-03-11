@@ -45,7 +45,7 @@ namespace black_cat
 			}
 		};
 
-		class bci_content : public bc_ref_count, public core_platform::bc_no_copy
+		class bci_content : public bc_ref_count, public platform::bc_no_copy
 		{
 		public:
 			friend class bc_content_manager;

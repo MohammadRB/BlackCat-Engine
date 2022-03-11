@@ -76,7 +76,7 @@ namespace black_cat
 			bcFLOAT m_mesh_scale;
 			bool m_use_hierarchy_transforms;
 
-			core_platform::bc_atomic<bcUINT32> m_temporary_decals_slot;
+			platform::bc_atomic<bcUINT32> m_temporary_decals_slot;
 			core::bc_array<bc_decal_instance_ptr, 10> m_temporary_decals;
 			container_type m_persistent_decals;
 		};

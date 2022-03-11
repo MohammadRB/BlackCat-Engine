@@ -42,7 +42,7 @@ namespace black_cat
 		void bc_memory_stack::_initialize(bcSIZE p_max_num_thread, bcSIZE p_size, const bcCHAR* p_tag)
 		{
 			// We alloc mHeap by min align defined in CorePCH because we want all of our allocations have MIN_Align /
-			m_heap = static_cast<bcUBYTE*>(core_platform::bc_mem_aligned_alloc(p_size * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN));
+			m_heap = static_cast<bcUBYTE*>(platform::bc_mem_aligned_alloc(p_size * sizeof(bcUBYTE), BC_MEMORY_MIN_ALIGN));
 
 			if (!m_heap)
 			{
@@ -51,9 +51,9 @@ namespace black_cat
 
 			m_max_num_thread = p_max_num_thread;
 			m_capacity = p_size;
-			m_top.store(m_heap, core_platform::bc_memory_order::relaxed);
-			m_pop_thread_count.store(0, core_platform::bc_memory_order::relaxed);
-			m_free_block_count.store(0, core_platform::bc_memory_order::relaxed);
+			m_top.store(m_heap, platform::bc_memory_order::relaxed);
+			m_pop_thread_count.store(0, platform::bc_memory_order::relaxed);
+			m_free_block_count.store(0, platform::bc_memory_order::relaxed);
 
 			m_tracer.initialize(m_capacity);
 
@@ -65,7 +65,7 @@ namespace black_cat
 
 		void bc_memory_stack::_destroy() noexcept
 		{
-			core_platform::bc_mem_aligned_free(m_heap);
+			platform::bc_mem_aligned_free(m_heap);
 		}
 
 		void* bc_memory_stack::push(bc_memblock* p_mem_block) noexcept
@@ -75,12 +75,12 @@ namespace black_cat
 
 			BC_ASSERT(l_size > 0);
 
-			bcUBYTE* l_local_top = m_top.load(core_platform::bc_memory_order::seqcst);
+			bcUBYTE* l_local_top = m_top.load(platform::bc_memory_order::seqcst);
 
 			while (true)
 			{
 				// Always keep size of n free-blocks unallocated so threads in pop method can do their job by adding new free-blocks
-				const bcSIZE l_free_blocks_size = (m_free_block_count.load(core_platform::bc_memory_order::seqcst) + m_max_num_thread) * sizeof(_bc_memory_stack_block);
+				const bcSIZE l_free_blocks_size = (m_free_block_count.load(platform::bc_memory_order::seqcst) + m_max_num_thread) * sizeof(_bc_memory_stack_block);
 				const bcSIZE l_bytes_free = std::max((m_heap + m_capacity - l_local_top) - static_cast<bcINT32>(l_free_blocks_size), 0);
 
 				// No more free memory
@@ -96,8 +96,8 @@ namespace black_cat
 				(
 					&l_local_top,
 					l_new_top,
-					core_platform::bc_memory_order::seqcst,
-					core_platform::bc_memory_order::seqcst
+					platform::bc_memory_order::seqcst,
+					platform::bc_memory_order::seqcst
 				))
 				{
 					l_result = l_local_top;
@@ -112,7 +112,7 @@ namespace black_cat
 		bool bc_memory_stack::pop(void* p_pointer, bc_memblock* p_mem_block) noexcept
 		{
 			const bcSIZE l_size = p_mem_block->size();
-			bcUBYTE* l_local_top = m_top.load(core_platform::bc_memory_order::seqcst);
+			bcUBYTE* l_local_top = m_top.load(platform::bc_memory_order::seqcst);
 
 			if (l_local_top == m_heap)
 			{
@@ -126,7 +126,7 @@ namespace black_cat
 			{
 				// Check again if current block has become top block because after first compare it's 
 				// possible duo to popping by other threads this block become top block
-				l_local_top = m_top.load(core_platform::bc_memory_order::seqcst);
+				l_local_top = m_top.load(platform::bc_memory_order::seqcst);
 				l_is_freeing_top = l_local_top - l_size == p_pointer;
 
 				if (!l_is_freeing_top)
@@ -141,8 +141,8 @@ namespace black_cat
 			(
 				&l_local_top,
 				l_new_top,
-				core_platform::bc_memory_order::seqcst,
-				core_platform::bc_memory_order::seqcst
+				platform::bc_memory_order::seqcst,
+				platform::bc_memory_order::seqcst
 			);
 
 			if(l_freed)
@@ -161,26 +161,26 @@ namespace black_cat
 
 		void bc_memory_stack::free(void* p_pointer, bc_memblock* p_memblock) noexcept
 		{
-			m_pop_thread_count.fetch_add(1U, core_platform::bc_memory_order::acquire);
+			m_pop_thread_count.fetch_add(1U, platform::bc_memory_order::acquire);
 
 			const bool l_was_top = pop(p_pointer, p_memblock);
 
 			if (!l_was_top)
 			{
 				{
-					core_platform::bc_shared_lock<core_platform::bc_shared_mutex> l_guard(m_free_block_mutex);
+					platform::bc_shared_lock<platform::bc_shared_mutex> l_guard(m_free_block_mutex);
 					// Add current block to free list
 					_add_free_block(p_pointer, p_memblock);
 				}
 			}
 
-			auto l_pop_thread_count = m_pop_thread_count.fetch_sub(1U, core_platform::bc_memory_order::release) - 1;
+			auto l_pop_thread_count = m_pop_thread_count.fetch_sub(1U, platform::bc_memory_order::release) - 1;
 			if (l_pop_thread_count == 0)
 			{
 				{
-					core_platform::bc_lock_guard<core_platform::bc_shared_mutex> l_guard(m_free_block_mutex);
+					platform::bc_lock_guard<platform::bc_shared_mutex> l_guard(m_free_block_mutex);
 					
-					l_pop_thread_count = m_pop_thread_count.load(core_platform::bc_memory_order::relaxed);
+					l_pop_thread_count = m_pop_thread_count.load(platform::bc_memory_order::relaxed);
 					if (l_pop_thread_count == 0)
 					{
 						_reclaim_free_blocks();
@@ -196,27 +196,27 @@ namespace black_cat
 
 		void bc_memory_stack::clear() noexcept
 		{
-			m_top.store(m_heap, core_platform::bc_memory_order::relaxed);
-			m_free_block_count.store(0, core_platform::bc_memory_order::relaxed);
+			m_top.store(m_heap, platform::bc_memory_order::relaxed);
+			m_free_block_count.store(0, platform::bc_memory_order::relaxed);
 
 			m_tracer.accept_clear();
 		}
 
 		void bc_memory_stack::_add_free_block(void* p_pointer, bc_memblock* p_memblock)
 		{
-			const auto l_free_block_count = m_free_block_count.fetch_add(1U, core_platform::bc_memory_order::relaxed) + 1;
+			const auto l_free_block_count = m_free_block_count.fetch_add(1U, platform::bc_memory_order::relaxed) + 1;
 			auto* l_free_block_top = reinterpret_cast<_bc_memory_stack_block*>(m_heap + m_capacity) - l_free_block_count;
 
 			*l_free_block_top = _bc_memory_stack_block(p_pointer, p_memblock->size());
 			
 			// Use acquire ordering to get other thread changes and release ordering to propagate all writes to _reclaim_free_blocks function
-			m_free_block_count.fetch_or(0U, core_platform::bc_memory_order::acqrel);
+			m_free_block_count.fetch_or(0U, platform::bc_memory_order::acqrel);
 		}
 
 		void bc_memory_stack::_reclaim_free_blocks()
 		{
 			// Use acquire ordering to get all changes from _add_free_block function
-			const auto l_free_block_count = m_free_block_count.load(core_platform::bc_memory_order::acquire);
+			const auto l_free_block_count = m_free_block_count.load(platform::bc_memory_order::acquire);
 
 			auto* l_free_block_begin = reinterpret_cast<_bc_memory_stack_block*>(m_heap + m_capacity);
 			auto* l_free_block_end = l_free_block_begin - l_free_block_count;
@@ -225,7 +225,7 @@ namespace black_cat
 			while(l_current_free_block != l_free_block_begin)
 			{
 				bcUBYTE* l_current_free_block_pointer = static_cast<bcUBYTE*>(l_current_free_block->m_address) + l_current_free_block->m_size;
-				bcUBYTE* l_local_top = m_top.load(core_platform::bc_memory_order::relaxed);
+				bcUBYTE* l_local_top = m_top.load(platform::bc_memory_order::relaxed);
 
 				// If this free block is top
 				if (l_current_free_block_pointer == l_local_top)
@@ -250,7 +250,7 @@ namespace black_cat
 					{
 						while (l_current_free_block->m_address == nullptr && l_current_free_block != l_free_block_begin)
 						{
-							m_free_block_count.fetch_sub(1U, core_platform::bc_memory_order::relaxed);
+							m_free_block_count.fetch_sub(1U, platform::bc_memory_order::relaxed);
 							l_free_block_end++;
 							l_current_free_block++;
 						}
@@ -270,18 +270,18 @@ namespace black_cat
 
 		void bc_memory_stack::_move(this_type&& p_other)
 		{
-			bcUBYTE* l_top = p_other.m_top.load(core_platform::bc_memory_order::relaxed);
-			const bcSIZE l_free_block_count = p_other.m_free_block_count.load(core_platform::bc_memory_order::relaxed);
+			bcUBYTE* l_top = p_other.m_top.load(platform::bc_memory_order::relaxed);
+			const bcSIZE l_free_block_count = p_other.m_free_block_count.load(platform::bc_memory_order::relaxed);
 
 			m_capacity = p_other.m_capacity;
 			m_heap = p_other.m_heap;
-			m_top.store(l_top, core_platform::bc_memory_order::relaxed);
-			m_free_block_count.store(l_free_block_count, core_platform::bc_memory_order::relaxed);
+			m_top.store(l_top, platform::bc_memory_order::relaxed);
+			m_free_block_count.store(l_free_block_count, platform::bc_memory_order::relaxed);
 
 			p_other.m_capacity = 0;
 			p_other.m_heap = nullptr;
-			p_other.m_top.store(0, core_platform::bc_memory_order::relaxed);
-			p_other.m_free_block_count.store(0, core_platform::bc_memory_order::relaxed);
+			p_other.m_top.store(0, platform::bc_memory_order::relaxed);
+			p_other.m_free_block_count.store(0, platform::bc_memory_order::relaxed);
 		}
 
 #endif
