@@ -34,31 +34,35 @@ namespace black_cat
 
 			const core::bc_content_stream_manager& get_content_stream_manager() const;
 
-			const bcECHAR* get_content_path() const noexcept;
+			core::bc_estring_view get_content_path() const noexcept;
 
 			core::bc_estring get_content_path(const bcECHAR* p_path) const noexcept;
 
-			const bcECHAR* get_content_data_path() const noexcept;
+			core::bc_estring_view get_content_data_path() const noexcept;
 
 			core::bc_estring get_content_data_path(const bcECHAR* p_data_path) const noexcept;
 
-			const bcECHAR* get_content_texture_path() const noexcept;
+			core::bc_estring_view get_content_texture_path() const noexcept;
 
 			core::bc_estring get_content_texture_path(const bcECHAR* p_texture_path) const noexcept;
 
-			const bcECHAR* get_content_model_path() const noexcept;
+			core::bc_estring_view get_content_sound_path() const noexcept;
+
+			core::bc_estring get_content_sound_path(const bcECHAR* p_sound_path) const noexcept;
+
+			core::bc_estring_view get_content_model_path() const noexcept;
 
 			core::bc_estring get_content_model_path(const bcECHAR* p_model_path) const noexcept;
 
-			const bcECHAR* get_content_platform_shader_path() const noexcept;
+			core::bc_estring_view get_content_platform_shader_path() const noexcept;
 
 			core::bc_estring get_content_platform_shader_path(const bcECHAR* p_shader_path) const noexcept;
 
-			const bcECHAR* get_content_script_path() const noexcept;
+			core::bc_estring_view get_content_script_path() const noexcept;
 
 			core::bc_estring get_content_script_path(const bcECHAR* p_script_path) const noexcept;
 
-			const bcECHAR* get_content_scene_path() const noexcept;
+			core::bc_estring_view get_content_scene_path() const noexcept;
 
 			core::bc_estring get_content_scene_path(const bcECHAR* p_scene_path) const noexcept;
 
@@ -76,6 +80,7 @@ namespace black_cat
 			core::bc_estring m_content_base_path;
 			core::bc_estring m_content_data_path;
 			core::bc_estring m_content_texture_path;
+			core::bc_estring m_content_sound_path;
 			core::bc_estring m_content_model_path;
 			core::bc_estring m_content_platform_shader_path;
 			core::bc_estring m_content_script_path;

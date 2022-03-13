@@ -41,8 +41,8 @@ namespace black_cat
 	{
 		graphic::bc_device& l_device = core::bc_get_service<game::bc_game_system>()->get_render_system().get_device();
 		const auto l_file_path = core::bc_to_exclusive_string(p_context.m_file_path.data());
-		const auto& l_function = p_context.m_parameters->get_value_throw<core::bc_string>(constant::g_param_shader_function);
-		const auto* l_macros_value = p_context.m_parameters->get_value<core::bc_json_key_value>(constant::g_param_shader_macro);
+		const auto& l_function = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_shader_function);
+		const auto* l_macros_value = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_shader_macro);
 
 		core::bc_vector<graphic::bc_shader_macro> l_macros_buffer;
 		const graphic::bc_shader_macro* l_macros = nullptr;
@@ -87,8 +87,8 @@ namespace black_cat
 
 	void bc_pixel_shader_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
-		graphic::bc_device& l_device = core::bc_get_service<game::bc_game_system>()->get_render_system().get_device();
-		const auto& l_function = p_context.m_parameters->get_value_throw<core::bc_string>(constant::g_param_shader_function);
+		auto& l_device = core::bc_get_service<game::bc_game_system>()->get_render_system().get_device();
+		const auto& l_function = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_shader_function);
 
 		graphic::bc_pixel_shader_ref l_result = l_device.create_pixel_shader
 		(

@@ -101,7 +101,7 @@ namespace black_cat
 			(
 				constant::g_rpass_back_buffer_texture, 
 				constant::g_rpass_back_buffer_render_view, 
-				{"player", "sun", "light", "cloud", "wind"}, 
+				{"player", "sun", "light", "cloud", "wind", "sound"}, 
 				bcL("SpriteIcon.png"), 
 				64, 
 				64

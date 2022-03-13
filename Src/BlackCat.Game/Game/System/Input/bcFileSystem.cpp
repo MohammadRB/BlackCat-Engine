@@ -38,6 +38,10 @@ namespace black_cat
 			m_content_texture_path = l_temp.get_string();
 
 			l_temp = l_execute_path;
+			l_temp.combine(core::bc_path(bcL("Content\\Sound")));
+			m_content_sound_path = l_temp.get_string();
+
+			l_temp = l_execute_path;
 			l_temp.combine(core::bc_path(bcL("Content\\Model")));
 			m_content_model_path = l_temp.get_string();
 
@@ -119,9 +123,9 @@ namespace black_cat
 			return *m_content_stream_manager;
 		}
 
-		const bcECHAR* bc_file_system::get_content_path() const noexcept
+		core::bc_estring_view bc_file_system::get_content_path() const noexcept
 		{
-			return m_content_base_path.c_str();
+			return m_content_base_path;
 		}
 
 		core::bc_estring bc_file_system::get_content_path(const bcECHAR* p_path) const noexcept
@@ -132,9 +136,9 @@ namespace black_cat
 			return l_path.get_string();
 		}
 
-		const bcECHAR* bc_file_system::get_content_data_path() const noexcept
+		core::bc_estring_view bc_file_system::get_content_data_path() const noexcept
 		{
-			return m_content_data_path.c_str();
+			return m_content_data_path;
 		}
 
 		core::bc_estring bc_file_system::get_content_data_path(const bcECHAR* p_data_path) const noexcept
@@ -145,9 +149,9 @@ namespace black_cat
 			return l_path.get_string();
 		}
 
-		const bcECHAR* bc_file_system::get_content_texture_path() const noexcept
+		core::bc_estring_view bc_file_system::get_content_texture_path() const noexcept
 		{
-			return m_content_texture_path.c_str();
+			return m_content_texture_path;
 		}
 
 		core::bc_estring bc_file_system::get_content_texture_path(const bcECHAR* p_texture_path) const noexcept
@@ -158,9 +162,22 @@ namespace black_cat
 			return l_path.get_string();
 		}
 
-		const bcECHAR* bc_file_system::get_content_model_path() const noexcept
+		core::bc_estring_view bc_file_system::get_content_sound_path() const noexcept
 		{
-			return m_content_model_path.c_str();
+			return m_content_sound_path;
+		}
+
+		core::bc_estring bc_file_system::get_content_sound_path(const bcECHAR* p_sound_path) const noexcept
+		{
+			core::bc_path l_path(get_content_sound_path());
+			l_path.combine(core::bc_path(p_sound_path));
+
+			return l_path.get_string();
+		}
+
+		core::bc_estring_view bc_file_system::get_content_model_path() const noexcept
+		{
+			return m_content_model_path;
 		}
 
 		core::bc_estring bc_file_system::get_content_model_path(const bcECHAR* p_model_path) const noexcept
@@ -171,9 +188,9 @@ namespace black_cat
 			return l_path.get_string();
 		}
 
-		const bcECHAR* bc_file_system::get_content_platform_shader_path() const noexcept
+		core::bc_estring_view bc_file_system::get_content_platform_shader_path() const noexcept
 		{
-			return m_content_platform_shader_path.c_str();
+			return m_content_platform_shader_path;
 		}
 
 		core::bc_estring bc_file_system::get_content_platform_shader_path(const bcECHAR* p_shader_path) const noexcept
@@ -184,9 +201,9 @@ namespace black_cat
 			return l_path.get_string();
 		}
 
-		const bcECHAR* bc_file_system::get_content_script_path() const noexcept
+		core::bc_estring_view bc_file_system::get_content_script_path() const noexcept
 		{
-			return m_content_script_path.c_str();
+			return m_content_script_path;
 		}
 
 		core::bc_estring bc_file_system::get_content_script_path(const bcECHAR* p_script_path) const noexcept
@@ -197,9 +214,9 @@ namespace black_cat
 			return l_path.get_string();
 		}
 
-		const bcECHAR* bc_file_system::get_content_scene_path() const noexcept
+		core::bc_estring_view bc_file_system::get_content_scene_path() const noexcept
 		{
-			return m_content_scene_path.c_str();
+			return m_content_scene_path;
 		}
 
 		core::bc_estring bc_file_system::get_content_scene_path(const bcECHAR* p_scene_path) const noexcept

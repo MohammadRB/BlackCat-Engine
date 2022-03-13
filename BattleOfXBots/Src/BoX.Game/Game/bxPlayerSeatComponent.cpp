@@ -38,9 +38,8 @@ namespace box
 			throw bc_invalid_argument_exception("invalid team parameter");
 		}
 
-		const auto l_icon_parameters = core::bc_data_driven_parameter(core::bc_alloc_type::frame)
-			.add_or_update(constant::g_param_icon_name, core::bc_string("player"));
-		p_context.m_actor.create_component<game::bc_icon_component>(l_icon_parameters);
+		auto* l_icon_component = p_context.m_actor.get_create_component<game::bc_icon_component>();
+		l_icon_component->set_icon("player");
 	}
 
 	void bx_player_seat_component::handle_event(const game::bc_actor_component_event_context& p_context)

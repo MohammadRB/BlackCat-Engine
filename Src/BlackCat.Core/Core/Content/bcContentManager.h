@@ -382,17 +382,15 @@ namespace black_cat
 			static_assert(std::is_base_of_v<bci_content, TContent>, "Content must inherit from bc_icontent");
 
 			bci_content_loader* l_loader = _get_loader<TContent>();
-			bc_content_saving_context l_context;
-			l_context.m_file_path = p_file_path;
-			l_context.m_content = &p_content;
+			bc_content_saving_context l_context(p_file_path, p_content);
 
 			const bc_estring_frame l_file_to_open = l_loader->support_offline_processing()
 				                                        ? _get_offline_file_path<TContent>(p_file_path, p_file_variant)
 				                                        : bc_estring_frame(p_file_path);
 
 			{
-				bc_file_stream l_file_stream;
 				_bc_content_loader_guard<TContent> l_guard(*l_loader, l_context);
+				bc_file_stream l_file_stream;
 				
 				if (!l_file_stream.open_write(l_file_to_open.c_str()))
 				{
@@ -526,13 +524,8 @@ namespace black_cat
 				l_offline_file_info.m_size == 0
 			);
 
-			bc_content_loading_context l_context;
 			bc_unique_ptr<TContent> l_result;
-
-			l_context.m_file_path = p_file;
-			l_context.m_file_variant = p_file_variant;
-			l_context.m_parameters = &p_parameter;
-			l_context.m_instance_parameters = std::move(p_instance_parameters);
+			bc_content_loading_context l_context(p_file, p_file_variant, p_parameter, std::move(p_instance_parameters));
 			l_context.set_allocator_alloc_type(p_alloc_type);
 
 			{
@@ -557,13 +550,16 @@ namespace black_cat
 					l_context.m_file = bc_stream(std::move(l_file_stream));
 					p_loader->content_file_open_succeeded(l_context);
 
-					if (!l_offline_file_stream.open
+					if
+					(
+						!l_offline_file_stream.open
 						(
 							p_offline_file,
 							platform::bc_file_mode::create_overwrite,
 							platform::bc_file_access::write,
 							platform::bc_file_sharing::none
-						))
+						)
+					)
 					{
 						l_context.m_file = bc_stream(std::move(l_offline_file_stream));
 						p_loader->content_file_open_failed(l_context);

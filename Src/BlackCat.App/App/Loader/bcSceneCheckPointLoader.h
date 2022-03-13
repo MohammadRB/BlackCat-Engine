@@ -63,10 +63,10 @@ namespace black_cat
 	{
 		static_assert(std::is_base_of_v<game::bc_scene_checkpoint, TCheckPoint>);
 
-		const auto* l_check_point = static_cast<TCheckPoint*>(p_context.m_content);
-		const auto l_dynamic_actors = l_check_point->export_dynamic_actors();
+		const auto& l_check_point = static_cast<TCheckPoint&>(p_context.m_content);
+		const auto l_dynamic_actors = l_check_point.export_dynamic_actors();
 		const auto l_json_str = save_checkpoint_file(l_dynamic_actors);
 		
-		p_context.m_file.write(l_json_str.c_str(), sizeof(decltype(l_json_str)::value_type) * l_json_str.size());
+		p_context.m_file.write(l_json_str.c_str(), sizeof(typename decltype(l_json_str)::value_type) * l_json_str.size());
 	}
 }

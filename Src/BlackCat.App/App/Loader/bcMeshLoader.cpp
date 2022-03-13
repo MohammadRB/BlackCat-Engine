@@ -82,7 +82,7 @@ namespace black_cat
 		convert_ai_nodes(l_game_system.get_render_system(), p_context, *l_scene, l_node_mapping, *l_scene->mRootNode, l_builder);
 
 		const auto l_mesh_name = core::bc_path(p_context.m_file_path).get_filename();
-		const auto* l_auto_scale = p_context.m_parameters->get_value<bcFLOAT>(constant::g_param_mesh_auto_scale);
+		const auto* l_auto_scale = p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_mesh_auto_scale);
 
 		if(l_auto_scale)
 		{
@@ -109,14 +109,14 @@ namespace black_cat
 				p_context.get_allocator_alloc_type(),
 				l_lod_path.get_string_frame().c_str(),
 				p_context.m_file_variant,
-				*p_context.m_parameters,
+				p_context.m_parameters,
 				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_or_update(constant::g_param_mesh_is_lod, true)
 			);
 
 			l_builder.with_lod(std::move(l_lod_mesh));
 		}
 
-		const auto* l_collider_file_name_value = p_context.m_parameters->get_value<core::bc_string>(constant::g_param_mesh_collider);
+		const auto* l_collider_file_name_value = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_mesh_collider);
 		const auto l_is_lod = bc_null_default(p_context.m_instance_parameters.get_value<bool>(constant::g_param_mesh_is_lod), false);
 		core::bc_estring_frame l_collider_file_name;
 		
@@ -152,7 +152,7 @@ namespace black_cat
 				p_context.get_allocator_alloc_type(),
 				l_collider_file_path.get_string_frame().c_str(),
 				p_context.m_file_variant,
-				*p_context.m_parameters,
+				p_context.m_parameters,
 				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_or_update("aiScene", l_collider_ai_scene)
 			);
 		}
@@ -223,7 +223,7 @@ namespace black_cat
 				p_context.get_allocator_alloc_type(),
 				core::bc_path(l_root_path).set_filename(l_diffuse_file_name->get_string().c_str()).get_string().c_str(),
 				{},
-				*p_context.m_parameters
+				p_context.m_parameters
 			);
 		}
 
@@ -267,7 +267,7 @@ namespace black_cat
 				p_context.get_allocator_alloc_type(),
 				l_normal_map_path.c_str(),
 				{},
-				*p_context.m_parameters
+				p_context.m_parameters
 			);
 		}
 		if (!l_specular_map_path.empty())
@@ -277,7 +277,7 @@ namespace black_cat
 				p_context.get_allocator_alloc_type(),
 				l_specular_map_path.c_str(),
 				{},
-				*p_context.m_parameters
+				p_context.m_parameters
 			);
 		}
 	}
@@ -305,7 +305,7 @@ namespace black_cat
 		bool l_has_texcoord = p_ai_mesh.HasTextureCoords(0);
 		bool l_has_normal = p_ai_mesh.HasNormals();
 		bool l_has_tangent = p_ai_mesh.HasTangentsAndBitangents();
-		bool l_has_skinned = p_ai_mesh.HasBones() && bc_null_default(p_context.m_parameters->get_value<bool>(constant::g_param_mesh_skinned), false);
+		bool l_has_skinned = p_ai_mesh.HasBones() && bc_null_default(p_context.m_parameters.get_value<bool>(constant::g_param_mesh_skinned), false);
 
 		if (l_has_skinned)
 		{

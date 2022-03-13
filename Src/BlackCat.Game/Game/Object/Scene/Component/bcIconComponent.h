@@ -29,6 +29,8 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
+			bool has_icon() const noexcept;
+
 			std::string_view get_name() const noexcept;
 
 			bcUINT16 get_size() const noexcept;
@@ -37,11 +39,20 @@ namespace black_cat
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
+			void set_icon(core::bc_string p_name) noexcept;
+
+			void set_icon(core::bc_string p_name, bcUINT16 p_size, bc_icon_type p_type) noexcept;
+
 		private:
 			core::bc_string m_name;
 			bcUINT16 m_size;
 			bc_icon_type m_type;
 		};
+
+		inline bool bc_icon_component::has_icon() const noexcept
+		{
+			return !m_name.empty();
+		}
 
 		inline std::string_view bc_icon_component::get_name() const noexcept
 		{

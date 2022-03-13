@@ -7,6 +7,7 @@
 #include "Game/Object/Scene/Component/bcIconComponent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
+#include "Game/bcConstant.h"
 
 namespace black_cat
 {
@@ -136,27 +137,23 @@ namespace black_cat
 
 		void bc_wind_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			const auto& l_wind_type = p_context.m_parameters.get_value_throw<core::bc_string>("type");
+			const auto& l_wind_type = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_wind_type);
 
 			if (l_wind_type == "direct")
 			{
-				const auto l_direction_x = p_context.m_parameters.get_value_throw<bcFLOAT>("direction_x");
-				const auto l_direction_y = p_context.m_parameters.get_value_throw<bcFLOAT>("direction_y");
-				const auto l_direction_z = p_context.m_parameters.get_value_throw<bcFLOAT>("direction_z");
+				const auto l_direction = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_wind_direction);
 				const auto l_power = p_context.m_parameters.get_value_throw<bcFLOAT>("power");
 
-				const bc_direct_wind l_direct_wind({ l_direction_x, l_direction_y, l_direction_z }, l_power);
+				const bc_direct_wind l_direct_wind(l_direction, l_power);
 				m_wind = bc_wind(l_direct_wind);
 			}
 			else if (l_wind_type == "point")
 			{
-				const auto l_position_x = p_context.m_parameters.get_value_throw<bcFLOAT>("position_x");
-				const auto l_position_y = p_context.m_parameters.get_value_throw<bcFLOAT>("position_y");
-				const auto l_position_z = p_context.m_parameters.get_value_throw<bcFLOAT>("position_z");
+				const auto l_position = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_wind_position);
 				const auto l_power = p_context.m_parameters.get_value_throw<bcFLOAT>("power");
 				const auto l_radius = p_context.m_parameters.get_value_throw<bcFLOAT>("radius");
 
-				const bc_point_wind l_wind_point({ l_position_x, l_position_y, l_position_z }, l_power, l_radius);
+				const bc_point_wind l_wind_point(l_position, l_power, l_radius);
 				m_wind = bc_wind(l_wind_point);
 			}
 			else
@@ -165,15 +162,13 @@ namespace black_cat
 				throw bc_invalid_argument_exception("Invalid wind type");
 			}
 
-			const auto l_icon_parameters = core::bc_data_driven_parameter(core::bc_alloc_type::frame)
-				.add_or_update(constant::g_param_icon_name, core::bc_string("wind"));
-			p_context.m_actor.create_component<bc_icon_component>(l_icon_parameters);
+			auto* l_icon_component = p_context.m_actor.get_create_component<bc_icon_component>();
+			l_icon_component->set_icon("wind");
 		}
 
 		void bc_wind_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
-			if (l_world_transform_event)
+			if (const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event))
 			{
 				// TODO what if wind is part of a mesh
 				const auto& l_transform = l_world_transform_event->get_transform();
@@ -184,10 +179,6 @@ namespace black_cat
 
 				return;
 			}
-		}
-
-		void bc_wind_component::update(const bc_actor_component_update_content& p_context)
-		{
 		}
 	}	
 }

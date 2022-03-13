@@ -92,7 +92,7 @@ namespace black_cat
 
 			bc_wind_component(bc_wind_component&& p_other) noexcept = default;
 
-			~bc_wind_component() = default;
+			~bc_wind_component() override = default;
 
 			bc_wind_component& operator=(bc_wind_component&& p_other) noexcept = default;
 
@@ -103,8 +103,6 @@ namespace black_cat
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
 			void handle_event(const bc_actor_component_event_context& p_context) override;
-
-			void update(const bc_actor_component_update_content& p_context) override;
 
 		private:			
 			core::bc_nullable<bc_wind> m_wind;

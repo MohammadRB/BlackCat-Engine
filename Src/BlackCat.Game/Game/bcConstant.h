@@ -20,6 +20,11 @@ namespace black_cat
 		BC_PARAMETER(mesh_collider_materials, "collider_materials");
 		BC_PARAMETER(mesh_is_lod, "is_lod");
 		BC_PARAMETER(high_detail_query_shape, "high_detail_query_shape");
+		BC_PARAMETER(sound, "sound");
+		BC_PARAMETER(sound_load_mode, "load");
+		BC_PARAMETER(sound_play_mode, "play");
+		BC_PARAMETER(sound_min_max_distance, "min_max_distance");
+		BC_PARAMETER(sound_volume, "volume");
 		BC_PARAMETER(position, "position");
 		BC_PARAMETER(direction, "direction");
 		BC_PARAMETER(rotation, "rotation");
@@ -52,6 +57,11 @@ namespace black_cat
 		BC_PARAMETER(weapon_rate_of_fire_seconds, "rate_of_fire");
 		BC_PARAMETER(weapon_bullet_speed, "bullet_speed");
 		BC_PARAMETER(weapon_bullet_mass, "bullet_mass");
+		BC_PARAMETER(wind_type, "type");
+		BC_PARAMETER(wind_position, "position");
+		BC_PARAMETER(wind_direction, "direction");
+		BC_PARAMETER(wind_power, "power");
+		BC_PARAMETER(wind_radius, "radius");
 		BC_PARAMETER(light_type, "type");
 		BC_PARAMETER(light_position, "position");
 		BC_PARAMETER(light_direction, "direction");
@@ -69,12 +79,12 @@ namespace black_cat
 		BC_PARAMETER(light_flare_mask_v0, "flare_mask_v0");
 		BC_PARAMETER(light_flare_mask_u1, "flare_mask_u1");
 		BC_PARAMETER(light_flare_mask_v1, "flare_mask_v1");
-		BC_PARAMETER(network_data_dir, "data_dir");
-		BC_PARAMETER(network_entity_name, "entity_name");
 		BC_PARAMETER(ragdoll_joints, "joints");
 		BC_PARAMETER(icon_name, "name");
 		BC_PARAMETER(icon_size, "size");
 		BC_PARAMETER(icon_type, "type");
 		BC_PARAMETER(player_id, "player_id");
+		BC_PARAMETER(network_data_dir, "data_dir");
+		BC_PARAMETER(network_entity_name, "entity_name");
 	}
 }

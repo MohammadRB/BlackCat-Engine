@@ -11,7 +11,9 @@ namespace black_cat
 	{
 		template<>
 		BC_SOUNDIMP_DLL
-		bc_platform_sound_channel<bc_sound_api::fmod>::bc_platform_sound_channel() noexcept = default;
+		bc_platform_sound_channel<bc_sound_api::fmod>::bc_platform_sound_channel() noexcept
+		{
+		}
 
 		template<>
 		BC_SOUNDIMP_DLL
@@ -22,15 +24,24 @@ namespace black_cat
 
 		template<>
 		BC_SOUNDIMP_DLL
-			bc_platform_sound_channel<bc_sound_api::fmod>::bc_platform_sound_channel(const bc_platform_sound_channel&) noexcept = default;
+		bc_platform_sound_channel<bc_sound_api::fmod>::bc_platform_sound_channel(const bc_platform_sound_channel& p_other) noexcept
+			: m_pack(p_other.m_pack)
+		{
+		}
 
 		template<>
 		BC_SOUNDIMP_DLL
-		bc_platform_sound_channel<bc_sound_api::fmod>::~bc_platform_sound_channel() noexcept = default;
+		bc_platform_sound_channel<bc_sound_api::fmod>::~bc_platform_sound_channel() noexcept
+		{
+		}
 
 		template<>
 		BC_SOUNDIMP_DLL
-		bc_platform_sound_channel<bc_sound_api::fmod>& bc_platform_sound_channel<bc_sound_api::fmod>::operator=(const bc_platform_sound_channel&) noexcept = default;
+		bc_platform_sound_channel<bc_sound_api::fmod>& bc_platform_sound_channel<bc_sound_api::fmod>::operator=(const bc_platform_sound_channel& p_other) noexcept
+		{
+			m_pack = p_other.m_pack;
+			return *this;
+		}
 
 		template<>
 		BC_SOUNDIMP_DLL
@@ -45,14 +56,21 @@ namespace black_cat
 
 		template<>
 		BC_SOUNDIMP_DLL
-		void bc_platform_sound_channel<bc_sound_api::fmod>::stop() const noexcept
+		void bc_platform_sound_channel<bc_sound_api::fmod>::play() noexcept
 		{
-			bc_fmod_call(m_pack.m_channel->stop());
+			bc_fmod_call(m_pack.m_channel->setPaused(false));
 		}
 
 		template<>
 		BC_SOUNDIMP_DLL
 		void bc_platform_sound_channel<bc_sound_api::fmod>::pause() noexcept
+		{
+			bc_fmod_call(m_pack.m_channel->setPaused(true));
+		}
+
+		template<>
+		BC_SOUNDIMP_DLL
+		void bc_platform_sound_channel<bc_sound_api::fmod>::stop() const noexcept
 		{
 			bc_fmod_call(m_pack.m_channel->stop());
 		}

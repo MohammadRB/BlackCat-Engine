@@ -62,7 +62,7 @@ namespace black_cat
 		core::bc_unordered_map_frame<core::bc_string_view, core::bc_vector_frame<const aiNode*>> l_px_node_mapping;
 		core::bc_vector<std::tuple<core::bc_string_view, core::bc_string_view, physics::bc_transform>> l_px_joint_mapping;
 		
-		const bool l_is_skinned = bc_null_default(p_context.m_parameters->get_value<bool>(constant::g_param_mesh_skinned), false);
+		const bool l_is_skinned = bc_null_default(p_context.m_parameters.get_value<bool>(constant::g_param_mesh_skinned), false);
 		if(l_is_skinned)
 		{
 			bc_mesh_loader_utility::calculate_node_mapping(*l_scene->mRootNode, l_node_mapping);
@@ -75,7 +75,7 @@ namespace black_cat
 			bc_mesh_loader_utility::calculate_px_node_mapping(*l_scene, *l_scene->mRootNode, l_px_node_mapping);
 		}
 		
-		const bool l_generate_high_detail_query_shape = bc_null_default(p_context.m_parameters->get_value<bool>(constant::g_param_high_detail_query_shape), true);
+		const bool l_generate_high_detail_query_shape = bc_null_default(p_context.m_parameters.get_value<bool>(constant::g_param_high_detail_query_shape), true);
 		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
 		game::bc_mesh_collider_builder l_builder;
 

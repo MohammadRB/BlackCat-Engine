@@ -109,10 +109,10 @@ namespace black_cat
 	{
 		auto* l_game_system = core::bc_get_service<game::bc_game_system>();
 		auto& l_device = l_game_system->get_render_system().get_device();
-		auto* l_texture_content = static_cast<graphic::bc_texture2d_content*>(p_context.m_content);
+		auto& l_texture_content = static_cast<graphic::bc_texture2d_content&>(p_context.m_content);
 
 		p_context.m_file.close(); // Close file so DX can write to the file
 
-		l_device.save_texture2d(l_texture_content->get_resource(), graphic::bc_image_format::dds, p_context.m_file_path.data());
+		l_device.save_texture2d(l_texture_content.get_resource(), graphic::bc_image_format::dds, p_context.m_file_path.data());
 	}
 }

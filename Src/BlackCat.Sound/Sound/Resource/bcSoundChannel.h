@@ -34,9 +34,11 @@ namespace black_cat
 
 			bool is_playing() const noexcept;
 
-			void stop() const noexcept;
+			void play() noexcept;
 
 			void pause() noexcept;
+
+			void stop() const noexcept;
 
 			bcFLOAT get_volume() const noexcept;
 

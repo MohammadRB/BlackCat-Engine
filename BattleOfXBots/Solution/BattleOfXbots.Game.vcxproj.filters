@@ -40,6 +40,9 @@
     <Filter Include="BoX.Game\Content\Shader\DirectX11\PostProcess">
       <UniqueIdentifier>{f36a5671-c312-46ec-a8af-9b9355a063ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BoX.Game\Content\Sound">
+      <UniqueIdentifier>{8d2a2281-806e-47f2-8197-ab6ab6e1152a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\BoX.Game\Application\bxApplicationHookFunctions.cpp">

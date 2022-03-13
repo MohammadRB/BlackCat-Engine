@@ -24,13 +24,9 @@ namespace black_cat
 		void bc_icon_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			const auto* l_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_icon_name);
-			if(l_name)
+			if(!l_name)
 			{
-				m_name = *l_name;
-			}
-			else
-			{
-				m_name = p_context.m_instance_parameters.get_value_throw<core::bc_string>(constant::g_param_icon_name);
+				l_name = p_context.m_instance_parameters.get_value<core::bc_string>(constant::g_param_icon_name);
 			}
 
 			auto* l_size = p_context.m_parameters.get_value<bcUINT32>(constant::g_param_icon_size);
@@ -45,11 +41,14 @@ namespace black_cat
 				l_type = p_context.m_instance_parameters.get_value<core::bc_string>(constant::g_param_icon_type);
 			}
 
+			if(l_name)
+			{
+				m_name = *l_name;
+			}
 			if(l_size)
 			{
 				m_size = *l_size;
 			}
-
 			if(l_type)
 			{
 				if(*l_type == "editor")
@@ -57,6 +56,18 @@ namespace black_cat
 					m_type = bc_icon_type::editor;
 				}
 			}
+		}
+
+		void bc_icon_component::set_icon(core::bc_string p_name) noexcept
+		{
+			set_icon(std::move(p_name), 32, bc_icon_type::editor);
+		}
+
+		void bc_icon_component::set_icon(core::bc_string p_name, bcUINT16 p_size, bc_icon_type p_type) noexcept
+		{
+			m_name = std::move(p_name);
+			m_size = p_size;
+			m_type = p_type;
 		}
 	}
 }

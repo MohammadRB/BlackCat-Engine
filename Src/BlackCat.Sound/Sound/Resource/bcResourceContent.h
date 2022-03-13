@@ -18,7 +18,7 @@ namespace black_cat
 		class bc_device_resource_content : public core::bci_content
 		{
 		public:
-			explicit bc_device_resource_content(bc_sounds_ref<TResource>&& p_resource) noexcept
+			explicit bc_device_resource_content(bc_sounds_ref<TResource> p_resource) noexcept
 				: m_resource(std::move(p_resource))
 			{
 			}

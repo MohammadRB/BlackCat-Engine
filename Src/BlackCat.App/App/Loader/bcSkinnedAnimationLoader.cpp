@@ -208,7 +208,7 @@ namespace black_cat
 		core::bc_vector_frame< ozz::unique_ptr< ozz::animation::Animation>> l_ozz_animations;
 		l_ozz_animations.reserve(l_ozz_raw_animations.size());
 
-		bool l_additive_animation = bc_null_default(p_context.m_parameters->get_value<bool>(constant::g_param_animation_additive), false);
+		bool l_additive_animation = bc_null_default(p_context.m_parameters.get_value<bool>(constant::g_param_animation_additive), false);
 		
 		std::transform
 		(

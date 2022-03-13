@@ -62,6 +62,14 @@
           "content_file": "content\\texture\\BulletTrail.dds",
           "content_parameter": {
           }
+        },
+        {
+          "content_title": "wind_through_reeds",
+          "content_loader": "sound",
+          "content_file": "content\\sound\\wind-through-reeds.mp3",
+          "content_parameter": {
+            "load": "compressed" 
+          }
         }
       ]
     }

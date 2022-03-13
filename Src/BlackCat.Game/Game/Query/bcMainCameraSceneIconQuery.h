@@ -66,7 +66,7 @@ namespace black_cat
 			for (auto& l_actor : l_main_camera_scene_buffer)
 			{
 				const auto* l_icon_component = l_actor.get_component<bc_icon_component>();
-				if(!l_icon_component)
+				if(!l_icon_component || !l_icon_component->has_icon())
 				{
 					continue;
 				}

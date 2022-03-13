@@ -56,6 +56,7 @@
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "Game/Object/Scene/Component/bcIconComponent.h"
 #include "Game/Object/Scene/Component/bcCheckPointComponent.h"
+#include "Game/Object/Scene/Component/bcSoundComponent.h"
 #include "Game/Object/Animation/bcSkinnedAnimation.h"
 #include "App/Application/bcApplicationHookFuncations.h"
 #include "App/Loader/bcTextureLoader.h"
@@ -65,6 +66,7 @@
 #include "App/Loader/bcGeometryShaderLoader.h"
 #include "App/Loader/bcPixelShaderLoader.h"
 #include "App/Loader/bcComputeShaderLoader.h"
+#include "App/Loader/bcSoundLoader.h"
 #include "App/Loader/bcMeshColliderLoader.h"
 #include "App/Loader/bcMeshLoader.h"
 #include "App/Loader/bcSkinnedAnimationLoader.h"
@@ -150,6 +152,7 @@ namespace black_cat
 		core::bc_register_loader<graphic::bc_geometry_shader_content, bc_geometry_shader_loader>("geometry_shader", core::bc_make_loader<bc_geometry_shader_loader>());
 		core::bc_register_loader<graphic::bc_pixel_shader_content, bc_pixel_shader_loader>("pixel_shader", core::bc_make_loader<bc_pixel_shader_loader>());
 		core::bc_register_loader<graphic::bc_compute_shader_content, bc_compute_shader_loader>("compute_shader", core::bc_make_loader<bc_compute_shader_loader>());
+		core::bc_register_loader<sound::bc_sound_content, bc_sound_loader>("sound", core::bc_make_loader<bc_sound_loader>());
 		core::bc_register_loader<game::bc_mesh_collider, bc_mesh_collider_loader>("mesh_collider", core::bc_make_loader<bc_mesh_collider_loader>());
 		core::bc_register_loader<game::bc_mesh, bc_mesh_loader>("mesh", core::bc_make_loader<bc_mesh_loader>());
 		core::bc_register_loader<game::bc_skinned_animation, bc_skinned_animation_loader>("animation", core::bc_make_loader<bc_skinned_animation_loader>());
@@ -204,7 +207,8 @@ namespace black_cat
 			game::bc_component_register<game::bc_network_component>("network"),
 			game::bc_component_register<game::bc_human_ragdoll_component>("human_ragdoll"),
 			game::bc_component_register<game::bc_icon_component>("icon"),
-			game::bc_component_register<game::bc_checkpoint_component>("checkpoint")
+			game::bc_component_register<game::bc_checkpoint_component>("checkpoint"),
+			game::bc_component_register<game::bc_sound_component>("sound")
 		);
 		game::bc_register_abstract_component_types
 		(

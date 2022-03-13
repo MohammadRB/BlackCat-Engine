@@ -5,6 +5,7 @@
 #include "SoundImp/Resource/bcSound.h"
 
 #include "Sound/Resource/bcSoundChannel.h"
+#include "SoundImp/bcExport.h"
 #include "3rdParty/FMOD/Include/fmod.hpp"
 
 namespace black_cat
