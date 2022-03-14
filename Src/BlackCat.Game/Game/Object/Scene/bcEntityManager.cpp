@@ -215,7 +215,7 @@ namespace black_cat
 					auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
 					if (l_entity_component_entry == std::end(m_components))
 					{
-						throw bc_key_not_found_exception("There is no component registered with specified name");
+						throw bc_key_not_found_exception("There is no registered component with specified name");
 					}
 
 					l_entity_component_entry->second.m_create_delegate(l_actor);
@@ -321,7 +321,7 @@ namespace black_cat
 					l_actor = bc_actor();
 				}
 
-				core::bc_log(core::bc_log_type::error) << "Error in creation of entity '" << p_entity_name << "': " << p_exception.what() << core::bc_lend;
+				core::bc_log(core::bc_log_type::error) << "Error in entity creation: '" << p_entity_name << "': " << p_exception.what() << core::bc_lend;
 			}
 
 			return l_actor;

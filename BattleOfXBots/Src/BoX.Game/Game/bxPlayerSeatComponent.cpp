@@ -46,9 +46,9 @@ namespace box
 	{
 		if (const auto* l_world_transform_event = core::bci_message::as<game::bc_world_transform_actor_event>(p_context.m_event))
 		{
-			const auto& l_transform = l_world_transform_event->get_transform();
-			const auto& l_bound_box = physics::bc_bound_box(l_transform.get_translation(), core::bc_vector3f(.5f));
-			p_context.m_actor.add_event(game::bc_bound_box_changed_actor_event(l_bound_box));
+			//const auto& l_transform = l_world_transform_event->get_transform();
+			//const auto& l_bound_box = physics::bc_bound_box(l_transform.get_translation(), core::bc_vector3f(.5f));
+			//p_context.m_actor.add_event(game::bc_bound_box_changed_actor_event(l_bound_box));
 
 			return;
 		}

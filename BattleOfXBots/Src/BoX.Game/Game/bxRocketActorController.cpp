@@ -1,7 +1,5 @@
 // [04/27/2021 MRB]
 
-#include "App/AppPCH.h"
-
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Utility/bcNullable.h"
 #include "Game/System/Physics/bcPxWrap.h"
@@ -13,17 +11,17 @@
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/bcUtility.h"
 #include "Game/bcConstant.h"
-#include "App/SampleImp/ActorController/bcRocketActorController.h"
+#include "BoX.Game/Game/bxRocketActorController.h"
 
-namespace black_cat
+namespace box
 {
-	void bc_rocket_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
+	void bx_rocket_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		m_explosion_entity = p_context.m_parameters.get_value_throw<core::bc_string>("explosion_entity").c_str();
 		m_speed = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_speed);
 	}
 
-	void bc_rocket_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
+	void bx_rocket_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		const auto& l_mediate_component = *p_context.m_actor.get_component<game::bc_mediate_component>();
 		
@@ -46,7 +44,7 @@ namespace black_cat
 		p_context.m_actor.get_create_component<game::bc_particle_emitter_component>()->add_emitter(l_emitter);
 	}
 
-	void bc_rocket_controller::update(const game::bc_actor_component_update_content& p_context)
+	void bx_rocket_controller::update(const game::bc_actor_component_update_content& p_context)
 	{
 		if(!m_scene)
 		{

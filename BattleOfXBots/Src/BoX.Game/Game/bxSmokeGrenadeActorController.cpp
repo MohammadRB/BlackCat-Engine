@@ -1,15 +1,14 @@
 // [11/06/2021 MRB]
 
-#include "App/AppPCH.h"
-
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
+#include "Game/Object/Scene/Component/bcSoundComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/bcUtility.h"
-#include "App/SampleImp/ActorController/bcSmokeGrenadeActorController.h"
+#include "BoX.Game/Game/bxSmokeGrenadeActorController.h"
 
-namespace black_cat
+namespace box
 {
-	void bc_smoke_grenade_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
+	void bx_smoke_grenade_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		bc_rigid_dynamic_network_actor_controller::initialize(p_context);
 		
@@ -19,7 +18,7 @@ namespace black_cat
 		m_num_particles_per_second = 20;
 	}
 
-	void bc_smoke_grenade_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
+	void bx_smoke_grenade_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
 		if (get_network_type() == game::bc_network_type::not_started)
 		{
@@ -49,7 +48,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_smoke_grenade_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
+	void bx_smoke_grenade_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
 	{
 		if (!get_scene())
 		{
@@ -79,8 +78,15 @@ namespace black_cat
 				.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up(), m_smoke_time, 0, 0)
 				.with_texture(5)
 				.emit_particles(0, 20, 19, 0.1f);
+
 			auto* l_emitter_component = p_context.m_actor.get_create_component<game::bc_particle_emitter_component>();
 			l_emitter_component->add_emitter(l_emitter);
+
+			const auto* l_sound_component = p_context.m_actor.get_component<game::bc_sound_component>();
+			if(l_sound_component)
+			{
+				l_sound_component->get_channel().play();
+			}
 
 			m_particles_added = true;
 		}
@@ -115,7 +121,7 @@ namespace black_cat
 		m_num_spawned_particles_in_current_second += l_num_particles_in_current_second;
 	}
 
-	void bc_smoke_grenade_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
+	void bx_smoke_grenade_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
 	{
 	}
 }

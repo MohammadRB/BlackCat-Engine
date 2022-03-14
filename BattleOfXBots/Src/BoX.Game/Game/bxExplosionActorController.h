@@ -5,12 +5,15 @@
 #include "Core/Math/bcVector3f.h"
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
+#include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Query/bcSceneQuery.h"
-#include "App/bcExport.h"
+#include "BoX.Game/bxExport.h"
 
-namespace black_cat
+namespace box
 {
-	class BC_DLL bc_explosion_actor_controller : public game::bci_actor_controller
+	using namespace black_cat;
+
+	class BX_GAME_DLL bx_explosion_actor_controller : public game::bci_actor_controller
 	{
 	private:
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
@@ -30,12 +33,14 @@ namespace black_cat
 		bcFLOAT m_light_radius = 0;
 		bcFLOAT m_light_rise_per_second = 0;
 		bcFLOAT m_light_lifetime_second = 1.0f;
+		bcFLOAT m_sound_lifetime_second = m_light_lifetime_second;
 		bcFLOAT m_age = 0;
 		core::bc_vector3f m_position;
 		core::bc_vector3f m_direction;
 		bool m_has_started = false;
 
 		game::bc_scene* m_scene = nullptr;
+		game::bc_light_component* m_light_component = nullptr;
 		core::bc_query_result<game::bc_scene_query> m_scene_terrain_query;
 		core::bc_query_result<game::bc_scene_query> m_scene_dynamics_query;
 	};

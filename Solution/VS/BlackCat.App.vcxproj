@@ -285,14 +285,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcCascadedShadowMapPass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcSkinnedCascadedShadowMapPass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcVegetableCascadedShadowMapPass.h" />
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcExplosionActorController.h" />
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcFireActorController.h" />
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcGrenadeActorController.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcRigidDynamicNetworkActorController.h" />
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcRocketActorController.h" />
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcSmokeGrenadeActorController.h" />
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\Particle\bcExplosionParticle.h" />
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\Particle\bcWeaponParticle.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotActorController.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotGrenadeNetworkMessage.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotIdleActorController.h" />
@@ -346,12 +339,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcCascadedShadowMapPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcSkinnedCascadedShadowMapPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcVegetableCascadedShadowMapPass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcExplosionActorController.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcFireActorController.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcGrenadeActorController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcRigidDynamicNetworkActorController.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcRocketActorController.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcSmokeGrenadeActorController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotActorController.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotGrenadeNetworkMessage.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotRagdollNetworkMessage.cpp" />
@@ -595,48 +583,15 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Decal.dds">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Decal.nrm.dds">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Decal.spec.dds">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-    </Image>
     <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Default.dds">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Flare1.dds">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Flare2.dds">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Flare3.dds">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
-    </Image>
     <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\SpriteIcon.png">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Sprites.dds">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </Image>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

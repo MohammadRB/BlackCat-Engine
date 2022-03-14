@@ -8,6 +8,7 @@
 #include "Core/Math/bcVector3f.h"
 #include "Core/Utility/bcInitializable.h"
 #include "Sound/bcSoundRef.h"
+#include "Sound/bcDefinition.h"
 #include "Sound/bcSoundApi.h"
 
 namespace black_cat
@@ -40,6 +41,7 @@ namespace black_cat
 			core::bc_vector3f m_listener_position;
 			core::bc_vector3f m_listener_forward;
 			core::bc_vector3f m_listener_up;
+			core::bc_vector3f m_listener_velocity;
 		};
 
 		template<bc_sound_api TApi>
@@ -58,15 +60,15 @@ namespace black_cat
 
 			bc_platform_device& operator=(bc_platform_device&&) noexcept;
 
-			bc_sound_ref create_sound(const void* p_data, bcSIZE p_data_length);
+			bc_sound_ref create_sound(const void* p_data, bcSIZE p_data_length, bc_sound_mode p_mode = bc_sound_mode::none);
 
-			bc_sound_ref create_sound(core::bc_estring_view p_path);
+			bc_sound_ref create_sound(core::bc_estring_view p_path, bc_sound_mode p_mode = bc_sound_mode::none);
 
-			bc_sound_ref create_compressed_sound(const void* p_data, bcSIZE p_data_length);
+			bc_sound_ref create_compressed_sound(const void* p_data, bcSIZE p_data_length, bc_sound_mode p_mode = bc_sound_mode::none);
 
-			bc_sound_ref create_compressed_sound(core::bc_estring_view p_path);
+			bc_sound_ref create_compressed_sound(core::bc_estring_view p_path, bc_sound_mode p_mode = bc_sound_mode::none);
 
-			bc_sound_ref create_stream_sound(core::bc_estring_view p_path);
+			bc_sound_ref create_stream_sound(core::bc_estring_view p_path, bc_sound_mode p_mode = bc_sound_mode::none);
 
 			bc_sound_channel play_sound(bc_sound p_sound, bool p_paused);
 

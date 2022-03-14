@@ -12,6 +12,9 @@ namespace black_cat
 	{
 		void bc_sound_system::update(const update_context& p_context)
 		{
+			const auto l_listener_position = p_context.m_camera.get_position();
+			const auto l_velocity = (l_listener_position - m_last_listener_position) * p_context.m_clock.m_elapsed_second; // amount of move per second
+
 			m_device.update
 			(
 				sound::bc_device::update_context
@@ -19,9 +22,12 @@ namespace black_cat
 					p_context.m_clock,
 					p_context.m_camera.get_position(),
 					p_context.m_camera.get_forward(),
-					p_context.m_camera.get_up()
+					p_context.m_camera.get_up(),
+					l_velocity
 				}
 			);
+
+			m_last_listener_position = p_context.m_camera.get_position();
 		}
 
 		core::bc_task<void> bc_sound_system::update_async(const update_context& p_context)

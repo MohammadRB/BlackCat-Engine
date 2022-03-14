@@ -27,6 +27,42 @@
       "stream_name": "game_assets",
       "stream_content": [
         {
+          "content_title": "decal_texture",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Decal.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "decal_texture.nrm",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Decal.nrm.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "decal_texture.spec",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Decal.spec.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "flare1",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Flare1.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "flare2",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Flare2.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "flare3",
+          "content_loader": "texture2d",
+          "content_file": "content\\Texture\\Flare3.dds",
+          "content_parameter": {}
+        },
+        {
           "content_title": "scifi_rifle",
           "content_loader": "mesh",
           "content_file": "content\\model\\scifi-rifle.fbx",
@@ -68,7 +104,40 @@
           "content_loader": "sound",
           "content_file": "content\\sound\\wind-through-reeds.mp3",
           "content_parameter": {
-            "load": "compressed" 
+            "load": "compressed",
+            "load_3d": false
+          }
+        },
+        {
+          "content_title": "foot_steps",
+          "content_loader": "sound",
+          "content_file": "content\\sound\\foot-steps.mp3",
+          "content_parameter": {
+            "load": "compressed"
+          }
+        },
+        {
+          "content_title": "gun_shot",
+          "content_loader": "sound",
+          "content_file": "content\\sound\\gun-shot-silencer.mp3",
+          "content_parameter": {
+            "load": "compressed"
+          }
+        },
+        {
+          "content_title": "grenade_explosion",
+          "content_loader": "sound",
+          "content_file": "content\\sound\\grenade-explosion.mp3",
+          "content_parameter": {
+            "load": "compressed"
+          }
+        },
+        {
+          "content_title": "grenade_smoke",
+          "content_loader": "sound",
+          "content_file": "content\\sound\\grenade-smoke.mp3",
+          "content_parameter": {
+            "load": "compressed"
           }
         }
       ]

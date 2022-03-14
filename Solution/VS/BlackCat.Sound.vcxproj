@@ -23,6 +23,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\bcDefinition.h" />
     <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\bcExport.h" />
     <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\bcException.h" />
     <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\bcSoundApi.h" />

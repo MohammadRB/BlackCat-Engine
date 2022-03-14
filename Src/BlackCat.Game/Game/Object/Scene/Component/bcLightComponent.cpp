@@ -147,7 +147,7 @@ namespace black_cat
 		}
 
 		void bc_light_component::handle_event(const bc_actor_component_event_context& p_context)
-		{			
+		{
 			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
 			if(l_world_transform_event)
 			{
@@ -155,8 +155,8 @@ namespace black_cat
 				const auto& l_transform = l_world_transform_event->get_transform();
 				m_light->set_transformation(l_transform);
 
-				const auto& l_bound_box = physics::bc_bound_box(l_transform.get_translation(), core::bc_vector3f(.5f));
-				p_context.m_actor.add_event(bc_bound_box_changed_actor_event(l_bound_box));
+				//const auto& l_bound_box = physics::bc_bound_box(l_transform.get_translation(), core::bc_vector3f(.5f));
+				//p_context.m_actor.add_event(bc_bound_box_changed_actor_event(l_bound_box));
 
 				return;
 			}

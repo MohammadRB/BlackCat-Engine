@@ -1,17 +1,15 @@
 // [12/19/2020 MRB]
 
-#include "App/AppPCH.h"
-
 #include "Core/bcUtility.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
-#include "App/SampleImp/ActorController/bcFireActorController.h"
+#include "BoX.Game/Game/bxFireActorController.h"
 
-namespace black_cat
+namespace box
 {
-	void bc_fire_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
+	void bx_fire_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		auto* l_light_component = p_context.m_actor.get_component<game::bc_light_component>();
 		auto* l_emitter_component = p_context.m_actor.get_create_component<game::bc_particle_emitter_component>();
@@ -45,7 +43,7 @@ namespace black_cat
 		m_light_flare_intensity = l_point_light->get_flare() ? l_point_light->get_flare()->get_intensity() : 0;
 	}
 
-	void bc_fire_actor_controller::update(const game::bc_actor_component_update_content& p_context)
+	void bx_fire_actor_controller::update(const game::bc_actor_component_update_content& p_context)
 	{
 		auto* l_light_component = p_context.m_actor.get_component<game::bc_light_component>();
 		auto* l_emitter_component = p_context.m_actor.get_component<game::bc_particle_emitter_component>();

@@ -91,10 +91,9 @@ namespace black_cat
 
 		void bc_render_system::render(const render_context& p_render_param)
 		{
-			m_frame_renderer->render(bc_frame_renderer_render_context(p_render_param.m_clock, p_render_param.m_query_manager, *this));
-
 			if(m_swap_buffer->is_valid())
 			{
+				m_frame_renderer->render(bc_frame_renderer_render_context(p_render_param.m_clock, p_render_param.m_query_manager, *this));
 				m_swap_buffer->present();
 			}
 		}

@@ -16,6 +16,7 @@ namespace black_cat
 		struct bc_platform_device_pack<bc_sound_api::fmod>
 		{
 			FMOD::System* m_system{ nullptr };
+			FMOD_MODE m_default_rolloff;
 		};
 	}
 }

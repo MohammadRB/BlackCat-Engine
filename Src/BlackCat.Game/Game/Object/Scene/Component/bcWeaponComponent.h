@@ -61,7 +61,8 @@ namespace black_cat
 			core::bc_vector3f m_main_hand_offset_ls;
 			core::bc_vector3f m_second_hand_offset_ls;
 			core::bc_vector3f m_fire_offset_ls;
-			const bcCHAR* m_fire_particle;
+			core::bc_string_view m_fire_particle;
+			core::bc_string_view m_fire_sound;
 			core::bc_vector3f m_fire_light_color;
 			bcFLOAT m_fire_light_radius;
 			bcFLOAT m_fire_light_intensity;

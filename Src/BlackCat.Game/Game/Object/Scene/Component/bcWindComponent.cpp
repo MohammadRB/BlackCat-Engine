@@ -174,8 +174,8 @@ namespace black_cat
 				const auto& l_transform = l_world_transform_event->get_transform();
 				m_wind->set_transformation(l_transform);
 
-				const auto& l_bound_box = physics::bc_bound_box(l_transform.get_translation(), core::bc_vector3f(.5f));
-				p_context.m_actor.add_event(bc_bound_box_changed_actor_event(l_bound_box));
+				//const auto& l_bound_box = physics::bc_bound_box(l_transform.get_translation(), core::bc_vector3f(.5f));
+				//p_context.m_actor.add_event(bc_bound_box_changed_actor_event(l_bound_box));
 
 				return;
 			}

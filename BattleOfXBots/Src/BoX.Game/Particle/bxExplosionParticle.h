@@ -6,15 +6,17 @@
 #include "Core/bcUtility.h"
 #include "Game/System/Render/Particle/bcParticleBuilder.h"
 
-namespace black_cat
+namespace box
 {
-	class bc_big_explosion_particle
+	using namespace black_cat;
+
+	class bx_big_explosion_particle
 	{
 	public:
 		game::bc_particle_builder operator()(core::bc_random& p_random) const;
 	};
 
-	inline game::bc_particle_builder bc_big_explosion_particle::operator()(core::bc_random& p_random) const
+	inline game::bc_particle_builder bx_big_explosion_particle::operator()(core::bc_random& p_random) const
 	{
 		core::bc_array<core::bc_vector3f, 30> l_random_directions;
 		bc_randomize_direction

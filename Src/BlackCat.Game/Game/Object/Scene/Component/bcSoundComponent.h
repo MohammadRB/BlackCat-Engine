@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "SoundImp/Resource/bcSound.h"
 #include "SoundImp/Resource/bcSoundChannel.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/bcExport.h"
@@ -25,6 +26,8 @@ namespace black_cat
 
 			bc_actor get_actor() const noexcept override;
 
+			sound::bc_sound get_sound() const noexcept;
+
 			sound::bc_sound_channel get_channel() const noexcept;
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
@@ -32,12 +35,19 @@ namespace black_cat
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 
 		private:
-			sound::bc_sound_channel m_sound;
+			bool m_auto_play;
+			sound::bc_sound m_sound;
+			sound::bc_sound_channel m_channel;
 		};
+
+		inline sound::bc_sound bc_sound_component::get_sound() const noexcept
+		{
+			return m_sound;
+		}
 
 		inline sound::bc_sound_channel bc_sound_component::get_channel() const noexcept
 		{
-			return m_sound;
+			return m_channel;
 		}
 	}
 }

@@ -18,7 +18,8 @@ namespace black_cat
 	namespace game
 	{
 		bc_sound_component::bc_sound_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
-			: bci_actor_component(p_actor_index, p_index)
+			: bci_actor_component(p_actor_index, p_index),
+			m_auto_play(true)
 		{
 		}
 
@@ -33,6 +34,7 @@ namespace black_cat
 			const auto* l_play_mode_param = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_sound_play_mode);
 			const auto l_min_max_distance_param = p_context.m_parameters.get_value_vector2f(constant::g_param_sound_min_max_distance);
 			const auto* l_volume_param = p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_sound_volume);
+			const auto* l_auto_play_param = p_context.m_parameters.get_value<bool>(constant::g_param_sound_auto_play);
 			auto l_sound_mode = sound::bc_sound_mode::none;
 
 			if(l_play_mode_param)
@@ -57,19 +59,23 @@ namespace black_cat
 			}
 
 			auto& l_sound_device = p_context.m_game_system.get_sound_system().get_device();
-			const auto l_sound_content = p_context.m_stream_manager.find_content_throw<sound::bc_sound_content>(l_sound_param);
-
-			m_sound = l_sound_device.play_sound(l_sound_content->get_resource(), true);
-			m_sound.set_mode(l_sound_mode);
+			m_sound = p_context.m_stream_manager.find_content_throw<sound::bc_sound_content>(l_sound_param)->get_resource();
+			m_channel = l_sound_device.play_sound(m_sound, true);
+			m_channel.set_mode(l_sound_mode);
 
 			if(l_min_max_distance_param.has_value())
 			{
-				m_sound.set_3d_min_max_distance(l_min_max_distance_param->x, l_min_max_distance_param->y);
+				m_channel.set_3d_min_max_distance(l_min_max_distance_param->x, l_min_max_distance_param->y);
 			}
 
 			if(l_volume_param)
 			{
-				m_sound.set_volume(*l_volume_param);
+				m_channel.set_volume(*l_volume_param);
+			}
+
+			if(l_auto_play_param)
+			{
+				m_auto_play = *l_auto_play_param;
 			}
 
 			if(core::bc_enum::has(l_sound_mode, sound::bc_sound_mode::loop))
@@ -83,22 +89,28 @@ namespace black_cat
 		{
 			if(const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event))
 			{
-				if(core::bc_enum::has(m_sound.get_mode(), sound::bc_sound_mode::d3))
+				if(m_channel.is_valid() && core::bc_enum::has(m_channel.get_mode(), sound::bc_sound_mode::d3))
 				{
-					m_sound.set_3d_position(l_world_transform_event->get_transform().get_translation());
+					m_channel.set_3d_position(l_world_transform_event->get_transform().get_translation());
 					return;
 				}
 			}
 
 			if(core::bci_message::is<bc_added_to_scene_actor_event>(p_context.m_event))
 			{
-				m_sound.play();
+				if(m_auto_play)
+				{
+					m_channel.play();
+				}
 				return;
 			}
 
 			if (core::bci_message::is<bc_removed_from_scene_actor_event>(p_context.m_event))
 			{
-				m_sound.stop();
+				if(m_channel.is_valid())
+				{
+					m_channel.stop();
+				}
 				return;
 			}
 		}

@@ -4,11 +4,13 @@
 
 #include "Game/Object/Scene/ActorComponent/bcActorNetworkController.h"
 #include "App/SampleImp/ActorController/bcRigidDynamicNetworkActorController.h"
-#include "App/bcExport.h"
+#include "BoX.Game/bxExport.h"
 
-namespace black_cat
+namespace box
 {
-	class BC_DLL bc_grenade_actor_controller : public bc_rigid_dynamic_network_actor_controller
+	using namespace black_cat;
+
+	class BX_GAME_DLL bx_grenade_actor_controller : public bc_rigid_dynamic_network_actor_controller
 	{
 	private:
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;

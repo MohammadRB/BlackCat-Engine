@@ -43,7 +43,7 @@ namespace black_cat
 			const auto l_position = (l_transform * core::bc_vector4f(m_fire_offset_ls, 1)).xyz();
 			const auto l_direction = core::bc_vector3f::normalize(l_transform.get_rotation() * m_forward_ls);
 
-			m_scene->get_particle_manager().spawn_emitter(m_fire_particle, l_position, l_direction);
+			m_scene->get_particle_manager().spawn_emitter(m_fire_particle.data(), l_position, l_direction);
 			m_light = m_scene->get_light_manager().add_light(bc_point_light
 			(
 				l_position,
@@ -77,6 +77,7 @@ namespace black_cat
 			m_second_hand_offset_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_second_hand_offset_ls);
 			m_fire_offset_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_fire_offset_ls);
 			m_fire_particle = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_weapon_fire_particle).c_str();
+			m_fire_sound = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_weapon_fire_sound).c_str();
 			m_fire_light_color = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_fire_light_color);
 			m_fire_light_radius = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_fire_light_radius);
 			m_fire_light_intensity = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_fire_light_intensity);

@@ -1,16 +1,14 @@
 // [11/05/2021 MRB]
 
-#include "App/AppPCH.h"
-
 #include "Core/Utility/bcJsonParse.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 #include "Game/bcUtility.h"
-#include "App/SampleImp/ActorController/bcGrenadeActorController.h"
+#include "BoX.Game/Game/bxGrenadeActorController.h"
 
-namespace black_cat
+namespace box
 {
-	void bc_grenade_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
+	void bx_grenade_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		bc_rigid_dynamic_network_actor_controller::initialize(p_context);
 		
@@ -24,7 +22,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_grenade_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
+	void bx_grenade_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
 		update_replicated_instance(p_context);
 
@@ -46,7 +44,7 @@ namespace black_cat
 		}*/
 	}
 
-	void bc_grenade_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
+	void bx_grenade_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
 	{
 		if (!get_scene() || m_exploded)
 		{
@@ -57,8 +55,6 @@ namespace black_cat
 		m_lifetime -= p_context.m_clock.m_elapsed_second;
 		if (m_lifetime - l_ping <= 0)
 		{
-			_explode(p_context.m_actor);
-
 			// actor will be removed by its network component if network has started
 			if (get_network_type() == game::bc_network_type::not_started || get_network_type() == game::bc_network_type::server)
 			{
@@ -67,14 +63,14 @@ namespace black_cat
 		}
 	}
 
-	void bc_grenade_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
+	void bx_grenade_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		_explode(p_context.m_actor);
 
 		bc_rigid_dynamic_network_actor_controller::removed_from_scene(p_context, p_scene);
 	}
 
-	void bc_grenade_actor_controller::_explode(game::bc_actor& p_actor)
+	void bx_grenade_actor_controller::_explode(game::bc_actor& p_actor)
 	{
 		const auto* l_mediate_component = p_actor.get_component<game::bc_mediate_component>();
 		auto l_explosion_actor = get_scene()->create_actor

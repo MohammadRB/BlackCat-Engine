@@ -1,6 +1,7 @@
 // [12/23/2021 MRB]
 
 #include "Core/Messaging/Event/bcEventManager.h"
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "App/Loader/bcSceneCheckPointLoader.h"
@@ -11,6 +12,13 @@
 #include "BoX.Game/Game/bxPlayerActorController.h"
 #include "BoX.Game/Game/bxNetworkPlayerActorController.h"
 #include "BoX.Game/Game/bxPlayerSeatComponent.h"
+#include "BoX.Game/Game/bxFireActorController.h"
+#include "BoX.Game/Game/bxExplosionActorController.h"
+#include "BoX.Game/Game/bxRocketActorController.h"
+#include "BoX.Game/Game/bxGrenadeActorController.h"
+#include "BoX.Game/Game/bxSmokeGrenadeActorController.h"
+#include "BoX.Game/Particle/bxExplosionParticle.h"
+#include "BoX.Game/Particle/bxWeaponParticle.h"
 #include "BoX.Game/Network/bxTeamSelectNetworkMessage.h"
 #include "BoX.Game/Network/bxPlayerSpawnNetworkMessage.h"
 #include "BoX.Game/Network/bxPlayerKilledNetworkMessage.h"
@@ -41,6 +49,11 @@ namespace box
 		);
 		game::bc_register_actor_controller_types
 		(
+			game::bc_actor_controller_register<bx_fire_actor_controller>("fire"),
+			game::bc_actor_controller_register<bx_explosion_actor_controller>("explosion"),
+			game::bc_actor_controller_register<bx_rocket_controller>("rocket"),
+			game::bc_actor_controller_register<bx_grenade_actor_controller>("grenade"),
+			game::bc_actor_controller_register<bx_smoke_grenade_actor_controller>("smoke_grenade"),
 			game::bc_actor_controller_register<bx_player_actor_controller>("box_player"),
 			game::bc_actor_controller_register<bx_network_player_actor_controller>("box_network_player")
 		);
@@ -64,6 +77,14 @@ namespace box
 
 	void bx_register_game_particle_emitters(game::bc_game_system& p_game_system)
 	{
+		auto& l_particle_manager = p_game_system.get_render_system().get_particle_manager();
+		core::bc_random l_random;
+
+		l_particle_manager.register_emitter_definition("big_explosion", bx_big_explosion_particle()(l_random));
+		l_particle_manager.register_emitter_definition("rifle_fire", bx_rifle_fire_particle()());
+		l_particle_manager.register_emitter_definition("bullet_terrain", bx_bullet_terrain_particle()(l_random));
+		l_particle_manager.register_emitter_definition("bullet_soil", bx_bullet_soil_particle()());
+		l_particle_manager.register_emitter_definition("bullet_iron", bx_bullet_iron_particle()());
 	}
 
 	void bx_load_game_shaders(core::bc_content_stream_manager& p_stream_manager, game::bc_game_system& p_game_system)

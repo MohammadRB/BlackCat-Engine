@@ -43,6 +43,9 @@
     <Filter Include="BoX.Game\Content\Sound">
       <UniqueIdentifier>{8d2a2281-806e-47f2-8197-ab6ab6e1152a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="BoX.Game\Particle">
+      <UniqueIdentifier>{232ceeb8-feff-474f-a77a-3c3882add0a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Src\BoX.Game\Application\bxApplicationHookFunctions.cpp">
@@ -83,6 +86,21 @@
     </ClCompile>
     <ClCompile Include="..\Src\BoX.Game\RenderPass\bxBulletTrailPass.cpp">
       <Filter>BoX.Game\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Game\bxExplosionActorController.cpp">
+      <Filter>BoX.Game\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Game\bxFireActorController.cpp">
+      <Filter>BoX.Game\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Game\bxGrenadeActorController.cpp">
+      <Filter>BoX.Game\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Game\bxRocketActorController.cpp">
+      <Filter>BoX.Game\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Game\bxSmokeGrenadeActorController.cpp">
+      <Filter>BoX.Game\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,6 +161,27 @@
     <ClInclude Include="..\Src\BoX.Game\RenderPass\bxBulletTrailPass.h">
       <Filter>BoX.Game\RenderPass</Filter>
     </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Game\bxExplosionActorController.h">
+      <Filter>BoX.Game\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Game\bxFireActorController.h">
+      <Filter>BoX.Game\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Game\bxGrenadeActorController.h">
+      <Filter>BoX.Game\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Game\bxRocketActorController.h">
+      <Filter>BoX.Game\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Game\bxSmokeGrenadeActorController.h">
+      <Filter>BoX.Game\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Particle\bxWeaponParticle.h">
+      <Filter>BoX.Game\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Particle\bxExplosionParticle.h">
+      <Filter>BoX.Game\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Src\BoX.Game\Content\Data\BoXContentStream.json">
@@ -175,6 +214,27 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Src\BoX.Game\Content\Texture\BulletTrail.dds">
+      <Filter>BoX.Game\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\Src\BoX.Game\Content\Texture\Decal.dds">
+      <Filter>BoX.Game\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\Src\BoX.Game\Content\Texture\Decal.nrm.dds">
+      <Filter>BoX.Game\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\Src\BoX.Game\Content\Texture\Decal.spec.dds">
+      <Filter>BoX.Game\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\Src\BoX.Game\Content\Texture\Flare1.dds">
+      <Filter>BoX.Game\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\Src\BoX.Game\Content\Texture\Flare2.dds">
+      <Filter>BoX.Game\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\Src\BoX.Game\Content\Texture\Flare3.dds">
+      <Filter>BoX.Game\Content\Texture</Filter>
+    </Image>
+    <Image Include="..\Src\BoX.Game\Content\Texture\Sprites.dds">
       <Filter>BoX.Game\Content\Texture</Filter>
     </Image>
   </ItemGroup>

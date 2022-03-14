@@ -48,75 +48,115 @@ namespace black_cat
 
 		template<>
 		BC_SOUNDIMP_DLL
-		bc_sound_ref bc_platform_device<bc_sound_api::fmod>::create_sound(const void* p_data, bcSIZE p_data_length)
+		bc_sound_ref bc_platform_device<bc_sound_api::fmod>::create_sound(const void* p_data, bcSIZE p_data_length, bc_sound_mode p_mode)
 		{
-			FMOD::Sound* l_fmod_sound;
+			FMOD_MODE l_mode = FMOD_DEFAULT | m_pack.m_default_rolloff | FMOD_OPENMEMORY;
 			FMOD_CREATESOUNDEXINFO l_fmod_info{};
 			l_fmod_info.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
 			l_fmod_info.length = p_data_length;
 
-			bc_fmod_call(m_pack.m_system->createSound(static_cast<const bcCHAR*>(p_data), FMOD_OPENMEMORY, &l_fmod_info, &l_fmod_sound));
+			if(core::bc_enum::has(p_mode, bc_sound_mode::d3))
+			{
+				l_mode |= FMOD_3D;
+			}
+
+			FMOD::Sound* l_fmod_sound;
+			bc_fmod_call(m_pack.m_system->createSound(static_cast<const bcCHAR*>(p_data), l_mode, &l_fmod_info, &l_fmod_sound));
 
 			bc_sound::platform_pack l_pack{ l_fmod_sound };
-			const bc_sound l_sound(l_pack);
+			bc_sound l_sound(l_pack);
+			l_sound.set_mode(p_mode);
+
 			return bc_sound_ref(l_sound);
 		}
 
 		template<>
 		BC_SOUNDIMP_DLL
-		bc_sound_ref bc_platform_device<bc_sound_api::fmod>::create_sound(core::bc_estring_view p_path)
+		bc_sound_ref bc_platform_device<bc_sound_api::fmod>::create_sound(core::bc_estring_view p_path, bc_sound_mode p_mode)
 		{
-			FMOD::Sound* l_fmod_sound;
 			const auto l_path = core::bc_to_exclusive_string(p_path.data());
+			FMOD_MODE l_mode = FMOD_DEFAULT | m_pack.m_default_rolloff;
 
-			bc_fmod_call(m_pack.m_system->createSound(l_path.c_str(), FMOD_DEFAULT, nullptr, &l_fmod_sound));
+			if (core::bc_enum::has(p_mode, bc_sound_mode::d3))
+			{
+				l_mode |= FMOD_3D;
+			}
+
+			FMOD::Sound* l_fmod_sound;
+			bc_fmod_call(m_pack.m_system->createSound(l_path.c_str(), l_mode, nullptr, &l_fmod_sound));
 
 			bc_sound::platform_pack l_pack{ l_fmod_sound };
-			const bc_sound l_sound(l_pack);
+			bc_sound l_sound(l_pack);
+			l_sound.set_mode(p_mode);
+
 			return bc_sound_ref(l_sound);
 		}
 
 		template<>
 		BC_SOUNDIMP_DLL
-		bc_sound_ref bc_platform_device<bc_sound_api::fmod>::create_compressed_sound(const void* p_data, bcSIZE p_data_length)
+		bc_sound_ref bc_platform_device<bc_sound_api::fmod>::create_compressed_sound(const void* p_data, bcSIZE p_data_length, bc_sound_mode p_mode)
 		{
-			FMOD::Sound* l_fmod_sound;
+			FMOD_MODE l_mode = FMOD_DEFAULT | m_pack.m_default_rolloff | FMOD_OPENMEMORY | FMOD_CREATECOMPRESSEDSAMPLE;
 			FMOD_CREATESOUNDEXINFO l_fmod_info{};
 			l_fmod_info.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
 			l_fmod_info.length = p_data_length;
 
-			bc_fmod_call(m_pack.m_system->createSound(static_cast<const bcCHAR*>(p_data), FMOD_OPENMEMORY | FMOD_CREATECOMPRESSEDSAMPLE, &l_fmod_info, &l_fmod_sound));
+			if (core::bc_enum::has(p_mode, bc_sound_mode::d3))
+			{
+				l_mode |= FMOD_3D;
+			}
+
+			FMOD::Sound* l_fmod_sound;
+			bc_fmod_call(m_pack.m_system->createSound(static_cast<const bcCHAR*>(p_data), l_mode, &l_fmod_info, &l_fmod_sound));
 
 			bc_sound::platform_pack l_pack{ l_fmod_sound };
-			const bc_sound l_sound(l_pack);
+			bc_sound l_sound(l_pack);
+			//l_sound.set_mode(p_mode);
+
 			return bc_sound_ref(l_sound);
 		}
 
 		template<>
 		BC_SOUNDIMP_DLL
-		bc_sound_ref bc_platform_device<bc_sound_api::fmod>::create_compressed_sound(core::bc_estring_view p_path)
+		bc_sound_ref bc_platform_device<bc_sound_api::fmod>::create_compressed_sound(core::bc_estring_view p_path, bc_sound_mode p_mode)
 		{
-			FMOD::Sound* l_fmod_sound;
 			const auto l_path = core::bc_to_exclusive_string(p_path.data());
+			FMOD_MODE l_mode = FMOD_DEFAULT | m_pack.m_default_rolloff | FMOD_CREATECOMPRESSEDSAMPLE;
 
-			bc_fmod_call(m_pack.m_system->createSound(l_path.c_str(), FMOD_CREATECOMPRESSEDSAMPLE, nullptr, &l_fmod_sound));
+			if (core::bc_enum::has(p_mode, bc_sound_mode::d3))
+			{
+				l_mode |= FMOD_3D;
+			}
+
+			FMOD::Sound* l_fmod_sound;
+			bc_fmod_call(m_pack.m_system->createSound(l_path.c_str(), l_mode, nullptr, &l_fmod_sound));
 
 			bc_sound::platform_pack l_pack{ l_fmod_sound };
-			const bc_sound l_sound(l_pack);
+			bc_sound l_sound(l_pack);
+			l_sound.set_mode(p_mode);
+
 			return bc_sound_ref(l_sound);
 		}
 
 		template<>
 		BC_SOUNDIMP_DLL
-		bc_sound_ref bc_platform_device<bc_sound_api::fmod>::create_stream_sound(core::bc_estring_view p_path)
+		bc_sound_ref bc_platform_device<bc_sound_api::fmod>::create_stream_sound(core::bc_estring_view p_path, bc_sound_mode p_mode)
 		{
-			FMOD::Sound* l_fmod_sound;
 			const auto l_path = core::bc_to_exclusive_string(p_path.data());
+			FMOD_MODE l_mode = FMOD_DEFAULT | m_pack.m_default_rolloff | FMOD_CREATESTREAM;
 
-			bc_fmod_call(m_pack.m_system->createSound(l_path.c_str(), FMOD_CREATESTREAM, nullptr, &l_fmod_sound));
+			if (core::bc_enum::has(p_mode, bc_sound_mode::d3))
+			{
+				l_mode |= FMOD_3D;
+			}
+
+			FMOD::Sound* l_fmod_sound;
+			bc_fmod_call(m_pack.m_system->createSound(l_path.c_str(), l_mode, nullptr, &l_fmod_sound));
 
 			bc_sound::platform_pack l_pack{ l_fmod_sound };
-			const bc_sound l_sound(l_pack);
+			bc_sound l_sound(l_pack);
+			l_sound.set_mode(p_mode);
+
 			return bc_sound_ref(l_sound);
 		}
 
@@ -138,9 +178,9 @@ namespace black_cat
 		void bc_platform_device<bc_sound_api::fmod>::update(const update_context& p_context)
 		{
 			const FMOD_VECTOR l_listener_position{ p_context.m_listener_position.x, p_context.m_listener_position.y, p_context.m_listener_position.z };
-			const FMOD_VECTOR l_listener_velocity{ 0,0,0 };
 			const FMOD_VECTOR l_listener_forward{ p_context.m_listener_forward.x, p_context.m_listener_forward.y, p_context.m_listener_forward.z };
 			const FMOD_VECTOR l_listener_up{ p_context.m_listener_up.x, p_context.m_listener_up.y, p_context.m_listener_up.z };
+			const FMOD_VECTOR l_listener_velocity{ p_context.m_listener_velocity.x, p_context.m_listener_velocity.y, p_context.m_listener_velocity.z };
 
 			bc_fmod_call(m_pack.m_system->set3DListenerAttributes(0, &l_listener_position, &l_listener_velocity, &l_listener_forward, &l_listener_up));
 			bc_fmod_call(m_pack.m_system->update());
@@ -157,6 +197,7 @@ namespace black_cat
 				l_mode |= FMOD_INIT_3D_RIGHTHANDED;
 			}
 
+			m_pack.m_default_rolloff = FMOD_3D_LINEARSQUAREROLLOFF;
 			bc_fmod_call(FMOD::System_Create(&m_pack.m_system));
 			bc_fmod_call(m_pack.m_system->init(static_cast<bcINT>(p_params.m_max_channels), l_mode, nullptr));
 			bc_fmod_call(m_pack.m_system->set3DSettings(1.f, 1.f, 1.f));

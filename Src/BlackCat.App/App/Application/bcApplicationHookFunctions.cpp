@@ -72,11 +72,6 @@
 #include "App/Loader/bcSkinnedAnimationLoader.h"
 #include "App/Loader/bcSceneLoader.h"
 #include "App/Loader/bcSceneCheckPointLoader.h"
-#include "App/SampleImp/ActorController/bcFireActorController.h"
-#include "App/SampleImp/ActorController/bcExplosionActorController.h"
-#include "App/SampleImp/ActorController/bcRocketActorController.h"
-#include "App/SampleImp/ActorController/bcGrenadeActorController.h"
-#include "App/SampleImp/ActorController/bcSmokeGrenadeActorController.h"
 #include "App/SampleImp/XBot/bcXBotIdleActorController.h"
 #include "App/SampleImp/XBot/bcXBotPlayerActorController.h"
 #include "App/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
@@ -84,8 +79,6 @@
 #include "App/SampleImp/XBot/bcXBotGrenadeNetworkMessage.h"
 #include "App/SampleImp/XBot/bcXBotRagdollNetworkMessage.h"
 #include "App/SampleImp/ActorController/bcRigidDynamicNetworkActorController.h"
-#include "App/SampleImp/Particle/bcExplosionParticle.h"
-#include "App/SampleImp/Particle/bcWeaponParticle.h"
 
 namespace black_cat
 {
@@ -219,11 +212,6 @@ namespace black_cat
 		);
 		game::bc_register_actor_controller_types
 		(
-			game::bc_actor_controller_register<bc_fire_actor_controller>("fire"),
-			game::bc_actor_controller_register<bc_explosion_actor_controller>("explosion"),
-			game::bc_actor_controller_register<bc_rocket_controller>("rocket"),
-			game::bc_actor_controller_register<bc_grenade_actor_controller>("grenade"),
-			game::bc_actor_controller_register<bc_smoke_grenade_actor_controller>("smoke_grenade"),
 			game::bc_actor_controller_register<bc_xbot_idle_actor_controller>("xbot_idle"),
 			game::bc_actor_controller_register<bc_xbot_player_actor_controller>("xbot_player"),
 			game::bc_actor_controller_register<bc_xbot_network_player_actor_controller>("xbot_network_player"),
@@ -266,14 +254,6 @@ namespace black_cat
 
 	void bc_register_engine_particle_emitters(game::bc_game_system& p_game_system)
 	{
-		auto& l_particle_manager = p_game_system.get_render_system().get_particle_manager();
-		core::bc_random l_random;
-
-		l_particle_manager.register_emitter_definition("big_explosion", bc_big_explosion_particle()(l_random));
-		l_particle_manager.register_emitter_definition("rifle_fire", bc_rifle_fire_particle()());
-		l_particle_manager.register_emitter_definition("bullet_terrain", bc_bullet_terrain_particle()(l_random));
-		l_particle_manager.register_emitter_definition("bullet_soil", bc_bullet_soil_particle()());
-		l_particle_manager.register_emitter_definition("bullet_iron", bc_bullet_iron_particle()());
 	}
 
 	void bc_load_engine_shaders(core::bc_content_stream_manager& p_stream_manager, game::bc_game_system& p_game_system)

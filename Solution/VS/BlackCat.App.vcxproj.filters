@@ -61,9 +61,6 @@
     <Filter Include="BlackCat\SampleImp\ActorController">
       <UniqueIdentifier>{3cc56406-f62d-41fb-980c-7dc15c0a638d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BlackCat\SampleImp\Particle">
-      <UniqueIdentifier>{4ab9c3f0-d322-451c-b2f0-dabf98843651}</UniqueIdentifier>
-    </Filter>
     <Filter Include="BlackCat\Content\Shader\DirectX11\PostProcess">
       <UniqueIdentifier>{2071d54a-0059-4402-b697-5d7d1d33d141}</UniqueIdentifier>
     </Filter>
@@ -177,23 +174,8 @@
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferDecalPass.h">
       <Filter>BlackCat\RenderPass\GBuffer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcExplosionActorController.h">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcFireActorController.h">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\Particle\bcExplosionParticle.h">
-      <Filter>BlackCat\SampleImp\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\Particle\bcWeaponParticle.h">
-      <Filter>BlackCat\SampleImp\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcSceneCheckPointLoader.h">
       <Filter>BlackCat\Loader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcRocketActorController.h">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcLightFlarePass.h">
       <Filter>BlackCat\RenderPass\PostProcess</Filter>
@@ -225,14 +207,8 @@
     <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotWeaponIKAnimationJob.h">
       <Filter>BlackCat\SampleImp\XBot</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcGrenadeActorController.h">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotWeaponNetworkMessage.h">
       <Filter>BlackCat\SampleImp\XBot</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcSmokeGrenadeActorController.h">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotGrenadeNetworkMessage.h">
       <Filter>BlackCat\SampleImp\XBot</Filter>
@@ -344,17 +320,8 @@
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferDecalPass.cpp">
       <Filter>BlackCat\RenderPass\GBuffer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcExplosionActorController.cpp">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcFireActorController.cpp">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcSceneCheckPointLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcRocketActorController.cpp">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcLightFlarePass.cpp">
       <Filter>BlackCat\RenderPass\PostProcess</Filter>
@@ -377,14 +344,8 @@
     <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotWeaponIKAnimationJob.cpp">
       <Filter>BlackCat\SampleImp\XBot</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcGrenadeActorController.cpp">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotWeaponNetworkMessage.cpp">
       <Filter>BlackCat\SampleImp\XBot</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\ActorController\bcSmokeGrenadeActorController.cpp">
-      <Filter>BlackCat\SampleImp\ActorController</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.App\App\SampleImp\XBot\bcXBotGrenadeNetworkMessage.cpp">
       <Filter>BlackCat\SampleImp\XBot</Filter>
@@ -513,27 +474,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Default.dds">
-      <Filter>BlackCat\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Sprites.dds">
-      <Filter>BlackCat\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Decal.dds">
-      <Filter>BlackCat\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Decal.nrm.dds">
-      <Filter>BlackCat\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Decal.spec.dds">
-      <Filter>BlackCat\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Flare1.dds">
-      <Filter>BlackCat\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Flare2.dds">
-      <Filter>BlackCat\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\Flare3.dds">
       <Filter>BlackCat\Content\Texture</Filter>
     </Image>
     <Image Include="..\..\Src\BlackCat.App\App\Content\Texture\SpriteIcon.png">

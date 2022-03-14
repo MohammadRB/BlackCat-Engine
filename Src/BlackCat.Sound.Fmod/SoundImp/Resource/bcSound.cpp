@@ -49,6 +49,18 @@ namespace black_cat
 
 		template<>
 		BC_SOUNDIMP_DLL
+		bcUINT32 bc_platform_sound<bc_sound_api::fmod>::get_length() const noexcept
+		{
+			auto* l_fmod_sound = static_cast<FMOD::Sound*>(m_pack.m_pointer);
+			unsigned l_length;
+
+			bc_fmod_call(l_fmod_sound->getLength(&l_length, FMOD_TIMEUNIT_MS));
+
+			return l_length;
+		}
+
+		template<>
+		BC_SOUNDIMP_DLL
 		bc_sound_mode bc_platform_sound<bc_sound_api::fmod>::get_mode() const noexcept
 		{
 			auto* l_fmod_sound = static_cast<FMOD::Sound*>(m_pack.m_pointer);

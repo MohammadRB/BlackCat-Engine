@@ -3,11 +3,13 @@
 #pragma once
 
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
-#include "App/bcExport.h"
+#include "BoX.Game/bxExport.h"
 
-namespace black_cat
+namespace box
 {
-	class BC_DLL bc_fire_actor_controller : public game::bci_actor_controller
+	using namespace black_cat;
+
+	class BX_GAME_DLL bx_fire_actor_controller : public game::bci_actor_controller
 	{
 	private:
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;

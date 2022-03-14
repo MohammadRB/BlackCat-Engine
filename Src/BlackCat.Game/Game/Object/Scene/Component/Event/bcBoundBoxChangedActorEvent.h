@@ -19,7 +19,7 @@ namespace black_cat
 
 			bc_bound_box_changed_actor_event(const bc_bound_box_changed_actor_event&);
 
-			~bc_bound_box_changed_actor_event();
+			~bc_bound_box_changed_actor_event() override;
 
 			bc_bound_box_changed_actor_event& operator=(const bc_bound_box_changed_actor_event&);
 

@@ -22,7 +22,9 @@ namespace black_cat
 		BC_PARAMETER(high_detail_query_shape, "high_detail_query_shape");
 		BC_PARAMETER(sound, "sound");
 		BC_PARAMETER(sound_load_mode, "load");
+		BC_PARAMETER(sound_load_3d, "load_3d");
 		BC_PARAMETER(sound_play_mode, "play");
+		BC_PARAMETER(sound_auto_play, "auto_play");
 		BC_PARAMETER(sound_min_max_distance, "min_max_distance");
 		BC_PARAMETER(sound_volume, "volume");
 		BC_PARAMETER(position, "position");
@@ -48,6 +50,7 @@ namespace black_cat
 		BC_PARAMETER(weapon_second_hand_offset_ls, "second_hand_offset_ls");
 		BC_PARAMETER(weapon_fire_offset_ls, "fire_offset_ls");
 		BC_PARAMETER(weapon_fire_particle, "fire_particle");
+		BC_PARAMETER(weapon_fire_sound, "fire_sound");
 		BC_PARAMETER(weapon_fire_light_color, "fire_light_color");
 		BC_PARAMETER(weapon_fire_light_radius, "fire_light_radius");
 		BC_PARAMETER(weapon_fire_light_intensity, "fire_light_intensity");

@@ -30,6 +30,48 @@
   },
   "actors": [
     {
+      "entity_name": "sun_light",
+      "position": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "wind",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "env_sound",
+      "position": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
       "entity_name": "xbot_idle_red",
       "position": [
         42.0,
@@ -161,34 +203,6 @@
         85.0,
         1.0,
         -810.0
-      ],
-      "rotation": [
-        -0.0,
-        0.0,
-        -0.0
-      ],
-      "parameters": {}
-    },
-    {
-      "entity_name": "sun_light",
-      "position": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        -0.0,
-        0.0,
-        -0.0
-      ],
-      "parameters": {}
-    },
-    {
-      "entity_name": "wind",
-      "position": [
-        0.0,
-        0.0,
-        0.0
       ],
       "rotation": [
         -0.0,

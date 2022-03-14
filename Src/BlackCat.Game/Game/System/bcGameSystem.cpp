@@ -175,8 +175,11 @@ namespace black_cat
 				l_event_manager.process_event_queue(p_clock);
 				l_actor_component_manager.process_actor_events(p_clock);
 
+				core::bc_task<void> l_sound_task;
 				core::bc_task<void> l_scene_task;
-				
+
+				l_sound_task = l_sound_system.update_async(bc_sound_system::update_context(p_clock, *l_camera));
+
 				if (l_scene)
 				{
 					l_scene_task = l_scene->update_graph_async(p_clock);
@@ -190,7 +193,7 @@ namespace black_cat
 					l_render_system.update(bc_render_system::update_context(p_clock, *l_camera));
 				}
 
-				core::bc_concurrency::when_all(l_scene_task);
+				core::bc_concurrency::when_all(l_sound_task, l_scene_task);
 			}
 		}
 		
@@ -267,7 +270,7 @@ namespace black_cat
 			m_script_system.initialize(true);
 			m_render_system.initialize(std::move(p_parameter.m_render_system_parameter));
 			m_sound_system = core::bc_make_unique<bc_sound_system>(core::bc_alloc_type::program);
-			m_sound_system->initialize(bc_sound_system_params{ 16 });
+			m_sound_system->initialize(bc_sound_system_params{ 32 });
 
 			m_pause_event_handle = m_event_manager->register_event_listener<bc_event_game_pause_state>
 			(

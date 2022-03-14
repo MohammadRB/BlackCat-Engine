@@ -24,8 +24,6 @@ namespace black_cat
 			m_entity_name(nullptr),
 			m_scene(nullptr),
 			m_bound_box_changed(false),
-			m_prev_bound_box(),
-			m_bound_box(),
 			m_controller(nullptr)
 		{
 		}
@@ -43,6 +41,8 @@ namespace black_cat
 
 		void bc_mediate_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
+			// Assign default bound box
+			m_prev_bound_box = m_bound_box = physics::bc_bound_box({ 0, 0, 0 }, { .5f, .5f, .5f });
 		}
 
 		void bc_mediate_component::load_instance(const bc_actor_component_load_context& p_context)
@@ -116,12 +116,19 @@ namespace black_cat
 			if (const auto* l_transformation_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event))
 			{
 				m_world_transform = l_transformation_event->get_transform();
+
+				if (!m_bound_box_changed) // update prev box only once in case of multiple events per frame
+				{
+					m_prev_bound_box = m_bound_box;
+				}
+				m_bound_box = physics::bc_bound_box(m_world_transform.get_translation(), m_bound_box.get_half_extends());
+				m_bound_box_changed = true;
 				return;
 			}
 
 			if (const auto* l_bound_box_event = core::bci_message::as<bc_bound_box_changed_actor_event>(p_context.m_event))
 			{
-				if(!m_bound_box_changed) // update prev box once only in case of multiple events per frame
+				if(!m_bound_box_changed) // update prev box only once in case of multiple events per frame
 				{
 					m_prev_bound_box = m_bound_box;
 				}
@@ -133,6 +140,8 @@ namespace black_cat
 			if (const auto* l_added_to_scene_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event))
 			{
 				m_scene = &l_added_to_scene_event->get_scene();
+				m_prev_bound_box = m_bound_box; // Reset default prev bb to be as same as current bb when actor is added to scene graph
+
 				if (m_controller)
 				{
 					m_controller->added_to_scene(p_context, *m_scene);

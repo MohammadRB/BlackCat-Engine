@@ -7,20 +7,13 @@
 #include "Sound/Resource/bcResourceContent.h"
 #include "Sound/bcSoundRef.h"
 #include "Sound/bcSoundReference.h"
+#include "Sound/bcDefinition.h"
 #include "Sound/bcSoundApi.h"
 
 namespace black_cat
 {
 	namespace sound
 	{
-		enum class bc_sound_mode
-		{
-			none = 0,
-			loop_off = core::bc_enum::value(0),
-			loop = core::bc_enum::value(1),
-			d3 = core::bc_enum::value(2)
-		};
-
 		template<bc_sound_api TApi>
 		struct bc_platform_sound_pack : bc_platform_sound_reference_pack<TApi>
 		{
@@ -42,6 +35,12 @@ namespace black_cat
 			~bc_platform_sound() noexcept override;
 
 			bc_platform_sound& operator=(const bc_platform_sound&) noexcept;
+
+			/**
+			 * \brief Return length of the sound in ms
+			 * \return 
+			 */
+			bcUINT32 get_length() const noexcept;
 
 			bc_sound_mode get_mode() const noexcept;
 

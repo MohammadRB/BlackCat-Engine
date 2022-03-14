@@ -271,6 +271,11 @@
     <ClCompile Include="..\Src\BoX.Game\Application\bxApplicationHookFunctions.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Application\bxPlayerService.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Application\bxSceneCheckPoint.cpp" />
+    <ClCompile Include="..\Src\BoX.Game\Game\bxExplosionActorController.cpp" />
+    <ClCompile Include="..\Src\BoX.Game\Game\bxFireActorController.cpp" />
+    <ClCompile Include="..\Src\BoX.Game\Game\bxGrenadeActorController.cpp" />
+    <ClCompile Include="..\Src\BoX.Game\Game\bxRocketActorController.cpp" />
+    <ClCompile Include="..\Src\BoX.Game\Game\bxSmokeGrenadeActorController.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Game\bxNetworkPlayerActorController.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Game\bxPlayerActorController.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Game\bxPlayerSeatComponent.cpp" />
@@ -292,6 +297,11 @@
     <ClInclude Include="..\Src\BoX.Game\Application\bxServerNetworkMessageVisitor.h" />
     <ClInclude Include="..\Src\BoX.Game\bxEvent.h" />
     <ClInclude Include="..\Src\BoX.Game\bxExport.h" />
+    <ClInclude Include="..\Src\BoX.Game\Game\bxExplosionActorController.h" />
+    <ClInclude Include="..\Src\BoX.Game\Game\bxFireActorController.h" />
+    <ClInclude Include="..\Src\BoX.Game\Game\bxGrenadeActorController.h" />
+    <ClInclude Include="..\Src\BoX.Game\Game\bxRocketActorController.h" />
+    <ClInclude Include="..\Src\BoX.Game\Game\bxSmokeGrenadeActorController.h" />
     <ClInclude Include="..\Src\BoX.Game\Game\bxNetworkPlayerActorController.h" />
     <ClInclude Include="..\Src\BoX.Game\Game\bxPlayerActorController.h" />
     <ClInclude Include="..\Src\BoX.Game\Game\bxPlayerSeatComponent.h" />
@@ -300,6 +310,8 @@
     <ClInclude Include="..\Src\BoX.Game\Network\bxPlayerKilledNetworkMessage.h" />
     <ClInclude Include="..\Src\BoX.Game\Network\bxPlayerSpawnNetworkMessage.h" />
     <ClInclude Include="..\Src\BoX.Game\Network\bxTeamSelectNetworkMessage.h" />
+    <ClInclude Include="..\Src\BoX.Game\Particle\bxExplosionParticle.h" />
+    <ClInclude Include="..\Src\BoX.Game\Particle\bxWeaponParticle.h" />
     <ClInclude Include="..\Src\BoX.Game\RenderPass\bxBulletTrailPass.h" />
     <ClInclude Include="..\Src\BoX.Game\RenderPass\bxPlayerUIPass.h" />
   </ItemGroup>
@@ -316,6 +328,13 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Src\BoX.Game\Content\Texture\BulletTrail.dds" />
+    <Image Include="..\Src\BoX.Game\Content\Texture\Decal.dds" />
+    <Image Include="..\Src\BoX.Game\Content\Texture\Decal.nrm.dds" />
+    <Image Include="..\Src\BoX.Game\Content\Texture\Decal.spec.dds" />
+    <Image Include="..\Src\BoX.Game\Content\Texture\Flare1.dds" />
+    <Image Include="..\Src\BoX.Game\Content\Texture\Flare2.dds" />
+    <Image Include="..\Src\BoX.Game\Content\Texture\Flare3.dds" />
+    <Image Include="..\Src\BoX.Game\Content\Texture\Sprites.dds" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Src\BoX.Game\Content\Shader\DirectX11\PostProcess\bxBulletTrail.hlsl">

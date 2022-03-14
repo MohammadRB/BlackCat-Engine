@@ -49,7 +49,16 @@ namespace black_cat
 		{
 			bool l_is_playing;
 
-			bc_fmod_call(m_pack.m_channel->isPlaying(&l_is_playing));
+			const auto l_fmod_result = m_pack.m_channel->isPlaying(&l_is_playing);
+
+			if(l_fmod_result == FMOD_ERR_INVALID_HANDLE)
+			{
+				l_is_playing = false;
+			}
+			else
+			{
+				bc_fmod_call(l_fmod_result);
+			}
 
 			return l_is_playing;
 		}
@@ -72,7 +81,7 @@ namespace black_cat
 		BC_SOUNDIMP_DLL
 		void bc_platform_sound_channel<bc_sound_api::fmod>::stop() const noexcept
 		{
-			bc_fmod_call(m_pack.m_channel->stop());
+			bc_fmod_call(m_pack.m_channel->stop(), FMOD_ERR_CHANNEL_STOLEN);
 		}
 
 		template<>
@@ -181,7 +190,8 @@ namespace black_cat
 		BC_SOUNDIMP_DLL
 		bool bc_platform_sound_channel<bc_sound_api::fmod>::is_valid() const noexcept
 		{
-			return m_pack.m_channel != nullptr;
+			int l_index;
+			return m_pack.m_channel != nullptr && m_pack.m_channel->getIndex(&l_index) != FMOD_ERR_INVALID_HANDLE;
 		}
 
 		template<>

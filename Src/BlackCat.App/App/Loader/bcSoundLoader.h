@@ -13,6 +13,8 @@ namespace black_cat
 	public:
 		bool support_offline_processing() const override;
 
+		void content_file_open_succeeded(core::bc_content_loading_context& p_context) const override;
+
 		void content_processing(core::bc_content_loading_context& p_context) const override;
 	};
 }

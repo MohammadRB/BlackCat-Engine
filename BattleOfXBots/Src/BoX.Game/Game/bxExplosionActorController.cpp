@@ -1,7 +1,5 @@
 // [12/19/2020 MRB]
 
-#include "App/AppPCH.h"
-
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Utility/bcRandom.h"
@@ -13,33 +11,44 @@
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
+#include "Game/Object/Scene/Component/bcSoundComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
 #include "Game/bcConstant.h"
-#include "App/SampleImp/ActorController/bcExplosionActorController.h"
+#include "BoX.Game/Game/bxExplosionActorController.h"
 
-namespace black_cat
+namespace box
 {
-	void bc_explosion_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
+	void bx_explosion_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
-		auto* l_light_component = p_context.m_actor.get_component<game::bc_light_component>();
-		if (!l_light_component || !l_light_component->get_light()->as_point_light())
+		m_light_component = p_context.m_actor.get_component<game::bc_light_component>();
+		if (!m_light_component->get_light()->as_point_light())
 		{
-			throw bc_invalid_operation_exception("explosion actor must have point light components");
+			m_light_component = nullptr;
 		}
 
-		const auto* l_point_light = l_light_component->get_light()->as_point_light();
 		m_emitter_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_emitter_name)->c_str();
 		m_decal_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_decal_name)->c_str();
 		m_force_amount = *p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_force_amount);
 		m_force_radius = *p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_force_radius);
-		m_light_intensity = l_point_light->get_intensity();
-		m_light_particle_intensity = l_point_light->get_particle_intensity();
-		m_light_flare_intensity = l_point_light->get_flare() ? l_point_light->get_flare()->get_intensity() : 0.f;
-		m_light_radius = l_point_light->get_radius();
-		m_light_rise_per_second = m_light_radius * 0.7f / m_light_lifetime_second;
+
+		if(m_light_component)
+		{
+			const auto* l_point_light = m_light_component->get_light()->as_point_light();
+			m_light_intensity = l_point_light->get_intensity();
+			m_light_particle_intensity = l_point_light->get_particle_intensity();
+			m_light_flare_intensity = l_point_light->get_flare() ? l_point_light->get_flare()->get_intensity() : 0.f;
+			m_light_radius = l_point_light->get_radius();
+			m_light_rise_per_second = m_light_radius * 0.7f / m_light_lifetime_second;
+		}
+
+		const auto* l_sound_component = p_context.m_actor.get_component<game::bc_sound_component>();
+		if(l_sound_component)
+		{
+			m_sound_lifetime_second = l_sound_component->get_sound().get_length() / 1000.f;
+		}
 
 		const auto* l_player_id = p_context.m_instance_parameters.get_value<game::bc_network_client_id>(constant::g_param_player_id);
 		if (l_player_id)
@@ -48,7 +57,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_explosion_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
+	void bx_explosion_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		m_scene = &p_scene;
 		m_scene_terrain_query = p_context.m_query_manager.queue_query(game::bc_scene_query().with_callable
@@ -139,7 +148,7 @@ namespace black_cat
 		));
 	}
 
-	void bc_explosion_actor_controller::update(const game::bc_actor_component_update_content& p_context)
+	void bx_explosion_actor_controller::update(const game::bc_actor_component_update_content& p_context)
 	{
 		if(!m_has_started)
 		{
@@ -193,21 +202,23 @@ namespace black_cat
 			}
 		}
 
-		auto* l_light_component = p_context.m_actor.get_component<game::bc_light_component>();
-		auto* l_point_light = l_light_component->get_light()->as_point_light();
+		if(m_light_component)
+		{
+			auto* l_point_light = m_light_component->get_light()->as_point_light();
 
-		const auto l_normal_age = pow(1 - (m_age / m_light_lifetime_second), 2);
-		l_point_light->set_intensity(m_light_intensity * l_normal_age);
-		l_point_light->set_particle_intensity(m_light_particle_intensity * l_normal_age);
-		l_point_light->set_flare_intensity(m_light_flare_intensity * l_normal_age);
-		l_point_light->set_position
-		(
-			l_point_light->get_position() + m_direction * m_light_rise_per_second * p_context.m_clock.
-			m_elapsed_second
-		);
+			const auto l_normal_age = pow(1 - std::min(1.f, m_age / m_light_lifetime_second), 2);
+			l_point_light->set_intensity(m_light_intensity * l_normal_age);
+			l_point_light->set_particle_intensity(m_light_particle_intensity * l_normal_age);
+			l_point_light->set_flare_intensity(m_light_flare_intensity * l_normal_age);
+			l_point_light->set_position
+			(
+				l_point_light->get_position() + m_direction * m_light_rise_per_second * p_context.m_clock.
+				m_elapsed_second
+			);
+		}
 
 		m_age += p_context.m_clock.m_elapsed_second;
-		if (m_age > m_light_lifetime_second)
+		if (m_age > m_light_lifetime_second && m_age > m_sound_lifetime_second)
 		{
 			m_scene->remove_actor(p_context.m_actor);
 			m_has_started = false;

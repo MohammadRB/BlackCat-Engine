@@ -56,6 +56,7 @@ namespace black_cat
 			void _destroy() override;
 
 			sound::bc_device m_device;
+			core::bc_vector3f m_last_listener_position;
 		};
 
 		inline sound::bc_device& bc_sound_system::get_device() noexcept

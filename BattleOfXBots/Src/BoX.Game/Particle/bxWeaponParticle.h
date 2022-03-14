@@ -5,33 +5,35 @@
 #include "Core/Utility/bcRandom.h"
 #include "Game/System/Render/Particle/bcParticleBuilder.h"
 
-namespace black_cat
+namespace box
 {
-	class bc_rifle_fire_particle
+	using namespace black_cat;
+
+	class bx_rifle_fire_particle
 	{
 	public:
 		game::bc_particle_builder operator()() const;
 	};
 
-	class bc_bullet_terrain_particle
+	class bx_bullet_terrain_particle
 	{
 	public:
 		game::bc_particle_builder operator()(core::bc_random& p_random) const;
 	};
 
-	class bc_bullet_soil_particle
+	class bx_bullet_soil_particle
 	{
 	public:
 		game::bc_particle_builder operator()() const;
 	};
 
-	class bc_bullet_iron_particle
+	class bx_bullet_iron_particle
 	{
 	public:
 		game::bc_particle_builder operator()() const;
 	};
 	
-	inline game::bc_particle_builder bc_rifle_fire_particle::operator()() const
+	inline game::bc_particle_builder bx_rifle_fire_particle::operator()() const
 	{
 		game::bc_particle_builder l_builder;
 
@@ -52,7 +54,7 @@ namespace black_cat
 		return l_builder;
 	}
 	
-	inline game::bc_particle_builder bc_bullet_terrain_particle::operator()(core::bc_random& p_random) const
+	inline game::bc_particle_builder bx_bullet_terrain_particle::operator()(core::bc_random& p_random) const
 	{
 		core::bc_array<core::bc_vector3f, 3> l_random_directions = 
 		{
@@ -95,7 +97,7 @@ namespace black_cat
 		return l_builder;
 	}
 
-	inline game::bc_particle_builder bc_bullet_soil_particle::operator()() const
+	inline game::bc_particle_builder bx_bullet_soil_particle::operator()() const
 	{
 		core::bc_array<core::bc_vector3f, 3> l_random_directions =
 		{
@@ -136,7 +138,7 @@ namespace black_cat
 		return l_builder;
 	}
 
-	inline game::bc_particle_builder bc_bullet_iron_particle::operator()() const
+	inline game::bc_particle_builder bx_bullet_iron_particle::operator()() const
 	{
 		core::bc_array<core::bc_vector3f, 3> l_random_directions =
 		{

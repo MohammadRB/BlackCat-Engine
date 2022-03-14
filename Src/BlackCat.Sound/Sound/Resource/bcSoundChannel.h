@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/Math/bcVector3f.h"
-#include "Sound/Resource/bcSound.h"
+#include "Sound/bcDefinition.h"
 #include "Sound/bcSoundApi.h"
 
 namespace black_cat
