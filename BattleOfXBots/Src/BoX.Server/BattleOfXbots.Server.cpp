@@ -8,7 +8,7 @@ using namespace black_cat;
 
 int WINAPI WinMain(HINSTANCE p_instance, HINSTANCE p_prev_instance, CHAR* p_cmd_line, int p_cmd_show)
 {
-	platform::bc_basic_hardware_info l_hardware_info;
+	platform::bc_basic_hardware_info l_hardware_info{};
 	platform::bc_hardware_info::get_basic_info(l_hardware_info);
 
 	platform::bc_application_parameter l_app_parameters

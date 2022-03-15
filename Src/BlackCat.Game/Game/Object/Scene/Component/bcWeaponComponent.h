@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Math/bcVector3f.h"
+#include "SoundImp/Resource/bcSound.h"
 #include "Game/System/Render/Light/bcLight.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/Bullet/bcBullet.h"
@@ -61,19 +62,21 @@ namespace black_cat
 			core::bc_vector3f m_main_hand_offset_ls;
 			core::bc_vector3f m_second_hand_offset_ls;
 			core::bc_vector3f m_fire_offset_ls;
-			core::bc_string_view m_fire_particle;
-			core::bc_string_view m_fire_sound;
+			core::bc_string_view m_fire_particle_name;
 			core::bc_vector3f m_fire_light_color;
 			bcFLOAT m_fire_light_radius;
 			bcFLOAT m_fire_light_intensity;
 			core::bc_nullable<bc_light_flare> m_fire_light_flare;
+			core::bc_string_view m_fire_sound_name;
+			core::bc_vector2f m_fire_sound_min_max_distance;
+			sound::bc_sound_content_ptr m_fire_sound;
 			bcFLOAT m_rate_of_fire_seconds;
 			bcFLOAT m_bullet_speed;
 			bcFLOAT m_bullet_mass;
-
+			
 			bc_scene* m_scene;
-			bc_light_ptr m_light;
-			bcFLOAT m_light_age;
+			bc_light_ptr m_fire_light;
+			bcFLOAT m_fire_light_age;
 		};
 
 		inline bc_weapon_class bc_weapon_component::get_class() const noexcept

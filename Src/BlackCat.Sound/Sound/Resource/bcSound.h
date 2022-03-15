@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/Utility/bcEnumOperand.h"
 #include "Core/bcConstant.h"
 #include "Sound/Resource/bcResourceContent.h"
 #include "Sound/bcSoundRef.h"

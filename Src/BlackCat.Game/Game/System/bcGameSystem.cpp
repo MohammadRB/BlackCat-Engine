@@ -8,6 +8,7 @@
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"
 #include "Game/System/Sound/bcSoundSystem.h"
+#include "Game/System/Sound/bcSoundManager.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/Object/Animation/bcAnimationManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
@@ -63,6 +64,7 @@ namespace black_cat
 			auto* l_scene = m_scene.get();
 			auto* l_particle_manager = l_scene ? &l_scene->get_particle_manager() : static_cast<bc_particle_manager_container*>(nullptr);
 			auto* l_decal_manager = l_scene ? &l_scene->get_decal_manager() : static_cast<bc_decal_manager_container*>(nullptr);
+			auto* l_sound_manager = l_scene ? &l_scene->get_sound_manager() : static_cast<bc_sound_manager*>(nullptr);
 			core::bc_nullable<bc_camera_instance> l_camera;
 
 			if(m_input_system.get_camera())
@@ -116,7 +118,10 @@ namespace black_cat
 				
 				l_actor_component_manager.double_update_actors(p_clock);
 
-				l_sound_task = l_sound_system.update_async(bc_sound_system::update_context(p_clock, *l_camera));
+				if (l_camera.has_value())
+				{
+					l_sound_task = l_sound_system.update_async(bc_sound_system::update_context(p_clock, *l_camera));
+				}
 
 				if (l_scene)
 				{
@@ -125,6 +130,7 @@ namespace black_cat
 
 					l_particle_manager->update(p_clock);
 					l_decal_manager->update_decal_lifespans(p_clock);
+					l_sound_manager->update_pitch(p_clock);
 				}
 
 				l_script_system.update(p_clock);
@@ -178,7 +184,10 @@ namespace black_cat
 				core::bc_task<void> l_sound_task;
 				core::bc_task<void> l_scene_task;
 
-				l_sound_task = l_sound_system.update_async(bc_sound_system::update_context(p_clock, *l_camera));
+				if (l_camera.has_value())
+				{
+					l_sound_task = l_sound_system.update_async(bc_sound_system::update_context(p_clock, *l_camera));
+				}
 
 				if (l_scene)
 				{
@@ -248,6 +257,15 @@ namespace black_cat
 
 					// Pass large elapsed time to reform graph if graph uses deferred update
 					m_scene->update_graph(platform::bc_clock::update_param(p_clock.m_total_elapsed, 10000, 10000));
+
+					if (m_paused)
+					{
+						m_scene->paused();
+					}
+					else
+					{
+						m_scene->resumed();
+					}
 				}
 
 				bc_event_scene_change l_scene_change_event(m_scene.get());
@@ -313,8 +331,7 @@ namespace black_cat
 
 		void bc_game_system::_event_handler(core::bci_event& p_event)
 		{
-			const auto* l_pause_event = core::bci_message::as<bc_event_game_pause_state>(p_event);
-			if(l_pause_event)
+			if(const auto* l_pause_event = core::bci_message::as<bc_event_game_pause_state>(p_event))
 			{
 				const auto l_current_pause_state = m_paused;
 				m_paused = l_pause_event->get_state() == bc_event_game_pause_state::state::paused;
@@ -323,18 +340,27 @@ namespace black_cat
 				{
 					m_pause_last_total_elapsed.reset();
 				}
-				return;
 			}
 
-			const auto* l_editor_event = core::bci_message::as<bc_event_editor_mode>(p_event);
-			if (l_editor_event)
+			if (const auto* l_editor_event = core::bci_message::as<bc_event_editor_mode>(p_event))
 			{
 				m_editor_mode = l_editor_event->get_editor_mode();
 				if(m_editor_mode)
 				{
 					m_paused = false;
 				}
-				return;
+			}
+
+			if (m_scene)
+			{
+				if (m_paused)
+				{
+					m_scene->paused();
+				}
+				else
+				{
+					m_scene->resumed();
+				}
 			}
 		}
 	}

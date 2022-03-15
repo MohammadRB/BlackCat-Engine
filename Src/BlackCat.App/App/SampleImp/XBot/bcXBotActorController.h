@@ -135,7 +135,7 @@ namespace black_cat
 		void on_ccontroller_hit(const physics::bc_ccontroller_controller_hit& p_hit) override;
 
 		virtual void throw_grenade(game::bc_actor& p_grenade) noexcept = 0;
-		
+
 		core::bc_shared_ptr<game::bci_animation_job> _create_animation_pipeline(const bcCHAR* p_idle_animation,
 			const bcCHAR* p_idle_left_turn_animation,
 			const bcCHAR* p_idle_right_turn_animation,
@@ -176,6 +176,7 @@ namespace black_cat
 		game::bc_skinned_mesh_component* m_skinned_mesh_component;
 		game::bc_rigid_controller_component* m_rigid_controller_component;
 		game::bc_human_ragdoll_component* m_human_ragdoll_component;
+
 		core::bc_vector3f m_local_origin;
 		core::bc_vector3f m_local_forward;
 		core::bc_vector<core::bc_string> m_upper_body_chain;

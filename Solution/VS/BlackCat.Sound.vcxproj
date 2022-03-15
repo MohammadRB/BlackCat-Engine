@@ -30,9 +30,10 @@
     <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\bcSoundRef.h" />
     <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\bcSoundReference.h" />
     <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Fundation\bcDevice.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Resource\bcChannelGroup.h" />
     <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Resource\bcResourceContent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Resource\bcSound.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Resource\bcSoundChannel.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Resource\bcChannel.h" />
     <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\SoundPCH.h" />
   </ItemGroup>
   <ItemGroup>

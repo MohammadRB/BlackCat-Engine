@@ -51,6 +51,7 @@ namespace black_cat
 		BC_PARAMETER(weapon_fire_offset_ls, "fire_offset_ls");
 		BC_PARAMETER(weapon_fire_particle, "fire_particle");
 		BC_PARAMETER(weapon_fire_sound, "fire_sound");
+		BC_PARAMETER(weapon_fire_sound_min_max_distance, "fire_sound_min_max_distance");
 		BC_PARAMETER(weapon_fire_light_color, "fire_light_color");
 		BC_PARAMETER(weapon_fire_light_radius, "fire_light_radius");
 		BC_PARAMETER(weapon_fire_light_intensity, "fire_light_intensity");

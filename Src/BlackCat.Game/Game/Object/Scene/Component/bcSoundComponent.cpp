@@ -4,6 +4,7 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Sound/bcSoundSystem.h"
+#include "Game/System/Sound/bcSoundManager.h"
 #include "Game/Object/Scene/Component/bcSoundComponent.h"
 #include "Game/Object/Scene/Component/bcIconComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
@@ -58,9 +59,9 @@ namespace black_cat
 				l_sound_mode = core::bc_enum::set(l_sound_mode, sound::bc_sound_mode::d3, true);
 			}
 
-			auto& l_sound_device = p_context.m_game_system.get_sound_system().get_device();
-			m_sound = p_context.m_stream_manager.find_content_throw<sound::bc_sound_content>(l_sound_param)->get_resource();
-			m_channel = l_sound_device.play_sound(m_sound, true);
+			auto& l_sound_manager = p_context.m_scene.get_sound_manager();
+			m_sound = p_context.m_stream_manager.find_content_throw<sound::bc_sound_content>(l_sound_param);
+			m_channel = l_sound_manager.play_sound(m_sound->get_resource(), true);
 			m_channel.set_mode(l_sound_mode);
 
 			if(l_min_max_distance_param.has_value())
@@ -100,7 +101,7 @@ namespace black_cat
 			{
 				if(m_auto_play)
 				{
-					m_channel.play();
+					m_channel.resume();
 				}
 				return;
 			}

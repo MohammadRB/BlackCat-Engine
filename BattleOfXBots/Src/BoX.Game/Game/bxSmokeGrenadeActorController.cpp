@@ -85,7 +85,7 @@ namespace box
 			const auto* l_sound_component = p_context.m_actor.get_component<game::bc_sound_component>();
 			if(l_sound_component)
 			{
-				l_sound_component->get_channel().play();
+				l_sound_component->get_channel().resume();
 			}
 
 			m_particles_added = true;

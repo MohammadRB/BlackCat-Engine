@@ -86,9 +86,15 @@ namespace box
 		
 		void client_disconnected(const game::bc_network_client& p_client) noexcept override;
 		
-		void message_packet_sent(const game::bc_network_client& p_client, const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept override;
+		void message_packet_sent(const game::bc_network_client& p_client, 
+			const core::bc_memory_stream& p_packet, 
+			bcSIZE p_packet_size, 
+			core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept override;
 
-		void message_packet_received(const game::bc_network_client& p_client, const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept override;
+		void message_packet_received(const game::bc_network_client& p_client, 
+			const core::bc_memory_stream& p_packet, 
+			bcSIZE p_packet_size, 
+			core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept override;
 		
 		void error_occurred(const game::bc_network_client* p_client, const bc_network_exception* p_exception) noexcept override;
 

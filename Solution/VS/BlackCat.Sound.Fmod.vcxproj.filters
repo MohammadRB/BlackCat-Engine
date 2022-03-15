@@ -30,11 +30,14 @@
     <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcSound.h">
       <Filter>SoundImp\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcSoundChannel.h">
-      <Filter>SoundImp\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Fundation\bcFmodError.h">
       <Filter>SoundImp\Fundation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcChannel.h">
+      <Filter>SoundImp\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcChannelGroup.h">
+      <Filter>SoundImp\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -50,7 +53,10 @@
     <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcSound.cpp">
       <Filter>SoundImp\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcSoundChannel.cpp">
+    <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcChannel.cpp">
+      <Filter>SoundImp\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcChannelGroup.cpp">
       <Filter>SoundImp\Resource</Filter>
     </ClCompile>
   </ItemGroup>

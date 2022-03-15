@@ -705,6 +705,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcSoundComponent.h">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Sound\bcSoundManager.h">
+      <Filter>Game\System\Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">
@@ -1063,6 +1066,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcSoundComponent.cpp">
       <Filter>Game\Object\Scene\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Sound\bcSoundManager.cpp">
+      <Filter>Game\System\Sound</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

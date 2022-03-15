@@ -5,11 +5,17 @@
 #include "Core/Concurrency/bcConcurrency.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Sound/bcSoundSystem.h"
+#include "Game/System/Sound/bcSoundManager.h"
 
 namespace black_cat
 {
 	namespace game
 	{
+		bc_sound_manager bc_sound_system::create_sound_manager() noexcept
+		{
+			return bc_sound_manager(m_device);
+		}
+
 		void bc_sound_system::update(const update_context& p_context)
 		{
 			const auto l_listener_position = p_context.m_camera.get_position();

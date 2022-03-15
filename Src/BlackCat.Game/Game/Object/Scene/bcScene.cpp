@@ -21,6 +21,8 @@
 #include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"
+#include "Game/System/Sound/bcSoundSystem.h"
+#include "Game/System/Sound/bcSoundManager.h"
 
 namespace black_cat
 {
@@ -54,7 +56,8 @@ namespace black_cat
 			m_bullet_manager = core::bc_make_unique<bc_bullet_manager>(bc_bullet_manager(*m_physics));
 			m_light_manager = core::bc_make_unique<bc_light_manager>(bc_light_manager());
 			m_particle_manager = core::bc_make_unique<bc_particle_manager_container>(p_game_system.get_render_system().get_particle_manager().create_container());
-			m_decal_container = core::bc_make_unique<bc_decal_manager_container>(p_game_system.get_render_system().get_decal_manager().create_container());
+			m_decal_manager = core::bc_make_unique<bc_decal_manager_container>(p_game_system.get_render_system().get_decal_manager().create_container());
+			m_sound_manager = core::bc_make_unique<bc_sound_manager>(p_game_system.get_sound_system().create_sound_manager());
 		}
 
 		bc_scene::bc_scene(bc_scene&& p_other) noexcept
@@ -74,7 +77,8 @@ namespace black_cat
 			m_bullet_manager(std::move(p_other.m_bullet_manager)),
 			m_light_manager(std::move(p_other.m_light_manager)),
 			m_particle_manager(std::move(p_other.m_particle_manager)),
-			m_decal_container(std::move(p_other.m_decal_container))
+			m_decal_manager(std::move(p_other.m_decal_manager)),
+			m_sound_manager(std::move(p_other.m_sound_manager))
 		{
 		}
 
@@ -108,9 +112,20 @@ namespace black_cat
 			m_bullet_manager = std::move(p_other.m_bullet_manager);
 			m_light_manager = std::move(p_other.m_light_manager);
 			m_particle_manager = std::move(p_other.m_particle_manager);
-			m_decal_container = std::move(p_other.m_decal_container);
+			m_decal_manager = std::move(p_other.m_decal_manager);
+			m_sound_manager = std::move(p_other.m_sound_manager);
 
 			return *this;
+		}
+
+		void bc_scene::paused() noexcept
+		{
+			m_sound_manager->pause();
+		}
+
+		void bc_scene::resumed() noexcept
+		{
+			m_sound_manager->resume();
 		}
 
 		void bc_scene::enable_bulk_loading(bcSIZE p_hint_size) noexcept
@@ -239,11 +254,6 @@ namespace black_cat
 		void bc_scene::add_bullet(const bc_bullet& p_bullet) noexcept
 		{
 			m_bullet_manager->add_bullet(p_bullet);
-		}
-
-		void bc_scene::draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const
-		{
-			m_scene_graph.draw_debug_shapes(p_shape_drawer);
 		}
 
 		void bc_scene::update_physics(const platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
@@ -404,6 +414,11 @@ namespace black_cat
 			);
 
 			return l_task;
+		}
+
+		void bc_scene::draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const
+		{
+			m_scene_graph.draw_debug_shapes(p_shape_drawer);
 		}
 
 		void bc_scene::_add_actor(bc_actor& p_actor)

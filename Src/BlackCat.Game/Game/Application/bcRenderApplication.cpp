@@ -79,14 +79,14 @@ namespace black_cat
 			return m_output_window;
 		}
 
-		bcFLOAT bc_render_application::get_fps() const noexcept
-		{
-			return m_fps;
-		}
-
 		bcFLOAT bc_render_application::get_ft() const noexcept
 		{
 			return m_frame_watch.average_total_elapsed();
+		}
+
+		bcFLOAT bc_render_application::get_fps() const noexcept
+		{
+			return m_fps;
 		}
 
 		void bc_render_application::set_fps(bcUINT32 p_fps)

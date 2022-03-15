@@ -19,6 +19,9 @@ namespace black_cat
 		template<bc_sound_api>
 		class bc_platform_sound;
 
+		template<bc_sound_api>
+		class bc_platform_channel_group;
+
 		template<class TObject>
 		struct bc_platform_sounds_ref_pack<bc_sound_api::fmod, TObject>
 		{
@@ -122,5 +125,7 @@ namespace black_cat
 		}
 
 		void BC_SOUNDIMP_DLL _release_fmod_reference(bc_platform_sound<bc_sound_api::fmod>& p_reference);
+
+		void BC_SOUNDIMP_DLL _release_fmod_reference(bc_platform_channel_group<bc_sound_api::fmod>& p_reference);
 	}
 }

@@ -30,6 +30,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_entity_manager;
+		class bc_sound_manager;
 		
 		enum class _bc_scene_actor_state
 		{
@@ -99,6 +100,14 @@ namespace black_cat
 
 			const bc_decal_manager_container& get_decal_manager() const noexcept;
 
+			bc_sound_manager& get_sound_manager() noexcept;
+
+			const bc_sound_manager& get_sound_manager() const noexcept;
+
+			void paused() noexcept;
+
+			void resumed() noexcept;
+
 			void enable_bulk_loading(bcSIZE p_hint_size) noexcept;
 
 			void disable_bulk_loading() noexcept;
@@ -129,8 +138,6 @@ namespace black_cat
 			 * \param p_bullet 
 			 */
 			void add_bullet(const bc_bullet& p_bullet) noexcept;
-			
-			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
 			void update_physics(const platform::bc_clock::update_param& p_clock, bool p_is_partial_update);
 			
@@ -143,7 +150,9 @@ namespace black_cat
 			void update_graph(const platform::bc_clock::update_param& p_clock) noexcept;
 			
 			core::bc_task<void> update_graph_async(const platform::bc_clock::update_param& p_clock) noexcept;
-			
+
+			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
+
 		private:
 			void _add_actor(bc_actor& p_actor);
 
@@ -168,7 +177,8 @@ namespace black_cat
 			core::bc_unique_ptr<bc_bullet_manager> m_bullet_manager;
 			core::bc_unique_ptr<bc_light_manager> m_light_manager;
 			core::bc_unique_ptr<bc_particle_manager_container> m_particle_manager;
-			core::bc_unique_ptr<bc_decal_manager_container> m_decal_container;
+			core::bc_unique_ptr<bc_decal_manager_container> m_decal_manager;
+			core::bc_unique_ptr<bc_sound_manager> m_sound_manager;
 
 			platform::bc_spin_mutex m_actors_to_add_lock;
 			platform::bc_spin_mutex m_actors_to_remove_lock;
@@ -272,12 +282,22 @@ namespace black_cat
 
 		inline bc_decal_manager_container& bc_scene::get_decal_manager() noexcept
 		{
-			return *m_decal_container;
+			return *m_decal_manager;
 		}
 
 		inline const bc_decal_manager_container& bc_scene::get_decal_manager() const noexcept
 		{
-			return *m_decal_container;
+			return *m_decal_manager;
+		}
+
+		inline bc_sound_manager& bc_scene::get_sound_manager() noexcept
+		{
+			return *m_sound_manager;
+		}
+
+		inline const bc_sound_manager& bc_scene::get_sound_manager() const noexcept
+		{
+			return *m_sound_manager;
 		}
 	}
 }

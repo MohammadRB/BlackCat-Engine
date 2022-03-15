@@ -21,8 +21,13 @@ namespace black_cat
 		using bc_sound_ref = bc_sounds_ref<bc_sound>;
 
 		template<bc_sound_api TApi>
-		class bc_platform_sound_channel;
-		using bc_sound_channel = bc_platform_sound_channel<g_current_sound_api>;
+		class bc_platform_channel;
+		using bc_channel = bc_platform_channel<g_current_sound_api>;
+
+		template<bc_sound_api TApi>
+		class bc_platform_channel_group;
+		using bc_channel_group = bc_platform_channel_group<g_current_sound_api>;
+		using bc_channel_group_ref = bc_sounds_ref<bc_channel_group>;
 
 		template<bc_sound_api TApi>
 		struct bc_platform_device_pack
@@ -60,6 +65,8 @@ namespace black_cat
 
 			bc_platform_device& operator=(bc_platform_device&&) noexcept;
 
+			bc_channel_group get_default_channel_group() noexcept;
+
 			bc_sound_ref create_sound(const void* p_data, bcSIZE p_data_length, bc_sound_mode p_mode = bc_sound_mode::none);
 
 			bc_sound_ref create_sound(core::bc_estring_view p_path, bc_sound_mode p_mode = bc_sound_mode::none);
@@ -70,9 +77,11 @@ namespace black_cat
 
 			bc_sound_ref create_stream_sound(core::bc_estring_view p_path, bc_sound_mode p_mode = bc_sound_mode::none);
 
-			bc_sound_channel play_sound(bc_sound p_sound, bool p_paused);
+			bc_channel_group_ref create_channel_group(core::bc_string_view p_name);
 
-			void update(const update_context& p_context);
+			bc_channel play_sound(const bc_sound& p_sound, const bc_channel_group& p_group, bool p_paused) noexcept;
+
+			void update(const update_context& p_context) noexcept;
 
 			platform_pack& get_platform_pack() noexcept
 			{

@@ -1,6 +1,8 @@
 // [03/10/2022 MRB]
 
 #include "SoundImp/SoundImpPCH.h"
+
+#include "Core/Utility/bcEnumOperand.h"
 #include "SoundImp/Fundation/bcFmodError.h"
 #include "SoundImp/Resource/bcSound.h"
 #include "SoundImp/bcExport.h"
@@ -54,7 +56,7 @@ namespace black_cat
 			auto* l_fmod_sound = static_cast<FMOD::Sound*>(m_pack.m_pointer);
 			unsigned l_length;
 
-			bc_fmod_call(l_fmod_sound->getLength(&l_length, FMOD_TIMEUNIT_MS));
+			bc_fmod_log(l_fmod_sound->getLength(&l_length, FMOD_TIMEUNIT_MS));
 
 			return l_length;
 		}
@@ -66,7 +68,7 @@ namespace black_cat
 			auto* l_fmod_sound = static_cast<FMOD::Sound*>(m_pack.m_pointer);
 			auto l_fmod_mod = FMOD_MODE();
 
-			bc_fmod_call(l_fmod_sound->getMode(&l_fmod_mod));
+			bc_fmod_log(l_fmod_sound->getMode(&l_fmod_mod));
 
 			auto l_mode = bc_sound_mode::none;
 
@@ -94,15 +96,15 @@ namespace black_cat
 
 			if(core::bc_enum::has(p_mode, bc_sound_mode::loop_off))
 			{
-				l_fmod_sound->setMode(FMOD_LOOP_OFF);
+				bc_fmod_log(l_fmod_sound->setMode(FMOD_LOOP_OFF));
 			}
 			if (core::bc_enum::has(p_mode, bc_sound_mode::loop))
 			{
-				l_fmod_sound->setMode(FMOD_LOOP_NORMAL);
+				bc_fmod_log(l_fmod_sound->setMode(FMOD_LOOP_NORMAL));
 			}
 			if (core::bc_enum::has(p_mode, bc_sound_mode::d3))
 			{
-				l_fmod_sound->setMode(FMOD_3D);
+				bc_fmod_log(l_fmod_sound->setMode(FMOD_3D));
 			}
 		}
 
@@ -113,7 +115,7 @@ namespace black_cat
 			auto* l_fmod_sound = static_cast<FMOD::Sound*>(m_pack.m_pointer);
 			void* l_user_data;
 
-			l_fmod_sound->getUserData(&l_user_data);
+			bc_fmod_log(l_fmod_sound->getUserData(&l_user_data));
 
 			return l_user_data;
 		}
@@ -123,7 +125,7 @@ namespace black_cat
 		void bc_platform_sound<bc_sound_api::fmod>::set_user_data(void* p_data) noexcept
 		{
 			auto* l_fmod_sound = static_cast<FMOD::Sound*>(m_pack.m_pointer);
-			l_fmod_sound->setUserData(p_data);
+			bc_fmod_log(l_fmod_sound->setUserData(p_data));
 		}
 	}
 }

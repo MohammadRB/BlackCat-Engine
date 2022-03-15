@@ -49,9 +49,9 @@ namespace black_cat
 		m_skinned_mesh_component(nullptr),
 		m_rigid_controller_component(nullptr),
 		m_human_ragdoll_component(nullptr),
+		m_bound_box_max_side_length(0),
 		m_grenade_anim_attach_time(0),
 		m_grenade_anim_throw_time(0),
-		m_bound_box_max_side_length(0),
 		m_look_delta_x(0),
 		m_look_velocity(0, 1, 0.50f),
 		m_forward_velocity(0, 1, 0.35f),
@@ -249,6 +249,7 @@ namespace black_cat
 		m_rigid_controller_component->reset_controller(create_px_controller());
 
 		auto l_mass = 0.f;
+
 		{
 			game::bc_rigid_component_shared_lock l_lock(*m_rigid_controller_component);
 			l_mass = m_rigid_controller_component->get_body().get_mass();
@@ -918,7 +919,7 @@ namespace black_cat
 		core::bc_matrix4f l_world_transform;
 		core::bc_matrix3f l_rotation;
 
-		auto l_move_direction_sign = m_state_machine->m_state.m_look_direction.dot(m_state_machine->m_state.m_move_direction) >= -0.01f ? 1.f : -1.f;
+		const auto l_move_direction_sign = m_state_machine->m_state.m_look_direction.dot(m_state_machine->m_state.m_move_direction) >= -0.01f ? 1.f : -1.f;
 		if constexpr (graphic::bc_render_api_info::use_left_handed())
 		{
 			l_rotation.rotation_between_two_vector_lh(get_local_forward(), m_state_machine->m_state.m_move_direction * l_move_direction_sign);
@@ -932,11 +933,7 @@ namespace black_cat
 		l_world_transform.set_rotation(l_rotation);
 		l_world_transform.set_translation(m_position);
 
-		/*game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_idle_job), l_world_transform);
-		game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_running_job), l_world_transform);
-		game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_rifle_idle_job), l_world_transform);
-		game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_rifle_running_job), l_world_transform);*/
-		game::bc_animation_job_helper::set_skinning_world_transform(static_cast<game::bc_sequence_animation_job&>(*m_animation_pipeline), l_world_transform);
+		game::bc_animation_job_helper::set_skinning_world_transform(*m_animation_pipeline, l_world_transform);
 		
 		m_actor.add_event(game::bc_world_transform_actor_event(l_world_transform, game::bc_transform_event_type::physics));
 	}

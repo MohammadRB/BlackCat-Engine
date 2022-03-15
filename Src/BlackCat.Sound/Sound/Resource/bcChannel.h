@@ -11,30 +11,30 @@ namespace black_cat
 	namespace sound
 	{
 		template<bc_sound_api TApi>
-		struct bc_platform_sound_channel_pack
+		struct bc_platform_channel_pack
 		{
 		};
 
 		template<bc_sound_api TApi>
-		class bc_platform_sound_channel
+		class bc_platform_channel
 		{
 		public:
-			using platform_pack = bc_platform_sound_channel_pack<TApi>;
+			using platform_pack = bc_platform_channel_pack<TApi>;
 
 		public:
-			bc_platform_sound_channel() noexcept;
+			bc_platform_channel() noexcept;
 
-			bc_platform_sound_channel(platform_pack& p_pack) noexcept;
+			bc_platform_channel(platform_pack& p_pack) noexcept;
 
-			bc_platform_sound_channel(const bc_platform_sound_channel&) noexcept;
+			bc_platform_channel(const bc_platform_channel&) noexcept;
 
-			~bc_platform_sound_channel() noexcept;
+			~bc_platform_channel() noexcept;
 
-			bc_platform_sound_channel& operator=(const bc_platform_sound_channel&) noexcept;
+			bc_platform_channel& operator=(const bc_platform_channel&) noexcept;
 
 			bool is_playing() const noexcept;
 
-			void play() noexcept;
+			void resume() noexcept;
 
 			void pause() noexcept;
 
@@ -43,6 +43,14 @@ namespace black_cat
 			bcFLOAT get_volume() const noexcept;
 
 			void set_volume(bcFLOAT p_volume) noexcept;
+
+			bool get_mute() const noexcept;
+
+			void set_mute(bool p_value) noexcept;
+
+			bcFLOAT get_pitch() const noexcept;
+
+			void set_pitch(bcFLOAT p_pitch) const noexcept;
 
 			bc_sound_mode get_mode() const noexcept;
 
@@ -76,6 +84,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_sound_channel = bc_platform_sound_channel<g_current_sound_api>;
+		using bc_channel = bc_platform_channel<g_current_sound_api>;
 	}
 }

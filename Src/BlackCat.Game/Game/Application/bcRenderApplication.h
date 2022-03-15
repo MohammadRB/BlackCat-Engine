@@ -31,9 +31,9 @@ namespace black_cat
 			
 			const bci_render_application_output_window* get_output_window() const noexcept;
 
-			bcFLOAT get_fps() const noexcept;
-
 			bcFLOAT get_ft() const noexcept;
+
+			bcFLOAT get_fps() const noexcept;
 			
 			/**
 			 * \brief Specify an upper range for application fps or use a value lower than 0 for unlimited fps.

@@ -20,8 +20,8 @@ float kernel(in int p_i, in float p_sigma)
 
 float4 gaussian_blur_ps(float4 p_position : SV_POSITION, float2 p_texcoord : TEXCOORD0) : SV_Target0
 {
-	const int l_size = 2;
-	const int l_radius = 11;
+	const int l_size = 1;
+	const int l_radius = 21;
 	const int l_kernel_size = (l_radius - 1) / 2;
 	float l_kernel[l_radius];
 	float4 l_final_color = 0.0;

@@ -33,9 +33,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Resource\bcSound.h">
       <Filter>Sound\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Resource\bcSoundChannel.h">
-      <Filter>Sound\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\bcException.h">
       <Filter>Sound</Filter>
     </ClInclude>
@@ -44,6 +41,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\bcDefinition.h">
       <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Resource\bcChannelGroup.h">
+      <Filter>Sound\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Sound\Sound\Resource\bcChannel.h">
+      <Filter>Sound\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,6 +6,8 @@
 #include "Platform/bcEvent.h"
 #include "PlatformImp/Script/bcScriptGlobalPrototypeBuilder.h"
 #include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
+#include "SoundImp/Resource/bcChannelGroup.h"
+#include "Game/System/Sound/bcSoundSystem.h"
 #include "Game/System/Script/bcScriptBinding.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "BoX.Game/Application/bxApplicationHookFunctions.h"
@@ -47,6 +49,7 @@ namespace box
 	void bx_server_application::application_start_engine_components(const bc_application_start_context& p_context)
 	{
 		m_app_name = p_context.m_app_parameters.m_app_name;
+		m_network_system = &m_game_system->get_network_system();
 		
 		bx_start_game_services(p_context);
 		bx_register_game_loaders(p_context);
@@ -59,9 +62,10 @@ namespace box
 
 	void bx_server_application::application_initialize(const bc_application_initialize_context& p_context)
 	{
-		m_network_system = &m_game_system->get_network_system();
 		auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
 		auto& l_game_console = m_game_system->get_console();
+
+		m_game_system->get_sound_system().get_device().get_default_channel_group().set_mute(true);
 
 		m_console = core::bc_make_unique<game::bc_default_game_console>(*this, l_game_console);
 		m_console->show();
@@ -275,13 +279,19 @@ namespace box
 		_remove_client(p_client.m_id);
 	}
 
-	void bx_server_application::message_packet_sent(const game::bc_network_client& p_client, const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept
+	void bx_server_application::message_packet_sent(const game::bc_network_client& p_client, 
+		const core::bc_memory_stream& p_packet, 
+		bcSIZE p_packet_size, 
+		core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept
 	{
 		/*const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
 		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet sent to client: " << p_client << " " << l_packet << core::bc_lend;*/
 	}
 
-	void bx_server_application::message_packet_received(const game::bc_network_client& p_client, const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept
+	void bx_server_application::message_packet_received(const game::bc_network_client& p_client, 
+		const core::bc_memory_stream& p_packet, 
+		bcSIZE p_packet_size, 
+		core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept
 	{
 		/*const core::bc_string_frame l_packet(static_cast<const bcCHAR*>(p_packet.get_position_data()), p_packet_size);
 		core::bc_log(core::bc_log_type::debug) << core::bc_only_file << "Network packet received from client: " << p_client << " " << l_packet << core::bc_lend;*/

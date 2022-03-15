@@ -28,15 +28,17 @@
     <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\bcSoundReference.h" />
     <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Fundation\bcDevice.h" />
     <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Fundation\bcFmodError.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcChannelGroup.h" />
     <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcSound.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcSoundChannel.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcChannel.h" />
     <ClInclude Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\SoundImpPCH.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\bcSoundRef.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Fundation\bcDevice.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcChannelGroup.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcSound.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcSoundChannel.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\Resource\bcChannel.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Sound.Fmod\SoundImp\SoundImpPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -211,7 +213,7 @@ xcopy ..\..\Src\BlackCat.Sound.Fmod\SoundImp\*.h ..\..\BC_SDK\Include\SoundImp\ 
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\</AdditionalLibraryDirectories>
-      <AdditionalDependencies>3rdParty\FMOD\Lib\$(Platform)_$(Configuration)\fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>3rdParty\FMOD\Lib\$(Platform)_$(Configuration)\fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist ..\..\BC_SDK\Include\SoundImp\ mkdir ..\..\BC_SDK\Include\SoundImp\

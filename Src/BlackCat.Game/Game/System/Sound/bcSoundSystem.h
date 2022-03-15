@@ -11,6 +11,8 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_sound_manager;
+
 		struct bc_sound_system_params
 		{
 			bcUINT32 m_max_channels;
@@ -45,6 +47,8 @@ namespace black_cat
 			sound::bc_device& get_device() noexcept;
 
 			const sound::bc_device& get_device() const noexcept;
+
+			bc_sound_manager create_sound_manager() noexcept;
 
 			void update(const update_context& p_context);
 
