@@ -52,7 +52,7 @@ namespace black_cat
 			return l_task;
 		}
 
-		void bc_sound_system::_initialize(bc_sound_system_params p_params)
+		void bc_sound_system::_initialize(bc_sound_system_parameter p_params)
 		{
 			m_device.initialize(sound::bc_device_init_params{ p_params.m_max_channels, graphic::bc_render_api_info::use_left_handed() });
 		}

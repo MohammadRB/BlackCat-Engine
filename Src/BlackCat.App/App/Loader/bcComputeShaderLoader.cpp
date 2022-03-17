@@ -6,6 +6,7 @@
 #include "Core/File/bcPath.h"
 #include "GraphicImp/Shader/bcShader.h"
 #include "GraphicImp/Shader/bcComputeShader.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "App/bcConstant.h"
 #include "App/Loader/bcComputeShaderLoader.h"

@@ -9,14 +9,15 @@
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcCounterValueManager.h"
 #include "Core/Utility/bcLogger.h"
-#include "Core/Math/bcCoordinate.h"
 #include "Core/bcEvent.h"
+#include "Platform/bcEvent.h"
+#include "Game/System/Input/bcFileSystem.h"
+#include "Game/System/Input/bcFileLogger.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "App/Application/bcRenderApplication.h"
 #include "App/Application/bcApplicationHookFuncations.h"
-#include "Platform/bcEvent.h"
 
 namespace black_cat
 {
@@ -58,28 +59,34 @@ namespace black_cat
 
 		m_query_manager = core::bc_get_service<core::bc_query_manager>();
 		m_game_system = core::bc_get_service<game::bc_game_system>();
+
 		m_game_system->initialize
 		(
-			game::bc_game_system_init_params
+			get_output_window()
+			? game::bc_game_system_parameter
 			(
+				*core::bc_get_service<core::bc_content_stream_manager>(),
 				*core::bc_get_service<core::bc_query_manager>(),
 				*core::bc_get_service<core::bc_event_manager>(),
-				game::bc_render_application::get_output_window()
-				? game::bc_render_system_parameter
-				(
-					*core::bc_get_service<core::bc_content_stream_manager>(),
-					m_game_system->get_physics_system(),
-					game::bc_render_application::get_output_window()->get_width(),
-					game::bc_render_application::get_output_window()->get_height(),
-					graphic::bc_format::R8G8B8A8_UNORM,
-					game::bc_render_application::get_output_window()->get_device_output()
-				)
-				: game::bc_render_system_parameter
-				(
-					*core::bc_get_service<core::bc_content_stream_manager>(),
-					m_game_system->get_physics_system()
-				)
+				*get_output_window(),
+				graphic::bc_format::R8G8B8A8_UNORM
 			)
+			: game::bc_game_system_parameter
+			(
+				*core::bc_get_service<core::bc_content_stream_manager>(),
+				*core::bc_get_service<core::bc_query_manager>(),
+				*core::bc_get_service<core::bc_event_manager>()
+			)
+		);
+
+		core::bc_get_service<core::bc_logger>()->register_listener
+		(
+			core::bc_log_type::all,
+			core::bc_make_unique<game::bc_file_logger>(game::bc_file_logger
+			(
+				m_game_system->get_file_system().get_content_data_path(bcL("Log")).c_str(),
+				p_parameters.m_app_parameters.m_app_name
+			))
 		);
 
 		bc_register_engine_actor_components();

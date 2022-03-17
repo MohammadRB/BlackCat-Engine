@@ -1,7 +1,9 @@
 // [06/26/2021 MRB]
 
-#include "Game/System/bcGameSystem.h"
+#include "PlatformImp/Script/bcScriptString.h"
 #include "Game/System/Network/Message/bcStringNetworkMessage.h"
+#include "Game/System/Network/bcNetworkSystem.h"
+#include "Game/System/bcGameSystem.h"
 #include "BoX/Application/bxClientScript.h"
 
 namespace box

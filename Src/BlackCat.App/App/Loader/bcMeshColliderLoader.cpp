@@ -5,6 +5,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcStringStream.h"
 #include "Core/bcUtility.h"
+#include "GraphicImp/bcRenderApiInfo.h"
 #include "PhysicsImp/Fundation/bcMemoryBuffer.h"
 #include "PhysicsImp/Shape/bcShape.h"
 #include "Game/System/Render/State/bcVertexLayout.h"

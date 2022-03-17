@@ -4,7 +4,10 @@
 
 #include "Core/Utility/bcEnumOperand.h"
 #include "Game/Object/Mesh/bcMeshUtility.h"
-#include "Game/Object/Animation/Job/bcMeshColliderSkinningAnimationJob.h"
+#include "Game/Object/Scene/bcScene.h"
+#include "Game/System/Animation/Job/bcMeshColliderSkinningAnimationJob.h"
+#include "Game/System/Input/bcInputSystem.h"
+#include "Game/System/bcGameSystem.h"
 #include "Editor/Application/bcUICommand.h"
 
 namespace black_cat

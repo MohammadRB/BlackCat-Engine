@@ -2,6 +2,7 @@
 
 #include "Editor/EditorPCH.h"
 
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Editor/UICommand/bcObjectUpdateUICommand.h"
 #include "Editor/UI/bcFormObject.h"

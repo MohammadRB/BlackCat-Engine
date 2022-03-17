@@ -11,6 +11,7 @@
 #include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/bcConstant.h"
 

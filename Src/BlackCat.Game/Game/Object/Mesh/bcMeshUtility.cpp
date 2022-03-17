@@ -13,7 +13,7 @@
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
-#include "Game/Object/Animation/Job/bcMeshColliderSkinningAnimationJob.h"
+#include "Game/System/Animation/Job/bcMeshColliderSkinningAnimationJob.h"
 
 namespace black_cat
 {

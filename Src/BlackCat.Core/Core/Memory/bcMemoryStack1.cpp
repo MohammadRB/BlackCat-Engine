@@ -142,6 +142,8 @@ namespace black_cat
 					break;
 				}
 
+				BC_ASSERT(m_top >= m_heap);
+
 				auto* l_block_pointer = m_top - sizeof(_bc_memory_stack_block1);
 				auto* l_block = reinterpret_cast<_bc_memory_stack_block1*>(l_block_pointer);
 

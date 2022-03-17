@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/System/Network/Message/bcNetworkMessage.h"
 #include "App/bcExport.h"
 

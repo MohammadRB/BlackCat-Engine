@@ -4,7 +4,7 @@
 
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix3f.h"
-#include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/System/Network/Message/bcNetworkMessage.h"
 #include "App/bcExport.h"
 

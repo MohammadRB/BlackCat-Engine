@@ -220,7 +220,9 @@ namespace black_cat
 		bool bc_platform_channel<bc_sound_api::fmod>::is_valid() const noexcept
 		{
 			int l_index;
-			return m_pack.m_channel != nullptr && m_pack.m_channel->getIndex(&l_index) != FMOD_ERR_INVALID_HANDLE;
+			const auto l_fmod_error = m_pack.m_channel->getIndex(&l_index);
+
+			return m_pack.m_channel != nullptr && l_fmod_error != FMOD_ERR_INVALID_HANDLE && l_fmod_error != FMOD_ERR_CHANNEL_STOLEN;
 		}
 
 		template<>

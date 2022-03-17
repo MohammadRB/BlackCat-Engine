@@ -13,9 +13,10 @@
 #include "Core/Utility/bcLogger.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Input/bcFileSystem.h"
-#include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
+#include "Game/System/Physics/bcPhysicsSystem.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/bcException.h"
 
 namespace black_cat

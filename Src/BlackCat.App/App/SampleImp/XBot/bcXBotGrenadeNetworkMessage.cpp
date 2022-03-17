@@ -4,6 +4,7 @@
 
 #include "Core/Utility/bcLogger.h"
 #include "Core/Utility/bcJsonParse.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/bcUtility.h"

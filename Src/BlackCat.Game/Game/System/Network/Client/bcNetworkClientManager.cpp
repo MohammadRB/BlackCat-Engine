@@ -12,6 +12,7 @@
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Input/bcGlobalConfig.h"
+#include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/Network/Client/bcNetworkClientManager.h"
 #include "Game/System/Network/Message/bcPingNetworkMessage.h"
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
@@ -20,6 +21,7 @@
 #include "Game/System/Network/Message/bcActorSyncNetworkMessage.h"
 #include "Game/System/Network/Message/bcActorRemoveNetworkMessage.h"
 #include "Game/System/Network/Message/bcSceneReplicateNetworkMessage.h"
+#include "Game/bcEvent.h"
 
 namespace black_cat
 {

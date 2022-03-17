@@ -8,6 +8,7 @@
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "App/bcConstant.h"
 #include "App/Loader/bcTextureLoader.h"

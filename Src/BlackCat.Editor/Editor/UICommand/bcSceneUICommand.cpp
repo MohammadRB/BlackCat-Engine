@@ -1,8 +1,11 @@
 // [02/08/2019 MRB]
 
-#include <utility>
 
 #include "Editor/EditorPCH.h"
+
+#include <utility>
+#include "Game/System/Input/bcFileSystem.h"
+#include "Game/System/bcGameSystem.h"
 #include "Editor/UICommand/bcSceneUICommand.h"
 #include "Editor/UI/bcFormMainMenu.h"
 

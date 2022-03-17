@@ -1,6 +1,7 @@
 // [02/12/2022 MRB]
 
 #include "Core/Utility/bcJsonParse.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "BoX.Game/Network/bxPlayerKilledNetworkMessage.h"
 #include "BoX.Game/Game/bxPlayerActorController.h"

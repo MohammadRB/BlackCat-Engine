@@ -3,6 +3,7 @@
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
 #include "Game/Object/Scene/Component/bcSoundComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/bcUtility.h"
 #include "BoX.Game/Game/bxSmokeGrenadeActorController.h"
 

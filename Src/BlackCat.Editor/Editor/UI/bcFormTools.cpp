@@ -2,6 +2,8 @@
 
 #include "Editor/EditorPCH.h"
 
+#include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/bcGameSystem.h"
 #include "App/RenderPass/GBuffer/bcGBufferDecalPass.h"
 #include "Editor/UI/bcFormTools.h"
 #include "Editor/UICommand/bcTerrainHeightUICommand.h"

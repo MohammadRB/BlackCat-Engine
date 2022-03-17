@@ -5,13 +5,21 @@
 #include "CorePlatformImp/Concurrency/bcThread.h"
 #include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
-#include "Game/System/Render/Particle/bcParticleManager.h"
-#include "Game/System/Render/Decal/bcDecalManager.h"
+#include "Game/Object/Scene/bcScene.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/System/Input/bcFileSystem.h"
+#include "Game/System/Input/bcInputSystem.h"
+#include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/Sound/bcSoundSystem.h"
 #include "Game/System/Sound/bcSoundManager.h"
+#include "Game/System/Animation/bcAnimationSystem.h"
+#include "Game/System/Network/bcNetworkSystem.h"
+#include "Game/System/Script/bcScriptSystem.h"
+#include "Game/System/Script/bcGameConsole.h"
+#include "Game/System/Render/Particle/bcParticleManager.h"
+#include "Game/System/Render/Decal/bcDecalManager.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
-#include "Game/Object/Animation/bcAnimationManager.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Query/bcQueryContext.h"
 #include "Game/bcEvent.h"
 
@@ -22,16 +30,10 @@ namespace black_cat
 		bc_game_system::bc_game_system()
 			: m_query_manager(nullptr),
 			m_event_manager(nullptr),
-			m_file_system
-			(
-				*core::bc_get_service<core::bc_content_manager>(),
-				*core::bc_get_service<core::bc_content_stream_manager>()
-			),
 			m_scene_changed(false),
 			m_paused(false),
 			m_editor_mode(false)
 		{
-			m_console = core::bc_make_unique<bc_game_console>(core::bc_alloc_type::program, m_script_system);
 		}
 
 		bc_game_system::~bc_game_system()
@@ -59,7 +61,7 @@ namespace black_cat
 			auto& l_script_system = m_script_system;
 			auto& l_render_system = m_render_system;
 			auto& l_sound_system = *m_sound_system;
-			auto& l_animation_manager = m_render_system.get_animation_manager();
+			auto& l_animation_system = *m_animation_system;
 			auto& l_console = m_console;
 			auto* l_scene = m_scene.get();
 			auto* l_particle_manager = l_scene ? &l_scene->get_particle_manager() : static_cast<bc_particle_manager_container*>(nullptr);
@@ -67,9 +69,9 @@ namespace black_cat
 			auto* l_sound_manager = l_scene ? &l_scene->get_sound_manager() : static_cast<bc_sound_manager*>(nullptr);
 			core::bc_nullable<bc_camera_instance> l_camera;
 
-			if(m_input_system.get_camera())
+			if(m_input_system->get_camera())
 			{
-				l_camera.reset(bc_camera_instance(*m_input_system.get_camera()));
+				l_camera.reset(bc_camera_instance(*m_input_system->get_camera()));
 			}
 
 			if(!m_editor_mode && !m_paused)
@@ -82,7 +84,7 @@ namespace black_cat
 
 				if (p_is_partial_update)
 				{
-					l_physics_system.update(p_clock);
+					l_physics_system->update(p_clock);
 
 					if (l_scene)
 					{
@@ -95,9 +97,9 @@ namespace black_cat
 					return;
 				}
 
-				l_file_system.update(p_clock);
-				l_input_system.update(p_clock);
-				l_physics_system.update(p_clock);
+				l_file_system->update(p_clock);
+				l_input_system->update(p_clock);
+				l_physics_system->update(p_clock);
 
 				if (l_scene)
 				{
@@ -111,8 +113,8 @@ namespace black_cat
 				l_actor_component_manager.process_actor_events(p_clock);
 				l_actor_component_manager.update_actors(p_clock);
 
-				l_network_task = l_network_system.update_async(p_clock);
-				l_animation_task = l_animation_manager.run_scheduled_jobs_async(p_clock);
+				l_network_task = l_network_system->update_async(p_clock);
+				l_animation_task = l_animation_system.run_scheduled_jobs_async(p_clock);
 
 				core::bc_concurrency::when_all(l_network_task, l_animation_task);
 				
@@ -133,12 +135,12 @@ namespace black_cat
 					l_sound_manager->update_pitch(p_clock);
 				}
 
-				l_script_system.update(p_clock);
+				l_script_system->update(p_clock);
 				l_console->update(p_clock);
 
 				if(l_camera.has_value())
 				{
-					l_render_system.update(bc_render_system::update_context(p_clock, *l_camera));
+					l_render_system->update(bc_render_system::update_context(p_clock, *l_camera));
 				}
 
 				core::bc_concurrency::when_all(l_sound_task, l_scene_task, l_scene_task1);
@@ -156,8 +158,8 @@ namespace black_cat
 					m_pause_last_total_elapsed.reset(p_clock.m_total_elapsed);
 				}
 
-				l_file_system.update(p_clock);
-				l_input_system.update(p_clock);
+				l_file_system->update(p_clock);
+				l_input_system->update(p_clock);
 				l_event_manager.process_event_queue(p_clock);
 
 				l_console->update(p_clock);
@@ -165,7 +167,7 @@ namespace black_cat
 				if (l_camera.has_value())
 				{
 					const auto l_paused_clock = platform::bc_clock::update_param(*m_pause_last_total_elapsed, 0, p_clock.m_average_elapsed);
-					l_render_system.update(bc_render_system::update_context(l_paused_clock, *l_camera));
+					l_render_system->update(bc_render_system::update_context(l_paused_clock, *l_camera));
 				}
 			}
 
@@ -176,8 +178,8 @@ namespace black_cat
 					return;
 				}
 
-				l_file_system.update(p_clock);
-				l_input_system.update(p_clock);
+				l_file_system->update(p_clock);
+				l_input_system->update(p_clock);
 				l_event_manager.process_event_queue(p_clock);
 				l_actor_component_manager.process_actor_events(p_clock);
 
@@ -194,12 +196,12 @@ namespace black_cat
 					l_scene_task = l_scene->update_graph_async(p_clock);
 				}
 
-				l_script_system.update(p_clock);
+				l_script_system->update(p_clock);
 				l_console->update(p_clock);
 				
 				if (l_camera.has_value())
 				{
-					l_render_system.update(bc_render_system::update_context(p_clock, *l_camera));
+					l_render_system->update(bc_render_system::update_context(p_clock, *l_camera));
 				}
 
 				core::bc_concurrency::when_all(l_sound_task, l_scene_task);
@@ -210,16 +212,16 @@ namespace black_cat
 		{
 			m_event_manager->process_render_event_queue(p_clock);
 
-			if(m_input_system.get_camera() && m_scene)
+			if(m_input_system->get_camera() && m_scene)
 			{
 				if(!m_paused)
 				{
-					m_render_system.render(bc_render_system::render_context(p_clock, *m_query_manager));
+					m_render_system->render(bc_render_system::render_context(p_clock, *m_query_manager));
 				}
 				else
 				{
 					const auto l_paused_clock = platform::bc_clock::update_param(*m_pause_last_total_elapsed, 0, p_clock.m_average_elapsed);
-					m_render_system.render(bc_render_system::render_context(l_paused_clock, *m_query_manager));
+					m_render_system->render(bc_render_system::render_context(l_paused_clock, *m_query_manager));
 				}
 			}
 		}
@@ -275,20 +277,37 @@ namespace black_cat
 
 		void bc_game_system::render_swap_frame(const platform::bc_clock::update_param& p_clock)
 		{
-			m_render_system.swap(bc_render_system::swap_context(p_clock));
+			m_render_system->swap(bc_render_system::swap_context(p_clock));
 		}
 
-		void bc_game_system::_initialize(bc_game_system_init_params p_parameter)
+		void bc_game_system::_initialize(bc_game_system_parameter p_parameter)
 		{
-			m_query_manager = p_parameter.m_query_manager;
-			m_event_manager = p_parameter.m_event_manager;
+			m_query_manager = &p_parameter.m_query_manager;
+			m_event_manager = &p_parameter.m_event_manager;
 
-			m_physics_system.initialize();
-			m_network_system.initialize(bc_network_system_parameter{ *m_event_manager, *this });
-			m_script_system.initialize(true);
-			m_render_system.initialize(std::move(p_parameter.m_render_system_parameter));
+			m_file_system = core::bc_make_unique<bc_file_system>(*core::bc_get_service<core::bc_content_manager>(), *core::bc_get_service<core::bc_content_stream_manager>());
+			m_input_system = core::bc_make_unique<bc_input_system>();
+			m_physics_system = core::bc_make_unique<bc_physics_system>();
+			m_physics_system->initialize();
 			m_sound_system = core::bc_make_unique<bc_sound_system>(core::bc_alloc_type::program);
-			m_sound_system->initialize(bc_sound_system_params{ 32 });
+			m_sound_system->initialize(bc_sound_system_parameter{ 32 });
+			m_animation_system = core::bc_make_unique<bc_animation_system>(core::bc_alloc_type::program);
+			m_animation_system->initialize();
+			m_network_system = core::bc_make_unique<bc_network_system>();
+			m_network_system->initialize(bc_network_system_parameter{ *m_event_manager, *this });
+			m_script_system = core::bc_make_unique<bc_script_system>();
+			m_script_system->initialize(true);
+			m_render_system = core::bc_make_unique<bc_render_system>();
+			m_render_system->initialize(bc_render_system_parameter
+			(
+				p_parameter.m_content_stream,
+				*m_physics_system,
+				p_parameter.m_device_backbuffer_width,
+				p_parameter.m_device_backbuffer_height,
+				p_parameter.m_device_backbuffer_format,
+				std::move(p_parameter.m_render_output)
+			));
+			m_console = core::bc_make_unique<bc_game_console>(core::bc_alloc_type::program, *m_script_system);
 
 			m_pause_event_handle = m_event_manager->register_event_listener<bc_event_game_pause_state>
 			(
@@ -316,17 +335,18 @@ namespace black_cat
 			m_editor_event_handle.reset();
 			m_scene_query_context_provider.reset();
 
-			m_render_system.destroy_render_passes();
+			m_render_system->destroy_render_passes();
 			m_query_manager->clear_queries(); // Clear queries to release probable references to render states
 			
 			m_scene.reset();
 			m_console.reset();
 
+			m_render_system->destroy();
+			m_script_system->destroy();
+			m_network_system->destroy();
+			m_animation_system->destroy();
 			m_sound_system->destroy();
-			m_render_system.destroy();
-			m_script_system.destroy();
-			m_network_system.destroy();
-			m_physics_system.destroy();
+			m_physics_system->destroy();
 		}
 
 		void bc_game_system::_event_handler(core::bci_event& p_event)

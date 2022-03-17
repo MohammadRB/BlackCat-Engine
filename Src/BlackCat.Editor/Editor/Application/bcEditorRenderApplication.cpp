@@ -7,6 +7,8 @@
 #include "Core/bcUtility.h"
 #include "Platform/bcEvent.h"
 #include "PhysicsImp/Body/bcRigidDynamic.h"
+#include "Game/System/Input/bcInputSystem.h"
+#include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/Input/bcFreeCamera.h"
 #include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"

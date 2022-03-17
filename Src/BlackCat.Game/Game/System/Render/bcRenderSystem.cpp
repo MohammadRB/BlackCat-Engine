@@ -15,6 +15,12 @@
 #include "Platform/bcEvent.h"
 #include "Graphic/bcEvent.h"
 #include "GraphicImp/Device/bcDevice.h"
+#include "Game/System/Input/bcFileSystem.h"
+#include "Game/System/Input/bcInputSystem.h"
+#include "Game/System/Physics/bcPhysicsSystem.h"
+#include "Game/System/Network/bcNetworkSystem.h"
+#include "Game/System/Script/bcScriptSystem.h"
+#include "Game/System/Script/bcGameConsole.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Render/bcRenderTask.h"
@@ -26,7 +32,6 @@
 #include "Game/System/Render/Decal/bcDecalManager.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Mesh/bcMeshUtility.h"
-#include "Game/Object/Animation/bcAnimationManager.h"
 #include "Game/bcEvent.h"
 
 namespace black_cat
@@ -61,7 +66,6 @@ namespace black_cat
 			m_material_manager = std::move(p_other.m_material_manager);
 			m_decal_manager = std::move(p_other.m_decal_manager);
 			m_render_pass_manager = std::move(p_other.m_render_pass_manager);
-			m_animation_manager = std::move(p_other.m_animation_manager);
 			m_shape_drawer = std::move(p_other.m_shape_drawer);
 			m_frame_renderer = std::move(p_other.m_frame_renderer);
 
@@ -415,7 +419,6 @@ namespace black_cat
 			m_decal_manager = core::bc_make_unique<bc_decal_manager>(core::bc_alloc_type::program, bc_decal_manager(*m_material_manager));
 			m_particle_manager = core::bc_make_unique<bc_particle_manager>(core::bc_alloc_type::program);
 			m_render_pass_manager = core::bc_make_unique<bc_render_pass_manager>(core::bc_alloc_type::program, bc_render_pass_manager(m_device));
-			m_animation_manager = core::bc_make_unique<bc_animation_manager>(core::bc_alloc_type::program);
 			m_shape_drawer = core::bc_make_unique<bc_shape_drawer>(core::bc_alloc_type::program);
 			m_frame_renderer = core::bc_make_unique<bc_frame_renderer>(core::bc_alloc_type::program, bc_frame_renderer(m_device, *m_thread_manager, *m_render_pass_manager));
 

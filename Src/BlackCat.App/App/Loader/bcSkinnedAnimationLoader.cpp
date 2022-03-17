@@ -7,7 +7,7 @@
 #include "Core/Container/bcStringStream.h"
 #include "Core/bcUtility.h"
 #include "Graphic/bcRenderApiInfo.h"
-#include "Game/Object/Animation/bcSkinnedAnimation.h"
+#include "Game/System/Animation/bcSkinnedAnimation.h"
 #include "Game/bcConstant.h"
 #include "App/Loader/bcSkinnedAnimationLoader.h"
 #include "App/bcException.h"

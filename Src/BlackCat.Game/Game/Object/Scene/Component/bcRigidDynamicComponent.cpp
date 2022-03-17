@@ -4,7 +4,6 @@
 
 #include "Core/bcUtility.h"
 #include "Core/Utility/bcJsonParse.h"
-#include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
@@ -16,6 +15,8 @@
 #include "Game/Object/Scene/Component/Event/bcNetworkReplicateActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
+#include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat

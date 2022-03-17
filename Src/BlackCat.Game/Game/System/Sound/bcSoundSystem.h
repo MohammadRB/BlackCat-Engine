@@ -13,7 +13,7 @@ namespace black_cat
 	{
 		class bc_sound_manager;
 
-		struct bc_sound_system_params
+		struct bc_sound_system_parameter
 		{
 			bcUINT32 m_max_channels;
 		};
@@ -30,7 +30,7 @@ namespace black_cat
 			const bc_camera_instance& m_camera;
 		};
 
-		class BC_GAME_DLL bc_sound_system : public core::bc_initializable<bc_sound_system_params>
+		class BC_GAME_DLL bc_sound_system : public core::bc_initializable<bc_sound_system_parameter>
 		{
 		public:
 			using update_context = bc_sound_system_update_context;
@@ -55,7 +55,7 @@ namespace black_cat
 			core::bc_task<void> update_async(const update_context& p_context);
 
 		private:
-			void _initialize(bc_sound_system_params) override;
+			void _initialize(bc_sound_system_parameter) override;
 
 			void _destroy() override;
 

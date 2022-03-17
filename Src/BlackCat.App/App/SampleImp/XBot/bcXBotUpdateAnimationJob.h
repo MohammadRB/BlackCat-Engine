@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Game/Object/Animation/Job/bcActorUpdateAnimationJob.h"
+#include "Game/System/Animation/Job/bcActorUpdateAnimationJob.h"
 #include "App/bcExport.h"
 
 namespace black_cat

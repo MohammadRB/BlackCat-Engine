@@ -4,6 +4,7 @@
 
 #include "PhysicsImp/Collision/bcShapeQuery.h"
 #include "PhysicsImp/Body/bcRigidActor.h"
+#include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 

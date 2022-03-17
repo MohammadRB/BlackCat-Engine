@@ -1,8 +1,9 @@
 // [05/27/2021 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/System/bcGameSystem.h"
 #include "Game/System/Network/Message/bcActorReplicateNetworkMessage.h"
+#include "Game/System/Network/bcNetworkSystem.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"

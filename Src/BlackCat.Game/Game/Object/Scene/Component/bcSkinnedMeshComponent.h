@@ -5,8 +5,8 @@
 #include "Core/Container/bcSpan.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
 #include "Game/Object/Mesh/bcSubMeshTransform.h"
-#include "Game/Object/Animation/bcSkinnedAnimation.h"
-#include "Game/Object/Animation/bcAnimationJob.h"
+#include "Game/System/Animation/bcSkinnedAnimation.h"
+#include "Game/System/Animation/bcAnimationJob.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/bcExport.h"
 
@@ -14,7 +14,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_animation_manager;
+		class bc_animation_system;
 		class bc_particle_manager;
 		
 		class BC_GAME_DLL bc_skinned_mesh_component : public bc_mesh_component
@@ -77,7 +77,7 @@ namespace black_cat
 		private:
 			void _set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform);
 
-			bc_animation_manager* m_animation_manager;
+			bc_animation_system* m_animation_manager;
 			bc_sub_mesh_mat4_transform m_model_transforms;
 			bc_sub_mesh_px_transform m_collider_model_transforms;
 			core::bc_vector<bc_skinned_animation_ptr> m_animations;

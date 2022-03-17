@@ -12,14 +12,22 @@
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcCounterValueManager.h"
 #include "Core/bcUtility.h"
+#include "GraphicImp/Shader/bcComputeShader.h"
+#include "GraphicImp/Shader/bcDomainShader.h"
+#include "GraphicImp/Shader/bcGeometryShader.h"
+#include "GraphicImp/Shader/bcHullShader.h"
+#include "GraphicImp/Shader/bcPixelShader.h"
+#include "GraphicImp/Shader/bcVertexShader.h"
 #include "Game/Application/bcEngineApplicationParameter.h"
-#include "Game/System/bcGameSystem.h"
+#include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/Input/bcFileLogger.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/System/Script/bcScriptBinding.h"
+#include "Game/System/Script/bcGameConsole.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
-#include "Game/System/Render/Particle/bcParticleManager.h"
+#include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/System/Network/Message/bcStringNetworkMessage.h"
 #include "Game/System/Network/Message/bcPingNetworkMessage.h"
@@ -31,6 +39,7 @@
 #include "Game/System/Network/Message/bcSceneChangeNetworkMessage.h"
 #include "Game/System/Network/Message/bcSceneReplicateNetworkMessage.h"
 #include "Game/System/Physics/bcPhysicsSimulationCallback.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/bcScene.h"
@@ -57,7 +66,7 @@
 #include "Game/Object/Scene/Component/bcIconComponent.h"
 #include "Game/Object/Scene/Component/bcCheckPointComponent.h"
 #include "Game/Object/Scene/Component/bcSoundComponent.h"
-#include "Game/Object/Animation/bcSkinnedAnimation.h"
+#include "Game/System/Animation/bcSkinnedAnimation.h"
 #include "App/Application/bcApplicationHookFuncations.h"
 #include "App/Loader/bcTextureLoader.h"
 #include "App/Loader/bcVertexShaderLoader.h"
@@ -116,24 +125,18 @@ namespace black_cat
 		core::bc_register_service(core::bc_make_service<core::bc_counter_value_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
-		auto* l_game_system = core::bc_register_service(core::bc_make_service<game::bc_game_system>());
-		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>(*core::bc_get_service<core::bc_query_manager>(), *l_game_system));
+		core::bc_register_service(core::bc_make_service<game::bc_game_system>());
+		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>
+		(
+			*core::bc_get_service<core::bc_query_manager>(), 
+			*core::bc_get_service<game::bc_game_system>())
+		);
 		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>
 		(
 			*core::bc_get_service<core::bc_content_stream_manager>(), 
 			*core::bc_get_service<game::bc_actor_component_manager>(),
-			*l_game_system
+			*core::bc_get_service<game::bc_game_system>()
 		));
-
-		l_logger->register_listener
-		(
-			core::bc_log_type::all, 
-			core::bc_make_unique<game::bc_file_logger>(game::bc_file_logger
-			(
-				l_game_system->get_file_system().get_content_data_path(bcL("Log")).c_str(),
-				p_parameters.m_app_parameters.m_app_name
-			))
-		);
 	}
 
 	void bc_register_engine_loaders(const game::bc_engine_application_parameter& p_parameters)

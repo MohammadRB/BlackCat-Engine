@@ -10,12 +10,12 @@
 #include "Core/Container/bcStateMachine.h"
 #include "Core/Utility/bcVelocity.h"
 #include "GraphicImp/bcRenderApiInfo.h"
-#include "Game/Object/Animation/bcAnimationJob.h"
-#include "Game/Object/Animation/bcAnimationJobHelper.h"
-#include "Game/Object/Animation/Job/bcBlendingAnimationJob.h"
-#include "Game/Object/Animation/Job/bcPartialBlendingAnimationJob.h"
-#include "Game/Object/Animation/Job/bcAdditiveBlendingAnimationJob.h"
-#include "Game/Object/Animation/Job/bcExecuteOneAnimationJob.h"
+#include "Game/System/Animation/bcAnimationJob.h"
+#include "Game/System/Animation/bcAnimationJobHelper.h"
+#include "Game/System/Animation/Job/bcBlendingAnimationJob.h"
+#include "Game/System/Animation/Job/bcPartialBlendingAnimationJob.h"
+#include "Game/System/Animation/Job/bcAdditiveBlendingAnimationJob.h"
+#include "Game/System/Animation/Job/bcExecuteOneAnimationJob.h"
 #include "App/SampleImp/XBot/bcXBotWeaponIKAnimationJob.h"
 
 namespace black_cat

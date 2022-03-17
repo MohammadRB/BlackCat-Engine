@@ -8,6 +8,7 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemoveDecalActorEvent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/bcUtility.h"

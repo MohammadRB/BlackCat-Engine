@@ -3,8 +3,9 @@
 #include "App/AppPCH.h"
 
 #include "Core/File/bcPath.h"
-#include "Game/bcConstant.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcConstant.h"
 #include "App/Loader/bcGeometryShaderLoader.h"
 
 namespace black_cat

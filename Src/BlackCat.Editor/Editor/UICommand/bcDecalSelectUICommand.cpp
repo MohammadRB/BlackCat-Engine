@@ -6,7 +6,7 @@
 #include "PhysicsImp/Shape/bcShapeBox.h"
 #include "PhysicsImp/Collision/bcShapeQuery.h"
 #include "Game/System/Physics/bcPxWrap.h"
-#include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Editor/UICommand/bcDecalSelectUICommand.h"
 #include "Editor/UI/bcFormDecal.h"

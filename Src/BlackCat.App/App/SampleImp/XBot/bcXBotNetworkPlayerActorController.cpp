@@ -8,6 +8,7 @@
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 #include "App/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"

@@ -10,6 +10,7 @@
 #include "Game/System/Sound/bcSoundSystem.h"
 #include "Game/System/Script/bcScriptBinding.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "BoX.Game/Application/bxApplicationHookFunctions.h"
 #include "BoX.Game/Application/bxSceneCheckPoint.h"
 #include "BoX.Game/Game/bxPlayerSeatComponent.h"

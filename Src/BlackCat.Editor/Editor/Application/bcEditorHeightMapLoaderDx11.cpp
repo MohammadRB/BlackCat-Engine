@@ -3,6 +3,7 @@
 #include "Editor/EditorPCH.h"
 
 #include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
 

@@ -1,6 +1,9 @@
 // [01/29/2022 MRB]
 
 #include "Editor/EditorPCH.h"
+
+#include "Game/System/Input/bcFileSystem.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "App/RenderPass/PostProcess/bcGlowPass.h"
 #include "App/bcConstant.h"
 #include "BoX.Game/Application/bxApplicationHookFunctions.h"

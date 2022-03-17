@@ -2,6 +2,7 @@
 
 #include "Editor/EditorPCH.h"
 
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/Event/bcRemoveDecalActorEvent.h"
 #include "Editor/UICommand/bcDecalRemoveUICommand.h"
 #include "Editor/UI/bcFormDecal.h"

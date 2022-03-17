@@ -6,7 +6,9 @@
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat

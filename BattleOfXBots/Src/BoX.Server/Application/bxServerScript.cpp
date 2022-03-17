@@ -1,8 +1,12 @@
 // [06/20/2021 MRB]
 
-#include "Game/System/bcGameSystem.h"
+#include "Core/Content/bcContentManager.h"
+#include "PlatformImp/Script/bcScriptString.h"
+#include "Game/System/Input/bcFileSystem.h"
+#include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/System/Network/Message/bcStringNetworkMessage.h"
 #include "Game/System/Network/Message/bcSceneChangeNetworkMessage.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "BoX.Server/Application/bxServerScript.h"
 

@@ -3,6 +3,8 @@
 #include "Editor/EditorPCH.h"
 
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/bcGameSystem.h"
 #include "Editor/UI/bcFormDecalInsert.h"
 #include "Editor/UICommand/bcDecalNamesUICommand.h"
 

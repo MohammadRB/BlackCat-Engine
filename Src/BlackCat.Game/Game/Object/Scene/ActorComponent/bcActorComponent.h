@@ -22,8 +22,8 @@ namespace black_cat
 	
 	namespace game
 	{
-		class bc_game_system;
 		class bc_actor_component_manager;
+		class bc_game_system;
 		class bc_scene;
 		class bc_shape_drawer;
 		

@@ -2,10 +2,11 @@
 
 #include "Game/GamePCH.h"
 #include "Core/File/bcFileStream.h"
-#include "Game/bcException.h"
+#include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/Script/bcScriptSystem.h"
 #include "Game/System/Script/bcScriptBinding.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcException.h"
 
 namespace black_cat
 {

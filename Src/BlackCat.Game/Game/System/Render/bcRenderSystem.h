@@ -29,6 +29,7 @@
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/System/Render/bcFrameRenderer.h"
 #include "Game/System/Input/bcCameraInstance.h"
+#include "Game/System/bcGameSystemParameter.h"
 #include "Game/bcEvent.h"
 #include "Game/bcExport.h"
 
@@ -43,49 +44,11 @@ namespace black_cat
 	namespace game
 	{
 		class bci_render_task;
-		class bc_file_system;
-		class bc_physics_system;
 		class bc_render_thread_manager;
 		class bc_material_manager;
 		class bc_decal_manager;
 		class bc_particle_manager;
-		class bc_animation_manager;
 		class bc_scene;
-		
-		struct bc_render_system_parameter
-		{
-			bc_render_system_parameter(core::bc_content_stream_manager& p_content_stream, bc_physics_system& p_physics_system)
-				: m_content_stream(p_content_stream),
-				m_physics_system(p_physics_system),
-				m_device_backbuffer_width(0),
-				m_device_backbuffer_height(0),
-				m_device_backbuffer_format(graphic::bc_format::unknown),
-				m_render_output()
-			{
-			}
-			
-			bc_render_system_parameter(core::bc_content_stream_manager& p_content_stream,
-				bc_physics_system& p_physics_system,
-				bcUINT32 p_device_backbuffer_width, 
-				bcUINT32 p_device_backbuffer_height, 
-				graphic::bc_format p_device_backbuffer_format, 
-				graphic::bc_device_output p_render_output)
-				: m_content_stream(p_content_stream),
-				m_physics_system(p_physics_system),
-				m_device_backbuffer_width(p_device_backbuffer_width),
-				m_device_backbuffer_height(p_device_backbuffer_height),
-				m_device_backbuffer_format(p_device_backbuffer_format),
-				m_render_output(std::move(p_render_output))
-			{
-			}
-
-			core::bc_content_stream_manager& m_content_stream;
-			bc_physics_system& m_physics_system;
-			bcUINT32 m_device_backbuffer_width;
-			bcUINT32 m_device_backbuffer_height;
-			graphic::bc_format m_device_backbuffer_format;
-			graphic::bc_device_output m_render_output;
-		};
 
 		struct bc_render_system_update_context
 		{
@@ -161,10 +124,6 @@ namespace black_cat
 			bc_particle_manager& get_particle_manager() noexcept;
 
 			const bc_particle_manager& get_particle_manager() const noexcept;
-
-			bc_animation_manager& get_animation_manager() noexcept;
-			
-			const bc_animation_manager& get_animation_manager() const noexcept;
 
 			bc_shape_drawer& get_shape_drawer() noexcept;
 			
@@ -344,7 +303,6 @@ namespace black_cat
 			core::bc_unique_ptr<bc_decal_manager> m_decal_manager;
 			core::bc_unique_ptr<bc_particle_manager> m_particle_manager;
 			core::bc_unique_ptr<bc_render_pass_manager> m_render_pass_manager;
-			core::bc_unique_ptr<bc_animation_manager> m_animation_manager;
 			core::bc_unique_ptr<bc_shape_drawer> m_shape_drawer;
 			core::bc_unique_ptr<bc_frame_renderer> m_frame_renderer;
 
@@ -405,16 +363,6 @@ namespace black_cat
 		inline const bc_particle_manager& bc_render_system::get_particle_manager() const noexcept
 		{
 			return *m_particle_manager;
-		}
-
-		inline bc_animation_manager& bc_render_system::get_animation_manager() noexcept
-		{
-			return *m_animation_manager;
-		}
-
-		inline const bc_animation_manager& bc_render_system::get_animation_manager() const noexcept
-		{
-			return *m_animation_manager;
 		}
 				
 		inline bc_shape_drawer& bc_render_system::get_shape_drawer() noexcept

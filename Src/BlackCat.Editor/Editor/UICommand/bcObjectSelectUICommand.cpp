@@ -3,9 +3,11 @@
 #include "Editor/EditorPCH.h"
 
 #include "Core/Utility/bcLogger.h"
-#include "Game/System/Physics/bcPxWrap.h"
-#include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/System/Physics/bcPxWrap.h"
+#include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/bcGameSystem.h"
 #include "App/RenderPass/bcShapeDrawPass.h"
 #include "Editor/UICommand/bcObjectSelectUICommand.h"
 #include "Editor/UI/bcFormObject.h"

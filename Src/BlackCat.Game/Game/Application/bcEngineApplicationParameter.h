@@ -79,8 +79,7 @@ namespace black_cat
 
 		struct bc_engine_application_parameter
 		{
-			bc_engine_application_parameter(const bc_engine_component_parameter& p_engine_parameters, 
-				bc_render_application_parameter&& p_app_parameters)
+			bc_engine_application_parameter(const bc_engine_component_parameter& p_engine_parameters, bc_render_application_parameter p_app_parameters)
 				: m_engine_parameters(p_engine_parameters),
 				m_app_parameters(std::move(p_app_parameters))
 			{

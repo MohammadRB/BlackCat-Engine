@@ -18,6 +18,7 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat

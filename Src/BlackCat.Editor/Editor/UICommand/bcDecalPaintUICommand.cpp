@@ -2,6 +2,7 @@
 
 #include "Editor/EditorPCH.h"
 
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
 #include "Editor/UICommand/bcDecalPaintUICommand.h"
 

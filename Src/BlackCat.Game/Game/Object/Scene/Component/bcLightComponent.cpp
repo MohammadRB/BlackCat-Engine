@@ -7,6 +7,7 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"

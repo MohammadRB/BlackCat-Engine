@@ -12,6 +12,7 @@
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Sound/bcSoundManager.h"
 #include "Game/bcUtility.h"
 #include "Game/bcConstant.h"

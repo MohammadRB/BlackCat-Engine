@@ -3,10 +3,10 @@
 #include "Game/GamePCH.h"
 
 #include "PhysicsImp/Shape/bcShape.h"
-#include "Game/System/bcGameSystem.h"
 #include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Physics/bcPxShapeData.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
@@ -15,6 +15,7 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
+#include "Game/Object/Scene/bcScene.h"
 
 namespace black_cat
 {

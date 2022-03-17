@@ -7,16 +7,11 @@
 #include "Core/Container/bcString.h"
 #include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "Core/Messaging/Query/bcQueryProviderHandle.h"
+#include "Core/Content/bcContent.h"
 #include "Core/Utility/bcServiceManager.h"
+#include "Core/Utility/bcNullable.h"
+#include "Game/System/bcGameSystemParameter.h"
 #include "Game/bcExport.h"
-#include "Game/System/Input/bcInputSystem.h"
-#include "Game/System/Input/bcFileSystem.h"
-#include "Game/System/Render/bcRenderSystem.h"
-#include "Game/System/Physics/bcPhysicsSystem.h"
-#include "Game/System/Network/bcNetworkSystem.h"
-#include "Game/System/Script/bcScriptSystem.h"
-#include "Game/System/Script/bcGameConsole.h"
-#include "Game/Object/Scene/bcScene.h"
 
 namespace black_cat
 {
@@ -28,25 +23,19 @@ namespace black_cat
 	
 	namespace game
 	{
+		class bc_file_system;
+		class bc_input_system;
+		class bc_physics_system;
+		class bc_network_system;
 		class bc_sound_system;
+		class bc_animation_system;
+		class bc_script_system;
+		class bc_render_system;
+		class bc_game_console;
+		class bc_scene;
+		using bc_scene_ptr = core::bc_content_ptr<bc_scene>;
 
-		struct bc_game_system_init_params
-		{
-			explicit bc_game_system_init_params(core::bc_query_manager& p_query_manager,
-				core::bc_event_manager& p_event_manager,
-				bc_render_system_parameter p_render_system_parameter)
-				: m_query_manager(&p_query_manager),
-				m_event_manager(&p_event_manager),
-				m_render_system_parameter(std::move(p_render_system_parameter))
-			{
-			}
-
-			core::bc_query_manager* m_query_manager;
-			core::bc_event_manager* m_event_manager;
-			bc_render_system_parameter m_render_system_parameter;
-		};
-
-		class BC_GAME_DLL bc_game_system : public core::bci_service, public core::bc_initializable<bc_game_system_init_params>
+		class BC_GAME_DLL bc_game_system : public core::bci_service, public core::bc_initializable<bc_game_system_parameter>
 		{
 			BC_SERVICE(gme_sys)
 
@@ -61,62 +50,62 @@ namespace black_cat
 
 			bc_input_system& get_input_system() noexcept
 			{
-				return m_input_system;
+				return *m_input_system;
 			}
 
 			const bc_input_system& get_input_system() const noexcept
 			{
-				return m_input_system;
+				return *m_input_system;
 			}
 
 			bc_file_system& get_file_system() noexcept
 			{
-				return m_file_system;
+				return *m_file_system;
 			}
 
 			const bc_file_system& get_file_system() const noexcept
 			{
-				return m_file_system;
+				return *m_file_system;
 			}
 
 			bc_physics_system& get_physics_system() noexcept
 			{
-				return m_physics_system;
+				return *m_physics_system;
 			}
 
 			const bc_physics_system& get_physics_system() const noexcept
 			{
-				return m_physics_system;
+				return *m_physics_system;
 			}
 
 			bc_network_system& get_network_system() noexcept
 			{
-				return m_network_system;
+				return *m_network_system;
 			}
 
 			const bc_network_system& get_network_system() const noexcept
 			{
-				return m_network_system;
+				return *m_network_system;
 			}
 
 			bc_script_system& get_script_system() noexcept
 			{
-				return m_script_system;
+				return *m_script_system;
 			}
 
 			const bc_script_system& get_script_system() const noexcept
 			{
-				return m_script_system;
+				return *m_script_system;
 			}
 
 			bc_render_system& get_render_system() noexcept
 			{
-				return m_render_system;
+				return *m_render_system;
 			}
 
 			const bc_render_system& get_render_system() const noexcept
 			{
-				return m_render_system;
+				return *m_render_system;
 			}
 
 			bc_sound_system& get_sound_system() noexcept
@@ -127,6 +116,16 @@ namespace black_cat
 			const bc_sound_system& get_sound_system() const noexcept
 			{
 				return *m_sound_system;
+			}
+
+			bc_animation_system& get_animation_system() noexcept
+			{
+				return *m_animation_system;
+			}
+
+			const bc_animation_system& get_animation_system() const noexcept
+			{
+				return *m_animation_system;
 			}
 
 			bc_game_console& get_console() noexcept
@@ -175,7 +174,7 @@ namespace black_cat
 			void render_swap_frame(const platform::bc_clock::update_param& p_clock);
 
 		private:
-			void _initialize(bc_game_system_init_params) override;
+			void _initialize(bc_game_system_parameter) override;
 
 			void _destroy() override;
 
@@ -183,13 +182,14 @@ namespace black_cat
 
 			core::bc_query_manager* m_query_manager;
 			core::bc_event_manager* m_event_manager;
-			bc_file_system m_file_system;
-			bc_input_system m_input_system;
-			bc_physics_system m_physics_system;
-			bc_network_system m_network_system;
-			bc_script_system m_script_system;
-			bc_render_system m_render_system;
+			core::bc_unique_ptr<bc_file_system> m_file_system;
+			core::bc_unique_ptr<bc_input_system> m_input_system;
+			core::bc_unique_ptr<bc_physics_system> m_physics_system;
 			core::bc_unique_ptr<bc_sound_system> m_sound_system;
+			core::bc_unique_ptr<bc_animation_system> m_animation_system;
+			core::bc_unique_ptr<bc_network_system> m_network_system;
+			core::bc_unique_ptr<bc_script_system> m_script_system;
+			core::bc_unique_ptr<bc_render_system> m_render_system;
 			core::bc_unique_ptr<bc_game_console> m_console;
 
 			bool m_scene_changed;

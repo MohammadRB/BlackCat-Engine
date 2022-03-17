@@ -1,6 +1,9 @@
 // [03/19/2021 MRB]
 
 #include "Editor/EditorPCH.h"
+
+#include "Game/Object/Scene/bcScene.h"
+#include "Game/System/bcGameSystem.h"
 #include "Editor/UICommand/bcObjectDeleteUICommand.h"
 #include "Editor/UI/bcFormObject.h"
 

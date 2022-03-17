@@ -5,8 +5,11 @@
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Game/System/Render/bcRenderThread.h"
+#include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
 #include "Editor/UICommand/bcTerrainSmoothUICommand.h"
 
@@ -86,7 +89,7 @@ namespace black_cat
 			bc_terrain_smooth_ui_command_render_task l_render_task
 			(
 				l_dx11_height_map,
-				*static_cast< bc_terrain_smooth_ui_command_state* >(p_context.m_state),
+				*static_cast<bc_terrain_smooth_ui_command_state*>(p_context.m_state),
 				l_cbuffer_parameters
 			);
 			p_context.m_game_system.get_render_system().add_render_task(l_render_task);
@@ -96,7 +99,7 @@ namespace black_cat
 			const bcINT32 l_diameter = l_cbuffer_parameters.m_tool_radius * 2;
 			const core::bc_vector2f l_tool_center(l_cbuffer_parameters.m_tool_center_x, l_cbuffer_parameters.m_tool_center_z);
 			const bcUINT32 l_sample_count = l_diameter * l_diameter;
-			const core::bc_unique_ptr< height_map_sample_t > l_sample_buffer
+			const core::bc_unique_ptr<height_map_sample_t> l_sample_buffer
 			(
 				static_cast<height_map_sample_t*>(BC_ALLOC(l_sample_count * sizeof(height_map_sample_t), core::bc_alloc_type::frame))
 			);

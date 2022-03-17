@@ -5,7 +5,9 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/bcEntityManager.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/System/Physics/bcPxWrap.h"
+#include "Game/System/bcGameSystem.h"
 #include "Editor/UICommand/bcObjectInsertUICommand.h"
 
 namespace black_cat

@@ -17,12 +17,13 @@
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 #include "Game/Object/Scene/Bullet/bcBulletManager.h"
-#include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Sound/bcSoundSystem.h"
 #include "Game/System/Sound/bcSoundManager.h"
+#include "Game/System/bcGameSystem.h"
 
 namespace black_cat
 {

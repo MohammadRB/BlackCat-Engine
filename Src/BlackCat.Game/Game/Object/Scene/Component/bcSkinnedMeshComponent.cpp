@@ -8,6 +8,9 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
+#include "Game/System/Render/bcShapeDrawer.h"
+#include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Animation/bcAnimationSystem.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
@@ -15,7 +18,7 @@
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
-#include "Game/Object/Animation/bcAnimationManager.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/bcException.h"
 #include "Game/bcConstant.h"
 #include "Game/bcUtility.h"
@@ -103,7 +106,7 @@ namespace black_cat
 			
 			const auto& l_animation_names = p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>(constant::g_param_animations);
 
-			m_animation_manager = &p_context.m_game_system.get_render_system().get_animation_manager();
+			m_animation_manager = &p_context.m_game_system.get_animation_system();
 			m_model_transforms = bc_sub_mesh_mat4_transform(*get_mesh().get_root_node());
 			m_collider_model_transforms = bc_sub_mesh_px_transform(*get_mesh().get_root_node());
 			m_animations.reserve(l_animation_names.size());

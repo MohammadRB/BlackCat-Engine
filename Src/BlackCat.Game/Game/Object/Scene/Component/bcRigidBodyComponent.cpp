@@ -4,8 +4,9 @@
 
 #include "Core/Container/bcVector.h"
 #include "PhysicsImp/Fundation/bcScene.h"
-#include "Game/System/bcGameSystem.h"
 #include "Game/System/Physics/bcPxShapeData.h"
+#include "Game/System/Render/bcShapeDrawer.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/Object/Mesh/bcMeshCollider.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"

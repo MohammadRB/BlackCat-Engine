@@ -4,8 +4,11 @@
 
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Game/System/Render/bcRenderThread.h"
+#include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
 #include "Editor/UICommand/bcTerrainMaterialUICommand.h"
 

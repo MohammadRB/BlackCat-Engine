@@ -8,7 +8,7 @@
 #include "PhysicsImp/Joint/bcJoint.h"
 #include "Game/Object/Mesh/bcMeshNode.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
-#include "Game/Object/Animation/Job/bcRagdollSkinningAnimationJob.h"
+#include "Game/System/Animation/Job/bcRagdollSkinningAnimationJob.h"
 #include "Game/bcExport.h"
 
 namespace black_cat

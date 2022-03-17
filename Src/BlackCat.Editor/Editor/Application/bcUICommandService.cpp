@@ -5,10 +5,10 @@
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Messaging/Event/bcEventManager.h"
+#include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/bcEvent.h"
 #include "Editor/Application/bcUICommandService.h"
-#include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
 {

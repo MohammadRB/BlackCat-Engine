@@ -6,6 +6,7 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/System/Input/bcGlobalConfig.h"
+#include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/System/bcGameSystem.h"

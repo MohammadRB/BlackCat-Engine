@@ -12,7 +12,7 @@
 #include "PhysicsImp/Fundation/bcCControllerSimulationCallback.h"
 #include "SoundImp/Resource/bcChannel.h"
 #include "Game/Object/Scene/ActorComponent/bcActorNetworkController.h"
-#include "Game/Object/Animation/bcAnimationJob.h"
+#include "Game/System/Animation/bcAnimationJob.h"
 #include "App/SampleImp/XBot/bcXBotWeapon.h"
 #include "App/SampleImp/XBot/bcXBotStateMachine.h"
 #include "App/bcExport.h"

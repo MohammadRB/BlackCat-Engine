@@ -15,8 +15,8 @@ namespace black_cat
 		bc_file_logger::bc_file_logger(const bcECHAR* p_path, const bcECHAR* p_app_name)
 			: m_buffer_length(0)
 		{
-			auto l_time = std::time(nullptr);
-			auto* l_local_time = std::localtime(&l_time);
+			const auto l_time = std::time(nullptr);
+			const auto* l_local_time = std::localtime(&l_time);
 
 			std::wostringstream l_file_name_stream;
 			l_file_name_stream << p_app_name << " ";
@@ -31,7 +31,7 @@ namespace black_cat
 		}
 
 		bc_file_logger::bc_file_logger(bc_file_logger&& p_other) noexcept
-			: bci_log_listener(std::move(p_other)),
+			: bci_log_listener(p_other),
 			m_file(std::move(p_other.m_file)),
 			m_buffer_length(p_other.m_buffer_length.load())
 		{
@@ -41,7 +41,7 @@ namespace black_cat
 
 		bc_file_logger& bc_file_logger::operator=(bc_file_logger&& p_other) noexcept
 		{
-			bci_log_listener::operator=(std::move(p_other));
+			bci_log_listener::operator=(p_other);
 			m_file = std::move(p_other.m_file);
 			m_buffer_length.store(p_other.m_buffer_length.load());
 			

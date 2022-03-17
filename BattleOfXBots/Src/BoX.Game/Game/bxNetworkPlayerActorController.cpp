@@ -2,6 +2,8 @@
 
 #include "Core/Messaging/Event/bcEventManager.h"
 #include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
+#include "Game/System/Network/bcNetworkSystem.h"
 #include "BoX.Game/Game/bxNetworkPlayerActorController.h"
 #include "BoX.Game/Network/bxPlayerKilledNetworkMessage.h"
 #include "BoX.Game/bxEvent.h"

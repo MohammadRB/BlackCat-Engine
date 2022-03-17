@@ -4,7 +4,7 @@
 
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
-#include "Game/Object/Animation/Job/bcTwoBoneIKAnimationJob.h"
+#include "Game/System/Animation/Job/bcTwoBoneIKAnimationJob.h"
 #include "App/SampleImp/XBot/bcXBotWeapon.h"
 #include "App/bcExport.h"
 

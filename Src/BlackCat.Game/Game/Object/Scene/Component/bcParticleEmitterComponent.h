@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/Math/bcVector3f.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/System/Render/Particle/bcParticleEmitter.h"

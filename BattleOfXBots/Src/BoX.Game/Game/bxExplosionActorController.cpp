@@ -8,7 +8,6 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
-#include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/Component/bcSoundComponent.h"
@@ -16,6 +15,8 @@
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
+#include "Game/Object/Scene/bcEntityManager.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/bcConstant.h"
 #include "BoX.Game/Game/bxExplosionActorController.h"
 
