@@ -10,6 +10,7 @@
 #include "Core/Utility/bcNullable.h"
 #include "PhysicsImp/Fundation/bcCController.h"
 #include "PhysicsImp/Fundation/bcCControllerSimulationCallback.h"
+#include "SoundImp/Resource/bcChannel.h"
 #include "Game/Object/Scene/ActorComponent/bcActorNetworkController.h"
 #include "Game/Object/Animation/bcAnimationJob.h"
 #include "App/SampleImp/XBot/bcXBotWeapon.h"
@@ -159,6 +160,8 @@ namespace black_cat
 		
 		void _update_world_transform();
 
+		void _update_sounds();
+
 		core::bc_matrix4f _calculate_weapon_aim_transform();
 
 		core::bc_matrix4f _calculate_attachment_transform(bcUINT32 p_attached_node_index, 
@@ -208,6 +211,7 @@ namespace black_cat
 		core::bc_shared_ptr<game::bci_animation_job> m_animation_pipeline;
 		core::bc_nullable<bc_xbot_weapon> m_weapon;
 		core::bc_nullable<bc_xbot_grenade> m_grenade;
+		sound::bc_channel m_running_sound;
 	};
 
 	inline game::bc_scene* bc_xbot_actor_controller::get_scene() noexcept

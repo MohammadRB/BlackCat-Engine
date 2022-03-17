@@ -33,9 +33,14 @@
         {
           "name": "sound",
           "parameters": {
-            "sound": "wind_through_reeds",
-            "play": "loop",
-            "volume": 1.0
+            "sounds": [
+              {
+                "sound": "wind_through_reeds",
+                "play": "loop",
+                "volume": 1.0,
+                "auto_play": true 
+              }
+            ]
           }
         }
       ] 

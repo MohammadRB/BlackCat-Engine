@@ -47,7 +47,7 @@ namespace box
 		const auto* l_sound_component = p_context.m_actor.get_component<game::bc_sound_component>();
 		if(l_sound_component)
 		{
-			m_sound_lifetime_second = l_sound_component->get_sound().get_length() / 1000.f;
+			m_sound_lifetime_second = l_sound_component->get_max_length() / 1000.f;
 		}
 
 		const auto* l_player_id = p_context.m_instance_parameters.get_value<game::bc_network_client_id>(constant::g_param_player_id);

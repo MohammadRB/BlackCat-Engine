@@ -13,6 +13,7 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_sound_component;
 		class bc_scene;
 		
 		enum class bc_weapon_class : bcUBYTE
@@ -67,14 +68,12 @@ namespace black_cat
 			bcFLOAT m_fire_light_radius;
 			bcFLOAT m_fire_light_intensity;
 			core::bc_nullable<bc_light_flare> m_fire_light_flare;
-			core::bc_string_view m_fire_sound_name;
-			core::bc_vector2f m_fire_sound_min_max_distance;
-			sound::bc_sound_content_ptr m_fire_sound;
 			bcFLOAT m_rate_of_fire_seconds;
 			bcFLOAT m_bullet_speed;
 			bcFLOAT m_bullet_mass;
 			
 			bc_scene* m_scene;
+			bc_sound_component* m_sound_component;
 			bc_light_ptr m_fire_light;
 			bcFLOAT m_fire_light_age;
 		};

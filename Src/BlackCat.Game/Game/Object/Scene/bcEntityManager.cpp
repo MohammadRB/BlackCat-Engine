@@ -321,7 +321,7 @@ namespace black_cat
 					l_actor = bc_actor();
 				}
 
-				core::bc_log(core::bc_log_type::error) << "Error in entity creation: '" << p_entity_name << "': " << p_exception.what() << core::bc_lend;
+				core::bc_log(core::bc_log_type::error) << "Error in entity creation: '" << p_entity_name << "', " << p_exception.what() << core::bc_lend;
 			}
 
 			return l_actor;

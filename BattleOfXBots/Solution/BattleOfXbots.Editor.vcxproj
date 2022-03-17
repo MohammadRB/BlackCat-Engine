@@ -78,7 +78,7 @@
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration)\;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Sound.Fmod.lib;BlackCat.Game.lib;BlackCat.App.lib;qtmaind.lib;qt5cored.lib;qt5guid.lib;qt5fontdatabasesupportd.lib;qt5concurrentd.lib;qt5widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Sound.Fmod.lib;BlackCat.Game.lib;BlackCat.App.lib;BattleOfXbots.Game.lib;qtmaind.lib;qt5cored.lib;qt5guid.lib;qt5fontdatabasesupportd.lib;qt5concurrentd.lib;qt5widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(SolutionDir)\$(Configuration)\Content\ mkdir $(SolutionDir)\$(Configuration)\Content\
@@ -106,7 +106,7 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(SolutionDir)\$(Configuratio
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration)\;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Sound.Fmod.lib;BlackCat.Game.lib;BlackCat.App.lib;qtmaind.lib;qt5cored.lib;qt5guid.lib;qt5fontdatabasesupportd.lib;qt5concurrentd.lib;qt5widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Sound.Fmod.lib;BlackCat.Game.lib;BlackCat.App.lib;BattleOfXbots.Game.lib;qtmaind.lib;qt5cored.lib;qt5guid.lib;qt5fontdatabasesupportd.lib;qt5concurrentd.lib;qt5widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>if not exist $(SolutionDir)\$(Configuration)\Content\ mkdir $(SolutionDir)\$(Configuration)\Content\
@@ -136,7 +136,7 @@ xcopy ..\..\Src\BlackCat.Editor\Editor\Content\*.* $(SolutionDir)\$(Configuratio
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration)\;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Sound.Fmod.lib;BlackCat.Game.lib;BlackCat.App.lib;qtmain.lib;qt5core.lib;qt5gui.lib;qt5fontdatabasesupport.lib;qt5concurrent.lib;qt5widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Sound.Fmod.lib;BlackCat.Game.lib;BlackCat.App.lib;BattleOfXbots.Game.lib;qtmain.lib;qt5core.lib;qt5gui.lib;qt5fontdatabasesupport.lib;qt5concurrent.lib;qt5widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>

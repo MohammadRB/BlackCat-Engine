@@ -19,6 +19,7 @@
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/Component/bcWeaponComponent.h"
+#include "Game/Object/Scene/Component/bcSoundComponent.h"
 #include "Game/Object/Scene/Component/bcCheckPointComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Animation/bcAnimationSkeleton.h"
@@ -264,6 +265,16 @@ namespace black_cat
 			l_mass,
 			*m_animation_pipeline
 		));
+
+		if(auto* l_sound_component = p_context.m_actor.get_component<game::bc_sound_component>())
+		{
+			m_running_sound = l_sound_component->play_sound("running");
+			if(m_running_sound.is_valid())
+			{
+				m_running_sound.set_mode(core::bc_enum::mask_or({ sound::bc_sound_mode::loop, m_running_sound.get_mode() }));
+				m_running_sound.set_volume(0);
+			}
+		}
 	}
 
 	void bc_xbot_actor_controller::update(const bc_xbot_input_update_context& p_context)
@@ -351,6 +362,7 @@ namespace black_cat
 		{
 			_update_px_move(p_context.m_clock, m_state_machine->m_state.m_move_direction * m_state_machine->m_state.m_move_amount);
 			_update_world_transform();
+			_update_sounds();
 
 			m_skinned_mesh_component->add_animation_job(m_state_machine->get_active_animation());
 		}
@@ -431,6 +443,7 @@ namespace black_cat
 		{
 			_update_px_position(p_context.m_position);
 			_update_world_transform();
+			_update_sounds();
 
 			m_skinned_mesh_component->add_animation_job(m_state_machine->get_active_animation());
 		}
@@ -936,6 +949,23 @@ namespace black_cat
 		game::bc_animation_job_helper::set_skinning_world_transform(*m_animation_pipeline, l_world_transform);
 		
 		m_actor.add_event(game::bc_world_transform_actor_event(l_world_transform, game::bc_transform_event_type::physics));
+	}
+
+	void bc_xbot_actor_controller::_update_sounds()
+	{
+		if(m_running_sound.is_valid())
+		{
+			auto l_move_velocity = std::max
+			({
+				m_forward_velocity.get_value(),
+				m_backward_velocity.get_value(),
+				m_left_velocity.get_value(),
+				m_right_velocity.get_value()
+			});
+			l_move_velocity = std::max(0.f, l_move_velocity - m_walk_velocity.get_value());
+
+			m_running_sound.set_volume(l_move_velocity);
+		}
 	}
 
 	core::bc_matrix4f bc_xbot_actor_controller::_calculate_weapon_aim_transform()

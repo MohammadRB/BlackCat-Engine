@@ -5,6 +5,7 @@
 #include "Core/Math/bcMatrix3f.h"
 #include "Game/Object/Scene/Component/bcWeaponComponent.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/bcSoundComponent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/System/bcGameSystem.h"
@@ -28,6 +29,7 @@ namespace black_cat
 			m_bullet_speed(0),
 			m_bullet_mass(0),
 			m_scene(nullptr),
+			m_sound_component(nullptr),
 			m_fire_light_age(0)
 		{
 		}
@@ -54,11 +56,7 @@ namespace black_cat
 			));
 			m_fire_light_age = 0;
 
-			auto l_sound_channel = m_scene->get_sound_manager().play_sound(m_fire_sound->get_resource(), true);
-			l_sound_channel.set_mode(core::bc_enum::mask_or({ sound::bc_sound_mode::d3, sound::bc_sound_mode::loop_off }));
-			l_sound_channel.set_3d_min_max_distance(m_fire_sound_min_max_distance.x, m_fire_sound_min_max_distance.y);
-			l_sound_channel.set_3d_position(l_position);
-			l_sound_channel.resume();
+			m_sound_component->play_sounds();
 
 			return bc_bullet(l_position, p_aim_direction_ws, m_bullet_speed, m_bullet_mass, p_player_id);
 		}
@@ -86,12 +84,11 @@ namespace black_cat
 			m_fire_light_color = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_fire_light_color);
 			m_fire_light_radius = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_fire_light_radius);
 			m_fire_light_intensity = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_fire_light_intensity);
-			m_fire_sound_name = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_weapon_fire_sound).c_str();
-			m_fire_sound_min_max_distance = p_context.m_parameters.get_value_vector2f_throw(constant::g_param_weapon_fire_sound_min_max_distance);
 			m_rate_of_fire_seconds = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_rate_of_fire_seconds);
 			m_bullet_speed = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_speed);
 			m_bullet_mass = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_mass);
 			m_scene = &p_context.m_scene;
+			m_sound_component = p_context.m_actor.get_component<bc_sound_component>();
 
 			const auto l_flare_surface = p_context.m_parameters.get_value_vector3f(constant::g_param_weapon_fire_light_flare_surface);
 			const auto* l_flare_mask_material = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_weapon_fire_light_flare_mask_material);
@@ -111,11 +108,6 @@ namespace black_cat
 					l_material->get_diffuse_map().get_width(),
 					l_material->get_diffuse_map().get_height()
 				));
-			}
-
-			if(!m_fire_sound_name.empty())
-			{
-				m_fire_sound = p_context.m_stream_manager.find_content<sound::bc_sound_content>(m_fire_sound_name);
 			}
 		}
 
