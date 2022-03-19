@@ -11,21 +11,6 @@
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
-    <Filter Include="Generated Files">
-      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
-      <Extensions>moc;h;cpp</Extensions>
-      <SourceControlFiles>False</SourceControlFiles>
-    </Filter>
-    <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{bc1e86a8-3fa9-4790-ac34-474c046cb01d}</UniqueIdentifier>
-      <Extensions>cpp;moc</Extensions>
-      <SourceControlFiles>False</SourceControlFiles>
-    </Filter>
-    <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{9bae0734-b14d-41ef-bb36-969eed8ea864}</UniqueIdentifier>
-      <Extensions>cpp;moc</Extensions>
-      <SourceControlFiles>False</SourceControlFiles>
-    </Filter>
     <Filter Include="Editor">
       <UniqueIdentifier>{37566e1a-0219-4155-821b-1dcac1bac717}</UniqueIdentifier>
     </Filter>
@@ -59,9 +44,6 @@
     <Filter Include="Editor\Content\Scene">
       <UniqueIdentifier>{d226d214-d4d6-4b70-b0db-7a1d9fae9309}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Generated Files\Develope">
-      <UniqueIdentifier>{a2b1c5a7-aa4d-4158-8c7e-af44bbaed9fa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Editor\FormFiles">
       <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
       <Extensions>ui</Extensions>
@@ -72,41 +54,14 @@
     <Filter Include="BoX.Editor\Application">
       <UniqueIdentifier>{d7c0ca62-d36e-401b-ab1e-7eb3ac64d713}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\qdarkstyle">
+      <UniqueIdentifier>{e68534cc-4f92-4d45-a1e1-cb2513c567f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\GeneratedFiles">
+      <UniqueIdentifier>{32818a3f-228b-4ef8-bcf2-b4d49d8b6ed2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GeneratedFiles\qrc_style.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcEditorApplication.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcEditorApplication.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcEditorGameConsole.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcEditorGameConsole.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_QtAwesome.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_QtAwesome.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_QtAwesomeAnim.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_QtAwesomeAnim.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcFormTools.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcFormTools.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorApplication.cpp">
       <Filter>Editor\Application</Filter>
     </ClCompile>
@@ -140,65 +95,11 @@
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorRenderApplicationThread.cpp">
       <Filter>Editor\Application</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcFormMainMenu.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcFormMainMenu.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcWidgetConsole.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcWidgetConsole.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetConsole.cpp">
       <Filter>Editor\Widget</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcWidgetD3DOutput.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcWidgetD3DOutput.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetD3DOutput.cpp">
       <Filter>Editor\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Develope\moc_bcEditorApplication.cpp">
-      <Filter>Generated Files\Develope</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Develope\moc_bcEditorGameConsole.cpp">
-      <Filter>Generated Files\Develope</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Develope\moc_bcFormMainMenu.cpp">
-      <Filter>Generated Files\Develope</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Develope\moc_bcFormTools.cpp">
-      <Filter>Generated Files\Develope</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Develope\moc_bcWidgetConsole.cpp">
-      <Filter>Generated Files\Develope</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Develope\moc_bcWidgetD3DOutput.cpp">
-      <Filter>Generated Files\Develope</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Develope\moc_QtAwesome.cpp">
-      <Filter>Generated Files\Develope</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Develope\moc_QtAwesomeAnim.cpp">
-      <Filter>Generated Files\Develope</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Develope\moc_bcFormObject.cpp">
-      <Filter>Generated Files\Develope</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Develope\moc_bcFormMainToolBar.cpp">
-      <Filter>Generated Files\Develope</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcFormMainToolBar.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcFormMainToolBar.cpp">
-      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainToolBar.cpp">
       <Filter>Editor\UI</Filter>
@@ -251,15 +152,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormDecal.cpp">
       <Filter>Editor\UI</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Develope\moc_bcFormDecal.cpp">
-      <Filter>Generated Files\Develope</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_bcFormDecal.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_bcFormDecal.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.cpp">
       <Filter>Editor\UI</Filter>
     </ClCompile>
@@ -269,20 +161,53 @@
     <ClCompile Include="..\..\Src\BlackCat.Editor\Editor\UICommand\bcDecalUpdateUICommand.cpp">
       <Filter>Editor\UICommand</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_bcBlackCatEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Src\BoX.Editor\Application\bxEditorRenderApplication.cpp">
       <Filter>BoX.Editor\Application</Filter>
     </ClCompile>
     <ClCompile Include="..\Src\BoX.Editor\main.cpp">
       <Filter>BoX.Editor</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\GeneratedFiles\moc_bcEditorApplication.cpp">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\GeneratedFiles\moc_bcEditorGameConsole.cpp">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\GeneratedFiles\moc_bcFormDecal.cpp">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\GeneratedFiles\moc_bcFormMainMenu.cpp">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\GeneratedFiles\moc_bcFormMainToolBar.cpp">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\GeneratedFiles\moc_bcFormObject.cpp">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\GeneratedFiles\moc_bcFormTools.cpp">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\GeneratedFiles\moc_bcWidgetConsole.cpp">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\GeneratedFiles\moc_bcWidgetD3DOutput.cpp">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\GeneratedFiles\moc_QtAwesome.cpp">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\GeneratedFiles\moc_QtAwesomeAnim.cpp">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\GeneratedFiles\qrc_bcBlackCatEditor.cpp">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Src\BoX.Editor\GeneratedFiles\qrc_style.cpp">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GeneratedFiles\ui_bcBlackCatEditor.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorHeightMapLoaderDx11.h">
       <Filter>Editor\Application</Filter>
     </ClInclude>
@@ -367,6 +292,9 @@
     <ClInclude Include="..\Src\BoX.Editor\Application\bxEditorRenderApplication.h">
       <Filter>BoX.Editor\Application</Filter>
     </ClInclude>
+    <ClInclude Include="..\Src\BoX.Editor\GeneratedFiles\ui_bcBlackCatEditor.h">
+      <Filter>Editor\GeneratedFiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorApplication.h">
@@ -383,9 +311,6 @@
     </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormTools.h">
       <Filter>Editor\UI</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qrc">
-      <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainMenu.h">
       <Filter>Editor\UI</Filter>
@@ -408,135 +333,16 @@
     <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\FormFiles\bcBlackCatEditor.ui">
       <Filter>Editor\FormFiles</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\FormFiles\bcBlackCatEditor.qrc">
+    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Resources\bcBlackCatEditor.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_closed-on.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\branch_open-on.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_disabled.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_checked_focus.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_indeterminate_focus.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_disabled.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\checkbox_unchecked_focus.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-hover.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\close-pressed.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\down_arrow_disabled.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hmovetoolbar.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Hsepartoolbar.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\left_arrow_disabled.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_disabled.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_checked_focus.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_disabled.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\radio_unchecked_focus.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\right_arrow_disabled.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\sizegrip.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-end.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-branch-more.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\stylesheet-vline.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\transparent.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\undock.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\up_arrow_disabled.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vmovetoolbar.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\rc\Vsepartoolbar.png">
-      <Filter>Resource Files</Filter>
-    </Image>
+    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Resources\qdarkstyle\style.qrc">
+      <Filter>Resource Files\qdarkstyle</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Data\EditorContentStream.json">
       <Filter>Editor\Content\Data</Filter>
-    </None>
-    <None Include="..\..\Src\BlackCat.Editor\Editor\qdarkstyle\style.qss">
-      <Filter>Resource Files</Filter>
     </None>
     <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMap.json">
       <Filter>Editor\Content\Scene</Filter>
@@ -553,6 +359,9 @@
     <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Scene\CrysisHeightMapMaterial.json">
       <Filter>Editor\Content\Scene</Filter>
     </None>
+    <None Include="..\..\Src\BlackCat.Editor\Editor\Resources\qdarkstyle\style.qss">
+      <Filter>Resource Files\qdarkstyle</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\bcTerrainHeight.hlsl">
@@ -567,10 +376,5 @@
     <FxCompile Include="..\..\Src\BlackCat.Editor\Editor\Content\Shader\DirectX11\bcTerrainSmooth.hlsl">
       <Filter>Editor\Content\Shader\DirectX11</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="..\..\Src\BlackCat.Editor\Editor\Resources\fonts\fontawesome-4.6.1.ttf">
-      <Filter>Resource Files</Filter>
-    </Font>
   </ItemGroup>
 </Project>

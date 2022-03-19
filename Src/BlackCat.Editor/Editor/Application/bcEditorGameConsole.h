@@ -3,11 +3,11 @@
 #pragma once
 
 #include <mutex>
-#include <QtCore/QObject>
-#include <QtConcurrent/QtConcurrent>
 #include "Game/System/Script/bcGameConsole.h"
 #include "Game/System/Script/bcIGameConsoleImp.h"
 #include "Editor/Widget/bcWidgetConsole.h"
+#include <QtCore/QObject>
+#include <QtConcurrent/QtConcurrent>
 
 namespace black_cat
 {

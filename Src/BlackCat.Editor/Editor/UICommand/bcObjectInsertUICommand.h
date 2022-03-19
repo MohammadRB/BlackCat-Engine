@@ -4,6 +4,7 @@
 
 #include "Core/Container/bcString.h"
 #include "Editor/Application/bcUICommand.h"
+#include <QtCore/QString>
 
 namespace black_cat
 {

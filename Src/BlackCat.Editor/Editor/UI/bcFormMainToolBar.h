@@ -4,7 +4,6 @@
 
 #include "Editor/Application/bcUICommandService.h"
 #include "Editor/Widget/bcWidgetD3DOutput.h"
-#include <Qt3DInput/QAction>
 #include <QtWidgets/QToolBar>
 
 namespace black_cat

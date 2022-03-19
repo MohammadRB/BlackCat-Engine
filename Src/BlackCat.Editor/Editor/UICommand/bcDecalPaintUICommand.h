@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Editor/Application/bcUICommand.h"
+#include <QtCore/QString>
 
 namespace black_cat
 {

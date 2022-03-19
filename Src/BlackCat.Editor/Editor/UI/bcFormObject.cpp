@@ -11,6 +11,9 @@
 #include "Editor/UI/bcFormObject.h"
 #include "Editor/UICommand/bcObjectUpdateUICommand.h"
 #include "Editor/UICommand/bcObjectDeleteUICommand.h"
+#include <QtCore/QObject>
+#include <QtCore/QString>
+#include <QtWidgets/QtWidgets>
 
 namespace black_cat
 {

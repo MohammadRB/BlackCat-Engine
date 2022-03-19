@@ -3,9 +3,7 @@
 #pragma once
 
 #include "CorePlatform/bcType.h"
-
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QSlider>
+#include <QtWidgets/QtWidgets>
 
 namespace black_cat
 {

@@ -17,5 +17,3 @@
 #include <utility>
 #include <chrono>
 #include <assert.h>
-
-#include <QtWidgets/QtWidgets>

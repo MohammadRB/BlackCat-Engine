@@ -10,7 +10,7 @@
 #include "Editor/UI/bcFormObjectInsert.h"
 #include "Editor/UI/bcFormDecal.h"
 #include "Editor/UI/bcFormDecalInsert.h"
-#include <QtWidgets/QWidget>
+#include <QtWidgets/QtWidgets>
 #include <QtWidgets/QDockWidget>
 
 namespace black_cat

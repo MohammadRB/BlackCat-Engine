@@ -2,6 +2,7 @@
 
 #include "Editor/EditorPCH.h"
 #include "Editor/Widget/bcWidgetConsole.h"
+#include <QtWidgets/QListWidget>
 
 namespace black_cat
 {

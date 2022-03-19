@@ -16,8 +16,10 @@
 #include "Editor/UI/bcFormObjectInsert.h"
 #include "Editor/UI/bcFormDecalInsert.h"
 #include "Editor/UI/bcFormDecal.h"
-#include "ui_bcBlackCatEditor.h"
+#include "Editor/GeneratedFiles/ui_bcBlackCatEditor.h"
+#include <QtWidgets/QToolBox>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QAbstractButton>
 #include <QtConcurrent/QtConcurrent>
 
 namespace black_cat

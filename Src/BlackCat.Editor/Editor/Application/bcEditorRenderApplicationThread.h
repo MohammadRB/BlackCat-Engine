@@ -4,6 +4,7 @@
 
 #include "Core/Utility/bcDelegate.h"
 #include "Editor/Application/bcRenderApplicationD3DWidgetOutputWindow.h"
+#include <QtCore/QThread>
 
 namespace black_cat
 {

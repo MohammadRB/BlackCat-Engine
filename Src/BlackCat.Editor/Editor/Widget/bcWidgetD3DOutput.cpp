@@ -5,6 +5,8 @@
 #include "Core/Messaging/Event/bcEventManager.h"
 #include "Platform/bcEvent.h"
 #include "Editor/Widget/bcWidgetD3DOutput.h"
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QtWidgets>
 
 namespace black_cat
 {

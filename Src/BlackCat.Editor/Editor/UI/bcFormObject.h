@@ -5,8 +5,7 @@
 #include "Core/Math/bcMatrix4f.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Editor/Application/bcUICommandService.h"
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QtWidgets>
 
 namespace black_cat
 {

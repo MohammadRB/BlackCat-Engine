@@ -6,6 +6,7 @@
 #include "Game/bcEvent.h"
 #include "Editor/UICommand/bcEditorModeUICommand.h"
 #include "Editor/UI/bcFormMainToolBar.h"
+#include <QtWidgets/QtWidgets>
 
 namespace black_cat
 {

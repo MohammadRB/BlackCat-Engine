@@ -6,6 +6,7 @@
 #include "Editor/UI/bcFormDecal.h"
 #include "Editor/UICommand/bcDecalUpdateUICommand.h"
 #include "Editor/UICommand/bcDecalRemoveUICommand.h"
+#include <QtWidgets/QtWidgets>
 
 namespace black_cat
 {

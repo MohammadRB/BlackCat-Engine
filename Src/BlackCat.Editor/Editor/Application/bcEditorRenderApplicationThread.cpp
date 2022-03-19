@@ -41,7 +41,7 @@ namespace black_cat
 
 		void bc_editor_render_app_thread::run()
 		{
-			platform::bc_basic_hardware_info l_hardware_info;
+			platform::bc_basic_hardware_info l_hardware_info{};
 			platform::bc_hardware_info::get_basic_info(l_hardware_info);
 
 			platform::bc_application_parameter l_app_parameters

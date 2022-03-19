@@ -3,8 +3,8 @@
 #pragma once
 
 #include "Game/System/Script/bcGameConsole.h"
-#include "Editor/EditorPCH.h"
 #include "Editor/QtAwesome/QtAwesome.h"
+#include <QtWidgets/QtWidgets>
 
 namespace black_cat
 {

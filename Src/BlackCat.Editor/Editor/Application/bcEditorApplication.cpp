@@ -4,7 +4,11 @@
 #include "Editor/Application/bcEditorApplication.h"
 #include "Editor/Application/bcEditorRenderApplication.h"
 #include "Editor/Application/bcUICommandService.h"
-#include "QtWidgets/QMessageBox"
+#include <QtGui/QtEvents>
+#include <QtCore/QTextStream>
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QFrame>
 
 namespace black_cat
 {
@@ -115,11 +119,10 @@ namespace black_cat
 
 		void bc_editor_app::_load_style() const
 		{
-			QFile l_style_file(":qdarkstyle/style.qss");
+			QFile l_style_file(":/qdarkstyle/style.qss");
 
-			if (l_style_file.exists())
+			if (l_style_file.open(QFile::ReadOnly | QFile::Text))
 			{
-				l_style_file.open(QFile::ReadOnly | QFile::Text);
 				QTextStream ts(&l_style_file);
 
 				qApp->setStyleSheet(ts.readAll());

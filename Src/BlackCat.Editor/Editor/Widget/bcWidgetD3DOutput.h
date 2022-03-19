@@ -3,8 +3,8 @@
 #pragma once
 
 #include "GraphicImp/Device/bcDeviceOutput.h"
-
-#include <QtWidgets/qwidget.h>
+#include <QtWidgets/QWidget>
+#include <QtGui/QtEvents>
 
 namespace black_cat
 {
