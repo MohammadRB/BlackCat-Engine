@@ -192,7 +192,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "scifi_rifle",
-            "lod_scale": 1.0
+            "view_distance": 200.0
           }
         },
         {
@@ -243,7 +243,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "grenade",
-            "lod_scale": 2.0,
+            "view_distance": 110.0,
             "materials": {
               "bodyMesh": "grenade"
             }
@@ -281,7 +281,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "smoke_grenade",
-            "lod_scale": 2.0,
+            "view_distance": 110.0,
             "materials": {
               "bodyMesh": "smoke_grenade"
             }

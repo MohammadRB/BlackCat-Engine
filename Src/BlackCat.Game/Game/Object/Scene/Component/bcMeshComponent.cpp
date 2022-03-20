@@ -23,10 +23,7 @@ namespace black_cat
 		bc_mesh_component::bc_mesh_component() noexcept
 			: bc_render_component(),
 			bc_decal_resolver_component(),
-			m_sub_mesh(),
-			m_world_transforms(),
-			m_lod_scale(0),
-			m_lod_factor(0)
+			m_view_distance(0)
 		{
 		}
 
@@ -35,8 +32,7 @@ namespace black_cat
 			bc_decal_resolver_component(std::move(p_other)),
 			m_sub_mesh(std::move(p_other.m_sub_mesh)),
 			m_world_transforms(std::move(p_other.m_world_transforms)),
-			m_lod_scale(0),
-			m_lod_factor(p_other.m_lod_factor)
+			m_view_distance(p_other.m_view_distance)
 		{
 		}
 
@@ -48,8 +44,7 @@ namespace black_cat
 			bc_decal_resolver_component::operator=(std::move(p_other));
 			m_sub_mesh = std::move(p_other.m_sub_mesh);
 			m_world_transforms = std::move(p_other.m_world_transforms);
-			m_lod_scale = p_other.m_lod_scale;
-			m_lod_factor = p_other.m_lod_factor;
+			m_view_distance = p_other.m_view_distance;
 
 			return *this;
 		}
@@ -59,11 +54,10 @@ namespace black_cat
 			const auto& l_mesh_name = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_mesh);
 			const auto* l_sub_mesh_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_sub_mesh);
 			const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_materials);
-			const auto l_lod_scale = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_mesh_lod_scale), 1.0f);
+			const auto* l_view_distance_param = p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_mesh_view_distance);
 			const auto l_mesh = p_context.m_stream_manager.find_content_throw<bc_mesh>(l_mesh_name.c_str());
 
 			m_sub_mesh = l_sub_mesh_name ? bc_sub_mesh(l_mesh, l_sub_mesh_name->c_str()) : bc_sub_mesh(l_mesh);
-			m_lod_scale = l_lod_scale;
 			m_world_transforms = bc_sub_mesh_mat4_transform(*m_sub_mesh.get_root_node());
 
 			if(l_materials)
@@ -75,10 +69,17 @@ namespace black_cat
 				m_render_state = m_sub_mesh.create_render_states(p_context.m_game_system.get_render_system());
 			}
 
-			physics::bc_bound_box l_bound_box;
-			m_sub_mesh.calculate_absolute_transforms(core::bc_matrix4f::identity(), m_world_transforms, l_bound_box);
+			if(l_view_distance_param)
+			{
+				m_view_distance = *l_view_distance_param;
+			}
+			else
+			{
+				physics::bc_bound_box l_bound_box;
+				m_sub_mesh.calculate_absolute_transforms(core::bc_matrix4f::identity(), m_world_transforms, l_bound_box);
 
-			set_lod_factor(l_bound_box);
+				update_view_distance(l_bound_box);
+			}
 		}
 
 		void bc_mesh_component::load_instance(const bc_actor_component_load_context& p_context)
@@ -134,11 +135,11 @@ namespace black_cat
 			}
 		}
 
-		void bc_mesh_component::set_lod_factor(const physics::bc_bound_box& p_bound_box) noexcept
+		void bc_mesh_component::update_view_distance(const physics::bc_bound_box& p_bound_box) noexcept
 		{
 			const auto l_bound_box_half_extends = p_bound_box.get_half_extends();
 			const auto l_box_length = std::max({ l_bound_box_half_extends.x, l_bound_box_half_extends.y, l_bound_box_half_extends.z }) * 2;
-			m_lod_factor = l_box_length * m_lod_scale * bc_get_global_config().get_lod_global_scale();
+			m_view_distance = l_box_length * 30 * bc_get_global_config().get_global_view_distance_scale();
 		}
 	}
 }

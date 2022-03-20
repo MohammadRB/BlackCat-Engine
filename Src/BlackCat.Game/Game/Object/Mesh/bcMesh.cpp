@@ -255,16 +255,7 @@ namespace black_cat
 			m_auto_scale = p_auto_scale;
 			m_scale = p_auto_scale / l_largest_side;
 			m_transformations[m_root->get_index()] *= core::bc_matrix4f::scale_matrix(m_scale);
-
-			/*for(auto& l_transform : m_transformations)
-			{
-				l_transform.set_translation(l_transform.get_translation() * m_scale);
-			}*/
-			/*for (auto& l_transform : m_bind_poses)
-			{
-				l_transform.set_translation(l_transform.get_translation() * m_scale);
-			}*/
-
+			
 			for(auto& l_mesh_part_data : m_meshes)
 			{
 				l_mesh_part_data.m_bound_box.scale(m_scale);

@@ -349,7 +349,7 @@ namespace black_cat
 				}
 				
 				auto* l_decal = l_decal_instance->get_decal();
-				const auto l_lod_factor = std::max(l_decal->get_width(), l_decal->get_height()) * l_decal->get_lod_scale() * l_global_config.get_lod_global_scale();
+				const auto l_lod_factor = std::max(l_decal->get_width(), l_decal->get_height()) * l_decal->get_view_distance() * l_global_config.get_lod_global_scale();
 				const auto l_camera_distance = (l_decal_instance->get_world_transform().get_translation() - p_context.m_camera.m_main_camera.get_position()).magnitude();
 				const auto l_culling_index = static_cast<bcUINT32>(l_camera_distance / l_lod_factor);
 				

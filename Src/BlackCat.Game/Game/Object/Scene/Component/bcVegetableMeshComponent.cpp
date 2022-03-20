@@ -61,13 +61,13 @@ namespace black_cat
 				(
 					p_context.m_game_system.get_render_system(),
 					*l_materials,
-					"leaf."
+					"leaf_"
 				);
 				m_trunk_render_state = get_mesh().create_render_states
 				(
 					p_context.m_game_system.get_render_system(),
 					*l_materials,
-					"trunk."
+					"trunk_"
 				);
 			}
 			else
@@ -75,12 +75,12 @@ namespace black_cat
 				m_leaf_render_state = get_mesh().create_render_states
 				(
 					p_context.m_game_system.get_render_system(),
-					"leaf."
+					"leaf_"
 				);
 				m_trunk_render_state = get_mesh().create_render_states
 				(
 					p_context.m_game_system.get_render_system(),
-					"trunk."
+					"trunk_"
 				);
 			}
 		}
@@ -97,7 +97,7 @@ namespace black_cat
 			/*const auto* l_bound_box_event = core::bci_message::as< bc_bound_box_changed_actor_event >(p_context.m_event);
 			if (l_bound_box_event)
 			{
-				bc_mesh_component::set_lod_factor(l_bound_box_event->get_bound_box());
+				bc_mesh_component::update_view_distance(l_bound_box_event->get_bound_box());
 				return;
 			}*/
 
@@ -128,7 +128,7 @@ namespace black_cat
 				p_context.m_camera.m_main_camera.get_position(),
 				p_context.m_camera.m_render_camera.get_position(),
 				get_world_position(),
-				get_lod_factor()
+				get_view_distance()
 			);
 			if(!l_lod.second)
 			{

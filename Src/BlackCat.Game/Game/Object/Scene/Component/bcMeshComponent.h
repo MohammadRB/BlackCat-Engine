@@ -51,9 +51,9 @@ namespace black_cat
 
 			bc_mesh_component& operator=(bc_mesh_component&&) noexcept;
 
-			bcFLOAT get_lod_factor() const noexcept;
+			bcFLOAT get_view_distance() const noexcept;
 
-			void set_lod_factor(const physics::bc_bound_box& p_bound_box) noexcept;
+			void update_view_distance(const physics::bc_bound_box& p_bound_box) noexcept;
 			
 			const bc_mesh_render_state& get_render_states() const noexcept;
 			
@@ -68,10 +68,9 @@ namespace black_cat
 			
 		private:
 			bc_sub_mesh m_sub_mesh;
+			bcFLOAT m_view_distance;
 			bc_mesh_render_state m_render_state;
 			bc_sub_mesh_mat4_transform m_world_transforms;
-			bcFLOAT m_lod_scale;
-			bcFLOAT m_lod_factor;
 		};
 
 		inline const bc_sub_mesh& bc_mesh_component::get_mesh() const
@@ -99,9 +98,9 @@ namespace black_cat
 			return m_world_transforms.get_node_transform(*m_sub_mesh.get_root_node());
 		}
 
-		inline bcFLOAT bc_mesh_component::get_lod_factor() const noexcept
+		inline bcFLOAT bc_mesh_component::get_view_distance() const noexcept
 		{
-			return m_lod_factor;
+			return m_view_distance;
 		}
 		
 		inline const bc_mesh_render_state& bc_mesh_component::get_render_states() const noexcept

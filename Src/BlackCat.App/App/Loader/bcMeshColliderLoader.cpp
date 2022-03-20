@@ -107,7 +107,7 @@ namespace black_cat
 		core::bc_string_frame l_px_node_name;
 		l_px_node_name.reserve(3 + p_ai_node_mesh.mName.length);
 
-		l_px_node_name.append("px.");
+		l_px_node_name.append(bc_mesh_loader_utility::s_px_node_prefix);
 		l_px_node_name.append(p_ai_node_mesh.mName.data);
 
 		for (bcUINT32 l_index = 0; l_index < p_ai_node.mNumChildren; ++l_index)
@@ -148,7 +148,7 @@ namespace black_cat
 			const aiMesh* l_ai_mesh = p_ai_scene.mMeshes[p_px_node.mMeshes[l_mesh_index]];
 			l_mesh_name.assign(l_ai_mesh->mName.data);
 
-			if (l_mesh_name.compare(0, sizeof("px.sphere") - 1, "px.sphere") == 0)
+			if (l_mesh_name.compare(0, sizeof("px_sphere") - 1, "px_sphere") == 0)
 			{
 				physics::bc_shape_sphere l_px_sphere = game::bc_extract_sphere_from_points(physics::bc_bounded_strided_typed_data<core::bc_vector3f>
 				(
@@ -159,7 +159,7 @@ namespace black_cat
 
 				p_builder.add_px_shape(p_attached_mesh_name, l_attached_node_index, l_px_sphere, physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
-			else if (l_mesh_name.compare(0, sizeof("px.box") - 1, "px.box") == 0)
+			else if (l_mesh_name.compare(0, sizeof("px_box") - 1, "px_box") == 0)
 			{
 				physics::bc_shape_box l_px_box = game::bc_extract_box_from_points(physics::bc_bounded_strided_typed_data<core::bc_vector3f>
 				(
@@ -170,7 +170,7 @@ namespace black_cat
 
 				p_builder.add_px_shape(p_attached_mesh_name, l_attached_node_index, l_px_box, physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
-			else if (l_mesh_name.compare(0, sizeof("px.capsule") - 1, "px.capsule") == 0)
+			else if (l_mesh_name.compare(0, sizeof("px_capsule") - 1, "px_capsule") == 0)
 			{
 				physics::bc_shape_capsule l_px_capsule = game::bc_extract_capsule_from_points(physics::bc_bounded_strided_typed_data<core::bc_vector3f>
 				(
@@ -181,7 +181,7 @@ namespace black_cat
 
 				p_builder.add_px_shape(p_attached_mesh_name, l_attached_node_index, l_px_capsule, physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
-			else if (l_mesh_name.compare(0, sizeof("px.convex") - 1, "px.convex") == 0)
+			else if (l_mesh_name.compare(0, sizeof("px_convex") - 1, "px_convex") == 0)
 			{
 				physics::bc_convex_mesh_desc l_px_convex_desc = game::bc_extract_convex_from_points(physics::bc_bounded_strided_typed_data<core::bc_vector3f>
 				(
@@ -195,7 +195,7 @@ namespace black_cat
 
 				p_builder.add_px_shape(p_attached_mesh_name, l_attached_node_index, std::move(l_convex), physics::bc_transform(l_node_transformation), l_shape_flag);
 			}
-			else if (l_mesh_name.compare(0, sizeof("px.mesh") - 1, "px.mesh") == 0)
+			else if (l_mesh_name.compare(0, sizeof("px_mesh") - 1, "px_mesh") == 0)
 			{
 				auto l_triangle_mesh_data = _bc_extract_triangle_mesh(*l_ai_mesh);
 				physics::bc_memory_buffer l_triangle_buffer = p_physics.create_triangle_mesh(std::get<physics::bc_triangle_mesh_desc>(l_triangle_mesh_data));

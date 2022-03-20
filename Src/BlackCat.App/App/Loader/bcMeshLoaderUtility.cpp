@@ -32,14 +32,14 @@ namespace black_cat
 	
 	bool bc_mesh_loader_utility::is_px_node(const aiNode& p_ai_node)
 	{
-		const core::bc_string_view l_px_str = "px.";
+		const core::bc_string_view l_px_str = bc_mesh_loader_utility::s_px_node_prefix;
 		const auto l_length_to_compare = l_px_str.size();
 		return l_px_str.compare(0, l_length_to_compare, &p_ai_node.mName.data[0], l_length_to_compare) == 0;
 	}
 
 	bool bc_mesh_loader_utility::is_px_joint_node(const aiNode& p_ai_node)
 	{
-		const core::bc_string_view l_px_str = "px.joint.";
+		const core::bc_string_view l_px_str = bc_mesh_loader_utility::s_px_joint_node_prefix;
 		const auto l_length_to_compare = l_px_str.size();
 		return l_px_str.compare(0, l_length_to_compare, &p_ai_node.mName.data[0], l_length_to_compare) == 0;
 	}
@@ -75,7 +75,7 @@ namespace black_cat
 
 			core::bc_string_frame l_px_node_name;
 			l_px_node_name.reserve(3 + l_ai_mesh->mName.length);
-			l_px_node_name.append("px.");
+			l_px_node_name.append(bc_mesh_loader_utility::s_px_node_prefix);
 			l_px_node_name.append(l_ai_mesh->mName.data);
 
 			for (bcUINT32 l_index = 0; l_index < p_ai_node.mNumChildren; ++l_index)
@@ -112,7 +112,7 @@ namespace black_cat
 
 		core::bc_string_frame l_px_node_name;
 		l_px_node_name.reserve(3 + p_ai_node.mName.length);
-		l_px_node_name.append("px.");
+		l_px_node_name.append(bc_mesh_loader_utility::s_px_node_prefix);
 		l_px_node_name.append(p_ai_node.mName.data);
 
 		core::bc_vector_frame<const aiNode*> l_ai_node_colliders;
@@ -139,8 +139,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_mesh_loader_utility::calculate_px_joint_mapping(const aiScene& p_ai_scene,
-		core::bc_vector<std::tuple<core::bc_string_view, core::bc_string_view, physics::bc_transform>>& p_px_joint_mapping)
+	void bc_mesh_loader_utility::calculate_px_joint_mapping(const aiScene& p_ai_scene, core::bc_vector<std::tuple<core::bc_string_view, core::bc_string_view, physics::bc_transform>>& p_px_joint_mapping)
 	{
 		for (bcUINT32 l_child_ite = 0; l_child_ite < p_ai_scene.mRootNode->mNumChildren; ++l_child_ite)
 		{
@@ -153,7 +152,7 @@ namespace black_cat
 			core::bc_string_view l_node_name = l_child_node->mName.data;
 			l_node_name = l_node_name.substr(9);
 
-			const auto l_split_pos = l_node_name.find('.');
+			const auto l_split_pos = l_node_name.find(bc_mesh_loader_utility::s_px_joint_node_split);
 			const auto l_node1 = l_node_name.substr(0, l_split_pos);
 			const auto l_node2 = l_node_name.substr(l_split_pos + 1, l_node_name.size() - l_split_pos);
 

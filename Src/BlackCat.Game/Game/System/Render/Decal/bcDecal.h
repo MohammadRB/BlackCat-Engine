@@ -43,7 +43,7 @@ namespace black_cat
 				bcFLOAT p_width,
 				bcFLOAT p_height,
 				bcFLOAT p_depth,
-				bcFLOAT p_lod_scale,
+				bcFLOAT p_view_distance,
 				bc_render_group p_group,
 				bool p_auto_remove);
 
@@ -71,7 +71,7 @@ namespace black_cat
 			
 			bcFLOAT get_depth() const noexcept;
 			
-			bcFLOAT get_lod_scale() const noexcept;
+			bcFLOAT get_view_distance() const noexcept;
 
 			bc_render_group get_group() const noexcept;
 
@@ -87,7 +87,7 @@ namespace black_cat
 			bcFLOAT m_width;
 			bcFLOAT m_height;
 			bcFLOAT m_depth;
-			bcFLOAT m_lod_scale;
+			bcFLOAT m_view_distance;
 			bc_render_group m_group;
 			bool m_auto_remove;
 		};
@@ -113,7 +113,7 @@ namespace black_cat
 			bcFLOAT p_width,
 			bcFLOAT p_height,
 			bcFLOAT p_depth,
-			bcFLOAT p_lod_scale,
+			bcFLOAT p_view_distance,
 			bc_render_group p_group,
 			bool p_auto_remove)
 			: m_name(p_name),
@@ -125,7 +125,7 @@ namespace black_cat
 			m_width(p_width),
 			m_height(p_height),
 			m_depth(p_depth),
-			m_lod_scale(p_lod_scale),
+			m_view_distance(p_view_distance),
 			m_group(p_group),
 			m_auto_remove(p_auto_remove)
 		{
@@ -162,9 +162,9 @@ namespace black_cat
 			return m_depth;
 		}
 
-		inline bcFLOAT bc_decal::get_lod_scale() const noexcept
+		inline bcFLOAT bc_decal::get_view_distance() const noexcept
 		{
-			return m_lod_scale;
+			return m_view_distance;
 		}
 		
 		inline bcFLOAT bc_decal::get_u0() const noexcept

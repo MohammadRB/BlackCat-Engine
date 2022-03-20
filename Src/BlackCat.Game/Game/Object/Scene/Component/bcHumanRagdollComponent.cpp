@@ -410,7 +410,7 @@ namespace black_cat
 
 			if (!l_is_valid)
 			{
-				throw bc_invalid_operation_exception("nodes with more than one collider is not supported in ragdoll");
+				throw bc_invalid_operation_exception("nodes with zero or more than one collider is not supported in ragdoll component");
 			}
 		}
 

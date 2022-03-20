@@ -158,7 +158,7 @@ namespace black_cat
 			/*const auto* l_bound_box_event = core::bci_message::as<bc_bound_box_changed_actor_event>(p_context.m_event);
 			if (l_bound_box_event)
 			{
-				bc_mesh_component::set_lod_factor(l_bound_box_event->get_bound_box());
+				bc_mesh_component::update_view_distance(l_bound_box_event->get_bound_box());
 				return;
 			}*/
 
@@ -184,7 +184,7 @@ namespace black_cat
 				p_context.m_camera.m_main_camera.get_position(),
 				p_context.m_camera.m_render_camera.get_position(),
 				get_world_position(),
-				get_lod_factor()
+				get_view_distance()
 			);
 			if(!l_lod.second)
 			{
@@ -199,7 +199,7 @@ namespace black_cat
 		void bc_skinned_mesh_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)
 		{
 			const auto& l_mesh = get_mesh();
-			const auto* l_mediate_component = p_context.m_actor.get_component< bc_mediate_component >();
+			const auto* l_mediate_component = p_context.m_actor.get_component<bc_mediate_component>();
 			const auto l_bound_box_z_length = l_mediate_component->get_bound_box().get_half_extends().z;
 			auto l_world_transform = l_mediate_component->get_world_transform();
 			const auto l_world_offset = l_world_transform.get_rotation() * core::bc_vector3f(0, 0, l_bound_box_z_length * 2.5f);

@@ -24,15 +24,11 @@ namespace black_cat
 			auto& l_json = *m_json;
 			if (!l_json->m_global_scale.has_value())
 			{
-				*l_json->m_global_scale = 1.0f;
+				*l_json->m_global_scale = 1.f;
 			}
-			if(!l_json->m_lod_global_scale.has_value())
+			if(!l_json->m_global_view_distance_scale.has_value())
 			{
-				*l_json->m_lod_global_scale = 10.0f;
-			}
-			if (!l_json->m_lod_culling_index.has_value())
-			{
-				*l_json->m_lod_culling_index = 6;
+				*l_json->m_global_view_distance_scale = 1.f;
 			}
 			if (!l_json->m_scene_graph_debug_draw.has_value())
 			{
@@ -48,7 +44,7 @@ namespace black_cat
 			}
 			if(!l_json->m_bullet_reference_mass.has_value())
 			{
-				*l_json->m_bullet_reference_mass = 0.1f;
+				*l_json->m_bullet_reference_mass = .1f;
 			}
 			if(!l_json->m_counter_values.has_value())
 			{

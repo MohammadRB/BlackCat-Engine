@@ -28,7 +28,7 @@ namespace black_cat
 			bcFLOAT m_width;
 			bcFLOAT m_height;
 			bcFLOAT m_depth;
-			bcFLOAT m_lod_scale;
+			bcFLOAT m_view_distance;
 			bc_render_group m_group;
 			bool m_auto_remove;
 		};
@@ -96,6 +96,8 @@ namespace black_cat
 			void destroy_decal(bc_decal* p_decal);
 			
 		private:
+			bcFLOAT _calculate_default_view_distance(bcFLOAT p_width, bcFLOAT p_height, bcFLOAT p_depth);
+
 			bc_material_manager* m_material_manager;
 
 			decal_desc_map m_decal_descriptions;

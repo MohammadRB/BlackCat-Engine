@@ -15,8 +15,7 @@ namespace black_cat
 		BC_JSON_STRUCTURE(bc_config_layout)
 		{
 			BC_JSON_VALUE_OP(bcFLOAT, global_scale);
-			BC_JSON_VALUE_OP(bcFLOAT, lod_global_scale);
-			BC_JSON_VALUE_OP(bcUINT32, lod_culling_index);
+			BC_JSON_VALUE_OP(bcFLOAT, global_view_distance_scale);
 			BC_JSON_VALUE_OP(bool, scene_graph_debug_draw);
 			BC_JSON_VALUE_OP(bcUINT32, scene_graph_actors_pool_capacity);
 			BC_JSON_VALUE_OP(core::bc_string, network_client_name);
@@ -28,7 +27,7 @@ namespace black_cat
 		class bc_global_config final : public bc_config_file
 		{
 		public:
-			bc_global_config(const bcECHAR* p_content_path, const bcECHAR* p_config_file_name = bcL("config"));
+			explicit bc_global_config(const bcECHAR* p_content_path, const bcECHAR* p_config_file_name = bcL("config"));
 
 			bc_global_config(bc_global_config&&) noexcept;
 
@@ -38,10 +37,8 @@ namespace black_cat
 
 			bcFLOAT get_global_scale() const noexcept;
 			
-			bcFLOAT get_lod_global_scale() const noexcept;
-
-			bcUINT32 get_lod_culling_index() const noexcept;
-
+			bcFLOAT get_global_view_distance_scale() const noexcept;
+			
 			bool get_scene_graph_debug_draw() const noexcept;
 
 			bcUINT32 get_scene_graph_actors_pool_capacity() const noexcept;
@@ -73,16 +70,11 @@ namespace black_cat
 			return *(*m_json)->m_global_scale;
 		}
 		
-		inline bcFLOAT bc_global_config::get_lod_global_scale() const noexcept
+		inline bcFLOAT bc_global_config::get_global_view_distance_scale() const noexcept
 		{
-			return *(*m_json)->m_lod_global_scale;
+			return *(*m_json)->m_global_view_distance_scale;
 		}
-
-		inline bcUINT32 bc_global_config::get_lod_culling_index() const noexcept
-		{
-			return *(*m_json)->m_lod_culling_index;
-		}
-
+		
 		inline bool bc_global_config::get_scene_graph_debug_draw() const noexcept
 		{
 			return *(*m_json)->m_scene_graph_debug_draw;

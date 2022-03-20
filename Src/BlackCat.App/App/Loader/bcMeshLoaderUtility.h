@@ -20,6 +20,10 @@ namespace black_cat
 	class BC_DLL bc_mesh_loader_utility
 	{
 	public:
+		static inline const bcCHAR* s_px_node_prefix = "px_";
+		static inline const bcCHAR* s_px_joint_node_prefix = "px_joint_";
+		static inline const bcCHAR* s_px_joint_node_split = "&";
+
 		static void convert_ai_matrix(const aiMatrix4x4t<float>& p_ai_matrix, core::bc_matrix4f& p_matrix);
 		
 		static bool is_px_node(const aiNode& p_ai_node);
@@ -58,8 +62,7 @@ namespace black_cat
 		 * \param p_ai_scene
 		 * \param p_px_joint_mapping
 		 */
-		static void calculate_px_joint_mapping(const aiScene& p_ai_scene,
-			core::bc_vector<std::tuple<core::bc_string_view, core::bc_string_view, physics::bc_transform>>& p_px_joint_mapping);
+		static void calculate_px_joint_mapping(const aiScene& p_ai_scene, core::bc_vector<std::tuple<core::bc_string_view, core::bc_string_view, physics::bc_transform>>& p_px_joint_mapping);
 
 		static void store_skinned_vertex_weights(core::bc_vector4i& p_indices, core::bc_vector4f& p_weights, bcUINT32 p_bone_index, bcFLOAT p_bone_weight);
 		

@@ -9,6 +9,7 @@
 #include "Core/File/bcFileStream.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Render/Decal/bcDecalManager.h"
 #include "Game/System/Render/bcRenderSystem.h"
@@ -29,7 +30,7 @@ namespace black_cat
 			BC_JSON_VALUE(bcFLOAT, width);
 			BC_JSON_VALUE(bcFLOAT, height);
 			BC_JSON_VALUE(bcFLOAT, depth);
-			BC_JSON_VALUE_OP(bcFLOAT, lod_scale);
+			BC_JSON_VALUE_OP(bcFLOAT, view_distance);
 			BC_JSON_VALUE_OP(bcUINT32, group);
 			BC_JSON_VALUE_OP(bool, auto_remove);
 		};
@@ -100,7 +101,7 @@ namespace black_cat
 					*l_decal->m_width,
 					*l_decal->m_height,
 					*l_decal->m_depth,
-					l_decal->m_lod_scale.has_value() ? *l_decal->m_lod_scale : 1,
+					l_decal->m_view_distance.has_value() ? *l_decal->m_view_distance : _calculate_default_view_distance(*l_decal->m_width, *l_decal->m_height, *l_decal->m_depth),
 					l_decal->m_group.has_value() ? static_cast<bc_render_group>(*l_decal->m_group) : bc_render_group::all,
 					l_decal->m_auto_remove.has_value() ? *l_decal->m_auto_remove : false
 				};
@@ -174,7 +175,7 @@ namespace black_cat
 					l_desc_ite->second.m_width,
 					l_desc_ite->second.m_height,
 					l_desc_ite->second.m_depth,
-					l_desc_ite->second.m_lod_scale,
+					l_desc_ite->second.m_view_distance,
 					l_desc_ite->second.m_group,
 					l_desc_ite->second.m_auto_remove
 				),
@@ -216,6 +217,12 @@ namespace black_cat
 			}
 
 			m_decals_pool.free(l_entry);
+		}
+
+		bcFLOAT bc_decal_manager::_calculate_default_view_distance(bcFLOAT p_width, bcFLOAT p_height, bcFLOAT p_depth)
+		{
+			const auto l_box_length = std::max({ p_width, p_height, p_depth });
+			return l_box_length * 25 * bc_get_global_config().get_global_view_distance_scale();
 		}
 	}	
 }

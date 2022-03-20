@@ -21,12 +21,10 @@ namespace black_cat
 
 				for (auto& l_decal_instance : l_iterator)
 				{
-					auto* l_decal = l_decal_instance.get_decal();
-					const auto l_lod_factor = std::max(l_decal->get_width(), l_decal->get_height()) * l_decal->get_lod_scale() * bc_get_global_config().get_lod_global_scale();
+					const auto* l_decal = l_decal_instance.get_decal();
 					const auto l_camera_distance = (l_decal_instance.get_world_transform().get_translation() - m_camera_position).magnitude();
-					const auto l_culling_index = static_cast<bcUINT32>(l_camera_distance / l_lod_factor);
 
-					if (l_culling_index <= bc_get_global_config().get_lod_culling_index())
+					if (l_camera_distance <= l_decal->get_view_distance())
 					{
 						m_buffer.add_decal_instance
 						(

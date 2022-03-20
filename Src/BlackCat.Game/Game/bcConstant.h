@@ -15,7 +15,7 @@ namespace black_cat
 		BC_PARAMETER(mesh_materials, "materials");
 		BC_PARAMETER(mesh_skinned, "skinned");
 		BC_PARAMETER(mesh_auto_scale, "auto_scale");
-		BC_PARAMETER(mesh_lod_scale, "lod_scale");
+		BC_PARAMETER(mesh_view_distance, "view_distance");
 		BC_PARAMETER(mesh_collider, "collider");
 		BC_PARAMETER(mesh_collider_materials, "collider_materials");
 		BC_PARAMETER(mesh_is_lod, "is_lod");

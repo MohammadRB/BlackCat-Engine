@@ -27,18 +27,18 @@ namespace black_cat
 
 			const bc_mesh& get_mesh(bcUINT32 p_lod) const noexcept;
 
-			std::pair<bcUINT32, const bc_mesh*> get_lod(const core::bc_vector3f& p_camera_position, const
-				core::bc_vector3f& p_position, 
-				bcFLOAT p_lod_factor) const noexcept;
+			std::pair<bcUINT32, const bc_mesh*> get_lod(const core::bc_vector3f& p_camera_position, 
+				const core::bc_vector3f& p_position, 
+				bcFLOAT p_max_view_distance) const noexcept;
 			
 			std::pair<bcUINT32, const bc_mesh*> get_lod_culling(const core::bc_vector3f& p_camera_position,
 				const core::bc_vector3f& p_position, 
-				bcFLOAT p_lod_factor) const noexcept;
+				bcFLOAT p_max_view_distance) const noexcept;
 
 			std::pair<bcUINT32, const bc_mesh*> get_lod_culling(const core::bc_vector3f& p_main_camera_position,
 				const core::bc_vector3f& p_render_camera_position,
 				const core::bc_vector3f& p_position,
-				bcFLOAT p_lod_factor) const noexcept;
+				bcFLOAT p_max_view_distance) const noexcept;
 		
 		private:
 			const bc_mesh* const* m_meshes;
@@ -49,6 +49,7 @@ namespace black_cat
 			: m_meshes(p_meshes),
 			m_count(p_count)
 		{
+			BC_ASSERT(p_count <= 3);
 		}
 
 		inline bcSIZE bc_mesh_level_of_detail::get_mesh_count() const noexcept
@@ -63,19 +64,13 @@ namespace black_cat
 
 		inline std::pair<bcUINT32, const bc_mesh*> bc_mesh_level_of_detail::get_lod(const core::bc_vector3f& p_camera_position,
 			const core::bc_vector3f& p_position, 
-			bcFLOAT p_lod_factor) const noexcept
+			bcFLOAT p_max_view_distance) const noexcept
 		{
-			const auto l_distance = (p_camera_position - p_position).magnitude();
-			const auto l_mesh_index = std::min(static_cast<bcUINT32>(l_distance / p_lod_factor), m_count - 1);
+			const auto l_lod_distance = p_max_view_distance / 3;
+			const auto l_camera_distance = (p_camera_position - p_position).magnitude();
+			const auto l_mesh_index = std::min(static_cast<bcUINT32>(l_camera_distance / l_lod_distance), m_count - 1);
 
 			return std::make_pair(l_mesh_index, m_meshes[l_mesh_index]);
-		}
-
-		inline std::pair<bcUINT32, const bc_mesh*> bc_mesh_level_of_detail::get_lod_culling(const core::bc_vector3f& p_camera_position,
-			const core::bc_vector3f& p_position, 
-			bcFLOAT p_lod_factor) const noexcept
-		{
-			return get_lod_culling(p_camera_position, p_camera_position, p_position, p_lod_factor);
 		}
 	}
 }
