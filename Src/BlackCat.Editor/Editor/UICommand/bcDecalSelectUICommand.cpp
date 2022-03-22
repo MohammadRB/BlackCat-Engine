@@ -5,9 +5,12 @@
 #include "Core/Utility/bcLogger.h"
 #include "PhysicsImp/Shape/bcShapeBox.h"
 #include "PhysicsImp/Collision/bcShapeQuery.h"
-#include "Game/System/Physics/bcPxWrap.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
+#include "Game/System/Physics/bcPxWrap.h"
+#include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/bcGameSystem.h"
+#include "App/RenderPass/bcShapeDrawPass.h"
 #include "Editor/UICommand/bcDecalSelectUICommand.h"
 #include "Editor/UI/bcFormDecal.h"
 
@@ -18,12 +21,13 @@ namespace black_cat
 		bc_decal_select_ui_command::bc_decal_select_ui_command(bcUINT16 p_screen_width,
 			bcUINT16 p_screen_height,
 			bcUINT16 p_point_left,
-			bcUINT16 p_point_top)
+			bcUINT16 p_point_top,
+			bool p_is_decal_hover)
 			: m_screen_width(p_screen_width),
 			m_screen_height(p_screen_height),
 			m_point_left(p_point_left),
 			m_point_top(p_point_top),
-			m_selected_decal(nullptr)
+			m_is_decal_hover(p_is_decal_hover)
 		{
 		}
 
@@ -49,28 +53,19 @@ namespace black_cat
 			{
 				return false;
 			}
-
-			physics::bc_scene_ray_query_buffer l_query_buffer;
-
-			const bool l_query_result = query_ray_in_px_scene
+			
+			const auto l_actor = query_ray_in_scene
 			(
 				p_context,
 				m_point_left,
-				m_point_top,
-				game::bc_actor_group::all,
-				core::bc_enum::mask_or({ physics::bc_query_flags::statics, physics::bc_query_flags::dynamics }),
-				l_query_buffer
+				m_point_top
 			);
-
-			if (!l_query_result)
+			if (!l_actor.is_valid())
 			{
 				return false;
 			}
 			
-			const game::bc_ray_hit l_actor_hit = l_query_buffer.get_block();
-			const auto l_actor = l_actor_hit.get_actor();
 			const auto* l_decal_component = l_actor.get_component<game::bc_decal_component>();
-
 			if(!l_decal_component)
 			{
 				return false;
@@ -78,7 +73,7 @@ namespace black_cat
 
 			const auto l_ray = get_pointer_ray(p_context, m_point_left, m_point_top);
 
-			for(auto& l_decal : *l_decal_component)
+			for(const auto& l_decal : *l_decal_component)
 			{
 				physics::bc_shape_box l_decal_box
 				(
@@ -103,13 +98,21 @@ namespace black_cat
 					continue;
 				}
 
-				m_selected_decal = l_decal.get();
+				m_selected_decal = l_decal;
 				break;
 			}
 
-			if(!m_selected_decal)
+			auto* l_shape_draw_pass = p_context.m_game_system.get_render_system().get_render_pass<bc_shape_draw_pass>();
+			if (l_shape_draw_pass)
 			{
-				return false;
+				if (m_is_decal_hover)
+				{
+					l_shape_draw_pass->set_hovered_decal(m_selected_decal.get());
+				}
+				else
+				{
+					l_shape_draw_pass->set_selected_decal(m_selected_decal.get());
+				}
 			}
 
 			return false;
@@ -117,7 +120,10 @@ namespace black_cat
 
 		void bc_decal_select_ui_command::update_ui(update_ui_context& p_context)
 		{
-			p_context.m_form_decal.setSelectedDecal(m_selected_decal);
+			if (!m_is_decal_hover)
+			{
+				p_context.m_form_decal.setSelectedDecal(m_selected_decal.get());
+			}
 		}
 	}
 }

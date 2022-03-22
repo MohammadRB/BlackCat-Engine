@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <variant>
 #include "Core/Math/bcVector3f.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/bcExport.h"
@@ -22,11 +23,11 @@ namespace black_cat
 		public:
 			explicit bc_light_instance(const bc_light& p_light) noexcept;
 
-			bc_light_instance(const bc_light_instance& p_other) noexcept;
+			bc_light_instance(const bc_light_instance& p_other) noexcept = default;
 
-			~bc_light_instance();
+			~bc_light_instance() = default;
 
-			bc_light_instance& operator=(const bc_light_instance& p_other) noexcept;
+			bc_light_instance& operator=(const bc_light_instance& p_other) noexcept = default;
 
 			id_t get_id() const noexcept
 			{
@@ -62,14 +63,9 @@ namespace black_cat
 			const bc_spot_light* as_spot_light() const noexcept;
 			
 		private:
-			union
-			{
-				bc_direct_light m_direct_light;
-				bc_point_light m_point_light;
-				bc_spot_light m_spot_light;
-			};
 			id_t m_id;
 			bc_light_type m_type;
+			std::variant<bc_direct_light, bc_point_light, bc_spot_light> m_light;
 			physics::bc_bound_box m_bound_box;
 		};
 	}

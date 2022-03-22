@@ -26,7 +26,7 @@ namespace black_cat
 			friend class bci_network_manager;
 			
 		public:
-			bc_network_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept;
+			bc_network_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept;
 
 			bc_network_component(bc_network_component&&) noexcept;
 

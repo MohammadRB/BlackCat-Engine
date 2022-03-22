@@ -29,7 +29,8 @@ namespace black_cat
 		m_sprites_texture_name(p_sprites_texture_name),
 		m_sprites_width(p_sprites_width),
 		m_sprites_count_per_row(std::sqrtf(static_cast<bcFLOAT>(p_sprites_count))),
-		m_editor_mode(false)
+		m_editor_mode(false),
+		m_draw_decal_icons(false)
 	{
 		auto l_icon_ite = 0U;
 		for (auto& l_icon : p_icons)
@@ -60,6 +61,7 @@ namespace black_cat
 		m_device_pipeline_state(std::move(p_other.m_device_pipeline_state)),
 		m_render_pass_state(std::move(p_other.m_render_pass_state)),
 		m_editor_mode(p_other.m_editor_mode),
+		m_draw_decal_icons(p_other.m_draw_decal_icons),
 		m_icons_query(std::move(p_other.m_icons_query)),
 		m_sprites(std::move(p_other.m_sprites)),
 		m_editor_event_handle(std::move(p_other.m_editor_event_handle))
@@ -86,6 +88,7 @@ namespace black_cat
 		m_render_pass_state = std::move(p_other.m_render_pass_state);
 
 		m_editor_mode = p_other.m_editor_mode;
+		m_draw_decal_icons = p_other.m_draw_decal_icons;
 		m_icons_query = std::move(p_other.m_icons_query);
 		m_sprites = std::move(p_other.m_sprites);
 
@@ -94,7 +97,7 @@ namespace black_cat
 
 		return *this;
 	}
-
+	
 	void bc_icon_draw_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
@@ -163,15 +166,6 @@ namespace black_cat
 			const auto l_icons = m_icons_query.get().get_icons();
 			for(const auto& l_icon : l_icons)
 			{
-				if
-				(
-					(l_icon.m_type == game::bc_icon_type::editor && !m_editor_mode) ||
-					(l_icon.m_type != game::bc_icon_type::editor && m_editor_mode)
-				)
-				{
-					continue;
-				}
-
 				const auto l_sprite_texcoord = m_sprites_map.find(l_icon.m_name);
 
 				if(l_sprite_texcoord != std::end(m_sprites_map))
@@ -189,10 +183,18 @@ namespace black_cat
 			}
 		}
 
-		m_icons_query = p_context.m_query_manager.queue_query
-		(
-			game::bc_main_camera_scene_icon_query()
-		);
+		auto l_icon_query = game::bc_main_camera_scene_icon_query();
+
+		if(m_editor_mode)
+		{
+			l_icon_query.include_editor_icons();
+		}
+		if(m_draw_decal_icons)
+		{
+			l_icon_query.include_decal_icons();
+		}
+
+		m_icons_query = p_context.m_query_manager.queue_query(l_icon_query);
 	}
 
 	void bc_icon_draw_pass::execute(const game::bc_render_pass_render_context& p_context)
@@ -283,6 +285,11 @@ namespace black_cat
 		m_linear_sampler.reset();
 		m_device_pipeline_state.reset();
 		m_render_pass_state.reset();
+	}
+
+	void bc_icon_draw_pass::draw_decal_icons(bool p_value)
+	{
+		m_draw_decal_icons = p_value;
 	}
 
 	void bc_icon_draw_pass::_event_handler(core::bci_event& p_event)

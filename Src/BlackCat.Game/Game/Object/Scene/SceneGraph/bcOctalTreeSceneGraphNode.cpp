@@ -6,9 +6,11 @@
 #include "Core/bcUtility.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Input/bcGlobalConfig.h"
+#include "Game/System/Physics/bcPhysicsShapeUtility.h"
 #include "Game/Object/Scene/SceneGraph/bcOctalTreeSceneGraphNode.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/bcHeightMapComponent.h"
 #include "Game/bcException.h"
 
 namespace black_cat
@@ -243,11 +245,11 @@ namespace black_cat
 					const auto& l_bound_box = _get_actor_bound_box(l_entry.m_actor);
 
 					physics::bc_ray_hit l_ray_hit;
-					const bool l_intersects = physics::bc_shape_query::ray_cast
+					bool l_intersects = physics::bc_shape_query::ray_cast
 					(
 						p_ray, 
 						l_bound_box,
-						core::bc_enum::mask_or({ physics::bc_hit_flag::distance }), 
+						physics::bc_hit_flag::distance, 
 						&l_ray_hit, 
 						1
 					);
@@ -257,13 +259,37 @@ namespace black_cat
 						const auto l_is_inside = l_bound_box.contains(p_ray.m_origin);
 						if(l_is_inside)
 						{
-							continue;
+							const auto* l_height_map_component = l_entry.m_actor.get_component<bc_height_map_component>();
+							if(!l_height_map_component)
+							{
+								continue;
+							}
+
+							// if ray is inside height map box, re-test for ray hit against height map
+							const auto l_px_height_field_shape = physics::bc_shape_height_field
+							(
+								l_height_map_component->get_height_map().get_px_height_field(),
+								l_height_map_component->get_height_map().get_xz_multiplier(),
+								l_height_map_component->get_height_map().get_y_multiplier()
+							);
+							l_intersects = physics::bc_shape_query::ray_cast
+							(
+								p_ray,
+								l_px_height_field_shape,
+								bc_convert_to_height_map_transform(l_height_map_component->get_height_map(), physics::bc_transform(l_height_map_component->get_world_position())),
+								physics::bc_hit_flag::distance,
+								&l_ray_hit,
+								1
+							);
 						}
 
-						if (!p_result.second.is_valid() || l_ray_hit.get_distance() < p_result.first)
+						if(l_intersects)
 						{
-							p_result.first = l_ray_hit.get_distance();
-							p_result.second = l_entry.m_actor;
+							if (!p_result.second.is_valid() || l_ray_hit.get_distance() < p_result.first)
+							{
+								p_result.first = l_ray_hit.get_distance();
+								p_result.second = l_entry.m_actor;
+							}
 						}
 					}
 				}

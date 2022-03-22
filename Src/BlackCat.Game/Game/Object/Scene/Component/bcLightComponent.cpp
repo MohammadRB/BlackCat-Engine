@@ -22,8 +22,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_light_component::bc_light_component(bc_actor_id p_actor_index, bc_actor_component_id p_index)
-			: bci_actor_component(p_actor_index, p_index)
+		bc_light_component::bc_light_component(bc_actor_id p_actor_id, bc_actor_component_id p_index)
+			: bci_actor_component(p_actor_id, p_index)
 		{
 		}
 
@@ -55,7 +55,7 @@ namespace black_cat
 					l_ambient_color.xyz(),
 					l_ambient_color.w
 				));
-				l_light_icon_type = "sun";
+				l_light_icon_type = bc_icon_type::sun;
 			}
 			else if(l_light_type == "point")
 			{
@@ -95,7 +95,7 @@ namespace black_cat
 					l_particle_intensity,
 					l_flare.get()
 				));
-				l_light_icon_type = "light";
+				l_light_icon_type = bc_icon_type::light;
 			}
 			else if(l_light_type == "spot")
 			{
@@ -135,7 +135,7 @@ namespace black_cat
 					l_color.w,
 					l_flare.get()
 				));
-				l_light_icon_type = "light";
+				l_light_icon_type = bc_icon_type::light;
 			}
 			else
 			{

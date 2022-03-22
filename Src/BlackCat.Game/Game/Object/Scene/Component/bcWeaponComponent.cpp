@@ -21,8 +21,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_weapon_component::bc_weapon_component(bc_actor_id p_actor_index, bc_actor_component_id p_index)
-			: bci_actor_component(p_actor_index, p_index),
+		bc_weapon_component::bc_weapon_component(bc_actor_id p_actor_id, bc_actor_component_id p_id)
+			: bci_actor_component(p_actor_id, p_id),
 			m_class(bc_weapon_class::rifle),
 			m_fire_light_radius(0),
 			m_fire_light_intensity(0),

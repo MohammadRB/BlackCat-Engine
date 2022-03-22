@@ -17,7 +17,7 @@ namespace black_cat
 			BC_COMPONENT(chk_pnt, false, false)
 
 		public:
-			bc_checkpoint_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept;
+			bc_checkpoint_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept;
 
 			bc_checkpoint_component(bc_checkpoint_component&&) noexcept = default;
 

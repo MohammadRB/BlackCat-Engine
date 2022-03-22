@@ -5,6 +5,7 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "App/RenderPass/GBuffer/bcGBufferDecalPass.h"
+#include "App/RenderPass/bcIconDrawPass.h"
 #include "Editor/UI/bcFormTools.h"
 #include "Editor/UICommand/bcTerrainHeightUICommand.h"
 #include "Editor/UICommand/bcTerrainSmoothUICommand.h"
@@ -169,10 +170,15 @@ namespace black_cat
 				m_tool_properties_container.setCurrentIndex(4);
 			}
 
-			auto* l_decal_render_pass = m_game_system.get_render_system().get_render_pass<bc_gbuffer_decal_pass>();
+			/*auto* l_decal_render_pass = m_game_system.get_render_system().get_render_pass<bc_gbuffer_decal_pass>();
 			if (l_decal_render_pass)
 			{
 				l_decal_render_pass->draw_decal_bounds(p_toggled);
+			}*/
+			auto* l_icon_render_pass = m_game_system.get_render_system().get_render_pass<bc_icon_draw_pass>();
+			if (l_icon_render_pass)
+			{
+				l_icon_render_pass->draw_decal_icons(p_toggled);
 			}
 		}
 
@@ -207,6 +213,18 @@ namespace black_cat
 			else if(m_state == state::object_select)
 			{
 				bc_object_select_ui_command l_command
+				(
+					m_render_widget.width(),
+					m_render_widget.height(),
+					p_event->x(),
+					p_event->y(),
+					true
+				);
+				m_ui_command_service.queue_command(std::move(l_command));
+			}
+			else if(m_state == state::decal_select)
+			{
+				bc_decal_select_ui_command l_command
 				(
 					m_render_widget.width(),
 					m_render_widget.height(),
@@ -336,7 +354,8 @@ namespace black_cat
 					m_render_widget.width(),
 					m_render_widget.height(),
 					p_event->x(),
-					p_event->y()
+					p_event->y(),
+					false
 				);
 				m_ui_command_service.queue_command(std::move(l_command));
 				break;

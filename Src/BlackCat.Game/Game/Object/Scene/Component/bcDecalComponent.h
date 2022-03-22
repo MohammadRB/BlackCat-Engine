@@ -25,7 +25,7 @@ namespace black_cat
 			BC_COMPONENT(dcl, true, false)
 			
 		public:
-			bc_decal_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept;
+			bc_decal_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept;
 
 			bc_decal_component(bc_decal_component&&) noexcept;
 

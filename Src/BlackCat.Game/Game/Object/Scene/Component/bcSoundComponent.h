@@ -32,7 +32,7 @@ namespace black_cat
 			BC_COMPONENT(sound, true, false)
 
 		public:
-			bc_sound_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept;
+			bc_sound_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept;
 
 			bc_sound_component(bc_sound_component&& p_other) noexcept = default;
 

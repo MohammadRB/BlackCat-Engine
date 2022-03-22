@@ -15,7 +15,8 @@ namespace black_cat
 			bc_decal_select_ui_command(bcUINT16 p_screen_width,
 				bcUINT16 p_screen_height,
 				bcUINT16 p_point_left,
-				bcUINT16 p_point_top);
+				bcUINT16 p_point_top,
+				bool p_is_decal_hover);
 
 			bc_decal_select_ui_command(const bc_decal_select_ui_command&);
 
@@ -36,8 +37,9 @@ namespace black_cat
 			bcUINT16 m_screen_height;
 			bcUINT16 m_point_left;
 			bcUINT16 m_point_top;
+			bool m_is_decal_hover;
 
-			game::bc_decal_instance* m_selected_decal;
+			game::bc_decal_instance_ptr m_selected_decal;
 		};
 	}
 }

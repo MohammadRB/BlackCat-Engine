@@ -33,7 +33,7 @@
                 "min_max_distance": [ 30.0, 100.0 ]
               }
             ]
-          } 
+          }
         }
       ]
     },
@@ -105,6 +105,28 @@
       ]
     },
     {
+      "name": "box_red_seat",
+      "components": [
+        {
+          "name": "box_player_seat",
+          "parameters": {
+            "team": "red"
+          }
+        }
+      ]
+    },
+    {
+      "name": "box_blue_seat",
+      "components": [
+        {
+          "name": "box_player_seat",
+          "parameters": {
+            "team": "blue"
+          }
+        }
+      ]
+    },
+    {
       "name": "box_sample_fire",
       "controller": "fire",
       "components": [
@@ -116,10 +138,7 @@
             "color": [ 1.0, 0.4, 0.001, 2.5 ],
             "radius": 30.0,
             "particle_cast": true,
-            "particle_intensity": 50.0,
-            "flare_surface": [ 1.0, 1.0, 1.0 ],
-            "flare_intensity": 1.0,
-            "flare_mask_material": "flare2"
+            "particle_intensity": 50.0
           }
         }
       ]
@@ -155,7 +174,7 @@
               {
                 "sound": "grenade_explosion",
                 "min_max_distance": [ 30.0, 300.0 ],
-                "auto_play": true 
+                "auto_play": true
               }
             ]
           }
@@ -229,7 +248,7 @@
             "sounds": [
               {
                 "sound": "gun_shot",
-                "min_max_distance": [ 20.0, 250.0 ] 
+                "min_max_distance": [ 20.0, 250.0 ]
               }
             ]
           }
@@ -343,23 +362,13 @@
       ]
     },
     {
-      "name": "box_red_seat",
+      "name": "Palm_Tree_Short_b",
       "components": [
         {
-          "name": "box_player_seat",
+          "name": "vegetable_mesh",
           "parameters": {
-            "team": "red"
-          }
-        }
-      ]
-    },
-    {
-      "name": "box_blue_seat",
-      "components": [
-        {
-          "name": "box_player_seat",
-          "parameters": {
-            "team": "blue"
+            "mesh": "Palm_Tree_Short_b",
+            "view_distance": 200.0
           }
         }
       ]

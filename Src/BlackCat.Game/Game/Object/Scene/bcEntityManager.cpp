@@ -222,7 +222,7 @@ namespace black_cat
 				}
 
 				auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
-				l_mediate_component->set_entity_name(l_entity_entry->second.m_entity_name.c_str());
+				l_mediate_component->_set_entity_name(l_entity_entry->second.m_entity_name.c_str());
 				l_mediate_component->initialize
 				(
 					bc_actor_component_initialize_context
@@ -297,7 +297,7 @@ namespace black_cat
 					}
 
 					auto l_controller = l_controller_ite->second();
-					l_mediate_component->set_controller
+					l_mediate_component->_set_controller
 					(
 						std::move(l_controller),
 						bc_actor_component_initialize_context

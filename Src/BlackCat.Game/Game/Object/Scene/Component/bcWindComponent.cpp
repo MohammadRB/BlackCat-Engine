@@ -120,8 +120,8 @@ namespace black_cat
 			}
 		}
 
-		bc_wind_component::bc_wind_component(bc_actor_id p_actor_index, bc_actor_component_id p_index)
-			: bci_actor_component(p_actor_index, p_index)
+		bc_wind_component::bc_wind_component(bc_actor_id p_actor_id, bc_actor_component_id p_id)
+			: bci_actor_component(p_actor_id, p_id)
 		{
 		}
 
@@ -163,7 +163,7 @@ namespace black_cat
 			}
 
 			auto* l_icon_component = p_context.m_actor.get_create_component<bc_icon_component>();
-			l_icon_component->set_icon("wind");
+			l_icon_component->set_icon(bc_icon_type::wind);
 		}
 
 		void bc_wind_component::handle_event(const bc_actor_component_event_context& p_context)

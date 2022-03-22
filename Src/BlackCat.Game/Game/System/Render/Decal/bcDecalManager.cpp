@@ -78,7 +78,7 @@ namespace black_cat
 
 			if (!l_json_file.open_read(p_decal_file))
 			{
-				const auto l_msg = core::bc_string_stream_frame() << "Error in reading material file: " << p_decal_file;
+				const auto l_msg = core::bc_string_stream_frame() << "Error in reading decal file: " << p_decal_file;
 				throw bc_io_exception(l_msg.str().c_str());
 			}
 

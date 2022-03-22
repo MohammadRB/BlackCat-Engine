@@ -6,15 +6,11 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/bcUtility.h"
 #include "Platform/bcEvent.h"
-#include "PhysicsImp/Body/bcRigidDynamic.h"
 #include "Game/System/Input/bcInputSystem.h"
 #include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/Input/bcFreeCamera.h"
 #include "Game/System/Input/bcGlobalConfig.h"
-#include "Game/System/Render/Material/bcMaterialManager.h"
-#include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
-#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
-#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
+#include "Game/Object/Scene/Component/bcIconComponent.h"
 #include "Game/bcEvent.h"
 #include "Game/bcUtility.h"
 #include "App/RenderPass/GBuffer/bcGBufferInitializePass.h"
@@ -103,7 +99,16 @@ namespace black_cat
 			(
 				constant::g_rpass_back_buffer_texture, 
 				constant::g_rpass_back_buffer_render_view, 
-				{"player", "sun", "light", "cloud", "wind", "sound"}, 
+				{
+					game::bc_icon_type::player,
+					game::bc_icon_type::sun,
+					game::bc_icon_type::light,
+					game::bc_icon_type::cloud,
+					game::bc_icon_type::wind,
+					game::bc_icon_type::sound,
+					game::bc_icon_type::particle,
+					game::bc_icon_type::decal
+				},
 				bcL("SpriteIcon.png"), 
 				64, 
 				64

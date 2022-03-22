@@ -14,6 +14,7 @@
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 #include "Game/System/Physics/bcPxWrap.h"
+#include "Game/System/Physics/bcPhysicsShapeUtility.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
@@ -24,8 +25,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_rigid_static_component::bc_rigid_static_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
-			: bci_actor_component(p_actor_index, p_index),
+		bc_rigid_static_component::bc_rigid_static_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept
+			: bci_actor_component(p_actor_id, p_id),
 			bc_rigid_body_component()
 		{
 		}
@@ -100,28 +101,15 @@ namespace black_cat
 		void bc_rigid_static_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
 			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
-			//if (l_world_transform_event && !l_world_transform_event->is_px_simulation_transform())
 			if (l_world_transform_event)
 			{
 				const auto& l_transform = l_world_transform_event->get_transform();
-				physics::bc_transform l_px_transform;
+				auto l_px_transform = physics::bc_transform(l_transform);
 				
 				auto* l_height_map_component = p_context.m_actor.get_component<bc_height_map_component>();
-				if (l_height_map_component) // TODO
+				if (l_height_map_component)
 				{
-					const auto& l_height_map = l_height_map_component->get_height_map();
-					const auto l_half_width = (l_height_map.get_width() * l_height_map.get_xz_multiplier()) / 2;
-					const auto l_half_height = (l_height_map.get_height() * l_height_map.get_xz_multiplier()) / 2;
-					const auto l_position = l_transform.get_translation() + core::bc_vector3f(-l_half_width, 0, l_half_height);
-
-					core::bc_matrix4f l_new_transform = l_transform;
-					l_new_transform.set_translation(l_position);
-
-					l_px_transform = physics::bc_transform(l_new_transform);
-				}
-				else
-				{
-					l_px_transform = physics::bc_transform(l_transform);
+					l_px_transform = bc_convert_to_height_map_transform(l_height_map_component->get_height_map(), l_px_transform);
 				}
 
 				{

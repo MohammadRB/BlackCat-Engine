@@ -442,7 +442,7 @@ namespace black_cat
 		}
 		else if(p_light.get_type() == game::bc_light_type::spot)
 		{
-			const auto* l_spot_light = p_light.as_point_light();
+			const auto* l_spot_light = p_light.as_spot_light();
 			l_light_flare_surface_world.set_translation(l_spot_light->get_position());
 		}
 		else

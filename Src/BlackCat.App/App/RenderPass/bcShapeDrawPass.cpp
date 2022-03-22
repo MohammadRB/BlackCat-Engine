@@ -16,11 +16,18 @@
 
 namespace black_cat
 {
-	bc_scene_debug_shape_query::bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer, game::bc_actor p_hovered_actor, game::bc_actor p_selected_actor, bool p_draw_scene_graph) noexcept
+	bc_scene_debug_shape_query::bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer, 
+		game::bc_actor p_hovered_actor, 
+		game::bc_actor p_selected_actor,
+		game::bc_decal_instance* p_hovered_decal,
+		game::bc_decal_instance* p_selected_decal,
+		bool p_draw_scene_graph) noexcept
 		: bc_query(message_name()),
 		m_shape_drawer(&p_shape_drawer),
 		m_hovered_actor(std::move(p_hovered_actor)),
 		m_selected_actor(std::move(p_selected_actor)),
+		m_hovered_decal(std::move(p_hovered_decal)),
+		m_selected_decal(std::move(p_selected_decal)),
 		m_draw_scene_graph(p_draw_scene_graph)
 	{
 	}
@@ -48,6 +55,36 @@ namespace black_cat
 			}
 		}
 
+		if(m_hovered_decal)
+		{
+			m_shape_drawer->draw_wired_bound_box
+			(
+				{
+					m_hovered_decal->get_world_transform().get_translation(),
+					{
+						m_hovered_decal->get_decal()->get_width() / 2,
+						m_hovered_decal->get_decal()->get_height() / 2,
+						m_hovered_decal->get_decal()->get_depth() / 2
+					}
+				}
+			);
+		}
+
+		if (m_selected_decal)
+		{
+			m_shape_drawer->draw_wired_bound_box
+			(
+				{
+					m_selected_decal->get_world_transform().get_translation(),
+					{
+						m_selected_decal->get_decal()->get_width() / 2,
+						m_selected_decal->get_decal()->get_height() / 2,
+						m_selected_decal->get_decal()->get_depth() / 2
+					}
+				}
+			);
+		}
+
 		if(m_draw_scene_graph)
 		{
 			p_context.m_scene->draw_debug_shapes(*m_shape_drawer);
@@ -55,7 +92,9 @@ namespace black_cat
 	}
 	
 	bc_shape_draw_pass::bc_shape_draw_pass(game::bc_render_pass_variable_t p_render_target_view)
-		: m_render_target_view_variable(p_render_target_view)
+		: m_render_target_view_variable(p_render_target_view),
+		m_hovered_decal(nullptr),
+		m_selected_decal(nullptr)
 	{
 	}
 
@@ -67,6 +106,16 @@ namespace black_cat
 	void bc_shape_draw_pass::set_selected_actor(const game::bc_actor& p_actor)
 	{
 		m_selected_actor = p_actor;
+	}
+
+	void bc_shape_draw_pass::set_hovered_decal(game::bc_decal_instance* p_decal)
+	{
+		m_hovered_decal = p_decal;
+	}
+
+	void bc_shape_draw_pass::set_selected_decal(game::bc_decal_instance* p_decal)
+	{
+		m_selected_decal = p_decal;
 	}
 
 	void bc_shape_draw_pass::initialize_resources(game::bc_render_system& p_render_system)
@@ -133,9 +182,11 @@ namespace black_cat
 		(
 			bc_scene_debug_shape_query
 			(
-				p_context.m_render_system.get_shape_drawer(), 
+				p_context.m_render_system.get_shape_drawer(),
 				m_hovered_actor,
-				m_selected_actor, 
+				m_selected_actor,
+				m_hovered_decal,
+				m_selected_decal,
 				m_draw_scene_graph_debug
 			)
 		);

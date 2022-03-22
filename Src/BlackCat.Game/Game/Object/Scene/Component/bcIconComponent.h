@@ -9,9 +9,21 @@ namespace black_cat
 {
 	namespace game
 	{
-		enum class bc_icon_type : bcUBYTE
+		enum class bc_icon_mode : bcUBYTE
 		{
 			editor
+		};
+
+		struct bc_icon_type
+		{
+			static constexpr const bcCHAR* player = "player";
+			static constexpr const bcCHAR* sun = "sun";
+			static constexpr const bcCHAR* light = "light";
+			static constexpr const bcCHAR* cloud = "cloud";
+			static constexpr const bcCHAR* wind = "wind";
+			static constexpr const bcCHAR* sound = "sound";
+			static constexpr const bcCHAR* particle = "particle";
+			static constexpr const bcCHAR* decal = "decal";
 		};
 
 		class BC_GAME_DLL bc_icon_component : public bci_actor_component
@@ -19,7 +31,10 @@ namespace black_cat
 			BC_COMPONENT(icon, false, false)
 
 		public:
-			bc_icon_component(bc_actor_id p_actor_index, bc_actor_component_id p_index);
+			static constexpr bcUINT16 s_default_icon_size = 26;
+
+		public:
+			bc_icon_component(bc_actor_id p_actor_id, bc_actor_component_id p_id);
 
 			bc_icon_component(bc_icon_component&& p_other) noexcept = default;
 
@@ -35,18 +50,22 @@ namespace black_cat
 
 			bcUINT16 get_size() const noexcept;
 
-			bc_icon_type get_type() const noexcept;
+			bc_icon_mode get_mode() const noexcept;
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
+			/**
+			 * \brief set icon with default size and 'editor' mode
+			 * \param p_name 
+			 */
 			void set_icon(core::bc_string p_name) noexcept;
 
-			void set_icon(core::bc_string p_name, bcUINT16 p_size, bc_icon_type p_type) noexcept;
+			void set_icon(core::bc_string p_name, bcUINT16 p_size, bc_icon_mode p_mode) noexcept;
 
 		private:
 			core::bc_string m_name;
 			bcUINT16 m_size;
-			bc_icon_type m_type;
+			bc_icon_mode m_mode;
 		};
 
 		inline bool bc_icon_component::has_icon() const noexcept
@@ -64,9 +83,9 @@ namespace black_cat
 			return m_size;
 		}
 
-		inline bc_icon_type bc_icon_component::get_type() const noexcept
+		inline bc_icon_mode bc_icon_component::get_mode() const noexcept
 		{
-			return m_type;
+			return m_mode;
 		}
 	}	
 }

@@ -6,6 +6,7 @@
 #include "Core/Container/bcVector.h"
 #include "GraphicImp/bcRenderApiInfo.h"
 #include "Game/System/Physics/bcPhysicsShapeUtility.h"
+#include "Game/Object/Mesh/bcHeightMap.h"
 
 namespace black_cat
 {
@@ -149,6 +150,15 @@ namespace black_cat
 				core::bc_vector3f((l_max_x + l_min_x) / 2, (l_max_y + l_min_y) / 2, (l_max_z + l_min_z) / 2),
 				core::bc_vector3f((l_max_x - l_min_x) / 2, (l_max_y - l_min_y) / 2, (l_max_z - l_min_z) / 2)
 			);
+		}
+
+		physics::bc_transform bc_convert_to_height_map_transform(const bc_height_map& p_height_map, const physics::bc_transform& p_transform)
+		{
+			const auto l_half_width = (p_height_map.get_width() * p_height_map.get_xz_multiplier()) / 2;
+			const auto l_half_height = (p_height_map.get_height() * p_height_map.get_xz_multiplier()) / 2;
+			const auto l_position = p_transform.get_position() + core::bc_vector3f(-l_half_width, 0, l_half_height);
+
+			return {l_position, p_transform.get_matrix3()};
 		}
 
 		physics::bc_shape_ref bc_copy_shape(physics::bc_physics& p_physics, physics::bc_shape p_shape)

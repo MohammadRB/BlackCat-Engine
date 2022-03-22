@@ -58,9 +58,9 @@ namespace box
 	{
 		core::bc_array<core::bc_vector3f, 3> l_random_directions = 
 		{
-			core::bc_vector3f::normalize(core::bc_vector3f(.0,1,.0)),
-			core::bc_vector3f::normalize(core::bc_vector3f(-.3f, 0.8f, -.3f)),
-			core::bc_vector3f::normalize(core::bc_vector3f(.3f, 0.8f, .3f))
+			core::bc_vector3f::normalize(core::bc_vector3f(.0, 1, .0)),
+			core::bc_vector3f::normalize(core::bc_vector3f(-.3f, .8f, -.3f)),
+			core::bc_vector3f::normalize(core::bc_vector3f(.3f, .8f, .3f))
 		};
 		
 		game::bc_particle_builder l_builder;
@@ -102,8 +102,8 @@ namespace box
 		core::bc_array<core::bc_vector3f, 3> l_random_directions =
 		{
 			core::bc_vector3f::normalize(core::bc_vector3f(.0, 1.0f, .0)),
-			core::bc_vector3f::normalize(core::bc_vector3f(-.3f, 0.8f, -.3f)),
-			core::bc_vector3f::normalize(core::bc_vector3f(.3f, 0.8f, .3f))
+			core::bc_vector3f::normalize(core::bc_vector3f(-.3f, .8f, -.3f)),
+			core::bc_vector3f::normalize(core::bc_vector3f(.3f, .8f, .3f))
 		};
 
 		game::bc_particle_builder l_builder;

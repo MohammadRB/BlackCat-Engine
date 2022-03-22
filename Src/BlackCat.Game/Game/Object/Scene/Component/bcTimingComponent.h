@@ -35,7 +35,7 @@ namespace black_cat
 			using callback = core::bc_delegate<void(const bc_actor&)>;
 
 		public:
-			bc_timing_component(bc_actor_id p_actor_index, bc_actor_component_id p_index);
+			bc_timing_component(bc_actor_id p_actor_id, bc_actor_component_id p_id);
 
 			bc_timing_component(bc_timing_component&& p_other) noexcept = default;
 

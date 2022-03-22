@@ -79,11 +79,11 @@ namespace black_cat
 			
 			void create_px_shapes_from_height_map(const bc_material_manager& p_material_manager, 
 				physics::bc_rigid_static& p_rigid_static, 
-				const bc_height_map_component& p_height_map);
+				const bc_height_map_component& p_height_map_component);
 
 			void create_px_shapes_from_mesh(const bc_material_manager& p_material_manager, 
-				physics::bc_rigid_body& p_px_actor, 
-				const bc_mesh_component& p_mesh, 
+				physics::bc_rigid_body& p_rigid_body, 
+				const bc_mesh_component& p_mesh_component, 
 				const core::bc_json_key_value* p_collider_materials);
 
 			void clear_px_shapes_data(const physics::bc_rigid_body& p_px_actor);

@@ -4,6 +4,8 @@
 
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/Event/bcRemoveDecalActorEvent.h"
+#include "Game/System/Render/bcRenderSystem.h"
+#include "App/RenderPass/bcShapeDrawPass.h"
 #include "Editor/UICommand/bcDecalRemoveUICommand.h"
 #include "Editor/UI/bcFormDecal.h"
 
@@ -30,7 +32,11 @@ namespace black_cat
 		bool bc_decal_remove_ui_command::update(update_context& p_context)
 		{
 			m_decal->get_actor().add_event(game::bc_remove_decal_actor_event(*m_decal));
-			
+
+			auto* l_shape_draw_pass = p_context.m_game_system.get_render_system().get_render_pass<bc_shape_draw_pass>();
+			l_shape_draw_pass->set_hovered_decal(nullptr);
+			l_shape_draw_pass->set_selected_decal(nullptr);
+
 			return false;
 		}
 

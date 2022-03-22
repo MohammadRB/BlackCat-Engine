@@ -613,7 +613,7 @@ namespace black_cat
 			/*{
 				platform::bc_shared_mutex_shared_guard l_actors_lock(m_actors_lock);
 
-				return bc_actor(m_actors[l_actor_index].m_actor_index);
+				return bc_actor(m_actors[l_actor_index].m_actor_id);
 			}*/
 		}
 

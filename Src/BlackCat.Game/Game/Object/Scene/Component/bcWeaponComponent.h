@@ -26,7 +26,7 @@ namespace black_cat
 			BC_COMPONENT(weapon, true, true)
 
 		public:
-			bc_weapon_component(bc_actor_id p_actor_index, bc_actor_component_id p_index);
+			bc_weapon_component(bc_actor_id p_actor_id, bc_actor_component_id p_id);
 
 			bc_weapon_component(bc_weapon_component&&) noexcept = default;
 

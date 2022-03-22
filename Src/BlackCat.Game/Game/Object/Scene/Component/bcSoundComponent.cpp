@@ -20,8 +20,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_sound_component::bc_sound_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
-			: bci_actor_component(p_actor_index, p_index),
+		bc_sound_component::bc_sound_component(bc_actor_id p_actor_id, bc_actor_component_id p_index) noexcept
+			: bci_actor_component(p_actor_id, p_index),
 			m_scene(nullptr)
 		{
 		}
@@ -149,7 +149,7 @@ namespace black_cat
 			if (l_add_icon)
 			{
 				auto* l_icon_component = p_context.m_actor.get_create_component<bc_icon_component>();
-				l_icon_component->set_icon("sound");
+				l_icon_component->set_icon(bc_icon_type::sound);
 			}
 		}
 

@@ -249,9 +249,6 @@ namespace black_cat
 				if(m_scene)
 				{
 					// Process actor events to apply initial transforms and update scene graph so actors can be queryable in scene change event.
-
-					// Process actor events to apply initial transforms to prevent random force applied to overlapped objects by physics engine
-					// (not valid if we add actors to px scene after initial transform event process)
 					auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
 					l_actor_component_manager.process_actor_events(p_clock);
 					l_actor_component_manager.update_actors(p_clock);
@@ -285,19 +282,24 @@ namespace black_cat
 			m_query_manager = &p_parameter.m_query_manager;
 			m_event_manager = &p_parameter.m_event_manager;
 
-			m_file_system = core::bc_make_unique<bc_file_system>(*core::bc_get_service<core::bc_content_manager>(), *core::bc_get_service<core::bc_content_stream_manager>());
-			m_input_system = core::bc_make_unique<bc_input_system>();
-			m_physics_system = core::bc_make_unique<bc_physics_system>();
+			m_file_system = core::bc_make_unique<bc_file_system>
+			(
+				core::bc_alloc_type::program,
+				*core::bc_get_service<core::bc_content_manager>(),
+				*core::bc_get_service<core::bc_content_stream_manager>()
+			);
+			m_input_system = core::bc_make_unique<bc_input_system>(core::bc_alloc_type::program);
+			m_physics_system = core::bc_make_unique<bc_physics_system>(core::bc_alloc_type::program);
 			m_physics_system->initialize();
 			m_sound_system = core::bc_make_unique<bc_sound_system>(core::bc_alloc_type::program);
 			m_sound_system->initialize(bc_sound_system_parameter{ 32 });
 			m_animation_system = core::bc_make_unique<bc_animation_system>(core::bc_alloc_type::program);
 			m_animation_system->initialize();
-			m_network_system = core::bc_make_unique<bc_network_system>();
+			m_network_system = core::bc_make_unique<bc_network_system>(core::bc_alloc_type::program);
 			m_network_system->initialize(bc_network_system_parameter{ *m_event_manager, *this });
-			m_script_system = core::bc_make_unique<bc_script_system>();
+			m_script_system = core::bc_make_unique<bc_script_system>(core::bc_alloc_type::program);
 			m_script_system->initialize(true);
-			m_render_system = core::bc_make_unique<bc_render_system>();
+			m_render_system = core::bc_make_unique<bc_render_system>(core::bc_alloc_type::program);
 			m_render_system->initialize(bc_render_system_parameter
 			(
 				p_parameter.m_content_stream,

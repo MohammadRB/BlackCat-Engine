@@ -32,8 +32,8 @@ namespace black_cat
 			BC_JSON_ARRAY(_bc_decal_parameter_json, decals);
 		};
 		
-		bc_decal_component::bc_decal_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
-			: bci_actor_component(p_actor_index, p_index),
+		bc_decal_component::bc_decal_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept
+			: bci_actor_component(p_actor_id, p_id),
 			bc_render_component(),
 			bc_const_iterator_adapter(m_persistent_decals),
 			m_decal_manager(nullptr),

@@ -38,7 +38,7 @@ namespace box
 			.emit_particles(0, 3, 25, 0.0f);
 		l_emitter_component->add_emitter(l_emitter);
 
-		auto* l_point_light = l_light_component->get_light()->as_point_light();
+		const auto* l_point_light = l_light_component->get_light()->as_point_light();
 		m_light_intensity = l_point_light->get_intensity();
 		m_light_flare_intensity = l_point_light->get_flare() ? l_point_light->get_flare()->get_intensity() : 0;
 	}

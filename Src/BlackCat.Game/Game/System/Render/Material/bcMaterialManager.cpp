@@ -101,8 +101,8 @@ namespace black_cat
 				{},
 				core::bc_content_loader_parameter()
 			);
-			m_default_normal_map = l_content_manager.store_content(bcL("default_material_normal_map"), std::move(l_default_normal_map));
-			m_default_specular_map = l_content_manager.store_content(bcL("default_material_specular_map"), std::move(l_default_specular_map));
+			m_default_normal_map = l_content_manager.store_content(bcL("default_normal_map"), std::move(l_default_normal_map));
+			m_default_specular_map = l_content_manager.store_content(bcL("default_specular_map"), std::move(l_default_specular_map));
 
 			m_collider_materials.insert(collider_material_map::value_type
 			(
@@ -516,7 +516,7 @@ namespace black_cat
 					&l_color_map_init_data
 				);
 
-				core::bc_estring_frame l_content_name = bcL("material_color_map_");
+				core::bc_estring_frame l_content_name = bcL("material_color_");
 				l_content_name += core::bc_to_estring_frame(l_hash);
 
 				auto l_color_map_texture_content = m_content_stream_manager->get_content_manager().store_content

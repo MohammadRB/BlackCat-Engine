@@ -19,12 +19,13 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_mediate_component::bc_mediate_component(bc_actor_id p_actor_index, bc_actor_component_id p_index)
-			: bci_actor_component(p_actor_index, p_index),
+		bc_mediate_component::bc_mediate_component(bc_actor_id p_actor_id, bc_actor_component_id p_id)
+			: bci_actor_component(p_actor_id, p_id),
 			m_entity_name(nullptr),
 			m_scene(nullptr),
-			m_bound_box_changed(false),
-			m_controller(nullptr)
+			m_controller(nullptr),
+			m_added_to_scene(false),
+			m_bound_box_changed(false)
 		{
 		}
 
@@ -33,16 +34,10 @@ namespace black_cat
 			return get_manager().component_get_actor(*this);
 		}
 
-		void bc_mediate_component::set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller, const bc_actor_component_initialize_context& p_context) noexcept
-		{
-			m_controller = std::move(p_controller);
-			m_controller->initialize(p_context);
-		}
-
 		void bc_mediate_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			// Assign default bound box
-			m_prev_bound_box = m_bound_box = physics::bc_bound_box({ 0, 0, 0 }, { .5f, .5f, .5f });
+			m_scene = &p_context.m_scene;
+			m_prev_bound_box = m_bound_box = physics::bc_bound_box({ 0, 0, 0 }, { .5f, .5f, .5f }); // Assign default bound box
 		}
 
 		void bc_mediate_component::load_instance(const bc_actor_component_load_context& p_context)
@@ -79,12 +74,12 @@ namespace black_cat
 
 		void bc_mediate_component::update(const bc_actor_component_update_content& p_context)
 		{
-			if(m_scene && m_bound_box_changed && !p_context.m_is_double_update)
+			if(m_added_to_scene && m_bound_box_changed && !p_context.m_is_double_update)
 			{
 				m_scene->update_actor(p_context.m_actor);
 				m_bound_box_changed = false;
 			}
-
+			
 			if(m_controller)
 			{
 				m_controller->update(p_context);
@@ -109,6 +104,12 @@ namespace black_cat
 			{
 				m_controller->debug_draw(p_context);
 			}
+		}
+
+		void bc_mediate_component::_set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller, const bc_actor_component_initialize_context& p_context) noexcept
+		{
+			m_controller = std::move(p_controller);
+			m_controller->initialize(p_context);
 		}
 
 		void bc_mediate_component::_handle_event(const bc_actor_component_event_context& p_context)

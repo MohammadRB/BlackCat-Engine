@@ -11,12 +11,14 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_scene;
+
 		class BC_GAME_DLL bc_particle_emitter_component : public bci_actor_component
 		{
 			BC_COMPONENT("prtle", true, false)
 
 		public:
-			bc_particle_emitter_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept;
+			bc_particle_emitter_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept;
 
 			bc_particle_emitter_component(bc_particle_emitter_component&& p_other) noexcept = default;
 
@@ -35,6 +37,7 @@ namespace black_cat
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 			
 		private:
+			bc_scene* m_scene;
 			bc_particle_emitter_ptr m_emitter;
 		};
 	}

@@ -23,9 +23,10 @@ namespace black_cat
 		class BC_GAME_DLL bc_mediate_component : public bci_actor_component
 		{
 			BC_COMPONENT(mediate, true, true)
+			friend class bc_entity_manager;
 
 		public:
-			bc_mediate_component(bc_actor_id p_actor_index, bc_actor_component_id p_index);
+			bc_mediate_component(bc_actor_id p_actor_id, bc_actor_component_id p_id);
 
 			bc_mediate_component(bc_mediate_component&&) noexcept;
 
@@ -36,8 +37,6 @@ namespace black_cat
 			bc_actor get_actor() const noexcept override;
 
 			const bcCHAR* get_entity_name() const noexcept;
-
-			void set_entity_name(const bcCHAR* p_entity_name) noexcept;
 
 			bc_scene* get_scene() const noexcept;
 			
@@ -50,8 +49,6 @@ namespace black_cat
 			core::bc_vector3f get_position() const noexcept;
 
 			bci_actor_controller* get_controller() const noexcept;
-
-			void set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller, const bc_actor_component_initialize_context& p_context) noexcept;
 
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 
@@ -70,16 +67,21 @@ namespace black_cat
 			void debug_draw(const bc_actor_component_debug_draw_context& p_context) override;
 			
 		private:
+			void _set_entity_name(const bcCHAR* p_entity_name) noexcept;
+
+			void _set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller, const bc_actor_component_initialize_context& p_context) noexcept;
+
 			void _handle_event(const bc_actor_component_event_context& p_context);
 
 			const bcCHAR* m_entity_name;
-			
 			bc_scene* m_scene;
 			core::bc_matrix4f m_world_transform;
-			bool m_bound_box_changed;
 			physics::bc_bound_box m_prev_bound_box;
 			physics::bc_bound_box m_bound_box;
 			core::bc_unique_ptr<bci_actor_controller> m_controller;
+
+			bool m_added_to_scene;
+			bool m_bound_box_changed;
 		};
 
 		inline bc_mediate_component::bc_mediate_component(bc_mediate_component&&) noexcept = default;
@@ -91,11 +93,6 @@ namespace black_cat
 		inline const bcCHAR* bc_mediate_component::get_entity_name() const noexcept
 		{
 			return m_entity_name;
-		}
-		
-		inline void bc_mediate_component::set_entity_name(const bcCHAR* p_entity_name) noexcept
-		{
-			m_entity_name = p_entity_name;
 		}
 		
 		inline bc_scene* bc_mediate_component::get_scene() const noexcept
@@ -126,6 +123,11 @@ namespace black_cat
 		inline bci_actor_controller* bc_mediate_component::get_controller() const noexcept
 		{
 			return m_controller.get();
+		}
+
+		inline void bc_mediate_component::_set_entity_name(const bcCHAR* p_entity_name) noexcept
+		{
+			m_entity_name = p_entity_name;
 		}
 	}
 }

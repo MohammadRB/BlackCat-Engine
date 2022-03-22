@@ -19,6 +19,8 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_height_map;
+
 		/**
 		* \brief Extract surrounding sphere for a given set of points. Points must be defined with identity transformation.
 		* \param p_vertices
@@ -65,6 +67,8 @@ namespace black_cat
 		physics::bc_bound_box BC_GAME_DLL bc_convert_shape_box_to_bound_box(const physics::bc_shape_box& p_shape, const physics::bc_transform& p_shape_transform);
 
 		physics::bc_bound_box BC_GAME_DLL bc_convert_shape_box_to_bound_box(const physics::bc_shape_box& p_shape, const core::bc_matrix4f& p_shape_transform);
+
+		physics::bc_transform BC_GAME_DLL bc_convert_to_height_map_transform(const bc_height_map& p_height_map, const physics::bc_transform& p_transform);
 
 		physics::bc_shape_ref BC_GAME_DLL bc_copy_shape(physics::bc_physics& p_physics, physics::bc_shape p_shape);
 	}

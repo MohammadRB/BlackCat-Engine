@@ -60,6 +60,8 @@ namespace black_cat
 
 		void destroy(game::bc_render_system& p_render_system) override;
 
+		void draw_decal_icons(bool p_value);
+
 	private:
 		void _event_handler(core::bci_event& p_event);
 
@@ -84,6 +86,7 @@ namespace black_cat
 		game::bc_render_pass_state_ptr m_render_pass_state;
 
 		bool m_editor_mode;
+		bool m_draw_decal_icons;
 		core::bc_query_result<game::bc_main_camera_scene_icon_query> m_icons_query;
 		core::bc_vector<_bc_sprite_icon> m_sprites;
 

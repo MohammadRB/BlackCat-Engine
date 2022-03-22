@@ -105,8 +105,8 @@ namespace box
 			})
 		);
 
+		constexpr auto l_deviation_cycle = 4;
 		const auto l_deviation = 2.5f * m_scene->get_global_scale();
-		const auto l_deviation_cycle = 5 * m_scene->get_global_scale();
 		const auto l_sin = std::sinf(static_cast<bcFLOAT>(p_context.m_clock.m_total_elapsed_second) * l_deviation_cycle);
 		const auto l_cos = std::cosf(static_cast<bcFLOAT>(p_context.m_clock.m_total_elapsed_second) * l_deviation_cycle);
 		m_position += m_direction * (m_speed * p_context.m_clock.m_elapsed_second);

@@ -6,7 +6,6 @@
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
-#include "PlatformImp/bcIDELogger.h"
 
 namespace black_cat
 {
@@ -17,7 +16,7 @@ namespace black_cat
 			BC_COMPONENT(hier, false, false)
 
 		public:
-			bc_hierarchy_component(bc_actor_id p_actor_index, bc_actor_component_id p_index);
+			bc_hierarchy_component(bc_actor_id p_actor_id, bc_actor_component_id p_id);
 
 			bc_hierarchy_component(bc_hierarchy_component&&) noexcept;
 

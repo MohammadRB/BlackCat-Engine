@@ -235,7 +235,7 @@ namespace black_cat
 			virtual void debug_draw(const bc_actor_component_debug_draw_context& p_context);
 			
 		protected:
-			bci_actor_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept;
+			bci_actor_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept;
 
 			bci_actor_component(bci_actor_component&& p_other) noexcept;
 
@@ -244,8 +244,8 @@ namespace black_cat
 			static bc_actor_component_manager& get_manager() noexcept;
 
 		private:
-			bc_actor_id m_actor_index;
-			bc_actor_component_id m_index;
+			bc_actor_id m_actor_id;
+			bc_actor_component_id m_id;
 		};
 
 		class BC_GAME_DLL bci_actor_abstract_component : public virtual bci_actor_component
@@ -264,12 +264,12 @@ namespace black_cat
 
 		inline bc_actor_id bci_actor_component::get_actor_id() const noexcept
 		{
-			return m_actor_index;
+			return m_actor_id;
 		}
 		
 		inline bc_actor_component_id bci_actor_component::get_id() const noexcept
 		{
-			return m_index;
+			return m_id;
 		}
 
 		inline void bci_actor_component::initialize(const bc_actor_component_initialize_context& p_context)
@@ -308,22 +308,22 @@ namespace black_cat
 		{
 		}
 		
-		inline bci_actor_component::bci_actor_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
-			: m_actor_index(p_actor_index),
-			m_index(p_index)
+		inline bci_actor_component::bci_actor_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept
+			: m_actor_id(p_actor_id),
+			m_id(p_id)
 		{
 		}
 
 		inline bci_actor_component::bci_actor_component(bci_actor_component&& p_other) noexcept
-			: m_actor_index(p_other.m_actor_index),
-			m_index(p_other.m_index)
+			: m_actor_id(p_other.m_actor_id),
+			m_id(p_other.m_id)
 		{
 		}
 
 		inline bci_actor_component& bci_actor_component::operator=(bci_actor_component&& p_other) noexcept
 		{
-			m_actor_index = p_other.m_actor_index;
-			m_index = p_other.m_index;
+			m_actor_id = p_other.m_actor_id;
+			m_id = p_other.m_id;
 
 			return *this;
 		}

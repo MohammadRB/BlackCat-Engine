@@ -23,8 +23,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_rigid_dynamic_component::bc_rigid_dynamic_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
-			: bci_actor_component(p_actor_index, p_index),
+		bc_rigid_dynamic_component::bc_rigid_dynamic_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept
+			: bci_actor_component(p_actor_id, p_id),
 			bc_rigid_body_component()
 		{
 		}

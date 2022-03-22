@@ -94,7 +94,8 @@ namespace black_cat
 			{
 				platform::bc_hybrid_mutex_guard l_lock(m_emitters_lock, platform::bc_lock_operation::light);
 
-				emitters_container::iterator l_first_emitter = std::end(m_emitters);
+				auto l_first_emitter = std::end(m_emitters);
+
 				for (auto& l_emitter : p_builder.m_emitters)
 				{
 					m_emitters.emplace_back(l_emitter);
@@ -161,17 +162,16 @@ namespace black_cat
 					bcFLOAT l_velocity_curve_value;
 					bcFLOAT l_energy;
 					bcFLOAT l_particle_count_multiplier;
+
 					if (l_emitter.m_velocity_curve_index != l_constant_curve_index)
 					{
-						const auto l_velocity_curve_sample = m_manager->sample_curve(l_emitter.m_velocity_curve_index, l_emitter.m_age / l_emitter.m_velocity_curve_duration);
-						l_velocity_curve_value = l_velocity_curve_sample;
-						l_energy = l_velocity_curve_sample;
+						l_velocity_curve_value = m_manager->sample_curve(l_emitter.m_velocity_curve_index, l_emitter.m_age / l_emitter.m_velocity_curve_duration);
+						l_energy = l_velocity_curve_value;
 						l_particle_count_multiplier = 1 - l_energy;
 					}
 					else
 					{
-						const auto l_velocity_curve_sample = m_manager->sample_curve(l_emitter.m_velocity_curve_index, l_emitter.m_age / l_emitter.m_velocity_curve_duration);
-						l_velocity_curve_value = l_velocity_curve_sample;
+						l_velocity_curve_value = m_manager->sample_curve(l_emitter.m_velocity_curve_index, l_emitter.m_age / l_emitter.m_velocity_curve_duration);
 						l_energy = 1 - std::min(1.f, l_emitter.m_age / l_emitter.m_lifetime);
 						l_particle_count_multiplier = 1 - l_energy;
 

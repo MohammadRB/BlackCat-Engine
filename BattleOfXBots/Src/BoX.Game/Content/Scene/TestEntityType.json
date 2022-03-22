@@ -22,7 +22,7 @@
           "parameters": {
             "type": "direct",
             "direction": [ 0.0, 0.0, 1.0 ],
-            "power": 1.5
+            "power": 1.9
           }
         }
       ]

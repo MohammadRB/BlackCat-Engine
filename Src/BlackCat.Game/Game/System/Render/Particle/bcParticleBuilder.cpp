@@ -165,6 +165,11 @@ namespace black_cat
 
 		bc_particle_builder1 bc_particle_builder::duplicate_last(const core::bc_vector3f& p_position, const core::bc_vector3f& p_direction) noexcept
 		{
+			if(m_emitters.empty())
+			{
+				return 	duplicate_last(p_position, p_direction, 0, 0, 0);
+			}
+
 			return duplicate_last(p_position, p_direction, m_emitters.back().m_lifetime, m_emitters.back().m_force, m_emitters.back().m_mass);
 		}
 
@@ -176,7 +181,7 @@ namespace black_cat
 		{
 			if (m_emitters.empty())
 			{
-				return emitter(p_position, p_direction);
+				return emitter(p_position, p_direction, p_lifetime_seconds, p_force, p_mass);
 			}
 
 			auto& l_emitter = m_emitters.back();

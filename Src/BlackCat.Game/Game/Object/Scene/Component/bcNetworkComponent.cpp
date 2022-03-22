@@ -18,8 +18,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_network_component::bc_network_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
-			: bci_actor_component(p_actor_index, p_index),
+		bc_network_component::bc_network_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept
+			: bci_actor_component(p_actor_id, p_id),
 			m_network_client_id(bc_network_client::invalid_id),
 			m_network_id(bc_actor::invalid_id),
 			m_network_type(bc_network_type::not_started),

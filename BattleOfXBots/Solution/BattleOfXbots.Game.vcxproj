@@ -310,6 +310,7 @@
     <ClInclude Include="..\Src\BoX.Game\Network\bxPlayerKilledNetworkMessage.h" />
     <ClInclude Include="..\Src\BoX.Game\Network\bxPlayerSpawnNetworkMessage.h" />
     <ClInclude Include="..\Src\BoX.Game\Network\bxTeamSelectNetworkMessage.h" />
+    <ClInclude Include="..\Src\BoX.Game\Particle\bxEnvironmentParticle.h" />
     <ClInclude Include="..\Src\BoX.Game\Particle\bxExplosionParticle.h" />
     <ClInclude Include="..\Src\BoX.Game\Particle\bxWeaponParticle.h" />
     <ClInclude Include="..\Src\BoX.Game\RenderPass\bxBulletTrailPass.h" />

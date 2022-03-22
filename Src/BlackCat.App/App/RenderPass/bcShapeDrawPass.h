@@ -8,6 +8,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
+#include "Game/System/Render/Decal/bcDecalInstance.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/Query/bcQueryContext.h"
 #include "App/bcExport.h"
@@ -19,7 +20,12 @@ namespace black_cat
 		BC_QUERY(sc_dbg)
 
 	public:
-		bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer, game::bc_actor p_hovered_actor, game::bc_actor p_selected_actor, bool p_draw_scene_graph) noexcept;
+		bc_scene_debug_shape_query(game::bc_shape_drawer& p_shape_drawer, 
+			game::bc_actor p_hovered_actor, 
+			game::bc_actor p_selected_actor,
+			game::bc_decal_instance* p_hovered_decal,
+			game::bc_decal_instance* p_selected_decal,
+			bool p_draw_scene_graph) noexcept;
 
 	protected:
 		void execute(const game::bc_scene_query_context& p_context) noexcept override;
@@ -28,6 +34,8 @@ namespace black_cat
 		game::bc_shape_drawer* m_shape_drawer;
 		game::bc_actor m_hovered_actor;
 		game::bc_actor m_selected_actor;
+		game::bc_decal_instance* m_hovered_decal;
+		game::bc_decal_instance* m_selected_decal;
 		bool m_draw_scene_graph;
 	};
 	
@@ -41,6 +49,10 @@ namespace black_cat
 		void set_hovered_actor(const game::bc_actor& p_actor);
 
 		void set_selected_actor(const game::bc_actor& p_actor);
+
+		void set_hovered_decal(game::bc_decal_instance* p_decal);
+
+		void set_selected_decal(game::bc_decal_instance* p_decal);
 		
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 
@@ -71,5 +83,7 @@ namespace black_cat
 		core::bc_query_result<bc_scene_debug_shape_query> m_scene_debug_query;
 		game::bc_actor m_hovered_actor;
 		game::bc_actor m_selected_actor;
+		game::bc_decal_instance* m_hovered_decal;
+		game::bc_decal_instance* m_selected_decal;
 	};
 }

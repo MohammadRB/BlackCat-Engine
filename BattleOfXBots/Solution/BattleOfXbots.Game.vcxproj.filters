@@ -182,6 +182,9 @@
     <ClInclude Include="..\Src\BoX.Game\Particle\bxExplosionParticle.h">
       <Filter>BoX.Game\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Particle\bxEnvironmentParticle.h">
+      <Filter>BoX.Game\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Src\BoX.Game\Content\Data\BoXContentStream.json">

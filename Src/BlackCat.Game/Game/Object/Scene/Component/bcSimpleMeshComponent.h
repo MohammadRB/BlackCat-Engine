@@ -15,7 +15,7 @@ namespace black_cat
 			BC_COMPONENT(smp_msh, true, false)
 
 		public:
-			bc_simple_mesh_component(bc_actor_id p_actor_index, bc_actor_component_id p_index);
+			bc_simple_mesh_component(bc_actor_id p_actor_id, bc_actor_component_id p_id);
 
 			bc_simple_mesh_component(bc_simple_mesh_component&& p_other) noexcept;
 

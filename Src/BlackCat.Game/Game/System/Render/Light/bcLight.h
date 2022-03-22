@@ -2,9 +2,11 @@
 
 #pragma once
 
+#include <variant>
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "Core/Utility/bcRefCountPtr.h"
+#include "Core/Utility/bcEnumOperand.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/System/Render/Light/bcDirectLight.h"
 #include "Game/System/Render/Light/bcPointLight.h"
@@ -33,9 +35,9 @@ namespace black_cat
 
 		enum class bc_light_type
 		{
-			direct = 1,
-			point = 2,
-			spot = 4
+			direct = core::bc_enum::value(0),
+			point = core::bc_enum::value(1),
+			spot = core::bc_enum::value(2)
 		};
 
 		class BC_GAME_DLL bc_light : public core::bc_ref_count, platform::bc_no_copy
@@ -43,11 +45,11 @@ namespace black_cat
 			friend class bc_light_manager;
 
 		public:
-			bc_light(bc_light&& p_other) noexcept;
+			bc_light(bc_light&& p_other) noexcept = default;
 
-			~bc_light();
+			~bc_light() = default;
 
-			bc_light& operator=(bc_light&& p_other) noexcept;
+			bc_light& operator=(bc_light&& p_other) noexcept = default;
 
 			const core::bc_matrix4f& get_transformation() const noexcept
 			{
@@ -91,13 +93,8 @@ namespace black_cat
 
 			void _calculate_bound_box();
 
-			union
-			{
-				bc_direct_light m_direct_light;
-				bc_point_light m_point_light;
-				bc_spot_light m_spot_light;
-			};
 			bc_light_type m_type;
+			std::variant<bc_direct_light, bc_point_light, bc_spot_light> m_light;
 			core::bc_matrix4f m_transformation;
 			physics::bc_bound_box m_bound_box;
 		};

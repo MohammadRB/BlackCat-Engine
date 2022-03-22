@@ -80,7 +80,7 @@ namespace black_cat
 			constexpr static bc_ragdoll_body_part s_right_foot_index = 13;
 
 		public:
-			bc_human_ragdoll_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept;
+			bc_human_ragdoll_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept;
 
 			bc_human_ragdoll_component(bc_human_ragdoll_component&&) noexcept;
 

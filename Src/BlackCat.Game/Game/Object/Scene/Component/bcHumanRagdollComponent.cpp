@@ -29,8 +29,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_human_ragdoll_component::bc_human_ragdoll_component(bc_actor_id p_actor_index, bc_actor_component_id p_index) noexcept
-			: bci_actor_component(p_actor_index, p_index),
+		bc_human_ragdoll_component::bc_human_ragdoll_component(bc_actor_id p_actor_id, bc_actor_component_id p_index) noexcept
+			: bci_actor_component(p_actor_id, p_index),
 			m_physics_system(nullptr),
 			m_px_scene(nullptr),
 			m_mesh_component(nullptr),

@@ -9,10 +9,10 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_icon_component::bc_icon_component(bc_actor_id p_actor_index, bc_actor_component_id p_index)
-			: bci_actor_component(p_actor_index, p_index),
-			m_size(32),
-			m_type(bc_icon_type::editor)
+		bc_icon_component::bc_icon_component(bc_actor_id p_actor_id, bc_actor_component_id p_id)
+			: bci_actor_component(p_actor_id, p_id),
+			m_size(s_default_icon_size),
+			m_mode(bc_icon_mode::editor)
 		{
 		}
 
@@ -53,21 +53,21 @@ namespace black_cat
 			{
 				if(*l_type == "editor")
 				{
-					m_type = bc_icon_type::editor;
+					m_mode = bc_icon_mode::editor;
 				}
 			}
 		}
 
 		void bc_icon_component::set_icon(core::bc_string p_name) noexcept
 		{
-			set_icon(std::move(p_name), 32, bc_icon_type::editor);
+			set_icon(std::move(p_name), s_default_icon_size, bc_icon_mode::editor);
 		}
 
-		void bc_icon_component::set_icon(core::bc_string p_name, bcUINT16 p_size, bc_icon_type p_type) noexcept
+		void bc_icon_component::set_icon(core::bc_string p_name, bcUINT16 p_size, bc_icon_mode p_mode) noexcept
 		{
 			m_name = std::move(p_name);
 			m_size = p_size;
-			m_type = p_type;
+			m_mode = p_mode;
 		}
 	}
 }

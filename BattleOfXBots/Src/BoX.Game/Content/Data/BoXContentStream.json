@@ -141,6 +141,19 @@
           }
         }
       ]
+    },
+    {
+      "stream_name": "game_vegetables",
+      "stream_content": [
+        {
+          "content_title": "Palm_Tree_Short_b",
+          "content_loader": "mesh",
+          "content_file": "content\\model\\Nature\\palm_tree\\Palm_Tree_Short_b.fbx",
+          "content_parameter": {
+            "auto_scale": 9.0
+          }
+        }
+      ] 
     }
   ]
 }

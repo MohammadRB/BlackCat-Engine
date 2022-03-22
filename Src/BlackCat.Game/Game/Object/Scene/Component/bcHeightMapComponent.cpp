@@ -25,8 +25,8 @@ namespace black_cat
 {
 	namespace game
 	{
-		bc_height_map_component::bc_height_map_component(bc_actor_id p_actor_index, bc_actor_component_id p_index)
-			: bci_actor_component(p_actor_index, p_index),
+		bc_height_map_component::bc_height_map_component(bc_actor_id p_actor_id, bc_actor_component_id p_id)
+			: bci_actor_component(p_actor_id, p_id),
 			bc_render_component(),
 			bc_decal_resolver_component()
 		{
@@ -61,7 +61,7 @@ namespace black_cat
 
 		void bc_height_map_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			const auto& l_height_map_name = p_context.m_parameters.get_value_throw< core::bc_string >(constant::g_param_heightmap);
+			const auto& l_height_map_name = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_heightmap);
 			m_height_map = p_context.m_stream_manager.find_content_throw<bc_height_map>(l_height_map_name.c_str());
 		}
 
