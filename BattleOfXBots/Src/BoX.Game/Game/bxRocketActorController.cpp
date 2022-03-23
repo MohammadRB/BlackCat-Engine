@@ -24,6 +24,7 @@ namespace box
 	void bx_rocket_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		const auto& l_mediate_component = *p_context.m_actor.get_component<game::bc_mediate_component>();
+		auto& l_particle_emitter_component = *p_context.m_actor.get_create_component<game::bc_particle_emitter_component>();
 		
 		m_scene = &p_scene;
 		m_position = l_mediate_component.get_position();
@@ -39,9 +40,8 @@ namespace box
 			.with_particle_size(1.5f * m_scene->get_global_scale(), 4.5f * m_scene->get_global_scale())
 			.with_particles_rotation(40)
 			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step3, 1.5f)
-			.emit_particles(0, 3, 10, -0.1f);
-
-		p_context.m_actor.get_create_component<game::bc_particle_emitter_component>()->add_emitter(l_emitter);
+			.emit_particles_with_total_count(200, 3, 10, -0.1f);
+		l_particle_emitter_component.add_emitter(l_emitter, m_position);
 	}
 
 	void bx_rocket_controller::update(const game::bc_actor_component_update_content& p_context)
@@ -119,17 +119,5 @@ namespace box
 		l_world_transform.set_translation(m_deviated_position);
 		
 		p_context.m_actor.add_event(game::bc_world_transform_actor_event(l_world_transform));
-		
-		const auto l_total_particles_in_current_second = (p_context.m_clock.m_total_elapsed_second - std::floor(p_context.m_clock.m_total_elapsed_second)) * m_num_particles_per_second;
-		if (l_total_particles_in_current_second < m_num_spawned_particles_in_current_second)
-		{
-			m_num_spawned_particles_in_current_second = 0;
-		}
-
-		const bcUINT32 l_num_particles_in_current_second = l_total_particles_in_current_second - m_num_spawned_particles_in_current_second;
-		auto* l_emitter_component = p_context.m_actor.get_component<game::bc_particle_emitter_component>();
-		l_emitter_component->get_emitter()->set_particle_counts(l_num_particles_in_current_second);
-
-		m_num_spawned_particles_in_current_second += l_num_particles_in_current_second;
 	}
 }

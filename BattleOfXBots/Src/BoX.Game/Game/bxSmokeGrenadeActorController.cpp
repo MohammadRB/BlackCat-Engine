@@ -16,7 +16,6 @@ namespace box
 		m_lifetime = p_context.m_parameters.get_value_throw<bcFLOAT>("lifetime");
 		m_smoke_time = p_context.m_parameters.get_value_throw<bcFLOAT>("smoke_time");
 		m_color = bc_null_default(p_context.m_parameters.get_value_vector3f("color"), core::bc_vector3f(.7f));
-		m_num_particles_per_second = 20;
 	}
 
 	void bx_smoke_grenade_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
@@ -71,20 +70,20 @@ namespace box
 				.with_particles_color(m_color, 1)
 				.with_particle_size(4.0f, 10.0f)
 				.with_particles_rotation(20)
-				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step2, 5)
-				.emit_particles(0, 20, 10, 0.1f)
+				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step2, 4.5)
+				.emit_particles_with_per_second_count(20, 20, 10, 0.1f)
 				.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up(), m_smoke_time, 0, 0)
 				.with_texture(4)
-				.emit_particles(0, 20, 21, 0.1f)
+				.emit_particles_with_per_second_count(20, 20, 21, 0.1f)
 				.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up(), m_smoke_time, 0, 0)
 				.with_texture(5)
-				.emit_particles(0, 20, 19, 0.1f);
+				.emit_particles_with_per_second_count(20, 20, 19, 0.1f);
 
+			const auto l_actor_position = p_context.m_actor.get_component<game::bc_mediate_component>()->get_position();
 			auto* l_emitter_component = p_context.m_actor.get_create_component<game::bc_particle_emitter_component>();
-			l_emitter_component->add_emitter(l_emitter);
+			l_emitter_component->add_emitter(l_emitter, l_actor_position);
 
-			const auto* l_sound_component = p_context.m_actor.get_component<game::bc_sound_component>();
-			if(l_sound_component)
+			if(const auto* l_sound_component = p_context.m_actor.get_component<game::bc_sound_component>())
 			{
 				l_sound_component->play_sounds();
 			}
@@ -105,21 +104,6 @@ namespace box
 				return;
 			}
 		}
-
-		const bcUINT32 l_total_particles_in_current_second = (p_context.m_clock.m_total_elapsed_second - std::floor(p_context.m_clock.m_total_elapsed_second)) * m_num_particles_per_second;
-		if (l_total_particles_in_current_second < m_num_spawned_particles_in_current_second)
-		{
-			m_num_spawned_particles_in_current_second = 0;
-		}
-
-		const bcUINT32 l_num_particles_in_current_second = l_total_particles_in_current_second - m_num_spawned_particles_in_current_second;
-		const auto l_actor_position = p_context.m_actor.get_component<game::bc_mediate_component>()->get_position();
-
-		auto* l_emitter = p_context.m_actor.get_component<game::bc_particle_emitter_component>()->get_emitter();
-		l_emitter->set_positions(l_actor_position);
-		l_emitter->set_particle_counts(l_num_particles_in_current_second);
-
-		m_num_spawned_particles_in_current_second += l_num_particles_in_current_second;
 	}
 
 	void bx_smoke_grenade_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)

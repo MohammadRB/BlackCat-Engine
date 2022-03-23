@@ -31,8 +31,8 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	
 	for (uint i = 0; i < l_emitter.m_particles_count; ++i)
 	{
-		float l_random[] = { bc_random((i + 3) + g_total_elapsed), bc_random((i + 7) + g_total_elapsed), bc_random((i + 5) + g_total_elapsed) };
-		float l_random_range[] = { (l_random[0] - .5f) * 2, (l_random[1] - .5f) * 2, (l_random[2] - .5f) * 2 };
+		const float l_random[] = { bc_random((i + 3) + g_total_elapsed), bc_random((i + 7) + g_total_elapsed), bc_random((i + 5) + g_total_elapsed) };
+		const float l_random_range[] = { (l_random[0] - .5f) * 2, (l_random[1] - .5f) * 2, (l_random[2] - .5f) * 2 };
 		particle l_new_particle;
 
 		float3 l_new_particle_dir = normalize

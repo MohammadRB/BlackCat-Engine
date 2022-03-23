@@ -21,13 +21,13 @@ namespace black_cat
 		public:
 			bc_particle_builder1(bc_particle_builder& p_builder, bc_particle_emitter_trait& p_emitter) noexcept;
 
-			bc_particle_builder1& with_texture(bcUINT32 p_sprite_index) noexcept;
+			bc_particle_builder1& with_texture(bcUINT16 p_sprite_index) noexcept;
 
 			bc_particle_builder1& with_velocity_curve(const bc_particle_curve& p_curve) noexcept;
 			
-			bc_particle_builder1& with_direction_deviation(bcUINT32 p_angle) noexcept;
+			bc_particle_builder1& with_direction_deviation(bcUINT16 p_angle) noexcept;
 			
-			bc_particle_builder1& with_emission_deviation(bcUINT32 p_angle, const core::bc_vector3f& p_deviation_force = core::bc_vector3f(0)) noexcept;
+			bc_particle_builder1& with_emission_deviation(bcUINT16 p_angle, const core::bc_vector3f& p_deviation_force = core::bc_vector3f(0)) noexcept;
 
 			bc_particle_builder1& with_particles_color(const core::bc_vector3f& p_color, bcFLOAT p_intensity = 1);
 			
@@ -43,7 +43,12 @@ namespace black_cat
 			
 			bc_particle_builder1& with_particle_fade_curve(const bc_particle_curve& p_curve) noexcept;
 
-			bc_particle_builder& emit_particles(bcUINT32 p_particles_total_count,
+			bc_particle_builder& emit_particles_with_per_second_count(bcUINT16 p_particles_per_second,
+				bcFLOAT p_particles_lifetime,
+				bcFLOAT p_particles_force,
+				bcFLOAT p_particles_mass) noexcept;
+
+			bc_particle_builder& emit_particles_with_total_count(bcUINT16 p_particles_total_count,
 				bcFLOAT p_particles_lifetime,
 				bcFLOAT p_particles_force,
 				bcFLOAT p_particles_mass) noexcept;

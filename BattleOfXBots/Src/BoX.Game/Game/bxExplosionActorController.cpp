@@ -30,7 +30,7 @@ namespace box
 			m_light_component = nullptr;
 		}
 
-		m_emitter_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_emitter_name)->c_str();
+		m_emitter_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_particle_emitter_name)->c_str();
 		m_decal_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_decal_name)->c_str();
 		m_force_amount = *p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_force_amount);
 		m_force_radius = *p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_force_radius);

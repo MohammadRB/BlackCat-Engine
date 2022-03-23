@@ -29,8 +29,16 @@ namespace black_cat
 			bc_actor get_actor() const noexcept override;
 
 			bc_external_particle_emitter* get_emitter() noexcept;
+			
+			void add_emitter(const bcCHAR* p_emitter, 
+				const core::bc_vector3f& p_position, 
+				const core::bc_vector3f& p_dir = core::bc_vector3f::up(),
+				const core::bc_vector3f* p_color = nullptr);
 
-			void add_emitter(const bc_particle_builder& p_builder);
+			void add_emitter(const bc_particle_builder& p_builder, 
+				const core::bc_vector3f& p_position, 
+				const core::bc_vector3f& p_dir = core::bc_vector3f::up(),
+				const core::bc_vector3f* p_color = nullptr);
 			
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 

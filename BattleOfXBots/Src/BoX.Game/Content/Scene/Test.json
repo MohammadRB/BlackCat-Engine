@@ -30,7 +30,7 @@
   },
   "actors": [
     {
-      "entity_name": "sun_light",
+      "entity_name": "env_sun_light",
       "position": [
         -1.0,
         0.0,
@@ -44,7 +44,7 @@
       "parameters": {}
     },
     {
-      "entity_name": "wind",
+      "entity_name": "env_wind",
       "position": [
         0.0,
         0.0,
@@ -212,7 +212,7 @@
       "parameters": {}
     },
     {
-      "entity_name": "flat_height_map",
+      "entity_name": "env_flat_height_map",
       "position": [
         0.0,
         0.0,

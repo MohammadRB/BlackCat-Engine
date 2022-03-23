@@ -1,6 +1,205 @@
 {
   "entities": [
     {
+      "name": "env_sound",
+      "components": [
+        {
+          "name": "sound",
+          "parameters": {
+            "sounds": [
+              {
+                "sound": "wind_through_reeds",
+                "play": "loop",
+                "volume": 1.0,
+                "auto_play": true
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "env_falling_leaf_green",
+      "components": [
+        {
+          "name": "particle_emitter",
+          "parameters": {
+            "emitter_name": "falling_leaf",
+            "color": [ 0.3, 0.6, 0.3 ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "env_falling_leaf_yellow",
+      "components": [
+        {
+          "name": "particle_emitter",
+          "parameters": {
+            "emitter_name": "falling_leaf",
+            "color": [ 0.9, 0.5, 0.2 ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbot_rifle",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "scifi_rifle",
+            "view_distance": 200.0
+          }
+        },
+        {
+          "name": "weapon",
+          "parameters": {
+            "class": "rifle",
+            "up_ls": [ 0.0, 0.0, -1.0 ],
+            "forward_ls": [ -1.0, 0.0, 0.0 ],
+            "main_hand_offset_ls": [ 0.0, 0.05, 0.0 ],
+            "second_hand_offset_ls": [ 0.7, 0.0, -1.0 ],
+            "fire_offset_ls": [ -4.5, -0.1, -0.3 ],
+            "fire_particle": "rifle_fire",
+            "fire_light_color": [ 0.9, 0.4, 0.01 ],
+            "fire_light_radius": 12.0,
+            "fire_light_intensity": 3.0,
+            "fire_light_flare_surface": [ 0.5, 0.5, 0.5 ],
+            "fire_light_flare_intensity": 0.4,
+            "fire_light_flare_mask_material": "flare2",
+            "rate_of_fire": 0.20,
+            "bullet_speed": 250.0,
+            "bullet_mass": 0.2
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {
+            "mass": 10.0,
+            "cmass": [ -1.0, 0.0, 0.0 ]
+          }
+        },
+        {
+          "name": "sound",
+          "parameters": {
+            "sounds": [
+              {
+                "sound": "gun_shot",
+                "min_max_distance": [ 20.0, 250.0 ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbot_grenade",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "grenade",
+            "view_distance": 110.0,
+            "materials": {
+              "bodyMesh": "grenade"
+            }
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {
+            "mass": 5.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbot_threw_grenade",
+      "inherit": "xbot_grenade",
+      "controller": "grenade",
+      "parameters": {
+        "explosion_entity": "box_big_explosion",
+        "lifetime": 4.0
+      },
+      "components": [
+        {
+          "name": "network",
+          "parameters": {
+            "data_dir": "replicate_sync"
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbot_smoke_grenade",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "smoke_grenade",
+            "view_distance": 110.0,
+            "materials": {
+              "bodyMesh": "smoke_grenade"
+            }
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {
+            "mass": 5.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbot_threw_smoke_grenade",
+      "inherit": "xbot_smoke_grenade",
+      "controller": "smoke_grenade",
+      "parameters": {
+        "lifetime": 4.0,
+        "smoke_time": 30.0
+      },
+      "components": [
+        {
+          "name": "network",
+          "parameters": {
+            "data_dir": "replicate_sync"
+          }
+        },
+        {
+          "name": "sound",
+          "parameters": {
+            "sounds": [
+              {
+                "sound": "grenade_smoke",
+                "min_max_distance": [ 10.0, 90.0 ],
+                "auto_play": false
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "xbot_threw_red_smoke_grenade",
+      "inherit": "xbot_threw_smoke_grenade",
+      "parameters": {
+        "color": [ 0.8, 0.4, 0.3 ]
+      },
+      "components": [
+      ]
+    },
+    {
+      "name": "xbot_threw_blue_smoke_grenade",
+      "inherit": "xbot_threw_smoke_grenade",
+      "parameters": {
+        "color": [ 0.3, 0.4, 0.8 ]
+      },
+      "components": [
+      ]
+    },
+    {
       "name": "box_red_player",
       "inherit": "xbot_player",
       "controller": "box_player",
@@ -200,175 +399,6 @@
             "flare_surface": [ 2.0, 2.0, 2.0 ],
             "flare_intensity": 2.0,
             "flare_mask_material": "flare2"
-          }
-        }
-      ]
-    },
-    {
-      "name": "xbot_rifle",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "scifi_rifle",
-            "view_distance": 200.0
-          }
-        },
-        {
-          "name": "weapon",
-          "parameters": {
-            "class": "rifle",
-            "up_ls": [ 0.0, 0.0, -1.0 ],
-            "forward_ls": [ -1.0, 0.0, 0.0 ],
-            "main_hand_offset_ls": [ 0.0, 0.05, 0.0 ],
-            "second_hand_offset_ls": [ 0.7, 0.0, -1.0 ],
-            "fire_offset_ls": [ -4.5, -0.1, -0.3 ],
-            "fire_particle": "rifle_fire",
-            "fire_light_color": [ 0.9, 0.4, 0.01 ],
-            "fire_light_radius": 12.0,
-            "fire_light_intensity": 3.0,
-            "fire_light_flare_surface": [ 0.5, 0.5, 0.5 ],
-            "fire_light_flare_intensity": 0.4,
-            "fire_light_flare_mask_material": "flare2",
-            "rate_of_fire": 0.20,
-            "bullet_speed": 250.0,
-            "bullet_mass": 0.2
-          }
-        },
-        {
-          "name": "rigid_dynamic",
-          "parameters": {
-            "mass": 10.0,
-            "cmass": [ -1.0, 0.0, 0.0 ]
-          }
-        },
-        {
-          "name": "sound",
-          "parameters": {
-            "sounds": [
-              {
-                "sound": "gun_shot",
-                "min_max_distance": [ 20.0, 250.0 ]
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "xbot_grenade",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "grenade",
-            "view_distance": 110.0,
-            "materials": {
-              "bodyMesh": "grenade"
-            }
-          }
-        },
-        {
-          "name": "rigid_dynamic",
-          "parameters": {
-            "mass": 5.0
-          }
-        }
-      ]
-    },
-    {
-      "name": "xbot_threw_grenade",
-      "inherit": "xbot_grenade",
-      "controller": "grenade",
-      "parameters": {
-        "explosion_entity": "box_big_explosion",
-        "lifetime": 4.0
-      },
-      "components": [
-        {
-          "name": "network",
-          "parameters": {
-            "data_dir": "replicate_sync"
-          }
-        }
-      ]
-    },
-    {
-      "name": "xbot_smoke_grenade",
-      "components": [
-        {
-          "name": "simple_mesh",
-          "parameters": {
-            "mesh": "smoke_grenade",
-            "view_distance": 110.0,
-            "materials": {
-              "bodyMesh": "smoke_grenade"
-            }
-          }
-        },
-        {
-          "name": "rigid_dynamic",
-          "parameters": {
-            "mass": 5.0
-          }
-        }
-      ]
-    },
-    {
-      "name": "xbot_threw_smoke_grenade",
-      "inherit": "xbot_smoke_grenade",
-      "controller": "smoke_grenade",
-      "parameters": {
-        "lifetime": 4.0,
-        "smoke_time": 30.0
-      },
-      "components": [
-        {
-          "name": "network",
-          "parameters": {
-            "data_dir": "replicate_sync"
-          }
-        },
-        {
-          "name": "sound",
-          "parameters": {
-            "sounds": [
-              {
-                "sound": "grenade_smoke",
-                "min_max_distance": [ 10.0, 90.0 ],
-                "auto_play": false
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "xbot_threw_red_smoke_grenade",
-      "inherit": "xbot_threw_smoke_grenade",
-      "parameters": {
-        "color": [ 0.8, 0.4, 0.3 ]
-      },
-      "components": [
-      ]
-    },
-    {
-      "name": "xbot_threw_blue_smoke_grenade",
-      "inherit": "xbot_threw_smoke_grenade",
-      "parameters": {
-        "color": [ 0.3, 0.4, 0.8 ]
-      },
-      "components": [
-      ]
-    },
-    {
-      "name": "Palm_Tree_Short_b",
-      "components": [
-        {
-          "name": "vegetable_mesh",
-          "parameters": {
-            "mesh": "Palm_Tree_Short_b",
-            "view_distance": 200.0
           }
         }
       ]

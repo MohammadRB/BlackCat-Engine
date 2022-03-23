@@ -44,12 +44,12 @@ namespace box
 			.with_particle_size(0.3f, 0.9f)
 			.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step4)
 			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step5, 0.08f)
-			.emit_particles(10, 0.08f, 40, 0.0f)
+			.emit_particles_with_total_count(10, 0.08f, 40, 0.0f)
 			.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up(), 0.04f, 30, 0)
 			.with_emission_deviation(5)
 			.with_particle_size(0.1f, 0.3f)
 			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step5, 0.08f)
-			.emit_particles(20, 0.08f, 20, 0.0f);
+			.emit_particles_with_total_count(20, 0.08f, 25, 0.0f);
 
 		return l_builder;
 	}
@@ -79,7 +79,7 @@ namespace box
 				.with_particles_rotation(5)
 				.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step4)
 				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step5, 0.08f)
-				.emit_particles(20, 1.5f * l_emitter_energy, 100 * l_emitter_energy, 0.03f);
+				.emit_particles_with_total_count(20, 1.5f * l_emitter_energy, 100 * l_emitter_energy, 0.03f);
 		}
 
 		l_builder.emitter(core::bc_vector3f(0, -0.1f, 0), core::bc_vector3f::up())
@@ -90,9 +90,9 @@ namespace box
 			.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step2)
 			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step3, 0.09f)
 			.with_particles_rotation(10)
-			.emit_particles(3, 7, 70, 0.01f)
+			.emit_particles_with_total_count(3, 7, 70, 0.01f)
 			.duplicate_last(core::bc_vector3f(0, -0.2f, 0), core::bc_vector3f::up())
-			.emit_particles(3, 8, 40, 0.01f);
+			.emit_particles_with_total_count(3, 8, 40, 0.01f);
 
 		return l_builder;
 	}
@@ -122,7 +122,7 @@ namespace box
 				.with_particles_rotation(5)
 				.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step4)
 				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step5, 0.08f)
-				.emit_particles(20, 1.5f * l_emitter_energy, 100 * l_emitter_energy, 0.03f);
+				.emit_particles_with_total_count(20, 1.5f * l_emitter_energy, 100 * l_emitter_energy, 0.03f);
 		}
 
 		l_builder.emitter(core::bc_vector3f(0, 0, 0), core::bc_vector3f::up())
@@ -133,7 +133,7 @@ namespace box
 			.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step2)
 			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step3, 0.09f)
 			.with_particles_rotation(10)
-			.emit_particles(6, 1.5f, 70, 0.01f);
+			.emit_particles_with_total_count(6, 1.5f, 70, 0.01f);
 
 		return l_builder;
 	}
@@ -161,7 +161,7 @@ namespace box
 				.with_particle_size(0.02f, 0.06f)
 				.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step3)
 				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step5, 0.09f)
-				.emit_particles(10, 0.12f * l_emitter_energy, 200 * l_emitter_energy, 0.01f);
+				.emit_particles_with_total_count(10, 0.12f * l_emitter_energy, 200 * l_emitter_energy, 0.01f);
 		}
 
 		return l_builder;

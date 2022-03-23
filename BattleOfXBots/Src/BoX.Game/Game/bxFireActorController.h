@@ -18,7 +18,5 @@ namespace box
 
 		bcFLOAT m_light_intensity = 0;
 		bcFLOAT m_light_flare_intensity = 0;
-		bcUINT32 m_num_particles_per_second = 30;
-		bcUINT32 m_num_spawned_particles_in_current_second = 0;
 	};
 }

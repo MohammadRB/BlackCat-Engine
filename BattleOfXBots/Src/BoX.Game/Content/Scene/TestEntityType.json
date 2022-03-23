@@ -1,7 +1,7 @@
 {
   "entities": [
     {
-      "name": "sun_light",
+      "name": "env_sun_light",
       "components": [
         {
           "name": "light",
@@ -15,7 +15,7 @@
       ]
     },
     {
-      "name": "wind",
+      "name": "env_wind",
       "components": [
         {
           "name": "wind",
@@ -28,25 +28,7 @@
       ]
     },
     {
-      "name": "env_sound",
-      "components": [
-        {
-          "name": "sound",
-          "parameters": {
-            "sounds": [
-              {
-                "sound": "wind_through_reeds",
-                "play": "loop",
-                "volume": 1.0,
-                "auto_play": true 
-              }
-            ]
-          }
-        }
-      ] 
-    },
-    {
-      "name": "flat_height_map",
+      "name": "env_flat_height_map",
       "components": [
         {
           "name": "height_map",

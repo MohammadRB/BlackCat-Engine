@@ -24,9 +24,6 @@ namespace box
 		bcFLOAT m_lifetime{ 0 };
 		bcFLOAT m_smoke_time{ 0 };
 		core::bc_vector3f m_color;
-
 		bool m_particles_added{ false };
-		bcUINT32 m_num_particles_per_second{ 0 };
-		bcUINT32 m_num_spawned_particles_in_current_second{ 0 };
 	};
 }

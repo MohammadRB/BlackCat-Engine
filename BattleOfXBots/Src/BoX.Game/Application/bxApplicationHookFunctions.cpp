@@ -22,6 +22,7 @@
 #include "BoX.Game/Game/bxSmokeGrenadeActorController.h"
 #include "BoX.Game/Particle/bxExplosionParticle.h"
 #include "BoX.Game/Particle/bxWeaponParticle.h"
+#include "BoX.Game/Particle/bxEnvironmentParticle.h"
 #include "BoX.Game/Network/bxTeamSelectNetworkMessage.h"
 #include "BoX.Game/Network/bxPlayerSpawnNetworkMessage.h"
 #include "BoX.Game/Network/bxPlayerKilledNetworkMessage.h"
@@ -88,6 +89,7 @@ namespace box
 		l_particle_manager.register_emitter_definition("bullet_terrain", bx_bullet_terrain_particle()(l_random));
 		l_particle_manager.register_emitter_definition("bullet_soil", bx_bullet_soil_particle()());
 		l_particle_manager.register_emitter_definition("bullet_iron", bx_bullet_iron_particle()());
+		l_particle_manager.register_emitter_definition("falling_leaf", bx_falling_leaf_particle()());
 	}
 
 	void bx_load_game_shaders(core::bc_content_stream_manager& p_stream_manager, game::bc_game_system& p_game_system)

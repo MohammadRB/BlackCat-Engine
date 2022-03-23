@@ -140,6 +140,7 @@ namespace black_cat
 
 			if (const auto* l_added_to_scene_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event))
 			{
+				m_added_to_scene = true;
 				m_scene = &l_added_to_scene_event->get_scene();
 				m_prev_bound_box = m_bound_box; // Reset default prev bb to be as same as current bb when actor is added to scene graph
 
@@ -152,10 +153,12 @@ namespace black_cat
 
 			if (const auto* l_remove_from_scene_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event))
 			{
+				m_added_to_scene = false;
+				m_scene = nullptr;
+
 				if (m_controller)
 				{
 					m_controller->removed_from_scene(p_context, l_remove_from_scene_event->get_scene());
-					m_scene = nullptr;
 				}
 				return;
 			}

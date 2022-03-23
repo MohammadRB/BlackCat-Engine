@@ -84,8 +84,6 @@ namespace black_cat
 
 				if (p_is_partial_update)
 				{
-					l_physics_system->update(p_clock);
-
 					if (l_scene)
 					{
 						l_scene_task = l_scene->update_physics_async(p_clock, p_is_partial_update);

@@ -7,10 +7,11 @@
 #define THREAD_GROUP_SIZE 1024
 #define CURVE_COUNT 12
 #define CURVE_SAMPLE_COUNT 10
+
 cbuffer g_curves_cbuffer								: register(BC_COMPUTE_STATE_CB1)
 {
 	float g_curves[CURVE_COUNT][CURVE_SAMPLE_COUNT];
-};
+}
 
 RWStructuredBuffer<particle> g_particles				: register(BC_COMPUTE_STATE_U0);
 RWStructuredBuffer<alive_particle> g_alive_indices		: register(BC_COMPUTE_STATE_U1);
