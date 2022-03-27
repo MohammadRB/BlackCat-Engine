@@ -87,6 +87,11 @@ namespace black_cat
 
 		inline void bc_main_camera_render_state_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
+			if (!p_context.m_scene)
+			{
+				return;
+			}
+
 			const auto& l_main_camera_scene_buffer = p_context.get_shared_query<bc_main_camera_scene_shared_query>().get_scene_buffer();
 
 			if (m_execute_with_component.is_valid())

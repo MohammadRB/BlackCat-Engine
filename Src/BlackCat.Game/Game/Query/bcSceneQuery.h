@@ -28,7 +28,8 @@ namespace black_cat
 			
 			/**
 			 * \brief Callable object which will be executed with an instance of bc_scene_query_context
-			 * \tparam TCallable bc_any(const bc_scene_query_context&) 
+			 * \tparam TCallable Callable object with signature bc_any(const bc_scene_query_context&).
+			 * Callable is responsible to check if scene has value.
 			 * \param p_callable 
 			 */
 			template<typename TCallable>

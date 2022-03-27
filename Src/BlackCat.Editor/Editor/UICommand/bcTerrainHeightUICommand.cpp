@@ -25,7 +25,7 @@ namespace black_cat
 			bcUINT16 p_point_left,
 			bcUINT16 p_point_top,
 			bcUINT16 p_radius,
-			bcINT16 p_height)
+			bcFLOAT p_height)
 			: bc_ui_terrain_command
 			(
 				p_screen_width,
@@ -85,8 +85,8 @@ namespace black_cat
 			bc_terrain_height_ui_command_parameter_cbuffer l_cbuffer_parameters;
 			l_cbuffer_parameters.m_tool_center_x = p_context.m_tool_center_x;
 			l_cbuffer_parameters.m_tool_center_z = p_context.m_tool_center_z;
-			l_cbuffer_parameters.m_tool_height = m_height;
 			l_cbuffer_parameters.m_tool_radius = m_radius;
+			l_cbuffer_parameters.m_tool_height = m_height;
 
 			bc_terrain_height_ui_command_render_task l_render_task
 			(
@@ -127,7 +127,7 @@ namespace black_cat
 					bcFLOAT l_height = std::get<0>(l_height_map_sample) * l_dx11_height_map.get_physics_y_scale();
 					l_height += l_height_ratio * l_cbuffer_parameters.m_tool_height;
 
-					std::get<0>(l_height_map_sample) = l_height / l_dx11_height_map.get_physics_y_scale();
+					std::get<0>(l_height_map_sample) = static_cast<bcINT16>(l_height / l_dx11_height_map.get_physics_y_scale());
 					l_samples[l_sample_index] = l_height_map_sample;
 				}
 			}

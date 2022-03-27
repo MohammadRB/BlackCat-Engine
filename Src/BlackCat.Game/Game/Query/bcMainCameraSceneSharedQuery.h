@@ -65,8 +65,13 @@ namespace black_cat
 			return m_scene_buffer;
 		}
 
-		inline void bc_main_camera_scene_shared_query::execute(const bc_scene_query_context & p_context) noexcept
+		inline void bc_main_camera_scene_shared_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
+			if (!p_context.m_scene)
+			{
+				return;
+			}
+
 			m_scene_buffer = p_context.m_scene->get_scene_graph().get_actors(m_frustum);
 		}
 	}

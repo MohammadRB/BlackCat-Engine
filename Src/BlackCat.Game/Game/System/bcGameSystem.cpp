@@ -210,7 +210,7 @@ namespace black_cat
 		{
 			m_event_manager->process_render_event_queue(p_clock);
 
-			if(m_input_system->get_camera() && m_scene)
+			if(m_input_system->get_camera() /*&& m_scene*/)
 			{
 				if(!m_paused)
 				{

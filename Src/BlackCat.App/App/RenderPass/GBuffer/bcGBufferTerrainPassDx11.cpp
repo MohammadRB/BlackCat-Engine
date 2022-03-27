@@ -107,7 +107,12 @@ namespace black_cat
 			std::end(l_height_maps),
 			[&](const game::bc_height_map_ptr& p_height_map)
 			{
-				return std::find(std::begin(m_last_frame_height_maps), std::end(m_last_frame_height_maps), p_height_map.get()) == std::end(m_last_frame_height_maps);
+				return std::find
+				(
+					std::begin(m_last_frame_height_maps),
+					std::end(m_last_frame_height_maps),
+					p_height_map.get()
+				) == std::end(m_last_frame_height_maps);
 			}
 		);
 
@@ -181,12 +186,11 @@ namespace black_cat
 
 		p_context.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_context.m_render_thread.finish();
-
-		m_height_maps_render_buffer = game::bc_render_state_buffer();
 	}
 
 	void bc_gbuffer_terrain_pass_dx11::cleanup_frame(const game::bc_render_pass_render_context& p_context)
 	{
+		m_height_maps_render_buffer = game::bc_render_state_buffer();
 	}
 
 	void bc_gbuffer_terrain_pass_dx11::before_reset(const game::bc_render_pass_reset_context& p_context)

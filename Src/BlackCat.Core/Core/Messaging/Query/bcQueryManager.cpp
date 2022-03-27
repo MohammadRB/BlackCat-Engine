@@ -100,7 +100,7 @@ namespace black_cat
 							continue;
 						}
 
-						auto l_query_state = l_first_inserted_query->m_state.load(platform::bc_memory_order::relaxed);
+						const auto l_query_state = l_first_inserted_query->m_state.load(platform::bc_memory_order::relaxed);
 						if (l_query_state == _bc_query_shared_state::state::deleted)
 						{
 							l_first_inserted_query = m_executed_queries.erase(l_first_inserted_query);
@@ -122,24 +122,22 @@ namespace black_cat
 
 				const auto l_num_shared_queries = static_cast<bcSIZE>(std::distance(l_first_inserted_shared_query, std::end(m_executed_shared_queries)));
 				const auto l_num_queries = static_cast<bcSIZE>(std::distance(l_first_inserted_query, std::end(m_executed_queries)));
-				const auto l_num_shared_threads = std::min(bc_concurrency::hardware_worker_count(), l_num_shared_queries / 5U + 1);
-				const auto l_num_thread = std::min(bc_concurrency::hardware_worker_count(), l_num_queries / 5U + 1);
+				const auto l_num_shared_threads = std::min(bc_concurrency::hardware_worker_count(), l_num_shared_queries / 2U + 1);
+				const auto l_num_thread = std::min(bc_concurrency::hardware_worker_count(), l_num_queries / 2U + 1);
 
 				bc_concurrency::concurrent_for_each
 				(
 					l_num_shared_threads,
 					l_first_inserted_shared_query,
 					std::end(m_executed_shared_queries),
-					[&]() {return true; },
-					[&](bool, _query_entry& p_query)
+					[&](_query_entry& p_query)
 					{
 						BC_ASSERT(p_query.m_state.load(platform::bc_memory_order::relaxed) != _bc_query_shared_state::state::executed);
 
 						p_query.m_query->execute(*p_query.m_provider->m_provided_context);
 						// use release memory order so memory changes become available for calling thread
 						p_query.m_state.store(_bc_query_shared_state::state::executed, platform::bc_memory_order::release);
-					},
-					[&](bool) {}
+					}
 				);
 
 				bc_concurrency::concurrent_for_each
@@ -147,16 +145,14 @@ namespace black_cat
 					l_num_thread,
 					l_first_inserted_query,
 					std::end(m_executed_queries),
-					[&]() { return true; },
-					[&](bool, _query_entry& p_query)
+					[&](_query_entry& p_query)
 					{
 						BC_ASSERT(p_query.m_state.load(platform::bc_memory_order::relaxed) != _bc_query_shared_state::state::executed);
 
 						p_query.m_query->execute(*p_query.m_provider->m_provided_context);
 						// use release memory order so memory changes become available for calling thread
 						p_query.m_state.store(_bc_query_shared_state::state::executed, platform::bc_memory_order::release);
-					},
-					[&](bool) {}
+					}
 				);
 
 				return l_num_shared_queries + l_num_queries;

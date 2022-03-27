@@ -69,6 +69,11 @@ namespace black_cat
 
 		inline void bc_main_camera_scene_light_shared_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
+			if (!p_context.m_scene)
+			{
+				return;
+			}
+
 			{
 				auto l_iterator = p_context.m_scene->get_light_manager().get_iterator_buffer();
 				platform::bc_lock_guard<bc_light_manager::iterator_buffer> l_lock(l_iterator);

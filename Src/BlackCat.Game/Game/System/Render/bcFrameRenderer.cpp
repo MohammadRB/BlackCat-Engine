@@ -387,11 +387,11 @@ namespace black_cat
 			(
 				p_render_param.m_clock,
 				p_render_param.m_query_manager,
-				*l_camera,
-				*l_prev_camera,
 				p_render_param.m_render_system,
 				*this,
-				m_thread_manager->get_default_render_thread()
+				m_thread_manager->get_default_render_thread(),
+				*l_camera,
+				*l_prev_camera
 			));
 		}
 	}

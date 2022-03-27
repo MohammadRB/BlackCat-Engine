@@ -14,6 +14,11 @@ namespace black_cat
 	{
 		void bc_scene_decal_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
+			if (!p_context.m_scene)
+			{
+				return;
+			}
+
 			auto l_iterator = p_context.m_scene->get_decal_manager().get_iterator_buffer();
 			
 			{

@@ -16,15 +16,15 @@
           "content_parameter": {}
         },
         {
-          "content_title": "coast_sand_rocks",
+          "content_title": "plain_grass",
           "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\TerrainTextures1\\coast_sand_rocks.dds",
+          "content_file": "Content\\Texture\\TerrainTextures1\\plain_grass.dds",
           "content_parameter": {}
         },
         {
-          "content_title": "coast_sand_rocks_nrm",
+          "content_title": "plain_grass_nrm",
           "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\TerrainTextures1\\coast_sand_rocks_nrm.dds",
+          "content_file": "Content\\Texture\\TerrainTextures1\\plain_grass_nrm.dds",
           "content_parameter": {}
         },
         {
@@ -40,27 +40,27 @@
           "content_parameter": {}
         },
         {
-          "content_title": "dirt_aerial",
+          "content_title": "ground_crack",
           "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\TerrainTextures1\\dirt_aerial.dds",
+          "content_file": "Content\\Texture\\TerrainTextures1\\ground_crack.dds",
           "content_parameter": {}
         },
         {
-          "content_title": "dirt_aerial_nrm",
+          "content_title": "ground_crack_nrm",
           "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\TerrainTextures1\\dirt_aerial_nrm.dds",
+          "content_file": "Content\\Texture\\TerrainTextures1\\ground_crack_nrm.dds",
           "content_parameter": {}
         },
         {
-          "content_title": "forest_leaves",
+          "content_title": "spring_soil",
           "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\TerrainTextures1\\forest_leaves.dds",
+          "content_file": "Content\\Texture\\TerrainTextures1\\spring_soil.dds",
           "content_parameter": {}
         },
         {
-          "content_title": "forest_leaves_nrm",
+          "content_title": "spring_soil_nrm",
           "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\TerrainTextures1\\forest_leaves_nrm.dds",
+          "content_file": "Content\\Texture\\TerrainTextures1\\spring_soil_nrm.dds",
           "content_parameter": {}
         },
         {
@@ -194,42 +194,42 @@
               {
                 "mesh_material": "terrain_material_1",
                 "collider_material": "terrain_material_1",
-                "scale": 5.0
+                "scale": 30.0
               },
               {
                 "mesh_material": "terrain_material_2",
                 "collider_material": "terrain_material_2",
-                "scale": 20.0
+                "scale": 10.0
               },
               {
                 "mesh_material": "terrain_material_3",
                 "collider_material": "terrain_material_3",
-                "scale": 5.0
+                "scale": 10.0
               },
               {
                 "mesh_material": "terrain_material_4",
                 "collider_material": "terrain_material_4",
-                "scale": 5.0
+                "scale": 10.0
               },
               {
                 "mesh_material": "terrain_material_5",
                 "collider_material": "terrain_material_5",
-                "scale": 5.0
+                "scale": 10.0
               },
               {
                 "mesh_material": "terrain_material_6",
                 "collider_material": "terrain_material_6",
-                "scale": 5.0
+                "scale": 10.0
               },
               {
                 "mesh_material": "terrain_material_7",
                 "collider_material": "terrain_material_7",
-                "scale": 5.0
+                "scale": 10.0
               },
               {
                 "mesh_material": "terrain_material_8",
                 "collider_material": "terrain_material_8",
-                "scale": 5.0
+                "scale": 10.0
               }
             ]
           }

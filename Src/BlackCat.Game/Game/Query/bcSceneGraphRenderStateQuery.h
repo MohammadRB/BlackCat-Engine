@@ -102,6 +102,11 @@ namespace black_cat
 
 		inline void bc_scene_graph_render_state_query::execute(const bc_scene_query_context & p_context) noexcept
 		{
+			if (!p_context.m_scene)
+			{
+				return;
+			}
+
 			m_scene_query.execute(p_context);
 			const auto l_scene_buffer = m_scene_query.get_scene_buffer();
 

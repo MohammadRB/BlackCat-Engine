@@ -21,7 +21,7 @@ namespace black_cat
 		0,
 		false, // DX11 requires shader_bind_flag & render_target_bind_flag to be set for auto mip generation
 		0,
-		graphic::bc_format::R8G8B8A8_UNORM,
+		graphic::bc_format::unknown,
 		graphic::bc_resource_usage::gpu_r,
 		graphic::bc_resource_view_type::shader
 	)

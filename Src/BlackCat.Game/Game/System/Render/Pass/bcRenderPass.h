@@ -63,28 +63,28 @@ namespace black_cat
 		public:
 			bc_render_pass_render_context(const platform::bc_clock::update_param& p_clock,
 				core::bc_query_manager& p_query_manager,
-				const bc_camera_instance& p_update_camera,
-				const bc_camera_instance& p_render_camera,
 				bc_render_system& p_render_system,
 				bc_frame_renderer& p_frame_renderer,
-				bc_default_render_thread& p_render_thread)
+				bc_default_render_thread& p_render_thread,
+				const bc_camera_instance& p_update_camera,
+				const bc_camera_instance& p_render_camera)
 				: m_clock(p_clock),
 				m_query_manager(p_query_manager),
-				m_update_camera(p_update_camera),
-				m_render_camera(p_render_camera),
 				m_render_system(p_render_system),
 				m_frame_renderer(p_frame_renderer),
-				m_render_thread(p_render_thread)
+				m_render_thread(p_render_thread),
+				m_update_camera(p_update_camera),
+				m_render_camera(p_render_camera)
 			{
 			}
 
 			platform::bc_clock::update_param m_clock;
 			core::bc_query_manager& m_query_manager;
-			bc_camera_instance m_update_camera;
-			bc_camera_instance m_render_camera;
 			bc_render_system& m_render_system;
 			bc_frame_renderer& m_frame_renderer;
 			bc_default_render_thread& m_render_thread;
+			bc_camera_instance m_update_camera;
+			bc_camera_instance m_render_camera;
 		};
 
 		class bc_render_pass_reset_context

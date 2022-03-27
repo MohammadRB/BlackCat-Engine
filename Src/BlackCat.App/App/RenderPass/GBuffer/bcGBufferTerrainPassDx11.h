@@ -54,6 +54,6 @@ namespace black_cat
 
 		core::bc_query_result<game::bc_height_map_scene_query> m_height_maps_query;
 		game::bc_render_state_buffer m_height_maps_render_buffer;
-		core::bc_vector<const game::bc_height_map*> m_last_frame_height_maps;
+		core::bc_vector<const game::bc_height_map*> m_last_frame_height_maps; // Use weak pointers to let resources get free if needed
 	};
 }

@@ -36,6 +36,11 @@ namespace black_cat
 		protected:
 			void execute(const bc_scene_query_context& p_context) noexcept override
 			{
+				if (!p_context.m_scene)
+				{
+					return;
+				}
+
 				m_emitters = p_context.m_scene->get_particle_manager().get_emitter_states();
 			}
 			

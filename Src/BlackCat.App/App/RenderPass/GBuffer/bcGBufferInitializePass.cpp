@@ -88,17 +88,27 @@ namespace black_cat
 
 	void bc_gbuffer_initialize_pass::execute(const game::bc_render_pass_render_context& p_context)
 	{
-		game::bc_direct_light l_direct_light({0,0,0}, {0,0,0}, 1, {0,0,0}, 1);
-		game::bc_direct_wind l_direct_wind({0,0,0}, 1);
+		game::bc_direct_light l_direct_light({0,0,0}, {0,0,0}, 0, {0,0,0}, 0);
+		game::bc_direct_wind l_direct_wind({0,0,0}, 0);
 
-		const auto l_light_ite = std::max_element(std::begin(m_lights_query_result), std::end(m_lights_query_result), [](const game::bc_light_instance& p_light1, const game::bc_light_instance& p_light2)
-		{
-			return p_light1.as_direct_light()->get_intensity() < p_light2.as_direct_light()->get_intensity();
-		});
-		const auto l_wind_ite = std::max_element(std::begin(m_winds_query_result), std::end(m_winds_query_result), [](const game::bc_wind& p_wind1, const game::bc_wind& p_wind2)
-		{
-			return p_wind1.as_direct_wind()->m_power < p_wind2.as_direct_wind()->m_power;
-		});
+		const auto l_light_ite = std::max_element
+		(
+			std::begin(m_lights_query_result),
+			std::end(m_lights_query_result),
+			[](const game::bc_light_instance& p_light1, const game::bc_light_instance& p_light2)
+			{
+				return p_light1.as_direct_light()->get_intensity() < p_light2.as_direct_light()->get_intensity();
+			}
+		);
+		const auto l_wind_ite = std::max_element
+		(
+			std::begin(m_winds_query_result),
+			std::end(m_winds_query_result),
+			[](const game::bc_wind& p_wind1, const game::bc_wind& p_wind2)
+			{
+				return p_wind1.as_direct_wind()->m_power < p_wind2.as_direct_wind()->m_power;
+			}
+		);
 
 		if(l_light_ite != std::end(m_lights_query_result))
 		{
@@ -112,12 +122,12 @@ namespace black_cat
 		p_context.m_render_thread.start();
 		p_context.m_frame_renderer.update_global_cbuffer(p_context.m_render_thread, p_context.m_clock, p_context.m_render_camera, l_direct_light, l_direct_wind);
 
-		graphic::bc_render_target_view l_render_targets[] = { m_diffuse_map_view.get(), m_normal_map_view.get(), m_specular_map_view.get() };
+		const graphic::bc_render_target_view l_render_targets[] = { m_diffuse_map_view.get(), m_normal_map_view.get(), m_specular_map_view.get() };
 		
 		p_context.m_render_thread.get_pipeline().bind_om_render_targets(3, &l_render_targets[0], m_depth_stencil_view.get());
 		p_context.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
 
-		core::bc_vector4f l_colors[] =
+		const core::bc_vector4f l_colors[] =
 		{
 			core::bc_vector4f(l_direct_light.get_color() * l_direct_light.get_intensity(), 1),
 			core::bc_vector4f(0, 0, 0, 1),

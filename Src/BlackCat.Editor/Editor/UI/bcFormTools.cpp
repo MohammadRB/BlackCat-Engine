@@ -281,7 +281,7 @@ namespace black_cat
 						p_event->x(),
 						p_event->y(),
 						m_terrain_form.get_radius(),
-						m_terrain_form.get_height()
+						m_terrain_form.get_height() / 10.f
 					);
 					m_ui_command_service.queue_command(std::move(l_command));
 					break;

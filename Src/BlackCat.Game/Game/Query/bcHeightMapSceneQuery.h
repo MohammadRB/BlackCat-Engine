@@ -82,6 +82,11 @@ namespace black_cat
 
 		inline void bc_height_map_scene_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
+			if(!p_context.m_scene)
+			{
+				return;
+			}
+
 			auto l_scene_buffer = p_context.m_scene->get_scene_graph().get_actors<bc_height_map_component>();
 			m_height_maps.reserve(l_scene_buffer.size());
 			

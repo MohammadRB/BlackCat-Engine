@@ -81,6 +81,11 @@ namespace black_cat
 
 		inline void bc_main_camera_scene_icon_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
+			if (!p_context.m_scene)
+			{
+				return;
+			}
+
 			const auto& l_main_camera_scene_buffer = p_context.get_shared_query<bc_main_camera_scene_shared_query>().get_scene_buffer();
 
 			for (auto& l_actor : l_main_camera_scene_buffer)

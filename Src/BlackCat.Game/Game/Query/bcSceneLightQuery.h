@@ -81,6 +81,11 @@ namespace black_cat
 
 		inline void bc_scene_light_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
+			if (!p_context.m_scene)
+			{
+				return;
+			}
+
 			const bool l_need_direct = core::bc_enum::has(m_types, bc_light_type::direct);
 			const bool l_need_spot = core::bc_enum::has(m_types, bc_light_type::spot);
 			const bool l_need_point = core::bc_enum::has(m_types, bc_light_type::point);

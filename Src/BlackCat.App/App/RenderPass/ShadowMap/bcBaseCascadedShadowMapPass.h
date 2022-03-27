@@ -61,15 +61,15 @@ namespace black_cat
 			bcSIZE p_light_index,
 			bcSIZE p_cascade_index,
 			bcSIZE p_cascade_count)
-			: game::bc_render_pass_render_context
+			: bc_render_pass_render_context
 			(
 				p_render_param.m_clock,
 				p_render_param.m_query_manager,
-				p_render_param.m_update_camera,
-				p_render_param.m_render_camera,
 				p_render_param.m_render_system,
 				p_render_param.m_frame_renderer,
-				p_render_param.m_render_thread
+				p_render_param.m_render_thread,
+				p_render_param.m_update_camera,
+				p_render_param.m_render_camera
 			),
 			m_update_cascade_camera(p_update_cascade_camera),
 			m_render_cascade_camera(p_render_cascade_camera),
@@ -96,15 +96,15 @@ namespace black_cat
 			bcSIZE p_light_index,
 			bcSIZE p_cascade_index,
 			bcSIZE p_cascade_count)
-			: game::bc_render_pass_render_context
+			: bc_render_pass_render_context
 			(
 				p_render_param.m_clock,
 				p_render_param.m_query_manager,
-				p_render_param.m_update_camera,
-				p_render_param.m_render_camera,
 				p_render_param.m_render_system,
 				p_render_param.m_frame_renderer,
-				p_render_param.m_render_thread
+				p_render_param.m_render_thread,
+				p_render_param.m_update_camera,
+				p_render_param.m_render_camera
 			),
 			m_render_pass_states(p_render_states),
 			m_update_cascade_camera(p_update_cascade_camera),

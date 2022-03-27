@@ -97,6 +97,11 @@ namespace black_cat
 
 		inline void bc_scene_graph_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
+			if (!p_context.m_scene)
+			{
+				return;
+			}
+
 			if (m_execute_with_component.is_valid())
 			{
 				m_scene_buffer = m_execute_with_component(p_context, m_frustum);

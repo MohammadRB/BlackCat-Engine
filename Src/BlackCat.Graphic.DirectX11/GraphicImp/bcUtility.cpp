@@ -122,12 +122,12 @@ namespace black_cat
 				FormatMessageA
 				(
 					FORMAT_MESSAGE_FROM_SYSTEM,
-					0,
+					nullptr,
 					p_hr,
 					MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 					l_error_string,
 					MAX_PATH,
-					NULL
+					nullptr
 				);
 
 				core::bc_string l_message = "DirectX Error: ";
@@ -136,7 +136,7 @@ namespace black_cat
 				DWORD l_win32_code;
 				platform::win32_from_hresult(p_hr, &l_win32_code);
 
-				//BC_ASSERT(false);
+				BC_ASSERT(false);
 				throw bc_graphic_exception(static_cast<bcINT>(l_win32_code),l_message);
 			}
 		}

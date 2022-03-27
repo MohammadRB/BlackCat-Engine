@@ -18,7 +18,7 @@ namespace black_cat
 			bcUINT32 m_tool_center_x;
 			bcUINT32 m_tool_center_z;
 			bcUINT32 m_tool_radius;
-			bcINT32 m_tool_height;
+			bcFLOAT m_tool_height;
 		};
 
 		using bc_terrain_height_ui_command_state = bc_terrain_ui_command_state;
@@ -31,7 +31,7 @@ namespace black_cat
 				bcUINT16 p_point_left,
 				bcUINT16 p_point_top,
 				bcUINT16 p_radius,
-				bcINT16 p_height);
+				bcFLOAT p_height);
 
 			bc_terrain_height_ui_command(const bc_terrain_height_ui_command&);
 
@@ -47,7 +47,7 @@ namespace black_cat
 			bool update(terrain_update_context& p_context) override;
 
 		private:
-			bcINT16 m_height;
+			bcFLOAT m_height;
 		};
 
 		class bc_terrain_height_ui_command_render_task : public game::bci_render_task

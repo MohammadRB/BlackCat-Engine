@@ -21,7 +21,7 @@ namespace black_cat
 
 			bc_scene_wind_query(bc_scene_wind_query&&) noexcept;
 
-			~bc_scene_wind_query();
+			~bc_scene_wind_query() override;
 			
 			bc_scene_wind_query& operator=(bc_scene_wind_query&&) noexcept;
 
@@ -39,21 +39,11 @@ namespace black_cat
 		{
 		}
 
-		inline bc_scene_wind_query::bc_scene_wind_query(bc_scene_wind_query&& p_other) noexcept
-			: bc_query(std::move(p_other)),
-			m_winds(std::move(p_other.m_winds))
-		{
-		}
+		inline bc_scene_wind_query::bc_scene_wind_query(bc_scene_wind_query&&) noexcept = default;
 
 		inline bc_scene_wind_query::~bc_scene_wind_query() = default;
 
-		inline bc_scene_wind_query& bc_scene_wind_query::operator=(bc_scene_wind_query&& p_other) noexcept
-		{
-			bc_query::operator=(std::move(p_other));
-			m_winds = std::move(p_other.m_winds);
-
-			return *this;
-		}
+		inline bc_scene_wind_query& bc_scene_wind_query::operator=(bc_scene_wind_query&&) noexcept = default;
 
 		inline core::bc_vector<bc_wind> bc_scene_wind_query::get_winds() noexcept
 		{
@@ -62,8 +52,14 @@ namespace black_cat
 
 		inline void bc_scene_wind_query::execute(const bc_scene_query_context& p_context) noexcept
 		{
+			if (!p_context.m_scene)
+			{
+				return;
+			}
+
 			bc_scene_graph_query l_scene_graph_query;
 			l_scene_graph_query.only<bc_wind_component>().execute(p_context);
+
 			bc_scene_graph_buffer l_scene_graph_buffer = l_scene_graph_query.get_scene_buffer();
 			m_winds.reserve(l_scene_graph_buffer.size());
 			

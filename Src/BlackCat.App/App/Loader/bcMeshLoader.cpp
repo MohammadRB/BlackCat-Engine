@@ -413,9 +413,13 @@ namespace black_cat
 		l_vertex_buffer = l_device.create_buffer(l_vertex_buffer_config, &l_vertex_buffer_data);
 		l_index_buffer = l_device.create_buffer(l_index_buffer_config, &l_index_buffer_data);
 
-		convert_ai_material(p_context, *p_ai_scene.mMaterials[p_ai_mesh.mMaterialIndex], l_material);
+		aiString l_ai_material_name;
+		auto& l_ai_material = *p_ai_scene.mMaterials[p_ai_mesh.mMaterialIndex];
+		l_ai_material.Get(AI_MATKEY_NAME, l_ai_material_name);
 
-		auto l_material_name = core::bc_to_exclusive_string(core::bc_path(p_context.m_file.get_path().c_str()).get_filename()) + "." + p_ai_mesh.mName.C_Str();
+		convert_ai_material(p_context, l_ai_material, l_material);
+
+		auto l_material_name = core::bc_to_exclusive_string(core::bc_path(p_context.m_file.get_path().c_str()).get_filename()) + "_" + l_ai_material_name.C_Str();
 		auto l_material_ptr = p_render_system.get_material_manager().store_mesh_material
 		(
 			p_context.get_allocator_alloc_type(),

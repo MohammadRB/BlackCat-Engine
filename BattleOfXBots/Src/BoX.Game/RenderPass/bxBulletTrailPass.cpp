@@ -114,6 +114,11 @@ namespace box
 
 		m_query_result = p_context.m_query_manager.queue_query(game::bc_scene_query().with_callable([](const game::bc_scene_query_context& p_context)
 		{
+			if(!p_context.m_scene)
+			{
+				return core::bc_any(core::bc_vector<_bx_bullet>());
+			}
+
 			const auto l_bullets = p_context.m_scene->get_bullet_manager().get_bullets();
 			core::bc_vector<_bx_bullet> l_copied_bullets;
 			l_copied_bullets.reserve(l_bullets.size());
