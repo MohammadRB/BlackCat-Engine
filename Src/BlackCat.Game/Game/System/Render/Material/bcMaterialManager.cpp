@@ -5,10 +5,11 @@
 #include "CorePlatformImp/File/bcPath.h"
 #include "Core/Math/bcVector4f.h"
 #include "Core/Container/bcString.h"
+#include "Core/Container/bcStringStream.h"
+#include "Core/Content/bcContentStreamManager.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/File/bcFileStream.h"
 #include "Core/File/bcPath.h"
-#include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcJsonParse.h"
 #include "Core/Utility/bcLogger.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
@@ -142,10 +143,8 @@ namespace black_cat
 
 			if (!l_json_file.open_read(p_material_json_file))
 			{
-				core::bc_string_frame l_msg = "Error in reading material file: ";
-				l_msg += core::bc_to_exclusive_string(p_material_json_file).c_str();
-
-				throw bc_io_exception(l_msg.c_str());
+				const auto l_msg = core::bc_string_stream_frame() << "Error in reading material file: " << p_material_json_file;
+				throw bc_io_exception(l_msg.str().c_str());
 			}
 
 			core::bc_read_all_lines(l_json_file, l_json_file_buffer);
@@ -159,14 +158,26 @@ namespace black_cat
 				l_material.m_diffuse_color = *l_material_desc->m_diffuse_color;
 				l_material.m_specular_intensity = *l_material_desc->m_specular_intensity;
 				l_material.m_specular_power = *l_material_desc->m_specular_power;
-				l_material.m_diffuse_map_name = l_material_desc->m_diffuse_map->c_str();
-				l_material.m_normal_map_name = l_material_desc->m_normal_map->c_str();
-				l_material.m_specular_map_name = l_material_desc->m_specular_map->c_str();
+				l_material.m_diffuse_map_name = *l_material_desc->m_diffuse_map;
+				l_material.m_normal_map_name = *l_material_desc->m_normal_map;
+				l_material.m_specular_map_name = *l_material_desc->m_specular_map;
 
-				m_mesh_material_descriptions.insert(mesh_material_desc_map::value_type
-				(
-					string_hash()(l_material_desc->m_name->c_str()), std::move(l_material)
-				));
+				const auto l_material_hash = string_hash()(l_material_desc->m_name->c_str());
+				auto l_ite = m_mesh_material_descriptions.find(l_material_hash);
+
+				if(l_ite == std::end(m_mesh_material_descriptions))
+				{
+					m_mesh_material_descriptions.insert(mesh_material_desc_map::value_type(l_material_hash, std::move(l_material)));
+				}
+				else
+				{
+					l_ite->second = std::move(l_material);
+					core::bc_log(core::bc_log_type::warning)
+						<< "material description with name '"
+						<< *l_material_desc->m_name
+						<< "' already exist. old material will be replaced."
+						<< core::bc_lend;
+				}
 			}
 
 			for(core::bc_json_object<_bc_collider_material_desc>& l_material_desc : l_material_json->m_collider_materials)
@@ -185,10 +196,22 @@ namespace black_cat
 					l_material_desc->m_decal->c_str()
 				);
 
-				m_collider_materials.insert(collider_material_map::value_type
-				(
-					string_hash()(l_material.get_name()), std::move(l_material)
-				));
+				const auto l_material_hash = string_hash()(l_material.get_name());
+				auto l_ite = m_collider_materials.find(l_material_hash);
+
+				if (l_ite == std::end(m_collider_materials))
+				{
+					m_collider_materials.insert(collider_material_map::value_type(l_material_hash, std::move(l_material)));
+				}
+				else
+				{
+					l_ite->second = std::move(l_material);
+					core::bc_log(core::bc_log_type::warning)
+						<< "collider material description with name '"
+						<< *l_material_desc->m_name
+						<< "' already exist. old material will be replaced."
+						<< core::bc_lend;
+				}
 			}
 		}
 
@@ -225,7 +248,7 @@ namespace black_cat
 			{
 				l_diffuse_map = m_content_stream_manager->find_content<graphic::bc_texture2d_content>
 				(
-					l_description_entry->second.m_diffuse_map_name.c_str()
+					l_description_entry->second.m_diffuse_map_name
 				);
 
 				if(!l_diffuse_map)
@@ -242,7 +265,7 @@ namespace black_cat
 			{
 				l_normal_map = m_content_stream_manager->find_content<graphic::bc_texture2d_content>
 				(
-					l_description_entry->second.m_normal_map_name.c_str()
+					l_description_entry->second.m_normal_map_name
 				);
 
 				if (!l_normal_map)
@@ -259,7 +282,7 @@ namespace black_cat
 			{
 				l_specular_map = m_content_stream_manager->find_content<graphic::bc_texture2d_content>
 				(
-					l_description_entry->second.m_specular_map_name.c_str()
+					l_description_entry->second.m_specular_map_name
 				);
 
 				if (!l_specular_map)
@@ -325,9 +348,9 @@ namespace black_cat
 			l_material.m_parameters.m_specular_intensity = p_material.m_specular_intensity;
 			l_material.m_parameters.m_specular_power = p_material.m_specular_power;
 			l_material.m_parameters.m_has_normal_map = p_material.m_normal_map != nullptr;
-			l_material.m_diffuse_map = p_material.m_diffuse_map;
-			l_material.m_normal_map = p_material.m_normal_map;
-			l_material.m_specular_map = p_material.m_specular_map;
+			l_material.m_diffuse_map = std::move(p_material.m_diffuse_map);
+			l_material.m_normal_map = std::move(p_material.m_normal_map);
+			l_material.m_specular_map = std::move(p_material.m_specular_map);
 
 			if(l_material.m_diffuse_map == nullptr)
 			{
@@ -454,7 +477,7 @@ namespace black_cat
 
 		void bc_material_manager::destroy_mesh_material(bc_mesh_material* p_material)
 		{
-			auto* l_material = static_cast<_bc_material_manager_material*>(p_material);
+			const auto* l_material = static_cast<_bc_material_manager_material*>(p_material);
 
 			{
 				platform::bc_lock_guard<platform::bc_mutex> l_guard(m_materials_mutex);
@@ -573,13 +596,14 @@ namespace black_cat
 			{
 				platform::bc_lock_guard<platform::bc_mutex> l_guard(m_materials_mutex);
 
-				auto* l_result = m_materials.insert(mesh_material_map::value_type
-				(
-					l_hash,
-					core::bc_unique_ptr<bc_mesh_material>(std::move(l_material))
-				)).first->second.get();
+				auto l_ite = m_materials.insert(mesh_material_map::value_type(l_hash, core::bc_unique_ptr<bc_mesh_material>(std::move(l_material))));
+				if (!l_ite.second)
+				{
+					auto l_msg = core::bc_string_stream_frame() << "material with name '" << p_name << "' already exist in the materials map";
+					throw bc_invalid_operation_exception(l_msg.str().c_str());
+				}
 
-				return bc_mesh_material_ptr(l_result, _bc_mesh_material_ptr_deleter(this));
+				return bc_mesh_material_ptr(l_ite.first->second.get(), _bc_mesh_material_ptr_deleter(this));
 			}
 		}
 	}

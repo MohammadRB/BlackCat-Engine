@@ -26,6 +26,17 @@ namespace black_cat
 		{
 		}
 
+		bc_sound_component::~bc_sound_component() noexcept
+		{
+			for (auto& l_sound_entry : m_sounds)
+			{
+				if (l_sound_entry.m_channel.is_valid())
+				{
+					l_sound_entry.m_channel.stop();
+				}
+			}
+		}
+
 		bc_actor bc_sound_component::get_actor() const noexcept
 		{
 			return get_manager().component_get_actor(*this);

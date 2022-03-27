@@ -14,12 +14,12 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		struct bc_platform_script_object_pack
 		{
 		};
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_object : public bc_platform_script_reference<TPlatform>
 		{
 		public:
@@ -72,7 +72,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_script_object = bc_platform_script_object<platform::g_current_platform>;
+		using bc_script_object = bc_platform_script_object<g_current_platform>;
 		using bc_script_object_ref = bc_script_ref<bc_script_object>;
 	}
 }

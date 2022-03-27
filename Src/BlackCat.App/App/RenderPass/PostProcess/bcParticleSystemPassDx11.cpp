@@ -80,10 +80,12 @@ namespace black_cat
 		core::bc_vector4f m_lights[TLightCount * 2];
 	};
 
-	bc_particle_system_pass_dx11::bc_particle_system_pass_dx11(game::bc_render_pass_variable_t p_render_target_texture, game::bc_render_pass_variable_t p_render_target_view, const bcECHAR* p_sprites_content_name)
+	bc_particle_system_pass_dx11::bc_particle_system_pass_dx11(game::bc_render_pass_variable_t p_render_target_texture,
+		game::bc_render_pass_variable_t p_render_target_view, 
+		const bcECHAR* p_sprites_content_path)
 		: m_render_target_texture(p_render_target_texture),
 		m_render_target_view(p_render_target_view),
-		m_sprites_content_name(p_sprites_content_name)
+		m_sprites_content_path(p_sprites_content_path)
 	{
 		m_emitters_query_result.reserve(s_emitters_count);
 	}
@@ -95,7 +97,7 @@ namespace black_cat
 		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
 		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
 
-		const auto l_sprites_path = l_game_system.get_file_system().get_content_texture_path(m_sprites_content_name);
+		const auto l_sprites_path = l_game_system.get_file_system().get_content_path(m_sprites_content_path);
 		m_sprites_texture = l_content_manager.load<graphic::bc_texture2d_content>
 		(
 			core::bc_alloc_type::program,

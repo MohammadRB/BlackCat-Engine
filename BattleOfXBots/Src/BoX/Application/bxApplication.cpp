@@ -46,7 +46,7 @@
 namespace box
 {
 	constexpr bcFLOAT g_client_start_delay = 1.0f;
-	platform::bc_clock::small_delta_time g_client_start_time = 0;
+	platform::bc_clock::small_time g_client_start_time = 0;
 
 	void bx_application::bind(platform::bc_script_context& p_context, platform::bc_script_global_prototype_builder& p_global_prototype, bx_application& p_instance)
 	{
@@ -125,13 +125,13 @@ namespace box
 		l_render_system.add_render_pass(bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
 		l_render_system.add_render_pass(bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
 		l_render_system.add_render_pass(bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
-		l_render_system.add_render_pass(bc_particle_system_pass_dx11(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Sprites.dds")));
+		l_render_system.add_render_pass(bc_particle_system_pass_dx11(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Texture\\Particle\\Particle.dds")));
 		l_render_system.add_render_pass(bc_light_flare_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 		l_render_system.add_render_pass(bx_bullet_trail_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, l_file_system.get_content_texture_path(bcL("BulletTrail.dds"))));
 		l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 		l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
-		l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view, l_file_system.get_content_data_path(bcL("Dx.spritefont"))));
-		l_render_system.add_render_pass(bx_player_ui_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, l_file_system.get_content_data_path(bcL("Dx.spritefont"))));
+		l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
+		l_render_system.add_render_pass(bx_player_ui_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
 
 		m_player_spawn_event_handle = l_event_manager.register_event_listener<bx_player_spawned_event>
 		(

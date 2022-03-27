@@ -56,8 +56,8 @@ namespace black_cat
 
 			std::transform
 			(
-				l_height_map.get_materials(),
-				l_height_map.get_materials() + l_height_map.get_materials_count(),
+				std::begin(l_height_map.get_materials()),
+				std::end(l_height_map.get_materials()),
 				std::begin(l_px_height_field_materials),
 				[](const bc_height_map_material& p_material)
 				{
@@ -83,7 +83,13 @@ namespace black_cat
 			for (const bc_mesh_part_collider_entry& l_mesh_part_collider : l_mesh_collider.get_colliders())
 			{
 				auto l_material = p_material_manager.get_default_collider_material();
-				const auto l_material_ite = l_collider_materials.find(l_mesh_part_collider.m_attached_mesh_name.c_str());
+				auto l_material_ite = l_collider_materials.find(l_mesh_part_collider.m_attached_mesh_name.c_str());
+
+				if(l_material_ite == std::end(l_collider_materials))
+				{
+					l_material_ite = l_collider_materials.find("*");
+				}
+
 				if (l_material_ite != std::end(l_collider_materials))
 				{
 					core::bc_any& l_material_key = l_material_ite->second;

@@ -1269,7 +1269,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="bcBlackCatEditor.qrc"/>
+  <include location="..\\Resources\\bcBlackCatEditor.qrc"/>
  </resources>
  <connections>
   <connection>

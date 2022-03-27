@@ -69,7 +69,7 @@ namespace black_cat
 
 			bc_frame_renderer& operator=(bc_frame_renderer&&) noexcept;
 
-			constexpr bool need_matrix_transpose() const noexcept;
+			static constexpr bool need_matrix_transpose() noexcept;
 			
 			const graphic::bc_constant_buffer_parameter& get_global_cbuffer() const noexcept;
 
@@ -118,7 +118,7 @@ namespace black_cat
 			platform::bc_atomic<bc_camera_instance*> m_camera;
 		};
 
-		constexpr bool bc_frame_renderer::need_matrix_transpose() const noexcept
+		constexpr bool bc_frame_renderer::need_matrix_transpose() noexcept
 		{
 			return graphic::bc_render_api_info::use_column_matrix() && !core::bc_matrix4f::use_column_major_storage();
 		}

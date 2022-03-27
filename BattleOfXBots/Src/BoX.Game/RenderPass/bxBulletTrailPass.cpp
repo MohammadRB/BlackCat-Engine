@@ -3,9 +3,11 @@
 #include "Core/Content/bcContentManager.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
+#include "Game/System/Input/bcGlobalConfig.h"
+#include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcDefaultRenderThread.h"
-#include "Game/System/Input/bcGlobalConfig.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "App/bcConstant.h"
 #include "BoX.Game/RenderPass/bxBulletTrailPass.h"
@@ -33,10 +35,12 @@ namespace box
 		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
 		auto& l_device = p_render_system.get_device();
 		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
+		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
+
 		m_texture = l_content_manager.load<graphic::bc_texture2d_content>
 		(
 			core::bc_alloc_type::program,
-			m_texture_path.data(),
+			l_game_system.get_file_system().get_content_path(m_texture_path.data()),
 			{},
 			core::bc_content_loader_parameter()
 		);
@@ -62,8 +66,8 @@ namespace box
 			.as_constant_buffer();
 		const auto l_cbuffer_params = _bx_bullet_trail_cbuffer
 		{
-			bc_get_global_config().get_global_scale() * .8f,
-			bc_get_global_config().get_global_scale() * .1f
+			bc_get_global_config().get_scene_global_scale() * .8f,
+			bc_get_global_config().get_scene_global_scale() * .1f
 		};
 		const auto l_cbuffer_data = graphic::bc_subresource_data(&l_cbuffer_params, 0, 0);
 		

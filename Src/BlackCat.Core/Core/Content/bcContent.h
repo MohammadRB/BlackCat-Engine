@@ -21,7 +21,7 @@ namespace black_cat
 
 			_bc_content_ptr_deleter(bc_content_manager* p_content_manager);
 
-			void operator ()(bci_content* p_content) const;
+			void operator ()(const bci_content* p_content) const;
 
 		private:
 			bc_content_manager* m_content_manager;

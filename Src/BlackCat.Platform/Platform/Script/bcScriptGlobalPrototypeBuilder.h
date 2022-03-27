@@ -9,12 +9,12 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		struct bc_platform_script_global_prototype_builder_pack
 		{
 		};
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_global_prototype_builder
 		{
 		public:
@@ -201,6 +201,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_script_global_prototype_builder = bc_platform_script_global_prototype_builder<platform::g_current_platform>;
+		using bc_script_global_prototype_builder = bc_platform_script_global_prototype_builder<g_current_platform>;
 	}
 }

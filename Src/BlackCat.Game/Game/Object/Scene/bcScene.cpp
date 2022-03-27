@@ -48,7 +48,7 @@ namespace black_cat
 			m_entity_files(std::move(p_entity_files)),
 			m_loaded_streams(std::move(p_loaded_streams)),
 			m_loading_mode(false),
-			m_global_scale(bc_get_global_config().get_global_scale()),
+			m_global_scale(bc_get_global_config().get_scene_global_scale()),
 			m_entity_manager(&p_entity_manager),
 			m_physics(&p_game_system.get_physics_system()),
 			m_scene_graph(std::move(p_scene_graph)),

@@ -69,6 +69,11 @@ namespace black_cat
 							auto l_render_state = l_lod_mesh.get_node_mesh_render_state_ptr(p_node, l_mesh_ite);
 							auto l_material_ite = p_mesh_materials.find(l_mesh_part_name.data());
 
+							if(l_material_ite == std::cend(p_mesh_materials))
+							{
+								l_material_ite = p_mesh_materials.find("*");
+							}
+
 							if (l_material_ite != std::cend(p_mesh_materials))
 							{
 								core::bc_any& l_material_key = l_material_ite->second;

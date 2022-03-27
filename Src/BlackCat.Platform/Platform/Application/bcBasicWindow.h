@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_application;
 
 		enum class bc_messagebox_type
@@ -38,7 +38,7 @@ namespace black_cat
 			no
 		};
 
-		template<platform::bc_platform>
+		template<bc_platform>
 		struct bc_platform_basic_window_parameter_pack
 		{
 		public:
@@ -54,14 +54,14 @@ namespace black_cat
 			bcUINT32 m_height;
 		};
 
-		using bc_basic_window_parameter = bc_platform_basic_window_parameter_pack<platform::g_current_platform>;
+		using bc_basic_window_parameter = bc_platform_basic_window_parameter_pack<g_current_platform>;
 
-		template<platform::bc_platform>
+		template<bc_platform>
 		struct bc_platform_basic_window_pack
 		{
 		};
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_basic_window : public bc_platform_window<TPlatform>
 		{
 		public:
@@ -75,7 +75,7 @@ namespace black_cat
 			
 			bc_platform_basic_window(bc_platform_basic_window&& p_other) noexcept;
 
-			~bc_platform_basic_window();
+			~bc_platform_basic_window() override;
 
 			bc_platform_basic_window& operator =(bc_platform_basic_window&& p_other) noexcept;
 
@@ -113,11 +113,16 @@ namespace black_cat
 
 			void update() override;
 
-			bc_messagebox_value messagebox(const bcECHAR* p_caption, const bcECHAR* p_text, bc_messagebox_type p_type, bc_messagebox_buttom p_button);
+			bc_messagebox_value show_messagebox(const bcECHAR* p_caption, const bcECHAR* p_text, bc_messagebox_type p_type, bc_messagebox_buttom p_button);
 
-			bc_messagebox_value messagebox(core::bc_estring_frame p_caption, core::bc_estring_frame p_text, bc_messagebox_type p_type, bc_messagebox_buttom p_button);
+			bc_messagebox_value show_messagebox(core::bc_estring_frame p_caption, core::bc_estring_frame p_text, bc_messagebox_type p_type, bc_messagebox_buttom p_button);
 
 			platform_pack& get_platform_pack()
+			{
+				return m_pack;
+			}
+
+			const platform_pack& get_platform_pack() const
 			{
 				return m_pack;
 			}
@@ -126,6 +131,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_basic_window = bc_platform_basic_window<platform::g_current_platform>;
+		using bc_basic_window = bc_platform_basic_window<g_current_platform>;
 	}
 }

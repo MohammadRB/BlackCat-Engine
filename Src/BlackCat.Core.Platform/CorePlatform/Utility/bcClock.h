@@ -23,17 +23,17 @@ namespace black_cat
 			using platform_pack = bc_platform_clock_pack<TPlatform>;
 			using big_clock = typename platform_pack::big_clock;
 			using small_clock = typename platform_pack::small_clock;
-			using big_delta_time = typename platform_pack::big_delta_time;
-			using small_delta_time = typename platform_pack::small_delta_time;
+			using big_time = typename platform_pack::big_time;
+			using small_time = typename platform_pack::small_time;
 
 			struct update_param
 			{
-				update_param(big_delta_time p_total_elapsed, small_delta_time p_elapsed, small_delta_time p_average_elapsed)
+				update_param(big_time p_total_elapsed, small_time p_elapsed, small_time p_average_elapsed)
 					: update_param(p_total_elapsed, p_elapsed, p_average_elapsed, p_elapsed)
 				{
 				}
 				
-				update_param(big_delta_time p_total_elapsed, small_delta_time p_elapsed, small_delta_time p_average_elapsed, small_delta_time p_fixed_elapsed)
+				update_param(big_time p_total_elapsed, small_time p_elapsed, small_time p_average_elapsed, small_time p_fixed_elapsed)
 					: m_total_elapsed(p_total_elapsed),
 					m_total_elapsed_second(p_total_elapsed / 1000),
 					m_elapsed(p_elapsed),
@@ -45,14 +45,14 @@ namespace black_cat
 				{
 				}
 
-				big_delta_time m_total_elapsed;
-				big_delta_time m_total_elapsed_second;
-				small_delta_time m_elapsed;
-				small_delta_time m_elapsed_second;
-				small_delta_time m_fixed_elapsed;
-				small_delta_time m_fixed_elapsed_second;
-				small_delta_time m_average_elapsed;
-				small_delta_time m_average_elapsed_second;
+				big_time m_total_elapsed;
+				big_time m_total_elapsed_second;
+				small_time m_elapsed;
+				small_time m_elapsed_second;
+				small_time m_fixed_elapsed;
+				small_time m_fixed_elapsed_second;
+				small_time m_average_elapsed;
+				small_time m_average_elapsed_second;
 			};
 
 		public:
@@ -70,21 +70,21 @@ namespace black_cat
 			 * \brief Total elapsed time by millisecond since clock startup(This is a real value)
 			 * \return 
 			 */
-			big_delta_time get_total_elapsed() const noexcept;
+			big_time get_total_elapsed() const noexcept;
 
 			/**
 			 * \brief Elapsed time by millisecond from last update(This can be scaled or limited)
 			 * \return 
 			 */
-			small_delta_time get_elapsed() const noexcept;
+			small_time get_elapsed() const noexcept;
 
 			/**
 			 * \brief Scale up/down clock progress
 			 * \param p_scale 
 			 */
-			void set_scale(small_delta_time p_scale) noexcept;
+			void set_scale(small_time p_scale) noexcept;
 
-			small_delta_time get_scale() const noexcept;
+			small_time get_scale() const noexcept;
 
 			bool get_pause() const noexcept;
 
@@ -96,22 +96,22 @@ namespace black_cat
 			 * \brief Specify a fixed step time by millisecond
 			 * \param p_delta 
 			 */
-			void fixed_step(small_delta_time p_delta) noexcept;
+			void fixed_step(small_time p_delta) noexcept;
 
 			/**
 			 * \brief Fixed step time by millisecond if clock is in fixed step mode otherwise -1
 			 * \return 
 			 */
-			small_delta_time fixed_step() const noexcept;
+			small_time fixed_step() const noexcept;
 
 			/**
 			 * \brief Time difference between two clock by millisecond
 			 * \param p_other 
 			 * \return 
 			 */
-			small_delta_time get_delta_time(const bc_platform_clock& p_other);
+			small_time get_delta_time(const bc_platform_clock& p_other);
 
-			small_delta_time operator -(const bc_platform_clock& p_other) noexcept;
+			small_time operator -(const bc_platform_clock& p_other) noexcept;
 
 			void update() noexcept;
 
@@ -120,16 +120,16 @@ namespace black_cat
 			static big_clock query_elapsed_clocks();
 			
 		private:
-			big_clock _milliseconds_to_clocks(small_delta_time p_seconds) const;
+			big_clock _milliseconds_to_clocks(small_time p_seconds) const;
 
-			big_delta_time _clocks_to_milliseconds(big_delta_time p_clocks) const;
+			big_time _clocks_to_milliseconds(big_time p_clocks) const;
 
 			big_clock m_clock_per_millisecond;
 			big_clock m_start_up_clocks;
 			big_clock m_clocks;
-			small_delta_time m_fixed_step;
-			small_delta_time m_scale;
-			small_delta_time m_elapsed;
+			small_time m_fixed_step;
+			small_time m_scale;
+			small_time m_elapsed;
 			bool m_paused;
 		};
 
@@ -158,25 +158,25 @@ namespace black_cat
 		}
 
 		template<bc_platform TPlatform>
-		typename bc_platform_clock<TPlatform>::big_delta_time bc_platform_clock<TPlatform>::get_total_elapsed() const noexcept
+		typename bc_platform_clock<TPlatform>::big_time bc_platform_clock<TPlatform>::get_total_elapsed() const noexcept
 		{
 			return _clocks_to_milliseconds(m_clocks - m_start_up_clocks);
 		}
 
 		template<bc_platform TPlatform>
-		typename bc_platform_clock<TPlatform>::small_delta_time bc_platform_clock<TPlatform>::get_elapsed() const noexcept
+		typename bc_platform_clock<TPlatform>::small_time bc_platform_clock<TPlatform>::get_elapsed() const noexcept
 		{
 			return m_elapsed;
 		}
 
 		template<bc_platform TPlatform>
-		void bc_platform_clock<TPlatform>::set_scale(small_delta_time p_scale) noexcept
+		void bc_platform_clock<TPlatform>::set_scale(small_time p_scale) noexcept
 		{
 			m_scale = p_scale;
 		}
 
 		template<bc_platform TPlatform>
-		typename bc_platform_clock<TPlatform>::small_delta_time bc_platform_clock<TPlatform>::get_scale() const noexcept
+		typename bc_platform_clock<TPlatform>::small_time bc_platform_clock<TPlatform>::get_scale() const noexcept
 		{
 			return m_scale;
 		}
@@ -201,7 +201,7 @@ namespace black_cat
 		}
 
 		template<bc_platform TPlatform>
-		void bc_platform_clock<TPlatform>::fixed_step(small_delta_time p_delta) noexcept
+		void bc_platform_clock<TPlatform>::fixed_step(small_time p_delta) noexcept
 		{
 			if (p_delta <0)
 			{
@@ -212,19 +212,19 @@ namespace black_cat
 		}
 
 		template<bc_platform TPlatform>
-		typename bc_platform_clock<TPlatform>::small_delta_time bc_platform_clock<TPlatform>::fixed_step() const noexcept
+		typename bc_platform_clock<TPlatform>::small_time bc_platform_clock<TPlatform>::fixed_step() const noexcept
 		{
 			return m_fixed_step;
 		}
 
 		template<bc_platform TPlatform>
-		typename bc_platform_clock<TPlatform>::small_delta_time bc_platform_clock<TPlatform>::get_delta_time(const bc_platform_clock& p_other)
+		typename bc_platform_clock<TPlatform>::small_time bc_platform_clock<TPlatform>::get_delta_time(const bc_platform_clock& p_other)
 		{
-			return static_cast<small_delta_time>(_clocks_to_milliseconds(m_clocks - p_other.m_clocks));
+			return static_cast<small_time>(_clocks_to_milliseconds(m_clocks - p_other.m_clocks));
 		}
 
 		template<bc_platform TPlatform>
-		typename bc_platform_clock<TPlatform>::small_delta_time bc_platform_clock<TPlatform>::operator-(const bc_platform_clock& p_other) noexcept
+		typename bc_platform_clock<TPlatform>::small_time bc_platform_clock<TPlatform>::operator-(const bc_platform_clock& p_other) noexcept
 		{
 			return get_delta_time(p_other);
 		}
@@ -242,7 +242,7 @@ namespace black_cat
 
 			if (!l_is_fixed)
 			{
-				m_elapsed = static_cast<small_delta_time>(_clocks_to_milliseconds((l_current_clock - m_clocks)) * m_scale);
+				m_elapsed = static_cast<small_time>(_clocks_to_milliseconds((l_current_clock - m_clocks)) * m_scale);
 			}
 			else
 			{
@@ -253,13 +253,13 @@ namespace black_cat
 		}
 
 		template<bc_platform TPlatform>
-		typename bc_platform_clock<TPlatform>::big_clock bc_platform_clock<TPlatform>::_milliseconds_to_clocks(small_delta_time p_seconds) const
+		typename bc_platform_clock<TPlatform>::big_clock bc_platform_clock<TPlatform>::_milliseconds_to_clocks(small_time p_seconds) const
 		{
 			return static_cast<big_clock>(p_seconds * m_clock_per_millisecond);
 		}
 
 		template<bc_platform TPlatform>
-		typename bc_platform_clock<TPlatform>::big_delta_time bc_platform_clock<TPlatform>::_clocks_to_milliseconds(big_delta_time p_clocks) const
+		typename bc_platform_clock<TPlatform>::big_time bc_platform_clock<TPlatform>::_clocks_to_milliseconds(big_time p_clocks) const
 		{
 			return p_clocks / m_clock_per_millisecond;
 		}

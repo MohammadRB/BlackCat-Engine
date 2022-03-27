@@ -3,7 +3,9 @@
 #include <iomanip>
 #include "Core/Math/bcCurve.h"
 #include "Core/Container/bcStringStream.h"
+#include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/bcGameSystem.h"
 #include "BoX.Game/RenderPass/bxPlayerUIPass.h"
 
 namespace box
@@ -20,6 +22,7 @@ namespace box
 	{
 		auto& l_device = p_render_system.get_device();
 		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
+		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
 
 		m_sprite_batch = core::bc_make_unique<graphic::bc_sprite_batch>
 		(
@@ -27,7 +30,7 @@ namespace box
 		);
 		m_sprite_font = core::bc_make_unique<graphic::bc_sprite_font>
 		(
-			p_render_system.get_device().create_sprite_font(m_font_path.data())
+			p_render_system.get_device().create_sprite_font(l_game_system.get_file_system().get_content_path(m_font_path.data()))
 		);
 
 		after_reset(game::bc_render_pass_reset_context

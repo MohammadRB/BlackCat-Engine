@@ -5,20 +5,20 @@
 #include "CorePlatformImp/File/bcFileInfo.h"
 #include "CorePlatformImp/File/bcFile.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
-#include "Core/bcConstant.h"
-#include "Core/bcException.h"
+#include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Container/bcAllocator.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcStringStream.h"
 #include "Core/Container/bcUnorderedMap.h"
-#include "Core/Utility/bcServiceManager.h"
-#include "Core/Concurrency/bcConcurrency.h"
 #include "Core/File/bcPath.h"
 #include "Core/File/bcStream.h"
 #include "Core/File/bcFileStream.h"
 #include "Core/Content/bcContent.h"
 #include "Core/Content/bcContentLoader.h"
+#include "Core/Utility/bcServiceManager.h"
+#include "Core/bcExport.h"
 #include "Core/bcException.h"
+#include "Core/bcConstant.h"
 
 namespace black_cat
 {
@@ -97,7 +97,7 @@ namespace black_cat
 		 * \brief 
 		 * \ThreadSafe
 		 */
-		class bc_content_manager : public bci_service, protected bc_object_allocator
+		class BC_CORE_DLL bc_content_manager : public bci_service, protected bc_object_allocator
 		{
 			BC_SERVICE(cnt_mng)
 
@@ -196,7 +196,7 @@ namespace black_cat
 			template<class TContent>
 			bc_content_ptr<TContent> store_content(bc_alloc_type p_alloc_type, bc_estring_view p_content_name, TContent&& p_content);
 
-			void destroy_content(bci_content* p_content);
+			void destroy_content(const bci_content* p_content);
 
 		private:
 			template<class TContent>
@@ -223,34 +223,6 @@ namespace black_cat
 			platform::bc_shared_mutex m_contents_mutex;
 			map_type m_contents;
 		};
-
-		inline bc_content_manager::bc_content_manager() = default;
-
-		inline bc_content_manager::~bc_content_manager() = default;
-
-		inline void bc_content_manager::destroy_content(bci_content* p_content)
-		{
-			map_type::value_type::second_type l_value;
-
-			{
-				platform::bc_shared_mutex_guard l_guard(m_contents_mutex);
-
-				const auto l_item = m_contents.find(p_content->_get_key());
-
-				if (l_item == end(m_contents))
-				{
-					BC_ASSERT(false);
-					return;
-				}
-
-				// Move value from container because contents may have inner content and destroying
-				// content while lock is acquired cause deadlock
-				l_value = std::move(l_item->second);
-				m_contents.erase(l_item);
-			}
-
-			l_value.m_content.reset(nullptr);
-		}
 
 		template<class TContent, class TLoader>
 		void bc_content_manager::register_loader(bc_cloader_ptr<TLoader> p_loader)
@@ -398,7 +370,7 @@ namespace black_cat
 					l_loader->content_file_open_failed(l_context);
 
 					const auto l_file_name = bc_to_exclusive_string(l_file_to_open.c_str());
-					const auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
+					const auto l_error_msg = bc_string_frame("Error in opening content file '") + l_file_name.c_str() + "'";
 
 					throw bc_io_exception(l_error_msg.c_str());
 				}
@@ -483,18 +455,16 @@ namespace black_cat
 
 			if(p_file_variant.empty())
 			{
-				l_file_variant = bcL("");
+				l_file_variant = l_file_path.get_filename_without_extension_frame();
 			}
 			else
 			{
 				l_file_variant += p_file_variant;
-				l_file_variant += bcL(".");
 			}
 
 			auto l_offline_file_name = bc_estring_stream_frame()
-					<< l_file_path.get_filename_without_extension_frame()
-					<< bcL(".")
 					<< l_file_variant
+					<< bcL(".")
 					<< bc_to_estring_frame(bc_content_traits<TContent>::content_name())
 					<< bcL(".bcc");
 
@@ -542,7 +512,7 @@ namespace black_cat
 						p_loader->content_file_open_failed(l_context);
 						
 						auto l_file_name = bc_to_exclusive_string(p_file.data());
-						auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
+						auto l_error_msg = bc_string_frame("Error in opening content file '") + l_file_name.c_str() + "'";
 
 						throw bc_io_exception(l_error_msg.c_str());
 					}
@@ -565,7 +535,7 @@ namespace black_cat
 						p_loader->content_file_open_failed(l_context);
 
 						auto l_file_name = bc_to_exclusive_string(p_offline_file.data());
-						auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
+						auto l_error_msg = bc_string_frame("Error in opening content file '") + l_file_name.c_str() + "'";
 
 						throw bc_io_exception(l_error_msg.c_str());
 					}
@@ -582,9 +552,9 @@ namespace black_cat
 						bc_path l_offline_file(p_offline_file);
 						l_offline_file.delete_path();
 
-						auto l_message = bc_string_frame("Error in loading content file: ") + 
+						auto l_message = bc_string_frame("Error in loading content file '") + 
 							bc_to_exclusive_string(p_offline_file.data()).c_str() + 
-							". " + 
+							"'. " + 
 							l_exception.what();
 						throw bc_io_exception(l_message.c_str());
 					}
@@ -601,7 +571,7 @@ namespace black_cat
 					p_loader->content_file_open_failed(l_context);
 					
 					auto l_file_name = bc_to_exclusive_string(l_file_to_open.data());
-					auto l_error_msg = bc_string_frame("error in opening content file: ") + l_file_name.c_str();
+					auto l_error_msg = bc_string_frame("Error in opening content file '") + l_file_name.c_str() + "'";
 
 					throw bc_io_exception(l_error_msg.c_str());
 				}
@@ -624,9 +594,9 @@ namespace black_cat
 				{
 					l_context.m_file.close();
 
-					auto l_message = bc_string_frame("Error in loading content file: ") +
+					auto l_message = bc_string_frame("Error in loading content file '") +
 						bc_to_exclusive_string(l_file_to_open.data()).c_str() +
-						". " +
+						"'. " +
 						l_exception.what();
 					throw bc_io_exception(l_message.c_str());
 				}
@@ -650,16 +620,24 @@ namespace black_cat
 			{
 				platform::bc_lock_guard l_guard(m_contents_mutex);
 
-				auto l_entry = _bc_content_entry(std::move(p_key), bc_estring(p_file), bc_estring(p_file_variant), bc_unique_ptr<bci_content>(std::move(p_content)));
-				auto l_entry_key = bc_estring_view(l_entry.m_key);
-				const auto l_insertion_result = m_contents.insert(map_type::value_type(l_entry_key, std::move(l_entry)));
-
-				if (!l_insertion_result.second)
+				const auto l_ite = m_contents.find(p_key);
+				if(l_ite != std::end(m_contents))
 				{
-					throw bc_invalid_operation_exception("Content with the same hash already exist in the contents map");
+					// Due to concurrency it is possible one content load twice
+					if(p_file != l_ite->second.m_file)
+					{
+						auto l_msg = bc_string_stream_frame() << "Content with key '" << p_key << "' already exist in the contents map";
+						throw bc_invalid_operation_exception(l_msg.str().c_str());
+					}
 				}
+				else
+				{
+					auto l_entry = _bc_content_entry(std::move(p_key), bc_estring(p_file), bc_estring(p_file_variant), bc_unique_ptr<bci_content>(std::move(p_content)));
+					auto l_entry_key = bc_estring_view(l_entry.m_key);
+					const auto l_insertion_result = m_contents.insert(map_type::value_type(l_entry_key, std::move(l_entry)));
 
-				l_content_ptr->_set_key(l_insertion_result.first->second.m_key);
+					l_content_ptr->_set_key(l_insertion_result.first->second.m_key);
+				}
 			}
 
 			return bc_content_ptr<TContent>(l_content_ptr, _bc_content_ptr_deleter(this));

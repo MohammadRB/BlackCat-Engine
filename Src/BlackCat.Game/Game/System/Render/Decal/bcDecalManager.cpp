@@ -23,10 +23,10 @@ namespace black_cat
 		{
 			BC_JSON_VALUE(core::bc_string_frame, name);
 			BC_JSON_VALUE(core::bc_string_frame, material_name);
-			BC_JSON_VALUE(bcUINT32, u0);
-			BC_JSON_VALUE(bcUINT32, v0);
-			BC_JSON_VALUE(bcUINT32, u1);
-			BC_JSON_VALUE(bcUINT32, v1);
+			BC_JSON_VALUE_OP(bcUINT32, u0);
+			BC_JSON_VALUE_OP(bcUINT32, v0);
+			BC_JSON_VALUE_OP(bcUINT32, u1);
+			BC_JSON_VALUE_OP(bcUINT32, v1);
 			BC_JSON_VALUE(bcFLOAT, width);
 			BC_JSON_VALUE(bcFLOAT, height);
 			BC_JSON_VALUE(bcFLOAT, depth);
@@ -94,10 +94,10 @@ namespace black_cat
 				{
 					l_decal->m_name->c_str(),
 					l_decal->m_material_name->c_str(),
-					*l_decal->m_u0,
-					*l_decal->m_v0,
-					*l_decal->m_u1,
-					*l_decal->m_v1,
+					l_decal->m_u0.has_value() ? core::bc_nullable(*l_decal->m_u0) : nullptr,
+					l_decal->m_v0.has_value() ? core::bc_nullable(*l_decal->m_v0) : nullptr,
+					l_decal->m_u1.has_value() ? core::bc_nullable(*l_decal->m_u1) : nullptr,
+					l_decal->m_v1.has_value() ? core::bc_nullable(*l_decal->m_v1) : nullptr,
 					*l_decal->m_width,
 					*l_decal->m_height,
 					*l_decal->m_depth,
@@ -105,8 +105,17 @@ namespace black_cat
 					l_decal->m_group.has_value() ? static_cast<bc_render_group>(*l_decal->m_group) : bc_render_group::all,
 					l_decal->m_auto_remove.has_value() ? *l_decal->m_auto_remove : false
 				};
-				
-				m_decal_descriptions.insert(std::make_pair(l_hash, std::move(l_desc)));
+
+				auto l_ite = m_decal_descriptions.find(l_hash);
+				if(l_ite == std::end(m_decal_descriptions))
+				{
+					m_decal_descriptions.insert(std::make_pair(l_hash, std::move(l_desc)));
+				}
+				else
+				{
+					l_ite->second = std::move(l_desc);
+					core::bc_log(core::bc_log_type::warning) << "decal description with name '" << *l_decal->m_name << "' already exist. old decal will be replaced." << core::bc_lend;
+				}
 			}
 		}
 
@@ -168,10 +177,10 @@ namespace black_cat
 				(
 					l_desc_ite->second.m_name,
 					std::move(l_material), 
-					l_desc_ite->second.m_u0 / l_diffuse_width,
-					l_desc_ite->second.m_v0 / l_diffuse_height,
-					l_desc_ite->second.m_u1 / l_diffuse_width,
-					l_desc_ite->second.m_v1 / l_diffuse_height,
+					l_desc_ite->second.m_u0.has_value() ? *l_desc_ite->second.m_u0 / l_diffuse_width : 0.f,
+					l_desc_ite->second.m_v0.has_value() ? *l_desc_ite->second.m_v0 / l_diffuse_height : 0.f,
+					l_desc_ite->second.m_u1.has_value() ? *l_desc_ite->second.m_u1 / l_diffuse_width : 1.f,
+					l_desc_ite->second.m_v1.has_value() ? *l_desc_ite->second.m_v1 / l_diffuse_height : 1.f,
 					l_desc_ite->second.m_width,
 					l_desc_ite->second.m_height,
 					l_desc_ite->second.m_depth,
@@ -222,7 +231,7 @@ namespace black_cat
 		bcFLOAT bc_decal_manager::_calculate_default_view_distance(bcFLOAT p_width, bcFLOAT p_height, bcFLOAT p_depth)
 		{
 			const auto l_box_length = std::max({ p_width, p_height, p_depth });
-			return l_box_length * 25 * bc_get_global_config().get_global_view_distance_scale();
+			return l_box_length * 25 * bc_get_global_config().get_scene_global_view_distance_scale();
 		}
 	}	
 }

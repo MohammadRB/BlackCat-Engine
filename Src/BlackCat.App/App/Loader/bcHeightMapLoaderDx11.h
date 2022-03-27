@@ -39,7 +39,7 @@ namespace black_cat
 
 		bc_height_map_dx11(bc_height_map_dx11&&) = default;
 
-		~bc_height_map_dx11() = default;
+		~bc_height_map_dx11() override = default;
 
 		bc_height_map_dx11& operator=(bc_height_map_dx11&&) = default;
 		

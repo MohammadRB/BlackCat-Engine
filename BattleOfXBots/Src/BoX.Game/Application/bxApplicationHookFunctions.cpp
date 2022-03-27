@@ -94,28 +94,31 @@ namespace box
 
 	void bx_load_game_shaders(core::bc_content_stream_manager& p_stream_manager, game::bc_game_system& p_game_system)
 	{
+		auto& l_entity_manager = *core::bc_get_service<game::bc_entity_manager>();
+		auto& l_material_manager = p_game_system.get_render_system().get_material_manager();
+		auto& l_decal_manager = p_game_system.get_render_system().get_decal_manager();
+
 		p_stream_manager.read_stream_file(p_game_system.get_file_system().get_content_data_path(bcL("BoXContentStream.json")).c_str());
+		l_material_manager.read_material_file(p_game_system.get_file_system().get_content_data_path(bcL("BoXMaterial.json")).c_str());
+		l_decal_manager.read_decal_file(p_game_system.get_file_system().get_content_data_path(bcL("BoXDecal.json")).c_str());
+		l_entity_manager.read_entity_file(p_game_system.get_file_system().get_content_data_path(bcL("BoXEntityType.json")).c_str());
 
 		p_stream_manager.load_content_stream(core::bc_alloc_type::program, "game_shaders");
 	}
 
 	void bx_load_game_resources(core::bc_content_stream_manager& p_stream_manager, game::bc_game_system& p_game_system)
 	{
-		auto& l_entity_manager = *core::bc_get_service<game::bc_entity_manager>();
-		auto& l_material_manager = p_game_system.get_render_system().get_material_manager();
-		auto& l_decal_manager = p_game_system.get_render_system().get_decal_manager();
-
-		l_entity_manager.read_entity_file(p_game_system.get_file_system().get_content_data_path(bcL("BoXEntityType.json")).c_str());
-		l_material_manager.read_material_file(p_game_system.get_file_system().get_content_data_path(bcL("BoXMaterial.json")).c_str());
-		l_decal_manager.read_decal_file(p_game_system.get_file_system().get_content_data_path(bcL("BoXDecal.json")).c_str());
-
-		p_stream_manager.load_content_stream(core::bc_alloc_type::program, "game_assets");
+		p_stream_manager.load_content_stream(core::bc_alloc_type::program, "game_textures");
+		p_stream_manager.load_content_stream(core::bc_alloc_type::program, "game_models");
+		p_stream_manager.load_content_stream(core::bc_alloc_type::program, "game_sounds");
 	}
 
 	void bx_unload_game_resources(core::bc_content_stream_manager& p_stream_manager)
 	{
 		p_stream_manager.unload_content_stream("game_shaders");
-		p_stream_manager.unload_content_stream("game_assets");
+		p_stream_manager.unload_content_stream("game_textures");
+		p_stream_manager.unload_content_stream("game_models");
+		p_stream_manager.unload_content_stream("game_sounds");
 	}
 
 	void bx_close_game_services()

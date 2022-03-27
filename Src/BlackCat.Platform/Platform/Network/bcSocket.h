@@ -12,12 +12,12 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<platform::bc_platform>
+		template<bc_platform>
 		struct bc_platform_socket_pack
 		{
 		};
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_socket
 		{
 		public:
@@ -134,6 +134,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_socket = bc_platform_socket<platform::g_current_platform>;
+		using bc_socket = bc_platform_socket<g_current_platform>;
 	}
 }

@@ -493,6 +493,114 @@ namespace black_cat
 			}
 		}
 
+		template<class T1, class TDeleter1, class T2, class TDeleter2>
+		bool operator ==(const bc_ref_count_ptr<T1, TDeleter1 >& p_first, const bc_ref_count_ptr<T2, TDeleter2>& p_second)
+		{
+			return p_first.get() == p_second.get();
+		}
+
+		template<class T1, class TDeleter1, class T2, class TDeleter2>
+		bool operator !=(const bc_ref_count_ptr<T1, TDeleter1 >& p_first, const bc_ref_count_ptr<T2, TDeleter2>& p_second)
+		{
+			return p_first.get() != p_second.get();
+		}
+
+		template<class T1, class TDeleter1, class T2, class TDeleter2>
+		bool operator <(const bc_ref_count_ptr<T1, TDeleter1 >& p_first, const bc_ref_count_ptr<T2, TDeleter2>& p_second)
+		{
+			return p_first.get() < p_second.get();
+		}
+
+		template<class T1, class TDeleter1, class T2, class TDeleter2>
+		bool operator <=(const bc_ref_count_ptr<T1, TDeleter1 >& p_first, const bc_ref_count_ptr<T2, TDeleter2>& p_second)
+		{
+			return p_first.get() <= p_second.get();
+		}
+
+		template<class T1, class TDeleter1, class T2, class TDeleter2>
+		bool operator>(const bc_ref_count_ptr<T1, TDeleter1 >& p_first, const bc_ref_count_ptr<T2, TDeleter2>& p_second)
+		{
+			return p_first.get() > p_second.get();
+		}
+
+		template<class T1, class TDeleter1, class T2, class TDeleter2>
+		bool operator>=(const bc_ref_count_ptr<T1, TDeleter1 >& p_first, const bc_ref_count_ptr<T2, TDeleter2>& p_second)
+		{
+			return p_first.get() >= p_second.get();
+		}
+
+		template<class T, class TDeleter>
+		bool operator ==(const bc_ref_count_ptr<T, TDeleter>& p_first, std::nullptr_t)
+		{
+			return p_first.get() == nullptr;
+		}
+
+		template<class T, class TDeleter>
+		bool operator ==(std::nullptr_t, const bc_ref_count_ptr<T, TDeleter>& p_first)
+		{
+			return p_first.get() == nullptr;
+		}
+
+		template<class T, class TDeleter>
+		bool operator !=(const bc_ref_count_ptr<T, TDeleter>& p_first, std::nullptr_t)
+		{
+			return p_first.get() != nullptr;
+		}
+
+		template<class T, class TDeleter>
+		bool operator !=(std::nullptr_t, const bc_ref_count_ptr<T, TDeleter>& p_first)
+		{
+			return p_first.get() != nullptr;
+		}
+
+		template<class T, class TDeleter>
+		bool operator <(const bc_ref_count_ptr<T, TDeleter>& p_first, std::nullptr_t)
+		{
+			return p_first.get() < nullptr;
+		}
+
+		template<class T, class TDeleter>
+		bool operator <(std::nullptr_t, const bc_ref_count_ptr<T, TDeleter>& p_first)
+		{
+			return p_first.get() < nullptr;
+		}
+
+		template<class T, class TDeleter>
+		bool operator <=(const bc_ref_count_ptr<T, TDeleter>& p_first, std::nullptr_t)
+		{
+			return p_first.get() <= nullptr;
+		}
+
+		template<class T, class TDeleter>
+		bool operator <=(nullptr_t, const bc_ref_count_ptr<T, TDeleter>& p_first)
+		{
+			return p_first.get() <= nullptr;
+		}
+
+		template<class T, class TDeleter>
+		bool operator>(const bc_ref_count_ptr<T, TDeleter>& p_first, std::nullptr_t)
+		{
+			return p_first.get() > nullptr;
+		}
+
+		template<class T, class TDeleter>
+		bool operator>(std::nullptr_t, const bc_ref_count_ptr<T, TDeleter>& p_first)
+		{
+			return p_first.get() > nullptr;
+		}
+
+		template<class T, class TDeleter>
+		bool operator>=(const bc_ref_count_ptr<T, TDeleter>& p_first, std::nullptr_t)
+		{
+			return p_first.get() >= nullptr;
+		}
+
+		template<class T, class TDeleter>
+		bool operator>=(std::nullptr_t, const bc_ref_count_ptr<T, TDeleter>& p_first)
+		{
+			return p_first.get() >= nullptr;
+		}
+
 		// -- bc_ref_count_handle --------------------------------------------------------------------------------
 
 		template<class T, class TDeleter>
@@ -654,8 +762,7 @@ namespace black_cat
 		}
 
 		template<class T, class TDeleter>
-		typename bc_ref_count_handle<T, TDeleter>::element_t* bc_ref_count_handle<T, TDeleter>::operator
-		->() const noexcept
+		typename bc_ref_count_handle<T, TDeleter>::element_t* bc_ref_count_handle<T, TDeleter>::operator->() const noexcept
 		{
 			return get();
 		}

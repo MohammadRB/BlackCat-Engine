@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		struct bc_platform_script_reference_pack
 		{
 		};
@@ -18,7 +18,7 @@ namespace black_cat
 		 * \brief This class provide an abstraction over api's reference values so that bc_script_ref through
 		 * this class can create strong reference to api values
 		 */
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_reference
 		{
 		public:
@@ -45,6 +45,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_script_reference = bc_platform_script_reference<platform::g_current_platform>;
+		using bc_script_reference = bc_platform_script_reference<g_current_platform>;
 	}
 }

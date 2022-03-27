@@ -33,13 +33,13 @@ namespace box
 
 	struct bx_player_ui_message
 	{
-		platform::bc_clock::small_delta_time m_lifetime;
+		platform::bc_clock::small_time m_lifetime;
 		core::bc_wstring m_message;
 	};
 
 	struct bx_player_kill_message
 	{
-		platform::bc_clock::small_delta_time m_lifetime;
+		platform::bc_clock::small_time m_lifetime;
 		bx_player_kill_state m_kill;
 	};
 

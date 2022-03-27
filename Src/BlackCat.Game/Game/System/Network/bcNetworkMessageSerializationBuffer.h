@@ -24,7 +24,7 @@ namespace black_cat
 
 		struct bc_retry_message
 		{
-			platform::bc_clock::small_delta_time m_elapsed;
+			platform::bc_clock::small_time m_elapsed;
 			bc_network_message_ptr m_message;
 		};
 		

@@ -137,10 +137,7 @@ namespace black_cat
 		const auto l_attached_node_index = p_node_mapping.find(p_attached_node.mName.C_Str())->second;
 
 		bc_mesh_loader_utility::convert_ai_matrix(p_px_node.mTransformation, l_node_transformation);
-		/*const physics::bc_shape_flag l_shape_flag = p_high_detail_query_shape && !p_skinned ?
-			core::bc_enum::mask_or({ physics::bc_shape_flag::simulation, physics::bc_shape_flag::visualization }) :
-			physics::bc_shape_flag::default_v;*/
-		const physics::bc_shape_flag l_shape_flag = physics::bc_shape_flag::default_v;
+		constexpr auto l_shape_flag = physics::bc_shape_flag::default_v;
 
 		core::bc_string_frame l_mesh_name;
 		for (bcUINT32 l_mesh_index = 0; l_mesh_index < p_px_node.mNumMeshes; ++l_mesh_index)

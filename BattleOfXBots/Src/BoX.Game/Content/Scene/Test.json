@@ -14,7 +14,7 @@
   ],
   "streams": [
     "terrain_textures",
-    "models"
+    "assets"
   ],
   "scene_graph": {
     "center": [

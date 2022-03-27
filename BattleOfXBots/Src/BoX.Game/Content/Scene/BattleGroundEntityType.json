@@ -1,0 +1,552 @@
+{
+  "entities": [
+    {
+      "name": "env_sun_light",
+      "components": [
+        {
+          "name": "light",
+          "parameters": {
+            "type": "direct",
+            "direction": [ 0.4, -0.3, -0.5 ],
+            "color": [ 0.79, 0.78, 0.68, 1.2 ],
+            "ambient_color": [ 0.66, 0.68, 0.70, 0.8 ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "env_wind",
+      "components": [
+        {
+          "name": "wind",
+          "parameters": {
+            "type": "direct",
+            "direction": [ 0.0, 0.0, 1.0 ],
+            "power": 1.9
+          }
+        }
+      ]
+    },
+    {
+      "name": "env_height_map",
+      "components": [
+        {
+          "name": "height_map",
+          "parameters": {
+            "heightmap": "battle_ground"
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {}
+        }
+      ]
+    },
+    {
+      "name": "mesh_concrete_wall_simple_4m",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "concrete_wall_simple_4m",
+            "view_distance": 300.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_barrel_black",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "barrel_black",
+            "view_distance": 200.0
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {
+            "mass": 10.0,
+            "cmass": [ 0.0, 4.0, 0.0 ],
+            "collider_materials": {
+              "*": "iron"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_barrel_explosive_red",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "barrel_explosive_red",
+            "view_distance": 200.0
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {
+            "mass": 10.0,
+            "cmass": [ 0.0, 4.0, 0.0 ],
+            "collider_materials": {
+              "*": "iron"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_chair_plastic_local",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "chair_plastic_local",
+            "view_distance": 200.0
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {
+            "mass": 5.0,
+            "cmass": [ 0.0, 3.0, 0.0 ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_civil_box_a",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "civil_box_a",
+            "view_distance": 200.0
+          }
+        },
+        {
+          "name": "rigid_dynamic",
+          "parameters": {
+            "mass": 5.0,
+            "cmass": [ 0.0, 3.0, 0.0 ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_solid_metal_fences_120_400_a",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "solid_metal_fences_120_400_a",
+            "view_distance": 300.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "iron"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_sand_bag_long_big",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "sand_bag_long_big",
+            "view_distance": 300.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_sandbag_big_structure_a",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "sandbag_big_structure_a",
+            "view_distance": 300.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_support_big",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "support_big",
+            "view_distance": 300.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_car_b_chassi",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "car_b_chassi",
+            "view_distance": 400.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "iron"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_cliff_bush_yellow_mini",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "cliff_bush_yellow_mini",
+            "view_distance": 200.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_Green_Fern_Bush_a",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "Green_Fern_Bush_a",
+            "view_distance": 200.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_Round_Leaf_Bush_big_bright_green",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "Round_Leaf_Bush_big_bright_green",
+            "view_distance": 200.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_Round_Leaf_Bush_med_yellow",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "Round_Leaf_Bush_med_yellow",
+            "view_distance": 200.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_bigpatch_medium",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "bigpatch_medium",
+            "view_distance": 200.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_Palm_Tree_Large_d",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "Palm_Tree_Large_d",
+            "view_distance": 400.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_Palm_Tree_Large_h",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "Palm_Tree_Large_h",
+            "view_distance": 400.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_Palm_Tree_Short_b",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "Palm_Tree_Short_b",
+            "view_distance": 300.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_big_leave_plant_med_a",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "big_leave_plant_med_a",
+            "view_distance": 200.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_Green_Fern_Bush_a",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "Green_Fern_Bush_a",
+            "view_distance": 200.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_brown_riverrock_big_a",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "brown_riverrock_big_a",
+            "view_distance": 300.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_cliff_rock_a_big",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "cliff_rock_a_big",
+            "view_distance": 400.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_cliff_rock_island",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "cliff_rock_island",
+            "view_distance": 400.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_forest_rock_med_a",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "forest_rock_med_a",
+            "view_distance": 300.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_Jungle_rock_a",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "Jungle_rock_a",
+            "view_distance": 300.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_hill_tree_bright_green",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "hill_tree_bright_green",
+            "view_distance": 400.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_Jungle_Tree_Thin_b",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "Jungle_Tree_Thin_b",
+            "view_distance": 300.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_thin_leave_tree_big_bright_green",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "thin_leave_tree_big_bright_green",
+            "view_distance": 400.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

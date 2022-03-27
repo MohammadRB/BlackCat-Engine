@@ -16,12 +16,12 @@ namespace black_cat
 		template<bcSIZE TArgCount>
 		using bc_script_arg_pack = core::bc_array<bc_script_variable, TArgCount>;
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		struct bc_platform_script_function_pack
 		{
 		};
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_function : public bc_platform_script_reference<TPlatform>
 		{
 		public:
@@ -60,7 +60,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		template<platform::bc_platform TPlatform, typename TR, typename ...TA>
+		template<bc_platform TPlatform, typename TR, typename ...TA>
 		class bc_platform_script_function_wrapper;
 		
 		/**
@@ -68,13 +68,13 @@ namespace black_cat
 		 * \tparam TR Function return type.
 		 * \tparam TA Function argument types.
 		 */
-		template<platform::bc_platform TPlatform, typename TR, typename ...TA>
+		template<bc_platform TPlatform, typename TR, typename ...TA>
 		class bc_platform_script_function_wrapper<TPlatform, TR(TA...)> : public bc_platform_script_function<TPlatform>
 		{
 		public:
 			using callback_t = TR(*)(TA...);
 			friend bc_script_context;
-			template<platform::bc_platform TPlatform, typename TR, typename ...TA>
+			template<bc_platform TPlatform, typename TR, typename ...TA>
 			friend class bc_platform_script_function_wrapper;
 
 		public:
@@ -99,11 +99,11 @@ namespace black_cat
 			static void _unpack_args(bc_script_arg_pack<sizeof...(TA)>& p_pack, const TA&... p_args);
 		};
 
-		using bc_script_function = bc_platform_script_function<platform::g_current_platform>;
+		using bc_script_function = bc_platform_script_function<g_current_platform>;
 		using bc_script_function_ref = bc_script_ref<bc_script_function>;
 
 		template<typename TR, typename ...TA>
-		using bc_script_function_wrapper = bc_platform_script_function_wrapper<platform::g_current_platform, TR, TA...>;
+		using bc_script_function_wrapper = bc_platform_script_function_wrapper<g_current_platform, TR, TA...>;
 		template<typename TR, typename ...TA>
 		using bc_script_function_wrapper_ref = bc_script_ref<bc_script_function_wrapper<TR, TA...>>;
 	}

@@ -10,22 +10,22 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_context;
-		using bc_script_context = bc_platform_script_context<platform::g_current_platform>;
+		using bc_script_context = bc_platform_script_context<g_current_platform>;
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_bytecode;
-		using bc_script_bytecode = bc_platform_script_bytecode<platform::g_current_platform>;
+		using bc_script_bytecode = bc_platform_script_bytecode<g_current_platform>;
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_variable;
-		using bc_script_variable = bc_platform_script_variable<platform::g_current_platform>;
+		using bc_script_variable = bc_platform_script_variable<g_current_platform>;
 
 		template<typename T>
 		class bc_script_external_object;
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		struct bc_platform_script_runtime_pack
 		{
 		};
@@ -34,7 +34,7 @@ namespace black_cat
 		 * \brief Incompatible with movable memory
 		 * \tparam TPlatform 
 		 */
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_runtime
 		{
 		public:
@@ -116,6 +116,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_script_runtime = bc_platform_script_runtime<platform::g_current_platform>;
+		using bc_script_runtime = bc_platform_script_runtime<g_current_platform>;
 	}
 }

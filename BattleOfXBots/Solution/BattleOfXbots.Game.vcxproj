@@ -321,21 +321,16 @@
     <None Include="..\Src\BoX.Game\Content\Data\BoXDecal.json" />
     <None Include="..\Src\BoX.Game\Content\Data\BoXEntityType.json" />
     <None Include="..\Src\BoX.Game\Content\Data\BoXMaterial.json" />
+    <None Include="..\Src\BoX.Game\Content\Scene\BattleGround.json" />
+    <None Include="..\Src\BoX.Game\Content\Scene\BattleGroundContentStream.json" />
+    <None Include="..\Src\BoX.Game\Content\Scene\BattleGroundDecal.json" />
+    <None Include="..\Src\BoX.Game\Content\Scene\BattleGroundEntityType.json" />
+    <None Include="..\Src\BoX.Game\Content\Scene\BattleGroundMaterial.json" />
     <None Include="..\Src\BoX.Game\Content\Scene\Test.json" />
     <None Include="..\Src\BoX.Game\Content\Scene\TestContentStream.json" />
     <None Include="..\Src\BoX.Game\Content\Scene\TestDecal.json" />
     <None Include="..\Src\BoX.Game\Content\Scene\TestEntityType.json" />
     <None Include="..\Src\BoX.Game\Content\Scene\TestMaterial.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\Src\BoX.Game\Content\Texture\BulletTrail.dds" />
-    <Image Include="..\Src\BoX.Game\Content\Texture\Decal.dds" />
-    <Image Include="..\Src\BoX.Game\Content\Texture\Decal.nrm.dds" />
-    <Image Include="..\Src\BoX.Game\Content\Texture\Decal.spec.dds" />
-    <Image Include="..\Src\BoX.Game\Content\Texture\Flare1.dds" />
-    <Image Include="..\Src\BoX.Game\Content\Texture\Flare2.dds" />
-    <Image Include="..\Src\BoX.Game\Content\Texture\Flare3.dds" />
-    <Image Include="..\Src\BoX.Game\Content\Texture\Sprites.dds" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Src\BoX.Game\Content\Shader\DirectX11\PostProcess\bxBulletTrail.hlsl">

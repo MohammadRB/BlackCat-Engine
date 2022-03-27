@@ -61,7 +61,6 @@ namespace black_cat
 		{
 			auto& l_render_system = m_game_system->get_render_system();
 			auto& l_input_system = m_game_system->get_input_system();
-			auto& l_file_system = m_game_system->get_file_system();
 			auto& l_global_config = bc_get_global_config();
 			
 			bool l_camera_read = false;
@@ -92,7 +91,7 @@ namespace black_cat
 			l_render_system.add_render_pass(bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
 			l_render_system.add_render_pass(bc_gbuffer_light_map_pass(constant::g_rpass_direct_light_depth_buffers, constant::g_rpass_deferred_rendering_g_buffer_output));
 			l_render_system.add_render_pass(bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_output));
-			l_render_system.add_render_pass(bc_particle_system_pass_dx11(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Sprites.dds")));
+			l_render_system.add_render_pass(bc_particle_system_pass_dx11(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Texture\\Particle\\Particle.dds")));
 			l_render_system.add_render_pass(bc_light_flare_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 			l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 			l_render_system.add_render_pass(bc_icon_draw_pass
@@ -109,12 +108,12 @@ namespace black_cat
 					game::bc_icon_type::particle,
 					game::bc_icon_type::decal
 				},
-				bcL("SpriteIcon.png"), 
+				bcL("Texture\\SpriteIcon.png"), 
 				64, 
 				64
 			));
 			l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
-			l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view, l_file_system.get_content_data_path(bcL("Dx.spritefont"))));
+			l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
 
 			game::bc_event_editor_mode l_editor_mode_event(true);
 			core::bc_get_service<core::bc_event_manager>()->process_event(l_editor_mode_event);

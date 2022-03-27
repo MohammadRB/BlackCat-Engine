@@ -1,0 +1,206 @@
+{
+  "mesh_materials": [
+    {
+      "name": "terrain_material_1",
+      "diffuse_color": [ 0.63, 0.63, 0.63, 1.0 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.1,
+      "diffuse_map": "cliff_is2",
+      "normal_map": "cliff_is2_nrm"
+    },
+    {
+      "name": "terrain_material_2",
+      "diffuse_color": [ 0.29, 0.26, 0.18, 1.0 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.1,
+      "diffuse_map": "coast_sand_rocks",
+      "normal_map": "coast_sand_rocks_nrm"
+    },
+    {
+      "name": "terrain_material_3",
+      "diffuse_color": [ 0.5, 0.5, 0.43, 1.0 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.1,
+      "diffuse_map": "cobblestone_floor",
+      "normal_map": "cobblestone_floor_nrm"
+    },
+    {
+      "name": "terrain_material_4",
+      "diffuse_color": [ 0.52, 0.4, 0.27, 1.0 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.1,
+      "diffuse_map": "dirt_aerial",
+      "normal_map": "dirt_aerial_nrm"
+    },
+    {
+      "name": "terrain_material_5",
+      "diffuse_color": [ 0.50, 0.43, 0.21, 1.0 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.1,
+      "diffuse_map": "forest_leaves",
+      "normal_map": "forest_leaves_nrm"
+    },
+    {
+      "name": "terrain_material_6",
+      "diffuse_color": [ 0.45, 0.50, 0.31, 1.0 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.1,
+      "diffuse_map": "forrest_ground",
+      "normal_map": "forrest_ground_nrm"
+    },
+    {
+      "name": "terrain_material_7",
+      "diffuse_color": [ 0.46, 0.42, 0.38, 1.0 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.1,
+      "diffuse_map": "rocks_ground_var",
+      "normal_map": "rocks_ground_nrm"
+    },
+    {
+      "name": "terrain_material_8",
+      "diffuse_color": [ 0.81, 0.62, 0.43, 1.0 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.1,
+      "diffuse_map": "sandstone_cracks",
+      "normal_map": "sandstone_cracks_nrm"
+    },
+    {
+      "name": "decal_beach_dirt",
+      "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
+      "specular_intensity": 0.0,
+      "specular_power": 0.0,
+      "diffuse_map": "decal_beach_dirt",
+      "normal_map": null,
+      "specular_map": null
+    },
+    {
+      "name": "decal_crack_7",
+      "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
+      "specular_intensity": 0.0,
+      "specular_power": 0.0,
+      "diffuse_map": "decal_crack_7",
+      "normal_map": null,
+      "specular_map": null
+    },
+    {
+      "name": "decal_dirt_052",
+      "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.1,
+      "diffuse_map": "decal_dirt_052",
+      "normal_map": null,
+      "specular_map": null
+    },
+    {
+      "name": "decal_dirt_057",
+      "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.1,
+      "diffuse_map": "decal_dirt_057",
+      "normal_map": null,
+      "specular_map": null
+    },
+    {
+      "name": "decal_dirt_on_road_16",
+      "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
+      "specular_intensity": 0.0,
+      "specular_power": 0.0,
+      "diffuse_map": "decal_dirt_on_road_16",
+      "normal_map": "decal_dirt_on_road_16_nrm",
+      "specular_map": "decal_dirt_on_road_spec"
+    },
+    {
+      "name": "decal_rust",
+      "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
+      "specular_intensity": 0.1,
+      "specular_power": 0.1,
+      "diffuse_map": "decal_rust",
+      "normal_map": null,
+      "specular_map": null
+    },
+    {
+      "name": "decal_roots_on_cliff",
+      "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
+      "specular_intensity": 0.3,
+      "specular_power": 0.1,
+      "diffuse_map": "decal_roots_on_cliff",
+      "normal_map": "decal_roots_on_cliff_nrm",
+      "specular_map": null
+    },
+    {
+      "name": "decal_numbers",
+      "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
+      "specular_intensity": 0.3,
+      "specular_power": 0.1,
+      "diffuse_map": "decal_numbers",
+      "normal_map": "decal_numbers_nrm",
+      "specular_map": null
+    }
+  ],
+  "collider_materials": [
+    {
+      "name": "terrain_material_1",
+      "static_friction": 1000.0,
+      "dynamic_friction": 1000.0,
+      "restitution": 0.01,
+      "particle": "bullet_terrain",
+      "decal": "bullet_stone"
+    },
+    {
+      "name": "terrain_material_2",
+      "static_friction": 5.0,
+      "dynamic_friction": 5.0,
+      "restitution": 0.2,
+      "particle": "bullet_terrain",
+      "decal": "bullet_stone"
+    },
+    {
+      "name": "terrain_material_3",
+      "static_friction": 2.0,
+      "dynamic_friction": 2.0,
+      "restitution": 0.1,
+      "particle": "bullet_terrain",
+      "decal": "bullet_stone"
+    },
+    {
+      "name": "terrain_material_4",
+      "static_friction": 20.0,
+      "dynamic_friction": 20.0,
+      "restitution": 0.1,
+      "particle": "bullet_terrain",
+      "decal": "bullet_stone"
+    },
+    {
+      "name": "terrain_material_5",
+      "static_friction": 20.0,
+      "dynamic_friction": 20.0,
+      "restitution": 0.1,
+      "particle": "bullet_terrain",
+      "decal": "bullet_stone"
+    },
+    {
+      "name": "terrain_material_6",
+      "static_friction": 5.0,
+      "dynamic_friction": 5.0,
+      "restitution": 0.1,
+      "particle": "bullet_terrain",
+      "decal": "bullet_stone"
+    },
+    {
+      "name": "terrain_material_7",
+      "static_friction": 5.0,
+      "dynamic_friction": 5.0,
+      "restitution": 0.1,
+      "particle": "bullet_terrain",
+      "decal": "bullet_stone"
+    },
+    {
+      "name": "terrain_material_8",
+      "static_friction": 20.0,
+      "dynamic_friction": 20.0,
+      "restitution": 0.1,
+      "particle": "bullet_terrain",
+      "decal": "bullet_stone"
+    }
+  ]
+}

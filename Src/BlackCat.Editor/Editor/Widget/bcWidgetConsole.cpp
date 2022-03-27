@@ -241,6 +241,7 @@ namespace black_cat
 
 			m_console_list = new QListWidget(nullptr);
 			m_console_list->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+			m_console_list->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 			m_console_list->setUniformItemSizes(true);
 			m_console_input = new QLineEdit(nullptr);
 			m_console_input->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));

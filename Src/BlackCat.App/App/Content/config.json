@@ -1,6 +1,7 @@
 {
-  "global_scale": 1.0,
-  "global_view_distance_scale": 1.0,
+  "log_types": ["info", "debug", "warning", "error"],
+  "scene_global_scale": 1.0,
+  "scene_global_view_distance_scale": 1.0,
   "counter_values": [
     "fps",
     "ping",

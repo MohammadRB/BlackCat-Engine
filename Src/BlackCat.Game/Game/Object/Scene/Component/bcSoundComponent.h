@@ -36,7 +36,7 @@ namespace black_cat
 
 			bc_sound_component(bc_sound_component&& p_other) noexcept = default;
 
-			~bc_sound_component() noexcept override = default;
+			~bc_sound_component() noexcept override;
 
 			bc_sound_component& operator=(bc_sound_component&& p_other) noexcept = default;
 

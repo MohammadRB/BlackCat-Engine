@@ -15,7 +15,7 @@ namespace black_cat
 		 * This class does not use dynamic memory
 		 * \tparam T 
 		 */
-		template< typename T >
+		template<typename T>
 		class bc_nullable
 		{
 		public:
@@ -33,14 +33,14 @@ namespace black_cat
 			{
 			}
 
-			template< typename = std::enable_if_t< bc_type_traits< type >::is_copyable > >
+			template<typename = std::enable_if_t<bc_type_traits<type>::is_copyable>>
 			explicit bc_nullable(const type& p_value) noexcept(bc_type_traits<type>::is_no_throw_copy)
 				: bc_nullable()
 			{
 				_set(p_value);
 			}
 
-			explicit bc_nullable(type&& p_value) noexcept(bc_type_traits<type>::is_no_throw_move)
+			explicit bc_nullable(type p_value) noexcept(bc_type_traits<type>::is_no_throw_move)
 				: bc_nullable()
 			{
 				_set(std::move(p_value));
@@ -49,7 +49,7 @@ namespace black_cat
 			bc_nullable(const bc_nullable& p_other) noexcept(bc_type_traits<type>::is_no_throw_copy)
 				: bc_nullable()
 			{
-				static_assert(bc_type_traits< type >::is_copyable, "T is not copyable");
+				static_assert(bc_type_traits<type>::is_copyable, "T is not copyable");
 				
 				if(p_other.has_value())
 				{
@@ -74,7 +74,7 @@ namespace black_cat
 
 			bc_nullable& operator=(const bc_nullable& p_other) noexcept(bc_type_traits<type>::is_no_throw_copy)
 			{
-				static_assert(bc_type_traits< type >::is_copyable, "T is not copyable");
+				static_assert(bc_type_traits<type>::is_copyable, "T is not copyable");
 				
 				if(p_other.has_value())
 				{
@@ -103,14 +103,14 @@ namespace black_cat
 				return *this;
 			}
 
-			template< typename = std::enable_if_t< bc_type_traits< type >::is_copyable > >
+			template<typename = std::enable_if_t<bc_type_traits<type>::is_copyable>>
 			bc_nullable& operator =(const type& p_value) noexcept(bc_type_traits<type>::is_no_throw_copy)
 			{ 
 				_set(p_value); 
 				return *this;
 			}
 
-			bc_nullable& operator =(type&& p_value) noexcept(bc_type_traits<type>::is_no_throw_move)
+			bc_nullable& operator =(type p_value) noexcept(bc_type_traits<type>::is_no_throw_move)
 			{ 
 				_set(std::move(p_value)); 
 				return *this;

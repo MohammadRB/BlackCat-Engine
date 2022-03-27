@@ -23,7 +23,7 @@ namespace black_cat
 
 			bc_editor_height_map_dx11(bc_editor_height_map_dx11&&) = default;
 
-			~bc_editor_height_map_dx11() = default;
+			~bc_editor_height_map_dx11() override = default;
 
 			bc_editor_height_map_dx11& operator=(bc_editor_height_map_dx11&&) = default;
 

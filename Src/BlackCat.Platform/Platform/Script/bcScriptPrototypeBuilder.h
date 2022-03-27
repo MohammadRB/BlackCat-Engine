@@ -221,12 +221,12 @@ namespace black_cat
 			bc_script_member_setter<T> m_setter;
 		};
 
-		template<platform::bc_platform TPlatform, typename T>
+		template<bc_platform TPlatform, typename T>
 		struct bc_platform_script_prototype_builder_pack
 		{
 		};
 
-		template<platform::bc_platform TPlatform, typename T>
+		template<bc_platform TPlatform, typename T>
 		class bc_platform_script_prototype_builder
 		{
 		public:
@@ -426,6 +426,6 @@ namespace black_cat
 		};
 
 		template<typename T>
-		using bc_script_prototype_builder = bc_platform_script_prototype_builder<platform::g_current_platform, T>;
+		using bc_script_prototype_builder = bc_platform_script_prototype_builder<g_current_platform, T>;
 	}
 }

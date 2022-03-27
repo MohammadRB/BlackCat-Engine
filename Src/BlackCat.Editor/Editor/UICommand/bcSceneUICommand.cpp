@@ -4,6 +4,7 @@
 #include "Editor/EditorPCH.h"
 
 #include <utility>
+#include "Core/Utility/bcLogger.h"
 #include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "Editor/UICommand/bcSceneUICommand.h"
@@ -46,6 +47,8 @@ namespace black_cat
 
 		bool bc_scene_ui_command::update(update_context& p_context)
 		{
+			auto& l_content_manager = p_context.m_game_system.get_file_system().get_content_manager();
+
 			switch (m_type)
 			{
 				case bc_scene_ui_command_type::get_scene:
@@ -59,17 +62,27 @@ namespace black_cat
 				}
 				case bc_scene_ui_command_type::load_scene:
 				{
-					auto l_scene = p_context.m_game_system.get_file_system()
-						.get_content_manager()
-						.load<game::bc_scene>(m_scene_path.c_str(), {}, core::bc_content_loader_parameter());
-					p_context.m_game_system.set_scene(std::move(l_scene));
+					if(p_context.m_game_system.get_scene() != nullptr)
+					{
+						p_context.m_game_system.set_scene(nullptr);
+						return true;
+					}
+
+					try
+					{
+						auto l_scene = l_content_manager.load<game::bc_scene>(m_scene_path.c_str(), {}, core::bc_content_loader_parameter());
+						p_context.m_game_system.set_scene(std::move(l_scene));
+					}
+					catch(const std::exception& l_exception)
+					{
+						core::bc_log(core::bc_log_type::error) << l_exception.what() << core::bc_lend;
+					}
+
 					break;
 				}
 				case bc_scene_ui_command_type::save_scene:
 				{
-					p_context.m_game_system.get_file_system()
-						.get_content_manager()
-						.save(*m_scene);
+					l_content_manager.save(*m_scene);
 					break;
 				}
 				case bc_scene_ui_command_type::save_as_scene:
@@ -77,6 +90,7 @@ namespace black_cat
 					break;
 				}
 			}
+
 			return false;
 		}
 

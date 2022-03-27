@@ -37,6 +37,6 @@ namespace black_cat
 		using bc_network_message_id = bcINT32; // it must be int because in json deserialization it is interpreted as int
 		using bc_network_message_hash = core::bc_string_cmp_hash;
 		using bc_network_packet_time = platform::bc_clock::big_clock;
-		using bc_network_rtt = platform::bc_clock::small_delta_time;
+		using bc_network_rtt = platform::bc_clock::small_time;
 	}
 }

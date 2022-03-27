@@ -22,7 +22,9 @@ namespace black_cat
 		BC_RENDER_PASS(ptc_sys)
 		
 	public:
-		bc_particle_system_pass_dx11(game::bc_render_pass_variable_t p_render_target_texture, game::bc_render_pass_variable_t p_render_target_view, const bcECHAR* p_sprites_content_name);
+		bc_particle_system_pass_dx11(game::bc_render_pass_variable_t p_render_target_texture, 
+			game::bc_render_pass_variable_t p_render_target_view, 
+			const bcECHAR* p_sprites_content_path);
 		
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 		
@@ -57,7 +59,7 @@ namespace black_cat
 		bcINT32 m_dead_particles_initial_count = s_particles_count;
 		const game::bc_render_pass_variable_t m_render_target_texture;
 		const game::bc_render_pass_variable_t m_render_target_view;
-		const bcECHAR* m_sprites_content_name;
+		const bcECHAR* m_sprites_content_path;
 		
 		graphic::bc_depth_stencil_view m_depth_buffer_view;
 		graphic::bc_resource_view m_depth_buffer_shader_view;

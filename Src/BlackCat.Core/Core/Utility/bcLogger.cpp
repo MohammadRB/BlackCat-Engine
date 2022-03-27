@@ -9,9 +9,23 @@ namespace black_cat
 	namespace core
 	{
 		bc_logger::bc_logger()
-			: m_logs_ptr(0)
+			: m_enabled_logs(bc_log_type::all),
+			m_logs_ptr(0)
 		{
-			m_logs.resize(10, std::make_pair(bc_log_type::info, bc_estring()));
+			m_logs.resize(20, std::make_pair(bc_log_type::info, bc_estring()));
+		}
+
+		void bc_logger::set_enabled_log_types(bc_log_type p_types) noexcept
+		{
+			for (const auto l_type : { bc_log_type::info, bc_log_type::debug, bc_log_type::warning, bc_log_type::error })
+			{
+				if (!bc_enum::has(p_types, l_type))
+				{
+					continue;
+				}
+
+				m_enabled_logs = bc_enum::set(m_enabled_logs, l_type, true);
+			}
 		}
 
 		void bc_logger::log(bc_log_type p_types, const bcECHAR* p_log)
@@ -20,7 +34,7 @@ namespace black_cat
 
 			for (const auto l_type : { bc_log_type::info, bc_log_type::debug, bc_log_type::warning, bc_log_type::error })
 			{
-				if (!bc_enum::has(p_types, l_type))
+				if (!bc_enum::has(m_enabled_logs, l_type) || !bc_enum::has(p_types, l_type))
 				{
 					continue;
 				}

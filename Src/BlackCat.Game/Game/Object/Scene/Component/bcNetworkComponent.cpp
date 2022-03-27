@@ -296,7 +296,7 @@ namespace black_cat
 			auto& l_extrapolator = std::get<1>(*l_ite);
 			auto& l_extrapolator_elapsed = std::get<2>(*l_ite);
 			
-			const auto l_extrapolation_ratio = p_clock.m_average_elapsed / static_cast<platform::bc_clock::small_delta_time>(m_in_ping);
+			const auto l_extrapolation_ratio = p_clock.m_average_elapsed / static_cast<platform::bc_clock::small_time>(m_in_ping);
 			auto l_extrapolated_value = l_extrapolator.change_rate();
 			l_extrapolated_value *= l_extrapolation_ratio;
 

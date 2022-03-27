@@ -36,16 +36,10 @@ namespace box
 		bc_editor_render_app::application_initialize(p_context);
 
 		auto& l_render_system = m_game_system->get_render_system();
-		auto& l_file_system = m_game_system->get_file_system();
 
 		l_render_system.add_render_pass_before<bx_bullet_trail_pass, bc_glow_pass>
 		(
-			bx_bullet_trail_pass
-			(
-				constant::g_rpass_back_buffer_texture,
-				constant::g_rpass_back_buffer_render_view, 
-				l_file_system.get_content_texture_path(bcL("BulletTrail.dds"))
-			)
+			bx_bullet_trail_pass(constant::g_rpass_back_buffer_texture,constant::g_rpass_back_buffer_render_view, bcL("Texture\\Flare\\BulletTrail.dds"))
 		);
 	}
 

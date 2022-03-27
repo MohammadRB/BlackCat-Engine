@@ -16,7 +16,7 @@ namespace black_cat
 
 			bc_render_application_d3dwidget_output_window(bc_render_application_d3dwidget_output_window&&) noexcept;
 
-			~bc_render_application_d3dwidget_output_window();
+			~bc_render_application_d3dwidget_output_window() override;
 
 			bc_render_application_d3dwidget_output_window& operator=(bc_render_application_d3dwidget_output_window&&) noexcept;
 
@@ -56,7 +56,7 @@ namespace black_cat
 
 		inline platform::bc_window_id bc_render_application_d3dwidget_output_window::get_id() const noexcept
 		{
-			return static_cast< platform::bc_window_id >(m_d3d_widget->winId());
+			return static_cast<platform::bc_window_id>(m_d3d_widget->winId());
 		}
 
 		inline bcUINT32 bc_render_application_d3dwidget_output_window::get_width() const noexcept

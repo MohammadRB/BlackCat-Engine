@@ -54,8 +54,7 @@ namespace black_cat
 				bci_ui_command_state* p_state)
 				: m_clock(p_clock),
 				m_game_system(p_game_system),
-				m_state(p_state),
-				m_result()
+				m_state(p_state)
 			{
 			}
 
@@ -133,16 +132,14 @@ namespace black_cat
 			virtual state_ptr create_state(state_context& p_context) const;
 
 			/**
-			 * \brief Update command logic.
-			 * This method will be called from engine main thread.
+			 * \brief Update command logic. This method will be called from engine main thread.
 			 * \param p_context
-			 * \return Return true if command must persist in next frame
+			 * \return Return true if command must persist in next frame.
 			 */
 			virtual bool update(update_context& p_context) = 0;
 
 			/**
-			 * \brief Update command logic in UI context.
-			 * This method will be called from ui main thread.
+			 * \brief Update command logic in UI context. This method will be called from ui main thread.
 			 */
 			virtual void update_ui(update_ui_context& p_context);
 

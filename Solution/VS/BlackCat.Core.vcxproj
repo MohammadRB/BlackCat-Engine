@@ -320,6 +320,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Container\bcBitVector.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Content\bcContent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Content\bcContentLoader.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Content\bcContentManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Content\bcContentStreamManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\CorePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

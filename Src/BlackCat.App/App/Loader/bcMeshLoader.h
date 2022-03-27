@@ -31,7 +31,7 @@ namespace black_cat
 
 		bc_mesh_loader(bc_mesh_loader&&) = default;
 
-		~bc_mesh_loader() = default;
+		~bc_mesh_loader() override = default;
 
 		bc_mesh_loader& operator=(bc_mesh_loader&&) = default;
 
@@ -45,7 +45,7 @@ namespace black_cat
 			core::bc_vector_movable<game::bc_vertex_pos_tex_nor_tan_bon>& p_vertices,
 			game::bc_mesh_builder& p_builder);
 
-		static void convert_ai_material(core::bc_content_loading_context& p_context,
+		static void convert_ai_material(const core::bc_content_loading_context& p_context,
 			const aiMaterial& p_ai_material,
 			game::bc_mesh_material_description& p_material);
 

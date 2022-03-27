@@ -105,7 +105,7 @@ namespace black_cat
 		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
 		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
 
-		const auto l_sprites_texture_path = l_game_system.get_file_system().get_content_texture_path(m_sprites_texture_name);
+		const auto l_sprites_texture_path = l_game_system.get_file_system().get_content_path(m_sprites_texture_name);
 		m_sprites_texture = l_content_manager.load<graphic::bc_texture2d_content>
 		(
 			core::bc_alloc_type::program,
@@ -114,10 +114,10 @@ namespace black_cat
 			core::bc_content_loader_parameter()
 		);
 		const auto l_sprites_texture_view_config = graphic::bc_graphic_resource_builder()
-		                                   .as_resource_view()
-		                                   .as_texture_view(m_sprites_texture->get_resource().get_format())
-		                                   .as_tex2d_shader_view(0, -1)
-		                                   .on_texture2d();
+		                                           .as_resource_view()
+		                                           .as_texture_view(m_sprites_texture->get_resource().get_format())
+		                                           .as_tex2d_shader_view(0, -1)
+		                                           .on_texture2d();
 		m_sprites_texture_view = l_device.create_resource_view(m_sprites_texture->get_resource(), l_sprites_texture_view_config);
 
 		auto l_linear_sampler_config = graphic::bc_graphic_resource_builder()

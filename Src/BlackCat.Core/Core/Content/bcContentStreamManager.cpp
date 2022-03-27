@@ -10,6 +10,7 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Content/bcContent.h"
 #include "Core/Content/bcContentManager.h"
+#include "Core/Utility/bcLogger.h"
 #include "Core/bcException.h"
 
 namespace black_cat
@@ -26,7 +27,7 @@ namespace black_cat
 
 		BC_JSON_STRUCTURE(_bc_content_stream)
 		{
-			BC_JSON_VALUE(bc_string_frame, stream_name);
+			BC_JSON_VALUE(bc_string, stream_name);
 			BC_JSON_ARRAY(_bc_content_stream_content, stream_content);
 		};
 
@@ -49,21 +50,18 @@ namespace black_cat
 
 			if(!l_json_file.open_read(p_json_file_path))
 			{
-				bc_string_frame l_msg = "Error in reading content stream file: ";
-				l_msg += bc_to_exclusive_string(p_json_file_path.data());
-
-				throw bc_io_exception(l_msg.c_str());
+				const auto l_msg = bc_string_stream_frame() << "Error in reading content stream file: " << p_json_file_path;
+				throw bc_io_exception(l_msg.str().c_str());
 			}
 
-			core::bc_read_all_lines(l_json_file, l_json_file_content);
+			bc_read_all_lines(l_json_file, l_json_file_content);
 
 			bc_json_document<_bc_content_stream_json> l_content_stream;
 			l_content_stream.load(l_json_file_content.c_str());
-
+			
 			for (bc_json_object<_bc_content_stream>& l_stream : l_content_stream->m_streams)
 			{
 				bc_vector_program<_bc_content_stream_file> l_stream_files;
-
 				l_stream_files.reserve(l_stream->m_stream_content.size());
 
 				for (bc_json_object<_bc_content_stream_content>& l_stream_content : l_stream->m_stream_content)
@@ -74,7 +72,7 @@ namespace black_cat
 					{
 						bc_string_program(*l_stream_content->m_content_title),
 						bc_string_program(*l_stream_content->m_content_loader),
-						bc_estring_program(l_file_path),
+						bc_estring_program(l_file_path.get_string_frame()),
 						bc_data_driven_parameter()
 					};
 
@@ -93,7 +91,16 @@ namespace black_cat
 					l_stream_files.push_back(std::move(l_stream_file));
 				}
 
-				m_stream_descriptions.insert(content_stream_map_type::value_type(*l_stream->m_stream_name, std::move(l_stream_files)));
+				auto l_ite = m_stream_descriptions.find(*l_stream->m_stream_name);
+				if (l_ite == std::end(m_stream_descriptions))
+				{
+					m_stream_descriptions.insert(content_stream_map_type::value_type(std::move(*l_stream->m_stream_name), std::move(l_stream_files)));
+				}
+				else
+				{
+					l_ite->second = std::move(l_stream_files);
+					core::bc_log(bc_log_type::warning) << "content stream with name '" << *l_stream->m_stream_name << "' already exist. old stream will be replaced." << core::bc_lend;
+				}
 			}
 		}
 
@@ -150,13 +157,24 @@ namespace black_cat
 						throw bc_key_not_found_exception(l_error_msg.c_str());
 					}
 
-					bc_icontent_ptr l_content = l_loader_entry->second
-					(
-						p_alloc_type,
-						l_content_file.m_file.c_str(),
-						bc_to_estring_frame(l_content_file.m_title).c_str(),
-						l_content_file.m_parameters
-					);
+					bc_icontent_ptr l_content;
+
+					try
+					{
+						l_content = l_loader_entry->second
+						(
+							p_alloc_type,
+							l_content_file.m_file.c_str(),
+							bc_to_estring_frame(l_content_file.m_title).c_str(),
+							l_content_file.m_parameters
+						);
+					}
+					catch (const std::exception& l_exception)
+					{
+						// Let other contents in the list be loaded.
+						bc_log(bc_log_type::error) << "Error in loading content '" << l_content_file.m_title << "'. " << l_exception.what() << bc_lend;
+						return;
+					}
 
 					content_map_type::value_type l_new_content_entry = content_map_type::value_type(l_content_file.m_title, content_map_type::value_type::second_type());
 					l_new_content_entry.second.push_back(std::move(l_content));
@@ -175,6 +193,8 @@ namespace black_cat
 					}
 				}
 			);
+
+			core::bc_log(bc_log_type::info) << "content stream '" << p_stream_name << "' loaded." << core::bc_lend;
 		}
 
 		bc_task<void> bc_content_stream_manager::load_content_stream_async(bc_alloc_type p_alloc_type, bc_string_view p_stream_name)
@@ -226,6 +246,8 @@ namespace black_cat
 					}
 				}
 			}
+
+			core::bc_log(bc_log_type::info) << "content stream '" << p_stream_name << "' unloaded." << core::bc_lend;
 		}
 
 		bc_icontent_ptr bc_content_stream_manager::find_content(bc_string_view p_content_name) const

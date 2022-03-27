@@ -155,8 +155,8 @@ namespace black_cat
 			bci_render_application_output_window* m_output_window;
 			core::bc_unique_ptr<platform::bc_clock> m_clock;
 			core::bc_stop_watch m_frame_watch;
-			core::bc_value_sampler<platform::bc_clock::small_delta_time, 64> m_fps_sampler;
-			platform::bc_clock::small_delta_time m_fps;
+			core::bc_value_sampler<platform::bc_clock::small_time, 64> m_fps_sampler;
+			platform::bc_clock::small_time m_fps;
 			bcUINT32 m_min_update_rate;
 			bcINT32 m_render_rate;
 
@@ -168,11 +168,12 @@ namespace black_cat
 			core::bc_event_listener_handle m_event_handle_window_resize;
 			core::bc_event_listener_handle m_event_handle_window_focus;
 			core::bc_event_listener_handle m_event_handle_window_close;
-			core::bc_event_listener_handle m_event_handle_app_exit;
 			core::bc_event_listener_handle m_event_handle_app_pause;
+			core::bc_event_listener_handle m_event_handle_app_exit;
 			core::bc_event_listener_handle m_event_handle_error;
 			core::bc_event_listener_handle m_event_handle_key;
 			core::bc_event_listener_handle m_event_handle_pointing;
+			core::bc_event_listener_handle m_event_handle_config_changed;
 		};
 	}
 

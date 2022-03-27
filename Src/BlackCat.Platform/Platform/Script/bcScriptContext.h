@@ -17,48 +17,48 @@ namespace black_cat
 		using bc_script_int = bcINT32;
 		using bc_script_double = bcDOUBLE;
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_variable;
-		using bc_script_variable = bc_platform_script_variable<platform::g_current_platform>;
+		using bc_script_variable = bc_platform_script_variable<g_current_platform>;
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_string;
-		using bc_script_string = bc_platform_script_string<platform::g_current_platform>;
+		using bc_script_string = bc_platform_script_string<g_current_platform>;
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_object;
-		using bc_script_object = bc_platform_script_object<platform::g_current_platform>;
+		using bc_script_object = bc_platform_script_object<g_current_platform>;
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_array;
-		using bc_script_array = bc_platform_script_array<platform::g_current_platform>;
+		using bc_script_array = bc_platform_script_array<g_current_platform>;
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_function;
-		using bc_script_function = bc_platform_script_function<platform::g_current_platform>;
+		using bc_script_function = bc_platform_script_function<g_current_platform>;
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_error;
-		using bc_script_error = bc_platform_script_error<platform::g_current_platform>;
+		using bc_script_error = bc_platform_script_error<g_current_platform>;
 
-		template<platform::bc_platform TPlatform, typename T>
+		template<bc_platform TPlatform, typename T>
 		class bc_platform_script_prototype_builder;
 		template<typename T>
-		using bc_script_prototype_builder = bc_platform_script_prototype_builder<platform::g_current_platform, T>;
+		using bc_script_prototype_builder = bc_platform_script_prototype_builder<g_current_platform, T>;
 
-		template<platform::bc_platform TPlatform, typename T>
+		template<bc_platform TPlatform, typename T>
 		class bc_platform_script_prototype;
 		template<typename T>
-		using bc_script_prototype = bc_platform_script_prototype<platform::g_current_platform, T>;
+		using bc_script_prototype = bc_platform_script_prototype<g_current_platform, T>;
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_global_prototype_builder;
-		using bc_script_global_prototype_builder = bc_platform_script_global_prototype_builder<platform::g_current_platform>;
+		using bc_script_global_prototype_builder = bc_platform_script_global_prototype_builder<g_current_platform>;
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_script_context_scope;
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		struct bc_platform_script_context_pack
 		{
 		};
@@ -69,7 +69,7 @@ namespace black_cat
 		 * Incompatible with movable memory
 		 * \tparam TPlatform 
 		 */
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_script_context : public bc_platform_script_reference<TPlatform>
 		{
 		public:
@@ -183,7 +183,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_script_context = bc_platform_script_context<platform::g_current_platform>;
+		using bc_script_context = bc_platform_script_context<g_current_platform>;
 		using bc_script_context_ref = bc_script_ref<bc_script_context>;
 	}
 }

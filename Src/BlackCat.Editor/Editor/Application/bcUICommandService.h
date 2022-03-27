@@ -35,9 +35,9 @@ namespace black_cat
 		public:
 			_bc_ui_command_entry(core::bc_unique_ptr<bci_ui_command> p_command);
 
-			core::bc_task<core::bc_any> get_task();
-
 			bci_ui_command& get_command();
+
+			core::bc_task<core::bc_any> get_task();
 
 			bool command_update(bci_ui_command::update_context& p_context);
 
@@ -50,8 +50,7 @@ namespace black_cat
 
 			core::bc_unique_ptr<bci_ui_command> m_command;
 			core::bc_task_link<core::bc_any> m_task_link;
-			bci_ui_command::update_context* m_update_context;
-			bool m_command_result;
+			core::bc_any m_task_result;
 		};
 
 		class bc_ui_command_service : public core::bci_service
@@ -95,16 +94,16 @@ namespace black_cat
 			game::bc_game_system& m_game_system;
 
 			core::bc_event_listener_handle m_editor_mode_event_handle;
-			command_state_container m_command_states;
-			
-			mutable platform::bc_mutex m_commands_lock;
+			bool m_editor_mode;
 			platform::bc_clock::big_clock m_last_update_clock;
-			platform::bc_clock::big_clock m_last_execute_clock;
+			platform::bc_clock::big_clock m_last_command_clock;
+
+			mutable platform::bc_mutex m_commands_lock;
+			command_state_container m_command_states;
 			core::bc_queue<core::bc_shared_ptr<_bc_ui_command_entry>> m_commands_to_execute;
 			core::bc_queue<core::bc_shared_ptr<_bc_ui_command_entry>> m_executed_commands;
 			core::bc_queue<core::bc_shared_ptr<_bc_ui_command_entry>> m_reversible_commands;
 			bcUINT32 m_commands_to_undo;
-			bool m_editor_mode;
 		};
 
 		template<typename T>
@@ -121,11 +120,11 @@ namespace black_cat
 			{
 				platform::bc_mutex_guard l_lock(m_commands_lock);
 				
-				if(m_last_execute_clock == m_last_update_clock) // Only allow one command per frame
+				if(m_last_command_clock == m_last_update_clock) // Only allow one command per frame
 				{
 					return core::bc_task<core::bc_any>();
 				}
-				m_last_execute_clock = m_last_update_clock;
+				m_last_command_clock = m_last_update_clock;
 
 				auto l_command = core::bc_make_unique<T>(std::move(p_command));
 				auto l_command_entry = core::bc_make_shared<_bc_ui_command_entry>(std::move(l_command));

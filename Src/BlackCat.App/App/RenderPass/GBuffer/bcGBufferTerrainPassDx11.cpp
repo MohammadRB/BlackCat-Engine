@@ -45,7 +45,7 @@ namespace black_cat
 		auto& l_device = p_render_system.get_device();
 		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 
-		auto l_parameter_cbuffer_config = graphic::bc_graphic_resource_builder()
+		const auto l_parameter_cbuffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_buffer
 			(
@@ -56,7 +56,7 @@ namespace black_cat
 			.as_constant_buffer();
 
 		m_parameter_cbuffer = l_device.create_buffer(l_parameter_cbuffer_config, nullptr);
-		m_chunk_info_device_compute_state = p_render_system.create_device_compute_state("terrain_chunk_info");
+		m_chunk_info_device_compute_state = p_render_system.create_device_compute_state("terrain_chunk_info_cs");
 		m_run_chunk_info_shader = true;
 		
 		after_reset(game::bc_render_pass_reset_context
@@ -88,20 +88,30 @@ namespace black_cat
 	void bc_gbuffer_terrain_pass_dx11::initialize_frame(const game::bc_render_pass_render_context& p_context)
 	{
 		core::bc_vector<game::bc_height_map_ptr> l_height_maps;
-		
+
 		if(m_height_maps_query.is_executed())
 		{
 			auto l_query = m_height_maps_query.get();
-			m_height_maps_render_buffer = l_query.get_render_state_buffer();
 			l_height_maps = l_query.get_height_maps();
+			m_height_maps_render_buffer = l_query.get_render_state_buffer();
 		}
 
-		m_height_maps_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		m_height_maps_query = p_context.m_query_manager.queue_query
 		(
 			game::bc_height_map_scene_query(game::bc_actor_render_camera(p_context.m_update_camera), p_context.m_frame_renderer.create_buffer())
 		);
-		
-		if (m_run_chunk_info_shader)
+
+		const auto l_height_maps_changed = std::any_of
+		(
+			std::begin(l_height_maps),
+			std::end(l_height_maps),
+			[&](const game::bc_height_map_ptr& p_height_map)
+			{
+				return std::find(std::begin(m_last_frame_height_maps), std::end(m_last_frame_height_maps), p_height_map.get()) == std::end(m_last_frame_height_maps);
+			}
+		);
+
+		if (m_run_chunk_info_shader || l_height_maps_changed)
 		{
 			if(l_height_maps.empty())
 			{
@@ -112,7 +122,7 @@ namespace black_cat
 
 			for (auto& l_height_map : l_height_maps)
 			{
-				const bc_height_map_dx11& l_height_map_dx11 = static_cast<const bc_height_map_dx11&>(*l_height_map);
+				const auto& l_height_map_dx11 = static_cast<const bc_height_map_dx11&>(*l_height_map);
 
 				auto l_compute_state = p_context.m_render_system.create_compute_state
 				(
@@ -136,11 +146,23 @@ namespace black_cat
 			p_context.m_render_thread.finish();
 			m_run_chunk_info_shader = false;
 		}
+
+		m_last_frame_height_maps.clear();
+		std::transform
+		(
+			std::begin(l_height_maps),
+			std::end(l_height_maps),
+			std::back_inserter(m_last_frame_height_maps),
+			[](const game::bc_height_map_ptr& p_height_map)
+			{
+				return p_height_map.get();
+			}
+		);
 	}
 
 	void bc_gbuffer_terrain_pass_dx11::execute(const game::bc_render_pass_render_context& p_context)
 	{
-		game::bci_camera::extend l_camera_extends = p_context.m_render_camera.get_extends();
+		const auto l_camera_extends = p_context.m_render_camera.get_extends();
 
 		_bc_parameter_buffer l_parameter;
 		l_parameter.m_frustum_planes[0] = _plane_from_3_point(l_camera_extends[0], l_camera_extends[1], l_camera_extends[2]);
@@ -159,6 +181,8 @@ namespace black_cat
 
 		p_context.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
 		p_context.m_render_thread.finish();
+
+		m_height_maps_render_buffer = game::bc_render_state_buffer();
 	}
 
 	void bc_gbuffer_terrain_pass_dx11::cleanup_frame(const game::bc_render_pass_render_context& p_context)

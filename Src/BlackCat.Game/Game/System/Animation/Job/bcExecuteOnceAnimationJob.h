@@ -37,7 +37,7 @@ namespace black_cat
 			}
 
 		private:
-			platform::bc_clock::big_delta_time m_total_elapsed;
+			platform::bc_clock::big_time m_total_elapsed;
 		};
 	}
 }

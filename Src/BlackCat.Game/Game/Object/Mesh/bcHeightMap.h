@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include "Core/bcConstant.h"
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcSpan.h"
+#include "Core/bcConstant.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "PhysicsImp/Shape/bcHeightField.h"
 #include "Game/System/Render/State/bcRenderState.h"
@@ -39,7 +40,7 @@ namespace black_cat
 
 			bc_height_map(bc_height_map&& p_other) noexcept;
 
-			virtual ~bc_height_map();
+			~bc_height_map() override;
 
 			bc_height_map& operator=(bc_height_map&& p_other) noexcept;
 
@@ -67,7 +68,7 @@ namespace black_cat
 
 			const bc_height_map_material& get_material(bcUINT32 p_index) const noexcept;
 			
-			const bc_height_map_material* get_materials() const noexcept;
+			core::bc_const_span<bc_height_map_material> get_materials() const noexcept;
 
 		private:
 			bcUINT16 m_width;
@@ -146,9 +147,9 @@ namespace black_cat
 			return m_materials[p_index];
 		}
 		
-		inline const bc_height_map_material* bc_height_map::get_materials() const noexcept
+		inline core::bc_const_span<bc_height_map_material> bc_height_map::get_materials() const noexcept
 		{
-			return m_materials.data();
+			return core::bc_make_cspan(m_materials);
 		}
 	}
 }

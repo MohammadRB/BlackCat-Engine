@@ -344,7 +344,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		bc_messagebox_value bc_platform_basic_window<platform::bc_platform::win32>::messagebox(const bcECHAR* p_caption, 
+		bc_messagebox_value bc_platform_basic_window<platform::bc_platform::win32>::show_messagebox(const bcECHAR* p_caption, 
 			const bcECHAR* p_text, 
 			bc_messagebox_type p_type, 
 			bc_messagebox_buttom p_button)
@@ -414,12 +414,12 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		bc_messagebox_value bc_platform_basic_window<platform::bc_platform::win32>::messagebox(core::bc_estring_frame p_caption, 
+		bc_messagebox_value bc_platform_basic_window<platform::bc_platform::win32>::show_messagebox(core::bc_estring_frame p_caption, 
 			core::bc_estring_frame p_text, 
 			bc_messagebox_type p_type, 
 			bc_messagebox_buttom p_button)
 		{
-			return messagebox(p_caption.c_str(), p_text.c_str(), p_type, p_button);
+			return show_messagebox(p_caption.c_str(), p_text.c_str(), p_type, p_button);
 		}
 	}
 }

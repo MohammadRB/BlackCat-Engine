@@ -214,32 +214,21 @@
     <None Include="..\Src\BoX.Game\Content\Scene\TestMaterial.json">
       <Filter>BoX.Game\Content\Scene</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\Src\BoX.Game\Content\Texture\BulletTrail.dds">
-      <Filter>BoX.Game\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\Src\BoX.Game\Content\Texture\Decal.dds">
-      <Filter>BoX.Game\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\Src\BoX.Game\Content\Texture\Decal.nrm.dds">
-      <Filter>BoX.Game\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\Src\BoX.Game\Content\Texture\Decal.spec.dds">
-      <Filter>BoX.Game\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\Src\BoX.Game\Content\Texture\Flare1.dds">
-      <Filter>BoX.Game\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\Src\BoX.Game\Content\Texture\Flare2.dds">
-      <Filter>BoX.Game\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\Src\BoX.Game\Content\Texture\Flare3.dds">
-      <Filter>BoX.Game\Content\Texture</Filter>
-    </Image>
-    <Image Include="..\Src\BoX.Game\Content\Texture\Sprites.dds">
-      <Filter>BoX.Game\Content\Texture</Filter>
-    </Image>
+    <None Include="..\Src\BoX.Game\Content\Scene\BattleGround.json">
+      <Filter>BoX.Game\Content\Scene</Filter>
+    </None>
+    <None Include="..\Src\BoX.Game\Content\Scene\BattleGroundContentStream.json">
+      <Filter>BoX.Game\Content\Scene</Filter>
+    </None>
+    <None Include="..\Src\BoX.Game\Content\Scene\BattleGroundDecal.json">
+      <Filter>BoX.Game\Content\Scene</Filter>
+    </None>
+    <None Include="..\Src\BoX.Game\Content\Scene\BattleGroundEntityType.json">
+      <Filter>BoX.Game\Content\Scene</Filter>
+    </None>
+    <None Include="..\Src\BoX.Game\Content\Scene\BattleGroundMaterial.json">
+      <Filter>BoX.Game\Content\Scene</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Src\BoX.Game\Content\Shader\DirectX11\PostProcess\bxBulletTrail.hlsl">

@@ -88,9 +88,9 @@ namespace black_cat
 			 */
 			void delete_path() const noexcept(false);
 
-			static bc_estring get_program_path();
+			static bc_path get_program_path();
 
-			static bc_estring get_absolute_path(const bcECHAR* p_relative_path);
+			static bc_path get_absolute_path(const bcECHAR* p_relative_path);
 
 			static bc_path_info get_path_info();
 

@@ -14,8 +14,8 @@ namespace black_cat
 		{
 			using big_clock = bcUINT64;
 			using small_clock = bcUINT32;
-			using big_delta_time = bcDOUBLE;
-			using small_delta_time = bcFLOAT;
+			using big_time = bcDOUBLE;
+			using small_time = bcFLOAT;
 		};
 
 		template< >

@@ -30,7 +30,7 @@ namespace black_cat
 	};
 
 	bc_light_flare_pass::bc_light_flare_pass(game::bc_render_pass_variable_t p_render_target_texture, game::bc_render_pass_variable_t p_render_target_view)
-		: m_flare_size_distance(s_flare_size_distance * bc_get_global_config().get_global_scale()),
+		: m_flare_size_distance(s_flare_size_distance * bc_get_global_config().get_scene_global_scale()),
 		m_render_target_texture(p_render_target_texture),
 		m_render_target_view(p_render_target_view)
 	{

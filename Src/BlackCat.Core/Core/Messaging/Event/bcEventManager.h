@@ -39,7 +39,7 @@ namespace black_cat
 			{
 			}
 
-			_bc_queued_event(bc_event_ptr<bci_event>&& p_event, platform::bc_clock::big_delta_time p_process_time) noexcept
+			_bc_queued_event(bc_event_ptr<bci_event>&& p_event, platform::bc_clock::big_time p_process_time) noexcept
 				: m_event(std::move(p_event)),
 				m_process_time(p_process_time)
 			{
@@ -62,7 +62,7 @@ namespace black_cat
 			}
 
 			bc_event_ptr<bci_event> m_event;
-			platform::bc_clock::big_delta_time m_process_time;
+			platform::bc_clock::big_time m_process_time;
 		};
 
 		class BC_CORE_DLL bc_event_manager : public bci_service
@@ -106,7 +106,7 @@ namespace black_cat
 			 * \param p_millisecond
 			 */
 			template<class TEvent>
-			void queue_event(TEvent&& p_event, platform::bc_clock::small_delta_time p_millisecond);
+			void queue_event(TEvent&& p_event, platform::bc_clock::small_time p_millisecond);
 
 			bcUINT32 process_event_queue(const platform::bc_clock::update_param& p_clock);
 
@@ -139,7 +139,7 @@ namespace black_cat
 		}
 
 		template<class TEvent>
-		void bc_event_manager::queue_event(TEvent&& p_event, platform::bc_clock::small_delta_time p_millisecond)
+		void bc_event_manager::queue_event(TEvent&& p_event, platform::bc_clock::small_time p_millisecond)
 		{
 			auto l_event = static_cast<bc_event_ptr<bci_event>>(bc_make_event(std::forward<TEvent>(p_event)));
 			constexpr bool l_is_app_event = std::is_base_of_v<bc_app_event, std::decay_t<TEvent>>;

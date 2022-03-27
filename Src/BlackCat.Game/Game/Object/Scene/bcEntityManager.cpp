@@ -133,7 +133,12 @@ namespace black_cat
 			core::bc_file_stream l_json_file;
 			core::bc_string_frame l_json_file_buffer;
 
-			l_json_file.open_read(p_json_file_path);
+			if (!l_json_file.open_read(p_json_file_path))
+			{
+				const auto l_msg = core::bc_string_stream_frame() << "Error in reading entity file: " << p_json_file_path;
+				throw bc_io_exception(l_msg.str().c_str());
+			}
+
 			core::bc_read_all_lines(l_json_file, l_json_file_buffer);
 
 			core::bc_json_document<_bc_entity_json> l_json;

@@ -202,7 +202,7 @@ namespace black_cat
 
 			bool m_paused;
 			bool m_editor_mode;
-			core::bc_nullable<platform::bc_clock::big_delta_time> m_pause_last_total_elapsed;
+			core::bc_nullable<platform::bc_clock::big_time> m_pause_last_total_elapsed;
 		};
 	}
 }

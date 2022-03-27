@@ -163,7 +163,7 @@ namespace black_cat
 			g_global_state.m_total_elapsed_second = p_clock.m_total_elapsed_second;
 			g_global_state.m_elapsed = p_clock.m_elapsed;
 			g_global_state.m_elapsed_second = p_clock.m_elapsed_second;
-			g_global_state.m_global_scale = bc_get_global_config().get_global_scale();
+			g_global_state.m_global_scale = bc_get_global_config().get_scene_global_scale();
 
 			if (need_matrix_transpose())
 			{
@@ -198,7 +198,7 @@ namespace black_cat
 			g_global_state.m_total_elapsed_second = p_clock.m_total_elapsed_second;
 			g_global_state.m_elapsed = p_clock.m_elapsed;
 			g_global_state.m_elapsed_second = p_clock.m_elapsed_second;
-			g_global_state.m_global_scale = bc_get_global_config().get_global_scale();
+			g_global_state.m_global_scale = bc_get_global_config().get_scene_global_scale();
 			g_global_state.m_global_light_direction = p_global_light.get_direction();
 			g_global_state.m_global_light_color = p_global_light.get_color();
 			g_global_state.m_global_light_intensity = p_global_light.get_intensity();

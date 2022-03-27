@@ -21,7 +21,7 @@ namespace black_cat
 		{
 			if (p_buffer_size < p_path.size() + 1)
 			{
-				throw bc_invalid_operation_exception("Provided buffer hasn't enough space");
+				throw bc_invalid_operation_exception("Provided buffer does not have enough space");
 			}
 
 #ifdef BC_UNICODE

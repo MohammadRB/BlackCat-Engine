@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template<platform::bc_platform>
+		template<bc_platform>
 		struct bc_platform_application_parameter_pack
 		{
 		public:
@@ -25,14 +25,14 @@ namespace black_cat
 			const bcCHAR* m_commandline;
 		};
 
-		using bc_application_parameter = bc_platform_application_parameter_pack<platform::g_current_platform>;
+		using bc_application_parameter = bc_platform_application_parameter_pack<g_current_platform>;
 
-		template<platform::bc_platform>
+		template<bc_platform>
 		struct bc_platform_application_pack
 		{
 		};
 
-		template<platform::bc_platform TPlatform>
+		template<bc_platform TPlatform>
 		class bc_platform_application
 		{
 		public:
@@ -75,6 +75,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_application = bc_platform_application<platform::g_api_win32>;
+		using bc_application = bc_platform_application<g_api_win32>;
 	}
 }

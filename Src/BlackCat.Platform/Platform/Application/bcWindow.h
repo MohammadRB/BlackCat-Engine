@@ -11,13 +11,13 @@ namespace black_cat
 	{
 		using bc_window_id = bcUINT32;
 
-		template<platform::bc_platform>
+		template<bc_platform>
 		struct bc_platform_window_pack
 		{
 		};
 
-		template<platform::bc_platform TPlatform>
-		class bc_platform_window : private platform::bc_no_copy
+		template<bc_platform TPlatform>
+		class bc_platform_window : private bc_no_copy
 		{
 		public:
 			using platform_pack = bc_platform_window_pack<TPlatform>;
@@ -54,10 +54,15 @@ namespace black_cat
 				return m_pack;
 			}
 
+			const platform_pack& get_platform_pack() const
+			{
+				return m_pack;
+			}
+
 		private:
 			platform_pack m_pack;
 		};
 
-		using bc_window = bc_platform_window<platform::g_current_platform>;
+		using bc_window = bc_platform_window<g_current_platform>;
 	}
 }

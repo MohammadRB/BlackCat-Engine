@@ -81,7 +81,7 @@ namespace black_cat
 			BC_SERVICE(logger)
 
 		private:
-			using key_type = std::underlying_type<bc_log_type>::type;
+			using key_type = std::underlying_type_t<bc_log_type>;
 			using listener_map_type = bc_array<bc_vector<_bc_log_listener_container>, 4>;
 
 		public:
@@ -92,6 +92,8 @@ namespace black_cat
 			~bc_logger() override = default;
 
 			bc_logger& operator=(bc_logger&&) noexcept = delete;
+			
+			void set_enabled_log_types(bc_log_type p_types) noexcept;
 
 			/**
 			 * \brief Use binary OR to pass multiple type.
@@ -168,6 +170,8 @@ namespace black_cat
 			void _register_listener(bc_log_type p_types, _bc_log_listener_container p_listener);
 
 			void _replicate_last_logs(bc_log_type p_types, bci_log_listener* p_listener);
+
+			bc_log_type m_enabled_logs;
 
 			platform::bc_shared_mutex m_listener_mutex;
 			listener_map_type m_listeners;

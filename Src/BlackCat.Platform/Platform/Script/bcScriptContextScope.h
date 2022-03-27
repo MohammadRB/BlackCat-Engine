@@ -9,12 +9,12 @@ namespace black_cat
 {
 	namespace platform
 	{
-		template< platform::bc_platform TPlatform >
+		template<bc_platform TPlatform >
 		class bc_platform_script_context;
-		using bc_script_context = bc_platform_script_context< platform::g_current_platform >;
+		using bc_script_context = bc_platform_script_context<g_current_platform>;
 
-		template< platform::bc_platform TPlatform >
-		class bc_script_context_scope : public platform::bc_no_copy
+		template<bc_platform TPlatform >
+		class bc_script_context_scope : public bc_no_copy
 		{
 		public:
 			bc_script_context_scope(bc_script_context& p_context) noexcept

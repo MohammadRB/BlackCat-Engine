@@ -1,6 +1,8 @@
 // [02/22/2021 MRB]
 
 #include "Game/GamePCH.h"
+
+#include "Core/Utility/bcEnumOperand.h"
 #include "Game/System/Input/bcGlobalConfig.h"
 
 namespace black_cat
@@ -22,13 +24,20 @@ namespace black_cat
 			load(core::bc_path(p_content_path).combine(core::bc_path(l_config_file_name)));
 
 			auto& l_json = *m_json;
-			if (!l_json->m_global_scale.has_value())
+			if (!l_json->m_log_types.has_value())
 			{
-				*l_json->m_global_scale = 1.f;
+				l_json->m_log_types.new_entry().set("info");
+				l_json->m_log_types.new_entry().set("debug");
+				l_json->m_log_types.new_entry().set("warning");
+				l_json->m_log_types.new_entry().set("error");
 			}
-			if(!l_json->m_global_view_distance_scale.has_value())
+			if (!l_json->m_scene_global_scale.has_value())
 			{
-				*l_json->m_global_view_distance_scale = 1.f;
+				*l_json->m_scene_global_scale = 1.f;
+			}
+			if(!l_json->m_scene_global_view_distance_scale.has_value())
+			{
+				*l_json->m_scene_global_view_distance_scale = 1.f;
 			}
 			if (!l_json->m_scene_graph_debug_draw.has_value())
 			{
@@ -38,13 +47,13 @@ namespace black_cat
 			{
 				*l_json->m_scene_graph_actors_pool_capacity = 2000;
 			}
+			if (!l_json->m_scene_bullet_reference_mass.has_value())
+			{
+				*l_json->m_scene_bullet_reference_mass = .1f;
+			}
 			if (!l_json->m_network_client_name.has_value())
 			{
 				*l_json->m_network_client_name = "";
-			}
-			if(!l_json->m_bullet_reference_mass.has_value())
-			{
-				*l_json->m_bullet_reference_mass = .1f;
 			}
 			if(!l_json->m_counter_values.has_value())
 			{
@@ -81,6 +90,25 @@ namespace black_cat
 			l_read_value("lod_culling_index", m_lod_culling_index);*/
 
 			flush_changes();
+		}
+
+		core::bc_vector<core::bc_string> bc_global_config::get_log_types() const noexcept
+		{
+			core::bc_vector<core::bc_string> l_output;
+			l_output.reserve((*m_json)->m_log_types.size());
+
+			std::transform
+			(
+				std::begin((*m_json)->m_log_types),
+				std::end((*m_json)->m_log_types),
+				std::back_inserter(l_output),
+				[](const auto& l_json_value)
+				{
+					return *l_json_value;
+				}
+			);
+
+			return l_output;
 		}
 
 		core::bc_json_key_value* bc_global_config::load_json(const bcCHAR* p_json)

@@ -55,6 +55,8 @@ namespace black_cat
 
 		void bc_simple_mesh_component::initialize_entity(const bc_actor_component_initialize_entity_context& p_context)
 		{
+			bc_mesh_component::initialize_entity(p_context);
+
 			auto* l_rigid_body_component = get_actor().get_component<bc_rigid_body_component>();
 			if (l_rigid_body_component)
 			{

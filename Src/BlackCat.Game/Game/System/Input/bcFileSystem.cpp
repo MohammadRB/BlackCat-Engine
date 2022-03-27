@@ -22,7 +22,7 @@ namespace black_cat
 			m_global_config_last_write_time(0),
 			m_global_config_last_check_time(0)
 		{
-			const auto l_execute_path = core::bc_path(core::bc_path(core::bc_path::get_program_path()).get_directory());
+			const auto l_execute_path = core::bc_path(core::bc_path::get_program_path().get_directory());
 			m_execute_path = l_execute_path.get_string();
 
 			auto l_temp = l_execute_path;
@@ -251,7 +251,7 @@ namespace black_cat
 
 			m_global_config_last_check_time = 0;
 			
-			platform::bc_basic_file_info l_global_config_file_info;
+			platform::bc_basic_file_info l_global_config_file_info{};
 			platform::bc_file_info::get_basic_info(m_global_config->get_path().data(), &l_global_config_file_info);
 
 			const bool l_global_config_has_changed = l_global_config_file_info.m_last_write_time.m_total_milliseconds > m_global_config_last_write_time;

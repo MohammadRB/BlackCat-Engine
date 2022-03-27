@@ -314,10 +314,10 @@ namespace black_cat
 			)
 		);
 
-		const auto* l_xz_multiplier_value = p_context.m_parameters.get_value<bcINT>("xz_multiplier");
-		const auto* l_y_multiplier_value = p_context.m_parameters.get_value<bcINT>("y_multiplier");
-		const auto* l_distance_detail_value = p_context.m_parameters.get_value<bcINT>("distance_detail");
-		const auto* l_height_detail_value = p_context.m_parameters.get_value<bcINT>("height_detail");
+		const auto* l_xz_multiplier_value = p_context.m_parameters.get_value<bcINT32>("xz_multiplier");
+		const auto* l_y_multiplier_value = p_context.m_parameters.get_value<bcINT32>("y_multiplier");
+		const auto* l_distance_detail_value = p_context.m_parameters.get_value<bcINT32>("distance_detail");
+		const auto* l_height_detail_value = p_context.m_parameters.get_value<bcINT32>("height_detail");
 		const auto* l_material_names_value = p_context.m_parameters.get_value<core::bc_vector<core::bc_any>>("materials");
 
 		bcUINT16 l_xz_multiplier = bc_null_default(l_xz_multiplier_value, 1);
@@ -339,9 +339,9 @@ namespace black_cat
 				{
 					const auto& l_key_value = *p_material.as<core::bc_json_key_value>();
 
-					auto l_mesh_material_ite = l_key_value.find("mesh_material");
-					auto l_collider_material_ite = l_key_value.find("collider_material");
-					auto l_scale_ite = l_key_value.find("scale");
+					const auto l_mesh_material_ite = l_key_value.find("mesh_material");
+					const auto l_collider_material_ite = l_key_value.find("collider_material");
+					const auto l_scale_ite = l_key_value.find("scale");
 
 					core::bc_string l_mesh_material;
 					core::bc_string l_collider_material;

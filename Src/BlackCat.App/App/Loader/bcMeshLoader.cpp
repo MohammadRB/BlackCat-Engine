@@ -90,16 +90,16 @@ namespace black_cat
 		}
 
 		core::bc_path l_file_path(p_context.m_file_path);
-		core::bc_path l_lod_paths[3]
+		std::pair<core::bc_estring_view, core::bc_path> l_lod_paths[3]
 		{
-			core::bc_path(l_file_path).set_filename((l_file_path.get_filename_without_extension_frame() + bcL(".lod1") + l_file_path.get_file_extension_frame()).c_str()),
-			core::bc_path(l_file_path).set_filename((l_file_path.get_filename_without_extension_frame() + bcL(".lod2") + l_file_path.get_file_extension_frame()).c_str()),
-			core::bc_path(l_file_path).set_filename((l_file_path.get_filename_without_extension_frame() + bcL(".lod3") + l_file_path.get_file_extension_frame()).c_str())
+			{ bcL("_lod1"), core::bc_path(l_file_path).set_filename((l_file_path.get_filename_without_extension_frame() + bcL("_lod1") + l_file_path.get_file_extension_frame()).c_str()) },
+			{ bcL("_lod2"), core::bc_path(l_file_path).set_filename((l_file_path.get_filename_without_extension_frame() + bcL("_lod2") + l_file_path.get_file_extension_frame()).c_str()) },
+			{ bcL("_lod3"), core::bc_path(l_file_path).set_filename((l_file_path.get_filename_without_extension_frame() + bcL("_lod3") + l_file_path.get_file_extension_frame()).c_str()) }
 		};
 
 		for(auto& l_lod_path : l_lod_paths)
 		{
-			if(!l_lod_path.exist())
+			if(!l_lod_path.second.exist())
 			{
 				continue;
 			}
@@ -107,8 +107,8 @@ namespace black_cat
 			auto l_lod_mesh = l_content_manager.load<game::bc_mesh>
 			(
 				p_context.get_allocator_alloc_type(),
-				l_lod_path.get_string_frame().c_str(),
-				p_context.m_file_variant,
+				l_lod_path.second.get_string_frame().c_str(),
+				core::bc_estring_frame(p_context.m_file_variant) + l_lod_path.first.data(),
 				p_context.m_parameters,
 				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_or_update(constant::g_param_mesh_is_lod, true)
 			);
@@ -116,15 +116,15 @@ namespace black_cat
 			l_builder.with_lod(std::move(l_lod_mesh));
 		}
 
-		const auto* l_collider_file_name_value = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_mesh_collider);
+		const auto* l_collider_file_name_param = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_mesh_collider);
 		const auto l_is_lod = bc_null_default(p_context.m_instance_parameters.get_value<bool>(constant::g_param_mesh_is_lod), false);
 		core::bc_estring_frame l_collider_file_name;
 		
-		if (!l_collider_file_name_value)
+		if (!l_collider_file_name_param)
 		{
 			auto l_collider_file_path = core::bc_path(l_file_path).set_filename
 			(
-				(l_file_path.get_filename_without_extension_frame() + bcL(".collider") + l_file_path.get_file_extension_frame()).c_str()
+				(l_file_path.get_filename_without_extension_frame() + bcL("_collider") + l_file_path.get_file_extension_frame()).c_str()
 			);
 			if (l_collider_file_path.exist())
 			{
@@ -133,7 +133,7 @@ namespace black_cat
 		}
 		else
 		{
-			l_collider_file_name = core::bc_to_estring_frame(*l_collider_file_name_value);
+			l_collider_file_name = core::bc_to_estring_frame(*l_collider_file_name_param);
 		}
 
 		game::bc_mesh_collider_ptr l_mesh_collider;
@@ -158,7 +158,7 @@ namespace black_cat
 		}
 		else
 		{
-			l_mesh_collider = l_content_manager.store_content(l_mesh_name + bcL(".collider"), game::bc_mesh_collider());
+			l_mesh_collider = l_content_manager.store_content(l_mesh_name + bcL("_collider"), game::bc_mesh_collider());
 		}
 		
 		p_context.set_result(l_builder.build(l_mesh_name, std::move(l_mesh_collider)));
@@ -191,7 +191,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_mesh_loader::convert_ai_material(core::bc_content_loading_context& p_context,
+	void bc_mesh_loader::convert_ai_material(const core::bc_content_loading_context& p_context,
 		const aiMaterial& p_ai_material,
 		game::bc_mesh_material_description& p_material)
 	{
@@ -236,7 +236,7 @@ namespace black_cat
 		}
 		else if (l_diffuse_file_name != nullptr)
 		{
-			const auto l_conventional_normal_map_name = l_diffuse_file_name->get_filename_without_extension() + L".nrm" + l_diffuse_file_name->get_file_extension();
+			const auto l_conventional_normal_map_name = l_diffuse_file_name->get_filename_without_extension() + L"_nrm" + l_diffuse_file_name->get_file_extension();
 			auto l_normal_map = core::bc_path(l_root_path).set_filename(l_conventional_normal_map_name.c_str()).get_string();
 
 			if (platform::bc_file_info::exist(l_normal_map.c_str()))
@@ -251,7 +251,7 @@ namespace black_cat
 		}
 		else if (l_diffuse_file_name != nullptr)
 		{
-			const auto l_conventional_specular_map_name = l_diffuse_file_name->get_filename_without_extension() + L".spec" + l_diffuse_file_name->get_file_extension();
+			const auto l_conventional_specular_map_name = l_diffuse_file_name->get_filename_without_extension() + L"_spec" + l_diffuse_file_name->get_file_extension();
 			auto l_specular_map = core::bc_path(l_root_path).set_filename(l_conventional_specular_map_name.c_str()).get_string();
 
 			if (platform::bc_file_info::exist(l_specular_map.c_str()))

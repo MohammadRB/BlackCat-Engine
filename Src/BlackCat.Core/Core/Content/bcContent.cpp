@@ -18,7 +18,7 @@ namespace black_cat
 		{
 		}
 
-		void _bc_content_ptr_deleter::operator()(bci_content* p_content) const
+		void _bc_content_ptr_deleter::operator()(const bci_content* p_content) const
 		{
 			BC_ASSERT(m_content_manager != nullptr);
 

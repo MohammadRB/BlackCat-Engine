@@ -66,7 +66,7 @@
       ]
     },
     {
-      "stream_name": "deferred_rendering_shaders",
+      "stream_name": "engine_deferred_rendering_shaders",
       "stream_content": [
         {
           "content_title": "terrain_vs",
@@ -93,7 +93,7 @@
           "content_parameter": { "function": "gbuffer_ps" }
         },
         {
-          "content_title": "terrain_chunk_info",
+          "content_title": "terrain_chunk_info_cs",
           "content_loader": "compute_shader",
           "content_file": "content\\shader\\directx11\\Terrain\\bcTerrainChunkInfo.hlsl",
           "content_parameter": { "function": "main" }
@@ -199,7 +199,7 @@
       ]
     },
     {
-      "stream_name": "particle_shaders",
+      "stream_name": "engine_particle_shaders",
       "stream_content": [
         {
           "content_title": "particle_emission",
@@ -252,7 +252,7 @@
       ]
     },
     {
-      "stream_name": "post_process_shaders",
+      "stream_name": "engine_post_process_shaders",
       "stream_content": [
         {
           "content_title": "gaussian_blur_ps",
@@ -302,7 +302,7 @@
           "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcGlow.hlsl",
           "content_parameter": { "function": "glow_apply_ps" }
         }
-      ] 
+      ]
     },
     {
       "stream_name": "engine_assets",
@@ -354,7 +354,7 @@
           "content_parameter": {
             "auto_scale": 10.0,
             "skinned": true,
-            "collider": "xbot.collider.fbx",
+            "collider": "xbot_collider.fbx",
             "high_detail_query_shape": true
           }
         },

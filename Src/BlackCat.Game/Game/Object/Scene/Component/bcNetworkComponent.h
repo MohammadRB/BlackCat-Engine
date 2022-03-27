@@ -102,7 +102,7 @@ namespace black_cat
 			const bcCHAR* m_network_entity_name;
 			bc_network_rtt m_out_ping;
 			bc_network_rtt m_in_ping;
-			core::bc_vector<std::tuple<const bcCHAR*, bc_network_v3_extrapolation, platform::bc_clock::small_delta_time>> m_extrapolators;
+			core::bc_vector<std::tuple<const bcCHAR*, bc_network_v3_extrapolation, platform::bc_clock::small_time>> m_extrapolators;
 		};
 
 		inline bc_network_client_id bc_network_component::get_network_client_id() const noexcept

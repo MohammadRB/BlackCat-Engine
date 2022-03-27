@@ -1,0 +1,91 @@
+{
+  "name": "Test",
+  "stream_files": [
+    "Scene\\BattleGroundContentStream.json"
+  ],
+  "material_files": [
+    "Scene\\BattleGroundMaterial.json"
+  ],
+  "decal_files": [
+    "Scene\\BattleGroundDecal.json"
+  ],
+  "entity_files": [
+    "Scene\\BattleGroundEntityType.json"
+  ],
+  "streams": [
+    "terrain_textures",
+    "textures",
+    "models",
+    "vegetables"
+  ],
+  "scene_graph": {
+    "center": [
+      0.0,
+      -1.0,
+      -0.0
+    ],
+    "half_extends": [
+      1024.0,
+      1024.0,
+      1024.0
+    ]
+  },
+  "actors": [
+    {
+      "entity_name": "env_sun_light",
+      "position": [
+        -1.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "env_wind",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "env_sound",
+      "position": [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "parameters": {}
+    },
+    {
+      "entity_name": "env_height_map",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "parameters": {}
+    }
+  ]
+}
