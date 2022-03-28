@@ -239,7 +239,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Architecture\\concrete_wall_simple_4m.fbx",
           "content_parameter": {
-            "auto_scale": 10.0,
+            "auto_scale": 15.0,
             "collider": "concrete_wall_simple_4m.fbx",
             "high_detail_query_shape": false
           }
@@ -249,7 +249,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Barrier\\Barrel\\barrel_black.fbx",
           "content_parameter": {
-            "auto_scale": 8.0,
+            "auto_scale": 6.0,
             "collider": "barrel_black.fbx",
             "high_detail_query_shape": false
           }
@@ -259,7 +259,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Barrier\\Barrel\\barrel_explosive_red.fbx",
           "content_parameter": {
-            "auto_scale": 8.0,
+            "auto_scale": 6.0,
             "collider": "barrel_explosive_red.fbx",
             "high_detail_query_shape": false
           }
@@ -289,7 +289,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Barrier\\Fence\\solid_metal_fences_120_400_a.fbx",
           "content_parameter": {
-            "auto_scale": 10.0,
+            "auto_scale": 30.0,
             "collider": "solid_metal_fences_120_400_a_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -299,7 +299,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Barrier\\SandBox\\sand_bag_long_big.fbx",
           "content_parameter": {
-            "auto_scale": 12.0,
+            "auto_scale": 25.0,
             "collider": "sand_bag_long_big_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -309,7 +309,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Barrier\\SandBox\\sandbag_big_structure_a.fbx",
           "content_parameter": {
-            "auto_scale": 7.0,
+            "auto_scale": 13.0,
             "collider": "sandbag_big_structure_a_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -319,7 +319,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Barrier\\SandBox\\support_big.fbx",
           "content_parameter": {
-            "auto_scale": 8.0,
+            "auto_scale": 20.0,
             "collider": "support_big_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -329,7 +329,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Vehicle\\car_b_chassi.fbx",
           "content_parameter": {
-            "auto_scale": 15.0,
+            "auto_scale": 25.0,
             "collider": "car_b_chassi_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -344,7 +344,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Bush\\cliff_bush_yellow_mini.fbx",
           "content_parameter": {
-            "auto_scale": 5.0
+            "auto_scale": 10.0
           }
         },
         {
@@ -352,7 +352,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Bush\\Ground_Fern_Bush_a.fbx",
           "content_parameter": {
-            "auto_scale": 5.0
+            "auto_scale": 10.0
           }
         },
         {
@@ -360,7 +360,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Bush\\Round_Leaf_Bush_big_bright_green.fbx",
           "content_parameter": {
-            "auto_scale": 5.0
+            "auto_scale": 10.0
           }
         },
         {
@@ -368,7 +368,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Bush\\Round_Leaf_Bush_med_yellow.fbx",
           "content_parameter": {
-            "auto_scale": 5.0
+            "auto_scale": 10.0
           }
         },
         {
@@ -376,7 +376,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\grass\\bigpatch_medium.fbx",
           "content_parameter": {
-            "auto_scale": 15.0
+            "auto_scale": 18.0
           }
         },
         {
@@ -384,7 +384,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\PalmTree\\Palm_Tree_Large_d.fbx",
           "content_parameter": {
-            "auto_scale": 15.0,
+            "auto_scale": 20.0,
             "collider": "Palm_Tree_Large_d_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -394,7 +394,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\PalmTree\\Palm_Tree_Large_h.fbx",
           "content_parameter": {
-            "auto_scale": 15.0,
+            "auto_scale": 20.0,
             "collider": "Palm_Tree_Large_h_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -404,7 +404,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\PalmTree\\Palm_Tree_Short_b.fbx",
           "content_parameter": {
-            "auto_scale": 8.0,
+            "auto_scale": 10.0,
             "collider": "Palm_Tree_Short_b_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -414,7 +414,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Plant\\big_leave_plant_med_a.fbx",
           "content_parameter": {
-            "auto_scale": 5.0
+            "auto_scale": 10.0
           }
         },
         {
@@ -422,7 +422,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Plant\\Green_Fern_Bush_a.fbx",
           "content_parameter": {
-            "auto_scale": 5.0
+            "auto_scale": 10.0
           }
         },
         {
@@ -430,7 +430,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Rock\\brown_riverrock_big_a.fbx",
           "content_parameter": {
-            "auto_scale": 10.0,
+            "auto_scale": 15.0,
             "collider": "brown_riverrock_big_a_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -440,7 +440,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Rock\\cliff_rock_a_big.fbx",
           "content_parameter": {
-            "auto_scale": 25.0,
+            "auto_scale": 30.0,
             "collider": "cliff_rock_a_big_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -450,7 +450,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Rock\\cliff_rock_island.fbx",
           "content_parameter": {
-            "auto_scale": 20.0,
+            "auto_scale": 25.0,
             "collider": "cliff_rock_island_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -460,7 +460,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Rock\\forest_rock_med_a.fbx",
           "content_parameter": {
-            "auto_scale": 10.0,
+            "auto_scale": 15.0,
             "collider": "forest_rock_med_a_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -470,7 +470,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Rock\\Jungle_rock_a.fbx",
           "content_parameter": {
-            "auto_scale": 10.0,
+            "auto_scale": 15.0,
             "collider": "Jungle_rock_a_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -480,7 +480,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Tree\\hill_tree_bright_green.fbx",
           "content_parameter": {
-            "auto_scale": 20.0,
+            "auto_scale": 35.0,
             "collider": "hill_tree_bright_green_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -490,7 +490,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Tree\\Jungle_Tree_Thin_b.fbx",
           "content_parameter": {
-            "auto_scale": 12.0,
+            "auto_scale": 15.0,
             "collider": "Jungle_Tree_Thin_b_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -500,7 +500,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\Tree\\thin_leave_tree_big_bright_green.fbx",
           "content_parameter": {
-            "auto_scale": 25.0,
+            "auto_scale": 40.0,
             "collider": "thin_leave_tree_big_bright_green_collider.fbx",
             "high_detail_query_shape": true
           }

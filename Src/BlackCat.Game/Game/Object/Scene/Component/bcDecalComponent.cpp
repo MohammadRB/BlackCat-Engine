@@ -1,6 +1,8 @@
 // [02/25/2021 MRB]
 
 #include "Game/GamePCH.h"
+
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
@@ -50,7 +52,7 @@ namespace black_cat
 			m_decal_manager(p_other.m_decal_manager),
 			m_mesh_scale(p_other.m_mesh_scale),
 			m_use_hierarchy_transforms(p_other.m_use_hierarchy_transforms),
-			m_temporary_decals_slot(p_other.m_temporary_decals_slot.load(platform::bc_memory_order::relaxed)),
+			m_temporary_decals_slot(p_other.m_temporary_decals_slot),
 			m_temporary_decals(std::move(p_other.m_temporary_decals))
 		{
 		}
@@ -64,7 +66,7 @@ namespace black_cat
 			m_decal_manager = p_other.m_decal_manager;
 			m_mesh_scale = p_other.m_mesh_scale;
 			m_use_hierarchy_transforms = p_other.m_use_hierarchy_transforms;
-			m_temporary_decals_slot.store(p_other.m_temporary_decals_slot.load(platform::bc_memory_order::relaxed), platform::bc_memory_order::relaxed);
+			m_temporary_decals_slot = p_other.m_temporary_decals_slot;
 			m_temporary_decals = std::move(p_other.m_temporary_decals);
 			
 			return *this;
@@ -271,7 +273,11 @@ namespace black_cat
 					}
 				};
 
-				l_update_transform(core::bc_make_span(m_temporary_decals));
+				{
+					platform::bc_lock_guard l_decals_lock(*this);
+					l_update_transform(core::bc_make_span(m_temporary_decals));
+				}
+
 				l_update_transform(core::bc_make_span(m_persistent_decals));
 				
 				return;
@@ -306,7 +312,11 @@ namespace black_cat
 					}
 				};
 
-				l_update_transform(core::bc_make_span(m_temporary_decals));
+				{
+					platform::bc_lock_guard l_decals_lock(*this);
+					l_update_transform(core::bc_make_span(m_temporary_decals));
+				}
+
 				l_update_transform(core::bc_make_span(m_persistent_decals));
 				
 				return;
@@ -315,20 +325,34 @@ namespace black_cat
 			const auto* l_remove_event = core::bci_message::as<bc_remove_decal_actor_event>(p_context.m_event);
 			if(l_remove_event)
 			{
-				const auto l_temp_ite = std::find_if(std::begin(m_temporary_decals), std::end(m_temporary_decals), [&](const bc_decal_instance_ptr& p_decal)
 				{
-					return p_decal.get() == &l_remove_event->get_decal_instance();
-				});
-				if(l_temp_ite != std::end(m_temporary_decals))
-				{
-					*l_temp_ite = nullptr;
-					return;
+					platform::bc_lock_guard l_decals_lock(*this);
+
+					const auto l_temp_ite = std::find_if
+					(
+						std::begin(m_temporary_decals),
+						std::end(m_temporary_decals),
+						[&](const bc_decal_instance_ptr& p_decal)
+						{
+							return p_decal.get() == &l_remove_event->get_decal_instance();
+						}
+					);
+					if (l_temp_ite != std::end(m_temporary_decals))
+					{
+						*l_temp_ite = nullptr;
+						return;
+					}
 				}
 
-				const auto l_persistent_ite = std::find_if(std::begin(m_persistent_decals), std::end(m_persistent_decals), [&](const bc_decal_instance_ptr& p_decal)
-				{
-					return p_decal.get() == &l_remove_event->get_decal_instance();
-				});
+				const auto l_persistent_ite = std::find_if
+				(
+					std::begin(m_persistent_decals),
+					std::end(m_persistent_decals),
+					[&](const bc_decal_instance_ptr& p_decal)
+					{
+						return p_decal.get() == &l_remove_event->get_decal_instance();
+					}
+				);
 				if (l_persistent_ite != std::end(m_persistent_decals))
 				{
 					m_persistent_decals.erase(l_persistent_ite);
@@ -376,24 +400,25 @@ namespace black_cat
 
 			if(p_need_update)
 			{
-				while (true)
 				{
-					auto l_current_slot = m_temporary_decals_slot.load(platform::bc_memory_order::relaxed);
-					const auto l_new_slot = (l_current_slot + 1) % m_temporary_decals.size();
-					const auto l_compare_result = m_temporary_decals_slot.compare_exchange_strong
-					(
-						&l_current_slot,
-						l_new_slot,
-						platform::bc_memory_order::relaxed
-					);
+					platform::bc_lock_guard l_decals_lock(*this);
 
-					if (l_compare_result)
-					{
-						m_temporary_decals[l_current_slot] = std::move(p_decal);
-						break;
-					}
+					m_temporary_decals_slot = (m_temporary_decals_slot + 1) % m_temporary_decals.size();
+					m_temporary_decals[m_temporary_decals_slot] = std::move(p_decal);
 				}
 			}
+		}
+
+		void bc_decal_component::lock()
+		{
+			while (m_decals_lock.test_and_set())
+			{
+			}
+		}
+
+		void bc_decal_component::unlock()
+		{
+			m_decals_lock.clear();
 		}
 	}
 }

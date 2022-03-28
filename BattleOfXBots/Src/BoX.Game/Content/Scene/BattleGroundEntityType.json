@@ -75,7 +75,7 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 10.0,
+            "mass": 100.0,
             "cmass": [ 0.0, 4.0, 0.0 ],
             "collider_materials": {
               "*": "iron"
@@ -97,7 +97,7 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 10.0,
+            "mass": 100.0,
             "cmass": [ 0.0, 4.0, 0.0 ],
             "collider_materials": {
               "*": "iron"
@@ -257,6 +257,18 @@
       ]
     },
     {
+      "name": "veg_Ground_Fern_Bush_a",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "Ground_Fern_Bush_a",
+            "view_distance": 200.0
+          }
+        }
+      ]
+    },
+    {
       "name": "veg_Green_Fern_Bush_a",
       "components": [
         {
@@ -318,7 +330,7 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "*": "soil"
+              "*": "wood"
             }
           }
         }
@@ -338,7 +350,7 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "*": "soil"
+              "*": "wood"
             }
           }
         }
@@ -358,7 +370,7 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "*": "soil"
+              "*": "wood"
             }
           }
         }
@@ -392,7 +404,7 @@
       "name": "veg_brown_riverrock_big_a",
       "components": [
         {
-          "name": "vegetable_mesh",
+          "name": "simple_mesh",
           "parameters": {
             "mesh": "brown_riverrock_big_a",
             "view_distance": 300.0
@@ -412,7 +424,7 @@
       "name": "veg_cliff_rock_a_big",
       "components": [
         {
-          "name": "vegetable_mesh",
+          "name": "simple_mesh",
           "parameters": {
             "mesh": "cliff_rock_a_big",
             "view_distance": 400.0
@@ -432,7 +444,7 @@
       "name": "veg_cliff_rock_island",
       "components": [
         {
-          "name": "vegetable_mesh",
+          "name": "simple_mesh",
           "parameters": {
             "mesh": "cliff_rock_island",
             "view_distance": 400.0
@@ -452,7 +464,7 @@
       "name": "veg_forest_rock_med_a",
       "components": [
         {
-          "name": "vegetable_mesh",
+          "name": "simple_mesh",
           "parameters": {
             "mesh": "forest_rock_med_a",
             "view_distance": 300.0
@@ -472,7 +484,7 @@
       "name": "veg_Jungle_rock_a",
       "components": [
         {
-          "name": "vegetable_mesh",
+          "name": "simple_mesh",
           "parameters": {
             "mesh": "Jungle_rock_a",
             "view_distance": 300.0
@@ -502,7 +514,7 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "*": "soil"
+              "*": "wood"
             }
           }
         }
@@ -515,14 +527,14 @@
           "name": "vegetable_mesh",
           "parameters": {
             "mesh": "Jungle_Tree_Thin_b",
-            "view_distance": 300.0
+            "view_distance": 200.0
           }
         },
         {
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "*": "soil"
+              "*": "wood"
             }
           }
         }
@@ -542,7 +554,7 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "*": "soil"
+              "*": "wood"
             }
           }
         }

@@ -1,6 +1,10 @@
 // [01/23/2016 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
+
+#include <wincodec.h>
+#include <locale>
+#include <cwctype>
 #include "CorePlatform/CorePlatformPCH.h"
 #include "Core/Container/bcAllocator.h"
 #include "Core/Container/bcVector.h"
@@ -37,12 +41,9 @@
 #include "GraphicImp/Device/bcDeviceSwapBuffer.h"
 #include "GraphicImp/Font/bcSpriteBatch.h"
 #include "GraphicImp/Font/bcSpriteFont.h"
-#include "3rdParty/DirectXTK-master/Include/DDSTextureLoader.h"
-#include "3rdParty/DirectXTK-master/Include/WICTextureLoader.h"
-#include "3rdParty/DirectXTK-master/Include/ScreenGrab.h"
-#include <wincodec.h>
-#include <locale>
-#include <cwctype>
+#include "3rdParty/DirectXTK/Include/DDSTextureLoader.h"
+#include "3rdParty/DirectXTK/Include/WICTextureLoader.h"
+#include "3rdParty/DirectXTK/Include/ScreenGrab.h"
 
 using namespace Microsoft::WRL;
 

@@ -88,6 +88,7 @@ namespace box
 		l_particle_manager.register_emitter_definition("rifle_fire", bx_rifle_fire_particle()());
 		l_particle_manager.register_emitter_definition("bullet_terrain", bx_bullet_terrain_particle()(l_random));
 		l_particle_manager.register_emitter_definition("bullet_soil", bx_bullet_soil_particle()());
+		l_particle_manager.register_emitter_definition("bullet_wood", bx_bullet_wood_particle()());
 		l_particle_manager.register_emitter_definition("bullet_iron", bx_bullet_iron_particle()());
 		l_particle_manager.register_emitter_definition("falling_leaf", bx_falling_leaf_particle()());
 	}

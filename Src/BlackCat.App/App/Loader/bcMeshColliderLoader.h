@@ -7,8 +7,8 @@
 #include "Game/Object/Mesh/bcMeshColliderBuilder.h"
 #include "App/bcExport.h"
 
-struct aiNode;
 struct aiScene;
+struct aiNode;
 struct aiMesh;
 
 namespace black_cat

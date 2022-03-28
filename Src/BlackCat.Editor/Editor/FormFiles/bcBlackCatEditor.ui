@@ -182,7 +182,7 @@
               <x>0</x>
               <y>0</y>
               <width>340</width>
-              <height>670</height>
+              <height>663</height>
              </rect>
             </property>
             <attribute name="label">
@@ -453,7 +453,7 @@
               <x>0</x>
               <y>0</y>
               <width>340</width>
-              <height>670</height>
+              <height>663</height>
              </rect>
             </property>
             <attribute name="label">
@@ -471,7 +471,7 @@
               <x>0</x>
               <y>0</y>
               <width>340</width>
-              <height>670</height>
+              <height>663</height>
              </rect>
             </property>
             <attribute name="icon">
@@ -649,7 +649,7 @@
               <x>0</x>
               <y>0</y>
               <width>340</width>
-              <height>670</height>
+              <height>663</height>
              </rect>
             </property>
             <attribute name="label">
@@ -667,7 +667,7 @@
               <x>0</x>
               <y>0</y>
               <width>340</width>
-              <height>670</height>
+              <height>663</height>
              </rect>
             </property>
             <attribute name="label">
@@ -716,19 +716,6 @@
              </property>
              <property name="text">
               <string>Decal Name:</string>
-             </property>
-            </widget>
-            <widget class="QLabel" name="decalNameLabelValue">
-             <property name="geometry">
-              <rect>
-               <x>100</x>
-               <y>0</y>
-               <width>231</width>
-               <height>16</height>
-              </rect>
-             </property>
-             <property name="text">
-              <string/>
              </property>
             </widget>
             <widget class="QLineEdit" name="decalRotationZText">
@@ -831,10 +818,10 @@
               <string>y:</string>
              </property>
             </widget>
-            <widget class="QLabel" name="decalNameLabelValue_2">
+            <widget class="QLabel" name="decalNameLabelValue">
              <property name="geometry">
               <rect>
-               <x>90</x>
+               <x>100</x>
                <y>0</y>
                <width>231</width>
                <height>16</height>
@@ -860,7 +847,7 @@
      <x>0</x>
      <y>0</y>
      <width>1600</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">
@@ -1269,7 +1256,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="..\\Resources\\bcBlackCatEditor.qrc"/>
+  <include location="../Resources/bcBlackCatEditor.qrc"/>
  </resources>
  <connections>
   <connection>

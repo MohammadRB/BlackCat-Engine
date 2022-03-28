@@ -11,9 +11,9 @@
 #include "Game/bcConstant.h"
 #include "App/Loader/bcSkinnedAnimationLoader.h"
 #include "App/bcException.h"
-#include "3rdParty/Assimp/Include/Importer.hpp"
-#include "3rdParty/Assimp/Include/postprocess.h"
-#include "3rdParty/Assimp/Include/scene.h"
+#include "3rdParty/Assimp/Include/assimp/Importer.hpp"
+#include "3rdParty/Assimp/Include/assimp/postprocess.h"
+#include "3rdParty/Assimp/Include/assimp/scene.h"
 #include "3rdParty/Ozz/Include/ozz/base/io/stream.h"
 #include "3rdParty/Ozz/Include/ozz/base/io/archive.h"
 #include "3rdParty/Ozz/Include/ozz/animation/offline/raw_skeleton.h"
@@ -26,7 +26,7 @@
 
 namespace black_cat
 {
-	void _build_ozz_skeleton(aiNode* const * p_ai_nodes_begin,
+	void _build_ozz_skeleton(aiNode* const* p_ai_nodes_begin,
 		bcSIZE p_ai_nodes_count,
 		ozz::animation::offline::RawSkeleton::Joint::Children& p_ozz_skeletons)
 	{

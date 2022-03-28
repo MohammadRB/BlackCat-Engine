@@ -144,7 +144,7 @@
       "dynamic_friction": 1000.0,
       "restitution": 0.01,
       "particle": "bullet_terrain",
-      "decal": "bullet_stone"
+      "decal": "bullet_soil"
     },
     {
       "name": "terrain_material_2",
@@ -152,7 +152,7 @@
       "dynamic_friction": 5.0,
       "restitution": 0.2,
       "particle": "bullet_terrain",
-      "decal": "bullet_stone"
+      "decal": "bullet_soil"
     },
     {
       "name": "terrain_material_3",
@@ -160,7 +160,7 @@
       "dynamic_friction": 2.0,
       "restitution": 0.1,
       "particle": "bullet_terrain",
-      "decal": "bullet_stone"
+      "decal": "bullet_soil"
     },
     {
       "name": "terrain_material_4",
@@ -168,7 +168,7 @@
       "dynamic_friction": 20.0,
       "restitution": 0.1,
       "particle": "bullet_terrain",
-      "decal": "bullet_stone"
+      "decal": "bullet_soil"
     },
     {
       "name": "terrain_material_5",
@@ -176,7 +176,7 @@
       "dynamic_friction": 20.0,
       "restitution": 0.1,
       "particle": "bullet_terrain",
-      "decal": "bullet_stone"
+      "decal": "bullet_soil"
     },
     {
       "name": "terrain_material_6",
@@ -184,7 +184,7 @@
       "dynamic_friction": 5.0,
       "restitution": 0.1,
       "particle": "bullet_terrain",
-      "decal": "bullet_stone"
+      "decal": "bullet_soil"
     },
     {
       "name": "terrain_material_7",
@@ -192,7 +192,7 @@
       "dynamic_friction": 5.0,
       "restitution": 0.1,
       "particle": "bullet_terrain",
-      "decal": "bullet_stone"
+      "decal": "bullet_soil"
     },
     {
       "name": "terrain_material_8",
@@ -200,7 +200,7 @@
       "dynamic_friction": 20.0,
       "restitution": 0.1,
       "particle": "bullet_terrain",
-      "decal": "bullet_stone"
+      "decal": "bullet_soil"
     }
   ]
 }

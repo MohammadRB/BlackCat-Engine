@@ -14,9 +14,10 @@
 #include "Game/bcConstant.h"
 #include "App/Loader/bcMeshColliderLoader.h"
 #include "App/Loader/bcMeshLoaderUtility.h"
-#include "3rdParty/Assimp/Include/Importer.hpp"
-#include "3rdParty/Assimp/Include/postprocess.h"
-#include "3rdParty/Assimp/Include/scene.h"
+#include "3rdParty/Assimp/Include/assimp/Importer.hpp"
+#include "3rdParty/Assimp/Include/assimp/postprocess.h"
+#include "3rdParty/Assimp/Include/assimp/scene.h"
+#include "Core/File/bcPath.h"
 
 namespace black_cat
 {
@@ -35,7 +36,7 @@ namespace black_cat
 	{
 		Assimp::Importer l_importer;
 
-		const auto* const * l_scene_value = p_context.m_instance_parameters.get_value<const aiScene*>("aiScene");
+		const auto* const* l_scene_value = p_context.m_instance_parameters.get_value<const aiScene*>("aiScene");
 		const auto* l_scene = l_scene_value ? *l_scene_value : nullptr;
 		if (!l_scene)
 		{
@@ -58,7 +59,12 @@ namespace black_cat
 				<< l_importer.GetErrorString();
 			throw bc_io_exception(l_error_msg.str().c_str());
 		}
-		
+
+		if(core::bc_path(p_context.m_file_path).get_filename() == bcL("Jungle_rock_a_collider.fbx"))
+		{
+			BC_DEBUG_BREAK()
+		}
+
 		core::bc_unordered_map_frame<core::bc_string_view, bcUINT32> l_node_mapping;
 		core::bc_unordered_map_frame<core::bc_string_view, core::bc_vector_frame<const aiNode*>> l_px_node_mapping;
 		core::bc_vector<std::tuple<core::bc_string_view, core::bc_string_view, physics::bc_transform>> l_px_joint_mapping;
@@ -98,7 +104,7 @@ namespace black_cat
 			l_builder.add_px_joint(std::get<0>(l_joint), std::get<1>(l_joint), std::get<2>(l_joint));
 		}
 		
-		p_context.set_result(std::move(l_builder.build()));
+		p_context.set_result(l_builder.build());
 	}
 
 	aiNode* bc_mesh_collider_loader::find_px_node(const aiNode& p_ai_node, const aiMesh& p_ai_node_mesh) const

@@ -2,11 +2,10 @@
 
 #include "App/AppPCH.h"
 #include "App/Loader/bcMeshLoaderUtility.h"
-
-#include "3rdParty/Assimp/Include/matrix4x4.h"
-#include "3rdParty/Assimp/Include/material.h"
-#include "3rdParty/Assimp/Include/mesh.h"
-#include "3rdParty/Assimp/Include/scene.h"
+#include "3rdParty/Assimp/Include/assimp/matrix4x4.h"
+#include "3rdParty/Assimp/Include/assimp/material.h"
+#include "3rdParty/Assimp/Include/assimp/mesh.h"
+#include "3rdParty/Assimp/Include/assimp/scene.h"
 
 namespace black_cat
 {
@@ -67,32 +66,33 @@ namespace black_cat
 		{
 			return;
 		}
-		
-		for (bcUINT32 l_i = 0; l_i < p_ai_node.mNumMeshes; ++l_i)
-		{
-			aiMesh* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_i]];
-			core::bc_vector_frame<const aiNode*> l_ai_mesh_colliders;
 
-			core::bc_string_frame l_px_node_name;
+		core::bc_string_frame l_px_node_name;
+
+		for (bcUINT32 l_i = 0U; l_i < p_ai_node.mNumMeshes; ++l_i)
+		{
+			auto* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_i]];
+			auto l_ai_mesh_colliders = core::bc_vector_frame<const aiNode*>();
+
 			l_px_node_name.reserve(3 + l_ai_mesh->mName.length);
 			l_px_node_name.append(bc_mesh_loader_utility::s_px_node_prefix);
 			l_px_node_name.append(l_ai_mesh->mName.data);
 
 			for (bcUINT32 l_index = 0; l_index < p_ai_node.mNumChildren; ++l_index)
 			{
-				const aiNode* l_child_node = p_ai_node.mChildren[l_index];
+				const auto* l_child_node = p_ai_node.mChildren[l_index];
 				if (std::strncmp(l_child_node->mName.data, l_px_node_name.data(), l_px_node_name.size()) == 0)
 				{
 					l_ai_mesh_colliders.push_back(l_child_node);
 				}
 			}
-
-			l_px_node_name = core::bc_string_frame();
 			
 			if(!l_ai_mesh_colliders.empty())
 			{
 				p_px_node_mapping.insert(std::make_pair(core::bc_string_view(l_ai_mesh->mName.data), std::move(l_ai_mesh_colliders)));
 			}
+
+			l_px_node_name.clear();
 		}
 
 		for (bcUINT32 l_child_ite = 0; l_child_ite < p_ai_node.mNumChildren; ++l_child_ite)
@@ -119,7 +119,7 @@ namespace black_cat
 		
 		for(bcUINT32 l_child_ite = 0; l_child_ite < p_ai_scene.mRootNode->mNumChildren; ++l_child_ite)
 		{
-			const aiNode* l_child_node = p_ai_scene.mRootNode->mChildren[l_child_ite];
+			const auto* l_child_node = p_ai_scene.mRootNode->mChildren[l_child_ite];
 			if (std::strcmp(l_child_node->mName.data, l_px_node_name.data()) == 0)
 			{
 				l_ai_node_colliders.push_back(l_child_node);

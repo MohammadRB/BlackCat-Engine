@@ -6,7 +6,7 @@
 
 #include "Core/Memory/bcPtr.h"
 #include "Graphic/Font/bcSpriteFont.h"
-#include "3rdParty/DirectXTK-master/Include/SpriteFont.h"
+#include "3rdParty/DirectXTK/Include/SpriteFont.h"
 
 namespace black_cat
 {

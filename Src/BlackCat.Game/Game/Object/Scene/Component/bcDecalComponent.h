@@ -23,7 +23,8 @@ namespace black_cat
 		class BC_GAME_DLL bc_decal_component : public bc_render_component, public core::bc_const_iterator_adapter<core::bc_vector<bc_decal_instance_ptr>>
 		{
 			BC_COMPONENT(dcl, true, false)
-			
+			friend class platform::bc_lock_guard<bc_decal_component>;
+
 		public:
 			bc_decal_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept;
 
@@ -72,11 +73,16 @@ namespace black_cat
 		private:
 			void _add_decal_if_needed(bc_decal_instance_ptr p_decal, bool p_need_update) noexcept;
 
+			void lock();
+
+			void unlock();
+
 			bc_decal_manager_container* m_decal_manager;
 			bcFLOAT m_mesh_scale;
 			bool m_use_hierarchy_transforms;
 
-			platform::bc_atomic<bcUINT32> m_temporary_decals_slot;
+			platform::bc_atomic_flag m_decals_lock;
+			bcUINT32 m_temporary_decals_slot;
 			core::bc_array<bc_decal_instance_ptr, 10> m_temporary_decals;
 			container_type m_persistent_decals;
 		};

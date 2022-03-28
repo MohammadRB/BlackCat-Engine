@@ -31,10 +31,9 @@
 #include "App/Loader/bcMeshColliderLoader.h"
 #include "App/Loader/bcMeshLoader.h"
 #include "App/Loader/bcMeshLoaderUtility.h"
-
-#include "3rdParty/Assimp/Include/Importer.hpp"
-#include "3rdParty/Assimp/Include/postprocess.h"
-#include "3rdParty/Assimp/Include/scene.h"
+#include "3rdParty/Assimp/Include/assimp/Importer.hpp"
+#include "3rdParty/Assimp/Include/assimp/postprocess.h"
+#include "3rdParty/Assimp/Include/assimp/scene.h"
 
 namespace black_cat
 {
@@ -199,13 +198,13 @@ namespace black_cat
 
 		aiColor3D l_diffuse;
 		bcFLOAT l_alpha = 1;
-		bcFLOAT l_specular_intensity = 1;
-		bcFLOAT l_specular_power = 1;
+		bcFLOAT l_specular_intensity = 0.2f;
+		bcFLOAT l_specular_power = 32;
 
 		p_ai_material.Get(AI_MATKEY_COLOR_DIFFUSE, l_diffuse);
+		p_ai_material.Get(AI_MATKEY_OPACITY, l_alpha);
 		p_ai_material.Get(AI_MATKEY_SHININESS_STRENGTH, l_specular_intensity);
 		p_ai_material.Get(AI_MATKEY_SHININESS, l_specular_power);
-		p_ai_material.Get(AI_MATKEY_OPACITY, l_alpha);
 
 		p_material.m_diffuse = core::bc_vector4f(l_diffuse.r, l_diffuse.g, l_diffuse.b, l_alpha);
 		p_material.m_specular_intensity = l_specular_intensity;
@@ -213,11 +212,11 @@ namespace black_cat
 
 		const auto l_root_path = core::bc_path(p_context.m_file_path).set_filename(bcL(""));
 		core::bc_nullable<core::bc_path> l_diffuse_file_name;
-		aiString l_aistr;
+		aiString l_ai_string;
 
-		if (p_ai_material.GetTexture(aiTextureType_DIFFUSE, 0, &l_aistr) == aiReturn_SUCCESS)
+		if (p_ai_material.GetTexture(aiTextureType_DIFFUSE, 0, &l_ai_string) == aiReturn_SUCCESS)
 		{
-			l_diffuse_file_name = core::bc_path(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str());
+			l_diffuse_file_name = core::bc_path(core::bc_to_exclusive_wstring(l_ai_string.C_Str()).c_str());
 			p_material.m_diffuse_map = l_content_manager->load<graphic::bc_texture2d_content>
 			(
 				p_context.get_allocator_alloc_type(),
@@ -230,9 +229,9 @@ namespace black_cat
 		core::bc_estring l_normal_map_path;
 		core::bc_estring l_specular_map_path;
 
-		if (p_ai_material.GetTexture(aiTextureType_NORMALS, 0, &l_aistr) == aiReturn_SUCCESS)
+		if (p_ai_material.GetTexture(aiTextureType_NORMALS, 0, &l_ai_string) == aiReturn_SUCCESS)
 		{
-			l_normal_map_path = core::bc_path(l_root_path).set_filename(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str()).get_string();
+			l_normal_map_path = core::bc_path(l_root_path).set_filename(core::bc_to_exclusive_wstring(l_ai_string.C_Str()).c_str()).get_string();
 		}
 		else if (l_diffuse_file_name != nullptr)
 		{
@@ -245,9 +244,9 @@ namespace black_cat
 			}
 		}
 
-		if (p_ai_material.GetTexture(aiTextureType_SPECULAR, 0, &l_aistr) == aiReturn_SUCCESS)
+		if (p_ai_material.GetTexture(aiTextureType_SPECULAR, 0, &l_ai_string) == aiReturn_SUCCESS)
 		{
-			l_specular_map_path = core::bc_path(l_root_path).set_filename(core::bc_to_exclusive_wstring(l_aistr.C_Str()).c_str()).get_string();
+			l_specular_map_path = core::bc_path(l_root_path).set_filename(core::bc_to_exclusive_wstring(l_ai_string.C_Str()).c_str()).get_string();
 		}
 		else if (l_diffuse_file_name != nullptr)
 		{

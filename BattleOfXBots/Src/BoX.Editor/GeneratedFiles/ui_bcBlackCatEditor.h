@@ -101,7 +101,6 @@ public:
     QPushButton *decalUpdateButton;
     QPushButton *decalDeleteButton;
     QLabel *decalNameLabel;
-    QLabel *decalNameLabelValue;
     QLineEdit *decalRotationZText;
     QLabel *decalRotationZLabel;
     QLineEdit *decalRotationXText;
@@ -109,7 +108,7 @@ public:
     QLineEdit *decalRotationYText;
     QLabel *decalRotationXLabel;
     QLabel *decalRotationYLabel;
-    QLabel *decalNameLabelValue_2;
+    QLabel *decalNameLabelValue;
     QMenuBar *mainMenuBar;
     QMenu *fileMenu;
     QToolBar *mainToolBar;
@@ -238,7 +237,7 @@ public:
         rightToolBox->setObjectName(QString::fromUtf8("rightToolBox"));
         rightToolBoxObjectSelect = new QWidget();
         rightToolBoxObjectSelect->setObjectName(QString::fromUtf8("rightToolBoxObjectSelect"));
-        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 340, 670));
+        rightToolBoxObjectSelect->setGeometry(QRect(0, 0, 340, 663));
         entityNameLabel = new QLabel(rightToolBoxObjectSelect);
         entityNameLabel->setObjectName(QString::fromUtf8("entityNameLabel"));
         entityNameLabel->setGeometry(QRect(10, 10, 81, 16));
@@ -310,7 +309,7 @@ public:
         rightToolBox->addItem(rightToolBoxObjectSelect, QString::fromUtf8("Object Select"));
         rightToolBoxObjectInsert = new QWidget();
         rightToolBoxObjectInsert->setObjectName(QString::fromUtf8("rightToolBoxObjectInsert"));
-        rightToolBoxObjectInsert->setGeometry(QRect(0, 0, 340, 670));
+        rightToolBoxObjectInsert->setGeometry(QRect(0, 0, 340, 663));
         horizontalLayout_2 = new QHBoxLayout(rightToolBoxObjectInsert);
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -323,7 +322,7 @@ public:
         rightToolBox->addItem(rightToolBoxObjectInsert, QString::fromUtf8("Object Insert"));
         rightToolBoxTerrain = new QWidget();
         rightToolBoxTerrain->setObjectName(QString::fromUtf8("rightToolBoxTerrain"));
-        rightToolBoxTerrain->setGeometry(QRect(0, 0, 340, 670));
+        rightToolBoxTerrain->setGeometry(QRect(0, 0, 340, 663));
         formLayout = new QFormLayout(rightToolBoxTerrain);
         formLayout->setSpacing(6);
         formLayout->setContentsMargins(11, 11, 11, 11);
@@ -419,7 +418,7 @@ public:
         rightToolBox->addItem(rightToolBoxTerrain, icon, QString::fromUtf8("Terrain"));
         rightToolBoxDecalInsert = new QWidget();
         rightToolBoxDecalInsert->setObjectName(QString::fromUtf8("rightToolBoxDecalInsert"));
-        rightToolBoxDecalInsert->setGeometry(QRect(0, 0, 340, 670));
+        rightToolBoxDecalInsert->setGeometry(QRect(0, 0, 340, 663));
         horizontalLayout = new QHBoxLayout(rightToolBoxDecalInsert);
         horizontalLayout->setSpacing(6);
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
@@ -432,7 +431,7 @@ public:
         rightToolBox->addItem(rightToolBoxDecalInsert, QString::fromUtf8("Decal Paint"));
         rightToolBoxDecalSelect = new QWidget();
         rightToolBoxDecalSelect->setObjectName(QString::fromUtf8("rightToolBoxDecalSelect"));
-        rightToolBoxDecalSelect->setGeometry(QRect(0, 0, 340, 670));
+        rightToolBoxDecalSelect->setGeometry(QRect(0, 0, 340, 663));
         decalUpdateButton = new QPushButton(rightToolBoxDecalSelect);
         decalUpdateButton->setObjectName(QString::fromUtf8("decalUpdateButton"));
         decalUpdateButton->setEnabled(false);
@@ -444,9 +443,6 @@ public:
         decalNameLabel = new QLabel(rightToolBoxDecalSelect);
         decalNameLabel->setObjectName(QString::fromUtf8("decalNameLabel"));
         decalNameLabel->setGeometry(QRect(10, 0, 81, 16));
-        decalNameLabelValue = new QLabel(rightToolBoxDecalSelect);
-        decalNameLabelValue->setObjectName(QString::fromUtf8("decalNameLabelValue"));
-        decalNameLabelValue->setGeometry(QRect(100, 0, 231, 16));
         decalRotationZText = new QLineEdit(rightToolBoxDecalSelect);
         decalRotationZText->setObjectName(QString::fromUtf8("decalRotationZText"));
         decalRotationZText->setEnabled(false);
@@ -474,9 +470,9 @@ public:
         decalRotationYLabel = new QLabel(rightToolBoxDecalSelect);
         decalRotationYLabel->setObjectName(QString::fromUtf8("decalRotationYLabel"));
         decalRotationYLabel->setGeometry(QRect(10, 90, 16, 16));
-        decalNameLabelValue_2 = new QLabel(rightToolBoxDecalSelect);
-        decalNameLabelValue_2->setObjectName(QString::fromUtf8("decalNameLabelValue_2"));
-        decalNameLabelValue_2->setGeometry(QRect(90, 0, 231, 16));
+        decalNameLabelValue = new QLabel(rightToolBoxDecalSelect);
+        decalNameLabelValue->setObjectName(QString::fromUtf8("decalNameLabelValue"));
+        decalNameLabelValue->setGeometry(QRect(100, 0, 231, 16));
         rightToolBox->addItem(rightToolBoxDecalSelect, QString::fromUtf8("Decal Select"));
 
         verticalLayout_2->addWidget(rightToolBox);
@@ -490,7 +486,7 @@ public:
         bcBlackCatEditorClass->setCentralWidget(centralWidget);
         mainMenuBar = new QMenuBar(bcBlackCatEditorClass);
         mainMenuBar->setObjectName(QString::fromUtf8("mainMenuBar"));
-        mainMenuBar->setGeometry(QRect(0, 0, 1600, 21));
+        mainMenuBar->setGeometry(QRect(0, 0, 1600, 22));
         fileMenu = new QMenu(mainMenuBar);
         fileMenu->setObjectName(QString::fromUtf8("fileMenu"));
         bcBlackCatEditorClass->setMenuBar(mainMenuBar);
@@ -696,12 +692,11 @@ public:
         decalUpdateButton->setText(QCoreApplication::translate("bcBlackCatEditorClass", "Update", nullptr));
         decalDeleteButton->setText(QCoreApplication::translate("bcBlackCatEditorClass", "Delete", nullptr));
         decalNameLabel->setText(QCoreApplication::translate("bcBlackCatEditorClass", "Decal Name:", nullptr));
-        decalNameLabelValue->setText(QString());
         decalRotationZLabel->setText(QCoreApplication::translate("bcBlackCatEditorClass", "z:", nullptr));
         decalRotationLabel->setText(QCoreApplication::translate("bcBlackCatEditorClass", "D\331\220ecal Rotation:", nullptr));
         decalRotationXLabel->setText(QCoreApplication::translate("bcBlackCatEditorClass", "x:", nullptr));
         decalRotationYLabel->setText(QCoreApplication::translate("bcBlackCatEditorClass", "y:", nullptr));
-        decalNameLabelValue_2->setText(QString());
+        decalNameLabelValue->setText(QString());
         rightToolBox->setItemText(rightToolBox->indexOf(rightToolBoxDecalSelect), QCoreApplication::translate("bcBlackCatEditorClass", "Decal Select", nullptr));
         fileMenu->setTitle(QCoreApplication::translate("bcBlackCatEditorClass", "File", nullptr));
 #if QT_CONFIG(tooltip)
