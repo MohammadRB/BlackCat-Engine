@@ -110,7 +110,7 @@ namespace black_cat
 		void bc_decal_component::add_decal(core::bc_string_view p_name,
 			const core::bc_vector3f& p_local_pos,
 			const core::bc_matrix3f& p_local_rotation,
-			bc_render_group p_render_group,
+			bc_actor_render_group p_render_group,
 			const core::bc_matrix4f& p_initial_world_transform)
 		{
 			const auto l_is_auto_remove = m_decal_manager->is_decal_auto_remove(p_name);
@@ -164,7 +164,7 @@ namespace black_cat
 		void bc_decal_component::add_decal(core::bc_string_view p_name,
 			const core::bc_vector3f& p_local_pos,
 			const core::bc_matrix3f& p_local_rotation,
-			bc_render_group p_render_group,
+			bc_actor_render_group p_render_group,
 			const core::bc_matrix4f& p_initial_world_transform,
 			bc_mesh_node::node_index_t p_attached_node)
 		{
@@ -220,7 +220,7 @@ namespace black_cat
 							*l_json_entry->m_nm,
 							*l_json_entry->m_pos_ls,
 							bc_matrix3f_rotation_zyx(*l_json_entry->m_rot_ls),
-							static_cast<bc_render_group>(*l_json_entry->m_rg),
+							static_cast<bc_actor_render_group>(*l_json_entry->m_rg),
 							core::bc_matrix4f::identity(),
 							*l_json_entry->m_ani
 						);

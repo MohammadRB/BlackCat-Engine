@@ -59,7 +59,7 @@ namespace black_cat
 				p_context,
 				m_point_left, 
 				m_point_top, 
-				game::bc_actor_group::terrain,
+				game::bc_actor_physics_group::terrain,
 				physics::bc_query_flags::statics,
 				l_buffer
 			);

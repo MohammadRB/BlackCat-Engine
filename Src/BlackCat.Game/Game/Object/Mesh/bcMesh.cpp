@@ -241,7 +241,7 @@ namespace black_cat
 				throw bc_out_of_range_exception("Invalid mesh index");
 			}
 
-			return m_collider->find_mesh_collider(get_node_mesh_name(p_node, p_mesh_index));
+			return m_collider->find_mesh_node_colliders(get_node_mesh_name(p_node, p_mesh_index));
 		}
 
 		void bc_mesh::_apply_auto_scale(bcFLOAT p_auto_scale)

@@ -102,7 +102,7 @@ namespace black_cat
 					*l_decal->m_height,
 					*l_decal->m_depth,
 					l_decal->m_view_distance.has_value() ? *l_decal->m_view_distance : _calculate_default_view_distance(*l_decal->m_width, *l_decal->m_height, *l_decal->m_depth),
-					l_decal->m_group.has_value() ? static_cast<bc_render_group>(*l_decal->m_group) : bc_render_group::all,
+					l_decal->m_group.has_value() ? static_cast<bc_actor_render_group>(*l_decal->m_group) : bc_actor_render_group::all,
 					l_decal->m_auto_remove.has_value() ? *l_decal->m_auto_remove : false
 				};
 

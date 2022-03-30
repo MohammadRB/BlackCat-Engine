@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Messaging/Query/bcQuery.h"
 #include "Game/Object/Scene/SceneGraph/bcSceneGraphBuffer.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
@@ -114,23 +115,31 @@ namespace black_cat
 
 			if(m_include_decal_icons)
 			{
-				const auto l_decals_iterator = p_context.m_scene->get_decal_manager().get_iterator_buffer();
-				for (auto& l_decal_instance : l_decals_iterator)
-				{
-					if (l_decal_instance.get_decal()->get_auto_remove())
-					{
-						continue;
-					}
+				auto l_decals_iterator = p_context.m_scene->get_decal_manager().get_iterator_buffer();
 
-					const auto l_decal_transform = l_decal_instance.get_world_transform();
-					const auto l_position = l_decal_transform.get_translation() + core::bc_vector3f::normalize(l_decal_transform.get_basis_y());
-					m_icons.push_back(bc_icon_info
+				{
+					platform::bc_lock_guard l_lock(l_decals_iterator);
+
+					for (auto& l_decal_instance : l_decals_iterator)
 					{
-						l_position,
-						bc_icon_type::decal,
-						bc_icon_component::s_default_icon_size,
-						bc_icon_mode::editor
-					});
+						if (l_decal_instance.get_decal()->get_auto_remove())
+						{
+							continue;
+						}
+
+						const auto l_decal_transform = l_decal_instance.get_world_transform();
+						const auto l_position = l_decal_transform.get_translation() + core::bc_vector3f::normalize(l_decal_transform.get_basis_y());
+						m_icons.push_back
+						(
+							bc_icon_info
+							{
+								l_position,
+								bc_icon_type::decal,
+								bc_icon_component::s_default_icon_size,
+								bc_icon_mode::editor
+							}
+						);
+					}
 				}
 			}
 		}

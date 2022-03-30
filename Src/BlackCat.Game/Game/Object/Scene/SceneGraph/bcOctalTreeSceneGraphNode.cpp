@@ -236,11 +236,11 @@ namespace black_cat
 			return m_bound_box.intersect(l_actor_bound_box);
 		}
 
-		void bc_octal_tree_graph_node::get_actor(const physics::bc_ray& p_ray, std::pair<bcFLOAT, bc_actor>& p_result) const noexcept
+		void bc_octal_tree_graph_node::get_actor(const physics::bc_ray& p_ray, bc_scene_graph_ray_query_hit& p_result, bc_scene_graph_ray_query_filter_callback* p_filter) const noexcept
 		{
 			if (!m_actors.empty())
 			{
-				for (_bc_octal_tree_graph_node_entry& l_entry : m_actors)
+				for (auto& l_entry : m_actors)
 				{
 					const auto& l_bound_box = _get_actor_bound_box(l_entry.m_actor);
 
@@ -283,12 +283,17 @@ namespace black_cat
 							);
 						}
 
+						if (l_intersects && p_filter)
+						{
+							l_intersects = (*p_filter)(bc_scene_graph_ray_query_hit{ l_entry.m_actor, l_ray_hit });
+						}
+
 						if(l_intersects)
 						{
-							if (!p_result.second.is_valid() || l_ray_hit.get_distance() < p_result.first)
+							if (!p_result.m_actor.is_valid() || l_ray_hit.get_distance() < p_result.m_hit.get_distance())
 							{
-								p_result.first = l_ray_hit.get_distance();
-								p_result.second = l_entry.m_actor;
+								p_result.m_actor = l_entry.m_actor;
+								p_result.m_hit = l_ray_hit;
 							}
 						}
 					}
@@ -304,35 +309,35 @@ namespace black_cat
 
 			if (physics::bc_shape_query::ray_cast(p_ray, m_top_left_back->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
 			{
-				m_top_left_back->get_actor(p_ray, p_result);
+				m_top_left_back->get_actor(p_ray, p_result, p_filter);
 			}
 			if (physics::bc_shape_query::ray_cast(p_ray, m_top_left_front->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
 			{
-				m_top_left_front->get_actor(p_ray, p_result);
+				m_top_left_front->get_actor(p_ray, p_result, p_filter);
 			}
 			if (physics::bc_shape_query::ray_cast(p_ray, m_top_right_front->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
 			{
-				m_top_right_front->get_actor(p_ray, p_result);
+				m_top_right_front->get_actor(p_ray, p_result, p_filter);
 			}
 			if (physics::bc_shape_query::ray_cast(p_ray, m_top_right_back->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
 			{
-				m_top_right_back->get_actor(p_ray, p_result);
+				m_top_right_back->get_actor(p_ray, p_result, p_filter);
 			}
 			if (physics::bc_shape_query::ray_cast(p_ray, m_bottom_left_back->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
 			{
-				m_bottom_left_back->get_actor(p_ray, p_result);
+				m_bottom_left_back->get_actor(p_ray, p_result, p_filter);
 			}
 			if (physics::bc_shape_query::ray_cast(p_ray, m_bottom_left_front->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
 			{
-				m_bottom_left_front->get_actor(p_ray, p_result);
+				m_bottom_left_front->get_actor(p_ray, p_result, p_filter);
 			}
 			if (physics::bc_shape_query::ray_cast(p_ray, m_bottom_right_front->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
 			{
-				m_bottom_right_front->get_actor(p_ray, p_result);
+				m_bottom_right_front->get_actor(p_ray, p_result, p_filter);
 			}
 			if (physics::bc_shape_query::ray_cast(p_ray, m_bottom_right_back->m_bound_box, physics::bc_hit_flag::distance, &l_ray_hit, 1))
 			{
-				m_bottom_right_back->get_actor(p_ray, p_result);
+				m_bottom_right_back->get_actor(p_ray, p_result, p_filter);
 			}
 		}
 

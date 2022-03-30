@@ -12,19 +12,21 @@ namespace black_cat
 		{
 		}
 
-		void bc_mesh_collider_builder::add_px_shape(const bcCHAR* p_attached_mesh_name,
+		void bc_mesh_collider_builder::add_px_shape(core::bc_string_view p_name,
+			core::bc_string_view p_attached_node_name,
 			bc_mesh_node::node_index_t p_attached_node_index,
 			const physics::bc_shape_box& p_box,
 			const physics::bc_transform& p_local_transform,
 			physics::bc_shape_flag p_flags)
 		{
-			auto& l_mesh_colliders = _get_mesh_colliders(p_attached_mesh_name);
+			auto& l_mesh_colliders = _get_mesh_colliders(p_attached_node_name);
 			l_mesh_colliders.push_back
 			(
 				bc_mesh_part_collider_entry
 				(
+					core::bc_string(p_name),
+					core::bc_string(p_attached_node_name),
 					p_attached_node_index,
-					p_attached_mesh_name,
 					core::bc_make_unique<physics::bc_shape_box>(p_box),
 					p_local_transform,
 					p_flags
@@ -32,19 +34,21 @@ namespace black_cat
 			);
 		}
 
-		void bc_mesh_collider_builder::add_px_shape(const bcCHAR* p_attached_mesh_name,
+		void bc_mesh_collider_builder::add_px_shape(core::bc_string_view p_name,
+			core::bc_string_view p_attached_node_name,
 			bc_mesh_node::node_index_t p_attached_node_index,
 			const physics::bc_shape_sphere& p_sphere,
 			const physics::bc_transform& p_local_transform,
 			physics::bc_shape_flag p_flags)
 		{
-			auto& l_mesh_colliders = _get_mesh_colliders(p_attached_mesh_name);
+			auto& l_mesh_colliders = _get_mesh_colliders(p_attached_node_name);
 			l_mesh_colliders.push_back
 			(
 				bc_mesh_part_collider_entry
 				(
+					core::bc_string(p_name),
+					core::bc_string(p_attached_node_name),
 					p_attached_node_index,
-					p_attached_mesh_name,
 					core::bc_make_unique<physics::bc_shape_sphere>(p_sphere),
 					p_local_transform,
 					p_flags
@@ -52,19 +56,21 @@ namespace black_cat
 			);
 		}
 
-		void bc_mesh_collider_builder::add_px_shape(const bcCHAR* p_attached_mesh_name,
+		void bc_mesh_collider_builder::add_px_shape(core::bc_string_view p_name,
+			core::bc_string_view p_attached_node_name,
 			bc_mesh_node::node_index_t p_attached_node_index,
 			const physics::bc_shape_capsule& p_capsule,
 			const physics::bc_transform& p_local_transform,
 			physics::bc_shape_flag p_flags)
 		{
-			auto& l_mesh_colliders = _get_mesh_colliders(p_attached_mesh_name);
+			auto& l_mesh_colliders = _get_mesh_colliders(p_attached_node_name);
 			l_mesh_colliders.push_back
 			(
 				bc_mesh_part_collider_entry
 				(
+					core::bc_string(p_name),
+					core::bc_string(p_attached_node_name),
 					p_attached_node_index,
-					p_attached_mesh_name,
 					core::bc_make_unique<physics::bc_shape_capsule>(p_capsule),
 					p_local_transform,
 					p_flags
@@ -72,19 +78,21 @@ namespace black_cat
 			);
 		}
 
-		void bc_mesh_collider_builder::add_px_shape(const bcCHAR* p_attached_mesh_name,
+		void bc_mesh_collider_builder::add_px_shape(core::bc_string_view p_name,
+			core::bc_string_view p_attached_node_name,
 			bc_mesh_node::node_index_t p_attached_node_index,
 			physics::bc_convex_mesh_ref&& p_convex,
 			const physics::bc_transform& p_local_transform,
 			physics::bc_shape_flag p_flags)
 		{
-			auto& l_mesh_colliders = _get_mesh_colliders(p_attached_mesh_name);
+			auto& l_mesh_colliders = _get_mesh_colliders(p_attached_node_name);
 			l_mesh_colliders.push_back
 			(
 				bc_mesh_part_collider_entry
 				(
+					core::bc_string(p_name),
+					core::bc_string(p_attached_node_name),
 					p_attached_node_index,
-					p_attached_mesh_name,
 					core::bc_make_unique<physics::bc_shape_convex_mesh>(physics::bc_shape_convex_mesh(p_convex.get())),
 					p_local_transform,
 					p_flags
@@ -93,20 +101,22 @@ namespace black_cat
 			m_convex_shapes.push_back(std::move(p_convex));
 		}
 
-		void bc_mesh_collider_builder::add_px_shape(const bcCHAR* p_attached_mesh_name,
+		void bc_mesh_collider_builder::add_px_shape(core::bc_string_view p_name,
+			core::bc_string_view p_attached_node_name,
 			bc_mesh_node::node_index_t p_attached_node_index,
 			physics::bc_triangle_mesh_ref&& p_mesh,
 			const physics::bc_transform& p_local_transform,
 			physics::bc_shape_flag p_flags,
 			bool p_high_detail_query_shape)
 		{
-			auto& l_mesh_colliders = _get_mesh_colliders(p_attached_mesh_name);
+			auto& l_mesh_colliders = _get_mesh_colliders(p_attached_node_name);
 			l_mesh_colliders.push_back
 			(
 				bc_mesh_part_collider_entry
 				(
+					core::bc_string(p_name),
+					core::bc_string(p_attached_node_name),
 					p_attached_node_index,
-					p_attached_mesh_name,
 					core::bc_make_unique<physics::bc_shape_triangle_mesh>(physics::bc_shape_triangle_mesh(p_mesh.get())),
 					p_local_transform,
 					p_flags,
@@ -221,12 +231,12 @@ namespace black_cat
 			return l_collider;
 		}
 
-		core::bc_vector<bc_mesh_part_collider_entry>& bc_mesh_collider_builder::_get_mesh_colliders(const bcCHAR* p_mesh_name)
+		core::bc_vector<bc_mesh_part_collider_entry>& bc_mesh_collider_builder::_get_mesh_colliders(core::bc_string_view p_node_name)
 		{
-			auto l_ite = m_mesh_colliders.find(p_mesh_name);
+			auto l_ite = m_mesh_colliders.find(p_node_name);
 			if (l_ite == std::end(m_mesh_colliders))
 			{
-				l_ite = m_mesh_colliders.insert(std::make_pair(p_mesh_name, core::bc_vector<bc_mesh_part_collider_entry>())).first;
+				l_ite = m_mesh_colliders.insert(std::make_pair(p_node_name, core::bc_vector<bc_mesh_part_collider_entry>())).first;
 			}
 
 			return l_ite->second;

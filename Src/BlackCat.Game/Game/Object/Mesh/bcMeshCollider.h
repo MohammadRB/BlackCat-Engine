@@ -18,14 +18,16 @@ namespace black_cat
 	{
 		struct BC_GAME_DLL bc_mesh_part_collider_entry
 		{
-			bc_mesh_part_collider_entry(bc_mesh_node::node_index_t p_attached_node_index,
-				core::bc_string p_attached_mesh_name,
+			bc_mesh_part_collider_entry(core::bc_string p_name,
+				core::bc_string p_attached_node_name,
+				bc_mesh_node::node_index_t p_attached_node_index,
 				core::bc_unique_ptr<physics::bc_shape_geometry> p_px_shape,
 				const physics::bc_transform& p_local_transform)
 				: bc_mesh_part_collider_entry
 				(
+					std::move(p_name),
+					std::move(p_attached_node_name),
 					p_attached_node_index,
-					std::move(p_attached_mesh_name),
 					std::move(p_px_shape),
 					p_local_transform,
 					physics::bc_shape_flag::default_v
@@ -33,15 +35,17 @@ namespace black_cat
 			{
 			}
 
-			bc_mesh_part_collider_entry(bc_mesh_node::node_index_t p_attached_node_transform_index,
-				core::bc_string p_attached_mesh_name,
+			bc_mesh_part_collider_entry(core::bc_string p_name,
+				core::bc_string p_attached_node_name,
+				bc_mesh_node::node_index_t p_attached_node_transform_index,
 				core::bc_unique_ptr<physics::bc_shape_geometry> p_px_shape,
 				const physics::bc_transform& p_local_transform,
 				physics::bc_shape_flag p_flag)
 				: bc_mesh_part_collider_entry
 				(
+					std::move(p_name),
+					std::move(p_attached_node_name),
 					p_attached_node_transform_index,
-					std::move(p_attached_mesh_name),
 					std::move(p_px_shape),
 					p_local_transform,
 					p_flag,
@@ -50,14 +54,16 @@ namespace black_cat
 			{
 			}
 
-			bc_mesh_part_collider_entry(bc_mesh_node::node_index_t p_attached_node_transform_index,
-				core::bc_string p_attached_mesh_name,
+			bc_mesh_part_collider_entry(core::bc_string p_name,
+				core::bc_string p_attached_node_name,
+				bc_mesh_node::node_index_t p_attached_node_transform_index,
 				core::bc_unique_ptr<physics::bc_shape_geometry> p_px_shape,
 				const physics::bc_transform& p_local_transform,
 				physics::bc_shape_flag p_flag,
 				bool p_high_detail_query_shape)
-				: m_attached_node_index(p_attached_node_transform_index),
-				m_attached_mesh_name(std::move(p_attached_mesh_name)),
+				: m_name(std::move(p_name)),
+				m_attached_node_name(std::move(p_attached_node_name)),
+				m_attached_node_index(p_attached_node_transform_index),
 				m_shape(std::move(p_px_shape)),
 				m_shape_flags(p_flag),
 				m_local_transform(p_local_transform),
@@ -72,8 +78,9 @@ namespace black_cat
 
 			bc_mesh_part_collider_entry& operator=(bc_mesh_part_collider_entry&&) = default;
 
+			core::bc_string m_name;
+			core::bc_string m_attached_node_name;
 			bc_mesh_node::node_index_t m_attached_node_index;
-			core::bc_string m_attached_mesh_name;
 			core::bc_unique_ptr<physics::bc_shape_geometry> m_shape;
 			physics::bc_shape_flag m_shape_flags;
 			physics::bc_transform m_local_transform;
@@ -107,8 +114,10 @@ namespace black_cat
 			bc_skinned_mesh_collider& get_skinned_collider() noexcept;
 			
 			const bc_skinned_mesh_collider& get_skinned_collider() const noexcept;
-			
-			core::bc_const_span<bc_mesh_part_collider_entry> find_mesh_collider(core::bc_string_view p_mesh_name) const noexcept;
+
+			bc_mesh_part_collider_entry* find_collider_by_name(core::bc_string_view p_name) const noexcept;
+
+			core::bc_const_span<bc_mesh_part_collider_entry> find_mesh_node_colliders(core::bc_string_view p_node_name) const noexcept;
 
 			const physics::bc_transform* find_joint(core::bc_string_view p_collider1, core::bc_string_view p_collider2) const noexcept;
 

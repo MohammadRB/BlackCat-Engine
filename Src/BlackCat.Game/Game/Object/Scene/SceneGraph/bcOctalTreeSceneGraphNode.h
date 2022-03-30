@@ -97,7 +97,7 @@ namespace black_cat
 
 			bool intersects_actor(bc_actor& p_actor) const noexcept override;
 
-			void get_actor(const physics::bc_ray& p_ray, std::pair<bcFLOAT, bc_actor>& p_result) const noexcept override;
+			void get_actor(const physics::bc_ray& p_ray, bc_scene_graph_ray_query_hit& p_result, bc_scene_graph_ray_query_filter_callback* p_filter = nullptr) const noexcept override;
 
 			void get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const noexcept override;
 

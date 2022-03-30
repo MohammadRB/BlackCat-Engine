@@ -193,7 +193,7 @@ namespace black_cat
 
 			const auto& l_render_states = get_render_states();
 			const auto& l_world_transforms = get_world_transforms();
-			bc_mesh_utility::render_skinned_mesh(p_context.m_buffer, l_render_states, l_world_transforms, l_lod.first, bc_render_group::dynamic_mesh);
+			bc_mesh_utility::render_skinned_mesh(p_context.m_buffer, l_render_states, l_world_transforms, l_lod.first, bc_actor_render_group::dynamic_mesh);
 		}
 
 		void bc_skinned_mesh_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)
@@ -253,7 +253,7 @@ namespace black_cat
 				p_decal_name,
 				l_local_position,
 				l_local_rotation,
-				bc_render_group::dynamic_mesh,
+				bc_actor_render_group::dynamic_mesh,
 				l_world_transform,
 				p_attached_node_index
 			);

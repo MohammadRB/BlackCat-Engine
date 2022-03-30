@@ -311,7 +311,7 @@
           "name": "vegetable_mesh",
           "parameters": {
             "mesh": "bigpatch_medium",
-            "view_distance": 200.0
+            "view_distance": 150.0
           }
         }
       ]
@@ -323,7 +323,7 @@
           "name": "vegetable_mesh",
           "parameters": {
             "mesh": "Palm_Tree_Large_d",
-            "view_distance": 400.0
+            "view_distance": 300.0
           }
         },
         {
@@ -343,7 +343,7 @@
           "name": "vegetable_mesh",
           "parameters": {
             "mesh": "Palm_Tree_Large_h",
-            "view_distance": 400.0
+            "view_distance": 300.0
           }
         },
         {
@@ -363,7 +363,7 @@
           "name": "vegetable_mesh",
           "parameters": {
             "mesh": "Palm_Tree_Short_b",
-            "view_distance": 300.0
+            "view_distance": 250.0
           }
         },
         {

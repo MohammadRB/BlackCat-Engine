@@ -120,7 +120,7 @@ namespace black_cat
 		TEST(ConcurrentQueue, MultiwriterSinglereader)
 		{
 			bc_test_init();
-
+			
 			{
 				constexpr auto l_thread_count = 8U;
 				constexpr auto l_thread_item_count = 1000U;

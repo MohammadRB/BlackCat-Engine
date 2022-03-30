@@ -25,6 +25,9 @@ namespace box
 			.with_particle_size(.3f, .3f)
 			.with_particles_rotation(50)
 			.with_particle_fade_curve(game::bc_particle_builder::s_curve_constant)
-			.emit_particles_with_per_second_count(1, 12, 10, 0.1f);
+			.emit_particles_with_per_second_count(1, 12, 10, 0.08f)
+			.duplicate_last({ 0, 0, 0 }, { 0, 1, 0 }, std::numeric_limits<bcFLOAT>::max(), 0, 0)
+			.with_texture(12)
+			.emit_particles_with_per_second_count(1, 12, 13, 0.09f);
 	}
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcIterator.h"
+#include "Core/Utility/bcDelegate.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "PhysicsImp/Collision/bcShapeQuery.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
@@ -14,6 +15,14 @@ namespace black_cat
 {
 	namespace game
 	{
+		struct bc_scene_graph_ray_query_hit
+		{
+			bc_actor m_actor;
+			physics::bc_ray_hit m_hit;
+		};
+
+		using bc_scene_graph_ray_query_filter_callback = core::bc_delegate<bool(const bc_scene_graph_ray_query_hit&)>;
+
 		class bci_scene_graph_node_entry
 		{
 		public:
@@ -60,7 +69,7 @@ namespace black_cat
 
 			virtual bool intersects_actor(bc_actor& p_actor) const noexcept = 0;
 
-			virtual void get_actor(const physics::bc_ray& p_ray, std::pair<bcFLOAT, bc_actor>& p_result) const noexcept = 0;
+			virtual void get_actor(const physics::bc_ray& p_ray, bc_scene_graph_ray_query_hit& p_result, bc_scene_graph_ray_query_filter_callback* p_filter = nullptr) const noexcept = 0;
 
 			virtual void get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const noexcept = 0;
 

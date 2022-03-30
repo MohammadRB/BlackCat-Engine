@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
@@ -67,13 +66,14 @@ namespace black_cat
 		void before_reset(const game::bc_render_pass_reset_context& p_context) override;
 		
 		void after_reset(const game::bc_render_pass_reset_context& p_context) override;
-		
+
+		void config_changed(const game::bc_render_pass_config_change_context& p_context) override;
+
 		void destroy(game::bc_render_system& p_render_system) override;
 
 		void set_parameters(bool p_draw_scene_graph_debug);
 
 	private:
-		core::bc_event_listener_handle m_config_change_event_handle;
 		game::bc_render_pass_variable_t m_render_target_view_variable;
 
 		graphic::bc_device_pipeline_state_ref m_device_pipeline_state;

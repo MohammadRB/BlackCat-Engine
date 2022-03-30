@@ -454,7 +454,7 @@ namespace black_cat
 		(
 			p_context.m_render_thread, 
 			p_context.m_render_camera, 
-			game::bc_render_instance(l_light_flare_surface_world, game::bc_render_group::unknown)
+			game::bc_render_instance(l_light_flare_surface_world, game::bc_actor_render_group::unknown)
 		);
 
 		p_context.m_render_thread.start_query(*p_query.m_device_query);

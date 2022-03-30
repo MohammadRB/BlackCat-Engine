@@ -429,9 +429,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcDecalComponent.h">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorGroup.h">
-      <Filter>Game\Object\Scene\ActorComponent</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcDecalResolverComponent.h">
       <Filter>Game\Object\Scene\Component</Filter>
     </ClInclude>
@@ -710,6 +707,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\bcGameSystemParameter.h">
       <Filter>Game\System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcActorGroup.h">
+      <Filter>Game\System\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

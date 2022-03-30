@@ -92,9 +92,9 @@ namespace black_cat
 						m_transform.get_translation(),
 						core::bc_vector3f
 						(
-							(m_height_map->get_width() * m_height_map->get_xz_multiplier()) / 2,
-							1024.0 / 2, // TODO Get actual terrain height
-							(m_height_map->get_height() * m_height_map->get_xz_multiplier()) / 2
+							static_cast<bcFLOAT>(m_height_map->get_width() * m_height_map->get_xz_multiplier()) / 2,
+							m_height_map->get_y_multiplier() * 0.8f, // TODO Get actual terrain height
+							static_cast<bcFLOAT>(m_height_map->get_height() * m_height_map->get_xz_multiplier()) / 2
 						)
 					)
 				));
@@ -108,7 +108,7 @@ namespace black_cat
 
 				if(l_material.m_collider_material.m_collision_particle)
 				{
-					auto l_particle_color = l_material.m_mesh_material->get_diffuse().xyz();
+					const auto l_particle_color = l_material.m_mesh_material->get_diffuse().xyz();
 					p_context.m_game_system.get_scene()->get_particle_manager().spawn_emitter
 					(
 						l_material.m_collider_material.m_collision_particle,
@@ -133,7 +133,7 @@ namespace black_cat
 
 		void bc_height_map_component::render(const bc_actor_component_render_context& p_context) const
 		{
-			const bc_render_instance l_instance(m_transform, bc_render_group::terrain);
+			const bc_render_instance l_instance(m_transform, bc_actor_render_group::terrain);
 			p_context.m_buffer.add_render_instance(m_height_map->get_render_state_ptr(), l_instance);
 		}
 
@@ -143,8 +143,6 @@ namespace black_cat
 			bc_mesh_node::node_index_t p_attached_node_index)
 		{
 			auto l_actor = get_actor();
-			auto* l_decal_component = l_actor.get_create_component<bc_decal_component>();
-
 			const auto l_local_pos = p_world_position - m_transform.get_translation();
 			const auto l_world_pos = p_world_position - l_local_pos;
 			core::bc_matrix3f l_local_rotation;
@@ -158,12 +156,13 @@ namespace black_cat
 				l_local_rotation.rotation_between_two_vector_rh(core::bc_vector3f::up(), p_dir);
 			}
 
+			auto* l_decal_component = l_actor.get_create_component<bc_decal_component>();
 			l_decal_component->add_decal
 			(
 				p_decal_name,
 				l_local_pos,
 				l_local_rotation,
-				bc_render_group::terrain,
+				bc_actor_render_group::terrain,
 				core::bc_matrix4f::translation_matrix(l_world_pos)
 			);
 		}

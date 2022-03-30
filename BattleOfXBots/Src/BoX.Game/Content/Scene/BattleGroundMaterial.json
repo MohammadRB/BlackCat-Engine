@@ -65,72 +65,36 @@
       "normal_map": "sandstone_cracks_nrm"
     },
     {
-      "name": "decal_beach_dirt",
+      "name": "decal_dirt1",
       "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
       "specular_intensity": 0.0,
       "specular_power": 0.0,
-      "diffuse_map": "decal_beach_dirt",
+      "diffuse_map": "decal_dirt1",
       "normal_map": null,
       "specular_map": null
     },
     {
-      "name": "decal_crack_7",
+      "name": "decal_dirt2",
       "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
       "specular_intensity": 0.0,
       "specular_power": 0.0,
-      "diffuse_map": "decal_crack_7",
+      "diffuse_map": "decal_dirt2",
       "normal_map": null,
       "specular_map": null
     },
     {
-      "name": "decal_dirt_052",
+      "name": "decal_nature1",
       "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
       "specular_intensity": 0.1,
       "specular_power": 0.1,
-      "diffuse_map": "decal_dirt_052",
-      "normal_map": null,
-      "specular_map": null
-    },
-    {
-      "name": "decal_dirt_057",
-      "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
-      "specular_intensity": 0.1,
-      "specular_power": 0.1,
-      "diffuse_map": "decal_dirt_057",
-      "normal_map": null,
-      "specular_map": null
-    },
-    {
-      "name": "decal_dirt_on_road_16",
-      "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
-      "specular_intensity": 0.0,
-      "specular_power": 0.0,
-      "diffuse_map": "decal_dirt_on_road_16",
-      "normal_map": "decal_dirt_on_road_16_nrm",
-      "specular_map": "decal_dirt_on_road_spec"
-    },
-    {
-      "name": "decal_rust",
-      "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
-      "specular_intensity": 0.1,
-      "specular_power": 0.1,
-      "diffuse_map": "decal_rust",
-      "normal_map": null,
-      "specular_map": null
-    },
-    {
-      "name": "decal_roots_on_cliff",
-      "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
-      "specular_intensity": 0.3,
-      "specular_power": 0.1,
-      "diffuse_map": "decal_roots_on_cliff",
-      "normal_map": "decal_roots_on_cliff_nrm",
+      "diffuse_map": "decal_nature1",
+      "normal_map": "decal_nature1_nrm",
       "specular_map": null
     },
     {
       "name": "decal_numbers",
       "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
-      "specular_intensity": 0.3,
+      "specular_intensity": 0.1,
       "specular_power": 0.1,
       "diffuse_map": "decal_numbers",
       "normal_map": "decal_numbers_nrm",

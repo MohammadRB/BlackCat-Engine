@@ -75,20 +75,24 @@ namespace black_cat
 
 		game::bc_mesh_builder l_builder;
 		core::bc_unordered_map_frame<core::bc_string_view, bcUINT32> l_node_mapping;
-		
+
+		/*if(core::bc_path(p_context.m_file_path).get_filename() == bcL("brown_riverrock_big_a.fbx"))
+		{
+			BC_DEBUG_BREAK()
+		}*/
+
 		bc_mesh_loader_utility::calculate_node_mapping(*l_scene->mRootNode, l_node_mapping);
 		
 		convert_ai_nodes(l_game_system.get_render_system(), p_context, *l_scene, l_node_mapping, *l_scene->mRootNode, l_builder);
 
-		const auto l_mesh_name = core::bc_path(p_context.m_file_path).get_filename();
+		const auto l_file_path = core::bc_path(p_context.m_file_path);
+		const auto l_mesh_name = l_file_path.get_filename();
 		const auto* l_auto_scale = p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_mesh_auto_scale);
-
 		if(l_auto_scale)
 		{
 			l_builder.with_auto_scale(*l_auto_scale);
 		}
 
-		core::bc_path l_file_path(p_context.m_file_path);
 		std::pair<core::bc_estring_view, core::bc_path> l_lod_paths[3]
 		{
 			{ bcL("_lod1"), core::bc_path(l_file_path).set_filename((l_file_path.get_filename_without_extension_frame() + bcL("_lod1") + l_file_path.get_file_extension_frame()).c_str()) },

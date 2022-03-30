@@ -680,7 +680,7 @@
              <property name="geometry">
               <rect>
                <x>30</x>
-               <y>160</y>
+               <y>170</y>
                <width>81</width>
                <height>31</height>
               </rect>
@@ -696,7 +696,7 @@
              <property name="geometry">
               <rect>
                <x>160</x>
-               <y>160</y>
+               <y>170</y>
                <width>81</width>
                <height>31</height>
               </rect>
@@ -724,7 +724,7 @@
              </property>
              <property name="geometry">
               <rect>
-               <x>30</x>
+               <x>160</x>
                <y>120</y>
                <width>91</width>
                <height>25</height>
@@ -737,7 +737,7 @@
             <widget class="QLabel" name="decalRotationZLabel">
              <property name="geometry">
               <rect>
-               <x>10</x>
+               <x>140</x>
                <y>120</y>
                <width>16</width>
                <height>16</height>
@@ -753,7 +753,7 @@
              </property>
              <property name="geometry">
               <rect>
-               <x>30</x>
+               <x>160</x>
                <y>60</y>
                <width>91</width>
                <height>25</height>
@@ -766,7 +766,7 @@
             <widget class="QLabel" name="decalRotationLabel">
              <property name="geometry">
               <rect>
-               <x>10</x>
+               <x>140</x>
                <y>30</y>
                <width>81</width>
                <height>16</height>
@@ -782,7 +782,7 @@
              </property>
              <property name="geometry">
               <rect>
-               <x>30</x>
+               <x>160</x>
                <y>90</y>
                <width>91</width>
                <height>25</height>
@@ -795,7 +795,7 @@
             <widget class="QLabel" name="decalRotationXLabel">
              <property name="geometry">
               <rect>
-               <x>10</x>
+               <x>140</x>
                <y>60</y>
                <width>16</width>
                <height>16</height>
@@ -808,7 +808,7 @@
             <widget class="QLabel" name="decalRotationYLabel">
              <property name="geometry">
               <rect>
-               <x>10</x>
+               <x>140</x>
                <y>90</y>
                <width>16</width>
                <height>16</height>
@@ -829,6 +829,106 @@
              </property>
              <property name="text">
               <string/>
+             </property>
+            </widget>
+            <widget class="QLineEdit" name="decalPositionYText">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="geometry">
+              <rect>
+               <x>30</x>
+               <y>90</y>
+               <width>91</width>
+               <height>25</height>
+              </rect>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+            </widget>
+            <widget class="QLineEdit" name="decalPositionZText">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="geometry">
+              <rect>
+               <x>30</x>
+               <y>120</y>
+               <width>91</width>
+               <height>25</height>
+              </rect>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+            </widget>
+            <widget class="QLabel" name="decalPositionXLabel">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>60</y>
+               <width>16</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>x:</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="decalPositionYLabel">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>90</y>
+               <width>16</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>y:</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="decalPositionZLabel">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>120</y>
+               <width>16</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>z:</string>
+             </property>
+            </widget>
+            <widget class="QLineEdit" name="decalPositionXText">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="geometry">
+              <rect>
+               <x>30</x>
+               <y>60</y>
+               <width>91</width>
+               <height>25</height>
+              </rect>
+             </property>
+             <property name="readOnly">
+              <bool>false</bool>
+             </property>
+            </widget>
+            <widget class="QLabel" name="decalPositionLabel">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>30</y>
+               <width>81</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Decal Position:</string>
              </property>
             </widget>
            </widget>

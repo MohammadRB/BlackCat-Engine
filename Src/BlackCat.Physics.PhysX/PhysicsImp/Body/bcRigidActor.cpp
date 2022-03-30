@@ -60,7 +60,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_rigid_actor< g_api_physx >::set_global_pose(const bc_transform& p_transform) noexcept
+		void bc_platform_rigid_actor<g_api_physx>::set_global_pose(const bc_transform& p_transform) noexcept
 		{
 			auto* l_px_actor = static_cast<physx::PxRigidActor*>(get_platform_pack().m_px_object);
 			l_px_actor->setGlobalPose(p_transform.get_platform_pack().m_px_transform);
@@ -68,7 +68,7 @@ namespace black_cat
 		
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_rigid_actor< g_api_physx >::attach_shape(bc_shape& p_shape) noexcept
+		void bc_platform_rigid_actor<g_api_physx>::attach_shape(bc_shape& p_shape) noexcept
 		{
 			auto* l_px_actor = static_cast<physx::PxRigidActor*>(get_platform_pack().m_px_object);
 			auto* l_px_shape = static_cast<physx::PxShape*>(p_shape.get_platform_pack().m_px_object);
@@ -78,7 +78,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_rigid_actor< g_api_physx >::detach_shape(bc_shape& p_shape) noexcept
+		void bc_platform_rigid_actor<g_api_physx>::detach_shape(bc_shape& p_shape) noexcept
 		{
 			auto* l_px_actor = static_cast<physx::PxRigidActor*>(get_platform_pack().m_px_object);
 			auto* l_px_shape = static_cast<physx::PxShape*>(p_shape.get_platform_pack().m_px_object);
@@ -88,7 +88,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bcUINT32 bc_platform_rigid_actor< g_api_physx >::get_shape_count() const noexcept
+		bcUINT32 bc_platform_rigid_actor<g_api_physx>::get_shape_count() const noexcept
 		{
 			auto* l_px_actor = static_cast<physx::PxRigidActor*>(get_platform_pack().m_px_object);
 
@@ -97,12 +97,12 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bcUINT32 bc_platform_rigid_actor< g_api_physx >::get_shapes(bc_shape* p_buffer, bcUINT32 p_buffer_size, bcUINT32 p_start_index) const noexcept
+		bcUINT32 bc_platform_rigid_actor<g_api_physx>::get_shapes(bc_shape* p_buffer, bcUINT32 p_buffer_size, bcUINT32 p_start_index) const noexcept
 		{
 			auto* l_px_actor = static_cast<physx::PxRigidActor*>(get_platform_pack().m_px_object);
-			const bcUINT32 l_written_count = l_px_actor->getShapes(reinterpret_cast< physx::PxShape** >(p_buffer), p_buffer_size, p_start_index);
+			const bcUINT32 l_written_count = l_px_actor->getShapes(reinterpret_cast<physx::PxShape**>(p_buffer), p_buffer_size, p_start_index);
 
-			bc_overwrite_output_array< bc_shape, physx::PxShape* >(p_buffer, l_written_count, [](physx::PxShape* p_px_shape)
+			bc_overwrite_output_array<bc_shape, physx::PxShape*>(p_buffer, l_written_count, [](physx::PxShape* p_px_shape)
 			{
 				bc_shape::platform_pack l_pack;
 				l_pack.m_px_object = p_px_shape;
@@ -115,17 +115,17 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_rigid_actor< g_api_physx >::set_collision_group(bc_collision_filter p_filter) noexcept
+		void bc_platform_rigid_actor<g_api_physx>::set_collision_group(bc_collision_filter p_filter) noexcept
 		{
 			const auto l_buffer_size = get_shape_count();
-			auto* l_buffer = static_cast< bc_shape* >
+			auto* l_buffer = static_cast<bc_shape*>
 			(
 				BC_ALLOC(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
 			);
 
 			get_shapes(l_buffer, l_buffer_size);
 
-			for (bcUINT32 i = 0; i < l_buffer_size; ++i)
+			for (bcUINT32 i = 0; i <l_buffer_size; ++i)
 			{
 				l_buffer[i].set_collision_group(p_filter);
 			}
@@ -135,17 +135,17 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_rigid_actor< g_api_physx >::set_query_group(bc_query_group p_filter) noexcept
+		void bc_platform_rigid_actor<g_api_physx>::set_query_group(bc_query_group p_filter) noexcept
 		{
 			const auto l_buffer_size = get_shape_count();
-			auto* l_buffer = static_cast< bc_shape* >
+			auto* l_buffer = static_cast<bc_shape*>
 			(
 				BC_ALLOC(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
 			);
 
 			get_shapes(l_buffer, l_buffer_size);
 
-			for (bcUINT32 i = 0; i < l_buffer_size; ++i)
+			for (bcUINT32 i = 0; i <l_buffer_size; ++i)
 			{
 				l_buffer[i].set_query_group(p_filter);
 			}
@@ -155,17 +155,17 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_rigid_actor< g_api_physx >::set_notify_flag(bc_shape_notify_flag p_flag, bool p_value) noexcept
+		void bc_platform_rigid_actor<g_api_physx>::set_notify_flag(bc_shape_notify_flag p_flag, bool p_value) noexcept
 		{
 			const auto l_buffer_size = get_shape_count();
-			auto* l_buffer = static_cast< bc_shape* >
+			auto* l_buffer = static_cast<bc_shape*>
 			(
 				BC_ALLOC(sizeof(bc_shape*) * l_buffer_size, core::bc_alloc_type::frame)
 			);
 
 			get_shapes(l_buffer, l_buffer_size);
 
-			for (bcUINT32 i = 0; i < l_buffer_size; ++i)
+			for (bcUINT32 i = 0; i <l_buffer_size; ++i)
 			{
 				l_buffer[i].set_notify_flag(p_flag, p_value);
 			}

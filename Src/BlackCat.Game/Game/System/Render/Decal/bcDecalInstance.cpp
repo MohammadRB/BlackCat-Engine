@@ -13,6 +13,20 @@ namespace black_cat
 			m_container->destroy_decal_instance(p_ptr);
 		}
 
+		void bc_decal_instance::set_local_position(const core::bc_vector3f& p_position) noexcept
+		{
+			auto l_local_transform = core::bc_matrix4f::identity();
+			l_local_transform.set_rotation(get_local_rotation());
+			l_local_transform.set_translation(get_local_position());
+
+			auto l_world_transform = m_world_transform;
+			l_world_transform.make_neutralize_scale();
+			l_world_transform *= l_local_transform.inverse();
+
+			m_local_position = p_position;
+			set_world_transform(l_world_transform);
+		}
+
 		void bc_decal_instance::set_local_rotation(const core::bc_matrix3f& p_rotation) noexcept
 		{
 			auto l_local_transform = core::bc_matrix4f::identity();
@@ -42,6 +56,15 @@ namespace black_cat
 			auto l_world_rotation = m_world_transform.get_rotation();
 			l_world_rotation.make_neutralize_scale();
 			m_world_transform.set_rotation(l_scale.get_rotation() * l_world_rotation);
+		}
+
+		std::pair<physics::bc_shape_box, physics::bc_transform> bc_decal_instance::get_box() const noexcept
+		{
+			return std::make_pair
+			(
+				physics::bc_shape_box(m_decal->get_width() / 2, m_decal->get_depth() / 2, m_decal->get_height() / 2),
+				physics::bc_transform(get_world_transform())
+			);
 		}
 	}	
 }

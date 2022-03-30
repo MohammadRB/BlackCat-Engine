@@ -33,6 +33,8 @@ namespace black_cat
 			void update_ui(update_ui_context& p_context) override;
 
 		private:
+			game::bc_decal_instance_ptr _test_ray_against_actor(const game::bc_actor& p_actor, const physics::bc_ray& p_ray);
+
 			bcUINT16 m_screen_width;
 			bcUINT16 m_screen_height;
 			bcUINT16 m_point_left;

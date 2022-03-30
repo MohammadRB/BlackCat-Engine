@@ -16,7 +16,27 @@ namespace black_cat
 
 		bc_mesh_collider& bc_mesh_collider::operator=(bc_mesh_collider&& p_other) noexcept = default;
 
-		core::bc_const_span<bc_mesh_part_collider_entry> bc_mesh_collider::find_mesh_collider(core::bc_string_view p_mesh_name) const noexcept
+		bc_mesh_part_collider_entry* bc_mesh_collider::find_collider_by_name(core::bc_string_view p_name) const noexcept
+		{
+			const auto l_ite = std::find_if
+			(
+				std::begin(m_colliders),
+				std::end(m_colliders),
+				[=](const bc_mesh_part_collider_entry& p_entry)
+				{
+					return p_entry.m_name == p_name;
+				}
+			);
+
+			if(l_ite != std::end(m_colliders))
+			{
+				return &*l_ite;
+			}
+
+			return nullptr;
+		}
+
+		core::bc_const_span<bc_mesh_part_collider_entry> bc_mesh_collider::find_mesh_node_colliders(core::bc_string_view p_node_name) const noexcept
 		{
 			const auto l_ite = std::find_if
 			(
@@ -25,7 +45,7 @@ namespace black_cat
 				[=](const decltype(m_mesh_colliders)::value_type& p_entry)
 				{
 					auto& l_collider_name = std::get<core::bc_string>(p_entry);
-					return core::bc_string_view(l_collider_name.c_str(), l_collider_name.size()) == p_mesh_name;
+					return core::bc_string_view(l_collider_name.c_str(), l_collider_name.size()) == p_node_name;
 				}
 			);
 
@@ -36,7 +56,7 @@ namespace black_cat
 
 			const auto l_colliders_start = std::get<1>(*l_ite);
 			const auto l_colliders_length = std::get<2>(*l_ite);
-			return core::bc_const_span<bc_mesh_part_collider_entry>(&m_colliders[l_colliders_start], l_colliders_length);
+			return { &m_colliders[l_colliders_start], l_colliders_length };
 		}
 
 		const physics::bc_transform* bc_mesh_collider::find_joint(core::bc_string_view p_collider1, core::bc_string_view p_collider2) const noexcept

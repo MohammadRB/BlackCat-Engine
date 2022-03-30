@@ -56,7 +56,7 @@ namespace black_cat
 		bc_decal_instance* bc_decal_manager_container::create_decal(core::bc_string_view p_name,
 			const core::bc_vector3f& p_local_position,
 			const core::bc_matrix3f& p_local_rotation,
-			bc_render_group p_render_group)
+			bc_actor_render_group p_render_group)
 		{
 			auto l_ptr = create_decal(p_name, bc_actor(), p_local_position, p_local_rotation, p_render_group, bc_mesh_node::s_invalid_index);
 			return l_ptr.release();
@@ -93,7 +93,7 @@ namespace black_cat
 			const bc_actor& p_actor,
 			const core::bc_vector3f& p_local_position,
 			const core::bc_matrix3f& p_local_rotation,
-			bc_render_group p_render_group,
+			bc_actor_render_group p_render_group,
 			bc_mesh_node::node_index_t p_attached_node_index)
 		{
 			auto l_decal_ptr = m_decal_manager->load_decal(p_name);

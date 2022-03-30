@@ -193,7 +193,7 @@ namespace black_cat
 		}
 
 		_render_decals(p_context, *m_render_pass_state, l_decal_groups, &l_non_culling_decals);
-		
+	
 		if(!l_non_culling_decals.empty())
 		{
 			_render_decals(p_context, *m_render_pass_state_for_non_culling, l_non_culling_decals, nullptr);
@@ -394,8 +394,8 @@ namespace black_cat
 	}
 
 	void bc_gbuffer_decal_pass::_render_decals(const game::bc_render_pass_render_context& p_param,
-		game::bc_render_pass_state& p_render_pass_state,
-		decal_group_container& p_instances,
+		const game::bc_render_pass_state& p_render_pass_state,
+		const decal_group_container& p_instances,
 		decal_group_container* p_non_culling_instances)
 	{
 		const auto l_view_proj = p_param.m_render_camera.get_view() * p_param.m_render_camera.get_projection();
@@ -442,19 +442,20 @@ namespace black_cat
 					}
 				}
 
-				l_instance_buffer_data[l_instance_buffer_ite].m_world_inv = l_instance_world_inv;
-				l_instance_buffer_data[l_instance_buffer_ite].m_world_view_projection = l_render_instance.get_transform() * l_view_proj;
-				l_instance_buffer_data[l_instance_buffer_ite].m_u0 = l_decal.get_u0();
-				l_instance_buffer_data[l_instance_buffer_ite].m_v0 = l_decal.get_v0();
-				l_instance_buffer_data[l_instance_buffer_ite].m_u1 = l_decal.get_u1();
-				l_instance_buffer_data[l_instance_buffer_ite].m_v1 = l_decal.get_v1();
-				l_instance_buffer_data[l_instance_buffer_ite].m_group = static_cast<bcUINT32>(l_render_instance.get_render_group());
+				auto& l_decal_instance_buffer_entry = l_instance_buffer_data[l_instance_buffer_ite];
+				l_decal_instance_buffer_entry.m_world_inv = l_instance_world_inv;
+				l_decal_instance_buffer_entry.m_world_view_projection = l_render_instance.get_transform() * l_view_proj;
+				l_decal_instance_buffer_entry.m_u0 = l_decal.get_u0();
+				l_decal_instance_buffer_entry.m_v0 = l_decal.get_v0();
+				l_decal_instance_buffer_entry.m_u1 = l_decal.get_u1();
+				l_decal_instance_buffer_entry.m_v1 = l_decal.get_v1();
+				l_decal_instance_buffer_entry.m_group = static_cast<bcUINT32>(l_render_instance.get_render_group());
 				
 				// Because matrices are put in regular buffer rather than cbuffer they must be stored in row major format
 				if constexpr (!p_param.m_frame_renderer.need_matrix_transpose())
 				{
-					l_instance_buffer_data[l_instance_buffer_ite].m_world_inv.make_transpose();
-					l_instance_buffer_data[l_instance_buffer_ite].m_world_view_projection.make_transpose();
+					l_decal_instance_buffer_entry.m_world_inv.make_transpose();
+					l_decal_instance_buffer_entry.m_world_view_projection.make_transpose();
 				}
 
 				++l_instance_buffer_ite;

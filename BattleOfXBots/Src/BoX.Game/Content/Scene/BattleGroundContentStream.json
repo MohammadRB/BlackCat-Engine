@@ -105,51 +105,15 @@
       "stream_name": "textures",
       "stream_content": [
         {
-          "content_title": "decal_beach_dirt",
+          "content_title": "decal_dirt1",
           "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\Decal\\Dirt\\beach_dirt_a.dds",
+          "content_file": "Content\\Texture\\Decal\\Dirt\\dirt1.dds",
           "content_parameter": {}
         },
         {
-          "content_title": "decal_crack_7",
+          "content_title": "decal_dirt2",
           "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\Decal\\Dirt\\cracks_7.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "decal_dirt_052",
-          "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\Decal\\Dirt\\dirt_052.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "decal_dirt_057",
-          "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\Decal\\Dirt\\dirt_057.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "decal_dirt_on_road_16",
-          "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\Decal\\Dirt\\dirt_on_road_16.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "decal_dirt_on_road_16_nrm",
-          "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\Decal\\Dirt\\dirt_on_road_16_nrm.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "decal_dirt_on_road_16_spec",
-          "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\Decal\\Dirt\\dirt_on_road_16_spec.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "decal_rust",
-          "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\Decal\\Dirt\\rust_036.dds",
+          "content_file": "Content\\Texture\\Decal\\Dirt\\dirt2.dds",
           "content_parameter": {}
         },
         {
@@ -165,15 +129,15 @@
           "content_parameter": {}
         },
         {
-          "content_title": "decal_roots_on_cliff",
+          "content_title": "decal_nature1",
           "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\Decal\\Nature\\roots_on_cliff.dds",
+          "content_file": "Content\\Texture\\Decal\\Nature\\nature1.dds",
           "content_parameter": {}
         },
         {
-          "content_title": "decal_roots_on_cliff_nrm",
+          "content_title": "decal_nature1_nrm",
           "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\Decal\\Nature\\roots_on_cliff_nrm.dds",
+          "content_file": "Content\\Texture\\Decal\\Nature\\nature1_nrm.dds",
           "content_parameter": {}
         }
       ]
@@ -239,7 +203,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Architecture\\concrete_wall_simple_4m.fbx",
           "content_parameter": {
-            "auto_scale": 15.0,
+            "auto_scale": 20.0,
             "collider": "concrete_wall_simple_4m.fbx",
             "high_detail_query_shape": false
           }

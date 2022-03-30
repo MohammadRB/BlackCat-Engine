@@ -68,33 +68,28 @@ namespace black_cat
 		}
 
 		core::bc_string_frame l_px_node_name;
+		l_px_node_name.reserve(3 + p_ai_node.mName.length);
+		l_px_node_name.append(bc_mesh_loader_utility::s_px_node_prefix);
+		l_px_node_name.append(p_ai_node.mName.data);
 
-		for (bcUINT32 l_i = 0U; l_i < p_ai_node.mNumMeshes; ++l_i)
+		auto l_ai_node_colliders = core::bc_vector_frame<const aiNode*>();
+
+		for (bcUINT32 l_i = 0U; l_i < p_ai_node.mNumChildren; ++l_i)
 		{
-			auto* l_ai_mesh = p_ai_scene.mMeshes[p_ai_node.mMeshes[l_i]];
-			auto l_ai_mesh_colliders = core::bc_vector_frame<const aiNode*>();
-
-			l_px_node_name.reserve(3 + l_ai_mesh->mName.length);
-			l_px_node_name.append(bc_mesh_loader_utility::s_px_node_prefix);
-			l_px_node_name.append(l_ai_mesh->mName.data);
-
-			for (bcUINT32 l_index = 0; l_index < p_ai_node.mNumChildren; ++l_index)
+			const auto* l_ai_child_node = p_ai_node.mChildren[l_i];
+			if (std::strncmp(l_ai_child_node->mName.data, l_px_node_name.data(), l_px_node_name.size()) == 0)
 			{
-				const auto* l_child_node = p_ai_node.mChildren[l_index];
-				if (std::strncmp(l_child_node->mName.data, l_px_node_name.data(), l_px_node_name.size()) == 0)
-				{
-					l_ai_mesh_colliders.push_back(l_child_node);
-				}
+				l_ai_node_colliders.push_back(l_ai_child_node);
 			}
-			
-			if(!l_ai_mesh_colliders.empty())
-			{
-				p_px_node_mapping.insert(std::make_pair(core::bc_string_view(l_ai_mesh->mName.data), std::move(l_ai_mesh_colliders)));
-			}
-
-			l_px_node_name.clear();
 		}
 
+		l_px_node_name = core::bc_string_frame();
+
+		if (!l_ai_node_colliders.empty())
+		{
+			p_px_node_mapping.insert(std::make_pair(core::bc_string_view(p_ai_node.mName.C_Str()), std::move(l_ai_node_colliders)));
+		}
+		
 		for (bcUINT32 l_child_ite = 0; l_child_ite < p_ai_node.mNumChildren; ++l_child_ite)
 		{
 			calculate_px_node_mapping(p_ai_scene , *p_ai_node.mChildren[l_child_ite], p_px_node_mapping);

@@ -24,7 +24,7 @@ namespace black_cat
 		bc_simple_mesh_component::bc_simple_mesh_component(bc_actor_id p_actor_id, bc_actor_component_id p_id)
 			: bci_actor_component(p_actor_id, p_id),
 			bc_mesh_component(),
-			m_render_group(bc_render_group::unknown)
+			m_render_group(bc_actor_render_group::unknown)
 		{
 		}
 
@@ -63,16 +63,16 @@ namespace black_cat
 				const auto l_px_actor_type = l_rigid_body_component->get_body_type();
 				if (l_px_actor_type == physics::bc_actor_type::rigid_static)
 				{
-					m_render_group = bc_render_group::static_mesh;
+					m_render_group = bc_actor_render_group::static_mesh;
 				}
 				else
 				{
-					m_render_group = bc_render_group::dynamic_mesh;
+					m_render_group = bc_actor_render_group::dynamic_mesh;
 				}
 			}
 			else
 			{
-				m_render_group = bc_render_group::static_mesh;
+				m_render_group = bc_actor_render_group::static_mesh;
 			}
 		}
 
@@ -120,7 +120,7 @@ namespace black_cat
 					p_context.m_game_system.get_physics_system(),
 					p_context.m_game_system.get_scene()->get_particle_manager(), 
 					*l_bullet_hit_event,
-					m_render_group == bc_render_group::all_dynamic
+					m_render_group == bc_actor_render_group::all_dynamic
 				);
 				return;
 			}
@@ -135,35 +135,31 @@ namespace black_cat
 			core::bc_vector3f l_local_direction;
 			core::bc_matrix3f l_local_rotation;
 			core::bc_matrix4f l_world_transform;
+			const auto l_attached_node_transform = p_attached_node_index == bc_mesh_node::s_invalid_index
+				                                       ? get_world_transforms()[get_mesh().get_root_node()->get_index()]
+				                                       : get_world_transforms()[p_attached_node_index];
 
-			if (p_attached_node_index == bc_mesh_node::s_invalid_index)
-			{
-				bc_mesh_utility::calculate_mesh_decal
-				(
-					p_world_position,
-					p_world_direction,
-					l_local_position,
-					l_local_direction,
-					l_local_rotation,
-					l_world_transform
-				);
-			}
-			else
-			{
-				bc_mesh_utility::calculate_mesh_decal
-				(
-					p_world_position,
-					p_world_direction,
-					get_world_transforms()[p_attached_node_index],
-					l_local_position,
-					l_local_direction,
-					l_local_rotation,
-					l_world_transform
-				);
-			}
+			bc_mesh_utility::calculate_mesh_decal
+			(
+				p_world_position,
+				p_world_direction,
+				l_attached_node_transform,
+				l_local_position,
+				l_local_direction,
+				l_local_rotation,
+				l_world_transform
+			);
 
 			auto* l_decal_component = get_actor().get_create_component<bc_decal_component>();
-			l_decal_component->add_decal(p_decal_name, l_local_position, l_local_rotation, m_render_group, l_world_transform, p_attached_node_index);
+			l_decal_component->add_decal
+			(
+				p_decal_name,
+				l_local_position,
+				l_local_rotation,
+				m_render_group,
+				l_world_transform,
+				p_attached_node_index
+			);
 		}
 	}
 }

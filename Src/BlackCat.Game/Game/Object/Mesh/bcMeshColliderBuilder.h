@@ -27,31 +27,36 @@ namespace black_cat
 
 			bc_mesh_collider_builder& operator=(bc_mesh_collider_builder&&) noexcept = default;
 			
-			void add_px_shape(const bcCHAR* p_attached_mesh_name,
+			void add_px_shape(core::bc_string_view p_name,
+				core::bc_string_view p_attached_node_name,
 				bc_mesh_node::node_index_t p_attached_node_index,
 				const physics::bc_shape_box& p_box,
 				const physics::bc_transform& p_local_transform,
 				physics::bc_shape_flag p_flags = physics::bc_shape_flag::default_v);
 
-			void add_px_shape(const bcCHAR* p_attached_mesh_name,
+			void add_px_shape(core::bc_string_view p_name,
+				core::bc_string_view p_attached_node_name,
 				bc_mesh_node::node_index_t p_attached_node_index,
 				const physics::bc_shape_sphere& p_sphere,
 				const physics::bc_transform& p_local_transform,
 				physics::bc_shape_flag p_flags = physics::bc_shape_flag::default_v);
 
-			void add_px_shape(const bcCHAR* p_attached_mesh_name,
+			void add_px_shape(core::bc_string_view p_name,
+				core::bc_string_view p_attached_node_name,
 				bc_mesh_node::node_index_t p_attached_node_index,
 				const physics::bc_shape_capsule& p_capsule,
 				const physics::bc_transform& p_local_transform,
 				physics::bc_shape_flag p_flags = physics::bc_shape_flag::default_v);
 
-			void add_px_shape(const bcCHAR* p_attached_mesh_name,
+			void add_px_shape(core::bc_string_view p_name,
+				core::bc_string_view p_attached_node_name,
 				bc_mesh_node::node_index_t p_attached_node_index,
 				physics::bc_convex_mesh_ref&& p_convex,
 				const physics::bc_transform& p_local_transform,
 				physics::bc_shape_flag p_flags = physics::bc_shape_flag::default_v);
 
-			void add_px_shape(const bcCHAR* p_attached_mesh_name,
+			void add_px_shape(core::bc_string_view p_name,
+				core::bc_string_view p_attached_node_name,
 				bc_mesh_node::node_index_t p_attached_node_index,
 				physics::bc_triangle_mesh_ref&& p_mesh,
 				const physics::bc_transform& p_local_transform,
@@ -75,9 +80,9 @@ namespace black_cat
 			bc_mesh_collider build();
 
 		private:
-			core::bc_vector<bc_mesh_part_collider_entry>& _get_mesh_colliders(const bcCHAR* p_mesh_name);
+			core::bc_vector<bc_mesh_part_collider_entry>& _get_mesh_colliders(core::bc_string_view p_node_name);
 			
-			core::bc_unordered_map<const bcCHAR*, core::bc_vector<bc_mesh_part_collider_entry>> m_mesh_colliders;
+			core::bc_unordered_map<core::bc_string_view, core::bc_vector<bc_mesh_part_collider_entry>> m_mesh_colliders;
 			core::bc_vector<physics::bc_convex_mesh_ref> m_convex_shapes;
 			core::bc_vector<physics::bc_triangle_mesh_ref> m_triangle_shapes;
 			core::bc_vector<bc_mesh_part_collider_joint_entry> m_joints;

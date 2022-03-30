@@ -165,9 +165,9 @@ namespace black_cat
 			{
 				if (TAlignment <= BC_MEMORY_MIN_ALIGN)
 				{
-					return static_cast<pointer>(BC_ALLOC_THROW(sizeof(value_type)* p_count, TAllocType));
+					return static_cast<pointer>(BC_ALLOC_THROW(sizeof(value_type) * p_count, TAllocType));
 				}
-				return static_cast<pointer>(BC_ALIGNED_ALLOC_THROW(sizeof(value_type)* p_count, TAlignment, TAllocType));
+				return static_cast<pointer>(BC_ALIGNED_ALLOC_THROW(sizeof(value_type) * p_count, TAlignment, TAllocType));
 			}
 
 			// Parameter n is for compatibility with std allocators

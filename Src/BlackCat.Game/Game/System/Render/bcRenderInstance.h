@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace game
 	{
-		enum class bc_render_group : bcUBYTE
+		enum class bc_actor_render_group : bcUBYTE
 		{
 			unknown = 0,
 			terrain = core::bc_enum::value(0),
@@ -25,7 +25,7 @@ namespace black_cat
 		class bc_render_instance
 		{
 		public:
-			bc_render_instance(const core::bc_matrix4f& p_world, bc_render_group p_group)
+			bc_render_instance(const core::bc_matrix4f& p_world, bc_actor_render_group p_group)
 				: m_transform(p_world),
 				m_group(p_group)
 			{
@@ -42,20 +42,20 @@ namespace black_cat
 				return m_transform;
 			}
 
-			bc_render_group get_render_group() const noexcept
+			bc_actor_render_group get_render_group() const noexcept
 			{
 				return m_group;
 			}
 		
 		private:
 			core::bc_matrix4f m_transform;
-			bc_render_group m_group;
+			bc_actor_render_group m_group;
 		};
 
 		class bc_skinned_render_instance
 		{
 		public:
-			bc_skinned_render_instance(const core::bc_matrix4f* p_transforms, bcSIZE p_count, bc_render_group p_group)
+			bc_skinned_render_instance(const core::bc_matrix4f* p_transforms, bcSIZE p_count, bc_actor_render_group p_group)
 				: m_transforms(p_count),
 				m_group(p_group)
 			{
@@ -83,14 +83,14 @@ namespace black_cat
 				return m_transforms.data();
 			}
 
-			bc_render_group get_render_group() const noexcept
+			bc_actor_render_group get_render_group() const noexcept
 			{
 				return m_group;
 			}
 		
 		private:
 			core::bc_vector_movable<core::bc_matrix4f> m_transforms;
-			bc_render_group m_group;
+			bc_actor_render_group m_group;
 		};
 	}
 }

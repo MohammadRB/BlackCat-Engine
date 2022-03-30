@@ -44,7 +44,7 @@ namespace black_cat
 			void add_decal(core::bc_string_view p_name,
 				const core::bc_vector3f& p_local_pos,
 				const core::bc_matrix3f& p_local_rotation,
-				bc_render_group p_render_group,
+				bc_actor_render_group p_render_group,
 				const core::bc_matrix4f& p_initial_world_transform);
 
 			void add_decal(core::bc_string_view p_name,
@@ -56,7 +56,7 @@ namespace black_cat
 			void add_decal(core::bc_string_view p_name,
 				const core::bc_vector3f& p_local_pos,
 				const core::bc_matrix3f& p_local_rotation,
-				bc_render_group p_render_group,
+				bc_actor_render_group p_render_group,
 				const core::bc_matrix4f& p_initial_world_transform,
 				bc_mesh_node::node_index_t p_attached_node);
 

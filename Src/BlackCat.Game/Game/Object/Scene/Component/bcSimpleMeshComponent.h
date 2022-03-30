@@ -37,7 +37,7 @@ namespace black_cat
 				bc_mesh_node::node_index_t p_attached_node_index) override;
 			
 		private:
-			bc_render_group m_render_group;
+			bc_actor_render_group m_render_group;
 		};
 	}
 }

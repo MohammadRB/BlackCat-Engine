@@ -50,8 +50,8 @@ namespace black_cat
 		
 	private:
 		void _render_decals(const game::bc_render_pass_render_context& p_param,
-			game::bc_render_pass_state& p_render_pass_state, 
-			decal_group_container& p_instances,
+			const game::bc_render_pass_state& p_render_pass_state,
+			const decal_group_container& p_instances,
 			decal_group_container* p_non_culling_instances);
 		
 		void _create_decal_render_state(game::bc_render_system& p_render_system, const game::bc_mesh_material& p_material);

@@ -30,7 +30,7 @@ namespace black_cat
 			bcFLOAT m_height;
 			bcFLOAT m_depth;
 			bcFLOAT m_view_distance;
-			bc_render_group m_group;
+			bc_actor_render_group m_group;
 			bool m_auto_remove;
 		};
 

@@ -5,7 +5,6 @@
 #include "Core/Container/bcVector.h"
 #include "CorePlatform/bcType.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
-#include "Game/Object/Scene/ActorComponent/bcActorGroup.h"
 #include "Game/Object/Scene/ActorComponent/bcActorExtensions.h"
 
 namespace black_cat

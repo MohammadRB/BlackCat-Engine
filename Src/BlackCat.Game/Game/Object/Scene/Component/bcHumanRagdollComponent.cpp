@@ -116,7 +116,7 @@ namespace black_cat
 
 			// the vector which transform body part origin into local origin
 			const auto& l_mesh_collider = m_mesh_component->get_mesh().get_mesh_collider();
-			const auto l_body_transform = l_mesh_collider.find_mesh_collider(m_colliders_map[s_body_index].m_attached_node_name).front().m_absolute_transform;
+			const auto l_body_transform = l_mesh_collider.find_mesh_node_colliders(m_colliders_map[s_body_index].m_attached_node_name).front().m_absolute_transform;
 			m_body_to_origin_vector = core::bc_vector3f(0) - l_body_transform.get_position();
 			m_body_to_origin_vector = l_body_transform.as_rotation().get_inverse().transform(m_body_to_origin_vector);
 			
@@ -208,7 +208,7 @@ namespace black_cat
 				const auto* l_hit_shape_data = m_physics_system->get_game_shape_data(l_hit_shape);
 				const auto l_force = l_bullet_hit_event->get_bullet_direction() * l_bullet_hit_event->calculate_applied_force() * 10;
 
-				add_force(l_hit_shape_data->m_collider_entry->m_attached_mesh_name, l_force);
+				add_force(l_hit_shape_data->m_collider_entry->m_attached_node_name, l_force);
 				return;
 			}
 
@@ -379,33 +379,33 @@ namespace black_cat
 		{
 			bool l_is_valid = true;
 
-			auto l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_head_index].m_attached_node_name);
+			auto l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_head_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
-			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_body_index].m_attached_node_name);
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_body_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
-			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_left_arm_index].m_attached_node_name);
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_left_arm_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
-			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_left_fore_arm_index].m_attached_node_name);
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_left_fore_arm_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
-			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_left_hand_index].m_attached_node_name);
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_left_hand_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
-			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_right_arm_index].m_attached_node_name);
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_right_arm_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
-			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_right_fore_arm_index].m_attached_node_name);
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_right_fore_arm_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
-			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_right_hand_index].m_attached_node_name);
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_right_hand_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
-			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_left_up_leg_index].m_attached_node_name);
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_left_up_leg_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
-			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_left_leg_index].m_attached_node_name);
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_left_leg_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
-			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_left_foot_index].m_attached_node_name);
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_left_foot_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
-			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_right_up_leg_index].m_attached_node_name);
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_right_up_leg_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
-			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_right_leg_index].m_attached_node_name);
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_right_leg_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
-			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_collider(m_colliders_map[s_right_foot_index].m_attached_node_name);
+			l_colliders = m_mesh_component->get_mesh().get_mesh_collider().find_mesh_node_colliders(m_colliders_map[s_right_foot_index].m_attached_node_name);
 			l_is_valid &= l_colliders.size() == 1;
 
 			if (!l_is_valid)
@@ -437,7 +437,7 @@ namespace black_cat
 				}
 
 				auto* l_last_collider = &l_colliders_stack.top();
-				const auto l_node_colliders = l_mesh_collider.find_mesh_collider(p_node.get_name());
+				const auto l_node_colliders = l_mesh_collider.find_mesh_node_colliders(p_node.get_name());
 
 				if (!l_node_colliders.empty())
 				{
@@ -475,7 +475,7 @@ namespace black_cat
 
 			for (auto& l_entry : m_colliders_hierarchy)
 			{
-				auto l_collider = l_mesh_collider.find_mesh_collider(l_entry.m_attached_node_name);
+				auto l_collider = l_mesh_collider.find_mesh_node_colliders(l_entry.m_attached_node_name);
 
 				// Ignore collider rotation in bind pose transform
 				const auto l_collider_inv_bind_pose_transform = l_collider.front().m_absolute_transform.as_position().get_inverse();
@@ -516,7 +516,7 @@ namespace black_cat
 					[&, this](const auto& p_entry)
 					{
 						auto* l_shape_data = m_physics_system->get_game_shape_data(l_rigid_body_shape);
-						return p_entry.m_attached_node_name == l_shape_data->m_collider_entry->m_attached_mesh_name;
+						return p_entry.m_attached_node_name == l_shape_data->m_collider_entry->m_attached_node_name;
 					}
 				);
 				
@@ -555,8 +555,8 @@ namespace black_cat
 					return physics::bc_d6_joint_ref();
 				}
 
-				const auto l_collider1_colliders = l_mesh_colliders.find_mesh_collider(p_collider1);
-				const auto l_collider2_colliders = l_mesh_colliders.find_mesh_collider(p_collider2);
+				const auto l_collider1_colliders = l_mesh_colliders.find_mesh_node_colliders(p_collider1);
+				const auto l_collider2_colliders = l_mesh_colliders.find_mesh_node_colliders(p_collider2);
 
 				const auto& l_collider1_inv_bind_post = l_collider1_colliders.front().m_absolute_transform.get_inverse();
 				const auto& l_collider2_inv_bind_post = l_collider2_colliders.front().m_absolute_transform.get_inverse();

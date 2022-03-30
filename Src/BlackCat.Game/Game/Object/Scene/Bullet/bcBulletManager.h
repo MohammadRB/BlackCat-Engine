@@ -46,7 +46,8 @@ namespace black_cat
 			core::bc_nullable<physics::bc_ray_hit> _scene_ray_query(const physics::bc_scene& p_px_scene, 
 				const physics::bc_ray& p_ray, 
 				physics::bc_scene_ray_query_buffer& p_buffer,
-				core::bc_vector_frame<physics::bc_ray_hit>& p_modified_hits_buffer);
+				core::bc_vector_frame<physics::bc_shape>& p_shapes_buffer,
+				core::bc_vector_frame<physics::bc_ray_hit>& p_ray_hits_buffer);
 			
 			bc_physics_system* m_physics_system;			
 			mutable platform::bc_spin_mutex m_bullets_mutex;

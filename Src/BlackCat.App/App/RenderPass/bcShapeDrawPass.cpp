@@ -34,6 +34,11 @@ namespace black_cat
 
 	void bc_scene_debug_shape_query::execute(const game::bc_scene_query_context& p_context) noexcept
 	{
+		if(!p_context.m_scene)
+		{
+			return;
+		}
+
 		const auto& l_actors_buffer = p_context.get_shared_query<game::bc_main_camera_scene_shared_query>().get_scene_buffer();
 
 		if (m_hovered_actor.is_valid())
@@ -57,32 +62,14 @@ namespace black_cat
 
 		if(m_hovered_decal)
 		{
-			m_shape_drawer->draw_wired_bound_box
-			(
-				{
-					m_hovered_decal->get_world_transform().get_translation(),
-					{
-						m_hovered_decal->get_decal()->get_width() / 2,
-						m_hovered_decal->get_decal()->get_height() / 2,
-						m_hovered_decal->get_decal()->get_depth() / 2
-					}
-				}
-			);
+			const auto l_box = m_hovered_decal->get_box();
+			m_shape_drawer->draw_wired_box(l_box.first, l_box.second);
 		}
 
 		if (m_selected_decal)
 		{
-			m_shape_drawer->draw_wired_bound_box
-			(
-				{
-					m_selected_decal->get_world_transform().get_translation(),
-					{
-						m_selected_decal->get_decal()->get_width() / 2,
-						m_selected_decal->get_decal()->get_height() / 2,
-						m_selected_decal->get_decal()->get_depth() / 2
-					}
-				}
-			);
+			const auto l_box = m_selected_decal->get_box();
+			m_shape_drawer->draw_wired_box(l_box.first, l_box.second);
 		}
 
 		if(m_draw_scene_graph)
@@ -139,17 +126,7 @@ namespace black_cat
 			game::bc_surface_format_type::D32_FLOAT,
 			game::bc_multi_sample_type::c1_q1
 		);
-
-		m_config_change_event_handle = core::bc_get_service<core::bc_event_manager>()->register_event_listener<game::bc_event_global_config_changed>
-		(
-			core::bc_event_manager::delegate_type([&](core::bci_event& p_event)
-			{
-				const auto& l_config_change_event = *core::bci_event::as<game::bc_event_global_config_changed>(p_event);
-				const auto& l_config = l_config_change_event.get_config();
-				p_render_system.get_render_pass<bc_shape_draw_pass>()->set_parameters(l_config.get_scene_graph_debug_draw());
-			})
-		);
-
+		
 		after_reset(game::bc_render_pass_reset_context
 		(
 			p_render_system, 
@@ -256,6 +233,11 @@ namespace black_cat
 				}
 			);
 		}
+	}
+
+	void bc_shape_draw_pass::config_changed(const game::bc_render_pass_config_change_context& p_context)
+	{
+		set_parameters(p_context.m_global_config.get_scene_graph_debug_draw());
 	}
 
 	void bc_shape_draw_pass::destroy(game::bc_render_system& p_render_system)

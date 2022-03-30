@@ -53,54 +53,27 @@ namespace black_cat
 			{
 				return false;
 			}
-			
+
+			const auto l_ray = get_pointer_ray(p_context, m_point_left, m_point_top);
+			game::bc_scene_graph_ray_query_filter_callback l_filter = [=, &l_ray](const game::bc_scene_graph_ray_query_hit& p_hit)
+			{
+				const auto l_decal = _test_ray_against_actor(p_hit.m_actor, l_ray);
+				if(l_decal == nullptr)
+				{
+					int i = 0;
+				}
+
+				return l_decal != nullptr;
+			};
+
 			const auto l_actor = query_ray_in_scene
 			(
 				p_context,
 				m_point_left,
-				m_point_top
+				m_point_top,
+				&l_filter
 			);
-			if (!l_actor.is_valid())
-			{
-				return false;
-			}
-			
-			const auto* l_decal_component = l_actor.get_component<game::bc_decal_component>();
-			if(!l_decal_component)
-			{
-				return false;
-			}
-
-			const auto l_ray = get_pointer_ray(p_context, m_point_left, m_point_top);
-
-			for(const auto& l_decal : *l_decal_component)
-			{
-				physics::bc_shape_box l_decal_box
-				(
-					l_decal->get_decal()->get_width() / 2,
-					l_decal->get_decal()->get_height() / 2,
-					l_decal->get_decal()->get_depth() / 2
-				);
-
-				physics::bc_ray_hit l_decal_hit;
-				const auto l_num_hits = physics::bc_shape_query::ray_cast
-				(
-					l_ray,
-					l_decal_box,
-					physics::bc_transform(l_decal->get_world_transform()),
-					physics::bc_hit_flag::distance,
-					&l_decal_hit,
-					1
-				);
-
-				if(!l_num_hits)
-				{
-					continue;
-				}
-
-				m_selected_decal = l_decal;
-				break;
-			}
+			m_selected_decal = _test_ray_against_actor(l_actor, l_ray);
 
 			auto* l_shape_draw_pass = p_context.m_game_system.get_render_system().get_render_pass<bc_shape_draw_pass>();
 			if (l_shape_draw_pass)
@@ -124,6 +97,45 @@ namespace black_cat
 			{
 				p_context.m_form_decal.setSelectedDecal(m_selected_decal.get());
 			}
+		}
+
+		game::bc_decal_instance_ptr bc_decal_select_ui_command::_test_ray_against_actor(const game::bc_actor& p_actor, const physics::bc_ray& p_ray)
+		{
+			if (!p_actor.is_valid())
+			{
+				return nullptr;
+			}
+
+			const auto* l_decal_component = p_actor.get_component<game::bc_decal_component>();
+			if (!l_decal_component)
+			{
+				return nullptr;
+			}
+			
+			for (const auto& l_decal : *l_decal_component)
+			{
+				const auto l_box = l_decal->get_box();
+
+				physics::bc_ray_hit l_decal_hit;
+				const auto l_num_hits = physics::bc_shape_query::ray_cast
+				(
+					p_ray,
+					l_box.first,
+					l_box.second,
+					physics::bc_hit_flag::distance,
+					&l_decal_hit,
+					1
+				);
+
+				if (!l_num_hits)
+				{
+					continue;
+				}
+
+				return l_decal;
+			}
+
+			return nullptr;
 		}
 	}
 }

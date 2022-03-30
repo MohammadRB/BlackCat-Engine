@@ -44,7 +44,7 @@ namespace black_cat
 				bcFLOAT p_height,
 				bcFLOAT p_depth,
 				bcFLOAT p_view_distance,
-				bc_render_group p_group,
+				bc_actor_render_group p_group,
 				bool p_auto_remove);
 
 			bc_decal(bc_decal&&) noexcept;
@@ -73,7 +73,7 @@ namespace black_cat
 			
 			bcFLOAT get_view_distance() const noexcept;
 
-			bc_render_group get_group() const noexcept;
+			bc_actor_render_group get_group() const noexcept;
 
 			bool get_auto_remove() const noexcept;
 
@@ -88,7 +88,7 @@ namespace black_cat
 			bcFLOAT m_height;
 			bcFLOAT m_depth;
 			bcFLOAT m_view_distance;
-			bc_render_group m_group;
+			bc_actor_render_group m_group;
 			bool m_auto_remove;
 		};
 
@@ -114,7 +114,7 @@ namespace black_cat
 			bcFLOAT p_height,
 			bcFLOAT p_depth,
 			bcFLOAT p_view_distance,
-			bc_render_group p_group,
+			bc_actor_render_group p_group,
 			bool p_auto_remove)
 			: m_name(p_name),
 			m_material(std::move(p_material)),
@@ -187,7 +187,7 @@ namespace black_cat
 			return m_v1;
 		}
 
-		inline bc_render_group bc_decal::get_group() const noexcept
+		inline bc_actor_render_group bc_decal::get_group() const noexcept
 		{
 			return m_group;
 		}

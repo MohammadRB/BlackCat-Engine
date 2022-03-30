@@ -5,6 +5,7 @@
 #include "Core/Concurrency/bcConcurrency.h"
 #include "PhysicsImp/Fundation/bcScene.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
+#include "Game/System/Physics/bcActorGroup.h"
 #include "Game/Object/Scene/Bullet/bcBulletManager.h"
 #include "Game/Object/Mesh/bcMeshUtility.h"
 #include "Game/Object/Scene/bcScene.h"
@@ -68,8 +69,10 @@ namespace black_cat
 				physics::bc_scene_shared_lock l_px_lock(&l_px_scene);
 
 				physics::bc_scene_ray_query_buffer l_query_buffer;
-				core::bc_vector_frame<physics::bc_ray_hit> l_skinned_mesh_hits_buffer;
-				l_skinned_mesh_hits_buffer.reserve(4);
+				core::bc_vector_frame<physics::bc_shape> l_actors_shape_buffer;
+				core::bc_vector_frame<physics::bc_ray_hit> l_ray_hits_buffer;
+				l_actors_shape_buffer.reserve(4);
+				l_ray_hits_buffer.reserve(4);
 
 				const auto l_gravity = l_px_scene.get_gravity();
 				auto l_ite = std::begin(m_bullets);
@@ -82,7 +85,8 @@ namespace black_cat
 						l_px_scene,
 						physics::bc_ray(l_ite->m_position, l_ite->m_direction, l_ite->m_speed * p_clock.m_elapsed_second), 
 						l_query_buffer,
-						l_skinned_mesh_hits_buffer
+						l_actors_shape_buffer,
+						l_ray_hits_buffer
 					);
 
 					if(!l_query_buffer.has_block())
@@ -141,29 +145,67 @@ namespace black_cat
 		core::bc_nullable<physics::bc_ray_hit> bc_bullet_manager::_scene_ray_query(const physics::bc_scene& p_px_scene, 
 			const physics::bc_ray& p_ray, 
 			physics::bc_scene_ray_query_buffer& p_buffer,
-			core::bc_vector_frame<physics::bc_ray_hit>& p_modified_hits_buffer)
+			core::bc_vector_frame<physics::bc_shape>& p_shapes_buffer,
+			core::bc_vector_frame<physics::bc_ray_hit>& p_ray_hits_buffer)
 		{
-			p_modified_hits_buffer.clear();
+			p_ray_hits_buffer.clear();
 			
 			auto l_query_filter = physics::bc_scene_query_post_filter_callback
 			(
-				[&p_ray, &p_modified_hits_buffer, this](const physics::bc_scene_query_post_filter_data& p_filter_data)
+				[&p_ray, &p_shapes_buffer , &p_ray_hits_buffer, this](const physics::bc_scene_query_post_filter_data& p_filter_data)
 				{
-					if (p_filter_data.m_shape.get_query_group() != static_cast<physics::bc_query_group>(bc_actor_group::skinned_mesh))
-					{
-						const auto l_shape_query_flag = p_filter_data.m_shape.get_query_flags();
-						return core::bc_enum::has(l_shape_query_flag, physics::bc_shape_query_flag::touching) ?
-							physics::bc_query_hit_type::touch :
-							physics::bc_query_hit_type::block;
-					}
-					
-					const auto l_hit = bc_mesh_utility::skinned_mesh_ray_hit_test(*m_physics_system, p_ray, p_filter_data);
-					if(l_hit.first == physics::bc_query_hit_type::block)
-					{
-						p_modified_hits_buffer.push_back(l_hit.second);
-					}
+					const auto l_shape_query_group = static_cast<bc_actor_physics_group>(p_filter_data.m_shape.get_query_group());
 
-					return l_hit.first;
+					switch (l_shape_query_group)
+					{
+						case bc_actor_physics_group::skinned_mesh:
+						{
+							const auto l_hit = bc_mesh_utility::skinned_mesh_ray_hit_test(*m_physics_system, p_ray, p_filter_data.m_actor, p_filter_data.m_shape);
+							if (l_hit.first == physics::bc_query_hit_type::block)
+							{
+								p_ray_hits_buffer.push_back(l_hit.second);
+							}
+
+							return l_hit.first;
+						}
+						case bc_actor_physics_group::terrain:
+						{
+							const auto l_shape_query_flag = p_filter_data.m_shape.get_query_flags();
+							return core::bc_enum::has(l_shape_query_flag, physics::bc_shape_query_flag::touching) ?
+								physics::bc_query_hit_type::touch :
+								physics::bc_query_hit_type::block;
+						}
+						case bc_actor_physics_group::all:
+						{
+							const auto l_actor_shapes_count = p_filter_data.m_actor.get_shape_count();
+							p_shapes_buffer.reserve(l_actor_shapes_count);
+							p_filter_data.m_actor.get_shapes(p_shapes_buffer.data(), l_actor_shapes_count);
+
+							const auto l_has_high_detail_query_shape = std::any_of
+							(
+								p_shapes_buffer.data(),
+								p_shapes_buffer.data() + l_actor_shapes_count,
+								[](const physics::bc_shape& p_shape)
+								{
+									return p_shape.get_high_detail_query_shape();
+								}
+							);
+
+							if (l_has_high_detail_query_shape && !p_filter_data.m_shape.get_high_detail_query_shape())
+							{
+								return physics::bc_query_hit_type::none;
+							}
+
+							const auto l_shape_query_flag = p_filter_data.m_shape.get_query_flags();
+							return core::bc_enum::has(l_shape_query_flag, physics::bc_shape_query_flag::touching) ?
+								physics::bc_query_hit_type::touch :
+								physics::bc_query_hit_type::block;
+						}
+						default:
+						{
+							return physics::bc_query_hit_type::none;
+						}
+					}
 				}
 			);
 			
@@ -178,7 +220,7 @@ namespace black_cat
 				&l_query_filter
 			);
 
-			if(!l_hit || p_modified_hits_buffer.empty())
+			if(!l_hit || p_ray_hits_buffer.empty())
 			{
 				return nullptr;
 			}
@@ -186,8 +228,8 @@ namespace black_cat
 			const auto l_block = p_buffer.get_block();
 			const auto l_min_distance_ite = std::min_element
 			(
-				std::cbegin(p_modified_hits_buffer),
-				std::cend(p_modified_hits_buffer),
+				std::cbegin(p_ray_hits_buffer),
+				std::cend(p_ray_hits_buffer),
 				[&](const physics::bc_ray_hit& p_hit1, const physics::bc_ray_hit& p_hit2)
 				{
 					return p_hit1.get_distance() - l_block.get_distance() < p_hit2.get_distance() - l_block.get_distance();

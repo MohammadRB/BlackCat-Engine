@@ -295,8 +295,8 @@ namespace black_cat
 			}
 
 			// TODO this check will be done in PhysX fixed pipeline
-			const bc_query_group l_query_groups = static_cast<bc_query_group>(p_filter_data.word0);
-			const bc_query_group l_shape_group = l_shape.get_query_group();
+			const auto l_query_groups = static_cast<bc_query_group>(p_filter_data.word0);
+			const auto l_shape_group = l_shape.get_query_group();
 
 			// If filter data is zero or query groups does not include shape query group then discard test
 			if (l_query_groups != bc_query_group::all && !core::bc_enum::has(l_query_groups, l_shape_group))

@@ -17,7 +17,7 @@ namespace black_cat
 			Q_OBJECT
 
 		public:
-			bc_form_decal(QWidget& p_parent, bc_ui_command_service& p_ui_command_service);
+			bc_form_decal(const QWidget& p_parent, bc_ui_command_service& p_ui_command_service);
 
 			void setSelectedDecal(game::bc_decal_instance* p_decal);
 
@@ -30,6 +30,9 @@ namespace black_cat
 			bc_ui_command_service* m_command_service;
 
 			QLabel* m_decal_name_label;
+			QLineEdit* m_decal_position_x_text;
+			QLineEdit* m_decal_position_y_text;
+			QLineEdit* m_decal_position_z_text;
 			QLineEdit* m_decal_rotation_x_text;
 			QLineEdit* m_decal_rotation_y_text;
 			QLineEdit* m_decal_rotation_z_text;

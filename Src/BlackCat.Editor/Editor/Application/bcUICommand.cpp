@@ -35,16 +35,17 @@ namespace black_cat
 
 		game::bc_actor bci_ui_command::query_ray_in_scene(const update_context& p_context,
 			bcUINT16 p_point_left,
-			bcUINT16 p_point_top)
+			bcUINT16 p_point_top,
+			game::bc_scene_graph_ray_query_filter_callback* p_filter)
 		{
 			const auto l_ray = get_pointer_ray(p_context, p_point_left, p_point_top);
-			return p_context.m_game_system.get_scene()->get_scene_graph().get_actor(l_ray);
+			return p_context.m_game_system.get_scene()->get_scene_graph().get_actor(l_ray, p_filter);
 		}
 
 		bool bci_ui_command::query_ray_in_px_scene(const update_context& p_context,
 			bcUINT16 p_point_left,
 			bcUINT16 p_point_top,
-			game::bc_actor_group p_query_group,
+			game::bc_actor_physics_group p_query_group,
 			physics::bc_query_flags p_flags,
 			physics::bc_scene_ray_query_buffer& p_result) const
 		{
@@ -57,7 +58,8 @@ namespace black_cat
 					(
 						p_context.m_game_system.get_physics_system(),
 						l_ray,
-						p_filter_data
+						p_filter_data.m_actor,
+						p_filter_data.m_shape
 					).first;
 				}
 			);

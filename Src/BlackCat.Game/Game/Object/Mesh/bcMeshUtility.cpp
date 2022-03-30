@@ -8,6 +8,7 @@
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
+#include "Game/System/Physics/bcActorGroup.h"
 #include "Game/Object/Mesh/bcMeshUtility.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
@@ -157,7 +158,7 @@ namespace black_cat
 			const bc_mesh_render_state& p_render_states, 
 			const bc_sub_mesh_mat4_transform& p_transformations, 
 			bcUINT32 p_lod,
-			bc_render_group p_group)
+			bc_actor_render_group p_group)
 		{
 			auto l_begin = p_render_states.begin(p_lod);
 			const auto l_end = p_render_states.end(p_lod);
@@ -178,7 +179,7 @@ namespace black_cat
 			const bc_mesh_render_state& p_render_states, 
 			const bc_sub_mesh_mat4_transform& p_transformations, 
 			bcUINT32 p_lod,
-			bc_render_group p_group)
+			bc_actor_render_group p_group)
 		{
 			auto l_begin = p_render_states.begin(p_lod);
 			const auto l_end = p_render_states.end(p_lod);
@@ -313,19 +314,20 @@ namespace black_cat
 
 		std::pair<physics::bc_query_hit_type, physics::bc_ray_hit> bc_mesh_utility::skinned_mesh_ray_hit_test(bc_physics_system& p_physics_system,
 			const physics::bc_ray& p_ray,
-			const physics::bc_scene_query_post_filter_data& p_filter_data)
+			const physics::bc_actor& p_actor,
+			const physics::bc_shape& p_shape)
 		{
-			const auto l_shape_query_flag = p_filter_data.m_shape.get_query_flags();
+			const auto l_shape_query_flag = p_shape.get_query_flags();
 			const auto l_shape_query_type = core::bc_enum::has(l_shape_query_flag, physics::bc_shape_query_flag::touching) ?
 				physics::bc_query_hit_type::touch :
 				physics::bc_query_hit_type::block;
 
-			if (p_filter_data.m_shape.get_query_group() != static_cast<physics::bc_query_group>(bc_actor_group::skinned_mesh))
+			if (p_shape.get_query_group() != static_cast<physics::bc_query_group>(bc_actor_physics_group::skinned_mesh))
 			{
 				return std::make_pair(l_shape_query_type, physics::bc_ray_hit());
 			}
 
-			auto l_actor = p_physics_system.get_game_actor(p_filter_data.m_actor);
+			auto l_actor = p_physics_system.get_game_actor(p_actor);
 			auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
 			auto* l_skinned_mesh_component = l_actor.get_component<bc_skinned_mesh_component>();
 
@@ -378,28 +380,7 @@ namespace black_cat
 
 			return std::make_pair(l_hit_count > 0 ? l_shape_query_type : physics::bc_query_hit_type::none, l_hit);
 		}
-
-		void bc_mesh_utility::calculate_mesh_decal(const core::bc_vector3f& p_world_position,
-			const core::bc_vector3f& p_world_direction,
-			core::bc_vector3f& p_decal_local_position,
-			core::bc_vector3f& p_decal_local_direction,
-			core::bc_matrix3f& p_decal_local_rotation,
-			core::bc_matrix4f& p_decal_world_transform)
-		{
-			p_decal_local_position = p_world_position;
-			p_decal_local_direction = p_world_direction;
-			p_decal_world_transform.make_identity();
-						
-			if (graphic::bc_render_api_info::use_left_handed())
-			{
-				p_decal_local_rotation.rotation_between_two_vector_lh(core::bc_vector3f::up(), p_decal_local_direction);
-			}
-			else
-			{
-				p_decal_local_rotation.rotation_between_two_vector_rh(core::bc_vector3f::up(), p_decal_local_direction);
-			}
-		}
-
+		
 		void bc_mesh_utility::calculate_mesh_decal(const core::bc_vector3f& p_world_position,
 			const core::bc_vector3f& p_world_direction,
 			const core::bc_matrix4f& p_attached_node_world_transform,
@@ -414,7 +395,7 @@ namespace black_cat
 			p_decal_local_direction = core::bc_vector3f::normalize((l_inv_node_world_transform * core::bc_vector4f(p_world_direction, 0)).xyz());
 			p_decal_world_transform = p_attached_node_world_transform;
 
-			if (graphic::bc_render_api_info::use_left_handed())
+			if constexpr (graphic::bc_render_api_info::use_left_handed())
 			{
 				p_decal_local_rotation.rotation_between_two_vector_lh(core::bc_vector3f::up(), p_decal_local_direction);
 			}

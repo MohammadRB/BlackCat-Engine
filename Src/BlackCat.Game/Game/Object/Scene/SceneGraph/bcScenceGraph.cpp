@@ -78,12 +78,12 @@ namespace black_cat
 			return m_graph_node->remove_actor(p_actor);
 		}
 
-		bc_actor bc_scene_graph::get_actor(const physics::bc_ray& p_ray) const noexcept
+		bc_actor bc_scene_graph::get_actor(const physics::bc_ray& p_ray, bc_scene_graph_ray_query_filter_callback* p_filter) const noexcept
 		{
-			std::pair<bcFLOAT, bc_actor> l_result;
-			m_graph_node->get_actor(p_ray, l_result);
+			bc_scene_graph_ray_query_hit l_result;
+			m_graph_node->get_actor(p_ray, l_result, p_filter);
 
-			return l_result.second;
+			return l_result.m_actor;
 		}
 
 		bc_scene_graph_buffer bc_scene_graph::get_actors(const bc_camera_frustum& p_camera_frustum) const noexcept

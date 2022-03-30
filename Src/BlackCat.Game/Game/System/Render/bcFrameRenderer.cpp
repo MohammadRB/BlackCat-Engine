@@ -263,7 +263,7 @@ namespace black_cat
 		{
 			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
 			const auto l_view_proj = p_camera.get_view() * p_camera.get_projection();
-			auto l_last_render_group = bc_render_group::unknown;
+			auto l_last_render_group = bc_actor_render_group::unknown;
 			
 			for (const auto& l_render_state_entry : p_buffer.get_instances())
 			{
@@ -311,7 +311,7 @@ namespace black_cat
 		void bc_frame_renderer::render_skinned_buffer(bc_render_thread& p_render_thread, const bc_render_state_buffer& p_buffer, const bc_camera_instance& p_camera)
 		{
 			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
-			auto l_last_render_group = game::bc_render_group::unknown;
+			auto l_last_render_group = game::bc_actor_render_group::unknown;
 			
 			for (const auto& l_render_state_entry : p_buffer.get_skinned_instances())
 			{

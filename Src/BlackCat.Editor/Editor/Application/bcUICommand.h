@@ -9,6 +9,8 @@
 #include "Core/Utility/bcParameterPack.h"
 #include "PhysicsImp/Collision/bcSceneQuery.h"
 #include "Game/System/Physics/bcPxWrap.h"
+#include "Game/System/Physics/bcActorGroup.h"
+#include "Game/Object/Scene/SceneGraph/bcScenceGraph.h"
 
 namespace black_cat
 {
@@ -150,12 +152,13 @@ namespace black_cat
 
 			game::bc_actor query_ray_in_scene(const update_context& p_context,
 				bcUINT16 p_point_left,
-				bcUINT16 p_point_top);
+				bcUINT16 p_point_top,
+				game::bc_scene_graph_ray_query_filter_callback* p_filter = nullptr);
 
 			bool query_ray_in_px_scene(const update_context& p_context,
 				bcUINT16 p_point_left, 
 				bcUINT16 p_point_top,
-				game::bc_actor_group p_query_group,
+				game::bc_actor_physics_group p_query_group,
 				physics::bc_query_flags p_flags,
 				physics::bc_scene_ray_query_buffer& p_result) const;
 		};

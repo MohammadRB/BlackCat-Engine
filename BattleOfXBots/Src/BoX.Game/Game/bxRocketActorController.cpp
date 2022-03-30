@@ -3,6 +3,7 @@
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Utility/bcNullable.h"
 #include "Game/System/Physics/bcPxWrap.h"
+#include "Game/System/Physics/bcActorGroup.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
@@ -90,7 +91,7 @@ namespace box
 						l_query_buffer,
 						core::bc_enum::mask_or({ physics::bc_hit_flag::position, physics::bc_hit_flag::normal, physics::bc_hit_flag::face_index }),
 						physics::bc_query_flags::statics,
-						static_cast<physics::bc_query_group>(game::bc_actor_group::terrain)
+						static_cast<physics::bc_query_group>(game::bc_actor_physics_group::terrain)
 					);
 				}
 

@@ -15,7 +15,7 @@
           "parameters": {
             "mass": 10.0,
             "collider_materials": {
-              "cube": "iron"
+              "px_cube": "iron"
             }
           }
         }
@@ -40,7 +40,7 @@
           "parameters": {
             "mass": 10.0,
             "collider_materials": {
-              "cube": "iron"
+              "px_cube": "iron"
             }
           }
         },
@@ -71,7 +71,7 @@
           "parameters": {
             "mass": 10.0,
             "collider_materials": {
-              "cube": "iron"
+              "px_cube": "iron"
             }
           }
         },
@@ -112,7 +112,7 @@
           "parameters": {
             "mass": 10.0,
             "collider_materials": {
-              "sphere": "iron"
+              "px_sphere": "iron"
             }
           }
         }
@@ -133,7 +133,7 @@
           "parameters": {
             "mass": 10.0,
             "collider_materials": {
-              "convex": "iron"
+              "px_convex": "iron"
             }
           }
         }
@@ -154,7 +154,7 @@
           "parameters": {
             "mass": 10.0,
             "collider_materials": {
-              "capsule": "iron"
+              "px_capsule": "iron"
             }
           }
         }
@@ -211,20 +211,20 @@
           "parameters": {
             "mass": 100.0,
             "collider_materials": {
-              "mixamorig:Spine1": "iron",
-              "mixamorig:Head": "iron",
-              "mixamorig:LeftArm": "iron",
-              "mixamorig:LeftForeArm": "iron",
-              "mixamorig:LeftHand": "iron",
-              "mixamorig:RightArm": "iron",
-              "mixamorig:RightForeArm": "iron",
-              "mixamorig:RightHand": "iron",
-              "mixamorig:LeftUpLeg": "iron",
-              "mixamorig:LeftLeg": "iron",
-              "mixamorig:LeftFoot": "iron",
-              "mixamorig:RightUpLeg": "iron",
-              "mixamorig:RightLeg": "iron",
-              "mixamorig:RightFoot": "iron"
+              "px_mixamorig:Spine1": "iron",
+              "px_mixamorig:Head": "iron",
+              "px_mixamorig:LeftArm": "iron",
+              "px_mixamorig:LeftForeArm": "iron",
+              "px_mixamorig:LeftHand": "iron",
+              "px_mixamorig:RightArm": "iron",
+              "px_mixamorig:RightForeArm": "iron",
+              "px_mixamorig:RightHand": "iron",
+              "px_mixamorig:LeftUpLeg": "iron",
+              "px_mixamorig:LeftLeg": "iron",
+              "px_mixamorig:LeftFoot": "iron",
+              "px_mixamorig:RightUpLeg": "iron",
+              "px_mixamorig:RightLeg": "iron",
+              "px_mixamorig:RightFoot": "iron"
             }
           }
         },

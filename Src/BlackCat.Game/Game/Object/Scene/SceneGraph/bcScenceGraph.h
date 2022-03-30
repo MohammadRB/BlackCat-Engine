@@ -77,7 +77,7 @@ namespace black_cat
 			 */
 			bool remove_actor(bc_actor& p_actor) noexcept;
 
-			bc_actor get_actor(const physics::bc_ray& p_ray) const noexcept;
+			bc_actor get_actor(const physics::bc_ray& p_ray, bc_scene_graph_ray_query_filter_callback* p_filter = nullptr) const noexcept;
 
 			bc_scene_graph_buffer get_actors(const bc_camera_frustum& p_camera_frustum) const noexcept;
 

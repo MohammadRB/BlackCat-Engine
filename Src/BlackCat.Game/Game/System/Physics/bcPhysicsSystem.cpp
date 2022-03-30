@@ -9,6 +9,7 @@
 #include "PhysicsImp/Fundation/bcMemoryBuffer.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/Physics/bcPxWrap.h"
+#include "Game/System/Physics/bcActorGroup.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
@@ -66,7 +67,7 @@ namespace black_cat
 			);
 
 			auto l_px_shape = m_physics.create_shape(l_px_height_field_shape, l_px_height_field_materials.data(), l_height_map.get_materials_count(), true);
-			l_px_shape->set_query_group(static_cast<physics::bc_query_group>(bc_actor_group::terrain));
+			l_px_shape->set_query_group(static_cast<physics::bc_query_group>(bc_actor_physics_group::terrain));
 			p_rigid_static.attach_shape(l_px_shape.get());
 		}
 
@@ -83,7 +84,7 @@ namespace black_cat
 			for (const bc_mesh_part_collider_entry& l_mesh_part_collider : l_mesh_collider.get_colliders())
 			{
 				auto l_material = p_material_manager.get_default_collider_material();
-				auto l_material_ite = l_collider_materials.find(l_mesh_part_collider.m_attached_mesh_name.c_str());
+				auto l_material_ite = l_collider_materials.find(l_mesh_part_collider.m_name.c_str());
 
 				if(l_material_ite == std::end(l_collider_materials))
 				{
@@ -108,7 +109,7 @@ namespace black_cat
 				l_px_shape->set_high_detail_query_shape(l_mesh_part_collider.m_high_detail_query_shape);
 				if(l_mesh.get_skinned())
 				{
-					l_px_shape->set_query_group(static_cast<physics::bc_query_group>(bc_actor_group::skinned_mesh));
+					l_px_shape->set_query_group(static_cast<physics::bc_query_group>(bc_actor_physics_group::skinned_mesh));
 				}
 				
 				auto* l_shape_data = alloc_shape_data();
