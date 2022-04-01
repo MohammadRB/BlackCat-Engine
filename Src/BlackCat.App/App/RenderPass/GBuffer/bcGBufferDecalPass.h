@@ -46,6 +46,8 @@ namespace black_cat
 		
 		void destroy(game::bc_render_system& p_render_system) override;
 
+		void cleanup_frame(const game::bc_render_pass_render_context& p_context) override;
+
 		void draw_decal_bounds(bool p_value);
 		
 	private:
@@ -56,7 +58,7 @@ namespace black_cat
 		
 		void _create_decal_render_state(game::bc_render_system& p_render_system, const game::bc_mesh_material& p_material);
 
-		static const bcUINT32 s_max_instance_per_draw = 300;
+		static constexpr bcUINT32 s_max_instance_per_draw = 300;
 		
 		graphic::bc_buffer_ref m_cube_vb;
 		graphic::bc_buffer_ref m_cube_ib;

@@ -222,7 +222,7 @@ namespace black_cat
 
 				BC_ASSERT(l_ite != std::end(m_decals));
 
-				m_decals.erase(l_entry->m_hash);
+				m_decals.erase(l_ite);
 			}
 
 			m_decals_pool.free(l_entry);

@@ -267,9 +267,9 @@ namespace black_cat
 				bc_mesh_component::set_world_transform(p_actor, p_transform);
 
 				const auto& l_mesh = get_mesh();
+				const auto l_scale_transform = core::bc_matrix4f::scale_matrix(l_mesh.get_mesh_scale());
 				auto& l_model_transforms = get_model_transforms();
 				auto& l_world_transforms = get_world_transforms();
-				auto l_scale_transform = core::bc_matrix4f::scale_matrix(l_mesh.get_mesh_scale());
 
 				bcINT32 l_dummy;
 				l_mesh.iterate_over_nodes(l_dummy, [&, this](const bc_mesh_node& p_node, bcINT32)

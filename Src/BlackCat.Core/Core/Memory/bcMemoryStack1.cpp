@@ -152,6 +152,8 @@ namespace black_cat
 					break;
 				}
 
+				BC_ASSERT(l_block->get_size() > 0);
+
 				auto* l_new_top = m_top - l_block->get_size();
 				m_top = l_new_top;
 

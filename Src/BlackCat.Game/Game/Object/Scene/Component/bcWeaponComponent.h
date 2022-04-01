@@ -41,6 +41,8 @@ namespace black_cat
 			const core::bc_vector3f& get_up_ls() const noexcept;
 
 			const core::bc_vector3f& get_forward_ls() const noexcept;
+
+			const core::bc_vector3f& get_right_ls() const noexcept;
 			
 			const core::bc_vector3f& get_main_hand_offset_ls() const noexcept;
 			
@@ -60,6 +62,7 @@ namespace black_cat
 			bc_weapon_class m_class;
 			core::bc_vector3f m_up_ls;
 			core::bc_vector3f m_forward_ls;
+			core::bc_vector3f m_right_ls;
 			core::bc_vector3f m_main_hand_offset_ls;
 			core::bc_vector3f m_second_hand_offset_ls;
 			core::bc_vector3f m_fire_offset_ls;
@@ -91,6 +94,11 @@ namespace black_cat
 		inline const core::bc_vector3f& bc_weapon_component::get_forward_ls() const noexcept
 		{
 			return m_forward_ls;
+		}
+
+		inline const core::bc_vector3f& bc_weapon_component::get_right_ls() const noexcept
+		{
+			return m_right_ls;
 		}
 		
 		inline const core::bc_vector3f& bc_weapon_component::get_main_hand_offset_ls() const noexcept

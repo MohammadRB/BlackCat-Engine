@@ -222,37 +222,36 @@ namespace black_cat
 
 			switch (p_alloc_type)
 			{
-			case bc_alloc_type::frame:
-			{
-				auto* l_frame_allocator = m_my_frame_allocator.get();
-				if (l_frame_allocator == nullptr)
+				case bc_alloc_type::frame:
 				{
-					const auto l_fsa_index = m_last_used_frame_allocator.fetch_add(1U, platform::bc_memory_order::relaxed) % m_worker_frame_allocators_count;
-					l_frame_allocator = &m_worker_frame_allocators[l_fsa_index];
-					m_my_frame_allocator.set(l_frame_allocator);
-				}
+					auto* l_frame_allocator = m_my_frame_allocator.get();
+					if (l_frame_allocator == nullptr)
+					{
+						const auto l_my_allocator_index = m_last_used_frame_allocator.fetch_add(1U, platform::bc_memory_order::relaxed) % m_worker_frame_allocators_count;
+						l_frame_allocator = &m_worker_frame_allocators[l_my_allocator_index];
+						m_my_frame_allocator.set(l_frame_allocator);
+					}
 
-				l_result = l_frame_allocator->alloc(&l_block);
-				l_allocator = l_frame_allocator;
-				break;
-			}
-			case bc_alloc_type::unknown:
-			case bc_alloc_type::unknown_movable:
-			{
-				const auto l_fsa_index = _get_fsa_index(l_block.size());
-				if (l_fsa_index < m_fsa_allocators_count)
-				{
-					l_result = (m_fsa_allocators + l_fsa_index)->alloc(&l_block);
-					l_allocator = m_fsa_allocators + l_fsa_index;
+					l_result = l_frame_allocator->alloc(&l_block);
+					l_allocator = l_frame_allocator;
+					break;
 				}
-				break;
-			}
-			case bc_alloc_type::program:
-			{
-				l_result = m_program_allocator->alloc(&l_block);
-				l_allocator = m_program_allocator;
-				break;
-			}
+				case bc_alloc_type::unknown:
+				case bc_alloc_type::unknown_movable:
+				{
+					const auto l_fsa_index = _get_fsa_index(l_block.size());
+					if (l_fsa_index < m_fsa_allocators_count)
+					{
+						std::tie(l_result, l_allocator) = (m_fsa_allocators + l_fsa_index)->alloc1(&l_block);
+					}
+					break;
+				}
+				case bc_alloc_type::program:
+				{
+					l_result = m_program_allocator->alloc(&l_block);
+					l_allocator = m_program_allocator;
+					break;
+				}
 			}
 
 #ifdef BC_MEMORY_DEFRAG
@@ -359,37 +358,36 @@ namespace black_cat
 
 			switch (p_alloc_type)
 			{
-			case bc_alloc_type::frame:
-			{
-				auto* l_frame_allocator = m_my_frame_allocator.get();
-				if (l_frame_allocator == nullptr)
+				case bc_alloc_type::frame:
 				{
-					const auto l_fsa_index = platform::bc_thread::current_thread_id() % m_worker_frame_allocators_count;
-					l_frame_allocator = &m_worker_frame_allocators[l_fsa_index];
-					m_my_frame_allocator.set(l_frame_allocator);
-				}
+					auto* l_frame_allocator = m_my_frame_allocator.get();
+					if (l_frame_allocator == nullptr)
+					{
+						const auto l_my_allocator_index = platform::bc_thread::current_thread_id() % m_worker_frame_allocators_count;
+						l_frame_allocator = &m_worker_frame_allocators[l_my_allocator_index];
+						m_my_frame_allocator.set(l_frame_allocator);
+					}
 
-				l_result = l_frame_allocator->alloc(&l_block);
-				l_allocator = l_frame_allocator;
-				break;
-			}
-			case bc_alloc_type::unknown:
-			case bc_alloc_type::unknown_movable:
-			{
-				const auto l_fsa_index = _get_fsa_index(l_block.size());
-				if (l_fsa_index < m_fsa_allocators_count)
-				{
-					l_result = (m_fsa_allocators + l_fsa_index)->alloc(&l_block);
-					l_allocator = m_fsa_allocators + l_fsa_index;
+					l_result = l_frame_allocator->alloc(&l_block);
+					l_allocator = l_frame_allocator;
+					break;
 				}
-				break;
-			}
-			case bc_alloc_type::program:
-			{
-				l_result = m_program_allocator->alloc(&l_block);
-				l_allocator = m_program_allocator;
-				break;
-			}
+				case bc_alloc_type::unknown:
+				case bc_alloc_type::unknown_movable:
+				{
+					const auto l_fsa_index = _get_fsa_index(l_block.size());
+					if (l_fsa_index < m_fsa_allocators_count)
+					{
+						std::tie(l_result, l_allocator) = (m_fsa_allocators + l_fsa_index)->alloc1(&l_block);
+					}
+					break;
+				}
+				case bc_alloc_type::program:
+				{
+					l_result = m_program_allocator->alloc(&l_block);
+					l_allocator = m_program_allocator;
+					break;
+				}
 			}
 
 #ifdef BC_MEMORY_DEFRAG

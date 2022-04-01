@@ -16,6 +16,8 @@ namespace black_cat
 {
 	namespace core
 	{
+		class bc_content_manager;
+
 		using bc_content_loader_parameter = bc_data_driven_parameter;
 		
 		class bc_content_loader_result
@@ -68,11 +70,13 @@ namespace black_cat
 
 		struct bc_content_loading_context : bc_object_allocator
 		{
-			bc_content_loading_context(bc_estring_view p_file_path, 
-				bc_estring_view p_file_variant, 
-				const bc_content_loader_parameter& p_parameters, 
+			bc_content_loading_context(bc_content_manager& p_content_manager,
+				bc_estring_view p_file_path,
+				bc_estring_view p_file_variant,
+				const bc_content_loader_parameter& p_parameters,
 				bc_content_loader_parameter p_instance_parameters)
-				: m_file_path(p_file_path),
+				: m_content_manager(p_content_manager),
+				m_file_path(p_file_path),
 				m_file_variant(p_file_variant),
 				m_file_buffer(nullptr),
 				m_file_buffer_size(0),
@@ -96,6 +100,7 @@ namespace black_cat
 				m_result.reset(bc_content_loader_result(std::move(l_content_result)));
 			}
 
+			bc_content_manager& m_content_manager;
 			bc_estring_view m_file_path;						// Used to give loader access to content and offline content file path
 			bc_estring_view m_file_variant;						// Used to give loader access to content file variant
 			bc_stream m_file;									// Used to give loader access to content and offline content file
@@ -108,13 +113,20 @@ namespace black_cat
 
 		struct bc_content_saving_context
 		{
-			bc_content_saving_context(bc_estring_view p_file_path, bci_content& p_content)
-				: m_file_path(p_file_path),
+			bc_content_saving_context(bc_content_manager& p_content_manager,
+				bc_estring_view p_file_path,
+				bc_estring_view p_file_variant,
+				bci_content& p_content)
+				: m_content_manager(p_content_manager),
+				m_file_path(p_file_path),
+				m_file_variant(p_file_variant),
 				m_content(p_content)
 			{
 			}
 
+			bc_content_manager& m_content_manager;
 			bc_estring_view m_file_path;						// Used to give saver access to content file path
+			bc_estring_view m_file_variant;						// Used to give saver access to content file variant
 			bc_stream m_file;									// Used to give saver access to content file
 			bci_content& m_content;								// Used to give saver access to content
 		};

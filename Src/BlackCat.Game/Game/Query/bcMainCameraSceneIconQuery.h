@@ -113,7 +113,7 @@ namespace black_cat
 				});
 			}
 
-			if(m_include_decal_icons)
+			if(m_include_editor_icons && m_include_decal_icons)
 			{
 				auto l_decals_iterator = p_context.m_scene->get_decal_manager().get_iterator_buffer();
 

@@ -1,8 +1,10 @@
 // [12/23/2021 MRB]
 
 #include "Game/System/Network/bcNetworkSystem.h"
+#include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/bcJsonParse.h"
 #include "App/SampleImp/XBot/bcXBotRagdollNetworkMessage.h"
 #include "BoX.Game/Application/bxPlayerService.h"

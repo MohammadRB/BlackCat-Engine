@@ -56,9 +56,10 @@
           "name": "weapon",
           "parameters": {
             "class": "rifle",
-            "up_ls": [ 0.0, 0.0, -1.0 ],
-            "forward_ls": [ -1.0, 0.0, 0.0 ],
-            "main_hand_offset_ls": [ 0.0, 0.05, 0.0 ],
+            "up_ls": [0.0, 0.0, -1.0],
+            "forward_ls": [-1.0, 0.0, 0.0],
+            "right_ls": [0.0, 1.0, 0.0],
+            "main_hand_offset_ls": [ -0.1, 0.1, -0.1 ],
             "second_hand_offset_ls": [ 0.7, 0.0, -1.0 ],
             "fire_offset_ls": [ -4.5, -0.1, -0.3 ],
             "fire_particle": "rifle_fire",
@@ -86,7 +87,7 @@
             "sounds": [
               {
                 "sound": "gun_shot",
-                "min_max_distance": [ 20.0, 250.0 ]
+                "min_max_distance": [ 20.0, 200.0 ]
               }
             ]
           }
@@ -372,7 +373,7 @@
             "sounds": [
               {
                 "sound": "grenade_explosion",
-                "min_max_distance": [ 30.0, 300.0 ],
+                "min_max_distance": [ 30.0, 250.0 ],
                 "auto_play": true
               }
             ]

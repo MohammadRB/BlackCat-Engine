@@ -393,6 +393,12 @@ namespace black_cat
 		m_cube_ib.reset();
 	}
 
+	void bc_gbuffer_decal_pass::cleanup_frame(const game::bc_render_pass_render_context& p_context)
+	{
+		bci_render_pass::cleanup_frame(p_context);
+		m_decals_buffer = game::bc_render_state_buffer();
+	}
+
 	void bc_gbuffer_decal_pass::_render_decals(const game::bc_render_pass_render_context& p_param,
 		const game::bc_render_pass_state& p_render_pass_state,
 		const decal_group_container& p_instances,

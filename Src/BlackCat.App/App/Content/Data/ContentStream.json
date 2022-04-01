@@ -408,23 +408,23 @@
           }
         },
         {
-          "content_title": "xbot_rifle_aiming_idle",
+          "content_title": "xbot_rifle_idle_aiming",
           "content_loader": "animation",
-          "content_file": "content\\model\\xbot\\xbot-rifle-aiming-idle.fbx",
+          "content_file": "content\\model\\xbot\\xbot-rifle-idle-aiming.fbx",
           "content_parameter": {
           }
         },
         {
-          "content_title": "xbot_rifle_left_turn",
+          "content_title": "xbot_rifle_idle_aiming_left_turn",
           "content_loader": "animation",
-          "content_file": "content\\model\\xbot\\xbot-rifle-left-turn.fbx",
+          "content_file": "content\\model\\xbot\\xbot-rifle-idle-aiming-left-turn.fbx",
           "content_parameter": {
           }
         },
         {
-          "content_title": "xbot_rifle_right_turn",
+          "content_title": "xbot_rifle_idle_aiming_right_turn",
           "content_loader": "animation",
-          "content_file": "content\\model\\xbot\\xbot-rifle-right-turn.fbx",
+          "content_file": "content\\model\\xbot\\xbot-rifle-idle-aiming-right-turn.fbx",
           "content_parameter": {
           }
         },

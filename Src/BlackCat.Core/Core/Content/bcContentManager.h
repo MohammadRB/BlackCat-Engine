@@ -354,7 +354,7 @@ namespace black_cat
 			static_assert(std::is_base_of_v<bci_content, TContent>, "Content must inherit from bc_icontent");
 
 			bci_content_loader* l_loader = _get_loader<TContent>();
-			bc_content_saving_context l_context(p_file_path, p_content);
+			bc_content_saving_context l_context(*this, p_file_path, p_file_variant, p_content);
 
 			const bc_estring_frame l_file_to_open = l_loader->support_offline_processing()
 				                                        ? _get_offline_file_path<TContent>(p_file_path, p_file_variant)
@@ -495,7 +495,7 @@ namespace black_cat
 			);
 
 			bc_unique_ptr<TContent> l_result;
-			bc_content_loading_context l_context(p_file, p_file_variant, p_parameter, std::move(p_instance_parameters));
+			bc_content_loading_context l_context(*this, p_file, p_file_variant, p_parameter, std::move(p_instance_parameters));
 			l_context.set_allocator_alloc_type(p_alloc_type);
 
 			{

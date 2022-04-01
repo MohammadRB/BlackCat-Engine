@@ -78,6 +78,7 @@ namespace black_cat
 			
 			m_up_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_up_ls);
 			m_forward_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_forward_ls);
+			m_right_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_right_ls);
 			m_main_hand_offset_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_main_hand_offset_ls);
 			m_second_hand_offset_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_second_hand_offset_ls);
 			m_fire_offset_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_fire_offset_ls);

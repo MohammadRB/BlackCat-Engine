@@ -2,9 +2,11 @@
 
 #pragma once
 
+#include "Core/Messaging/Query/bcQueryResult.h"
 #include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "Platform/bcEvent.h"
 #include "Game/System/Input/bcChasingCamera.h"
+#include "Game/Query/bcSceneQuery.h"
 #include "App/SampleImp/XBot/bcXBotActorController.h"
 #include "App/bcExport.h"
 
@@ -13,6 +15,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_input_system;
+		class bc_physics_system;
 		class bc_network_system;
 		class bc_skinned_mesh_component;
 		class bc_rigid_controller_component;
@@ -55,6 +58,8 @@ namespace black_cat
 
 		void set_camera_offsets(bcFLOAT p_camera_y_offset, bcFLOAT p_camera_z_offset, bcFLOAT p_camera_look_at_offset) noexcept;
 
+		void set_weapon_obstacle_distance(bcFLOAT p_distance) noexcept;
+
 	private:
 		void throw_grenade(game::bc_actor& p_grenade) noexcept override final;
 
@@ -88,11 +93,22 @@ namespace black_cat
 
 		void _shoot_weapon();
 
+		void _build_weapon_obstacle_query(core::bc_query_manager& p_query_manager, const bc_xbot_weapon& p_weapon) noexcept;
+
 		core::bc_event_listener_handle m_key_listener_handle;
 		core::bc_event_listener_handle m_pointing_listener_handle;
 		game::bc_input_system* m_input_system;
+		game::bc_physics_system* m_physics_system;
 		game::bc_network_system* m_network_system;
 		game::bc_chasing_camera* m_camera;
+
+		const bcCHAR* m_rifle_name;
+		const bcCHAR* m_grenade_name;
+		const bcCHAR* m_threw_grenade_name;
+		const bcCHAR* m_smoke_grenade_name;
+		const bcCHAR* m_threw_smoke_grenade_name;
+		bcFLOAT m_grenade_throw_time;
+		bcFLOAT m_grenade_throw_force;
 
 		bcFLOAT m_camera_y_offset;
 		bcFLOAT m_camera_z_offset;
@@ -107,13 +123,9 @@ namespace black_cat
 		bool m_grenade_pressed;
 		bcFLOAT m_grenade_throw_passed_time;
 
-		const bcCHAR* m_rifle_name;
-		const bcCHAR* m_grenade_name;
-		const bcCHAR* m_threw_grenade_name;
-		const bcCHAR* m_smoke_grenade_name;
-		const bcCHAR* m_threw_smoke_grenade_name;
-		bcFLOAT m_grenade_throw_time;
-		bcFLOAT m_grenade_throw_force;
 		core::bc_velocity<bcFLOAT> m_weapon_shoot_velocity;
+		core::bc_query_result<game::bc_scene_query> m_weapon_obstacle_query;
+		core::bc_velocity<bcFLOAT> m_weapon_obstacle_rotation_velocity;
+		bcFLOAT m_weapon_obstacle_distance;
 	};
 }

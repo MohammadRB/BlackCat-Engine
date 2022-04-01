@@ -15,6 +15,7 @@ namespace black_cat
 		game::bc_weapon_class m_class;
 		core::bc_vector3f m_local_up;
 		core::bc_vector3f m_local_forward;
+		core::bc_vector3f m_local_right;
 		core::bc_vector3f m_main_hand_offset;
 		core::bc_vector3f m_second_hand_offset;
 		core::bc_vector3f m_fire_offset;

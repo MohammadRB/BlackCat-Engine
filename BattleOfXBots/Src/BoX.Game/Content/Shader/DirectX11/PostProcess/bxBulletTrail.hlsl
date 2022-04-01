@@ -58,7 +58,7 @@ void bullet_trail_gs(point bc_vs_output p_input[1], inout TriangleStream<bc_gs_o
 
 	bc_gs_output l_output_vertices[4];
 	const float3 l_billboard_forward = l_bullet.m_direction;
-	const float3 l_billboard_right = normalize(cross(l_billboard_forward, float3(0, 1, 0)));
+	const float3 l_billboard_right = normalize(cross(l_billboard_forward, normalize(g_camera_position - l_bullet.m_position)));
 	const float3 l_billboard_center = l_bullet.m_position - l_billboard_forward * (m_length / 2);
 
 	[unroll]

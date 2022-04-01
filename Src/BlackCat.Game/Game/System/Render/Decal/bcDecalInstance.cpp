@@ -21,7 +21,7 @@ namespace black_cat
 
 			auto l_world_transform = m_world_transform;
 			l_world_transform.make_neutralize_scale();
-			l_world_transform *= l_local_transform.inverse();
+			l_world_transform = l_local_transform.inverse() * l_world_transform;
 
 			m_local_position = p_position;
 			set_world_transform(l_world_transform);
@@ -35,7 +35,7 @@ namespace black_cat
 
 			auto l_world_transform = m_world_transform;
 			l_world_transform.make_neutralize_scale();
-			l_world_transform *= l_local_transform.inverse();
+			l_world_transform = l_local_transform.inverse() * l_world_transform;
 
 			m_local_rotation = p_rotation;
 			set_world_transform(l_world_transform);

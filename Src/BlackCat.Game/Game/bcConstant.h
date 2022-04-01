@@ -48,6 +48,7 @@ namespace black_cat
 		BC_PARAMETER(weapon_class, "class");
 		BC_PARAMETER(weapon_up_ls, "up_ls");
 		BC_PARAMETER(weapon_forward_ls, "forward_ls");
+		BC_PARAMETER(weapon_right_ls, "right_ls");
 		BC_PARAMETER(weapon_main_hand_offset_ls, "main_hand_offset_ls");
 		BC_PARAMETER(weapon_second_hand_offset_ls, "second_hand_offset_ls");
 		BC_PARAMETER(weapon_fire_offset_ls, "fire_offset_ls");

@@ -130,7 +130,7 @@ namespace black_cat
 			{
 				platform::bc_mutex_guard l_lock(m_decal_instances_mutex);
 
-				const bcUINT32 l_threshold_size = m_decal_instances_pool.get_memory_pool().capacity() * 0.9f;
+				const auto l_threshold_size = static_cast<bcUINT32>(m_decal_instances_pool.get_memory_pool().capacity() * 0.9f);
 				if (m_decal_instances_pool.size() < l_threshold_size)
 				{
 					return;
@@ -184,12 +184,7 @@ namespace black_cat
 		void bc_decal_manager_container::destroy_decal_instance(bc_decal_instance* p_instance)
 		{
 			const auto* l_entry = static_cast<_bc_decal_instance_entry*>(p_instance);
-
-			//if (l_entry->get_decal()->get_temporary() && !l_entry->get_actor().is_valid())
-			//{
-			//	return; // Temporary instances with no actor will be removed automatically
-			//}
-
+			
 			{
 				platform::bc_mutex_guard l_lock(m_decal_instances_mutex);
 				m_decal_instances_pool.erase(l_entry->m_iterator);

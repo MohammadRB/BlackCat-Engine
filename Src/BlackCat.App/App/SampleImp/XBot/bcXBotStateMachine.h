@@ -16,6 +16,7 @@
 #include "Game/System/Animation/Job/bcPartialBlendingAnimationJob.h"
 #include "Game/System/Animation/Job/bcAdditiveBlendingAnimationJob.h"
 #include "Game/System/Animation/Job/bcExecuteOneAnimationJob.h"
+#include "Game/bcUtility.h"
 #include "App/SampleImp/XBot/bcXBotWeaponIKAnimationJob.h"
 
 namespace black_cat
@@ -29,15 +30,17 @@ namespace black_cat
 
 	struct bc_xbot_state
 	{
-		bcINT32 m_look_side{0};
+		bcINT32 m_look_side{ 0 };
 		core::bc_vector3f m_look_direction;
+		core::bc_vector3f m_aim_direction;
 		core::bc_vector3f m_move_direction;
-		bcFLOAT m_move_speed{0};
-		bcFLOAT m_move_amount{0};
-		bcFLOAT m_grenade_throw_time{-1};
-		bcFLOAT m_weapon_shoot_time{-1};
-		core::bc_velocity<bcFLOAT> m_grenade_throw_weight{0,1,1};
-		game::bci_animation_job* m_active_animation{nullptr};
+		bcFLOAT m_move_speed{ 0 };
+		bcFLOAT m_move_amount{ 0 };
+		bcFLOAT m_weapon_shoot_time{ -1 };
+		bcFLOAT m_weapon_rotation{ 0 };
+		bcFLOAT m_grenade_throw_time{ -1 };
+		core::bc_velocity<bcFLOAT> m_grenade_throw_weight{ 0, 1, 1 };
+		game::bci_animation_job* m_active_animation{ nullptr };
 	};
 
 	struct bc_xbot_state_update_params
@@ -224,6 +227,8 @@ namespace black_cat
 
 		bool shoot_weapon() noexcept;
 
+		void set_weapon_rotation(bcFLOAT p_rotation) noexcept;
+
 		game::bci_animation_job* get_active_animation() const noexcept;
 
 		bc_xbot_state m_state;
@@ -249,7 +254,7 @@ namespace black_cat
 
 		void blend_weapon_shoot_animation(const bc_xbot_state_update_params& p_update_params, bc_xbot_weapon& p_weapon, game::bci_animation_job& p_active_animation) noexcept;
 
-		void place_weapon_ik(bc_xbot_weapon& p_weapon, game::bci_animation_job& p_active_animation) noexcept;
+		void blend_weapon_ik(bc_xbot_weapon& p_weapon, bcFLOAT p_weapon_rotation, game::bci_animation_job& p_active_animation) noexcept;
 
 		void change_animation(game::bci_animation_job* p_new_animation) noexcept;
 
@@ -390,14 +395,14 @@ namespace black_cat
 	inline bc_xbot_rifle_idle_state::state_transition bc_xbot_rifle_idle_state::handle(bc_xbot_update_event& p_event)
 	{
 		auto& l_machine = get_machine();
-		auto* l_idle_blending_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(*m_animation, "weapon_idle_blending");
+		auto* l_idle_blending_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(*m_animation, "weapon_idle_aiming_blending");
 
 		l_machine.update_directions(p_event.m_update_params, m_weapon->m_mass);
 		l_machine.blend_with_weapon_animation(*m_animation);
 		l_machine.blend_idle_animation(p_event.m_update_params, *l_idle_blending_job);
 		l_machine.blend_aim_animation(p_event.m_update_params, *m_animation);
 		l_machine.blend_grenade_throw_animation(p_event.m_update_params, *m_animation);
-		l_machine.place_weapon_ik(*m_weapon, *m_animation);
+		l_machine.blend_weapon_ik(*m_weapon, l_machine.m_state.m_weapon_rotation, *m_animation);
 		l_machine.blend_weapon_shoot_animation(p_event.m_update_params, *m_weapon, *m_animation);
 		
 		if (l_machine.m_state.m_move_amount > 0)
@@ -472,7 +477,7 @@ namespace black_cat
 		l_machine.blend_running_animation(p_event.m_update_params, *l_running_blending_job);
 		l_machine.blend_aim_animation(p_event.m_update_params, *m_animation);
 		l_machine.blend_grenade_throw_animation(p_event.m_update_params, *m_animation);
-		l_machine.place_weapon_ik(*m_weapon, *m_animation);
+		l_machine.blend_weapon_ik(*m_weapon, l_machine.m_state.m_weapon_rotation , *m_animation);
 		l_machine.blend_weapon_shoot_animation(p_event.m_update_params, *m_weapon, *m_animation);
 		
 		if (l_machine.m_state.m_move_amount <= 0)
@@ -649,6 +654,11 @@ namespace black_cat
 		return true;
 	}
 
+	inline void bc_xbot_state_machine::set_weapon_rotation(bcFLOAT p_rotation) noexcept
+	{
+		m_state.m_weapon_rotation = p_rotation;
+	}
+
 	inline game::bci_animation_job* bc_xbot_state_machine::get_active_animation() const noexcept
 	{
 		return m_state.m_active_animation;
@@ -656,60 +666,27 @@ namespace black_cat
 
 	inline void bc_xbot_state_machine::update_directions(const bc_xbot_state_update_params& p_update_params, bcFLOAT p_holding_mass) noexcept
 	{
-		core::bc_matrix3f l_look_rotation;
-		core::bc_vector3f l_right_vector;
-		core::bc_vector3f l_left_vector;
-		
-		if constexpr (graphic::bc_render_api_info::use_left_handed())
-		{
-			l_look_rotation.rotation_y_lh
-			(
-				core::bc_to_radian
-				(
-					static_cast<bcFLOAT>(p_update_params.m_look_delta_x) * p_update_params.m_look_velocity * m_look_speed * p_update_params.m_clock.m_elapsed_second
-				)
-			);
-		}
-		else
-		{
-			l_look_rotation.rotation_y_rh
-			(
-				core::bc_to_radian
-				(
-					static_cast<bcFLOAT>(p_update_params.m_look_delta_x) * p_update_params.m_look_velocity * m_look_speed * p_update_params.m_clock.m_elapsed_second
-				)
-			);
-		}
+		const auto l_look_rotation_amount = static_cast<bcFLOAT>(p_update_params.m_look_delta_x) * p_update_params.m_look_velocity * m_look_speed * p_update_params.m_clock.m_elapsed_second;
+		const auto l_look_rotation = bc_matrix3f_rotation_y(core::bc_to_radian(l_look_rotation_amount));
 
 		m_state.m_look_direction = core::bc_vector3f::normalize(l_look_rotation * m_state.m_look_direction);
 
-		if constexpr (graphic::bc_render_api_info::use_left_handed())
-		{
-			core::bc_matrix3f l_right_left_direction;
+		const auto l_look_right_direction = core::bc_vector3f::cross(core::bc_vector3f::up(), m_state.m_look_direction);
+		const auto l_weapon_rotation = bc_matrix3f_rotation_euler(l_look_right_direction, core::bc_to_radian(m_state.m_weapon_rotation));
 
-			l_right_left_direction.rotation_y_lh(core::bc_to_radian(p_update_params.m_right_velocity * 90));
-			l_right_vector = core::bc_vector3f::normalize(l_right_left_direction * m_state.m_look_direction);
+		m_state.m_aim_direction = l_weapon_rotation * m_state.m_look_direction;
 
-			l_right_left_direction.rotation_y_lh(core::bc_to_radian(p_update_params.m_left_velocity * -90));
-			l_left_vector = core::bc_vector3f::normalize(l_right_left_direction * m_state.m_look_direction);
-		}
-		else
-		{
-			core::bc_matrix3f l_right_left_direction;
-
-			l_right_left_direction.rotation_y_rh(core::bc_to_radian(p_update_params.m_right_velocity * 90));
-			l_right_vector = core::bc_vector3f::normalize(l_right_left_direction * m_state.m_look_direction);
-
-			l_right_left_direction.rotation_y_rh(core::bc_to_radian(p_update_params.m_left_velocity * -90));
-			l_left_vector = core::bc_vector3f::normalize(l_right_left_direction * m_state.m_look_direction);
-		}
-
+		const auto l_right_velocity_rotation = bc_matrix3f_rotation_y(core::bc_to_radian(p_update_params.m_right_velocity * 90));
+		const auto l_right_velocity_vector = core::bc_vector3f::normalize(l_right_velocity_rotation * m_state.m_look_direction);
+		const auto l_left_velocity_rotation = bc_matrix3f_rotation_y(core::bc_to_radian(p_update_params.m_left_velocity * -90));
+		const auto l_left_velocity_vector = core::bc_vector3f::normalize(l_left_velocity_rotation * m_state.m_look_direction);
 		const auto l_holding_mass = std::max(.6f, 1 - p_holding_mass / m_mass);
+
 		m_state.m_move_speed = (1 - p_update_params.m_walk_velocity) * m_run_speed + p_update_params.m_walk_velocity * m_walk_speed;
 		m_state.m_move_direction = m_state.m_look_direction * p_update_params.m_forward_velocity +
 				m_state.m_look_direction * -p_update_params.m_backward_velocity +
-				l_right_vector * p_update_params.m_right_velocity +
-				l_left_vector * p_update_params.m_left_velocity;
+				l_right_velocity_vector * p_update_params.m_right_velocity +
+				l_left_velocity_vector * p_update_params.m_left_velocity;
 		m_state.m_move_amount = l_holding_mass * m_state.m_move_speed *
 				std::max
 				(
@@ -744,8 +721,8 @@ namespace black_cat
 	inline void bc_xbot_state_machine::blend_without_weapon_animation(game::bci_animation_job& p_animation) noexcept
 	{
 		const auto l_move_speed_normalize = m_state.m_move_amount / m_state.m_move_speed;
-		
-		bcFLOAT l_blend_weights[] = { 1 - l_move_speed_normalize, l_move_speed_normalize };
+
+		const bcFLOAT l_blend_weights[] = { 1 - l_move_speed_normalize, l_move_speed_normalize };
 		auto* l_without_weapon_blend_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(p_animation, "without_weapon_blending");
 		l_without_weapon_blend_job->set_weights(l_blend_weights);
 	}
@@ -754,7 +731,7 @@ namespace black_cat
 	{
 		const auto l_move_speed_normalize = m_state.m_move_amount / m_state.m_move_speed;
 
-		bcFLOAT l_blend_weights[] = { 1 - l_move_speed_normalize, l_move_speed_normalize };
+		const bcFLOAT l_blend_weights[] = { 1 - l_move_speed_normalize, l_move_speed_normalize };
 		auto* l_without_weapon_blend_job = game::bc_animation_job_helper::find_job<game::bc_blending_animation_job>(p_animation, "with_weapon_blending");
 		l_without_weapon_blend_job->set_weights(l_blend_weights);
 	}
@@ -762,7 +739,7 @@ namespace black_cat
 	inline void bc_xbot_state_machine::blend_idle_animation(const bc_xbot_state_update_params& p_update_params, game::bc_blending_animation_job& p_idle_blending) noexcept
 	{
 		const auto l_look_velocity = p_update_params.m_look_velocity;
-		bcFLOAT l_weights[3] = 
+		const bcFLOAT l_weights[3] = 
 		{
 			m_state.m_look_side < 0 ? l_look_velocity : 0.f,
 			1 - l_look_velocity,
@@ -773,12 +750,12 @@ namespace black_cat
 
 		if (l_look_velocity == 0.f)
 		{
-			bcFLOAT l_times[3] = { 0, -1, 0 };
+			const bcFLOAT l_times[3] = { 0, -1, 0 };
 			p_idle_blending.set_local_times(&l_times[0]);
 		}
 		else
 		{
-			bcFLOAT l_times[3] = { -1, 0, -1 };
+			const bcFLOAT l_times[3] = { -1, 0, -1 };
 			p_idle_blending.set_local_times(&l_times[0]);
 		}
 	}
@@ -937,7 +914,7 @@ namespace black_cat
 		}
 	}
 
-	inline void bc_xbot_state_machine::place_weapon_ik(bc_xbot_weapon& p_weapon, game::bci_animation_job& p_active_animation) noexcept
+	inline void bc_xbot_state_machine::blend_weapon_ik(bc_xbot_weapon& p_weapon, bcFLOAT p_weapon_rotation, game::bci_animation_job& p_active_animation) noexcept
 	{
 		auto* l_weapon_ik_job = game::bc_animation_job_helper::find_job<bc_xbot_weapon_ik_animation_job>(p_active_animation);
 		if (!l_weapon_ik_job)
@@ -948,6 +925,7 @@ namespace black_cat
 		const auto l_grenade_throw_weight = m_state.m_grenade_throw_weight.get_value();
 		l_weapon_ik_job->set_weight(1 - l_grenade_throw_weight);
 		l_weapon_ik_job->set_weapon(&p_weapon);
+		l_weapon_ik_job->set_rotation(p_weapon_rotation);
 	}
 
 	inline void bc_xbot_state_machine::change_animation(game::bci_animation_job* p_new_animation) noexcept

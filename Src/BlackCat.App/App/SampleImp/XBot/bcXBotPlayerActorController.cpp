@@ -4,6 +4,7 @@
 
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "Core/Messaging/Event/bcEventManager.h"
+#include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Utility/bcJsonParse.h"
 #include "Core/Utility/bcLogger.h"
 #include "Platform/bcEvent.h"
@@ -28,6 +29,7 @@ namespace black_cat
 	bc_xbot_player_actor_controller::bc_xbot_player_actor_controller() noexcept
 		: bc_xbot_actor_controller(),
 		m_input_system(nullptr),
+		m_physics_system(nullptr),
 		m_network_system(nullptr),
 		m_camera(nullptr),
 		m_camera_y_offset(0),
@@ -49,13 +51,16 @@ namespace black_cat
 		m_threw_smoke_grenade_name(nullptr),
 		m_grenade_throw_time(0),
 		m_grenade_throw_force(0),
-		m_weapon_shoot_velocity(0, 1, 0.3f)
+		m_weapon_shoot_velocity(0, 1, 0.3f),
+		m_weapon_obstacle_rotation_velocity(0, 45, .2f),
+		m_weapon_obstacle_distance(0)
 	{
 	}
 
 	bc_xbot_player_actor_controller::bc_xbot_player_actor_controller(bc_xbot_player_actor_controller&& p_other) noexcept
 		: bc_xbot_actor_controller(std::move(p_other)),
-		m_weapon_shoot_velocity(p_other.m_weapon_shoot_velocity)
+		m_weapon_shoot_velocity(p_other.m_weapon_shoot_velocity),
+		m_weapon_obstacle_rotation_velocity(p_other.m_weapon_obstacle_rotation_velocity)
 	{
 		operator=(std::move(p_other));
 	}
@@ -69,8 +74,15 @@ namespace black_cat
 		m_key_listener_handle = std::move(p_other.m_key_listener_handle);
 		m_pointing_listener_handle = std::move(p_other.m_pointing_listener_handle);
 		m_input_system = p_other.m_input_system;
+		m_physics_system = p_other.m_physics_system;
 		m_network_system = p_other.m_network_system;
 		m_camera = p_other.m_camera;
+
+		m_rifle_name = p_other.m_rifle_name;
+		m_grenade_name = p_other.m_grenade_name;
+		m_threw_grenade_name = p_other.m_threw_grenade_name;
+		m_smoke_grenade_name = p_other.m_smoke_grenade_name;
+		m_threw_smoke_grenade_name = p_other.m_threw_smoke_grenade_name;
 
 		m_camera_y_offset = p_other.m_camera_y_offset;
 		m_camera_z_offset = p_other.m_camera_z_offset;
@@ -78,8 +90,10 @@ namespace black_cat
 		m_pointing_delta_x = p_other.m_pointing_delta_x;
 		m_pointing_last_x = p_other.m_pointing_last_x;
 
-		m_rifle_name = p_other.m_rifle_name;
 		m_weapon_shoot_velocity = p_other.m_weapon_shoot_velocity;
+		m_weapon_obstacle_query = std::move(p_other.m_weapon_obstacle_query);
+		m_weapon_obstacle_rotation_velocity = p_other.m_weapon_obstacle_rotation_velocity;
+		m_weapon_obstacle_distance = p_other.m_weapon_obstacle_distance;
 
 		m_key_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_xbot_player_actor_controller::_on_event));
 		m_pointing_listener_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_xbot_player_actor_controller::_on_event));
@@ -96,6 +110,7 @@ namespace black_cat
 	{
 		bc_xbot_actor_controller::initialize(p_context);
 		m_input_system = &p_context.m_game_system.get_input_system();
+		m_physics_system = &p_context.m_game_system.get_physics_system();
 		m_network_system = &p_context.m_game_system.get_network_system();
 
 		m_rifle_name = p_context.m_parameters.get_value_throw<core::bc_string>("rifle_name").c_str();
@@ -172,6 +187,7 @@ namespace black_cat
 	void bc_xbot_player_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		bc_xbot_actor_controller::added_to_scene(p_context, p_scene);
+		m_weapon_obstacle_distance = p_scene.get_global_scale() * 0.8f;
 	}
 
 	void bc_xbot_player_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
@@ -186,6 +202,33 @@ namespace black_cat
 		if (!l_can_look)
 		{
 			m_pointing_delta_x = 0;
+		}
+
+		if(m_weapon_obstacle_distance > 0)
+		{
+			const auto* l_weapon = get_weapon();
+			auto l_weapon_obstacle_distance = std::numeric_limits<bcFLOAT>::max();
+
+			if (l_weapon)
+			{
+				if (m_weapon_obstacle_query.is_executed())
+				{
+					l_weapon_obstacle_distance = m_weapon_obstacle_query.get().get_result().as_throw<bcFLOAT>();
+				}
+
+				_build_weapon_obstacle_query(p_context.m_query_manager, *l_weapon);
+			}
+
+			if (l_weapon_obstacle_distance <= m_weapon_obstacle_distance)
+			{
+				m_weapon_obstacle_rotation_velocity.push(p_context.m_clock.m_elapsed_second);
+			}
+			else
+			{
+				m_weapon_obstacle_rotation_velocity.release(p_context.m_clock.m_elapsed_second);
+			}
+
+			bc_xbot_player_actor_controller::set_weapon_rotation(m_weapon_obstacle_rotation_velocity.get_value());
 		}
 
 		bc_xbot_actor_controller::update(bc_xbot_input_update_context
@@ -256,6 +299,11 @@ namespace black_cat
 		m_camera_y_offset = p_camera_y_offset;
 		m_camera_z_offset = p_camera_z_offset;
 		m_camera_look_at_offset = p_camera_look_at_offset;
+	}
+
+	void bc_xbot_player_actor_controller::set_weapon_obstacle_distance(bcFLOAT p_distance) noexcept
+	{
+		m_weapon_obstacle_distance = p_distance;
 	}
 
 	void bc_xbot_player_actor_controller::throw_grenade(game::bc_actor& p_grenade) noexcept
@@ -523,7 +571,7 @@ namespace black_cat
 
 	void bc_xbot_player_actor_controller::_shoot_weapon()
 	{
-		const bool l_can_shoot = can_shoot_weapon();
+		const bool l_can_shoot = m_weapon_obstacle_rotation_velocity.get_value() <= 0 && can_shoot_weapon();
 		if (!l_can_shoot)
 		{
 			return;
@@ -542,5 +590,40 @@ namespace black_cat
 
 		weapon_shoot(get_weapon()->m_actor);
 		m_weapon_shoot_velocity.set_value(1);
+	}
+
+	void bc_xbot_player_actor_controller::_build_weapon_obstacle_query(core::bc_query_manager& p_query_manager, const bc_xbot_weapon& p_weapon) noexcept
+	{
+		auto* l_scene = get_scene();
+		if (!l_scene)
+		{
+			return;
+		}
+
+		m_weapon_obstacle_query = p_query_manager.queue_query
+		(
+			game::bc_scene_query().with_callable([=, &p_weapon](const game::bc_scene_query_context& p_context)
+				{
+					const auto& l_weapon_mediate_component = p_weapon.m_actor.get_component<game::bc_mediate_component>();
+
+					const physics::bc_ray l_hit_ray(l_weapon_mediate_component->get_position(), get_look_direction(), m_weapon_obstacle_distance);
+					physics::bc_scene_ray_query_buffer l_hit_buffer;
+
+					auto l_hit = l_scene->get_px_scene().raycast(l_hit_ray, l_hit_buffer, physics::bc_hit_flag::distance, physics::bc_query_flags::statics);
+
+					if (l_hit)
+					{
+						const auto l_hit_actor = m_physics_system->get_game_actor(l_hit_buffer.get_block().get_actor());
+						if (l_hit_actor == p_weapon.m_actor)
+						{
+							l_hit = false;
+						}
+					}
+
+					const auto l_hit_distance = l_hit ? l_hit_buffer.get_block().get_distance() : std::numeric_limits<bcFLOAT>::max();
+
+					return core::bc_any(l_hit_distance);
+				})
+		);
 	}
 }

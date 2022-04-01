@@ -5,6 +5,7 @@
 #include "CorePlatformImp/File/bcFileInfo.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcString.h"
+#include "Core/Container/bcStringStream.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Content/bcContentManager.h"
 #include "Core/Math/bcVector2f.h"
@@ -44,7 +45,8 @@ namespace black_cat
 	
 	void bc_mesh_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
-		Assimp::Importer l_importer;
+		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
+		auto l_importer = Assimp::Importer();
 
 		const aiScene* l_scene = l_importer.ReadFileFromMemory
 		(
@@ -59,24 +61,14 @@ namespace black_cat
 		);
 		if (!l_scene || !l_scene->HasMeshes())
 		{
-			const auto l_error_msg =
-				core::bc_string_frame("Content file loading error: ")
-				+
-				core::bc_to_string_frame(p_context.m_file_path.data())
-				+
-				", "
-				+
-				l_importer.GetErrorString();
-			throw bc_io_exception(l_error_msg.c_str());
+			const auto l_error_msg = core::bc_string_stream_frame() << "Error in loading mesh '" << p_context.m_file_path.data() << "'. " << l_importer.GetErrorString();
+			throw bc_io_exception(l_error_msg.str().c_str());
 		}
-
-		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
-		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
 
 		game::bc_mesh_builder l_builder;
 		core::bc_unordered_map_frame<core::bc_string_view, bcUINT32> l_node_mapping;
 
-		/*if(core::bc_path(p_context.m_file_path).get_filename() == bcL("brown_riverrock_big_a.fbx"))
+		/*if(core::bc_path(p_context.m_file_path).get_filename() == bcL("civil_box_a.fbx"))
 		{
 			BC_DEBUG_BREAK()
 		}*/
@@ -107,7 +99,7 @@ namespace black_cat
 				continue;
 			}
 			
-			auto l_lod_mesh = l_content_manager.load<game::bc_mesh>
+			auto l_lod_mesh = p_context.m_content_manager.load<game::bc_mesh>
 			(
 				p_context.get_allocator_alloc_type(),
 				l_lod_path.second.get_string_frame().c_str(),
@@ -150,7 +142,7 @@ namespace black_cat
 				l_collider_ai_scene = l_scene;
 			}
 
-			l_mesh_collider = l_content_manager.load<game::bc_mesh_collider>
+			l_mesh_collider = p_context.m_content_manager.load<game::bc_mesh_collider>
 			(
 				p_context.get_allocator_alloc_type(),
 				l_collider_file_path.get_string_frame().c_str(),
@@ -161,7 +153,7 @@ namespace black_cat
 		}
 		else
 		{
-			l_mesh_collider = l_content_manager.store_content(l_mesh_name + bcL("_collider"), game::bc_mesh_collider());
+			l_mesh_collider = p_context.m_content_manager.store_content(l_mesh_name + bcL("_collider"), game::bc_mesh_collider());
 		}
 		
 		p_context.set_result(l_builder.build(l_mesh_name, std::move(l_mesh_collider)));
@@ -198,8 +190,6 @@ namespace black_cat
 		const aiMaterial& p_ai_material,
 		game::bc_mesh_material_description& p_material)
 	{
-		auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
-
 		aiColor3D l_diffuse;
 		bcFLOAT l_alpha = 1;
 		bcFLOAT l_specular_intensity = 0.2f;
@@ -221,7 +211,7 @@ namespace black_cat
 		if (p_ai_material.GetTexture(aiTextureType_DIFFUSE, 0, &l_ai_string) == aiReturn_SUCCESS)
 		{
 			l_diffuse_file_name = core::bc_path(core::bc_to_exclusive_wstring(l_ai_string.C_Str()).c_str());
-			p_material.m_diffuse_map = l_content_manager->load<graphic::bc_texture2d_content>
+			p_material.m_diffuse_map = p_context.m_content_manager.load<graphic::bc_texture2d_content>
 			(
 				p_context.get_allocator_alloc_type(),
 				core::bc_path(l_root_path).set_filename(l_diffuse_file_name->get_string().c_str()).get_string().c_str(),
@@ -265,7 +255,7 @@ namespace black_cat
 
 		if (!l_normal_map_path.empty())
 		{
-			p_material.m_normal_map = l_content_manager->load<graphic::bc_texture2d_content>
+			p_material.m_normal_map = p_context.m_content_manager.load<graphic::bc_texture2d_content>
 			(
 				p_context.get_allocator_alloc_type(),
 				l_normal_map_path.c_str(),
@@ -275,7 +265,7 @@ namespace black_cat
 		}
 		if (!l_specular_map_path.empty())
 		{
-			p_material.m_specular_map = l_content_manager->load<graphic::bc_texture2d_content>
+			p_material.m_specular_map = p_context.m_content_manager.load<graphic::bc_texture2d_content>
 			(
 				p_context.get_allocator_alloc_type(),
 				l_specular_map_path.c_str(),

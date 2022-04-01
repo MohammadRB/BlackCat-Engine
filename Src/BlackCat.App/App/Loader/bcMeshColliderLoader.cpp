@@ -53,10 +53,7 @@ namespace black_cat
 		
 		if (!l_scene || !l_scene->HasMeshes())
 		{
-			const auto l_error_msg = core::bc_string_stream_frame()
-				<< "Content file loading error: "
-				<< p_context.m_file_path << ", "
-				<< l_importer.GetErrorString();
+			const auto l_error_msg = core::bc_string_stream_frame() << "Error in loading mesh collider '" << p_context.m_file_path.data() << "'. " << l_importer.GetErrorString();
 			throw bc_io_exception(l_error_msg.str().c_str());
 		}
 

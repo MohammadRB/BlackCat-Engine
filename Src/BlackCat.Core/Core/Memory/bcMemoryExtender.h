@@ -123,6 +123,8 @@ namespace black_cat
 
 			void* alloc(bc_memblock* p_memblock) noexcept override;
 
+			std::pair<void*, TMemory*> alloc1(bc_memblock* p_memblock) noexcept;
+
 			void free(void* p_pointer, bc_memblock* p_memblock) noexcept override;
 
 			bool contain_pointer(void* p_pointer) const noexcept override;
@@ -189,6 +191,28 @@ namespace black_cat
 			}
 
 			return l_result;
+		}
+
+		template<typename TMemory>
+		std::pair<void*, TMemory*> bc_memory_extender<TMemory>::alloc1(bc_memblock* p_memblock) noexcept
+		{
+			void* l_result = nullptr;
+			TMemory* l_allocator = nullptr;
+
+			bucket_type* l_current_bucket = m_first;
+
+			while (l_result == nullptr)
+			{
+				l_allocator = l_current_bucket->get_memory();
+				l_result = l_allocator->alloc(p_memblock);
+
+				if (!l_result)
+				{
+					l_current_bucket = l_current_bucket->create_next();
+				}
+			}
+
+			return std::make_pair(l_result, l_allocator);
 		}
 
 		template<typename TMemory>

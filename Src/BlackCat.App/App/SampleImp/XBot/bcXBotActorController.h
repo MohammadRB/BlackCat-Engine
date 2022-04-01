@@ -124,6 +124,8 @@ namespace black_cat
 
 		bool shoot_weapon(game::bc_network_client_id p_player_id = game::bc_actor::invalid_id) noexcept;
 
+		void set_weapon_rotation(bcFLOAT p_rotation) noexcept;
+
 		void enable_ragdoll();
 
 		void enable_ragdoll(core::bc_string_view p_body_part_force, const core::bc_vector3f& p_force);
@@ -140,9 +142,9 @@ namespace black_cat
 		core::bc_shared_ptr<game::bci_animation_job> _create_animation_pipeline(const bcCHAR* p_idle_animation,
 			const bcCHAR* p_idle_left_turn_animation,
 			const bcCHAR* p_idle_right_turn_animation,
-			const bcCHAR* p_weapon_idle_animation,
-			const bcCHAR* p_weapon_idle_left_turn_animation,
-			const bcCHAR* p_weapon_idle_right_turn_animation,
+			const bcCHAR* p_weapon_idle_aiming_animation,
+			const bcCHAR* p_weapon_idle_aiming_left_turn_animation,
+			const bcCHAR* p_weapon_idle_aiming_right_turn_animation,
 			const bcCHAR* p_walking_animation,
 			const bcCHAR* p_walking_backward_animation,
 			const bcCHAR* p_running_animation,

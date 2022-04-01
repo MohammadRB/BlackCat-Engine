@@ -61,7 +61,7 @@ namespace black_cat
 	{
 		p_ozz_animations.resize(p_ai_animation_count);
 
-		auto l_ozz_joint_names = p_ozz_skeleton.joint_names();
+		const auto l_ozz_joint_names = p_ozz_skeleton.joint_names();
 		const auto l_find_joint_index = [&](const bcCHAR* p_joint_name)
 		{
 			const auto* l_joint_ite = std::find_if
@@ -97,24 +97,24 @@ namespace black_cat
 				for(auto l_ai_channel_position_ite = 0U; l_ai_channel_position_ite < l_ai_channel->mNumPositionKeys; ++l_ai_channel_position_ite)
 				{
 					l_ozz_track.translations.resize(l_ai_channel->mNumPositionKeys);
-					
-					auto& l_ai_position = l_ai_channel->mPositionKeys[l_ai_channel_position_ite];
+
+					const auto& l_ai_position = l_ai_channel->mPositionKeys[l_ai_channel_position_ite];
 					l_ozz_track.translations[l_ai_channel_position_ite].time = static_cast<bcFLOAT>(l_ai_position.mTime / l_ai_animation->mTicksPerSecond);
 					l_ozz_track.translations[l_ai_channel_position_ite].value = ozz::math::Float3(l_ai_position.mValue.x, l_ai_position.mValue.y, l_ai_position.mValue.z);
 				}
 				for (auto l_ai_channel_scale_ite = 0U; l_ai_channel_scale_ite < l_ai_channel->mNumScalingKeys; ++l_ai_channel_scale_ite)
 				{
 					l_ozz_track.scales.resize(l_ai_channel->mNumScalingKeys);
-					
-					auto& l_ai_scale = l_ai_channel->mScalingKeys[l_ai_channel_scale_ite];
+
+					const auto& l_ai_scale = l_ai_channel->mScalingKeys[l_ai_channel_scale_ite];
 					l_ozz_track.scales[l_ai_channel_scale_ite].time = static_cast<bcFLOAT>(l_ai_scale.mTime / l_ai_animation->mTicksPerSecond);
 					l_ozz_track.scales[l_ai_channel_scale_ite].value = ozz::math::Float3(l_ai_scale.mValue.x, l_ai_scale.mValue.y, l_ai_scale.mValue.z);
 				}
 				for (auto l_ai_channel_rotation_ite = 0U; l_ai_channel_rotation_ite < l_ai_channel->mNumRotationKeys; ++l_ai_channel_rotation_ite)
 				{
 					l_ozz_track.rotations.resize(l_ai_channel->mNumRotationKeys);
-					
-					auto& l_ai_rotation = l_ai_channel->mRotationKeys[l_ai_channel_rotation_ite];
+
+					const auto& l_ai_rotation = l_ai_channel->mRotationKeys[l_ai_channel_rotation_ite];
 					l_ozz_track.rotations[l_ai_channel_rotation_ite].time = static_cast<bcFLOAT>(l_ai_rotation.mTime / l_ai_animation->mTicksPerSecond);
 					l_ozz_track.rotations[l_ai_channel_rotation_ite].value = ozz::math::Quaternion(l_ai_rotation.mValue.x, l_ai_rotation.mValue.y, l_ai_rotation.mValue.z, l_ai_rotation.mValue.w);
 				}
@@ -174,8 +174,8 @@ namespace black_cat
 	{
 		Assimp::Importer l_importer;
 
-		const aiScene* const* l_ai_scene_value = p_context.m_instance_parameters.get_value<const aiScene*>("aiScene");
-		const aiScene* l_ai_scene = l_ai_scene_value ? *l_ai_scene_value : nullptr;
+		const auto* const* l_ai_scene_value = p_context.m_instance_parameters.get_value<const aiScene*>("aiScene");
+		const auto* l_ai_scene = l_ai_scene_value ? *l_ai_scene_value : nullptr;
 		if (!l_ai_scene)
 		{
 			l_ai_scene = l_importer.ReadFileFromMemory
@@ -201,7 +201,7 @@ namespace black_cat
 		_build_ozz_skeleton(&l_ai_scene->mRootNode, 1, l_ozz_raw_skeleton.roots);
 
 		const auto l_ozz_skeleton = ozz::animation::offline::SkeletonBuilder()(l_ozz_raw_skeleton);
-		core::bc_vector_frame< ozz::animation::offline::RawAnimation> l_ozz_raw_animations;
+		core::bc_vector_frame<ozz::animation::offline::RawAnimation> l_ozz_raw_animations;
 
 		_build_ozz_animation(l_ai_scene->mAnimations, l_ai_scene->mNumAnimations, *l_ozz_skeleton, l_ozz_raw_animations);
 
@@ -218,7 +218,11 @@ namespace black_cat
 			[l_additive_animation](ozz::animation::offline::RawAnimation& p_ozz_raw_animation)
 			{
 				// TODO use animation optimizer
-				BC_ASSERT(p_ozz_raw_animation.Validate());
+				if(!p_ozz_raw_animation.Validate())
+				{
+					const auto l_msg = core::bc_string_stream_frame() << "animation '" << p_ozz_raw_animation.name.c_str() << "' is not valid.";
+					throw bc_io_exception(l_msg.str().c_str());
+				}
 
 				if(l_additive_animation)
 				{
