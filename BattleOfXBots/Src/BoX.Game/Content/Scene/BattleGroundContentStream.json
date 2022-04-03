@@ -209,6 +209,16 @@
           }
         },
         {
+          "content_title": "concrete_wall_base_16m",
+          "content_loader": "mesh",
+          "content_file": "Content\\Model\\Architecture\\concrete_wall_base_16m.fbx",
+          "content_parameter": {
+            "auto_scale": 40.0,
+            "collider": "concrete_wall_base_16m.fbx",
+            "high_detail_query_shape": false
+          }
+        },
+        {
           "content_title": "barrel_black",
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Barrier\\Barrel\\barrel_black.fbx",
@@ -225,6 +235,36 @@
           "content_parameter": {
             "auto_scale": 6.0,
             "collider": "barrel_explosive_red.fbx",
+            "high_detail_query_shape": false
+          }
+        },
+        {
+          "content_title": "support_building_c",
+          "content_loader": "mesh",
+          "content_file": "Content\\Model\\Building\\support_building_c.fbx",
+          "content_parameter": {
+            "auto_scale": 130.0,
+            "collider": "support_building_c.fbx",
+            "high_detail_query_shape": false
+          }
+        },
+        {
+          "content_title": "support_building_d",
+          "content_loader": "mesh",
+          "content_file": "Content\\Model\\Building\\support_building_d.fbx",
+          "content_parameter": {
+            "auto_scale": 30.0,
+            "collider": "support_building_d.fbx",
+            "high_detail_query_shape": false
+          }
+        },
+        {
+          "content_title": "floodlight_tower",
+          "content_loader": "mesh",
+          "content_file": "Content\\Model\\Light\\floodlight_tower.fbx",
+          "content_parameter": {
+            "auto_scale": 30.0,
+            "collider": "floodlight_tower.fbx",
             "high_detail_query_shape": false
           }
         },
@@ -249,11 +289,31 @@
           }
         },
         {
+          "content_title": "container_small_blue",
+          "content_loader": "mesh",
+          "content_file": "Content\\Model\\Barrier\\Crate\\container_small_blue.fbx",
+          "content_parameter": {
+            "auto_scale": 30.0,
+            "collider": "container_small_blue.fbx",
+            "high_detail_query_shape": false
+          }
+        },
+        {
+          "content_title": "container_small_red",
+          "content_loader": "mesh",
+          "content_file": "Content\\Model\\Barrier\\Crate\\container_small_red.fbx",
+          "content_parameter": {
+            "auto_scale": 30.0,
+            "collider": "container_small_red.fbx",
+            "high_detail_query_shape": false
+          }
+        },
+        {
           "content_title": "solid_metal_fences_120_400_a",
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Barrier\\Fence\\solid_metal_fences_120_400_a.fbx",
           "content_parameter": {
-            "auto_scale": 30.0,
+            "auto_scale": 20.0,
             "collider": "solid_metal_fences_120_400_a_collider.fbx",
             "high_detail_query_shape": true
           }

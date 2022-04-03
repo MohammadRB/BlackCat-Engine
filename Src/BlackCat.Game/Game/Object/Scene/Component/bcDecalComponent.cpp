@@ -239,7 +239,7 @@ namespace black_cat
 				auto& l_json_entry = l_json->m_decals.new_entry();
 				*l_json_entry->m_nm = l_decal->get_decal()->get_name();
 				*l_json_entry->m_pos_ls = l_decal->get_local_position();
-				*l_json_entry->m_rot_ls = bc_matrix3f_decompose_to_angles(l_decal->get_local_rotation());
+				*l_json_entry->m_rot_ls = bc_matrix3f_decompose_to_angles_zyx(l_decal->get_local_rotation());
 				*l_json_entry->m_rg = static_cast<bcINT32>(l_decal->get_render_group());
 				*l_json_entry->m_ani = l_decal->get_attached_node_index();
 			}

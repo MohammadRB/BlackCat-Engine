@@ -116,6 +116,10 @@ namespace black_cat
 
 			bc_vector4f operator* (const bc_vector4f& p_vector) const noexcept;
 
+			static bc_matrix4f zero() noexcept;
+
+			static bc_matrix4f identity() noexcept;
+
 			static bc_matrix4f rotation_matrix_xyz_lh(bcFLOAT p_radians_x, bcFLOAT p_radians_y, bcFLOAT p_radians_z) noexcept;
 
 			static bc_matrix4f rotation_matrix_x_lh(bcFLOAT p_radians) noexcept;
@@ -153,10 +157,6 @@ namespace black_cat
 			static bc_matrix4f perspective_fov_matrix_rh(bcFLOAT p_fovy, bcFLOAT p_aspect, bcFLOAT p_zn, bcFLOAT p_zf) noexcept;
 
 			static bc_matrix4f orthographic_matrix_rh(bcFLOAT p_zn, bcFLOAT p_zf, bcFLOAT p_width, bcFLOAT p_height) noexcept;
-
-			static bc_matrix4f zero() noexcept;
-
-			static bc_matrix4f identity() noexcept;
 
 			constexpr static bool use_column_major_storage()
 			{

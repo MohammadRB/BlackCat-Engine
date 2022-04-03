@@ -22,7 +22,7 @@
       "v1": 290,
       "width": 0.4,
       "height": 0.4,
-      "depth": 0.4,
+      "depth": 0.6,
       "view_distance": 80.0,
       "auto_remove": true
     },
@@ -35,7 +35,7 @@
       "v1": 290,
       "width": 0.4,
       "height": 0.4,
-      "depth": 0.4,
+      "depth": 0.6,
       "view_distance": 80.0,
       "auto_remove": true
     }

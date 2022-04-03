@@ -21,7 +21,7 @@ namespace black_cat
 				bcFLOAT p_m21, bcFLOAT p_m22, bcFLOAT p_m23,
 				bcFLOAT p_m31, bcFLOAT p_m32, bcFLOAT p_m33) noexcept;
 
-			bc_matrix3f& operator=(const bc_matrix3f& p_matrix) noexcept;
+			bc_matrix3f& operator=(const bc_matrix3f& p_other) noexcept;
 
 			void rotation_x_lh(bcFLOAT p_radians) noexcept;
 
@@ -29,7 +29,7 @@ namespace black_cat
 
 			void rotation_z_lh(bcFLOAT p_radians) noexcept;
 
-			void rotation_lh(bc_vector3f& p_rot) noexcept;
+			void rotation_xyz_lh(const bc_vector3f& p_rot) noexcept;
 
 			void rotation_zyx_lh(const bc_vector3f& p_rot) noexcept;
 
@@ -45,7 +45,7 @@ namespace black_cat
 
 			void rotation_z_rh(bcFLOAT p_radians) noexcept;
 
-			void rotation_rh(const bc_vector3f& p_rot) noexcept;
+			void rotation_xyz_rh(const bc_vector3f& p_rot) noexcept;
 
 			void rotation_zyx_rh(const bc_vector3f& p_rot) noexcept;
 
@@ -114,6 +114,38 @@ namespace black_cat
 			static bc_matrix3f zero() noexcept;
 
 			static bc_matrix3f identity() noexcept;
+
+			static bc_matrix3f rotation_matrix_x_lh(bcFLOAT p_radians) noexcept;
+
+			static bc_matrix3f rotation_matrix_y_lh(bcFLOAT p_radians) noexcept;
+
+			static bc_matrix3f rotation_matrix_z_lh(bcFLOAT p_radians) noexcept;
+
+			static bc_matrix3f rotation_matrix_xyz_lh(const bc_vector3f& p_rot) noexcept;
+
+			static bc_matrix3f rotation_matrix_zyx_lh(const bc_vector3f& p_rot) noexcept;
+
+			static bc_matrix3f rotation_matrix_euler_lh(const bc_vector3f& p_axis, bcFLOAT p_radians) noexcept;
+
+			static bc_matrix3f rotation_matrix_between_two_vector_lh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept;
+
+			static bc_matrix3f rotation_matrix_between_two_vector_checked_lh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept;
+
+			static bc_matrix3f rotation_matrix_x_rh(bcFLOAT p_radians) noexcept;
+
+			static bc_matrix3f rotation_matrix_y_rh(bcFLOAT p_radians) noexcept;
+
+			static bc_matrix3f rotation_matrix_z_rh(bcFLOAT p_radians) noexcept;
+
+			static bc_matrix3f rotation_matrix_xyz_rh(const bc_vector3f& p_rot) noexcept;
+
+			static bc_matrix3f rotation_matrix_zyx_rh(const bc_vector3f& p_rot) noexcept;
+
+			static bc_matrix3f rotation_matrix_euler_rh(const bc_vector3f& p_axis, bcFLOAT p_radians) noexcept;
+
+			static bc_matrix3f rotation_matrix_between_two_vector_rh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept;
+
+			static bc_matrix3f rotation_matrix_between_two_vector_checked_rh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept;
 
 			constexpr static bool use_column_major_storage()
 			{

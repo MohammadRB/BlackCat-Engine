@@ -3,6 +3,7 @@
 #include "App/AppPCH.h"
 
 #include "Core/Math/bcVector3f.h"
+#include "Core/Math/bcCoordinate.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
@@ -30,7 +31,8 @@ namespace black_cat
 	};
 
 	bc_light_flare_pass::bc_light_flare_pass(game::bc_render_pass_variable_t p_render_target_texture, game::bc_render_pass_variable_t p_render_target_view)
-		: m_flare_size_distance(s_flare_size_distance * bc_get_global_config().get_scene_global_scale()),
+		: m_flare_size_shrink_distance(s_flare_size_shrink_distance * bc_get_global_config().get_scene_global_scale()),
+		m_flare_surface_grow_distance(s_flare_surface_grow_distance * bc_get_global_config().get_scene_global_scale()),
 		m_render_target_texture(p_render_target_texture),
 		m_render_target_view(p_render_target_view)
 	{
@@ -372,53 +374,52 @@ namespace black_cat
 			if(!l_light_query_ite->m_free)
 			{
 				const auto l_query_result = p_context.m_render_thread.get_query_data(*l_light_query_ite->m_device_query);
-				if(l_query_result.first)
+				if(l_query_result.first && l_query_result.second > 0)
 				{
-					if(l_query_result.second > 0)
-					{
-						_bc_light_flare_instance l_flare;
-						l_flare.m_light = &l_light;
-						l_flare.m_intensity = l_light.get_flare()->get_intensity();
-						l_flare.m_texture_index = 0;
-						l_flare.m_u0 = l_light.get_flare()->get_u0();
-						l_flare.m_v0 = l_light.get_flare()->get_v0();
-						l_flare.m_u1 = l_light.get_flare()->get_u1();
-						l_flare.m_v1 = l_light.get_flare()->get_v1();
+					_bc_light_flare_instance l_flare;
+					l_flare.m_light = &l_light;
+					l_flare.m_intensity = l_light.get_flare()->get_intensity();
+					l_flare.m_size = l_light.get_flare()->get_size();
+					l_flare.m_texture_index = 0;
+					l_flare.m_u0 = l_light.get_flare()->get_u0();
+					l_flare.m_v0 = l_light.get_flare()->get_v0();
+					l_flare.m_u1 = l_light.get_flare()->get_u1();
+					l_flare.m_v1 = l_light.get_flare()->get_v1();
 
-						switch (l_light.get_type())
-						{
+					switch (l_light.get_type())
+					{
 						case game::bc_light_type::point:
 						{
 							const auto* l_point_light = l_light.as_point_light();
 							l_flare.m_position = l_point_light->get_position();
 							l_flare.m_color = l_point_light->get_color();
-							l_flare.m_size = l_point_light->get_radius();
 							break;
 						}
 						case game::bc_light_type::spot:
 						{
-							// TODO compute intensity base on camera angle
 							const auto* l_spot_light = l_light.as_spot_light();
 							l_flare.m_position = l_spot_light->get_position();
 							l_flare.m_color = l_spot_light->get_color();
-							l_flare.m_size = l_spot_light->get_length();
+							l_flare.m_intensity *= l_spot_light->calculate_intensity(p_context.m_render_camera.get_position(), s_flare_intensity_spot_angle);
 							break;
 						}
-						default: 
+						default:
+						{
 							BC_ASSERT(false);
+							continue;
 						}
-
-						const auto l_flare_distance = (l_flare.m_position - p_context.m_render_camera.get_position()).magnitude();
-						l_flare.m_size *= std::max(0.3f, std::min(1.0f, l_flare_distance / m_flare_size_distance));
-						l_flare.m_size *= s_flare_size_ratio;
-						
-						m_ready_to_draw_instances.push_back(l_flare);
 					}
 
-					_query_light(p_context, l_light, *l_light_query_ite);
+					const auto l_flare_distance = (l_flare.m_position - p_context.m_render_camera.get_position()).magnitude();
+					l_flare.m_size *= _calculate_flare_size_ratio(l_flare_distance);
+
+					m_ready_to_draw_instances.push_back(l_flare);
 				}
 
-				continue;
+				if (l_query_result.first)
+				{
+					_query_light(p_context, l_light, *l_light_query_ite);
+				}
 			}
 		}
 
@@ -426,29 +427,104 @@ namespace black_cat
 		p_context.m_render_thread.unbind_render_pass_state(*m_query_render_pass_state);
 	}
 
+	void bc_light_flare_pass::_draw_flares(const game::bc_render_pass_render_context& p_context)
+	{
+		core::bc_unordered_map_frame<game::bc_mesh_material*, core::bc_vector_frame<_bc_light_flare_instance*>> l_instance_groups;
+
+		for (_bc_light_flare_instance& l_instance : m_ready_to_draw_instances)
+		{
+			auto& l_group = l_instance_groups[l_instance.m_light->get_flare()->get_mask_material()];
+			l_group.push_back(&l_instance);
+		}
+
+		for (auto& l_texture_mask_parameter : m_flare_texture_parameters)
+		{
+			l_texture_mask_parameter.set_as_resource_view(graphic::bc_resource_view());
+		}
+
+		bcUINT32 l_used_texture_slot = 0;
+		for (auto& l_group : l_instance_groups)
+		{
+			m_flare_texture_parameters[l_used_texture_slot].set_as_resource_view(l_group.first->get_diffuse_map_view());
+
+			for (_bc_light_flare_instance* l_group_instance : l_group.second)
+			{
+				l_group_instance->m_texture_index = l_used_texture_slot;
+			}
+
+			++l_used_texture_slot;
+		}
+
+		core::bc_vector_frame<_bc_light_flare_draw_instance> l_draw_call_buffer(s_per_draw_flare_count);
+		const auto l_draw_call_count = static_cast<bcUINT32>(std::ceilf(m_ready_to_draw_instances.size() / static_cast<bcFLOAT>(s_per_draw_flare_count)));
+
+		p_context.m_render_thread.bind_render_pass_state(*m_flare_render_pass_state);
+		p_context.m_render_thread.bind_render_state(*m_flare_render_state);
+
+		for (auto l_draw_call = 0U; l_draw_call < l_draw_call_count; ++l_draw_call)
+		{
+			const auto l_instance_count_drawn = l_draw_call * s_per_draw_flare_count;
+			const auto l_instance_count_to_draw = std::min(m_ready_to_draw_instances.size(), (l_draw_call + 1) * s_per_draw_flare_count);
+			std::transform
+			(
+				std::begin(m_ready_to_draw_instances) + l_instance_count_drawn,
+				std::begin(m_ready_to_draw_instances) + l_instance_count_to_draw,
+				std::begin(l_draw_call_buffer),
+				[](const _bc_light_flare_instance& p_flare_instance)
+				{
+					_bc_light_flare_draw_instance l_flare_draw_instance;
+					l_flare_draw_instance.m_position = p_flare_instance.m_position;
+					l_flare_draw_instance.m_color = p_flare_instance.m_color;
+					l_flare_draw_instance.m_size = p_flare_instance.m_size;
+					l_flare_draw_instance.m_intensity = p_flare_instance.m_intensity;
+					l_flare_draw_instance.m_texture_index = p_flare_instance.m_texture_index;
+					l_flare_draw_instance.m_u0 = p_flare_instance.m_u0;
+					l_flare_draw_instance.m_v0 = p_flare_instance.m_v0;
+					l_flare_draw_instance.m_u1 = p_flare_instance.m_u1;
+					l_flare_draw_instance.m_v1 = p_flare_instance.m_v1;
+
+					return l_flare_draw_instance;
+				}
+			);
+
+			p_context.m_render_thread.update_subresource(m_flare_instances_buffer.get(), 0, l_draw_call_buffer.data(), 0, 0);
+			p_context.m_render_thread.draw_instanced(1, l_instance_count_to_draw, 0, 0);
+		}
+
+		p_context.m_render_thread.unbind_render_state(*m_flare_render_state);
+		p_context.m_render_thread.unbind_render_pass_state(*m_flare_render_pass_state);
+	}
+
 	void bc_light_flare_pass::_query_light(const game::bc_render_pass_render_context& p_context, game::bc_light_instance& p_light, _bc_light_flare_query_instance& p_query)
 	{
-		auto l_light_flare_surface_world = core::bc_matrix4f::scale_matrix_xyz
-		(
-			p_light.get_flare()->get_surface_width(),
-			p_light.get_flare()->get_surface_height(),
-			p_light.get_flare()->get_surface_depth()
-		);
+		core::bc_vector3f l_light_position;
 
 		if(p_light.get_type() == game::bc_light_type::point)
 		{
 			const auto* l_point_light = p_light.as_point_light();
-			l_light_flare_surface_world.set_translation(l_point_light->get_position());
+			l_light_position = l_point_light->get_position();
 		}
 		else if(p_light.get_type() == game::bc_light_type::spot)
 		{
 			const auto* l_spot_light = p_light.as_spot_light();
-			l_light_flare_surface_world.set_translation(l_spot_light->get_position());
+			l_light_position = l_spot_light->get_position();
 		}
 		else
 		{
 			BC_ASSERT(false);
+			return;
 		}
+
+		const auto l_light_distance = (l_light_position - p_context.m_render_camera.get_position()).magnitude();
+		const auto l_light_distance_surface_ratio = _calculate_flare_surface_ratio(l_light_distance);
+
+		auto l_light_flare_surface_world = core::bc_matrix4f::scale_matrix_xyz
+		(
+			p_light.get_flare()->get_surface_width() * l_light_distance_surface_ratio,
+			p_light.get_flare()->get_surface_height() * l_light_distance_surface_ratio,
+			p_light.get_flare()->get_surface_depth() * l_light_distance_surface_ratio
+		);
+		l_light_flare_surface_world.set_translation(l_light_position);
 		
 		p_context.m_frame_renderer.update_per_object_cbuffer
 		(
@@ -495,71 +571,13 @@ namespace black_cat
 		return &*l_free_query;
 	}
 
-	void bc_light_flare_pass::_draw_flares(const game::bc_render_pass_render_context& p_context)
+	bcFLOAT bc_light_flare_pass::_calculate_flare_size_ratio(bcFLOAT p_distance) const noexcept
 	{
-		core::bc_unordered_map_frame<game::bc_mesh_material*, core::bc_vector_frame<_bc_light_flare_instance*>> l_instance_groups;
+		return std::max(0.3f, std::min(1.0f, p_distance / m_flare_size_shrink_distance));
+	}
 
-		for(_bc_light_flare_instance& l_instance : m_ready_to_draw_instances)
-		{
-			auto& l_group = l_instance_groups[l_instance.m_light->get_flare()->get_mask_material()];
-			l_group.push_back(&l_instance);
-		}
-
-		for (auto& l_texture_mask_parameter : m_flare_texture_parameters)
-		{
-			l_texture_mask_parameter.set_as_resource_view(graphic::bc_resource_view());
-		}
-		
-		bcUINT32 l_used_texture_slot = 0;
-		for(auto& l_group : l_instance_groups)
-		{
-			m_flare_texture_parameters[l_used_texture_slot].set_as_resource_view(l_group.first->get_diffuse_map_view());
-
-			for(_bc_light_flare_instance* l_group_instance : l_group.second)
-			{
-				l_group_instance->m_texture_index = l_used_texture_slot;
-			}
-
-			++l_used_texture_slot;
-		}
-
-		core::bc_vector_frame<_bc_light_flare_draw_instance> l_draw_call_buffer(s_per_draw_flare_count);
-		const auto l_draw_call_count = static_cast<bcUINT32>(std::ceilf(m_ready_to_draw_instances.size() / static_cast<bcFLOAT>(s_per_draw_flare_count)));
-
-		p_context.m_render_thread.bind_render_pass_state(*m_flare_render_pass_state);
-		p_context.m_render_thread.bind_render_state(*m_flare_render_state);
-		
-		for(auto l_draw_call = 0U; l_draw_call < l_draw_call_count; ++l_draw_call)
-		{
-			const auto l_instance_count_drawn = l_draw_call * s_per_draw_flare_count;
-			const auto l_instance_count_to_draw = std::min(m_ready_to_draw_instances.size(), (l_draw_call + 1) * s_per_draw_flare_count);
-			std::transform
-			(
-				std::begin(m_ready_to_draw_instances) + l_instance_count_drawn,
-				std::begin(m_ready_to_draw_instances) + l_instance_count_to_draw,
-				std::begin(l_draw_call_buffer),
-				[](const _bc_light_flare_instance& p_flare_instance)
-				{
-					_bc_light_flare_draw_instance l_flare_draw_instance;
-					l_flare_draw_instance.m_position = p_flare_instance.m_position;
-					l_flare_draw_instance.m_color = p_flare_instance.m_color;
-					l_flare_draw_instance.m_size = p_flare_instance.m_size;
-					l_flare_draw_instance.m_intensity = p_flare_instance.m_intensity;
-					l_flare_draw_instance.m_texture_index = p_flare_instance.m_texture_index;
-					l_flare_draw_instance.m_u0 = p_flare_instance.m_u0;
-					l_flare_draw_instance.m_v0 = p_flare_instance.m_v0;
-					l_flare_draw_instance.m_u1 = p_flare_instance.m_u1;
-					l_flare_draw_instance.m_v1 = p_flare_instance.m_v1;
-
-					return l_flare_draw_instance;
-				}
-			);
-
-			p_context.m_render_thread.update_subresource(m_flare_instances_buffer.get(), 0, l_draw_call_buffer.data(), 0, 0);
-			p_context.m_render_thread.draw_instanced(1, l_instance_count_to_draw, 0, 0);
-		}
-		
-		p_context.m_render_thread.unbind_render_state(*m_flare_render_state);
-		p_context.m_render_thread.unbind_render_pass_state(*m_flare_render_pass_state);
+	bcFLOAT bc_light_flare_pass::_calculate_flare_surface_ratio(bcFLOAT p_distance) const noexcept
+	{
+		return (std::max(0.f, p_distance - m_flare_surface_grow_distance) / m_flare_surface_grow_distance) + 1;
 	}
 }

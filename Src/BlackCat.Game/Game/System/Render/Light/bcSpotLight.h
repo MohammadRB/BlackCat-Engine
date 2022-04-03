@@ -4,12 +4,15 @@
 
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
+#include "Core/Utility/bcNullable.h"
+#include "Game/System/Render/Light/bcLightFlare.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		class bc_spot_light
+		class BC_GAME_DLL bc_spot_light
 		{
 		public:
 			bc_spot_light(const core::bc_vector3f& p_position, 
@@ -59,6 +62,8 @@ namespace black_cat
 			void set_flare(bc_light_flare p_flare) noexcept;
 
 			void set_flare_intensity(bcFLOAT p_intensity) noexcept;
+
+			bcFLOAT calculate_intensity(const core::bc_vector3f& p_view_position, bcFLOAT p_fade_point) const noexcept;
 		
 		private:
 			core::bc_vector3f m_position;

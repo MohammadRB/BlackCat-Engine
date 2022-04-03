@@ -53,7 +53,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_shape_type bc_platform_shape<g_api_physx>::get_type() const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			return static_cast<bc_shape_type>(l_px_shape->getGeometryType());
 		}
@@ -62,7 +62,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bool bc_platform_shape<g_api_physx>::as_sphere(bc_shape_sphere& p_sphere) const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			physx::PxSphereGeometry l_geometry;
 			const bool l_result = l_px_shape->getSphereGeometry(l_geometry);
@@ -79,7 +79,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bool bc_platform_shape<g_api_physx>::as_box(bc_shape_box& p_box) const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			physx::PxBoxGeometry l_geometry;
 			const bool l_result = l_px_shape->getBoxGeometry(l_geometry);
@@ -96,7 +96,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bool bc_platform_shape<g_api_physx>::as_capsule(bc_shape_capsule& p_capsule) const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			physx::PxCapsuleGeometry l_geometry;
 			const bool l_result = l_px_shape->getCapsuleGeometry(l_geometry);
@@ -113,7 +113,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bool bc_platform_shape<g_api_physx>::as_plane(bc_shape_plane& p_plane) const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			physx::PxPlaneGeometry l_geometry;
 			const bool l_result = l_px_shape->getPlaneGeometry(l_geometry);
@@ -130,7 +130,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bool bc_platform_shape<g_api_physx>::as_convex_mesh(bc_shape_convex_mesh& p_convex_mesh) const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			physx::PxConvexMeshGeometry l_geometry;
 			const bool l_result = l_px_shape->getConvexMeshGeometry(l_geometry);
@@ -150,7 +150,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bool bc_platform_shape<g_api_physx>::as_triangle_mesh(bc_shape_triangle_mesh& p_triangle_mesh) const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			physx::PxTriangleMeshGeometry l_geometry;
 			const bool l_result = l_px_shape->getTriangleMeshGeometry(l_geometry);
@@ -170,7 +170,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bool bc_platform_shape<g_api_physx>::as_height_field(bc_shape_height_field& p_height_field) const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			physx::PxHeightFieldGeometry l_geometry;
 			const bool l_result = l_px_shape->getHeightFieldGeometry(l_geometry);
@@ -190,7 +190,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_transform bc_platform_shape<g_api_physx>::get_local_pose() const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 			
 			bc_transform::platform_pack l_pack;
 			l_pack.m_px_transform = l_px_shape->getLocalPose();
@@ -211,7 +211,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bcUINT32 bc_platform_shape<g_api_physx>::get_material_count() const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			return l_px_shape->getNbMaterials();
 		}
@@ -220,7 +220,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bcUINT32 bc_platform_shape<g_api_physx>::get_materials(bc_material* p_buffer, bcUINT32 p_buffer_size) const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			const bcUINT32 l_written_count = l_px_shape->getMaterials(reinterpret_cast<physx::PxMaterial**>(p_buffer), p_buffer_size);
 
@@ -260,7 +260,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_material bc_platform_shape<g_api_physx>::get_material_from_face(bcUINT32 p_face_index) const
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			bc_material::platform_pack l_pack;
 			l_pack.m_px_object = l_px_shape->getMaterialFromInternalFaceIndex(p_face_index);
@@ -272,7 +272,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bcFLOAT bc_platform_shape<g_api_physx>::get_contact_offset() const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			return l_px_shape->getContactOffset();
 		}
@@ -290,7 +290,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bcFLOAT bc_platform_shape<g_api_physx>::get_rest_offset() const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			return l_px_shape->getRestOffset();
 		}
@@ -308,7 +308,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_shape_flag bc_platform_shape<g_api_physx>::get_flags() const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			return static_cast<bc_shape_flag>(static_cast<physx::PxShapeFlags::InternalType>(l_px_shape->getFlags()));
 		}
@@ -335,7 +335,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_collision_filter bc_platform_shape<g_api_physx>::get_collision_group() const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 			auto l_px_filter_data = l_px_shape->getSimulationFilterData();
 
 			return bc_collision_filter
@@ -365,7 +365,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_shape_notify_flag bc_platform_shape<g_api_physx>::get_notify_flags() const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 			const auto l_px_filter_data = l_px_shape->getSimulationFilterData();
 
 			return static_cast<bc_shape_notify_flag>(l_px_filter_data.word2);
@@ -407,7 +407,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_query_group bc_platform_shape<g_api_physx>::get_query_group() const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 			const auto l_px_filter_data = l_px_shape->getQueryFilterData();
 
 			return static_cast<bc_query_group>(l_px_filter_data.word0);
@@ -433,7 +433,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_shape_query_flag bc_platform_shape<g_api_physx>::get_query_flags() const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 			const auto l_px_filter_data = l_px_shape->getQueryFilterData();
 
 			return static_cast<bc_shape_query_flag>(l_px_filter_data.word1);
@@ -475,7 +475,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bool bc_platform_shape<g_api_physx>::get_high_detail_query_shape() const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 			const auto l_px_filter_data = l_px_shape->getQueryFilterData();
 
 			return static_cast<bool>(l_px_filter_data.word2);
@@ -501,7 +501,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bool bc_platform_shape<g_api_physx>::is_exclusive() const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			return l_px_shape->isExclusive();
 		}
@@ -526,7 +526,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		void* bc_platform_shape<g_api_physx>::get_data() const noexcept
 		{
-			auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
+			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
 			return l_px_shape->userData;
 		}

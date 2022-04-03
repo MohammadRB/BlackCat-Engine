@@ -15,6 +15,26 @@
       ]
     },
     {
+      "name": "env_tower_spot_light",
+      "components": [
+        {
+          "name": "light",
+          "parameters": {
+            "type": "spot",
+            "position": [ 0.0, 0.0, 0.0 ],
+            "direction": [ 1.0, -0.5, 0.0 ],
+            "color": [ 0.79, 0.78, 0.68, 1.2 ],
+            "length": 100.0,
+            "angle": 130.0,
+            "flare_surface": [ 0.5, 0.5, 0.5 ],
+            "flare_intensity": 0.8,
+            "flare_size": 15.0,
+            "flare_mask_material": "flare3"
+          }
+        }
+      ]
+    },
+    {
       "name": "env_wind",
       "components": [
         {
@@ -22,7 +42,7 @@
           "parameters": {
             "type": "direct",
             "direction": [ 0.0, 0.0, 1.0 ],
-            "power": 1.9
+            "power": 2.2
           }
         }
       ]
@@ -63,20 +83,40 @@
       ]
     },
     {
+      "name": "mesh_concrete_wall_base_16m",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "concrete_wall_base_16m",
+            "view_distance": 300.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "mesh_barrel_black",
       "components": [
         {
           "name": "simple_mesh",
           "parameters": {
             "mesh": "barrel_black",
-            "view_distance": 200.0
+            "view_distance": 250.0
           }
         },
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 100.0,
-            "cmass": [ 0.0, 4.0, 0.0 ],
+            "mass": 15.0,
+            "cmass": [ 0.0, 3.0, 0.0 ],
             "collider_materials": {
               "*": "iron"
             }
@@ -91,14 +131,74 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "barrel_explosive_red",
-            "view_distance": 200.0
+            "view_distance": 250.0
           }
         },
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 100.0,
-            "cmass": [ 0.0, 4.0, 0.0 ],
+            "mass": 15.0,
+            "cmass": [ 0.0, 3.0, 0.0 ],
+            "collider_materials": {
+              "*": "iron"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_support_building_c",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "support_building_c",
+            "view_distance": 1000.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_support_building_d",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "support_building_d",
+            "view_distance": 500.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "soil"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_floodlight_tower",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "floodlight_tower",
+            "view_distance": 400.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
             "collider_materials": {
               "*": "iron"
             }
@@ -138,8 +238,48 @@
         {
           "name": "rigid_dynamic",
           "parameters": {
-            "mass": 5.0,
-            "cmass": [ 0.0, 3.0, 0.0 ]
+            "mass": 15.0,
+            "cmass": [ 0.0, 2.0, 0.0 ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_container_small_blue",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "container_small_blue",
+            "view_distance": 400.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "iron"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mesh_container_small_red",
+      "components": [
+        {
+          "name": "simple_mesh",
+          "parameters": {
+            "mesh": "container_small_red",
+            "view_distance": 400.0
+          }
+        },
+        {
+          "name": "rigid_static",
+          "parameters": {
+            "collider_materials": {
+              "*": "iron"
+            }
           }
         }
       ]

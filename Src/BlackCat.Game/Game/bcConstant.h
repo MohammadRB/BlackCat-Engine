@@ -58,6 +58,7 @@ namespace black_cat
 		BC_PARAMETER(weapon_fire_light_intensity, "fire_light_intensity");
 		BC_PARAMETER(weapon_fire_light_flare_surface, "fire_light_flare_surface");
 		BC_PARAMETER(weapon_fire_light_flare_intensity, "fire_light_flare_intensity");
+		BC_PARAMETER(weapon_fire_light_flare_size, "fire_light_flare_size");
 		BC_PARAMETER(weapon_fire_light_flare_mask_material, "fire_light_flare_mask_material");
 		BC_PARAMETER(weapon_rate_of_fire_seconds, "rate_of_fire");
 		BC_PARAMETER(weapon_bullet_speed, "bullet_speed");
@@ -79,6 +80,7 @@ namespace black_cat
 		BC_PARAMETER(light_particle_intensity, "particle_intensity");
 		BC_PARAMETER(light_flare_surface, "flare_surface");
 		BC_PARAMETER(light_flare_intensity, "flare_intensity");
+		BC_PARAMETER(light_flare_size, "flare_size");
 		BC_PARAMETER(light_flare_mask_material, "flare_mask_material");
 		BC_PARAMETER(light_flare_mask_u0, "flare_mask_u0");
 		BC_PARAMETER(light_flare_mask_v0, "flare_mask_v0");

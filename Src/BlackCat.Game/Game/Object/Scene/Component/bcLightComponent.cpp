@@ -77,6 +77,7 @@ namespace black_cat
 						l_flare_surface->y,
 						l_flare_surface->z,
 						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_intensity), l_color.w),
+						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_size), l_radius),
 						l_material,
 						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_u0), 0),
 						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_v0), 0),
@@ -117,6 +118,7 @@ namespace black_cat
 						l_flare_surface->y,
 						l_flare_surface->z,
 						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_intensity), l_color.w),
+						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_size), l_length / 2),
 						l_material,
 						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_u0), 0),
 						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_v0), 0),
@@ -149,8 +151,7 @@ namespace black_cat
 
 		void bc_light_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
-			if(l_world_transform_event)
+			if(const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event))
 			{
 				// TODO what if light is part of a mesh
 				const auto& l_transform = l_world_transform_event->get_transform();

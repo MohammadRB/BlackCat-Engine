@@ -94,8 +94,8 @@
     {
       "name": "decal_numbers",
       "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
-      "specular_intensity": 0.1,
-      "specular_power": 0.1,
+      "specular_intensity": 0.2,
+      "specular_power": 32.0,
       "diffuse_map": "decal_numbers",
       "normal_map": "decal_numbers_nrm",
       "specular_map": null

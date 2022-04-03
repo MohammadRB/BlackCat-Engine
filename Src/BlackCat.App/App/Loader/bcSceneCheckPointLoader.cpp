@@ -74,7 +74,7 @@ namespace black_cat
 
 			*l_json_entry->m_entity_name = l_mediate_component->get_entity_name();
 			*l_json_entry->m_position = l_world_transform.get_translation();
-			*l_json_entry->m_rotation = bc_matrix4f_decompose_to_angles(l_world_transform);
+			*l_json_entry->m_rotation = bc_matrix4f_decompose_to_angles_zyx(l_world_transform);
 
 			l_actor_components.clear();
 		}

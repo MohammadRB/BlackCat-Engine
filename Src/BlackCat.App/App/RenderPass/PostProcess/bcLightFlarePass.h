@@ -60,18 +60,25 @@ namespace black_cat
 
 	private:
 		void _update_light_queries(const game::bc_render_pass_render_context& p_context);
-		
+
+		void _draw_flares(const game::bc_render_pass_render_context& p_context);
+
 		void _query_light(const game::bc_render_pass_render_context& p_context, game::bc_light_instance& p_light, _bc_light_flare_query_instance& p_query);
 		
 		_bc_light_flare_query_instance* _find_free_query(graphic::bc_device& p_device);
 
-		void _draw_flares(const game::bc_render_pass_render_context& p_context);
+		bcFLOAT _calculate_flare_size_ratio(bcFLOAT p_distance) const noexcept;
+
+		bcFLOAT _calculate_flare_surface_ratio(bcFLOAT p_distance) const noexcept;
 		
 		constexpr static bcUINT32 s_per_draw_flare_count = 50U;
 		constexpr static bcUINT32 s_per_draw_texture_count = 10U;
-		constexpr static bcFLOAT s_flare_size_ratio = 0.9;
-		constexpr static bcFLOAT s_flare_size_distance = 5;
-		bcFLOAT m_flare_size_distance;
+		constexpr static bcFLOAT s_flare_size_shrink_distance = 5.0f;
+		constexpr static bcFLOAT s_flare_surface_grow_distance = 30.0f;
+		constexpr static bcFLOAT s_flare_intensity_spot_angle = 0.85f;
+
+		bcFLOAT m_flare_size_shrink_distance;
+		bcFLOAT m_flare_surface_grow_distance;
 		const game::bc_render_pass_variable_t m_render_target_texture;
 		const game::bc_render_pass_variable_t m_render_target_view;
 		

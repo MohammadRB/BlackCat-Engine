@@ -104,6 +104,7 @@ namespace black_cat
 					l_flare_surface->y,
 					l_flare_surface->z,
 					bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_weapon_fire_light_flare_intensity), m_fire_light_intensity),
+					bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_weapon_fire_light_flare_size), m_fire_light_radius),
 					l_material,
 					0,
 					0,

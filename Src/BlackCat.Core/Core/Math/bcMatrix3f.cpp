@@ -103,7 +103,7 @@ namespace black_cat
 			m_entry[i(2, 2)] = 1.0f;
 		}
 		
-		void bc_matrix3f::rotation_lh(bc_vector3f& p_rot) noexcept
+		void bc_matrix3f::rotation_xyz_lh(const bc_vector3f& p_rot) noexcept
 		{
 			bc_matrix3f l_rot1;
 			bc_matrix3f l_rot2;
@@ -195,7 +195,7 @@ namespace black_cat
 			m_entry[i(1, 0)] = -m_entry[i(1, 0)];
 		}
 
-		void bc_matrix3f::rotation_rh(const bc_vector3f& p_rot) noexcept
+		void bc_matrix3f::rotation_xyz_rh(const bc_vector3f& p_rot) noexcept
 		{
 			bc_matrix3f l_rot1;
 			bc_matrix3f l_rot2;
@@ -633,6 +633,134 @@ namespace black_cat
 			return l_ident;
 		}
 
+		bc_matrix3f bc_matrix3f::rotation_matrix_x_lh(bcFLOAT p_radians) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_x_lh(p_radians);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_y_lh(bcFLOAT p_radians) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_y_lh(p_radians);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_z_lh(bcFLOAT p_radians) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_z_lh(p_radians);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_xyz_lh(const bc_vector3f& p_rot) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_xyz_lh(p_rot);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_zyx_lh(const bc_vector3f& p_rot) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_zyx_lh(p_rot);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_euler_lh(const bc_vector3f& p_axis, bcFLOAT p_radians) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_euler_lh(p_axis, p_radians);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_between_two_vector_lh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_between_two_vector_lh(p_v1, p_v2);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_between_two_vector_checked_lh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_between_two_vector_checked_lh(p_v1, p_v2);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_x_rh(bcFLOAT p_radians) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_x_rh(p_radians);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_y_rh(bcFLOAT p_radians) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_y_rh(p_radians);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_z_rh(bcFLOAT p_radians) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_z_rh(p_radians);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_xyz_rh(const bc_vector3f& p_rot) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_xyz_rh(p_rot);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_zyx_rh(const bc_vector3f& p_rot) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_zyx_rh(p_rot);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_euler_rh(const bc_vector3f& p_axis, bcFLOAT p_radians) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_euler_rh(p_axis, p_radians);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_between_two_vector_rh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_between_two_vector_rh(p_v1, p_v2);
+
+			return l_matrix;
+		}
+
+		bc_matrix3f bc_matrix3f::rotation_matrix_between_two_vector_checked_rh(const bc_vector3f& p_v1, const bc_vector3f& p_v2) noexcept
+		{
+			bc_matrix3f l_matrix;
+			l_matrix.rotation_between_two_vector_checked_rh(p_v1, p_v2);
+
+			return l_matrix;
+		}
+
 		constexpr bcUINT32 bc_matrix3f::i(bcUINT32 p_index)
 		{
 			if constexpr (use_column_major_storage())
@@ -647,7 +775,7 @@ namespace black_cat
 
 		constexpr bcUINT32 bc_matrix3f::i(bcUINT32 p_row, bcUINT32 p_col)
 		{
-			if(use_column_major_storage())
+			if constexpr (use_column_major_storage())
 			{
 				return 3 * p_col + p_row;
 			}

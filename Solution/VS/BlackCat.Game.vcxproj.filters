@@ -1073,5 +1073,8 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Animation\bcAnimationSystem.cpp">
       <Filter>Game\System\Animation</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcSpotLight.cpp">
+      <Filter>Game\System\Render\Light</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

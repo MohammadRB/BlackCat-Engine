@@ -542,6 +542,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Animation\Job\bcRagdollSkinningAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Animation\Job\bcSamplingAnimationJob.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Animation\Job\bcTwoBoneIKAnimationJob.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcSpotLight.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Sound\bcSoundManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Sound\bcSoundSystem.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentManager.cpp" />

@@ -126,7 +126,7 @@ namespace box
 
 		bx_app_state m_state = bx_app_state::initial;
 		const bcFLOAT m_game_time = 60;
-		const bcFLOAT m_respawn_time = 5;
+		const bcFLOAT m_respawn_time = 10;
 		bcFLOAT m_current_game_time = m_game_time;
 		bcFLOAT m_last_state_update_elapsed_ms = 0;
 		std::unordered_map<game::bc_network_client_id, bx_client> m_joined_clients;

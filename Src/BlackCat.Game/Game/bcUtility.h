@@ -10,116 +10,100 @@
 
 namespace black_cat
 {
-	inline core::bc_matrix3f bc_matrix3f_rotation_between_two_vector(const core::bc_vector3f& p_v1, const core::bc_vector3f& p_v2)
-	{
-		core::bc_matrix3f l_matrix;
-		
-		if constexpr (graphic::bc_render_api_info::use_left_handed())
-		{
-			l_matrix.rotation_between_two_vector_lh(p_v1, p_v2);
-		}
-		else
-		{
-			l_matrix.rotation_between_two_vector_rh(p_v1, p_v2);
-		}
-
-		return l_matrix;
-	}
-
-	inline core::bc_matrix3f bc_matrix3f_rotation_between_two_vector_checked(const core::bc_vector3f& p_v1, const core::bc_vector3f& p_v2)
-	{
-		core::bc_matrix3f l_matrix;
-
-		if constexpr (graphic::bc_render_api_info::use_left_handed())
-		{
-			l_matrix.rotation_between_two_vector_checked_lh(p_v1, p_v2);
-		}
-		else
-		{
-			l_matrix.rotation_between_two_vector_checked_rh(p_v1, p_v2);
-		}
-
-		return l_matrix;
-	}
-
-	inline core::bc_matrix3f bc_matrix3f_rotation_euler(const core::bc_vector3f& p_axis, bcFLOAT p_radians)
-	{
-		core::bc_matrix3f l_matrix;
-
-		if constexpr (graphic::bc_render_api_info::use_left_handed())
-		{
-			l_matrix.rotation_euler_lh(p_axis, p_radians);
-		}
-		else
-		{
-			l_matrix.rotation_euler_rh(p_axis, p_radians);
-		}
-
-		return l_matrix;
-	}
-
-	inline core::bc_matrix3f bc_matrix3f_rotation_zyx(const core::bc_vector3f& p_angles)
-	{
-		core::bc_matrix3f l_matrix;
-
-		if constexpr (graphic::bc_render_api_info::use_left_handed())
-		{
-			l_matrix.rotation_zyx_lh(p_angles);
-		}
-		else
-		{
-			l_matrix.rotation_zyx_rh(p_angles);
-		}
-
-		return l_matrix;
-	}
-
 	inline core::bc_matrix3f bc_matrix3f_rotation_x(bcFLOAT p_radians)
 	{
-		core::bc_matrix3f l_matrix;
-
 		if constexpr (graphic::bc_render_api_info::use_left_handed())
 		{
-			l_matrix.rotation_x_lh(p_radians);
+			return core::bc_matrix3f::rotation_matrix_x_lh(p_radians);
 		}
 		else
 		{
-			l_matrix.rotation_x_rh(p_radians);
+			core::bc_matrix3f::rotation_matrix_x_rh(p_radians);
 		}
-
-		return l_matrix;
 	}
 
 	inline core::bc_matrix3f bc_matrix3f_rotation_y(bcFLOAT p_radians)
 	{
-		core::bc_matrix3f l_matrix;
-
 		if constexpr (graphic::bc_render_api_info::use_left_handed())
 		{
-			l_matrix.rotation_y_lh(p_radians);
+			return core::bc_matrix3f::rotation_matrix_y_lh(p_radians);
 		}
 		else
 		{
-			l_matrix.rotation_y_rh(p_radians);
+			core::bc_matrix3f::rotation_matrix_y_rh(p_radians);
 		}
-
-		return l_matrix;
 	}
 
 	inline core::bc_matrix3f bc_matrix3f_rotation_z(bcFLOAT p_radians)
 	{
-		core::bc_matrix3f l_matrix;
-
 		if constexpr (graphic::bc_render_api_info::use_left_handed())
 		{
-			l_matrix.rotation_z_lh(p_radians);
+			return core::bc_matrix3f::rotation_matrix_z_lh(p_radians);
 		}
 		else
 		{
-			l_matrix.rotation_z_rh(p_radians);
+			core::bc_matrix3f::rotation_matrix_z_rh(p_radians);
 		}
+	}
 
-		return l_matrix;
+	inline core::bc_matrix3f bc_matrix3f_rotation_xyz(const core::bc_vector3f& p_angles)
+	{
+		if constexpr (graphic::bc_render_api_info::use_left_handed())
+		{
+			return core::bc_matrix3f::rotation_matrix_xyz_lh(p_angles);
+		}
+		else
+		{
+			core::bc_matrix3f::rotation_matrix_xyz_rh(p_angles);
+		}
+	}
+
+	inline core::bc_matrix3f bc_matrix3f_rotation_zyx(const core::bc_vector3f& p_angles)
+	{
+		if constexpr (graphic::bc_render_api_info::use_left_handed())
+		{
+			return core::bc_matrix3f::rotation_matrix_zyx_lh(p_angles);
+		}
+		else
+		{
+			core::bc_matrix3f::rotation_matrix_zyx_rh(p_angles);
+		}
+	}
+
+	inline core::bc_matrix3f bc_matrix3f_rotation_euler(const core::bc_vector3f& p_axis, bcFLOAT p_radians)
+	{
+		if constexpr (graphic::bc_render_api_info::use_left_handed())
+		{
+			return core::bc_matrix3f::rotation_matrix_euler_lh(p_axis, p_radians);
+		}
+		else
+		{
+			core::bc_matrix3f::rotation_matrix_euler_rh(p_axis, p_radians);
+		}
+	}
+	
+	inline core::bc_matrix3f bc_matrix3f_rotation_between_two_vector(const core::bc_vector3f& p_v1, const core::bc_vector3f& p_v2)
+	{
+		if constexpr (graphic::bc_render_api_info::use_left_handed())
+		{
+			return core::bc_matrix3f::rotation_matrix_between_two_vector_lh(p_v1, p_v2);
+		}
+		else
+		{
+			return core::bc_matrix3f::rotation_matrix_between_two_vector_rh(p_v1, p_v2);
+		}
+	}
+
+	inline core::bc_matrix3f bc_matrix3f_rotation_between_two_vector_checked(const core::bc_vector3f& p_v1, const core::bc_vector3f& p_v2)
+	{
+		if constexpr (graphic::bc_render_api_info::use_left_handed())
+		{
+			return core::bc_matrix3f::rotation_matrix_between_two_vector_checked_lh(p_v1, p_v2);
+		}
+		else
+		{
+			return core::bc_matrix3f::rotation_matrix_between_two_vector_checked_rh(p_v1, p_v2);
+		}
 	}
 	
 	inline core::bc_vector4f bc_matrix3f_decompose_to_axis_angle(const core::bc_matrix3f& p_transform)
@@ -140,7 +124,7 @@ namespace black_cat
 		return core::bc_vector4f(l_up, l_up_rotation);
 	}
 
-	inline core::bc_vector3f bc_matrix3f_decompose_to_angles(const core::bc_matrix3f& p_transform)
+	inline core::bc_vector3f bc_matrix3f_decompose_to_angles_zyx(const core::bc_matrix3f& p_transform)
 	{
 		// https://stackoverflow.com/questions/15022630/how-to-calculate-the-angle-from-rotation-matrix
 		const auto l_tx = std::atan2(p_transform(2, 1), p_transform(2, 2));
@@ -155,7 +139,7 @@ namespace black_cat
 		return { l_tx, l_ty, l_tz };
 	}
 	
-	inline core::bc_vector3f bc_matrix4f_decompose_to_angles(const core::bc_matrix4f& p_transform)
+	inline core::bc_vector3f bc_matrix4f_decompose_to_angles_zyx(const core::bc_matrix4f& p_transform)
 	{
 		// https://stackoverflow.com/questions/15022630/how-to-calculate-the-angle-from-rotation-matrix
 		const auto l_tx = std::atan2(p_transform(2, 1), p_transform(2, 2));
@@ -169,7 +153,7 @@ namespace black_cat
 
 		return { l_tx, l_ty, l_tz };
 	}
-
+	
 	inline core::bc_matrix4f bc_matrix4f_from_position_and_direction(const core::bc_vector3f& p_position, const core::bc_vector3f& p_direction)
 	{
 		core::bc_matrix4f l_matrix;

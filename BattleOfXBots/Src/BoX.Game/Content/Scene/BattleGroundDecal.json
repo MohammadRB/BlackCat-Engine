@@ -287,6 +287,76 @@
       "group": 2,
       "view_distance": 100.0,
       "auto_remove": false
+    },
+    {
+      "name": "number_1",
+      "material_name": "decal_numbers",
+      "u0": 0,
+      "v0": 0,
+      "u1": 174,
+      "v1": 174,
+      "width": 5.0,
+      "height": 5.0,
+      "depth": 3.0,
+      "group": 2,
+      "view_distance": 150.0,
+      "auto_remove": false
+    },
+    {
+      "name": "number_2",
+      "material_name": "decal_numbers",
+      "u0": 174,
+      "v0": 0,
+      "u1": 348,
+      "v1": 174,
+      "width": 5.0,
+      "height": 5.0,
+      "depth": 3.0,
+      "group": 2,
+      "view_distance": 150.0,
+      "auto_remove": false
+    },
+    {
+      "name": "number_3",
+      "material_name": "decal_numbers",
+      "u0": 348,
+      "v0": 0,
+      "u1": 522,
+      "v1": 174,
+      "width": 5.0,
+      "height": 5.0,
+      "depth": 3.0,
+      "group": 2,
+      "view_distance": 150.0,
+      "auto_remove": false
+    },
+    {
+      "name": "number_4",
+      "material_name": "decal_numbers",
+      "u0": 0,
+      "v0": 174,
+      "u1": 174,
+      "v1": 348,
+      "width": 5.0,
+      "height": 5.0,
+      "depth": 3.0,
+      "group": 2,
+      "view_distance": 150.0,
+      "auto_remove": false
+    },
+    {
+      "name": "number_5",
+      "material_name": "decal_numbers",
+      "u0": 174,
+      "v0": 174,
+      "u1": 348,
+      "v1": 348,
+      "width": 5.0,
+      "height": 5.0,
+      "depth": 3.0,
+      "group": 2,
+      "view_distance": 150.0,
+      "auto_remove": false
     }
   ]
 }

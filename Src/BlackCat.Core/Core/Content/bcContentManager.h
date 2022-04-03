@@ -16,6 +16,7 @@
 #include "Core/Content/bcContent.h"
 #include "Core/Content/bcContentLoader.h"
 #include "Core/Utility/bcServiceManager.h"
+#include "Core/Utility/bcLogger.h"
 #include "Core/bcExport.h"
 #include "Core/bcException.h"
 #include "Core/bcConstant.h"
@@ -621,22 +622,17 @@ namespace black_cat
 				platform::bc_lock_guard l_guard(m_contents_mutex);
 
 				const auto l_ite = m_contents.find(p_key);
-				if(l_ite != std::end(m_contents))
-				{
-					// Due to concurrency it is possible one content load twice
-					if(p_file != l_ite->second.m_file)
-					{
-						auto l_msg = bc_string_stream_frame() << "Content with key '" << p_key << "' already exist in the contents map";
-						throw bc_invalid_operation_exception(l_msg.str().c_str());
-					}
-				}
-				else
+				if(l_ite == std::end(m_contents))
 				{
 					auto l_entry = _bc_content_entry(std::move(p_key), bc_estring(p_file), bc_estring(p_file_variant), bc_unique_ptr<bci_content>(std::move(p_content)));
 					auto l_entry_key = bc_estring_view(l_entry.m_key);
 					const auto l_insertion_result = m_contents.insert(map_type::value_type(l_entry_key, std::move(l_entry)));
 
 					l_content_ptr->_set_key(l_insertion_result.first->second.m_key);
+				}
+				else
+				{
+					bc_log(bc_log_type::warning) << "content with key '" << p_key << "' already exist in the contents map. newly loaded content will be discarded." << bc_lend;
 				}
 			}
 

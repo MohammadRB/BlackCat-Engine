@@ -19,10 +19,10 @@ namespace black_cat
 			}
 		}
 		
-		bc_matrix4f::bc_matrix4f(const bc_matrix4f& p_matrix) noexcept
+		bc_matrix4f::bc_matrix4f(const bc_matrix4f& p_other) noexcept
 			: m_entry{}
 		{
-			std::memcpy(m_entry, p_matrix.m_entry, 16 * sizeof(bcFLOAT));
+			std::memcpy(m_entry, p_other.m_entry, 16 * sizeof(bcFLOAT));
 		}
 		
 		bc_matrix4f::bc_matrix4f(bcFLOAT p_m11, bcFLOAT p_m12, bcFLOAT p_m13, bcFLOAT p_m14,
@@ -657,6 +657,34 @@ namespace black_cat
 			return l_prod;
 		}
 
+		bc_matrix4f bc_matrix4f::zero() noexcept
+		{
+			auto l_return = bc_matrix4f(true);
+			return l_return;
+		}
+
+		bc_matrix4f bc_matrix4f::identity() noexcept
+		{
+			bc_matrix4f l_ident;
+
+			for (auto l_row = 0U; l_row < 4; l_row++)
+			{
+				for (auto l_col = 0U; l_col < 4; l_col++)
+				{
+					if (l_row == l_col)
+					{
+						l_ident.m_entry[i(l_row, l_col)] = 1.0f;
+					}
+					else
+					{
+						l_ident.m_entry[i(l_row, l_col)] = 0.0f;
+					}
+				}
+			}
+
+			return l_ident;
+		}
+
 		bc_matrix4f bc_matrix4f::rotation_matrix_xyz_lh(bcFLOAT p_radians_x, bcFLOAT p_radians_y, bcFLOAT p_radians_z) noexcept
 		{
 			return bc_matrix4f::rotation_matrix_z_lh(p_radians_z) * bc_matrix4f::rotation_matrix_x_lh(p_radians_x) * bc_matrix4f::rotation_matrix_y_lh(p_radians_y);
@@ -996,38 +1024,9 @@ namespace black_cat
 			return l_ret;
 		}
 
-		bc_matrix4f bc_matrix4f::zero() noexcept
-		{
-			bc_matrix4f l_return = bc_matrix4f(true);
-
-			return l_return;
-		}
-
-		bc_matrix4f bc_matrix4f::identity() noexcept
-		{
-			bc_matrix4f l_ident;
-
-			for (auto l_row = 0U; l_row < 4; l_row++)
-			{
-				for (auto l_col = 0U; l_col < 4; l_col++)
-				{
-					if (l_row == l_col)
-					{
-						l_ident.m_entry[i(l_row, l_col)] = 1.0f;
-					}
-					else
-					{
-						l_ident.m_entry[i(l_row, l_col)] = 0.0f;
-					}
-				}
-			}
-
-			return l_ident;
-		}
-
 		constexpr bcUINT32 bc_matrix4f::i(bcUINT32 p_index)
 		{
-			if (use_column_major_storage())
+			if constexpr (use_column_major_storage())
 			{
 				return i(p_index / 4, p_index % 4);
 			}
@@ -1039,7 +1038,7 @@ namespace black_cat
 
 		constexpr bcUINT32 bc_matrix4f::i(bcUINT32 p_row, bcUINT32 p_col)
 		{		
-			if (use_column_major_storage())
+			if constexpr (use_column_major_storage())
 			{
 				return 4 * p_col + p_row;
 			}

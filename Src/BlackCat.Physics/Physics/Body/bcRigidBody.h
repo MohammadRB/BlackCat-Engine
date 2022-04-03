@@ -68,7 +68,30 @@ namespace black_cat
 			 * \param p_mass 
 			 */
 			virtual void set_inertia_tensor(const core::bc_vector3f& p_mass) noexcept;
+
+			/**
+			* \brief Computation of mass properties for a rigid body actor
+			* This method sets the mass, inertia and center of mass of a rigid body. The mass is set to the sum of all user-supplied
+			* shape mass values, and the inertia and center of mass are computed according to the rigid body's shapes and the per shape mass input values.
+			* If no collision shapes are found, the inertia tensor is set to (1,1,1)
+			* \param[in] p_shape_masses The per shape mass values. There must be one entry for each shape which has the PxShapeFlag::eSIMULATION_SHAPE set. Other shapes are ignored. The mass values must be greater than 0.
+			* \param[in] p_shape_masses_count The number of provided mass values.
+			* \param[in] p_mass_local_pose The center of mass relative to the actor frame. If set to null then (0,0,0) is assumed.
+			* \return Boolean. True on success else false.
+			*/
+			virtual bool set_mass_update_inertia(const bcFLOAT* p_shape_masses, bcUINT32 p_shape_masses_count, const core::bc_vector3f* p_mass_local_pose = nullptr) noexcept;
 			
+			/**
+			* \brief Computation of mass properties for a rigid body actor
+			* This method sets the mass, inertia and center of mass of a rigid body. The mass is set to the user-supplied
+			* value, and the inertia and center of mass are computed according to the rigid body's shapes and the input mass.
+			* If no collision shapes are found, the inertia tensor is set to (1,1,1)
+			* \param[in] p_mass The mass of the body. Must be greater than 0.
+			* \param[in] p_mass_local_pose The center of mass relative to the actor frame. If set to null then (0,0,0) is assumed.
+			* \return Boolean. True on success else false.
+			*/
+			virtual bool set_mass_update_inertia(bcFLOAT p_mass, const core::bc_vector3f* p_mass_local_pose = nullptr) noexcept;
+
 			/**
 			 * \brief Computation of mass properties for a rigid body actor
 			 * To simulate a dynamic rigid actor, actor needs a mass and an inertia tensor.

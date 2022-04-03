@@ -42,7 +42,7 @@ namespace black_cat
 			if (m_selected_decal)
 			{
 				const auto& l_position = p_decal->get_local_position();
-				const auto l_euler_rotation = bc_matrix3f_decompose_to_angles(p_decal->get_local_rotation());
+				const auto l_euler_rotation = bc_matrix3f_decompose_to_angles_zyx(p_decal->get_local_rotation());
 				
 				m_decal_name_label->setText(m_selected_decal->get_decal()->get_name().data());
 				m_decal_position_x_text->setText(QString::number(l_position.x));
