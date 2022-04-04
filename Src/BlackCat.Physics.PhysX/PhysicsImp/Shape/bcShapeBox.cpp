@@ -12,6 +12,13 @@ namespace black_cat
 	{
 		template<>
 		BC_PHYSICSIMP_DLL
+		bc_platform_shape_box<g_api_physx>::bc_platform_shape_box() noexcept
+			: bc_platform_shape_geometry()
+		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
 		bc_platform_shape_box<g_api_physx>::bc_platform_shape_box(platform_pack& p_pack) noexcept
 			: bc_platform_shape_geometry(),
 			m_pack(p_pack)

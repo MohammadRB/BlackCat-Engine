@@ -174,59 +174,45 @@ namespace black_cat
 			{
 			case physics::bc_shape_type::sphere:
 			{
-				physics::bc_shape_sphere l_sphere(0);
-				p_shape.as_sphere(l_sphere);
-
+				auto [l_is, l_sphere] = p_shape.as_sphere();
 				l_shape = p_physics.create_shape(l_sphere, l_materials.data(), l_material_count);
 				break;
 			}
 			case physics::bc_shape_type::plane:
 			{
-				physics::bc_shape_plane l_plane(core::bc_vector3f(), 0);
-				p_shape.as_plane(l_plane);
-
+				auto [l_is, l_plane] = p_shape.as_plane();
 				l_shape = p_physics.create_shape(l_plane, l_materials.data(), l_material_count);
 				break;
 			}
 			case physics::bc_shape_type::capsule:
 			{
-				physics::bc_shape_capsule l_capsule(0, 0);
-				p_shape.as_capsule(l_capsule);
-
+				auto [l_is, l_capsule] = p_shape.as_capsule();
 				l_shape = p_physics.create_shape(l_capsule, l_materials.data(), l_material_count);
 				break;
 			}
 			case physics::bc_shape_type::box:
 			{
-				physics::bc_shape_box l_box(0, 0, 0);
-				p_shape.as_box(l_box);
-
+				auto [l_is, l_box] = p_shape.as_box();
 				l_shape = p_physics.create_shape(l_box, l_materials.data(), l_material_count);
 				break;
 			}
 			case physics::bc_shape_type::convex_mesh:
 			{
-				const physics::bc_convex_mesh l_convex_mesh;
-				physics::bc_shape_convex_mesh _convex_shape(l_convex_mesh);
-				p_shape.as_convex_mesh(_convex_shape);
+				auto [l_is, _convex_shape] = p_shape.as_convex_mesh();
 
 				l_shape = p_physics.create_shape(_convex_shape, l_materials.data(), l_material_count);
 				break;
 			}
 			case physics::bc_shape_type::triangle_mesh:
 			{
-				const physics::bc_triangle_mesh l_triangle_mesh;
-				physics::bc_shape_triangle_mesh l_triangle_shape(l_triangle_mesh);
-				p_shape.as_triangle_mesh(l_triangle_shape);
+				auto [l_is, l_triangle_shape] = p_shape.as_triangle_mesh();
 
 				l_shape = p_physics.create_shape(l_triangle_shape, l_materials.data(), l_material_count);
 				break;
 			}
 			case physics::bc_shape_type::height_field:
 			{
-				const physics::bc_height_field l_height_field;
-				physics::bc_shape_height_field l_l_height_field_shape(l_height_field, 0, 0);
-				p_shape.as_height_field(l_l_height_field_shape);
+				auto [l_is, l_l_height_field_shape] = p_shape.as_height_field();
 
 				l_shape = p_physics.create_shape(l_l_height_field_shape, l_materials.data(), l_material_count);
 				break;

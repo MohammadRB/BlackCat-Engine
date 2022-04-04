@@ -5,11 +5,12 @@
 #include "Core/Content/bcLazyContent.h"
 #include "Core/Content/bcContentManager.h"
 #include "GraphicImp/bcRenderApiInfo.h"
-#include "Game/System/bcGameSystem.h"
 #include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
+#include "Game/System/Physics/bcPhysicsShapeUtility.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
@@ -165,6 +166,28 @@ namespace black_cat
 				bc_actor_render_group::terrain,
 				core::bc_matrix4f::translation_matrix(l_world_pos)
 			);
+		}
+
+		bc_pickup_proxy_result bc_height_map_component::ray_pickup(const physics::bc_ray& p_ray) const
+		{
+			auto l_ray_hit = physics::bc_ray_hit();
+			const auto l_px_height_field_shape = physics::bc_shape_height_field
+			(
+				get_height_map().get_px_height_field(),
+				get_height_map().get_xz_multiplier(),
+				get_height_map().get_y_multiplier()
+			);
+			const bool l_intersects = physics::bc_shape_query::ray_cast
+			(
+				p_ray,
+				l_px_height_field_shape,
+				bc_convert_to_height_map_transform(get_height_map(), physics::bc_transform(get_world_position())),
+				physics::bc_hit_flag::distance,
+				&l_ray_hit,
+				1
+			);
+
+			return { l_intersects ? bc_pickup_proxy_state::pickup : bc_pickup_proxy_state::no_pickup, l_ray_hit };
 		}
 	}
 }

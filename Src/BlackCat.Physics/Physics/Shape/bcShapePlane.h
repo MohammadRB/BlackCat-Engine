@@ -24,6 +24,8 @@ namespace black_cat
 			using platform_pack = bc_platform_shape_plane_pack<TApi>;
 
 		public:
+			bc_platform_shape_plane() noexcept;
+
 			explicit bc_platform_shape_plane(platform_pack& p_pack) noexcept;
 
 			bc_platform_shape_plane(const core::bc_vector3f& p_normal, bcFLOAT p_distance) noexcept;

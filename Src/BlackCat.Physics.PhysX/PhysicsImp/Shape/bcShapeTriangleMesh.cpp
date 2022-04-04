@@ -10,7 +10,14 @@ namespace black_cat
 	{
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_triangle_mesh<g_api_physx>::bc_platform_shape_triangle_mesh(platform_pack& p_pack)
+		bc_platform_shape_triangle_mesh<g_api_physx>::bc_platform_shape_triangle_mesh() noexcept
+			: bc_platform_shape_geometry()
+		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_shape_triangle_mesh<g_api_physx>::bc_platform_shape_triangle_mesh(platform_pack& p_pack) noexcept
 			: bc_platform_shape_geometry(),
 			m_pack(p_pack)
 		{
@@ -18,7 +25,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_triangle_mesh<g_api_physx>::bc_platform_shape_triangle_mesh(const bc_triangle_mesh& p_triangle)
+		bc_platform_shape_triangle_mesh<g_api_physx>::bc_platform_shape_triangle_mesh(const bc_triangle_mesh& p_triangle) noexcept
 			: bc_platform_shape_geometry(),
 			m_pack(physx::PxTriangleMeshGeometry(static_cast<physx::PxTriangleMesh*>(p_triangle.get_platform_pack().m_px_object)))
 		{
@@ -26,7 +33,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_triangle_mesh<g_api_physx>::bc_platform_shape_triangle_mesh(const bc_geometry_scale& p_scale, const bc_triangle_mesh& p_triangle)
+		bc_platform_shape_triangle_mesh<g_api_physx>::bc_platform_shape_triangle_mesh(const bc_geometry_scale& p_scale, const bc_triangle_mesh& p_triangle) noexcept
 			: bc_platform_shape_geometry(),
 			m_pack
 			(
@@ -41,7 +48,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_triangle_mesh<g_api_physx>::bc_platform_shape_triangle_mesh(const bc_platform_shape_triangle_mesh& p_other)
+		bc_platform_shape_triangle_mesh<g_api_physx>::bc_platform_shape_triangle_mesh(const bc_platform_shape_triangle_mesh& p_other) noexcept
 			: bc_platform_shape_geometry(),
 			m_pack(p_other.m_pack)
 		{
@@ -49,13 +56,13 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_triangle_mesh<g_api_physx>::~bc_platform_shape_triangle_mesh()
+		bc_platform_shape_triangle_mesh<g_api_physx>::~bc_platform_shape_triangle_mesh() noexcept
 		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_triangle_mesh<g_api_physx>& bc_platform_shape_triangle_mesh<g_api_physx>::operator=(const bc_platform_shape_triangle_mesh& p_other)
+		bc_platform_shape_triangle_mesh<g_api_physx>& bc_platform_shape_triangle_mesh<g_api_physx>::operator=(const bc_platform_shape_triangle_mesh& p_other) noexcept
 		{
 			bc_platform_shape_geometry::operator=(p_other);
 			m_pack = p_other.m_pack;

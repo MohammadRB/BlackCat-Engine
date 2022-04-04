@@ -77,7 +77,7 @@ namespace black_cat
 				l_physics_system.set_game_actor(*m_px_actor_ref, p_context.m_actor);
 
 				const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_collider_materials);
-				l_physics_system.create_px_shapes_from_mesh(l_material_manager, m_px_actor_ref.get(), *l_mesh_component, l_materials);
+				l_physics_system.create_px_shapes_from_mesh(l_material_manager, m_px_actor_ref.get(), l_mesh_component->get_mesh(), l_materials);
 
 				added_to_scene(p_context.m_scene.get_px_scene(), m_px_actor_ref.get());
 				
@@ -88,7 +88,7 @@ namespace black_cat
 			{
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform(p_context.m_transform));
 				l_physics_system.set_game_actor(*m_px_actor_ref, p_context.m_actor);
-				l_physics_system.create_px_shapes_from_height_map(l_material_manager, m_px_actor_ref.get(), *l_height_map_component);
+				l_physics_system.create_px_shapes_from_height_map(l_material_manager, m_px_actor_ref.get(), l_height_map_component->get_height_map());
 
 				added_to_scene(p_context.m_scene.get_px_scene(), m_px_actor_ref.get());
 				

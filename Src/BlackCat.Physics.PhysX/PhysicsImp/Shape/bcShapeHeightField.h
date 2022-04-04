@@ -15,6 +15,11 @@ namespace black_cat
 		template<>
 		struct bc_platform_shape_height_field_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
 		{
+			bc_platform_shape_height_field_pack()
+				: bc_platform_shape_geometry_pack(m_px_height_field)
+			{
+			}
+
 			explicit bc_platform_shape_height_field_pack(const physx::PxHeightFieldGeometry& p_px_height_field)
 				: bc_platform_shape_geometry_pack(m_px_height_field),
 				m_px_height_field(p_px_height_field)

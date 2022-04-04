@@ -66,6 +66,7 @@
 #include "Game/Object/Scene/Component/bcIconComponent.h"
 #include "Game/Object/Scene/Component/bcCheckPointComponent.h"
 #include "Game/Object/Scene/Component/bcSoundComponent.h"
+#include "Game/Object/Scene/Component/bcPickupProxyComponent.h"
 #include "Game/System/Animation/bcSkinnedAnimation.h"
 #include "App/Application/bcApplicationHookFuncations.h"
 #include "App/Loader/bcTextureLoader.h"
@@ -211,7 +212,8 @@ namespace black_cat
 			game::bc_abstract_component_register<game::bc_mesh_component, game::bc_simple_mesh_component, game::bc_vegetable_mesh_component, game::bc_skinned_mesh_component>(),
 			game::bc_abstract_component_register<game::bc_render_component, game::bc_mesh_component, game::bc_height_map_component>(),
 			game::bc_abstract_component_register<game::bc_rigid_body_component, game::bc_rigid_static_component, game::bc_rigid_dynamic_component, game::bc_rigid_controller_component>(),
-			game::bc_abstract_component_register<game::bc_decal_resolver_component, game::bc_mesh_component, game::bc_height_map_component>()
+			game::bc_abstract_component_register<game::bc_decal_resolver_component, game::bc_mesh_component, game::bc_height_map_component>(),
+			game::bc_abstract_component_register<game::bc_pickup_proxy_component, game::bc_mesh_component, game::bc_height_map_component>()
 		);
 		game::bc_register_actor_controller_types
 		(

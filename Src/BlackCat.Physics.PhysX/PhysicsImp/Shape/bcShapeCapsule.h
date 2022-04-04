@@ -14,6 +14,11 @@ namespace black_cat
 		template<>
 		struct bc_platform_shape_capsule_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
 		{
+			bc_platform_shape_capsule_pack()
+				: bc_platform_shape_geometry_pack(m_px_capsule)
+			{
+			}
+
 			explicit bc_platform_shape_capsule_pack(const physx::PxCapsuleGeometry& p_px_capsule)
 				: bc_platform_shape_geometry_pack(m_px_capsule),
 				m_px_capsule(p_px_capsule)

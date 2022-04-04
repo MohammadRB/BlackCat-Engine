@@ -2,9 +2,11 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/bcUtility.h"
 #include "Core/Content/bcContentStreamManager.h"
+#include "Core/Utility/bcParameterPack.h"
+#include "Core/bcUtility.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
+#include "PhysicsImp/Collision/bcShapeQuery.h"
 #include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
@@ -90,6 +92,100 @@ namespace black_cat
 		void bc_mesh_component::write_instance(const bc_actor_component_write_context& p_context)
 		{
 			bc_decal_resolver_component::write_instance(p_context);
+		}
+
+		bc_pickup_proxy_result bc_mesh_component::ray_pickup(const physics::bc_ray& p_ray) const
+		{
+			auto* l_rigid_body_component = get_actor().get_component<bc_rigid_body_component>();
+			if(!l_rigid_body_component)
+			{
+				return { bc_pickup_proxy_state::no_result, physics::bc_ray_hit() };
+			}
+
+			{
+				bc_rigid_component_shared_lock l_lock(*l_rigid_body_component);
+
+				const auto l_rigid_body = l_rigid_body_component->get_body();
+				const auto l_shape_count = l_rigid_body.get_shape_count();
+				auto l_shapes = core::bc_vector_frame<physics::bc_shape>(l_shape_count);
+				auto l_ray_hit = physics::bc_ray_hit();
+
+				l_rigid_body.get_shapes(l_shapes.data(), l_shape_count);
+
+				for (auto& l_shape : l_shapes)
+				{
+					core::bc_any l_shape_container;
+					physics::bc_shape_geometry* l_shape_geometry = nullptr;
+
+					switch (l_shape.get_type())
+					{
+					case physics::bc_shape_type::sphere:
+					{
+						auto [l_is, l_sphere] = l_shape.as_sphere();
+						l_shape_container.set_value(l_sphere);
+						l_shape_geometry = l_shape_container.as<physics::bc_shape_sphere>();
+						break;
+					}
+					case physics::bc_shape_type::plane:
+					{
+						auto [l_is, l_plane] = l_shape.as_plane();
+						l_shape_container.set_value(l_plane);
+						l_shape_geometry = l_shape_container.as<physics::bc_shape_plane>();
+						break;
+					}
+					case physics::bc_shape_type::capsule:
+					{
+						auto [l_is, l_capsule] = l_shape.as_capsule();
+						l_shape_container.set_value(l_capsule);
+						l_shape_geometry = l_shape_container.as<physics::bc_shape_capsule>();
+						break;
+					}
+					case physics::bc_shape_type::box:
+					{
+						auto [l_is, l_box] = l_shape.as_box();
+						l_shape_container.set_value(l_box);
+						l_shape_geometry = l_shape_container.as<physics::bc_shape_box>();
+						break;
+					}
+					case physics::bc_shape_type::convex_mesh:
+					{
+						auto [l_is, l_convex] = l_shape.as_convex_mesh();
+						l_shape_container.set_value(l_convex);
+						l_shape_geometry = l_shape_container.as<physics::bc_shape_convex_mesh>();
+						break;
+					}
+					case physics::bc_shape_type::triangle_mesh:
+					{
+						auto [l_is, l_triangle_mesh] = l_shape.as_triangle_mesh();
+						l_shape_container.set_value(l_triangle_mesh);
+						l_shape_geometry = l_shape_container.as<physics::bc_shape_triangle_mesh>();
+						break;
+					}
+					}
+
+					if (!l_shape_geometry)
+					{
+						continue;
+					}
+
+					const bool l_intersects = physics::bc_shape_query::ray_cast
+					(
+						p_ray,
+						*l_shape_geometry,
+						l_rigid_body.get_global_pose() * l_shape.get_local_pose(),
+						physics::bc_hit_flag::distance,
+						&l_ray_hit,
+						1
+					);
+
+					if (l_intersects)
+					{
+						return { bc_pickup_proxy_state::pickup, l_ray_hit };
+					}
+				}
+
+				return { bc_pickup_proxy_state::no_pickup, l_ray_hit };
+			}
 		}
 
 		void bc_mesh_component::set_world_transform(bc_actor& p_actor, const core::bc_matrix4f& p_transform) noexcept

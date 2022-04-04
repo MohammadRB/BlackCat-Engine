@@ -23,6 +23,8 @@ namespace black_cat
 			using platform_pack = bc_platform_shape_convex_mesh_pack<TApi>;
 
 		public:
+			bc_platform_shape_convex_mesh() noexcept;
+
 			explicit bc_platform_shape_convex_mesh(platform_pack& p_pack) noexcept;
 
 			explicit bc_platform_shape_convex_mesh(const bc_convex_mesh& p_convex) noexcept;

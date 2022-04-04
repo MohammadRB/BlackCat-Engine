@@ -8,13 +8,14 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
+#include "Game/Object/Scene/Component/bcPickupProxyComponent.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
 
 namespace black_cat
 {
 	namespace game
 	{
-		class BC_GAME_DLL bc_height_map_component : public bc_render_component, public bc_decal_resolver_component
+		class BC_GAME_DLL bc_height_map_component : public bc_render_component, public bc_decal_resolver_component, public bc_pickup_proxy_component
 		{
 			BC_COMPONENT(hgt_map, true, false)
 
@@ -49,6 +50,8 @@ namespace black_cat
 				const core::bc_vector3f& p_world_position, 
 				const core::bc_vector3f& p_dir, 
 				bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index) override;
+
+			bc_pickup_proxy_result ray_pickup(const physics::bc_ray& p_ray) const override;
 
 		private:
 			bc_height_map_ptr m_height_map;

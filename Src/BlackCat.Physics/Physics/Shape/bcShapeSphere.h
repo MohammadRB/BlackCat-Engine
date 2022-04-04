@@ -22,15 +22,17 @@ namespace black_cat
 			using platform_pack = bc_platform_shape_sphere_pack<TApi>;
 
 		public:
-			explicit bc_platform_shape_sphere(platform_pack& p_pack);
+			bc_platform_shape_sphere() noexcept;
 
-			explicit bc_platform_shape_sphere(bcFLOAT p_radius);
+			explicit bc_platform_shape_sphere(platform_pack& p_pack) noexcept;
 
-			bc_platform_shape_sphere(const bc_platform_shape_sphere&);
+			explicit bc_platform_shape_sphere(bcFLOAT p_radius) noexcept;
 
-			~bc_platform_shape_sphere();
+			bc_platform_shape_sphere(const bc_platform_shape_sphere&) noexcept;
 
-			bc_platform_shape_sphere& operator=(const bc_platform_shape_sphere&);
+			~bc_platform_shape_sphere() noexcept override;
+
+			bc_platform_shape_sphere& operator=(const bc_platform_shape_sphere&) noexcept;
 
 			bcFLOAT get_radius() const noexcept;
 

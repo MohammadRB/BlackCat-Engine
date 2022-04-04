@@ -14,6 +14,11 @@ namespace black_cat
 		template<>
 		struct bc_platform_shape_sphere_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
 		{
+			bc_platform_shape_sphere_pack()
+				: bc_platform_shape_geometry_pack(m_px_sphere)
+			{
+			}
+
 			explicit bc_platform_shape_sphere_pack(const physx::PxSphereGeometry& p_px_sphere)
 				: bc_platform_shape_geometry_pack(m_px_sphere),
 				m_px_sphere(p_px_sphere)

@@ -327,9 +327,9 @@ namespace black_cat
 				return std::make_pair(l_shape_query_type, physics::bc_ray_hit());
 			}
 
-			auto l_actor = p_physics_system.get_game_actor(p_actor);
-			auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
-			auto* l_skinned_mesh_component = l_actor.get_component<bc_skinned_mesh_component>();
+			const auto l_actor = p_physics_system.get_game_actor(p_actor);
+			const auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
+			const auto* l_skinned_mesh_component = l_actor.get_component<bc_skinned_mesh_component>();
 
 			BC_ASSERT(l_skinned_mesh_component);
 

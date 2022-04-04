@@ -21,6 +21,8 @@ namespace black_cat
 			using platform_pack = bc_platform_shape_height_field_pack<TApi>;
 
 		public:
+			bc_platform_shape_height_field() noexcept;
+
 			explicit bc_platform_shape_height_field(platform_pack& p_pack) noexcept;
 
 			bc_platform_shape_height_field(const bc_height_field& p_height_field,

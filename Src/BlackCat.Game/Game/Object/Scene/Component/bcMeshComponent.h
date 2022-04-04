@@ -9,6 +9,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
+#include "Game/Object/Scene/Component/bcPickupProxyComponent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/Object/Mesh/bcSubMesh.h"
 #include "Game/Object/Mesh/bcMeshRenderState.h"
@@ -21,7 +22,7 @@ namespace black_cat
 		class bc_physics_system;
 		class bc_particle_manager_container;
 		
-		class BC_GAME_DLL bc_mesh_component : public bc_render_component, public bc_decal_resolver_component
+		class BC_GAME_DLL bc_mesh_component : public bc_render_component, public bc_decal_resolver_component, public bc_pickup_proxy_component
 		{
 			BC_ABSTRACT_COMPONENT(mesh)
 			
@@ -41,7 +42,9 @@ namespace black_cat
 			void load_instance(const bc_actor_component_load_context& p_context) override;
 
 			void write_instance(const bc_actor_component_write_context& p_context) override;
-			
+
+			bc_pickup_proxy_result ray_pickup(const physics::bc_ray& p_ray) const override;
+
 		protected:
 			bc_mesh_component() noexcept;
 
@@ -65,7 +68,7 @@ namespace black_cat
 				bc_particle_manager_container& p_particle_manager, 
 				const bc_bullet_hit_actor_event& p_event,
 				bool p_store_reference_to_bullet);
-			
+		
 		private:
 			bc_sub_mesh m_sub_mesh;
 			bcFLOAT m_view_distance;

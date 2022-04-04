@@ -711,6 +711,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\System\Physics\bcActorGroup.h">
       <Filter>Game\System\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcPickupProxyComponent.h">
+      <Filter>Game\Object\Scene\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Application\bcRenderApplication.cpp">

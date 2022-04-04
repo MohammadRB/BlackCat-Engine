@@ -10,7 +10,14 @@ namespace black_cat
 	{
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_sphere< g_api_physx >::bc_platform_shape_sphere(platform_pack& p_pack)
+		bc_platform_shape_sphere<g_api_physx>::bc_platform_shape_sphere() noexcept
+			: bc_platform_shape_geometry()
+		{
+		}
+
+		template<>
+		BC_PHYSICSIMP_DLL
+		bc_platform_shape_sphere< g_api_physx >::bc_platform_shape_sphere(platform_pack& p_pack) noexcept
 			: bc_platform_shape_geometry(),
 			m_pack(p_pack)
 		{
@@ -18,7 +25,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_sphere< g_api_physx >::bc_platform_shape_sphere(bcFLOAT p_radius)
+		bc_platform_shape_sphere< g_api_physx >::bc_platform_shape_sphere(bcFLOAT p_radius) noexcept
 			: bc_platform_shape_geometry(),
 			m_pack(physx::PxSphereGeometry(p_radius))
 		{
@@ -26,7 +33,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_sphere<g_api_physx>::bc_platform_shape_sphere(const bc_platform_shape_sphere& p_other)
+		bc_platform_shape_sphere<g_api_physx>::bc_platform_shape_sphere(const bc_platform_shape_sphere& p_other) noexcept
 			: bc_platform_shape_geometry(p_other),
 			m_pack(p_other.m_pack)
 		{
@@ -34,13 +41,13 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_sphere<g_api_physx>::~bc_platform_shape_sphere()
+		bc_platform_shape_sphere<g_api_physx>::~bc_platform_shape_sphere() noexcept
 		{
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bc_platform_shape_sphere<g_api_physx>& bc_platform_shape_sphere<g_api_physx>::operator=(const bc_platform_shape_sphere& p_other)
+		bc_platform_shape_sphere<g_api_physx>& bc_platform_shape_sphere<g_api_physx>::operator=(const bc_platform_shape_sphere& p_other) noexcept
 		{
 			bc_platform_shape_geometry::operator=(p_other);
 			m_pack = p_other.m_pack;

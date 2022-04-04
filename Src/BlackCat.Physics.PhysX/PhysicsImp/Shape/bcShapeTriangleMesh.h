@@ -15,6 +15,11 @@ namespace black_cat
 		template<>
 		struct bc_platform_shape_triangle_mesh_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
 		{
+			bc_platform_shape_triangle_mesh_pack()
+				: bc_platform_shape_geometry_pack(m_px_mesh_geometry)
+			{
+			}
+
 			explicit bc_platform_shape_triangle_mesh_pack(const physx::PxTriangleMeshGeometry& p_px_mesh_geometry)
 				: bc_platform_shape_geometry_pack(m_px_mesh_geometry),
 				m_px_mesh_geometry(p_px_mesh_geometry)

@@ -26,8 +26,8 @@ namespace black_cat
 		class bci_scene_graph_node_entry
 		{
 		public:
-			explicit bci_scene_graph_node_entry(const bc_actor& p_actor)
-				: m_actor(p_actor)
+			explicit bci_scene_graph_node_entry(bc_actor p_actor)
+				: m_actor(std::move(p_actor))
 			{
 			}
 

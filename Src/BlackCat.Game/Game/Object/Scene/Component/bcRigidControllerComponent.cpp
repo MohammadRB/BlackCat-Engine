@@ -61,7 +61,7 @@ namespace black_cat
 				l_physics_system.set_game_actor(*m_px_body, p_context.m_actor);
 				
 				const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_collider_materials);
-				l_physics_system.create_px_shapes_from_mesh(l_material_manager, m_px_body.get(), *l_mesh_component, l_materials);
+				l_physics_system.create_px_shapes_from_mesh(l_material_manager, m_px_body.get(), l_mesh_component->get_mesh(), l_materials);
 
 				core::bc_vector_frame<physics::bc_shape> l_rigid_shapes(m_px_body->get_shape_count());
 				m_px_body->get_shapes(l_rigid_shapes.data(), l_rigid_shapes.size());

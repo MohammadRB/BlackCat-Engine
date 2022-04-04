@@ -60,7 +60,7 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_shape<g_api_physx>::as_sphere(bc_shape_sphere& p_sphere) const noexcept
+		std::pair<bool, bc_shape_sphere> bc_platform_shape<g_api_physx>::as_sphere() const noexcept
 		{
 			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
@@ -69,15 +69,16 @@ namespace black_cat
 
 			if (l_result)
 			{
-				p_sphere = bc_shape_sphere(l_geometry.radius);
+				bc_shape_sphere::platform_pack l_pack(l_geometry);
+				return std::make_pair(true, bc_shape_sphere(l_pack));
 			}
 
-			return l_result;
+			return std::make_pair(false, bc_shape_sphere());
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_shape<g_api_physx>::as_box(bc_shape_box& p_box) const noexcept
+		std::pair<bool, bc_shape_box> bc_platform_shape<g_api_physx>::as_box() const noexcept
 		{
 			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
@@ -86,15 +87,16 @@ namespace black_cat
 
 			if (l_result)
 			{
-				p_box = bc_shape_box(l_geometry.halfExtents.x, l_geometry.halfExtents.y, l_geometry.halfExtents.z);
+				bc_shape_box::platform_pack l_pack(l_geometry);
+				return std::make_pair(true, bc_shape_box(l_pack));
 			}
 
-			return l_result;
+			return std::make_pair(false, bc_shape_box());
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_shape<g_api_physx>::as_capsule(bc_shape_capsule& p_capsule) const noexcept
+		std::pair<bool, bc_shape_capsule> bc_platform_shape<g_api_physx>::as_capsule() const noexcept
 		{
 			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
@@ -103,15 +105,16 @@ namespace black_cat
 
 			if (l_result)
 			{
-				p_capsule = bc_shape_capsule(l_geometry.halfHeight, l_geometry.radius);
+				bc_shape_capsule::platform_pack l_pack(l_geometry);
+				return std::make_pair(true, bc_shape_capsule(l_pack));
 			}
 
-			return l_result;
+			return std::make_pair(false, bc_shape_capsule());
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_shape<g_api_physx>::as_plane(bc_shape_plane& p_plane) const noexcept
+		std::pair<bool, bc_shape_plane> bc_platform_shape<g_api_physx>::as_plane() const noexcept
 		{
 			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
@@ -121,14 +124,15 @@ namespace black_cat
 			if (l_result)
 			{
 				// TODO
+				return std::make_pair(true, bc_shape_plane());
 			}
 
-			return l_result;
+			return std::make_pair(false, bc_shape_plane());
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_shape<g_api_physx>::as_convex_mesh(bc_shape_convex_mesh& p_convex_mesh) const noexcept
+		std::pair<bool, bc_shape_convex_mesh> bc_platform_shape<g_api_physx>::as_convex_mesh() const noexcept
 		{
 			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
@@ -140,15 +144,15 @@ namespace black_cat
 				bc_convex_mesh::platform_pack l_pack;
 				l_pack.m_px_object = l_geometry.convexMesh;
 
-				p_convex_mesh = bc_shape_convex_mesh(bc_geometry_scale(l_geometry.scale.scale.x), bc_convex_mesh(l_pack));
+				return std::make_pair(true, bc_shape_convex_mesh(bc_geometry_scale(l_geometry.scale.scale.x), bc_convex_mesh(l_pack)));
 			}
 
-			return l_result;
+			return std::make_pair(false, bc_shape_convex_mesh());
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_shape<g_api_physx>::as_triangle_mesh(bc_shape_triangle_mesh& p_triangle_mesh) const noexcept
+		std::pair<bool, bc_shape_triangle_mesh> bc_platform_shape<g_api_physx>::as_triangle_mesh() const noexcept
 		{
 			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
@@ -160,15 +164,15 @@ namespace black_cat
 				bc_triangle_mesh::platform_pack l_pack;
 				l_pack.m_px_object = l_geometry.triangleMesh;
 				
-				p_triangle_mesh = bc_shape_triangle_mesh(bc_geometry_scale(l_geometry.scale.scale.x), bc_triangle_mesh(l_pack));
+				return std::make_pair(true, bc_shape_triangle_mesh(bc_geometry_scale(l_geometry.scale.scale.x), bc_triangle_mesh(l_pack)));
 			}
 
-			return l_result;
+			return std::make_pair(false, bc_shape_triangle_mesh());
 		}
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		bool bc_platform_shape<g_api_physx>::as_height_field(bc_shape_height_field& p_height_field) const noexcept
+		std::pair<bool, bc_shape_height_field> bc_platform_shape<g_api_physx>::as_height_field() const noexcept
 		{
 			const auto* l_px_shape = static_cast<physx::PxShape*>(m_pack.m_px_object);
 
@@ -180,10 +184,10 @@ namespace black_cat
 				bc_height_field::platform_pack l_pack;
 				l_pack.m_px_object = l_geometry.heightField;
 				
-				p_height_field = bc_shape_height_field(bc_height_field(l_pack), l_geometry.rowScale, l_geometry.heightScale);
+				return std::make_pair(true, bc_shape_height_field(bc_height_field(l_pack), l_geometry.rowScale, l_geometry.heightScale));
 			}
 
-			return l_result;
+			return std::make_pair(false, bc_shape_height_field());
 		}
 
 		template<>

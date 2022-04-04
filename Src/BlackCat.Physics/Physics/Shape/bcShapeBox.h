@@ -23,6 +23,8 @@ namespace black_cat
 			using platform_pack = bc_platform_shape_box_pack<TApi>;
 
 		public:
+			bc_platform_shape_box() noexcept;
+
 			explicit bc_platform_shape_box(platform_pack& p_pack) noexcept;
 
 			/**

@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "Game/bcExport.h"
 #include "Game/System/Input/bcCameraInstance.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {

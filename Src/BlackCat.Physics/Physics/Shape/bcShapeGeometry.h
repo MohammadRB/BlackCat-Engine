@@ -28,7 +28,7 @@ namespace black_cat
 		class bc_platform_shape_geometry
 		{
 		public:
-			using platform_pack = bc_platform_shape_geometry_pack< TApi >;
+			using platform_pack = bc_platform_shape_geometry_pack<TApi>;
 
 		public:
 			virtual ~bc_platform_shape_geometry() = default;

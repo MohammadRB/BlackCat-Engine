@@ -15,6 +15,11 @@ namespace black_cat
 		template<>
 		struct bc_platform_shape_convex_mesh_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
 		{
+			bc_platform_shape_convex_mesh_pack()
+				: bc_platform_shape_geometry_pack(m_px_convex)
+			{
+			}
+
 			explicit bc_platform_shape_convex_mesh_pack(const physx::PxConvexMeshGeometry& p_px_convex)
 				: bc_platform_shape_geometry_pack(m_px_convex),
 				m_px_convex(p_px_convex)

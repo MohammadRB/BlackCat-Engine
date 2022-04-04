@@ -22,17 +22,19 @@ namespace black_cat
 			using platform_pack = bc_platform_shape_triangle_mesh_pack<TApi>;
 
 		public:
-			explicit bc_platform_shape_triangle_mesh(platform_pack& p_pack);
+			bc_platform_shape_triangle_mesh() noexcept;
 
-			explicit bc_platform_shape_triangle_mesh(const bc_triangle_mesh& p_triangle);
+			explicit bc_platform_shape_triangle_mesh(platform_pack& p_pack) noexcept;
 
-			bc_platform_shape_triangle_mesh(const bc_geometry_scale& p_scale, const bc_triangle_mesh& p_triangle);
+			explicit bc_platform_shape_triangle_mesh(const bc_triangle_mesh& p_triangle) noexcept;
 
-			bc_platform_shape_triangle_mesh(const bc_platform_shape_triangle_mesh&);
+			bc_platform_shape_triangle_mesh(const bc_geometry_scale& p_scale, const bc_triangle_mesh& p_triangle) noexcept;
 
-			~bc_platform_shape_triangle_mesh();
+			bc_platform_shape_triangle_mesh(const bc_platform_shape_triangle_mesh&) noexcept;
 
-			bc_platform_shape_triangle_mesh& operator=(const bc_platform_shape_triangle_mesh&);
+			~bc_platform_shape_triangle_mesh() noexcept override;
+
+			bc_platform_shape_triangle_mesh& operator=(const bc_platform_shape_triangle_mesh&) noexcept;
 
 			bc_geometry_scale get_scale() const noexcept;
 

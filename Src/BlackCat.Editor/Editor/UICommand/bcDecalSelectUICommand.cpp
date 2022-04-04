@@ -58,11 +58,6 @@ namespace black_cat
 			game::bc_scene_graph_ray_query_filter_callback l_filter = [=, &l_ray](const game::bc_scene_graph_ray_query_hit& p_hit)
 			{
 				const auto l_decal = _test_ray_against_actor(p_hit.m_actor, l_ray);
-				if(l_decal == nullptr)
-				{
-					int i = 0;
-				}
-
 				return l_decal != nullptr;
 			};
 

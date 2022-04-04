@@ -100,8 +100,7 @@ namespace black_cat
 					{
 					case physics::bc_shape_type::sphere:
 					{
-						physics::bc_shape_sphere l_sphere(0);
-						l_shape.as_sphere(l_sphere);
+						auto [l_is, l_sphere] = l_shape.as_sphere();
 						p_context.m_shape_drawer.draw_wired_sphere(l_sphere, p_px_actor.get_global_pose().transform(l_shape.get_local_pose()));
 						break;
 					}
@@ -109,15 +108,13 @@ namespace black_cat
 						break;
 					case physics::bc_shape_type::capsule:
 					{
-						physics::bc_shape_capsule l_capsule(0, 0);
-						l_shape.as_capsule(l_capsule);
+						auto [l_is, l_capsule] = l_shape.as_capsule();
 						p_context.m_shape_drawer.draw_wired_capsule(l_capsule, p_px_actor.get_global_pose().transform(l_shape.get_local_pose()));
 						break;
 					}
 					case physics::bc_shape_type::box:
 					{
-						physics::bc_shape_box l_box(0, 0, 0);
-						l_shape.as_box(l_box);
+						auto [l_is, l_box] = l_shape.as_box();
 						p_context.m_shape_drawer.draw_wired_box(l_box, p_px_actor.get_global_pose().transform(l_shape.get_local_pose()));
 						break;
 					}

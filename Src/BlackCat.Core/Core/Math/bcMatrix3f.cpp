@@ -577,7 +577,7 @@ namespace black_cat
 			return*this;
 		}
 
-		bc_matrix3f& bc_matrix3f::operator*= (const bc_matrix3f& p_matrix) noexcept
+		bc_matrix3f& bc_matrix3f::operator*= (const bc_matrix3f& p_other) noexcept
 		{
 			bc_matrix3f l_prod = *this;
 
@@ -590,7 +590,7 @@ namespace black_cat
 
 					for (auto l_mid = 0U; l_mid < 3; l_mid++)
 					{
-						m_entry[l_i] += l_prod.m_entry[i(l_row, l_mid)] * p_matrix.m_entry[i(l_mid, l_col)];
+						m_entry[l_i] += l_prod.m_entry[i(l_row, l_mid)] * p_other.m_entry[i(l_mid, l_col)];
 					}
 				}
 			}

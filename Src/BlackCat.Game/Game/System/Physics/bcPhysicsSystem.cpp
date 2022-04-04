@@ -41,24 +41,21 @@ namespace black_cat
 			return l_buffer;
 		}
 
-		void bc_physics_system::create_px_shapes_from_height_map(const bc_material_manager& p_material_manager, 
-			physics::bc_rigid_static& p_rigid_static, 
-			const bc_height_map_component& p_height_map_component)
+		void bc_physics_system::create_px_shapes_from_height_map(const bc_material_manager& p_material_manager, physics::bc_rigid_static& p_rigid_static, const bc_height_map& p_height_map)
 		{
-			const auto& l_height_map = p_height_map_component.get_height_map();
-			const auto l_px_height_field = p_height_map_component.get_height_map().get_px_height_field();
+			const auto l_px_height_field = p_height_map.get_px_height_field();
 			const auto l_px_height_field_shape = physics::bc_shape_height_field
 			(
 				l_px_height_field, 
-				p_height_map_component.get_height_map().get_xz_multiplier(), 
+				p_height_map.get_xz_multiplier(),
 				get_height_field_y_scale()
 			);
-			const auto l_px_height_field_materials = core::bc_vector_frame<physics::bc_material>(l_height_map.get_materials_count());
+			const auto l_px_height_field_materials = core::bc_vector_frame<physics::bc_material>(p_height_map.get_materials_count());
 
 			std::transform
 			(
-				std::begin(l_height_map.get_materials()),
-				std::end(l_height_map.get_materials()),
+				std::begin(p_height_map.get_materials()),
+				std::end(p_height_map.get_materials()),
 				std::begin(l_px_height_field_materials),
 				[](const bc_height_map_material& p_material)
 				{
@@ -66,19 +63,18 @@ namespace black_cat
 				}
 			);
 
-			auto l_px_shape = m_physics.create_shape(l_px_height_field_shape, l_px_height_field_materials.data(), l_height_map.get_materials_count(), true);
+			auto l_px_shape = m_physics.create_shape(l_px_height_field_shape, l_px_height_field_materials.data(), p_height_map.get_materials_count(), true);
 			l_px_shape->set_query_group(static_cast<physics::bc_query_group>(bc_actor_physics_group::terrain));
 			p_rigid_static.attach_shape(l_px_shape.get());
 		}
 
 		void bc_physics_system::create_px_shapes_from_mesh(const bc_material_manager& p_material_manager,
 			physics::bc_rigid_body& p_rigid_body,
-			const bc_mesh_component& p_mesh_component,
+			const bc_sub_mesh& p_mesh,
 			const core::bc_json_key_value* p_collider_materials)
 		{
 			const core::bc_json_key_value l_empty_collider_json;
-			const auto& l_mesh = p_mesh_component.get_mesh();
-			const auto& l_mesh_collider = l_mesh.get_mesh_collider();
+			const auto& l_mesh_collider = p_mesh.get_mesh_collider();
 			const auto& l_collider_materials = p_collider_materials ? *p_collider_materials : l_empty_collider_json;
 
 			for (const bc_mesh_part_collider_entry& l_mesh_part_collider : l_mesh_collider.get_colliders())
@@ -107,7 +103,7 @@ namespace black_cat
 
 				l_px_shape->set_local_pose(l_mesh_part_collider.m_absolute_transform);
 				l_px_shape->set_high_detail_query_shape(l_mesh_part_collider.m_high_detail_query_shape);
-				if(l_mesh.get_skinned())
+				if(p_mesh.get_skinned())
 				{
 					l_px_shape->set_query_group(static_cast<physics::bc_query_group>(bc_actor_physics_group::skinned_mesh));
 				}

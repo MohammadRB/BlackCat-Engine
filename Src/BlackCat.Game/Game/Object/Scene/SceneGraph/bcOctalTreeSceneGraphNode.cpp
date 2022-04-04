@@ -11,6 +11,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
+#include "Game/Object/Scene/Component/bcPickupProxyComponent.h"
 #include "Game/bcException.h"
 
 namespace black_cat
@@ -256,31 +257,14 @@ namespace black_cat
 
 					if (l_intersects)
 					{
-						const auto l_is_inside = l_bound_box.contains(p_ray.m_origin);
-						if(l_is_inside)
+						if(const auto* l_pickup_component = l_entry.m_actor.get_component<bc_pickup_proxy_component>())
 						{
-							const auto* l_height_map_component = l_entry.m_actor.get_component<bc_height_map_component>();
-							if(!l_height_map_component)
+							const auto l_pickup_result = l_pickup_component->ray_pickup(p_ray);
+							if(l_pickup_result.m_state != bc_pickup_proxy_state::no_result)
 							{
-								continue;
+								l_intersects = l_pickup_result.m_state == bc_pickup_proxy_state::pickup;
+								l_ray_hit = l_pickup_result.m_ray_hit;
 							}
-
-							// if ray is inside height map box, re-test for ray hit against height map
-							const auto l_px_height_field_shape = physics::bc_shape_height_field
-							(
-								l_height_map_component->get_height_map().get_px_height_field(),
-								l_height_map_component->get_height_map().get_xz_multiplier(),
-								l_height_map_component->get_height_map().get_y_multiplier()
-							);
-							l_intersects = physics::bc_shape_query::ray_cast
-							(
-								p_ray,
-								l_px_height_field_shape,
-								bc_convert_to_height_map_transform(l_height_map_component->get_height_map(), physics::bc_transform(l_height_map_component->get_world_position())),
-								physics::bc_hit_flag::distance,
-								&l_ray_hit,
-								1
-							);
 						}
 
 						if (l_intersects && p_filter)

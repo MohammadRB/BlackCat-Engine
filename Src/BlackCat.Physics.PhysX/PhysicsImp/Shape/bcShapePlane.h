@@ -15,6 +15,11 @@ namespace black_cat
 		template<>
 		struct bc_platform_shape_plane_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
 		{
+			bc_platform_shape_plane_pack()
+				: bc_platform_shape_geometry_pack(m_px_plane_geometry)
+			{
+			}
+
 			explicit bc_platform_shape_plane_pack(const physx::PxPlaneGeometry& p_px_plane_geometry, const physx::PxPlane& p_px_plane)
 				: bc_platform_shape_geometry_pack(m_px_plane_geometry),
 				m_px_plane_geometry(p_px_plane_geometry),

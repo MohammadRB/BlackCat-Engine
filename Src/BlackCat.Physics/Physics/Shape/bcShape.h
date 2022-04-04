@@ -68,19 +68,19 @@ namespace black_cat
 
 			bc_shape_type get_type() const noexcept;
 
-			bool as_sphere(bc_shape_sphere& p_sphere) const noexcept;
+			std::pair<bool, bc_shape_sphere> as_sphere() const noexcept;
 
-			bool as_box(bc_shape_box& p_box) const noexcept;
+			std::pair<bool, bc_shape_box> as_box() const noexcept;
 
-			bool as_capsule(bc_shape_capsule& p_capsule) const noexcept;
+			std::pair<bool, bc_shape_capsule> as_capsule() const noexcept;
 
-			bool as_plane(bc_shape_plane& p_plane) const noexcept;
+			std::pair<bool, bc_shape_plane> as_plane() const noexcept;
 
-			bool as_convex_mesh(bc_shape_convex_mesh& p_convex_mesh) const noexcept;
+			std::pair<bool, bc_shape_convex_mesh> as_convex_mesh() const noexcept;
 
-			bool as_triangle_mesh(bc_shape_triangle_mesh& p_triangle_mesh) const noexcept;
+			std::pair<bool, bc_shape_triangle_mesh> as_triangle_mesh() const noexcept;
 
-			bool as_height_field(bc_shape_height_field& p_height_field) const noexcept;
+			std::pair<bool, bc_shape_height_field> as_height_field() const noexcept;
 
 			bc_transform get_local_pose() const noexcept;
 
