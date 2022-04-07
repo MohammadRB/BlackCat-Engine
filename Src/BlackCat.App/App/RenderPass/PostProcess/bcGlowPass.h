@@ -34,21 +34,14 @@ namespace black_cat
 		void config_changed(const game::bc_render_pass_config_change_context& p_context) override;
 
 		void destroy(game::bc_render_system& p_render_system) override;
-
-		bool get_enable() const noexcept;
-
-		void set_enable(bool p_value) noexcept;
-
-		void update_parameters(bcFLOAT p_glow_threshold, bcFLOAT p_glow_intensity);
-
+		
 	private:
 		void _update_parameters(game::bc_default_render_thread& p_render_thread);
 
-		bool m_enabled = true;
-		bool m_parameters_changed = false;
 		game::bc_render_pass_variable_t m_render_target_texture;
 		game::bc_render_pass_variable_t m_render_target_view;
 
+		bool m_parameters_changed = false;
 		bcFLOAT m_glow_threshold = 0;
 		bcFLOAT m_glow_intensity = 0;
 
@@ -71,14 +64,4 @@ namespace black_cat
 		game::bc_render_pass_state_ptr m_glow_apply_render_pass_state;
 		game::bc_render_state_ptr m_glow_apply_render_state;
 	};
-
-	inline void bc_glow_pass::set_enable(bool p_value) noexcept
-	{
-		m_enabled = p_value;
-	}
-
-	inline bool bc_glow_pass::get_enable() const noexcept
-	{
-		return m_enabled;
-	}
 }

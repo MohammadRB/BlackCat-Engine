@@ -158,7 +158,7 @@
               {
                 "mesh_material": "terrain_material_1",
                 "collider_material": "terrain_material_1",
-                "scale": 30.0
+                "scale": 25.0
               },
               {
                 "mesh_material": "terrain_material_2",
@@ -313,7 +313,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Barrier\\Fence\\solid_metal_fences_120_400_a.fbx",
           "content_parameter": {
-            "auto_scale": 20.0,
+            "auto_scale": 30.0,
             "collider": "solid_metal_fences_120_400_a_collider.fbx",
             "high_detail_query_shape": true
           }

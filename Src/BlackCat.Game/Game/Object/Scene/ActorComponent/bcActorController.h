@@ -12,7 +12,7 @@ namespace black_cat
 	{
 		class bc_scene;
 		class bc_shape_drawer;
-		class bc_mediate_component;
+		class bc_controller_component;
 		struct bc_actor_component_initialize_context;
 		struct bc_actor_component_load_context;
 		struct bc_actor_component_write_context;
@@ -24,7 +24,7 @@ namespace black_cat
 		
 		class bci_actor_controller
 		{
-			friend class bc_mediate_component;
+			friend class bc_controller_component;
 
 		public:
 			virtual ~bci_actor_controller() = 0;

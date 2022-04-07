@@ -3,7 +3,7 @@
 #include "App/AppPCH.h"
 
 #include "Core/Utility/bcJsonParse.h"
-#include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/bcControllerComponent.h"
 #include "App/SampleImp/XBot/bcXBotRagdollNetworkMessage.h"
 #include "App/SampleImp/XBot/bcXBotPlayerActorController.h"
 #include "App/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
@@ -39,8 +39,8 @@ namespace black_cat
 			return;
 		}
 
-		const auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
-		auto* l_xbot_controller = static_cast<bc_xbot_player_actor_controller*>(l_mediate_component->get_controller());
+		const auto* l_controller_component = m_actor.get_component<game::bc_controller_component>();
+		auto* l_xbot_controller = static_cast<bc_xbot_player_actor_controller*>(l_controller_component->get_controller());
 
 		l_xbot_controller->enable_ragdoll(std::move(m_body_part_force), m_force);
 	}
@@ -52,8 +52,8 @@ namespace black_cat
 			return;
 		}
 
-		const auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
-		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
+		const auto* l_controller_component = m_actor.get_component<game::bc_controller_component>();
+		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_controller_component->get_controller());
 
 		l_xbot_controller->enable_ragdoll(std::move(m_body_part_force), m_force);
 	}

@@ -397,7 +397,7 @@ namespace black_cat
 
 		bool bc_octal_tree_graph_node::update_actor(bc_actor& p_actor) noexcept
 		{
-			auto* l_actor_mediate_component = p_actor.get_component<bc_mediate_component>();
+			const auto* l_actor_mediate_component = p_actor.get_component<bc_mediate_component>();
 			const auto& l_actor_prev_bound_box = l_actor_mediate_component->get_prev_bound_box();
 			const auto& l_actor_bound_box = l_actor_mediate_component->get_bound_box();
 
@@ -418,8 +418,8 @@ namespace black_cat
 			}
 
 			const bool l_removed = _remove_actor(p_actor, l_actor_prev_bound_box);
-			const bool l_added = _add_actor(p_actor, l_actor_bound_box);
 			BC_ASSERT(l_removed);
+			const bool l_added = _add_actor(p_actor, l_actor_bound_box);
 
 			return l_added;
 		}

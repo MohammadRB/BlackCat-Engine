@@ -53,13 +53,19 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_particle_builder1& bc_particle_builder1::with_emission_deviation(bcUINT16 p_angle, const core::bc_vector3f& p_deviation_force) noexcept
+		bc_particle_builder1& bc_particle_builder1::with_emission_position_deviation(bcFLOAT p_radius, const core::bc_vector3f& p_deviation_force) noexcept
 		{
-			m_emitter.m_emission_deviation = p_angle;
-			m_emitter.m_emission_deviation_force = p_deviation_force;
+			m_emitter.m_emission_position_deviation = p_radius;
+			m_emitter.m_emission_position_deviation_force = p_deviation_force;
 			return *this;
 		}
 
+		bc_particle_builder1& bc_particle_builder1::with_emission_direction_deviation(bcUINT16 p_angle) noexcept
+		{
+			m_emitter.m_emission_direction_deviation = p_angle;
+			return *this;
+		}
+		
 		bc_particle_builder1& bc_particle_builder1::with_particles_color(const core::bc_vector3f& p_color, bcFLOAT p_intensity)
 		{
 			m_emitter.m_particles_color = p_color;
@@ -151,8 +157,9 @@ namespace black_cat
 			l_emitter.m_force = p_force;
 			l_emitter.m_mass = p_mass;
 			l_emitter.m_direction_deviation = 0;
-			l_emitter.m_emission_deviation = 45;
-			l_emitter.m_emission_deviation_force = core::bc_vector3f(0);
+			l_emitter.m_emission_position_deviation = 0;
+			l_emitter.m_emission_direction_deviation = 45;
+			l_emitter.m_emission_position_deviation_force = core::bc_vector3f(0);
 			l_emitter.m_sprite_index = 0;
 			l_emitter.m_velocity_curve_index = _find_curve_index(s_curve_constant);
 			l_emitter.m_velocity_curve_duration = p_lifetime_seconds;

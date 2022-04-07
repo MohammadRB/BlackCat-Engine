@@ -32,7 +32,6 @@ namespace black_cat
 	namespace game
 	{
 		class bc_game_system;
-		class bc_mediate_component;
 		class bc_actor_component_manager;
 
 		template<class TComponent>
@@ -627,12 +626,7 @@ namespace black_cat
 				(
 					[this, &l_counter]()
 					{
-						// Register mediate component as last component
-						const bcSIZE l_priority = std::is_same_v<typename TCAdapter::component_t, bc_mediate_component>
-													  ? _bc_actor_component_entry::s_invalid_priority_value - 1
-													  : l_counter++;
-						this->_register_component_type<typename TCAdapter::component_t>(l_priority);
-
+						this->_register_component_type<typename TCAdapter::component_t>(l_counter++);
 						return true;
 					}()
 				)...

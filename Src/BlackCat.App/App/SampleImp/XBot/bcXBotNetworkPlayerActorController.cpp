@@ -245,6 +245,11 @@ namespace black_cat
 
 	void bc_xbot_network_player_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
 	{
+		if (p_context.m_is_double_update)
+		{
+			return;
+		}
+
 		const auto l_extrapolated_look_direction = get_network_component().get_extrapolated_value("lk_dir", p_context.m_clock).second;
 		if(l_extrapolated_look_direction.magnitude() > 0.f)
 		{

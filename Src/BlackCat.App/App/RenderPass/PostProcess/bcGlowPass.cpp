@@ -118,53 +118,51 @@ namespace black_cat
 
 	void bc_glow_pass::execute(const game::bc_render_pass_render_context& p_context)
 	{
-		if(!m_enabled)
+		if(m_glow_intensity <= 0)
 		{
 			return;
 		}
 
+		const auto l_intermediate_texture1 = get_intermediate_texture(m_intermediate_texture_config);
+		const auto l_intermediate_texture2 = get_intermediate_texture(m_intermediate_texture_config);
+
+		p_context.m_render_thread.start();
+
+		if (m_parameters_changed)
 		{
-			const auto l_intermediate_texture1 = get_intermediate_texture(m_intermediate_texture_config);
-			const auto l_intermediate_texture2 = get_intermediate_texture(m_intermediate_texture_config);
-
-			p_context.m_render_thread.start();
-
-			if (m_parameters_changed)
-			{
-				_update_parameters(p_context.m_render_thread);
-				m_parameters_changed = false;
-			}
-
-			// Glow extract
-			m_intermediate_texture1_link.set_as_render_target_view(l_intermediate_texture1.get_render_target_view());
-
-			p_context.m_render_thread.bind_render_pass_state(*m_glow_extract_render_pass_state);
-			p_context.m_render_thread.bind_render_state(*m_glow_extract_render_state);
-			p_context.m_render_thread.draw(0, 6);
-			p_context.m_render_thread.unbind_render_state(*m_glow_extract_render_state);
-			p_context.m_render_thread.unbind_render_pass_state(*m_glow_extract_render_pass_state);
-
-			// Blur
-			m_intermediate_texture1_link.set_as_resource_view(l_intermediate_texture1.get_resource_view());
-			m_intermediate_texture2_link.set_as_render_target_view(l_intermediate_texture2.get_render_target_view());
-
-			p_context.m_render_thread.bind_render_pass_state(*m_blur_render_pass_state);
-			p_context.m_render_thread.bind_render_state(*m_blur_render_state);
-			p_context.m_render_thread.draw(0, 6);
-			p_context.m_render_thread.unbind_render_state(*m_blur_render_state);
-			p_context.m_render_thread.unbind_render_pass_state(*m_blur_render_pass_state);
-
-			// Apply
-			m_intermediate_texture2_link.set_as_resource_view(l_intermediate_texture2.get_resource_view());
-
-			p_context.m_render_thread.bind_render_pass_state(*m_glow_apply_render_pass_state);
-			p_context.m_render_thread.bind_render_state(*m_glow_apply_render_state);
-			p_context.m_render_thread.draw(0, 6);
-			p_context.m_render_thread.unbind_render_state(*m_glow_apply_render_state);
-			p_context.m_render_thread.unbind_render_pass_state(*m_glow_apply_render_pass_state);
-
-			p_context.m_render_thread.finish();
+			_update_parameters(p_context.m_render_thread);
+			m_parameters_changed = false;
 		}
+
+		// Glow extract
+		m_intermediate_texture1_link.set_as_render_target_view(l_intermediate_texture1.get_render_target_view());
+
+		p_context.m_render_thread.bind_render_pass_state(*m_glow_extract_render_pass_state);
+		p_context.m_render_thread.bind_render_state(*m_glow_extract_render_state);
+		p_context.m_render_thread.draw(0, 6);
+		p_context.m_render_thread.unbind_render_state(*m_glow_extract_render_state);
+		p_context.m_render_thread.unbind_render_pass_state(*m_glow_extract_render_pass_state);
+
+		// Blur
+		m_intermediate_texture1_link.set_as_resource_view(l_intermediate_texture1.get_resource_view());
+		m_intermediate_texture2_link.set_as_render_target_view(l_intermediate_texture2.get_render_target_view());
+
+		p_context.m_render_thread.bind_render_pass_state(*m_blur_render_pass_state);
+		p_context.m_render_thread.bind_render_state(*m_blur_render_state);
+		p_context.m_render_thread.draw(0, 6);
+		p_context.m_render_thread.unbind_render_state(*m_blur_render_state);
+		p_context.m_render_thread.unbind_render_pass_state(*m_blur_render_pass_state);
+
+		// Apply
+		m_intermediate_texture2_link.set_as_resource_view(l_intermediate_texture2.get_resource_view());
+
+		p_context.m_render_thread.bind_render_pass_state(*m_glow_apply_render_pass_state);
+		p_context.m_render_thread.bind_render_state(*m_glow_apply_render_state);
+		p_context.m_render_thread.draw(0, 6);
+		p_context.m_render_thread.unbind_render_state(*m_glow_apply_render_state);
+		p_context.m_render_thread.unbind_render_pass_state(*m_glow_apply_render_pass_state);
+
+		p_context.m_render_thread.finish();
 	}
 
 	void bc_glow_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
@@ -399,7 +397,9 @@ namespace black_cat
 
 		if (l_threshold_value.is<bcFLOAT>() && l_intensity_value.is<bcFLOAT>())
 		{
-			update_parameters(*l_threshold_value.as<bcFLOAT>(), *l_intensity_value.as<bcFLOAT>());
+			m_glow_threshold = *l_threshold_value.as<bcFLOAT>();
+			m_glow_intensity = *l_intensity_value.as<bcFLOAT>();
+			m_parameters_changed = true;
 		}
 	}
 
@@ -420,14 +420,7 @@ namespace black_cat
 		m_render_target_resource_view.reset();
 		m_render_target_resource_view.reset();
 	}
-
-	void bc_glow_pass::update_parameters(bcFLOAT p_glow_threshold, bcFLOAT p_glow_intensity)
-	{
-		m_glow_threshold = p_glow_threshold;
-		m_glow_intensity = p_glow_intensity;
-		m_parameters_changed = true;
-	}
-
+	
 	void bc_glow_pass::_update_parameters(game::bc_default_render_thread& p_render_thread)
 	{
 		const _bc_blur_params_struct l_blur_params

@@ -2,7 +2,7 @@
 
 #include "Core/Utility/bcJsonParse.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
-#include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/bcControllerComponent.h"
 #include "BoX.Game/Network/bxPlayerKilledNetworkMessage.h"
 #include "BoX.Game/Game/bxPlayerActorController.h"
 #include "BoX.Game/Game/bxNetworkPlayerActorController.h"
@@ -43,8 +43,8 @@ namespace box
 			return;
 		}
 
-		const auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
-		auto* l_xbot_controller = static_cast<bx_player_actor_controller*>(l_mediate_component->get_controller());
+		const auto* l_controller_component = m_actor.get_component<game::bc_controller_component>();
+		auto* l_xbot_controller = static_cast<bx_player_actor_controller*>(l_controller_component->get_controller());
 
 		l_xbot_controller->killed(m_killer_client_id, std::move(m_body_part_force), m_force);
 	}

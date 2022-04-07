@@ -33,19 +33,7 @@ namespace black_cat
 				graphic::bc_texture_address_mode::wrap
 			).as_sampler_state();
 		m_sampler_state = l_device.create_sampler_state(l_sampler_config);
-
-		/*core::bc_array<game::bc_vertex_pos_tex, 4> l_vertices
-		{
-			game::bc_vertex_pos_tex{ core::bc_vector3f(-1, 1, 1), core::bc_vector2f(0, 0) },
-			game::bc_vertex_pos_tex{ core::bc_vector3f(1, 1, 1), core::bc_vector2f(1, 0) },
-			game::bc_vertex_pos_tex{ core::bc_vector3f(-1, -1, 1), core::bc_vector2f(0, 1) },
-			game::bc_vertex_pos_tex{ core::bc_vector3f(1, -1, 1), core::bc_vector2f(1, 1) },
-		};
-		core::bc_array<bcUINT16, 6> l_indices
-		{
-			0, 1, 2, 1, 3, 2
-		};*/
-
+		
 		m_render_state = p_render_system.create_render_state
 		(
 			graphic::bc_primitive::trianglelist,

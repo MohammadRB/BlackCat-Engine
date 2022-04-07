@@ -15,7 +15,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_actor_event : public core::bc_event
 		{
 		public:
-			virtual ~bc_actor_event() = 0;
+			~bc_actor_event() override = 0;
 
 			bc_actor_event* get_next() const noexcept;
 

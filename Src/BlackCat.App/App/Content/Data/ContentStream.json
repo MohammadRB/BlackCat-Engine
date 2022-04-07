@@ -301,6 +301,18 @@
           "content_loader": "pixel_shader",
           "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcGlow.hlsl",
           "content_parameter": { "function": "glow_apply_ps" }
+        },
+        {
+          "content_title": "edge_aa_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcEdgeDetectionAA.hlsl",
+          "content_parameter": { "function": "edge_aa_vs" }
+        },
+        {
+          "content_title": "edge_aa_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcEdgeDetectionAA.hlsl",
+          "content_parameter": { "function": "edge_aa_ps" }
         }
       ]
     },

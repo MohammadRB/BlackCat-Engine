@@ -55,8 +55,8 @@ vertex_output vs(uint p_instance_index : SV_InstanceID)
 
 float3 direct_light_shading(float3 p_normal)
 {
-	float l_dot = max(0.2f, dot(p_normal, -g_global_light_direction));
-	float3 l_diffuse_light = g_global_light_color * g_global_light_intensity * l_dot;
+	const float l_dot = max(0.2f, dot(p_normal, -g_global_light_direction));
+	const float3 l_diffuse_light = g_global_light_color * g_global_light_intensity * l_dot;
 	
 	return l_diffuse_light;
 }
@@ -64,32 +64,32 @@ float3 direct_light_shading(float3 p_normal)
 [maxvertexcount(4)]
 void gs(point vertex_output p_input[1], inout TriangleStream<geometry_output> p_stream)
 {
-	uint l_particle_index = g_alive_indices[p_input[0].m_instance_index].m_index;
+	const uint l_particle_index = g_alive_indices[p_input[0].m_instance_index].m_index;
 	particle l_particle = g_particles[l_particle_index];
 	
 	float3 l_lights_color = 0;
 	float l_lights_intensity = 0;
 	for (uint i = 0; i < g_lights_count; ++i)
 	{
-		float4 l_light_pos = g_lights[i * 2];
-		float4 l_light_color = g_lights[i * 2 + 1];
-		float l_light_distance = length(l_light_pos.xyz - l_particle.m_position);
-		float l_light_attenuation = 1 - min(1, l_light_distance / l_light_pos.w);
-		float l_light_intensity = pow(l_light_attenuation, 4) * l_light_color.w;
+		const float4 l_light_pos = g_lights[i * 2];
+		const float4 l_light_color = g_lights[i * 2 + 1];
+		const float l_light_distance = length(l_light_pos.xyz - l_particle.m_position);
+		const float l_light_attenuation = 1 - min(1, l_light_distance / l_light_pos.w);
+		const float l_light_intensity = pow(l_light_attenuation, 4) * l_light_color.w;
 		
 		l_lights_color += l_light_color.xyz * l_light_intensity * l_particle.m_fade;
 		l_lights_intensity += l_light_intensity;
 	}
 
-	float l_rotation = l_particle.m_rotation * l_particle.m_age;
+	const float l_rotation = l_particle.m_rotation * l_particle.m_age;
 	float l_sin, l_cos;
 	sincos(l_rotation, l_sin, l_cos);
 	
-	float3 l_billboard_right = normalize(float3(g_view._11, g_view._21, g_view._31));
-	float3 l_billboard_up = normalize(float3(g_view._12, g_view._22, g_view._32));
+	const float3 l_billboard_right = normalize(float3(g_view._11, g_view._21, g_view._31));
+	const float3 l_billboard_up = normalize(float3(g_view._12, g_view._22, g_view._32));
 
-	float3 l_direct_light_shading = direct_light_shading(l_particle.m_direction);
-	float3 l_ambient_shading = g_global_light_ambient_color * g_global_light_ambient_intensity;
+	const float3 l_direct_light_shading = direct_light_shading(l_particle.m_direction);
+	const float3 l_ambient_shading = g_global_light_ambient_color * g_global_light_ambient_intensity;
 	
 	float2 l_quad[4];
 	geometry_output l_output_vertices[4];

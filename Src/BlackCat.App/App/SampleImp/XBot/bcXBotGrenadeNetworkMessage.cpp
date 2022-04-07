@@ -4,7 +4,7 @@
 
 #include "Core/Utility/bcLogger.h"
 #include "Core/Utility/bcJsonParse.h"
-#include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/bcControllerComponent.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/bcUtility.h"
@@ -48,8 +48,8 @@ namespace black_cat
 			return;
 		}
 
-		const auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
-		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
+		const auto* l_controller_component = m_actor.get_component<game::bc_controller_component>();
+		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_controller_component->get_controller());
 
 		l_xbot_controller->start_grenade_throw(m_grenade_entity_name.c_str());
 	}
@@ -61,8 +61,8 @@ namespace black_cat
 			return;
 		}
 
-		const auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
-		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
+		const auto* l_controller_component = m_actor.get_component<game::bc_controller_component>();
+		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_controller_component->get_controller());
 
 		l_xbot_controller->start_grenade_throw(m_grenade_entity_name.c_str());
 	}
@@ -119,8 +119,8 @@ namespace black_cat
 
 	void bc_xbot_grenade_throw_network_message::execute(const game::bc_network_message_server_context& p_context) noexcept
 	{
-		const auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
-		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
+		const auto* l_controller_component = m_actor.get_component<game::bc_controller_component>();
+		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_controller_component->get_controller());
 
 		l_xbot_controller->throw_grenade(m_grenade_entity_name, m_position, m_rotation, m_direction);
 	}

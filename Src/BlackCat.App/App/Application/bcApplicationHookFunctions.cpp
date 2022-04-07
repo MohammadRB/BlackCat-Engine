@@ -45,6 +45,7 @@
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/bcSceneCheckPoint.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/bcControllerComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
@@ -188,6 +189,7 @@ namespace black_cat
 		game::bc_register_component_types
 		(
 			game::bc_component_register<game::bc_mediate_component>("mediate"),
+			game::bc_component_register<game::bc_controller_component>("controller"),
 			game::bc_component_register<game::bc_simple_mesh_component>("simple_mesh"),
 			game::bc_component_register<game::bc_vegetable_mesh_component>("vegetable_mesh"),
 			game::bc_component_register<game::bc_skinned_mesh_component>("skinned_mesh"),

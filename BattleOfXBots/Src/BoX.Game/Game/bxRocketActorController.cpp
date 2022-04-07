@@ -34,7 +34,7 @@ namespace box
 
 		const auto l_emitter = game::bc_particle_builder()
 			.emitter(core::bc_vector3f(0), m_direction, std::numeric_limits<bcFLOAT>::max(), 0, 0)
-			.with_emission_deviation(360)
+			.with_emission_direction_deviation(360)
 			.with_texture(3)
 			.with_particles_reverse_direction()
 			.with_particles_color({ 0.8f, 0.8f, 0.8f }, 1)

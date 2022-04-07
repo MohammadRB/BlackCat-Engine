@@ -164,21 +164,27 @@ namespace black_cat
 
 		struct bc_actor_component_event_context
 		{
-			bc_actor_component_event_context(core::bc_query_manager& p_query_manager, 
+			bc_actor_component_event_context(const platform::bc_clock::update_param& p_clock,
+				core::bc_query_manager& p_query_manager, 
 				bc_game_system& p_game_system, 
 				bc_actor& p_actor, 
-				const bc_actor_event& p_event)
-				: m_query_manager(p_query_manager),
+				const bc_actor_event& p_event,
+				bcUINT32 p_event_index)
+				: m_clock(p_clock),
+				m_query_manager(p_query_manager),
 				m_game_system(p_game_system),
 				m_actor(p_actor),
-				m_event(p_event)
+				m_event(p_event),
+				m_event_index(p_event_index)
 			{
 			}
 
+			const platform::bc_clock::update_param& m_clock;
 			core::bc_query_manager& m_query_manager;
 			bc_game_system& m_game_system;
 			bc_actor& m_actor;
 			const bc_actor_event& m_event;
+			bcUINT32 m_event_index;
 		};
 
 		struct bc_actor_component_debug_draw_context

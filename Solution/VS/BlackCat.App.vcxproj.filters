@@ -228,6 +228,9 @@
     <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcSoundLoader.h">
       <Filter>BlackCat\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcEdgeDetectionAntiAliasingPass.h">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcComputeShaderLoader.cpp">
@@ -365,6 +368,9 @@
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcSoundLoader.cpp">
       <Filter>BlackCat\Loader</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcEdgeDetectionAntiAliasingPass.cpp">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\bcShapeDraw.hlsl">
@@ -441,6 +447,9 @@
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\bcSpriteIcon.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\PostProcess\bcEdgeDetectionAA.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

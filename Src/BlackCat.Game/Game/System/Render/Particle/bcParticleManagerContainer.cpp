@@ -102,7 +102,7 @@ namespace black_cat
 					l_ite.m_position = l_rotation * l_ite.m_position + p_pos;
 					l_ite.m_prev_position = l_ite.m_position;
 					l_ite.m_direction = l_rotation * l_ite.m_direction;
-					l_ite.m_emission_deviation_force = l_rotation * l_ite.m_emission_deviation_force;
+					l_ite.m_emission_position_deviation_force = l_rotation * l_ite.m_emission_position_deviation_force;
 					l_ite.m_lifetime_seconds += .0001f; // to avoid division by zero
 
 					if (p_color)
@@ -221,8 +221,9 @@ namespace black_cat
 						l_emitter.m_position = p_emitter.m_position;
 						l_emitter.m_emission_direction = p_emitter.m_direction * p_emitter.m_particles_velocity_reverse_direction;
 						l_emitter.m_energy = p_emitter.m_energy;
-						l_emitter.m_emission_deviation = p_emitter.m_emission_deviation;
-						l_emitter.m_emission_deviation_force = p_emitter.m_emission_deviation_force;
+						l_emitter.m_emission_direction_deviation = p_emitter.m_emission_direction_deviation;
+						l_emitter.m_emission_position_deviation = p_emitter.m_emission_position_deviation;
+						l_emitter.m_emission_position_deviation_force = p_emitter.m_emission_position_deviation_force;
 						l_emitter.m_sprite_index = p_emitter.m_sprite_index;
 						l_emitter.m_particles_color = p_emitter.m_particles_color;
 						l_emitter.m_particles_color_intensity = p_emitter.m_particles_color_intensity;
@@ -310,7 +311,7 @@ namespace black_cat
 					l_ite->m_position = l_rotation * l_ite->m_position + p_pos;
 					l_ite->m_prev_position = l_ite->m_position;
 					l_ite->m_direction = l_rotation * l_ite->m_direction;
-					l_ite->m_emission_deviation_force = l_rotation * l_ite->m_emission_deviation_force;
+					l_ite->m_emission_position_deviation_force = l_rotation * l_ite->m_emission_position_deviation_force;
 					l_ite->m_lifetime_seconds = -1;
 
 					if (p_color)

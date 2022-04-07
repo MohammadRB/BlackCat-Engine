@@ -26,8 +26,10 @@ namespace black_cat
 			bc_particle_builder1& with_velocity_curve(const bc_particle_curve& p_curve) noexcept;
 			
 			bc_particle_builder1& with_direction_deviation(bcUINT16 p_angle) noexcept;
-			
-			bc_particle_builder1& with_emission_deviation(bcUINT16 p_angle, const core::bc_vector3f& p_deviation_force = core::bc_vector3f(0)) noexcept;
+
+			bc_particle_builder1& with_emission_position_deviation(bcFLOAT p_radius, const core::bc_vector3f& p_deviation_force = core::bc_vector3f(0)) noexcept;
+
+			bc_particle_builder1& with_emission_direction_deviation(bcUINT16 p_angle) noexcept;
 
 			bc_particle_builder1& with_particles_color(const core::bc_vector3f& p_color, bcFLOAT p_intensity = 1);
 			

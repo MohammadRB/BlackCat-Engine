@@ -957,6 +957,7 @@ namespace black_cat
 		game::bc_animation_job_helper::set_skinning_world_transform(*m_animation_pipeline, l_world_transform);
 		
 		m_actor.add_event(game::bc_world_transform_actor_event(l_world_transform, game::bc_transform_event_type::physics));
+		m_actor.mark_for_double_update();
 	}
 
 	void bc_xbot_actor_controller::_update_sounds()

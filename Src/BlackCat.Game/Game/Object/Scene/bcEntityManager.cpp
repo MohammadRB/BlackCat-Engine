@@ -12,6 +12,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/bcControllerComponent.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/bcException.h"
 
@@ -302,7 +303,9 @@ namespace black_cat
 					}
 
 					auto l_controller = l_controller_ite->second();
-					l_mediate_component->_set_controller
+					auto* l_controller_component = l_actor.get_create_component<bc_controller_component>();
+
+					l_controller_component->set_controller
 					(
 						std::move(l_controller),
 						bc_actor_component_initialize_context
@@ -318,7 +321,7 @@ namespace black_cat
 					);
 				}
 			}
-			catch (const std::exception & p_exception)
+			catch (const std::exception& l_exception)
 			{
 				if (l_actor.is_valid())
 				{
@@ -326,7 +329,7 @@ namespace black_cat
 					l_actor = bc_actor();
 				}
 
-				core::bc_log(core::bc_log_type::error) << "Error in entity creation: '" << p_entity_name << "', " << p_exception.what() << core::bc_lend;
+				core::bc_log(core::bc_log_type::error) << "Error in entity creation: '" << p_entity_name << "', " << l_exception.what() << core::bc_lend;
 			}
 
 			return l_actor;

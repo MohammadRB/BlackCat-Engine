@@ -3,7 +3,7 @@
 #include "App/AppPCH.h"
 
 #include "Core/Utility/bcLogger.h"
-#include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/Object/Scene/Component/bcControllerComponent.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "App/SampleImp/XBot/bcXBotWeaponNetworkMessage.h"
 #include "App/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
@@ -45,9 +45,9 @@ namespace black_cat
 		{
 			return;
 		}
-		
-		auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
-		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
+
+		const auto* l_controller_component = m_actor.get_component<game::bc_controller_component>();
+		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_controller_component->get_controller());
 
 		l_xbot_controller->attach_weapon(m_weapon_entity_name.c_str());
 	}
@@ -59,7 +59,7 @@ namespace black_cat
 			return;
 		}
 
-		auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
+		const auto* l_mediate_component = m_actor.get_component<game::bc_controller_component>();
 		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
 
 		l_xbot_controller->attach_weapon(m_weapon_entity_name.c_str());
@@ -117,9 +117,9 @@ namespace black_cat
 		{
 			return;
 		}
-		
-		auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
-		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
+
+		const auto* l_controller_component = m_actor.get_component<game::bc_controller_component>();
+		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_controller_component->get_controller());
 
 		l_xbot_controller->detach_weapon();
 	}
@@ -131,7 +131,7 @@ namespace black_cat
 			return;
 		}
 
-		auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
+		const auto* l_mediate_component = m_actor.get_component<game::bc_controller_component>();
 		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
 
 		l_xbot_controller->detach_weapon();
@@ -188,7 +188,7 @@ namespace black_cat
 			return;
 		}
 
-		auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
+		const auto* l_mediate_component = m_actor.get_component<game::bc_controller_component>();
 		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
 		l_xbot_controller->shoot_weapon();
 	}
@@ -199,9 +199,9 @@ namespace black_cat
 		{
 			return;
 		}
-		
-		auto* l_mediate_component = m_actor.get_component<game::bc_mediate_component>();
-		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
+
+		const auto* l_controller_component = m_actor.get_component<game::bc_controller_component>();
+		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_controller_component->get_controller());
 		l_xbot_controller->shoot_weapon();
 	}
 

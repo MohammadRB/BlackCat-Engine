@@ -33,14 +33,15 @@ namespace black_cat
 
 			virtual void remove(bc_actor_component_id p_index) = 0;
 
-			virtual void handle_events(core::bc_query_manager& p_query_manager, 
-				bc_game_system& p_game_system, 
+			virtual void handle_events(const platform::bc_clock::update_param& p_clock,
+				core::bc_query_manager& p_query_manager,
+				bc_game_system& p_game_system,
 				bc_actor_component_manager& p_manager) = 0;
 
-			virtual void update(core::bc_query_manager& p_query_manager, 
-				bc_game_system& p_game_system, 
-				bc_actor_component_manager& p_manager, 
-				const platform::bc_clock::update_param& p_clock) = 0;
+			virtual void update(const platform::bc_clock::update_param& p_clock,
+				core::bc_query_manager& p_query_manager,
+				bc_game_system& p_game_system,
+				bc_actor_component_manager& p_manager) = 0;
 
 			virtual bcSIZE size() = 0;
 
@@ -56,7 +57,7 @@ namespace black_cat
 
 			bc_actor_component_container(bc_actor_component_container&&) noexcept;
 
-			~bc_actor_component_container();
+			~bc_actor_component_container() override;
 
 			bc_actor_component_container& operator=(bc_actor_component_container&&) noexcept;
 
@@ -75,14 +76,15 @@ namespace black_cat
 
 			void remove(bc_actor_component_id p_index) override;
 
-			void handle_events(core::bc_query_manager& p_query_manager,
+			void handle_events(const platform::bc_clock::update_param& p_clock,
+				core::bc_query_manager& p_query_manager,
 				bc_game_system& p_game_system,
 				bc_actor_component_manager& p_manager) override;
 
-			void update(core::bc_query_manager& p_query_manager,
+			void update(const platform::bc_clock::update_param& p_clock,
+				core::bc_query_manager& p_query_manager,
 				bc_game_system& p_game_system,
-				bc_actor_component_manager& p_manager,
-				const platform::bc_clock::update_param& p_clock) override;
+				bc_actor_component_manager& p_manager) override;
 
 			bcSIZE size() override;
 

@@ -44,11 +44,9 @@ bc_vs_output glow_extract_vs(uint p_vertex_id : SV_VertexID)
 bc_ps_output glow_extract_ps(bc_vs_output p_input)
 {
 	bc_ps_output l_output;
-
-	//const float l_saturation_inverse = 1. - g_threshold;
+	
 	l_output.m_color = saturate(g_tex2d_input.Sample(g_sam_sampler, p_input.m_texcoord) - g_threshold);
 	l_output.m_color *= g_intensity;
-	//l_output.m_color *= (l_saturation_inverse - l_output.m_color) * (1. / l_saturation_inverse) * g_intensity;
 
 	return l_output;
 }
@@ -56,7 +54,9 @@ bc_ps_output glow_extract_ps(bc_vs_output p_input)
 bc_ps_output glow_apply_ps(bc_vs_output p_input)
 {
 	bc_ps_output l_output;
-	l_output.m_color = g_tex2d_input.Sample(g_sam_sampler, p_input.m_texcoord);
+	
+	const float4 l_glow_blur = g_tex2d_input.Sample(g_sam_sampler, p_input.m_texcoord);
+	l_output.m_color = l_glow_blur;
 
 	return l_output;
 }

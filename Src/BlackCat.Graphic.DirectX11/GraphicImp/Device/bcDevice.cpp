@@ -243,15 +243,15 @@ namespace black_cat
 				{
 					DWORD l_error_code;
 					platform::win32_from_hresult(l_hr, &l_error_code);
-					core::bc_string l_full_message = "Error compiling shader file \"";
+					core::bc_string l_full_message = "Error in compiling shader file \"";
 
 					if (l_error_messages)
 					{
 						bcCHAR l_message[3072];
 						l_message[0] = NULL;
-						bcCHAR* l_blobdata = reinterpret_cast<char*>(l_error_messages->GetBufferPointer());
+						const bcCHAR* l_blob_data = static_cast<char*>(l_error_messages->GetBufferPointer());
 
-						std::strcpy(l_message, l_blobdata);
+						std::strcpy(l_message, l_blob_data);
 
 						l_full_message += l_message;
 

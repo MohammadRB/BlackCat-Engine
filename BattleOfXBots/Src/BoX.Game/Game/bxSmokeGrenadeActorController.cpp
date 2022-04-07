@@ -65,7 +65,7 @@ namespace box
 		{
 			const auto l_emitter = game::bc_particle_builder()
 				.emitter(core::bc_vector3f(0), core::bc_vector3f::up(), m_smoke_time, 0, 0)
-				.with_emission_deviation(180)
+				.with_emission_direction_deviation(180)
 				.with_texture(1)
 				.with_particles_color(m_color, 1)
 				.with_particle_size(4.0f, 10.0f)
