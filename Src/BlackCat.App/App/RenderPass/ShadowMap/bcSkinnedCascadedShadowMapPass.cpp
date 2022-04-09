@@ -48,18 +48,19 @@ namespace black_cat
 	void bc_skinned_cascaded_shadow_map_pass::initialize_frame_pass(const bc_cascaded_shadow_map_pass_init_frame_param& p_param)
 	{
 		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
-		if (m_scene_queries.size() < l_cascade_absolute_index + 1)
+		if (m_scene_query_results.size() < l_cascade_absolute_index + 1)
 		{
 			m_scene_queries.resize(l_cascade_absolute_index + 1);
 			m_scene_query_results.resize(l_cascade_absolute_index + 1);
+			m_scene_render_states.resize(l_cascade_absolute_index + 1);
 		}
 
-		if (m_scene_queries[l_cascade_absolute_index].is_executed())
+		if (m_scene_query_results[l_cascade_absolute_index].is_executed())
 		{
-			m_scene_query_results[l_cascade_absolute_index] = m_scene_queries[l_cascade_absolute_index].get().get_render_state_buffer();
+			m_scene_render_states[l_cascade_absolute_index] = m_scene_query_results[l_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>().get_render_state_buffer();
 		}
 
-		m_scene_queries[l_cascade_absolute_index] = p_param.m_query_manager.queue_query
+		m_scene_queries[l_cascade_absolute_index] = std::move
 		(
 			game::bc_scene_graph_render_state_query
 			(
@@ -69,12 +70,13 @@ namespace black_cat
 			.with(game::bc_camera_frustum(p_param.m_update_cascade_camera))
 			.only<game::bc_skinned_mesh_component>()
 		);
+		m_scene_query_results[l_cascade_absolute_index] = p_param.m_query_manager.queue_ext_query(m_scene_queries[l_cascade_absolute_index]);
 	}
 
 	void bc_skinned_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_param& p_param)
 	{
 		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
-		const auto& l_render_buffer = m_scene_query_results[l_cascade_absolute_index];
+		const auto& l_render_buffer = m_scene_render_states[l_cascade_absolute_index];
 		
 		const auto& l_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index];
 		p_param.m_render_thread.bind_render_pass_state(l_render_pass_state);
@@ -93,7 +95,7 @@ namespace black_cat
 	void bc_skinned_cascaded_shadow_map_pass::destroy_pass(game::bc_render_system& p_render_system)
 	{
 		m_device_pipeline.reset();
-		m_scene_queries.clear();
+		m_scene_query_results.clear();
 	}
 
 	core::bc_vector<game::bc_render_pass_state_ptr> bc_skinned_cascaded_shadow_map_pass::create_render_pass_states(game::bc_render_system& p_render_system,

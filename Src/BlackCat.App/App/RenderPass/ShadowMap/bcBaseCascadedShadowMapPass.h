@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcDeque.h"
 #include "Core/Container/bcSpan.h"
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
@@ -26,6 +27,9 @@ namespace black_cat
 		core::bc_vector<graphic::bc_depth_stencil_view_ref> m_depth_buffer_views;
 		core::bc_vector<core::bc_vector<game::bc_render_pass_state_ptr>> m_render_pass_states;
 		core::bc_vector_movable<core::bc_matrix4f> m_last_view_projections;
+		// Passed camera references to 'init frame' and 'execute' functions must remain valid until the end of frame.
+		// We store them in this list to maintain their references.
+		core::bc_deque<game::bc_camera_instance> m_last_cameras;
 	};
 
 	class _bc_cascaded_shadow_map_pass_state
@@ -39,10 +43,10 @@ namespace black_cat
 		game::bc_render_pass_variable_t m_output_depth_buffers_share_slot;
 		bcFLOAT m_shadow_map_multiplier;
 		bcUINT32 m_shadow_map_size;
-		core::bc_vector_program<bcSIZE> m_cascade_sizes;
-		core::bc_vector_program<std::tuple<bcUBYTE, bcUBYTE>> m_cascade_update_intervals;
+		core::bc_vector<bcSIZE> m_cascade_sizes;
+		core::bc_vector<std::tuple<bcUBYTE, bcUBYTE>> m_cascade_update_intervals;
 
-		core::bc_vector_program<_bc_cascaded_shadow_map_light_state> m_light_instance_states;
+		core::bc_vector<_bc_cascaded_shadow_map_light_state> m_light_states;
 		core::bc_query_result<game::bc_scene_light_query> m_lights_query;
 		core::bc_vector<game::bc_light_instance> m_lights;
 		

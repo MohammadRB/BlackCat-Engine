@@ -617,22 +617,27 @@ namespace black_cat
 			bc_unique_ptr<TContent> p_content)
 		{
 			auto l_content_ptr = p_content.get();
+			auto l_entry = _bc_content_entry
+			(
+				std::move(p_key), 
+				bc_estring(p_file), 
+				bc_estring(p_file_variant),
+				bc_unique_ptr<bci_content>(std::move(p_content))
+			);
 
 			{
 				platform::bc_lock_guard l_guard(m_contents_mutex);
 
-				const auto l_ite = m_contents.find(p_key);
+				const auto l_ite = m_contents.find(l_entry.m_key);
 				if(l_ite == std::end(m_contents))
 				{
-					auto l_entry = _bc_content_entry(std::move(p_key), bc_estring(p_file), bc_estring(p_file_variant), bc_unique_ptr<bci_content>(std::move(p_content)));
-					auto l_entry_key = bc_estring_view(l_entry.m_key);
-					const auto l_insertion_result = m_contents.insert(map_type::value_type(l_entry_key, std::move(l_entry)));
-
+					const auto l_insertion_result = m_contents.insert(map_type::value_type(bc_estring_view(l_entry.m_key), std::move(l_entry)));
 					l_content_ptr->_set_key(l_insertion_result.first->second.m_key);
 				}
 				else
 				{
-					bc_log(bc_log_type::warning) << "content with key '" << p_key << "' already exist in the contents map. newly loaded content will be discarded." << bc_lend;
+					bc_log(bc_log_type::warning) << "content with key '" << l_entry.m_key << "' already exist in the contents map. newly loaded one will be discarded" << bc_lend;
+					l_content_ptr = static_cast<TContent*>(l_ite->second.m_content.get());
 				}
 			}
 

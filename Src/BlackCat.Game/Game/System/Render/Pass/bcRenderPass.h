@@ -55,7 +55,7 @@ namespace black_cat
 			}
 
 			platform::bc_clock::update_param m_clock;
-			bc_camera_instance m_camera;
+			const bc_camera_instance& m_camera;
 		};
 
 		class bc_render_pass_render_context
@@ -83,8 +83,8 @@ namespace black_cat
 			bc_render_system& m_render_system;
 			bc_frame_renderer& m_frame_renderer;
 			bc_default_render_thread& m_render_thread;
-			bc_camera_instance m_update_camera;
-			bc_camera_instance m_render_camera;
+			const bc_camera_instance& m_update_camera; // update camera instance reference is valid until the end of frame
+			const bc_camera_instance& m_render_camera; // render camera instance reference is valid until the end of frame
 		};
 
 		class bc_render_pass_reset_context
@@ -160,14 +160,12 @@ namespace black_cat
 
 			/**
 			 * \brief This function will be called in the start of frame draw phase.
-			 * Threading: This function will be executed concurrently by a cpu worker thread.
 			 * \param p_context
 			 */
 			virtual void initialize_frame(const bc_render_pass_render_context& p_context) = 0;
 
 			/**
 			 * \brief This function will be called in frame draw phase.
-			 * Threading: This function will be executed concurrently by a cpu worker thread.
 			 * \param p_context
 			 */
 			virtual void execute(const bc_render_pass_render_context& p_context) = 0;
@@ -197,8 +195,7 @@ namespace black_cat
 			virtual void config_changed(const bc_render_pass_config_change_context& p_context);
 
 			/**
-			 * \brief This function will be called when pass is going to be destroy.
-			 * Before device destruction this function must be called.
+			 * \brief This function will be called when pass is going to be destroyed.
 			 * \param p_render_system 
 			 */
 			virtual void destroy(bc_render_system& p_render_system) = 0;

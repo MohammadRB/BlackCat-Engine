@@ -408,7 +408,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\PalmTree\\Palm_Tree_Large_d.fbx",
           "content_parameter": {
-            "auto_scale": 20.0,
+            "auto_scale": 25.0,
             "collider": "Palm_Tree_Large_d_collider.fbx",
             "high_detail_query_shape": true
           }
@@ -418,7 +418,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Nature\\PalmTree\\Palm_Tree_Large_h.fbx",
           "content_parameter": {
-            "auto_scale": 20.0,
+            "auto_scale": 25.0,
             "collider": "Palm_Tree_Large_h_collider.fbx",
             "high_detail_query_shape": true
           }

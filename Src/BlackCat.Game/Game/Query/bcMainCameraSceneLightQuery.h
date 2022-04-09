@@ -21,7 +21,7 @@ namespace black_cat
 			BC_QUERY(sc_lgt)
 
 		public:
-			bc_main_camera_scene_light_query(bc_light_type p_types) noexcept;
+			explicit bc_main_camera_scene_light_query(bc_light_type p_types) noexcept;
 
 			bc_main_camera_scene_light_query(bc_main_camera_scene_light_query&&) noexcept;
 

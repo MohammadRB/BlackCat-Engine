@@ -606,36 +606,34 @@ namespace black_cat
 			return;
 		}
 
-		m_weapon_obstacle_query = p_query_manager.queue_query
-		(
-			game::bc_scene_query().with_callable([=, &p_weapon](const game::bc_scene_query_context& p_context)
+		auto l_scene_query = game::bc_scene_query([=, &p_weapon](const game::bc_scene_query_context& p_context)
+		{
+			const auto& l_weapon_mediate_component = p_weapon.m_actor.get_component<game::bc_mediate_component>();
+
+			auto* l_px_scene = &l_scene->get_px_scene();
+			const auto l_ray = physics::bc_ray(l_weapon_mediate_component->get_position(), get_look_direction(), m_weapon_obstacle_distance);
+			auto l_hit_buffer = physics::bc_scene_ray_query_buffer();
+			bool l_hit;
+
 			{
-				const auto& l_weapon_mediate_component = p_weapon.m_actor.get_component<game::bc_mediate_component>();
+				physics::bc_scene_shared_lock l_lock(l_px_scene);
+				l_hit = l_px_scene->raycast(l_ray, l_hit_buffer, physics::bc_hit_flag::distance, physics::bc_query_flags::statics);
+			}
 
-				auto* l_px_scene = &l_scene->get_px_scene();
-				const auto l_ray = physics::bc_ray(l_weapon_mediate_component->get_position(), get_look_direction(), m_weapon_obstacle_distance);
-				auto l_hit_buffer = physics::bc_scene_ray_query_buffer();
-				bool l_hit;
-
+			if (l_hit)
+			{
+				const auto l_ray_hit = static_cast<game::bc_ray_hit>(l_hit_buffer.get_block());
+				const auto l_hit_actor = l_ray_hit.get_actor();
+				if (l_hit_actor == p_weapon.m_actor)
 				{
-					physics::bc_scene_shared_lock l_lock(l_px_scene);
-					l_hit = l_px_scene->raycast(l_ray, l_hit_buffer, physics::bc_hit_flag::distance, physics::bc_query_flags::statics);
+					l_hit = false;
 				}
+			}
 
-				if (l_hit)
-				{
-					const auto l_ray_hit = static_cast<game::bc_ray_hit>(l_hit_buffer.get_block());
-					const auto l_hit_actor = l_ray_hit.get_actor();
-					if (l_hit_actor == p_weapon.m_actor)
-					{
-						l_hit = false;
-					}
-				}
+			const auto l_hit_distance = l_hit ? l_hit_buffer.get_block().get_distance() : std::numeric_limits<bcFLOAT>::max();
 
-				const auto l_hit_distance = l_hit ? l_hit_buffer.get_block().get_distance() : std::numeric_limits<bcFLOAT>::max();
-
-				return core::bc_any(l_hit_distance);
-			})
-		);
+			return core::bc_any(l_hit_distance);
+		});
+		m_weapon_obstacle_query = p_query_manager.queue_query(std::move(l_scene_query));
 	}
 }

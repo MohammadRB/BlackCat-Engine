@@ -61,12 +61,12 @@ namespace black_cat
 	}
 }
 
-inline void* operator new(black_cat::bcSIZE p_size) noexcept(false)
+inline void* operator new(black_cat::bcSIZE p_size) noexcept
 {
 	return black_cat::platform::bc_mem_alloc(p_size);
 }
 
-inline void* operator new[](black_cat::bcSIZE p_size) noexcept(false)
+inline void* operator new[](black_cat::bcSIZE p_size) noexcept
 {
 	return black_cat::platform::bc_mem_alloc(p_size);
 }

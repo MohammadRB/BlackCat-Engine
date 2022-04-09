@@ -17,6 +17,8 @@ namespace black_cat
 		auto& l_device = p_render_system.get_device();
 		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 
+		m_command_list = l_device.create_command_list();
+
 		after_reset(game::bc_render_pass_reset_context
 		(
 			p_render_system,
@@ -43,13 +45,14 @@ namespace black_cat
 	{
 	}
 
-	void bc_gbuffer_skinned_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
+	void bc_gbuffer_skinned_pass::initialize_frame(const game::bc_concurrent_render_pass_render_context& p_context)
 	{
-		if (m_render_states_query.is_executed())
+		if (m_query_result.is_executed())
 		{
-			m_render_states = m_render_states_query.get().get_render_state_buffer();
+			m_render_states = m_query_result.get<game::bc_main_camera_render_state_query>().get_render_state_buffer();
 		}
-		m_render_states_query = p_context.m_query_manager.queue_query
+
+		m_query = std::move
 		(
 			game::bc_main_camera_render_state_query
 			(
@@ -58,17 +61,18 @@ namespace black_cat
 			)
 			.only<game::bc_skinned_mesh_component>()
 		);
+		m_query_result = p_context.m_query_manager.queue_ext_query(m_query);
 	}
 
-	void bc_gbuffer_skinned_pass::execute(const game::bc_render_pass_render_context& p_context)
+	void bc_gbuffer_skinned_pass::execute(const game::bc_concurrent_render_pass_render_context& p_context)
 	{
-		p_context.m_render_thread.start();
-		p_context.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
+		p_context.m_child_render_thread.start(*m_command_list);
+		p_context.m_child_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 		
-		p_context.m_frame_renderer.render_skinned_buffer(p_context.m_render_thread, m_render_states, p_context.m_render_camera);
+		p_context.m_frame_renderer.render_skinned_buffer(p_context.m_child_render_thread, m_render_states, p_context.m_render_camera);
 
-		p_context.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
-		p_context.m_render_thread.finish();
+		p_context.m_child_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
+		p_context.m_child_render_thread.finish();
 	}
 
 	void bc_gbuffer_skinned_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
@@ -150,5 +154,6 @@ namespace black_cat
 		m_render_pass_state.reset();
 		m_sampler_state.reset();
 		m_pipeline_state.reset();
+		m_command_list.reset();
 	}
 }

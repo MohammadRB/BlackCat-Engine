@@ -11,9 +11,9 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
-		struct bc_platform_mesh_buffer_pack<g_api_physx>
+		struct bc_platform_memory_buffer_pack<g_api_physx>
 		{
-			core::bc_unique_ptr<physx::PxDefaultMemoryOutputStream> m_px_stream;
+			physx::PxDefaultMemoryOutputStream* m_px_stream;
 			bool m_is_valid;
 		};
 	}

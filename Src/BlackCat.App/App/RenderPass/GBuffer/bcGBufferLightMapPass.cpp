@@ -359,7 +359,7 @@ namespace black_cat
 					std::begin(l_shadow_map_struct.m_view_projections),
 					[&p_context](const core::bc_matrix4f& p_mat)
 					{
-						if(p_context.m_frame_renderer.need_matrix_transpose())
+						if constexpr (p_context.m_frame_renderer.need_matrix_transpose())
 						{
 							return p_mat.transpose();
 						}
@@ -383,7 +383,7 @@ namespace black_cat
 			(p_context.m_render_camera.get_view() * p_context.m_render_camera.get_projection()).inverse()
 		};
 
-		if (p_context.m_frame_renderer.need_matrix_transpose())
+		if constexpr (p_context.m_frame_renderer.need_matrix_transpose())
 		{
 			l_parameters_cbuffer_data.m_view_proj_inv.make_transpose();
 		}

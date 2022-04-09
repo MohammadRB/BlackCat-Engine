@@ -25,7 +25,7 @@ namespace black_cat
 
 			bc_scene_light_query(bc_scene_light_query&&) noexcept;
 
-			~bc_scene_light_query();
+			~bc_scene_light_query() override;
 
 			bc_scene_light_query& operator=(bc_scene_light_query&&) noexcept;
 

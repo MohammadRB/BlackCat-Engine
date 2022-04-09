@@ -72,39 +72,37 @@ namespace box
 			}
 		}
 
-		m_scene_query = p_context.m_query_manager.queue_query
-		(
-			game::bc_scene_query().with_callable([this, l_elapsed = p_context.m_clock.m_elapsed_second](const game::bc_scene_query_context& p_query_context)
+		auto l_scene_query = game::bc_scene_query([this, l_elapsed = p_context.m_clock.m_elapsed_second](const game::bc_scene_query_context& p_query_context)
+		{
+			auto& l_px_scene = m_scene->get_px_scene();
+
+			const physics::bc_ray l_ray(m_deviated_position, m_direction, (m_direction* l_elapsed* m_speed).magnitude());
+			physics::bc_scene_ray_query_buffer l_query_buffer;
+			bool l_has_collided;
+
 			{
-				auto& l_px_scene = m_scene->get_px_scene();
+				physics::bc_scene_shared_lock l_lock(&l_px_scene);
 
-				const physics::bc_ray l_ray(m_deviated_position, m_direction, (m_direction* l_elapsed* m_speed).magnitude());
-				physics::bc_scene_ray_query_buffer l_query_buffer;
-				bool l_has_collided;
+				l_has_collided = l_px_scene.raycast
+				(
+					l_ray,
+					l_query_buffer,
+					core::bc_enum::mask_or({ physics::bc_hit_flag::position, physics::bc_hit_flag::normal, physics::bc_hit_flag::face_index }),
+					physics::bc_query_flags::statics,
+					static_cast<physics::bc_query_group>(game::bc_actor_physics_group::terrain)
+				);
+			}
 
-				{
-					physics::bc_scene_shared_lock l_lock(&l_px_scene);
+			core::bc_nullable<game::bc_ray_hit> l_result;
 
-					l_has_collided = l_px_scene.raycast
-					(
-						l_ray,
-						l_query_buffer,
-						core::bc_enum::mask_or({ physics::bc_hit_flag::position, physics::bc_hit_flag::normal, physics::bc_hit_flag::face_index }),
-						physics::bc_query_flags::statics,
-						static_cast<physics::bc_query_group>(game::bc_actor_physics_group::terrain)
-					);
-				}
+			if (l_has_collided)
+			{
+				l_result = l_query_buffer.get_block();
+			}
 
-				core::bc_nullable<game::bc_ray_hit> l_result;
-
-				if (l_has_collided)
-				{
-					l_result = l_query_buffer.get_block();
-				}
-
-				return core::bc_any(l_result);
-			})
-		);
+			return core::bc_any(l_result);
+		});
+		m_scene_query = p_context.m_query_manager.queue_query(std::move(l_scene_query));
 
 		constexpr auto l_deviation_cycle = 4;
 		const auto l_deviation = 2.5f * m_scene->get_global_scale();

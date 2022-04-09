@@ -251,7 +251,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "container_small_blue",
-            "view_distance": 400.0
+            "view_distance": 450.0
           }
         },
         {
@@ -271,7 +271,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "container_small_red",
-            "view_distance": 400.0
+            "view_distance": 450.0
           }
         },
         {

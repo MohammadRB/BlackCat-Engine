@@ -22,6 +22,8 @@ namespace black_cat
 			BC_QUERY(hms)
 			
 		public:
+			bc_height_map_scene_query();
+
 			bc_height_map_scene_query(const bc_actor_render_camera& p_camera, bc_render_state_buffer p_render_state_buffer);
 
 			bc_height_map_scene_query(bc_height_map_scene_query&&) noexcept;
@@ -42,6 +44,12 @@ namespace black_cat
 			bc_render_state_buffer m_render_state_buffer;
 			core::bc_vector<bc_height_map_ptr> m_height_maps;
 		};
+
+		inline bc_height_map_scene_query::bc_height_map_scene_query()
+			: bc_query(message_name()),
+			m_camera()
+		{
+		}
 
 		inline bc_height_map_scene_query::bc_height_map_scene_query(const bc_actor_render_camera& p_camera, bc_render_state_buffer p_render_state_buffer)
 			: bc_query(message_name()),

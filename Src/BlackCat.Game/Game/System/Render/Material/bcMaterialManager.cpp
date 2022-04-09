@@ -373,7 +373,7 @@ namespace black_cat
 				);
 				l_material.m_specular_map = _create_texture_from_color(l_specular);
 			}
-
+			
 			return _store_mesh_material(p_alloc_type, p_name, std::move(l_material));
 		}
 
@@ -524,16 +524,14 @@ namespace black_cat
 				// have this texture, creation and storing of texture must occur atomically
 				platform::bc_mutex_guard l_guard(m_materials_mutex);
 
-				default_diffuse_map::iterator l_color_map_entry = m_default_color_textures.find(l_hash);
+				auto l_color_map_entry = m_default_color_textures.find(l_hash);
 				if (l_color_map_entry != std::cend(m_default_color_textures))
 				{
 					return l_color_map_entry->second;
 				}
 
-				graphic::bc_subresource_data l_color_map_init_data(&p_color, sizeof(core::bc_vector4f), 0);
-				graphic::bc_texture2d_ref l_color_map_texture;
-
-				l_color_map_texture = m_render_system->get_device().create_texture2d
+				const graphic::bc_subresource_data l_color_map_init_data(&p_color, sizeof(core::bc_vector4f), 0);
+				graphic::bc_texture2d_ref l_color_map_texture = m_render_system->get_device().create_texture2d
 				(
 					m_default_texture_config,
 					&l_color_map_init_data
@@ -564,7 +562,7 @@ namespace black_cat
 			auto l_diffuse_map = l_material->get_diffuse_map();
 			auto l_normal_map = l_material->get_normal_map();
 			auto l_specular_map = l_material->get_specular_map();
-
+			
 			auto l_diffuse_map_view_config = graphic::bc_graphic_resource_builder()
 				.as_resource_view()
 				.as_texture_view(l_diffuse_map.get_format())
@@ -580,17 +578,15 @@ namespace black_cat
 				.as_texture_view(l_specular_map.get_format())
 				.as_tex2d_shader_view(0, -1)
 				.on_texture2d();
-
-			l_material->m_diffuse_map_view = l_device.create_resource_view(l_diffuse_map, l_diffuse_map_view_config);
-			l_material->m_normal_map_view = l_device.create_resource_view(l_normal_map, l_normal_map_view_config);
-			l_material->m_specular_map_view = l_device.create_resource_view(l_specular_map, l_specular_map_view_config);
-
 			auto l_parameters_cbuffer_config = graphic::bc_graphic_resource_builder()
 				.as_resource()
 				.as_buffer(1, sizeof(bc_mesh_material_parameter), graphic::bc_resource_usage::gpu_r, graphic::bc_resource_view_type::shader)
 				.as_constant_buffer();
 			auto l_parameters_cbuffer_data = graphic::bc_subresource_data(&l_material->m_parameters, 0, 0);
 
+			l_material->m_diffuse_map_view = l_device.create_resource_view(l_diffuse_map, l_diffuse_map_view_config);
+			l_material->m_normal_map_view = l_device.create_resource_view(l_normal_map, l_normal_map_view_config);
+			l_material->m_specular_map_view = l_device.create_resource_view(l_specular_map, l_specular_map_view_config);
 			l_material->m_parameter_cbuffer = l_device.create_buffer(l_parameters_cbuffer_config, &l_parameters_cbuffer_data);
 
 			{

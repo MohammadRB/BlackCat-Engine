@@ -346,6 +346,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQuery.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryProviderHandle.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryResult.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcCounterValueManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcInitializable.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Utility\bcLogger.cpp" />

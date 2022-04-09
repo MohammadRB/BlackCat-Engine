@@ -148,7 +148,7 @@ namespace box
 
 	core::bc_query_result<game::bc_scene_query> bx_explosion_actor_controller::_build_terrain_query(core::bc_query_manager& p_query_manager, const core::bc_vector3f& p_explosion_position) const
 	{
-		return p_query_manager.queue_query(game::bc_scene_query().with_callable
+		auto l_scene_query = game::bc_scene_query
 		(
 			[&, this, p_explosion_position](const game::bc_scene_query_context& p_query_context)
 			{
@@ -183,12 +183,14 @@ namespace box
 
 				return core::bc_any(l_result);
 			}
-		));
+		);
+
+		return p_query_manager.queue_query(std::move(l_scene_query));
 	}
 
 	core::bc_query_result<game::bc_scene_query> bx_explosion_actor_controller::_build_dynamics_query(core::bc_query_manager& p_query_manager, const core::bc_vector3f& p_explosion_position) const
 	{
-		return p_query_manager.queue_query(game::bc_scene_query().with_callable
+		auto l_scene_query = game::bc_scene_query
 		(
 			[&, this, p_explosion_position](const game::bc_scene_query_context& p_query_context)
 			{
@@ -228,17 +230,17 @@ namespace box
 						}
 
 						const auto l_actor_is_visible = _test_actor_visibility(l_px_scene, l_hit, p_explosion_position);
-
-						if(l_actor_is_visible)
+						if (l_actor_is_visible)
 						{
 							l_overlap_result.push_back(l_hit);
 						}
 					}
 				}
-				
+
 				return core::bc_any(std::move(l_overlap_result));
 			}
-		));
+		);
+		return p_query_manager.queue_query(std::move(l_scene_query));
 	}
 
 	bool bx_explosion_actor_controller::_test_actor_visibility(const physics::bc_scene& p_px_scene, const game::bc_overlap_hit& p_hit, const core::bc_vector3f& p_explosion_position) const

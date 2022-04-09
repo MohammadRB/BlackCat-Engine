@@ -21,7 +21,7 @@ namespace black_cat
 		class BC_GAME_DLL bci_camera
 		{
 		public:
-			using extend = core::bc_array< core::bc_vector3f, 8 >;
+			using extend = core::bc_array<core::bc_vector3f, 8>;
 
 		public:
 			virtual ~bci_camera() noexcept;

@@ -125,8 +125,8 @@ namespace black_cat
 			const auto l_mesh_lod = get_mesh().get_mesh_level_of_detail();
 			const auto l_lod = l_mesh_lod.get_lod_culling
 			(
-				p_context.m_camera.m_main_camera.get_position(),
-				p_context.m_camera.m_render_camera.get_position(),
+				p_context.m_camera.m_main_camera->get_position(),
+				p_context.m_camera.m_render_camera->get_position(),
 				get_world_position(),
 				get_view_distance()
 			);

@@ -58,15 +58,35 @@ namespace black_cat
 			template<class TContext>
 			bc_query_provider_handle register_query_provider(provider_delegate_t&& p_delegate);
 
-			void replace_query_provider(bc_query_provider_handle& p_provider_handle, provider_delegate_t&& p_delegate);
+			void replace_query_provider(const bc_query_provider_handle& p_provider_handle, provider_delegate_t&& p_delegate);
 
-			void unregister_query_provider(bc_query_provider_handle& p_provider_handle);
+			void unregister_query_provider(const bc_query_provider_handle& p_provider_handle);
+
+			/**
+			 * \brief Put query into queue to be executed.
+			 * \n The ownership of query is not moved and the caller is responsible for query object lifetime.
+			 * \tparam TQuery 
+			 * \param p_query 
+			 * \return 
+			 */
+			template<class TQuery>
+			bc_query_result<bci_query> queue_ext_query(TQuery& p_query);
+
+			/**
+			 * \brief Put query into queue to be executed.
+			 * \n The ownership of query is moved.
+			 * \tparam TQuery 
+			 * \param p_query 
+			 * \return 
+			 */
+			template<class TQuery>
+			bc_query_result<std::decay_t<TQuery>> queue_query(TQuery p_query);
 
 			template<class TQuery>
-			bc_query_result<std::decay_t<TQuery>> queue_query(TQuery&& p_query);
+			void queue_shared_ext_query(TQuery& p_query);
 
 			template<class TQuery>
-			void queue_shared_query(TQuery&& p_query);
+			void queue_shared_query(TQuery p_query);
 
 			bcUINT32 process_query_queue(const platform::bc_clock::update_param& p_clock);
 
@@ -84,15 +104,13 @@ namespace black_cat
 		private:
 			bc_query_provider_handle _register_query_provider(bc_query_context_hash p_context_hash, provider_delegate_t&& p_delegate);
 
-			_bc_query_shared_state& _queue_query(bc_query_context_hash p_context_hash, bool p_is_shared, bcUBYTE p_pool_index, bci_query* p_query);
-
-			bcUINT32 m_active_query_pool_swap_interval;
-			bcUINT32 m_active_query_pool;
-			bc_concurrent_object_stack_pool m_query_pool[2];
-			bc_concurrent_memory_pool m_query_entry_pool;
+			_bc_query_shared_state& _queue_query(bc_query_context_hash p_context_hash, bool p_is_shared, bool p_has_ownership, bci_query* p_query);
+			
 			platform::bc_shared_mutex m_providers_lock;
 			provider_map_t m_providers;
+
 			platform::bc_mutex m_executed_queries_lock;
+			bc_concurrent_memory_pool m_query_entry_pool;
 			query_list_t m_executed_shared_queries;
 			query_list_t m_executed_queries;
 		};
@@ -100,18 +118,18 @@ namespace black_cat
 		class bc_query_manager::_query_entry : public _bc_query_shared_state
 		{
 		public:
-			_query_entry(bc_concurrent_object_stack_pool* p_pool, _provider_entry& p_provider, bool p_is_shared, bci_query* p_query);
+			_query_entry(_provider_entry& p_provider, bool p_is_shared, bool p_has_ownership, bci_query* p_query);
 
 			_query_entry(_query_entry&&) noexcept;
 
 			~_query_entry();
 
 			_query_entry& operator=(_query_entry&&) noexcept;
-
-			bc_concurrent_object_stack_pool* m_pool;
+			
 			_provider_entry* m_provider;
 			query_list_t::iterator m_iterator;
 			bool m_is_shared;
+			bool m_has_ownership;
 		};
 
 		class bc_query_manager::_provider_entry
@@ -127,11 +145,11 @@ namespace black_cat
 
 			provider_delegate_t m_provider_delegate;
 			bc_query_context_ptr m_provided_context;
-			platform::bc_mutex m_queries_lock;
+			platform::bc_spin_mutex m_queries_lock;
 			query_list_t m_queries;
 		};
 
-		template< class TContext >
+		template<class TContext>
 		bc_query_provider_handle bc_query_manager::register_query_provider(provider_delegate_t&& p_delegate)
 		{
 			static_assert(std::is_base_of_v<bc_query_context, TContext>, "TContext must be derived from bc_query_context");
@@ -141,44 +159,66 @@ namespace black_cat
 		}
 
 		template<class TQuery>
-		bc_query_result<std::decay_t<TQuery>> bc_query_manager::queue_query(TQuery&& p_query)
+		bc_query_result<bci_query> bc_query_manager::queue_ext_query(TQuery& p_query)
 		{
-			using query_t = std::decay_t< TQuery >;
-			static_assert(std::is_base_of_v< bci_query, query_t >, "TQuery must be derived from bc_iquery");
+			using query_t = std::decay_t<TQuery>;
+			static_assert(std::is_base_of_v<bci_query, query_t>, "TQuery must be derived from bc_iquery");
 			static_assert(!query_t::is_shared(), "TQuery must not be a shared query");
 
-			auto* l_query = m_query_pool[m_active_query_pool].alloc<query_t>(std::forward< query_t >(p_query));
 			auto& l_context_type_info = typeid(typename query_t::context_t);
 
-			BC_ASSERT(l_query == static_cast<bci_query*>(l_query));
+			auto& l_shared_state = _queue_query(l_context_type_info.hash_code(), false, false, &p_query);
 
-			auto& l_shared_state = _queue_query(l_context_type_info.hash_code(), false, m_active_query_pool, l_query);
+			return bc_query_result<bci_query>(*this, l_shared_state);
+		}
+
+		template<class TQuery>
+		bc_query_result<std::decay_t<TQuery>> bc_query_manager::queue_query(TQuery p_query)
+		{
+			using query_t = std::decay_t<TQuery>;
+			static_assert(std::is_base_of_v<bci_query, query_t>, "TQuery must be derived from bc_iquery");
+			static_assert(!query_t::is_shared(), "TQuery must not be a shared query");
+			
+			auto* l_query = BC_NEW(query_t(std::move(p_query)), core::bc_alloc_type::unknown);
+			auto& l_context_type_info = typeid(typename query_t::context_t);
+			
+			auto& l_shared_state = _queue_query(l_context_type_info.hash_code(), false, true, l_query);
 
 			return bc_query_result<query_t>(*this, l_shared_state);
 		}
 
 		template<class TQuery>
-		void bc_query_manager::queue_shared_query(TQuery&& p_query)
+		void bc_query_manager::queue_shared_ext_query(TQuery& p_query)
 		{
-			using query_t = std::decay_t< TQuery >;
-			static_assert(std::is_base_of_v< bci_query, query_t >, "TQuery must be derived from bc_iquery");
+			using query_t = std::decay_t<TQuery>;
+			static_assert(std::is_base_of_v<bci_query, query_t>, "TQuery must be derived from bc_iquery");
 			static_assert(query_t::is_shared(), "TQuery must be a shared query");
-
-			auto* l_query = m_query_pool[m_active_query_pool].alloc<query_t>(std::forward< query_t >(p_query));
+			
 			auto& l_context_type_info = typeid(typename query_t::context_t);
+			
+			auto& l_shared_state = _queue_query(l_context_type_info.hash_code(), true, false, &p_query);
+		}
 
-			BC_ASSERT(l_query == static_cast<bci_query*>(l_query));
-
-			auto& l_shared_state = _queue_query(l_context_type_info.hash_code(), true, m_active_query_pool, l_query);
+		template<class TQuery>
+		void bc_query_manager::queue_shared_query(TQuery p_query)
+		{
+			using query_t = std::decay_t<TQuery>;
+			static_assert(std::is_base_of_v<bci_query, query_t>, "TQuery must be derived from bc_iquery");
+			static_assert(query_t::is_shared(), "TQuery must be a shared query");
+			
+			auto* l_query = BC_NEW(query_t(std::forward<query_t>(p_query)), core::bc_alloc_type::unknown);
+			auto& l_context_type_info = typeid(typename query_t::context_t);
+			
+			auto& l_shared_state = _queue_query(l_context_type_info.hash_code(), true, true, l_query);
 		}
 
 		template<class TQuery>
 		TQuery& bc_query_manager::_get_shared_query()
 		{
-			static_assert(std::is_base_of_v< bci_query, TQuery >, "TQuery must be derived from bc_iquery");
+			static_assert(std::is_base_of_v<bci_query, TQuery>, "TQuery must be derived from bc_iquery");
 			static_assert(TQuery::is_shared(), "TQuery must be a shared query");
 
-			for (auto& l_shared_query : m_executed_shared_queries)
+			for (const auto& l_shared_query : m_executed_shared_queries)
 			{
 				if (bci_message::is<TQuery>(*l_shared_query.m_query))
 				{

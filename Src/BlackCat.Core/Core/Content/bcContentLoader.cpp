@@ -83,7 +83,7 @@ namespace black_cat
 			{
 				p_context.m_file.close();
 			}
-
+			
 			p_context.m_file_buffer.reset();
 			p_context.m_instance_parameters.reset();
 			p_context.m_result.reset();

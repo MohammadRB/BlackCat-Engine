@@ -11,17 +11,19 @@ namespace black_cat
 		class BC_CORE_DLL bc_matrix3f
 		{
 		public:
-			bc_matrix3f() noexcept;
+			bc_matrix3f() noexcept = default;
 
 			explicit bc_matrix3f(bool p_zero) noexcept;
 
-			bc_matrix3f(const bc_matrix3f& p_other) noexcept;
+			bc_matrix3f(const bc_matrix3f& p_other) noexcept = default;
 
 			bc_matrix3f(bcFLOAT p_m11, bcFLOAT p_m12, bcFLOAT p_m13,
 				bcFLOAT p_m21, bcFLOAT p_m22, bcFLOAT p_m23,
 				bcFLOAT p_m31, bcFLOAT p_m32, bcFLOAT p_m33) noexcept;
 
-			bc_matrix3f& operator=(const bc_matrix3f& p_other) noexcept;
+			~bc_matrix3f() = default;
+
+			bc_matrix3f& operator=(const bc_matrix3f& p_other) noexcept = default;
 
 			void rotation_x_lh(bcFLOAT p_radians) noexcept;
 

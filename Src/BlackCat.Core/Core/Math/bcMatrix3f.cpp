@@ -4,12 +4,7 @@
 namespace black_cat
 {
 	namespace core
-	{
-		bc_matrix3f::bc_matrix3f() noexcept
-			: m_entry{}
-		{
-		}
-		
+	{		
 		bc_matrix3f::bc_matrix3f(bool p_zero) noexcept
 			: m_entry{}
 		{
@@ -17,12 +12,6 @@ namespace black_cat
 			{
 				std::memset(m_entry, 0, 3 * 3 * sizeof(bcFLOAT));
 			}
-		}
-		
-		bc_matrix3f::bc_matrix3f(const bc_matrix3f& p_other) noexcept
-			: m_entry{}
-		{
-			std::memcpy(m_entry, p_other.m_entry, 9 * sizeof(bcFLOAT));
 		}
 		
 		bc_matrix3f::bc_matrix3f(bcFLOAT p_m11, bcFLOAT p_m12, bcFLOAT p_m13,
@@ -41,12 +30,6 @@ namespace black_cat
 			m_entry[i(2, 0)] = p_m31;
 			m_entry[i(2, 1)] = p_m32;
 			m_entry[i(2, 2)] = p_m33;
-		}
-		
-		bc_matrix3f& bc_matrix3f::operator=(const bc_matrix3f& p_other) noexcept
-		{
-			std::memcpy(m_entry, p_other.m_entry, 9 * sizeof(bcFLOAT));
-			return *this;
 		}
 		
 		void bc_matrix3f::rotation_x_lh(bcFLOAT p_radians) noexcept

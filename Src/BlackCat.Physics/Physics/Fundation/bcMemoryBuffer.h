@@ -9,11 +9,11 @@ namespace black_cat
 {
 	namespace physics
 	{
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_physics;
 
-		template< bc_physics_api TApi >
-		struct bc_platform_mesh_buffer_pack
+		template<bc_physics_api TApi>
+		struct bc_platform_memory_buffer_pack
 		{
 		};
 
@@ -21,12 +21,12 @@ namespace black_cat
 		 * \brief An intermediate format when creating triangle mesh or convex mesh from input data.
 		 * \tparam TApi 
 		 */
-		template< bc_physics_api TApi >
+		template<bc_physics_api TApi>
 		class bc_platform_memory_buffer
 		{
 		public:
-			using platform_pack = bc_platform_mesh_buffer_pack< TApi >;
-			friend bc_platform_physics< TApi >;
+			using platform_pack = bc_platform_memory_buffer_pack<TApi>;
+			friend bc_platform_physics<TApi>;
 
 		public:
 			bc_platform_memory_buffer(bc_platform_memory_buffer&&) noexcept;
@@ -59,6 +59,6 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
-		using bc_memory_buffer = bc_platform_memory_buffer< g_current_physics_api >;
+		using bc_memory_buffer = bc_platform_memory_buffer<g_current_physics_api>;
 	}
 }

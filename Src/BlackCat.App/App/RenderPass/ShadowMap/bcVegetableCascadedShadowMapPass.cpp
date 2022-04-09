@@ -73,27 +73,29 @@ namespace black_cat
 	void bc_vegetable_cascaded_shadow_map_pass::initialize_frame_pass(const bc_cascaded_shadow_map_pass_init_frame_param& p_param)
 	{
 		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
-		if (m_leaf_scene_queries.size() < l_cascade_absolute_index + 1)
+		if (m_leaf_query_results.size() < l_cascade_absolute_index + 1)
 		{
-			m_leaf_scene_queries.resize(l_cascade_absolute_index + 1);
-			m_leaf_scene_query_results.resize(l_cascade_absolute_index + 1);
+			m_leaf_queries.resize(l_cascade_absolute_index + 1);
+			m_leaf_query_results.resize(l_cascade_absolute_index + 1);
+			m_leaf_render_states.resize(l_cascade_absolute_index + 1);
 		}
-		if (m_trunk_scene_queries.size() < l_cascade_absolute_index + 1)
+		if (m_trunk_query_results.size() < l_cascade_absolute_index + 1)
 		{
-			m_trunk_scene_queries.resize(l_cascade_absolute_index + 1);
-			m_trunk_scene_query_results.resize(l_cascade_absolute_index + 1);
-		}
-
-		if (m_leaf_scene_queries[l_cascade_absolute_index].is_executed())
-		{
-			m_leaf_scene_query_results[l_cascade_absolute_index] = m_leaf_scene_queries[l_cascade_absolute_index].get().get_render_state_buffer();
-		}
-		if (m_trunk_scene_queries[l_cascade_absolute_index].is_executed())
-		{
-			m_trunk_scene_query_results[l_cascade_absolute_index] = m_trunk_scene_queries[l_cascade_absolute_index].get().get_render_state_buffer();
+			m_trunk_queries.resize(l_cascade_absolute_index + 1);
+			m_trunk_query_results.resize(l_cascade_absolute_index + 1);
+			m_trunk_render_states.resize(l_cascade_absolute_index + 1);
 		}
 
-		m_leaf_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
+		if (m_leaf_query_results[l_cascade_absolute_index].is_executed())
+		{
+			m_leaf_render_states[l_cascade_absolute_index] = m_leaf_query_results[l_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>().get_render_state_buffer();
+		}
+		if (m_trunk_query_results[l_cascade_absolute_index].is_executed())
+		{
+			m_trunk_render_states[l_cascade_absolute_index] = m_trunk_query_results[l_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>().get_render_state_buffer();
+		}
+
+		m_leaf_queries[l_cascade_absolute_index] = std::move
 		(
 			game::bc_scene_graph_render_state_query
 			(
@@ -101,9 +103,9 @@ namespace black_cat
 				p_param.m_frame_renderer.create_buffer()
 			)
 			.with(game::bc_camera_frustum(p_param.m_update_cascade_camera))
-			.only< game::bc_vegetable_mesh_component >(true)
+			.only<game::bc_vegetable_mesh_component>(true)
 		);
-		m_trunk_scene_queries[l_cascade_absolute_index] = core::bc_get_service< core::bc_query_manager >()->queue_query
+		m_trunk_queries[l_cascade_absolute_index] = std::move
 		(
 			game::bc_scene_graph_render_state_query
 			(
@@ -111,15 +113,18 @@ namespace black_cat
 				p_param.m_frame_renderer.create_buffer()
 			)
 			.with(game::bc_camera_frustum(p_param.m_update_cascade_camera))
-			.only< game::bc_vegetable_mesh_component >(false)
+			.only<game::bc_vegetable_mesh_component>(false)
 		);
+
+		m_leaf_query_results[l_cascade_absolute_index] = p_param.m_query_manager.queue_ext_query(m_leaf_queries[l_cascade_absolute_index]);
+		m_trunk_query_results[l_cascade_absolute_index] = p_param.m_query_manager.queue_ext_query(m_trunk_queries[l_cascade_absolute_index]);
 	}
 
 	void bc_vegetable_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_param& p_param)
 	{
 		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
-		auto& l_leaf_render_buffer = m_leaf_scene_query_results[l_cascade_absolute_index];
-		auto& l_trunk_render_buffer = m_trunk_scene_query_results[l_cascade_absolute_index];
+		const auto& l_leaf_render_buffer = m_leaf_render_states[l_cascade_absolute_index];
+		const auto& l_trunk_render_buffer = m_trunk_render_states[l_cascade_absolute_index];
 		
 		// Render vegetable leafs
 		const auto& l_leaf_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index * 2];
@@ -148,8 +153,8 @@ namespace black_cat
 	{
 		m_leaf_pipeline_state.reset();
 		m_trunk_pipeline_state.reset();
-		m_leaf_scene_queries.clear();
-		m_trunk_scene_queries.clear();
+		m_leaf_query_results.clear();
+		m_trunk_query_results.clear();
 	}
 
 	core::bc_vector<game::bc_render_pass_state_ptr> bc_vegetable_cascaded_shadow_map_pass::create_render_pass_states(game::bc_render_system& p_render_system,

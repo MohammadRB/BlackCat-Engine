@@ -19,6 +19,8 @@ namespace black_cat
 			BC_QUERY(sc_dcl)
 
 		public:
+			bc_scene_decal_query() noexcept;
+
 			bc_scene_decal_query(const core::bc_vector3f& p_camera_position, bc_render_state_buffer p_buffer) noexcept;
 
 			bc_scene_decal_query(bc_scene_decal_query&&) noexcept;
@@ -39,6 +41,11 @@ namespace black_cat
 			core::bc_nullable<bc_camera_frustum> m_frustum;
 			bc_render_state_buffer m_buffer;
 		};
+
+		inline bc_scene_decal_query::bc_scene_decal_query() noexcept
+			: bc_query(message_name())
+		{
+		}
 
 		inline bc_scene_decal_query::bc_scene_decal_query(const core::bc_vector3f& p_camera_position, bc_render_state_buffer p_buffer) noexcept
 			: bc_query(message_name()),

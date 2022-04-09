@@ -14,20 +14,26 @@ namespace black_cat
 
 		struct bc_actor_render_camera
 		{
-			bc_camera_instance m_main_camera;
-			bc_camera_instance m_render_camera;
+			bc_actor_render_camera()
+				: m_main_camera(nullptr),
+				m_render_camera(nullptr)
+			{
+			}
 
 			explicit bc_actor_render_camera(const bc_camera_instance& p_main_camera)
-				: m_main_camera(p_main_camera),
-				m_render_camera(p_main_camera)
+				: m_main_camera(&p_main_camera),
+				m_render_camera(&p_main_camera)
 			{
 			}
 			
 			bc_actor_render_camera(const bc_camera_instance& p_main_camera, const bc_camera_instance& p_render_camera)
-				: m_main_camera(p_main_camera),
-				m_render_camera(p_render_camera)
+				: m_main_camera(&p_main_camera),
+				m_render_camera(&p_render_camera)
 			{
 			}
+
+			const bc_camera_instance* m_main_camera;
+			const bc_camera_instance* m_render_camera;
 		};
 		
 		struct bc_actor_component_render_context

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcDeque.h"
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
@@ -40,9 +41,12 @@ namespace black_cat
 		graphic::bc_device_pipeline_state_ref m_leaf_pipeline_state;
 		graphic::bc_device_pipeline_state_ref m_trunk_pipeline_state;
 		graphic::bc_sampler_state_ref m_sampler_state;
-		core::bc_vector<core::bc_query_result<game::bc_scene_graph_render_state_query>> m_leaf_scene_queries;
-		core::bc_vector<core::bc_query_result<game::bc_scene_graph_render_state_query>> m_trunk_scene_queries;
-		core::bc_vector<game::bc_render_state_buffer> m_leaf_scene_query_results;
-		core::bc_vector<game::bc_render_state_buffer> m_trunk_scene_query_results;
+
+		core::bc_deque<game::bc_scene_graph_render_state_query> m_leaf_queries;
+		core::bc_deque<game::bc_scene_graph_render_state_query> m_trunk_queries;
+		core::bc_vector<core::bc_query_result<core::bci_query>> m_leaf_query_results;
+		core::bc_vector<core::bc_query_result<core::bci_query>> m_trunk_query_results;
+		core::bc_vector<game::bc_render_state_buffer> m_leaf_render_states;
+		core::bc_vector<game::bc_render_state_buffer> m_trunk_render_states;
 	};
 }

@@ -95,6 +95,7 @@ namespace black_cat
 		auto l_cube_vb_data = graphic::bc_subresource_data(&l_cube_vertices[0], 0, 0);
 		auto l_cube_ib_data = graphic::bc_subresource_data(&l_cube_indices[0], 0, 0);
 
+		m_command_list = l_device.create_command_list();
 		m_cube_vb = l_device.create_buffer(l_cube_vb_config, &l_cube_vb_data);
 		m_cube_ib = l_device.create_buffer(l_cube_ib_config, &l_cube_ib_data);
 		m_instance_buffer = l_device.create_buffer(l_instance_buffer_config, nullptr);
@@ -153,29 +154,27 @@ namespace black_cat
 	{
 	}
 
-	void bc_gbuffer_decal_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
+	void bc_gbuffer_decal_pass::initialize_frame(const game::bc_concurrent_render_pass_render_context& p_context)
 	{
-		if(m_decals_query.is_executed())
+		if (m_query_result.is_executed())
 		{
-			m_decals_buffer = m_decals_query.get().get_render_state_buffer();
+			m_decals_render_state_buffer = m_query_result.get<game::bc_scene_decal_query>().get_render_state_buffer();
 		}
 
-		m_decals_query = p_context.m_query_manager.queue_query
+		m_query = game::bc_scene_decal_query
 		(
-			game::bc_scene_decal_query
-			(
-				p_context.m_update_camera.get_position(),
-				p_context.m_frame_renderer.create_buffer()
-			)
+			p_context.m_update_camera.get_position(),
+			p_context.m_frame_renderer.create_buffer()
 		);
+		m_query_result = p_context.m_query_manager.queue_ext_query(m_query);
 	}
 
-	void bc_gbuffer_decal_pass::execute(const game::bc_render_pass_render_context& p_context)
+	void bc_gbuffer_decal_pass::execute(const game::bc_concurrent_render_pass_render_context& p_context)
 	{
 		decal_group_container l_decal_groups;
 		decal_group_container l_non_culling_decals;
 
-		for (const auto& l_entry : m_decals_buffer.get_decal_instances())
+		for (const auto& l_entry : m_decals_render_state_buffer.get_decal_instances())
 		{
 			auto& l_instances = l_decal_groups[&l_entry.first->get_material()];
 			l_instances.reserve(l_instances.size() + l_entry.second.size());
@@ -203,6 +202,12 @@ namespace black_cat
 		{
 			_render_decals(p_context, *m_render_pass_state_for_debug_bounds, l_decal_groups, nullptr);
 		}
+	}
+
+	void bc_gbuffer_decal_pass::cleanup_frame(const game::bc_render_pass_render_context& p_context)
+	{
+		bci_render_pass::cleanup_frame(p_context);
+		m_decals_render_state_buffer = game::bc_render_state_buffer();
 	}
 
 	void bc_gbuffer_decal_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
@@ -391,23 +396,18 @@ namespace black_cat
 		m_instance_buffer.reset();
 		m_cube_vb.reset();
 		m_cube_ib.reset();
+		m_command_list.reset();
 	}
 
-	void bc_gbuffer_decal_pass::cleanup_frame(const game::bc_render_pass_render_context& p_context)
-	{
-		bci_render_pass::cleanup_frame(p_context);
-		m_decals_buffer = game::bc_render_state_buffer();
-	}
-
-	void bc_gbuffer_decal_pass::_render_decals(const game::bc_render_pass_render_context& p_param,
+	void bc_gbuffer_decal_pass::_render_decals(const game::bc_concurrent_render_pass_render_context& p_context,
 		const game::bc_render_pass_state& p_render_pass_state,
 		const decal_group_container& p_instances,
 		decal_group_container* p_non_culling_instances)
 	{
-		const auto l_view_proj = p_param.m_render_camera.get_view() * p_param.m_render_camera.get_projection();
+		const auto l_view_proj = p_context.m_render_camera.get_view() * p_context.m_render_camera.get_projection();
 		
-		p_param.m_render_thread.start();
-		p_param.m_render_thread.bind_render_pass_state(p_render_pass_state);
+		p_context.m_child_render_thread.start(*m_command_list);
+		p_context.m_child_render_thread.bind_render_pass_state(p_render_pass_state);
 
 		for (const auto& l_entry : p_instances)
 		{
@@ -416,11 +416,14 @@ namespace black_cat
 			auto l_render_state_ite = m_render_states.find(l_decal_material);
 			if (l_render_state_ite == std::end(m_render_states))
 			{
-				_create_decal_render_state(p_param.m_render_system, *l_decal_material);
+				_create_decal_render_state(p_context.m_render_system, *l_decal_material);
 				l_render_state_ite = m_render_states.find(l_decal_material);
 			}
 
-			p_param.m_render_thread.bind_render_state(*l_render_state_ite->second);
+			// TODO for unknown bug
+			BC_ASSERT((*l_render_state_ite).second->get_shader_views()[0].is_valid());
+
+			p_context.m_child_render_thread.bind_render_state(*l_render_state_ite->second);
 
 			core::bc_vector_frame<bc_decal_instance_parameter> l_instance_buffer_data(s_max_instance_per_draw);
 			auto l_instance_buffer_ite = 0U;
@@ -436,8 +439,8 @@ namespace black_cat
 				// if decal is not flat it can intersect with camera
 				if (p_non_culling_instances && l_decal.get_depth() > 0.5f)
 				{
-					const auto l_local_camera_pos = l_instance_world_inv * core::bc_vector4f(p_param.m_render_camera.get_position(), 1);
-					const auto l_local_camera_culling_distance = 0.5f + p_param.m_render_camera.get_near_clip();
+					const auto l_local_camera_pos = l_instance_world_inv * core::bc_vector4f(p_context.m_render_camera.get_position(), 1);
+					const auto l_local_camera_culling_distance = 0.5f + p_context.m_render_camera.get_near_clip();
 					if (std::abs(l_local_camera_pos.x) < l_local_camera_culling_distance && 
 						std::abs(l_local_camera_pos.y) < l_local_camera_culling_distance && 
 						std::abs(l_local_camera_pos.z) < l_local_camera_culling_distance)
@@ -458,7 +461,7 @@ namespace black_cat
 				l_decal_instance_buffer_entry.m_group = static_cast<bcUINT32>(l_render_instance.get_render_group());
 				
 				// Because matrices are put in regular buffer rather than cbuffer they must be stored in row major format
-				if constexpr (!p_param.m_frame_renderer.need_matrix_transpose())
+				if constexpr (!p_context.m_frame_renderer.need_matrix_transpose())
 				{
 					l_decal_instance_buffer_entry.m_world_inv.make_transpose();
 					l_decal_instance_buffer_entry.m_world_view_projection.make_transpose();
@@ -469,8 +472,8 @@ namespace black_cat
 
 				if (l_instance_buffer_ite % s_max_instance_per_draw == 0)
 				{
-					p_param.m_render_thread.update_subresource(*m_instance_buffer, 0, l_instance_buffer_data.data(), 0, 0);
-					p_param.m_render_thread.draw_indexed_instanced
+					p_context.m_child_render_thread.update_subresource(*m_instance_buffer, 0, l_instance_buffer_data.data(), 0, 0);
+					p_context.m_child_render_thread.draw_indexed_instanced
 					(
 						l_render_state_ite->second->get_index_count(),
 						l_instance_buffer_ite,
@@ -485,8 +488,8 @@ namespace black_cat
 
 			if (l_instance_buffer_ite > 0)
 			{
-				p_param.m_render_thread.update_subresource(*m_instance_buffer, 0, l_instance_buffer_data.data(), 0, 0);
-				p_param.m_render_thread.draw_indexed_instanced
+				p_context.m_child_render_thread.update_subresource(*m_instance_buffer, 0, l_instance_buffer_data.data(), 0, 0);
+				p_context.m_child_render_thread.draw_indexed_instanced
 				(
 					l_render_state_ite->second->get_index_count(),
 					l_instance_buffer_ite,
@@ -496,11 +499,11 @@ namespace black_cat
 				);
 			}
 
-			p_param.m_render_thread.unbind_render_state(*l_render_state_ite->second);
+			p_context.m_child_render_thread.unbind_render_state(*l_render_state_ite->second);
 		}
 
-		p_param.m_render_thread.unbind_render_pass_state(p_render_pass_state);
-		p_param.m_render_thread.finish();
+		p_context.m_child_render_thread.unbind_render_pass_state(p_render_pass_state);
+		p_context.m_child_render_thread.finish();
 	}
 
 	void bc_gbuffer_decal_pass::_create_decal_render_state(game::bc_render_system& p_render_system, const game::bc_mesh_material& p_material)

@@ -2,8 +2,10 @@
 
 #include "Game/GamePCH.h"
 
+#include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Utility/bcCounterValueManager.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcRenderTask.h"
 #include "Game/System/Render/Pass/bcRenderPassManager.h"
 #include "Game/bcException.h"
 
@@ -11,6 +13,31 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_concurrent_render_pass_task : public bci_render_task
+		{
+		public:
+			bc_concurrent_render_pass_task(_bc_render_pass_entry& p_pass, const bc_render_pass_render_context& p_context)
+				: m_pass(&p_pass),
+				m_context(&p_context)
+			{
+			}
+
+			void execute(bc_render_system& p_render_system, bc_render_thread& p_render_thread) override
+			{
+				auto* l_pass = static_cast<bci_concurrent_render_pass*>(m_pass->m_pass.get());
+				const auto l_context = bc_concurrent_render_pass_render_context(*m_context, p_render_thread);
+
+				m_pass->m_stop_watch->start();
+				l_pass->initialize_frame(l_context);
+				l_pass->execute(l_context);
+				m_pass->m_stop_watch->stop();
+			}
+
+		private:
+			_bc_render_pass_entry* m_pass;
+			const bc_render_pass_render_context* m_context;
+		};
+
 		bc_render_pass_manager::bc_render_pass_manager(graphic::bc_device& p_device) noexcept
 			: m_texture_manager(p_device)
 		{
@@ -55,19 +82,35 @@ namespace black_cat
 		void bc_render_pass_manager::pass_execute(const bc_render_pass_render_context& p_context)
 		{
 			auto* l_counter_value_manager = core::bc_get_service<core::bc_counter_value_manager>();
-			
-			for (const _bc_render_pass_entry& l_entry : m_passes)
+			auto l_concurrent_tasks = core::bc_vector_frame<bc_concurrent_render_pass_task>();
+			l_concurrent_tasks.reserve(5);
+
+			/*for (const _bc_render_pass_entry& l_entry : m_passes)
 			{
 				l_entry.m_stop_watch->start();
 				l_entry.m_pass->initialize_frame(p_context);
 				l_entry.m_stop_watch->stop();
-			}
-			
-			for(const _bc_render_pass_entry& l_entry : m_passes)
+			}*/
+
+			for (_bc_render_pass_entry& l_entry : m_passes)
 			{
-				l_entry.m_stop_watch->start();
-				l_entry.m_pass->execute(p_context);
-				l_entry.m_stop_watch->stop();
+				if (!l_entry.m_is_concurrent)
+				{
+					if (!l_concurrent_tasks.empty())
+					{
+						core::bc_concurrency::when_all(std::begin(l_concurrent_tasks), std::end(l_concurrent_tasks));
+					}
+
+					l_entry.m_stop_watch->start();
+					l_entry.m_pass->initialize_frame(p_context);
+					l_entry.m_pass->execute(p_context);
+					l_entry.m_stop_watch->stop();
+				}
+				else
+				{
+					l_concurrent_tasks.push_back(bc_concurrent_render_pass_task(l_entry, p_context));
+					p_context.m_render_system.add_render_task(l_concurrent_tasks.back());
+				}
 			}
 
 			for (const _bc_render_pass_entry& l_entry : m_passes)
@@ -120,10 +163,11 @@ namespace black_cat
 			m_passes.clear();
 		}
 
-		void bc_render_pass_manager::_add_pass(const bcCHAR* p_name, core::bc_unique_ptr<bci_render_pass> p_pass, const bcCHAR* p_before)
+		void bc_render_pass_manager::_add_pass(const bcCHAR* p_name, bool p_is_concurrent, core::bc_unique_ptr<bci_render_pass> p_pass, const bcCHAR* p_before)
 		{
 			_bc_render_pass_entry l_entry;
 			l_entry.m_name = p_name;
+			l_entry.m_is_concurrent = p_is_concurrent;
 			l_entry.m_pass = std::move(p_pass);
 			l_entry.m_stop_watch = core::bc_make_unique<core::bc_stop_watch>();
 			l_entry.m_pass->_set_private_fields(m_resource_manager, m_texture_manager);

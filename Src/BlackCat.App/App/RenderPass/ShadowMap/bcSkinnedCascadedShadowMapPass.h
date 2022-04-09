@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcDeque.h"
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
@@ -37,7 +38,8 @@ namespace black_cat
 			const core::bc_vector<graphic::bc_depth_stencil_view_ref>& p_depth_views) override;
 
 		graphic::bc_device_pipeline_state_ref m_device_pipeline;
-		core::bc_vector<core::bc_query_result<game::bc_scene_graph_render_state_query>> m_scene_queries;
-		core::bc_vector<game::bc_render_state_buffer> m_scene_query_results;
+		core::bc_deque<game::bc_scene_graph_render_state_query> m_scene_queries;
+		core::bc_vector<core::bc_query_result<core::bci_query>> m_scene_query_results;
+		core::bc_vector<game::bc_render_state_buffer> m_scene_render_states;
 	};
 }

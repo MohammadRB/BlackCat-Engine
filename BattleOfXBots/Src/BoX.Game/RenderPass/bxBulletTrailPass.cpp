@@ -112,9 +112,9 @@ namespace box
 			m_bullets.assign(std::begin(l_bullets), std::end(l_bullets));
 		}
 
-		m_query_result = p_context.m_query_manager.queue_query(game::bc_scene_query().with_callable([](const game::bc_scene_query_context& p_context)
+		auto l_scene_query = game::bc_scene_query([](const game::bc_scene_query_context& p_context)
 		{
-			if(!p_context.m_scene)
+			if (!p_context.m_scene)
 			{
 				return core::bc_any(core::bc_vector<_bx_bullet>());
 			}
@@ -135,7 +135,8 @@ namespace box
 			);
 
 			return core::bc_any(std::move(l_copied_bullets));
-		}));
+		});
+		m_query_result = p_context.m_query_manager.queue_query(std::move(l_scene_query));
 	}
 
 	void bx_bullet_trail_pass::execute(const game::bc_render_pass_render_context& p_context)

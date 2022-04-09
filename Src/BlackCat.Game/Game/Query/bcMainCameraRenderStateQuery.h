@@ -17,6 +17,8 @@ namespace black_cat
 			BC_QUERY(rs)
 
 		public:
+			bc_main_camera_render_state_query();
+
 			bc_main_camera_render_state_query(const bc_actor_render_camera& p_camera, bc_render_state_buffer p_buffer);
 
 			bc_main_camera_render_state_query(bc_main_camera_render_state_query&&) noexcept;
@@ -38,6 +40,12 @@ namespace black_cat
 			bc_render_state_buffer m_buffer;
 			core::bc_delegate<void(const bc_scene_graph_buffer&, const bc_actor_render_camera&, bc_render_state_buffer&)> m_execute_with_component;
 		};
+
+		inline bc_main_camera_render_state_query::bc_main_camera_render_state_query()
+			: bc_query(message_name()),
+			m_camera()
+		{
+		}
 
 		inline bc_main_camera_render_state_query::bc_main_camera_render_state_query(const bc_actor_render_camera& p_camera, bc_render_state_buffer p_buffer)
 			: bc_query(message_name()),

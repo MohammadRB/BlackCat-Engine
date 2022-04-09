@@ -10,6 +10,32 @@ namespace black_cat
 {
 	namespace core
 	{
+		template <typename T, bool is_poly>
+		struct bc_allocated_pointer_helper
+		{
+			static void* cast(T* p_ptr)
+			{
+				return p_ptr;
+			}
+		};
+
+		template <typename T>
+		struct bc_allocated_pointer_helper<T, true>
+		{
+			static void* cast(T* p_ptr)
+			{
+				return p_ptr;
+				return dynamic_cast<void*>(p_ptr);
+			}
+		};
+
+		template<typename T>
+		void* bc_get_allocated_pointer(T* p_ptr)
+		{
+			constexpr bool l_is_poly = std::is_polymorphic_v<T>;
+			return bc_allocated_pointer_helper<T, l_is_poly>::cast(p_ptr);
+		}
+
 		inline bool is_movable_pointer(void* p_pointer) noexcept
 		{
 #if defined(BC_MEMORY_ENABLE) && defined(BC_MEMORY_DEFRAG)
@@ -206,7 +232,7 @@ namespace black_cat
 			}
 
 			p_pointer->~T();
-			bc_mem_free(static_cast<void*>(p_pointer));
+			bc_mem_free(bc_get_allocated_pointer(p_pointer));
 		}
 
 		template<typename T>
@@ -270,7 +296,7 @@ namespace black_cat
 			}
 
 			p_pointer->~T();
-			bc_mem_aligned_free(p_pointer);
+			bc_mem_aligned_free(bc_get_allocated_pointer(p_pointer));
 		}
 
 		template<typename T>
@@ -304,8 +330,6 @@ namespace black_cat
 #define BC_ALLOC_THROW(p_size, p_alloc_type)									black_cat::core::bc_mem_alloc_throw(p_size, p_alloc_type, __FILE__, __LINE__)
 #define BC_ALIGNED_ALLOC_THROW(p_size, p_alignment, p_alloc_type)				black_cat::core::bc_mem_aligned_alloc_throw(p_size, p_alignment, p_alloc_type, __FILE__, __LINE__)
 
-		// TODO check array allocation
-		// TODO use standard routines in macros instead of calling bc_mem functions directly
 #define BC_NEW(p_type, p_alloc_type)											new (p_alloc_type, __FILE__, __LINE__) p_type
 #define BC_NEW_ARRAY(p_type, p_length, p_alloc_type)							black_cat::core::bc_mem_new_array<p_type>(p_length, p_alloc_type, __FILE__, __LINE__)
 #define BC_DELETE(p_pointer)													black_cat::core::bc_mem_delete(p_pointer); (p_pointer) = nullptr

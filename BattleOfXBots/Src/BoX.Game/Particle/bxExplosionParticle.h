@@ -49,17 +49,6 @@ namespace box
 			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step3, 0.09f)
 			.with_particles_rotation(10)
 			.emit_particles_with_total_count(150, 8, 100, 0.05f);
-		/*l_builder.emitter({ 0, -8, 0 }, core::bc_vector3f::up())
-		         .with_emission_direction_deviation(180, { 0, -0.9f, 0 })
-		         .with_texture(4)
-		         .with_particles_color({ 0.7f, 0.7f, 0.7f })
-		         .with_particle_size(7, 15)
-		         .with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step2)
-		         .with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step3, 0.09f)
-		         .with_particles_rotation(10)
-		         .emit_particles_with_total_count(100, 8, 2200, 0.05f)
-		         .duplicate_last({ 0, -8, 0 }, core::bc_vector3f::up())
-		         .emit_particles_with_total_count(50, 8, 1800, 0.05f);*/
 
 		for (auto& l_direction : l_random_directions)
 		{

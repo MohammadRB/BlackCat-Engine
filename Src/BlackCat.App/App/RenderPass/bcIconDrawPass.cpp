@@ -194,7 +194,7 @@ namespace black_cat
 			l_icon_query.include_decal_icons();
 		}
 
-		m_icons_query = p_context.m_query_manager.queue_query(l_icon_query);
+		m_icons_query = p_context.m_query_manager.queue_query(std::move(l_icon_query));
 	}
 
 	void bc_icon_draw_pass::execute(const game::bc_render_pass_render_context& p_context)

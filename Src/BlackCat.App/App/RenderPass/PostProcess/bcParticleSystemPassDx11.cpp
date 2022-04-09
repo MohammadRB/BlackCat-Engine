@@ -323,7 +323,10 @@ namespace black_cat
 		);
 		m_lights_query = p_context.m_query_manager.queue_query
 		(
-			game::bc_scene_light_query({game::bc_light_type::point}).with(game::bc_camera_frustum(p_context.m_update_camera))
+			std::move
+			(
+				game::bc_scene_light_query({game::bc_light_type::point}).with(game::bc_camera_frustum(p_context.m_update_camera))
+			)
 		);
 	}
 

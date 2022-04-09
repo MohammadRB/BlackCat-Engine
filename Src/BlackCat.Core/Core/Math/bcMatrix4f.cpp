@@ -5,11 +5,6 @@ namespace black_cat
 {
 	namespace core
 	{
-		bc_matrix4f::bc_matrix4f() noexcept
-			: m_entry{}
-		{
-		}
-
 		bc_matrix4f::bc_matrix4f(bool p_zero) noexcept
 			: m_entry{}
 		{

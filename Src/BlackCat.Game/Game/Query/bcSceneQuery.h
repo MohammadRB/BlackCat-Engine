@@ -16,7 +16,10 @@ namespace black_cat
 			BC_QUERY(sq)
 			
 		public:
-			bc_scene_query();
+			bc_scene_query() noexcept;
+
+			template<typename TCallable>
+			explicit bc_scene_query(TCallable p_callable) noexcept;
 
 			bc_scene_query(bc_scene_query&&) = default;
 
@@ -43,7 +46,7 @@ namespace black_cat
 			core::bc_any m_result;
 		};
 
-		inline bc_scene_query::bc_scene_query()
+		inline bc_scene_query::bc_scene_query() noexcept
 			: bc_query(message_name())
 		{
 		}
@@ -51,6 +54,13 @@ namespace black_cat
 		inline core::bc_any& bc_scene_query::get_result() noexcept
 		{
 			return m_result;
+		}
+
+		template<typename TCallable>
+		bc_scene_query::bc_scene_query(TCallable p_callable) noexcept
+			: bc_query(message_name()),
+			m_delegate(std::move(p_callable))
+		{
 		}
 
 		template< typename TCallable >

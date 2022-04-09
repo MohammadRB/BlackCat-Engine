@@ -259,7 +259,7 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_memory_buffer bc_platform_physics<g_api_physx>::create_convex_mesh(const bc_convex_mesh_desc& p_desc)
 		{
-			core::bc_unique_ptr<physx::PxVec3> l_vertex_buffer(static_cast<physx::PxVec3*>
+			const core::bc_unique_ptr<physx::PxVec3> l_vertex_buffer(static_cast<physx::PxVec3*>
 			(
 				BC_ALLOC(sizeof(physx::PxVec3) * p_desc.m_points.m_count, core::bc_alloc_type::frame)
 			));
@@ -609,8 +609,8 @@ namespace black_cat
 		BC_PHYSICSIMP_DLL
 		bc_memory_buffer bc_platform_physics<g_api_physx>::serialize(bc_serialize_buffer& p_buffer)
 		{
-			auto l_output_stream = core::bc_make_unique<physx::PxDefaultMemoryOutputStream>();
-
+			bc_memory_buffer l_buffer;
+			
 			physx::PxSerialization::complete
 			(
 				*p_buffer.get_platform_pack().m_collection,
@@ -618,13 +618,11 @@ namespace black_cat
 			);
 			physx::PxSerialization::serializeCollectionToBinary
 			(
-				*l_output_stream.get(), 
+				*l_buffer.get_platform_pack().m_px_stream,
 				*p_buffer.get_platform_pack().m_collection,
 				*p_buffer.get_platform_pack().m_registry
 			);
-
-			bc_memory_buffer l_buffer;
-			l_buffer.get_platform_pack().m_px_stream = std::move(l_output_stream);
+			
 			l_buffer.get_platform_pack().m_is_valid = true;
 
 			return l_buffer;

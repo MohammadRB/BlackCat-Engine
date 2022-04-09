@@ -18,6 +18,8 @@ namespace black_cat
 		auto& l_device = p_render_system.get_device();
 		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 
+		m_command_list = l_device.create_command_list();
+
 		after_reset(game::bc_render_pass_reset_context
 			(
 				p_render_system,
@@ -44,18 +46,18 @@ namespace black_cat
 	{
 	}
 
-	void bc_gbuffer_vegetable_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
+	void bc_gbuffer_vegetable_pass::initialize_frame(const game::bc_concurrent_render_pass_render_context& p_context)
 	{
-		if(m_leaf_render_states_query.is_executed())
+		if (m_leafs_query_result.is_executed())
 		{
-			m_leaf_render_states = m_leaf_render_states_query.get().get_render_state_buffer();
+			m_leaf_render_states = m_leafs_query_result.get<game::bc_main_camera_render_state_query>().get_render_state_buffer();
 		}
-		if (m_trunk_render_states_query.is_executed())
+		if (m_trunks_query_result.is_executed())
 		{
-			m_trunk_render_states = m_trunk_render_states_query.get().get_render_state_buffer();
+			m_trunk_render_states = m_trunks_query_result.get<game::bc_main_camera_render_state_query>().get_render_state_buffer();
 		}
 
-		m_leaf_render_states_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		m_leafs_query = std::move
 		(
 			game::bc_main_camera_render_state_query
 			(
@@ -63,7 +65,7 @@ namespace black_cat
 				p_context.m_frame_renderer.create_buffer()
 			).only<game::bc_vegetable_mesh_component>(true)
 		);
-		m_trunk_render_states_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+		m_trunks_query = std::move
 		(
 			game::bc_main_camera_render_state_query
 			(
@@ -71,27 +73,30 @@ namespace black_cat
 				p_context.m_frame_renderer.create_buffer()
 			).only<game::bc_vegetable_mesh_component>(false)
 		);
+
+		m_leafs_query_result = p_context.m_query_manager.queue_ext_query(m_leafs_query);
+		m_trunks_query_result = p_context.m_query_manager.queue_ext_query(m_trunks_query);
 	}
 
-	void bc_gbuffer_vegetable_pass::execute(const game::bc_render_pass_render_context& p_context)
+	void bc_gbuffer_vegetable_pass::execute(const game::bc_concurrent_render_pass_render_context& p_context)
 	{
-		p_context.m_render_thread.start();
+		p_context.m_child_render_thread.start(*m_command_list);
 		
 		// Render vegetable leafs
-		p_context.m_render_thread.bind_render_pass_state(*m_leaf_render_pass_state);
+		p_context.m_child_render_thread.bind_render_pass_state(*m_leaf_render_pass_state);
 		
-		p_context.m_frame_renderer.render_buffer(p_context.m_render_thread, m_leaf_render_states, p_context.m_render_camera);
+		p_context.m_frame_renderer.render_buffer(p_context.m_child_render_thread, m_leaf_render_states, p_context.m_render_camera);
 
-		p_context.m_render_thread.unbind_render_pass_state(*m_leaf_render_pass_state);
+		p_context.m_child_render_thread.unbind_render_pass_state(*m_leaf_render_pass_state);
 
 		// Render vegetable trunks
-		p_context.m_render_thread.bind_render_pass_state(*m_trunk_render_pass_state);
+		p_context.m_child_render_thread.bind_render_pass_state(*m_trunk_render_pass_state);
 				
-		p_context.m_frame_renderer.render_buffer(p_context.m_render_thread, m_trunk_render_states, p_context.m_render_camera);
+		p_context.m_frame_renderer.render_buffer(p_context.m_child_render_thread, m_trunk_render_states, p_context.m_render_camera);
 
-		p_context.m_render_thread.unbind_render_pass_state(*m_trunk_render_pass_state);
+		p_context.m_child_render_thread.unbind_render_pass_state(*m_trunk_render_pass_state);
 
-		p_context.m_render_thread.finish();
+		p_context.m_child_render_thread.finish();
 	}
 
 	void bc_gbuffer_vegetable_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
@@ -214,5 +219,6 @@ namespace black_cat
 		m_trunk_pipeline_state.reset();
 		m_leaf_pipeline_state.reset();
 		m_sampler_state.reset();
+		m_command_list.reset();
 	}
 }

@@ -9,6 +9,7 @@
 #include "GraphicImp/Device/bcDevice.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
+#include "Game/System/Render/Pass/bcConcurrentRenderPass.h"
 #include "Game/System/Render/Pass/bcRenderPassResourceManager.h"
 #include "Game/System/Render/Pass/bcIntermediateTextureManager.h"
 
@@ -24,6 +25,7 @@ namespace black_cat
 		{
 		public:
 			const bcCHAR* m_name;
+			bool m_is_concurrent;
 			core::bc_unique_ptr<bci_render_pass> m_pass;
 			core::bc_unique_ptr<core::bc_stop_watch> m_stop_watch;
 		};
@@ -68,7 +70,7 @@ namespace black_cat
 			void pass_clear();
 
 		private:
-			void _add_pass(const bcCHAR* p_name, core::bc_unique_ptr<bci_render_pass> p_pass, const bcCHAR* p_before = nullptr);
+			void _add_pass(const bcCHAR* p_name, bool p_is_concurrent, core::bc_unique_ptr<bci_render_pass> p_pass, const bcCHAR* p_before = nullptr);
 
 			bool _remove_pass(const bcCHAR* p_name);
 
@@ -94,7 +96,8 @@ namespace black_cat
 
 			_add_pass
 			(
-				bc_render_pass_trait<TPass>::render_pass_name(), 
+				bc_render_pass_trait<TPass>::render_pass_name(),
+				std::is_base_of_v<bci_concurrent_render_pass, TPass>,
 				core::bc_make_unique<TPass>(core::bc_alloc_type::program, std::move(p_pass))
 			);
 		}
@@ -107,6 +110,7 @@ namespace black_cat
 			_add_pass
 			(
 				bc_render_pass_trait<TPass>::render_pass_name(),
+				std::is_base_of_v<bci_concurrent_render_pass, TPass>,
 				core::bc_make_unique<TPass>(core::bc_alloc_type::program, std::move(p_pass)),
 				bc_render_pass_trait<TPassBefore>::render_pass_name()
 			);

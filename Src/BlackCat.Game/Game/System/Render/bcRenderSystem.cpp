@@ -406,7 +406,7 @@ namespace black_cat
 			
 			const auto l_alloc_type = m_device.set_allocator_alloc_type(core::bc_alloc_type::program);
 			
-			platform::bc_basic_hardware_info l_hw_info;
+			platform::bc_basic_hardware_info l_hw_info{};
 			platform::bc_hardware_info::get_basic_info(l_hw_info);
 
 			m_render_pass_states.initialize(20, core::bc_alloc_type::program);

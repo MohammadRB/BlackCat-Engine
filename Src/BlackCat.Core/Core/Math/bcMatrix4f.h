@@ -13,7 +13,7 @@ namespace black_cat
 		class BC_CORE_DLL bc_matrix4f
 		{
 		public:
-			bc_matrix4f() noexcept;
+			bc_matrix4f() noexcept = default;
 
 			bc_matrix4f(bool p_zero) noexcept;
 

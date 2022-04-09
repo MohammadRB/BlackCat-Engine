@@ -476,5 +476,8 @@
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Content\bcContentManager.cpp">
       <Filter>Core\Content</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryResult.cpp">
+      <Filter>Core\Messaging\Query</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

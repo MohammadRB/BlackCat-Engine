@@ -30,9 +30,9 @@ namespace black_cat
 	}
 }
 
-void* operator new(black_cat::bcSIZE p_size) noexcept(false);
+void* operator new(black_cat::bcSIZE p_size) noexcept;
 
-void* operator new[](black_cat::bcSIZE p_size) noexcept(false);
+void* operator new[](black_cat::bcSIZE p_size) noexcept;
 
 void operator delete(void* p_pointer) noexcept;
 

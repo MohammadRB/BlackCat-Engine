@@ -19,7 +19,7 @@ namespace black_cat
 		class bc_vector4
 		{
 		public:
-			bc_vector4() noexcept;
+			bc_vector4() noexcept = default;
 
 			explicit bc_vector4(T p_number) noexcept;
 
@@ -27,9 +27,11 @@ namespace black_cat
 
 			bc_vector4(const bc_vector3<T>& p_vector, T p_w) noexcept;
 
-			bc_vector4(const bc_vector4& p_vector) noexcept;
+			bc_vector4(const bc_vector4& p_vector) noexcept = default;
 
-			bc_vector4& operator=(const bc_vector4& p_other) noexcept;
+			~bc_vector4() = default;
+
+			bc_vector4& operator=(const bc_vector4& p_other) noexcept = default;
 
 			void clamp() noexcept;
 
@@ -99,15 +101,6 @@ namespace black_cat
 		BC_CORE_DLL bc_logger_output_stream& operator<<(bc_logger_output_stream& p_stream, const bc_vector4i& p_vector);
 
 		template<typename T>
-		bc_vector4<T>::bc_vector4() noexcept
-			: x(0),
-			y(0),
-			z(0),
-			w(0)
-		{
-		}
-
-		template<typename T>
 		bc_vector4<T>::bc_vector4(T p_number) noexcept
 			: x(p_number),
 			y(p_number),
@@ -133,27 +126,7 @@ namespace black_cat
 			z = p_vector.z;
 			w = p_w;
 		}
-
-		template<typename T>
-		bc_vector4<T>::bc_vector4(const bc_vector4<T>& p_vector) noexcept
-		{
-			x = p_vector.x;
-			y = p_vector.y;
-			z = p_vector.z;
-			w = p_vector.w;
-		}
-
-		template<typename T>
-		bc_vector4<T>& bc_vector4<T>::operator=(const bc_vector4& p_other) noexcept
-		{
-			x = p_other.x;
-			y = p_other.y;
-			z = p_other.z;
-			w = p_other.w;
-
-			return *this;
-		}
-
+		
 		template<typename T>
 		void bc_vector4<T>::clamp() noexcept
 		{

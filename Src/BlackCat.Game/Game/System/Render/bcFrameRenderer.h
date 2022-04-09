@@ -5,9 +5,8 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "GraphicImp/Device/bcDevice.h"
-#include "Core/Utility/bcNullable.h"
-#include "Game/System/Input/bcCameraInstance.h"
 #include "Game/System/Input/bcCamera.h"
+#include "Game/System/Input/bcCameraInstance.h"
 #include "Game/System/Render/Light/bcDirectLight.h"
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/Object/Scene/Component/bcWindComponent.h"
@@ -112,10 +111,12 @@ namespace black_cat
 			graphic::bc_constant_buffer_parameter m_global_cbuffer_parameter;
 			graphic::bc_constant_buffer_parameter m_per_object_cbuffer_parameter;
 
-			core::bc_nullable<bc_camera_instance> m_prev_camera_instance;
-			core::bc_nullable<bc_camera_instance> m_camera_instance;
-			platform::bc_atomic<bc_camera_instance*> m_prev_camera;
-			platform::bc_atomic<bc_camera_instance*> m_camera;
+			bc_camera_instance m_update_camera;
+			bc_camera_instance m_render_camera;
+			platform::bc_atomic<bc_camera_instance*> m_update_camera_instance;
+			platform::bc_atomic<bc_camera_instance*> m_render_camera_instance;
+			bc_camera_instance m_render_thread_update_camera;
+			bc_camera_instance m_render_thread_render_camera;
 		};
 
 		constexpr bool bc_frame_renderer::need_matrix_transpose() noexcept

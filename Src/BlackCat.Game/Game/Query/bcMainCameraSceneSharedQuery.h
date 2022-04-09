@@ -18,7 +18,7 @@ namespace black_cat
 			BC_SHARED_QUERY(mca)
 
 		public:
-			bc_main_camera_scene_shared_query(const bc_camera_frustum& p_frustum);
+			explicit bc_main_camera_scene_shared_query(const bc_camera_frustum& p_frustum);
 
 			bc_main_camera_scene_shared_query(bc_main_camera_scene_shared_query&&) noexcept;
 

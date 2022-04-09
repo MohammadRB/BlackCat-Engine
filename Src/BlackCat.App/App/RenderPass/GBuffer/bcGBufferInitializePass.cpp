@@ -50,8 +50,6 @@ namespace black_cat
 
 	void bc_gbuffer_initialize_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
 	{
-		const game::bc_camera_frustum l_frustum(p_context.m_update_camera);
-
 		if(m_lights_query.is_executed())
 		{
 			m_lights_query_result = m_lights_query.get().get_lights();
@@ -60,7 +58,9 @@ namespace black_cat
 		{
 			m_winds_query_result = m_winds_query.get().get_winds();
 		}
-		
+
+		const game::bc_camera_frustum l_frustum(p_context.m_update_camera);
+
 		p_context.m_query_manager.queue_shared_query
 		(
 			game::bc_main_camera_scene_shared_query(l_frustum)

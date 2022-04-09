@@ -118,7 +118,7 @@ namespace box
 			const auto l_position = core::bc_vector3f(l_direction.x, 0, l_direction.z) * 0.5f;
 			const auto l_emitter_energy = l_direction.y;
 
-			l_builder.emitter(l_position, l_direction, 0.025f, 50 * l_emitter_energy, 0)
+			l_builder.emitter(l_position, l_direction, 0.025f, 80 * l_emitter_energy, 0)
 				.with_direction_deviation(45)
 				.with_emission_direction_deviation(25)
 				.with_texture(8)
@@ -160,7 +160,7 @@ namespace box
 			const auto l_position = core::bc_vector3f(l_direction.x, 0, l_direction.z) * 0.5f;
 			const auto l_emitter_energy = l_direction.y;
 
-			l_builder.emitter(l_position, l_direction, 0.025f, 50 * l_emitter_energy, 0)
+			l_builder.emitter(l_position, l_direction, 0.025f, 80 * l_emitter_energy, 0)
 				.with_direction_deviation(45)
 				.with_emission_direction_deviation(25)
 				.with_texture(8)
