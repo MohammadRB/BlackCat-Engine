@@ -22,14 +22,16 @@ namespace black_cat
 
 		bc_skinned_cascaded_shadow_map_pass(game::bc_render_pass_variable_t p_output_depth_buffers,
 			bcFLOAT p_shadow_map_multiplier,
-			std::initializer_list<std::tuple<bcSIZE, bcUBYTE>> p_cascade_sizes);
+			std::initializer_list<bc_cascade_shadow_map_trait> p_cascade_sizes);
 
 	private:
 		void initialize_pass(game::bc_render_system& p_render_system) override;
 
-		void initialize_frame_pass(const bc_cascaded_shadow_map_pass_init_frame_param& p_param) override;
+		void initialize_frame_pass(const bc_cascaded_shadow_map_pass_init_frame_context& p_context) override;
 		
-		void execute_pass(const bc_cascaded_shadow_map_pass_render_param& p_param) override;
+		void execute_pass(const bc_cascaded_shadow_map_pass_render_context& p_context) override;
+
+		void cleanup_frame_pass(const bc_cascaded_shadow_map_pass_cleanup_context& p_context) override;
 
 		void destroy_pass(game::bc_render_system& p_render_system) override;
 

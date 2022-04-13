@@ -55,7 +55,8 @@ struct spot_light
 
 struct cascade_shadow_map
 {
-	float4x4 m_view_projections[SHADER_SHADOW_MAP_CASCADE_COUNT];
+    // Moving these matrices to another location in struct causes unknown errors in reading their values
+    float4x4 m_view_projections[SHADER_SHADOW_MAP_CASCADE_COUNT];
 	uint m_shadow_map_size;
 	uint m_shadow_map_count;
 	uint m_cascade_sizes[SHADER_SHADOW_MAP_CASCADE_COUNT];
@@ -217,11 +218,10 @@ float2 direct_light_shadow_map(direct_light p_light, float3 p_position, float p_
 	
 	if (p_light.m_shadow_map_index == -1) 
 	{
-		return l_result;
+		return float2(l_result, -1);
 	}
 
-	cascade_shadow_map l_shadow_map_data = g_shadow_maps[p_light.m_shadow_map_index];
-
+	const cascade_shadow_map l_shadow_map_data = g_shadow_maps[p_light.m_shadow_map_index];
 	const float l_depth = p_linear_depth * (g_far_plane - g_near_plane);
 	int l_cascade_index = -1;
 
@@ -243,8 +243,6 @@ float2 direct_light_shadow_map(direct_light p_light, float3 p_position, float p_
 	const float4 l_cascade_projection = mul(float4(p_position, 1), l_cascade_view_projection);
 	const float l_cascade_projection_z = l_cascade_projection.z / l_cascade_projection.w;
 	const float2 l_cascade_texcoord_normal = bc_clip_space_to_texcoord(l_cascade_projection);
-	//l_cascade_texcoord_normal.x /= l_shadow_map_data.m_shadow_map_count;
-	//l_cascade_texcoord_normal.x += (l_cascade_index * (1.0 / l_shadow_map_data.m_shadow_map_count));
 
 	const float l_bias = BIAS_SCALE[l_cascade_index] * p_shadow_bias;
 	const float l_poisson_disk_sample_radius = l_shadow_map_data.m_shadow_map_size / POISSON_DISK_SCALE[l_cascade_index];
@@ -398,17 +396,17 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
         l_light_map += l_shadow_map.x * direct_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
         l_ambient_map += (l_light.m_ambient_color * l_light.m_ambient_intensity);
 
-    //    if (l_shadow_map.y != -1)
-    //    {
-    //        float4 l_cascade_colors[] =
-    //        {
-    //            float4(.2, 0, 0, 0),
-				//float4(0, .2, 0, 0),
-				//float4(0, 0, .2, 0),
-				//float4(.2, .2, 0, 0),
-    //        };
-    //        l_light_map += l_cascade_colors[l_shadow_map.y];
-    //    }
+        /*if (l_shadow_map.y != -1)
+        {
+            float4 l_cascade_colors[] =
+            {
+                float4(.2, 0, 0, 0),
+				float4(0, .2, 0, 0),
+				float4(0, 0, .2, 0),
+				float4(.2, .2, 0, 0),
+            };
+            l_light_map += l_cascade_colors[l_shadow_map.y];
+        }*/
     }
 	
     for (uint l_p = 0; l_p < gs_number_of_visible_point_lights; ++l_p)

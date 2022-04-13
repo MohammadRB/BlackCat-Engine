@@ -24,7 +24,7 @@ namespace black_cat
 
 		bc_cascaded_shadow_map_camera(bc_cascaded_shadow_map_camera&& p_other) noexcept = default;
 
-		~bc_cascaded_shadow_map_camera() = default;
+		~bc_cascaded_shadow_map_camera() override = default;
 		
 		bc_cascaded_shadow_map_camera& operator=(bc_cascaded_shadow_map_camera&& p_other) noexcept = default;
 

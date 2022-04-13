@@ -227,10 +227,6 @@ namespace black_cat
 		void bc_game_system::swap_frame_idle(const platform::bc_clock::update_param& p_clock)
 		{
 			const auto l_num_query = m_query_manager->process_query_queue(p_clock);
-			if(!l_num_query)
-			{
-				platform::bc_thread::current_thread_yield();
-			}
 		}
 
 		void bc_game_system::swap_frame(const platform::bc_clock::update_param& p_clock)

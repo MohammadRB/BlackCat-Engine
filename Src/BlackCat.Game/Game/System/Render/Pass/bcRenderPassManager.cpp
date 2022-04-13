@@ -99,6 +99,7 @@ namespace black_cat
 					if (!l_concurrent_tasks.empty())
 					{
 						core::bc_concurrency::when_all(std::begin(l_concurrent_tasks), std::end(l_concurrent_tasks));
+						l_concurrent_tasks.clear();
 					}
 
 					l_entry.m_stop_watch->start();

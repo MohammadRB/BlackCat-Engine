@@ -20,7 +20,7 @@ namespace black_cat
 
 	bc_vegetable_cascaded_shadow_map_pass::bc_vegetable_cascaded_shadow_map_pass(game::bc_render_pass_variable_t p_output_depth_buffers,
 		bcFLOAT p_shadow_map_multiplier,
-		const std::initializer_list<std::tuple<bcSIZE, bcUBYTE>>& p_cascade_sizes)
+		const std::initializer_list<bc_cascade_shadow_map_trait> p_cascade_sizes)
 		: bc_base_cascaded_shadow_map_pass(p_output_depth_buffers, p_shadow_map_multiplier, p_cascade_sizes)
 	{
 	}
@@ -70,9 +70,9 @@ namespace black_cat
 		m_sampler_state = p_render_system.get_device().create_sampler_state(l_sampler_config);
 	}
 
-	void bc_vegetable_cascaded_shadow_map_pass::initialize_frame_pass(const bc_cascaded_shadow_map_pass_init_frame_param& p_param)
+	void bc_vegetable_cascaded_shadow_map_pass::initialize_frame_pass(const bc_cascaded_shadow_map_pass_init_frame_context& p_context)
 	{
-		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
+		const auto l_cascade_absolute_index = p_context.m_light_index * p_context.m_cascade_count + p_context.m_cascade_index;
 		if (m_leaf_query_results.size() < l_cascade_absolute_index + 1)
 		{
 			m_leaf_queries.resize(l_cascade_absolute_index + 1);
@@ -99,62 +99,68 @@ namespace black_cat
 		(
 			game::bc_scene_graph_render_state_query
 			(
-				game::bc_actor_render_camera(p_param.m_update_camera, p_param.m_update_cascade_camera),
-				p_param.m_frame_renderer.create_buffer()
+				game::bc_actor_render_camera(p_context.m_update_camera, p_context.m_update_cascade_camera),
+				p_context.m_frame_renderer.create_buffer()
 			)
-			.with(game::bc_camera_frustum(p_param.m_update_cascade_camera))
+			.with(game::bc_camera_frustum(p_context.m_update_cascade_camera))
 			.only<game::bc_vegetable_mesh_component>(true)
 		);
 		m_trunk_queries[l_cascade_absolute_index] = std::move
 		(
 			game::bc_scene_graph_render_state_query
 			(
-				game::bc_actor_render_camera(p_param.m_update_camera, p_param.m_update_cascade_camera),
-				p_param.m_frame_renderer.create_buffer()
+				game::bc_actor_render_camera(p_context.m_update_camera, p_context.m_update_cascade_camera),
+				p_context.m_frame_renderer.create_buffer()
 			)
-			.with(game::bc_camera_frustum(p_param.m_update_cascade_camera))
+			.with(game::bc_camera_frustum(p_context.m_update_cascade_camera))
 			.only<game::bc_vegetable_mesh_component>(false)
 		);
 
-		m_leaf_query_results[l_cascade_absolute_index] = p_param.m_query_manager.queue_ext_query(m_leaf_queries[l_cascade_absolute_index]);
-		m_trunk_query_results[l_cascade_absolute_index] = p_param.m_query_manager.queue_ext_query(m_trunk_queries[l_cascade_absolute_index]);
+		m_leaf_query_results[l_cascade_absolute_index] = p_context.m_query_manager.queue_ext_query(m_leaf_queries[l_cascade_absolute_index]);
+		m_trunk_query_results[l_cascade_absolute_index] = p_context.m_query_manager.queue_ext_query(m_trunk_queries[l_cascade_absolute_index]);
 	}
 
-	void bc_vegetable_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_param& p_param)
+	void bc_vegetable_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_context& p_context)
 	{
-		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
+		const auto l_cascade_absolute_index = p_context.m_light_index * p_context.m_cascade_count + p_context.m_cascade_index;
 		const auto& l_leaf_render_buffer = m_leaf_render_states[l_cascade_absolute_index];
 		const auto& l_trunk_render_buffer = m_trunk_render_states[l_cascade_absolute_index];
 		
+		// Update global cbuffer with cascade camera
+		p_context.m_frame_renderer.update_global_cbuffer(p_context.m_child_render_thread, p_context.m_clock, p_context.m_render_cascade_camera);
+
 		// Render vegetable leafs
-		const auto& l_leaf_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index * 2];
-		p_param.m_render_thread.bind_render_pass_state(l_leaf_render_pass_state);
+		const auto& l_leaf_render_pass_state = *p_context.m_render_pass_states[p_context.m_cascade_index * 2];
+		p_context.m_child_render_thread.bind_render_pass_state(l_leaf_render_pass_state);
+		
+		p_context.m_frame_renderer.render_buffer(p_context.m_child_render_thread, l_leaf_render_buffer, p_context.m_render_cascade_camera);
 
-		if(my_index() == 0)
-		{
-			core::bc_vector<core::bc_vector4f> l_clear_buffers(p_param.m_cascade_count, core::bc_vector4f(1));
-			p_param.m_render_thread.clear_buffers(l_clear_buffers.data(), p_param.m_cascade_count);
-		}
-
-		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_leaf_render_buffer, p_param.m_render_cascade_camera);
-
-		p_param.m_render_thread.unbind_render_pass_state(l_leaf_render_pass_state);
+		p_context.m_child_render_thread.unbind_render_pass_state(l_leaf_render_pass_state);
 
 		// Render vegetable trunks
-		const auto& l_trunk_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index * 2 + 1];
-		p_param.m_render_thread.bind_render_pass_state(l_trunk_render_pass_state);
+		const auto& l_trunk_render_pass_state = *p_context.m_render_pass_states[p_context.m_cascade_index * 2 + 1];
+		p_context.m_child_render_thread.bind_render_pass_state(l_trunk_render_pass_state);
 		
-		p_param.m_frame_renderer.render_buffer(p_param.m_render_thread, l_trunk_render_buffer, p_param.m_render_cascade_camera);
+		p_context.m_frame_renderer.render_buffer(p_context.m_child_render_thread, l_trunk_render_buffer, p_context.m_render_cascade_camera);
 
-		p_param.m_render_thread.unbind_render_pass_state(l_trunk_render_pass_state);
+		p_context.m_child_render_thread.unbind_render_pass_state(l_trunk_render_pass_state);
+	}
+
+	void bc_vegetable_cascaded_shadow_map_pass::cleanup_frame_pass(const bc_cascaded_shadow_map_pass_cleanup_context& p_context)
+	{
 	}
 
 	void bc_vegetable_cascaded_shadow_map_pass::destroy_pass(game::bc_render_system& p_render_system)
 	{
 		m_leaf_pipeline_state.reset();
 		m_trunk_pipeline_state.reset();
+
+		m_leaf_queries.clear();
+		m_trunk_queries.clear();
 		m_leaf_query_results.clear();
 		m_trunk_query_results.clear();
+		m_leaf_render_states.clear();
+		m_trunk_render_states.clear();
 	}
 
 	core::bc_vector<game::bc_render_pass_state_ptr> bc_vegetable_cascaded_shadow_map_pass::create_render_pass_states(game::bc_render_system& p_render_system,

@@ -193,6 +193,11 @@ namespace black_cat
 	{
 		m_game_system->swap_frame_idle(p_clock);
 		application_swap_frame_idle(p_clock);
+
+		for(auto l_i = 0U; l_i < 10; ++l_i)
+		{
+			platform::bc_thread::current_thread_yield();
+		}
 	}
 
 	void bc_render_application::app_swap_frame(const platform::bc_clock::update_param& p_clock)

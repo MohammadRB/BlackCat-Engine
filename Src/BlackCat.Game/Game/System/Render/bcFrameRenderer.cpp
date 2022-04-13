@@ -55,8 +55,7 @@ namespace black_cat
 			core::bc_vector3f m_global_wind_direction;
 			bcFLOAT m_global_wind_power;
 		};
-
-		static _bc_render_system_global_state_cbuffer g_global_state;
+		
 		static constexpr bcSIZE g_max_skinned_transform = 90;
 
 		struct _bc_render_system_per_object_cbuffer
@@ -80,28 +79,32 @@ namespace black_cat
 			m_render_thread_render_camera()
 		{
 			const auto l_global_cbuffer_config = graphic::bc_graphic_resource_builder()
-				.as_resource()
-				.as_buffer
-				(
-					1,
-					sizeof(_bc_render_system_global_state_cbuffer),
-					graphic::bc_resource_usage::gpu_rw,
-					graphic::bc_resource_view_type::none
-				)
-				.as_constant_buffer();
+			                                     .as_resource()
+			                                     .as_buffer
+			                                     (
+				                                     1,
+				                                     sizeof(_bc_render_system_global_state_cbuffer),
+				                                     graphic::bc_resource_usage::gpu_rw,
+				                                     graphic::bc_resource_view_type::none
+			                                     )
+			                                     .as_constant_buffer();
 			const auto l_per_object_cbuffer_config = graphic::bc_graphic_resource_builder()
-				.as_resource()
-				.as_buffer
-				(
-					1,
-					sizeof(_bc_render_system_per_object_cbuffer),
-					graphic::bc_resource_usage::gpu_rw,
-					graphic::bc_resource_view_type::none
-				)
-				.as_constant_buffer();
+			                                         .as_resource()
+			                                         .as_buffer
+			                                         (
+				                                         1,
+				                                         sizeof(_bc_render_system_per_object_cbuffer),
+				                                         graphic::bc_resource_usage::gpu_rw,
+				                                         graphic::bc_resource_view_type::none
+			                                         )
+			                                         .as_constant_buffer();
 
 			m_global_cbuffer = p_device.create_buffer(l_global_cbuffer_config, nullptr);
 			m_per_object_cbuffer = p_device.create_buffer(l_per_object_cbuffer_config, nullptr);
+
+			m_global_cbuffer->set_debug_name("global_cbuffer");
+			m_per_object_cbuffer->set_debug_name("object_cbuffer");
+
 			m_global_cbuffer_parameter = graphic::bc_constant_buffer_parameter
 			(
 				g_render_pass_state_constant_buffer_min_index,
@@ -156,33 +159,41 @@ namespace black_cat
 			const platform::bc_clock::update_param& p_clock,
 			const bc_camera_instance& p_camera)
 		{
-			g_global_state.m_view = p_camera.get_view();
-			g_global_state.m_view_inv = p_camera.get_view().inverse();
-			g_global_state.m_projection = p_camera.get_projection();
-			g_global_state.m_view_projection = p_camera.get_view() * p_camera.get_projection();
-			g_global_state.m_view_projection_inv = g_global_state.m_view_projection.inverse();
-			g_global_state.m_screen_width = p_camera.get_screen_width();
-			g_global_state.m_screen_height = p_camera.get_screen_height();
-			g_global_state.m_near_plan = p_camera.get_near_clip();
-			g_global_state.m_far_plan = p_camera.get_far_clip();
-			g_global_state.m_camera_position = p_camera.get_position();
-			g_global_state.m_total_elapsed = p_clock.m_total_elapsed;
-			g_global_state.m_total_elapsed_second = p_clock.m_total_elapsed_second;
-			g_global_state.m_elapsed = p_clock.m_elapsed;
-			g_global_state.m_elapsed_second = p_clock.m_elapsed_second;
-			g_global_state.m_global_scale = bc_get_global_config().get_scene_global_scale();
+			_bc_render_system_global_state_cbuffer l_global_cbuffer_data;
+			l_global_cbuffer_data.m_view = p_camera.get_view();
+			l_global_cbuffer_data.m_view_inv = p_camera.get_view().inverse();
+			l_global_cbuffer_data.m_projection = p_camera.get_projection();
+			l_global_cbuffer_data.m_view_projection = p_camera.get_view() * p_camera.get_projection();
+			l_global_cbuffer_data.m_view_projection_inv = l_global_cbuffer_data.m_view_projection.inverse();
+			l_global_cbuffer_data.m_screen_width = p_camera.get_screen_width();
+			l_global_cbuffer_data.m_screen_height = p_camera.get_screen_height();
+			l_global_cbuffer_data.m_near_plan = p_camera.get_near_clip();
+			l_global_cbuffer_data.m_far_plan = p_camera.get_far_clip();
+			l_global_cbuffer_data.m_camera_position = p_camera.get_position();
+			l_global_cbuffer_data.m_total_elapsed = p_clock.m_total_elapsed;
+			l_global_cbuffer_data.m_total_elapsed_second = p_clock.m_total_elapsed_second;
+			l_global_cbuffer_data.m_elapsed = p_clock.m_elapsed;
+			l_global_cbuffer_data.m_elapsed_second = p_clock.m_elapsed_second;
+			l_global_cbuffer_data.m_global_scale = bc_get_global_config().get_scene_global_scale();
+			l_global_cbuffer_data.m_global_light_direction = m_global_cbuffer_data.m_global_light.get_direction();
+			l_global_cbuffer_data.m_global_light_color = m_global_cbuffer_data.m_global_light.get_color();
+			l_global_cbuffer_data.m_global_light_intensity = m_global_cbuffer_data.m_global_light.get_intensity();
+			l_global_cbuffer_data.m_global_light_ambient_color = m_global_cbuffer_data.m_global_light.get_ambient_color();
+			l_global_cbuffer_data.m_global_light_ambient_intensity = m_global_cbuffer_data.m_global_light.get_ambient_intensity();
+			l_global_cbuffer_data.m_global_wind_direction = m_global_cbuffer_data.m_global_wind.m_direction;
+			l_global_cbuffer_data.m_global_wind_power = m_global_cbuffer_data.m_global_wind.m_power;
 
 			if constexpr (need_matrix_transpose())
 			{
-				g_global_state.m_view.make_transpose();
-				g_global_state.m_view_inv.make_transpose();
-				g_global_state.m_projection.make_transpose();
-				g_global_state.m_view_projection.make_transpose();
-				g_global_state.m_view_projection_inv.make_transpose();
+				l_global_cbuffer_data.m_view.make_transpose();
+				l_global_cbuffer_data.m_view_inv.make_transpose();
+				l_global_cbuffer_data.m_projection.make_transpose();
+				l_global_cbuffer_data.m_view_projection.make_transpose();
+				l_global_cbuffer_data.m_view_projection_inv.make_transpose();
 			}
 
 			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
-			p_render_thread.update_subresource(l_buffer, 0, &g_global_state, 0, 0);
+			p_render_thread.update_subresource(l_buffer, 0, &l_global_cbuffer_data, 0, 0);
 		}
 
 		void bc_frame_renderer::update_global_cbuffer(bc_render_thread& p_render_thread,
@@ -191,45 +202,49 @@ namespace black_cat
 			const bc_direct_light& p_global_light,
 			const bc_direct_wind& p_global_wind)
 		{
-			g_global_state.m_view = p_camera.get_view();
-			g_global_state.m_view_inv = p_camera.get_view().inverse();
-			g_global_state.m_projection = p_camera.get_projection();
-			g_global_state.m_view_projection = p_camera.get_view() * p_camera.get_projection();
-			g_global_state.m_view_projection_inv = g_global_state.m_view_projection.inverse();
-			g_global_state.m_screen_width = p_camera.get_screen_width();
-			g_global_state.m_screen_height = p_camera.get_screen_height();
-			g_global_state.m_near_plan = p_camera.get_near_clip();
-			g_global_state.m_far_plan = p_camera.get_far_clip();
-			g_global_state.m_camera_position = p_camera.get_position();
-			g_global_state.m_total_elapsed = p_clock.m_total_elapsed;
-			g_global_state.m_total_elapsed_second = p_clock.m_total_elapsed_second;
-			g_global_state.m_elapsed = p_clock.m_elapsed;
-			g_global_state.m_elapsed_second = p_clock.m_elapsed_second;
-			g_global_state.m_global_scale = bc_get_global_config().get_scene_global_scale();
-			g_global_state.m_global_light_direction = p_global_light.get_direction();
-			g_global_state.m_global_light_color = p_global_light.get_color();
-			g_global_state.m_global_light_intensity = p_global_light.get_intensity();
-			g_global_state.m_global_light_ambient_color = p_global_light.get_ambient_color();
-			g_global_state.m_global_light_ambient_intensity = p_global_light.get_ambient_intensity();
-			g_global_state.m_global_wind_direction = p_global_wind.m_direction;
-			g_global_state.m_global_wind_power = p_global_wind.m_power;
+			m_global_cbuffer_data.m_global_light = p_global_light;
+			m_global_cbuffer_data.m_global_wind = p_global_wind;
+
+			_bc_render_system_global_state_cbuffer l_global_cbuffer_data;
+			l_global_cbuffer_data.m_view = p_camera.get_view();
+			l_global_cbuffer_data.m_view_inv = p_camera.get_view().inverse();
+			l_global_cbuffer_data.m_projection = p_camera.get_projection();
+			l_global_cbuffer_data.m_view_projection = p_camera.get_view() * p_camera.get_projection();
+			l_global_cbuffer_data.m_view_projection_inv = l_global_cbuffer_data.m_view_projection.inverse();
+			l_global_cbuffer_data.m_screen_width = p_camera.get_screen_width();
+			l_global_cbuffer_data.m_screen_height = p_camera.get_screen_height();
+			l_global_cbuffer_data.m_near_plan = p_camera.get_near_clip();
+			l_global_cbuffer_data.m_far_plan = p_camera.get_far_clip();
+			l_global_cbuffer_data.m_camera_position = p_camera.get_position();
+			l_global_cbuffer_data.m_total_elapsed = p_clock.m_total_elapsed;
+			l_global_cbuffer_data.m_total_elapsed_second = p_clock.m_total_elapsed_second;
+			l_global_cbuffer_data.m_elapsed = p_clock.m_elapsed;
+			l_global_cbuffer_data.m_elapsed_second = p_clock.m_elapsed_second;
+			l_global_cbuffer_data.m_global_scale = bc_get_global_config().get_scene_global_scale();
+			l_global_cbuffer_data.m_global_light_direction = m_global_cbuffer_data.m_global_light.get_direction();
+			l_global_cbuffer_data.m_global_light_color = m_global_cbuffer_data.m_global_light.get_color();
+			l_global_cbuffer_data.m_global_light_intensity = m_global_cbuffer_data.m_global_light.get_intensity();
+			l_global_cbuffer_data.m_global_light_ambient_color = m_global_cbuffer_data.m_global_light.get_ambient_color();
+			l_global_cbuffer_data.m_global_light_ambient_intensity = m_global_cbuffer_data.m_global_light.get_ambient_intensity();
+			l_global_cbuffer_data.m_global_wind_direction = m_global_cbuffer_data.m_global_wind.m_direction;
+			l_global_cbuffer_data.m_global_wind_power = m_global_cbuffer_data.m_global_wind.m_power;
 
 			if constexpr (need_matrix_transpose())
 			{
-				g_global_state.m_view.make_transpose();
-				g_global_state.m_view_inv.make_transpose();
-				g_global_state.m_projection.make_transpose();
-				g_global_state.m_view_projection_inv.make_transpose();
+				l_global_cbuffer_data.m_view.make_transpose();
+				l_global_cbuffer_data.m_view_inv.make_transpose();
+				l_global_cbuffer_data.m_projection.make_transpose();
+				l_global_cbuffer_data.m_view_projection_inv.make_transpose();
 			}
 			
 			graphic::bc_buffer l_buffer = m_global_cbuffer_parameter.get_buffer();
-			p_render_thread.update_subresource(l_buffer, 0, &g_global_state, 0, 0);
+			p_render_thread.update_subresource(l_buffer, 0, &l_global_cbuffer_data, 0, 0);
 		}
 
 		void bc_frame_renderer::update_per_object_cbuffer(bc_render_thread& p_render_thread, const bc_camera_instance& p_camera, const bc_render_instance& p_instance)
 		{
 			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
-			l_per_object_cbuffer.m_world_view_projection = (p_instance.get_transform() * p_camera.get_view() * p_camera.get_projection());
+			l_per_object_cbuffer.m_world_view_projection = p_instance.get_transform() * p_camera.get_view() * p_camera.get_projection();
 			l_per_object_cbuffer.m_world = p_instance.get_transform();
 
 			if constexpr (need_matrix_transpose())
@@ -239,7 +254,7 @@ namespace black_cat
 			}
 
 			graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
-			p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0); // TODO update part of buffer
+			p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0);
 		}
 
 		void bc_frame_renderer::update_per_skinned_object_cbuffer(bc_render_thread& p_render_thread, const bc_camera_instance& p_camera, const bc_skinned_render_instance& p_instance)
@@ -291,7 +306,7 @@ namespace black_cat
 						p_render_thread.pipeline_apply_states(graphic::bc_pipeline_stage::output_merger_stage);
 					}
 					
-					l_per_object_cbuffer.m_world_view_projection = (l_render_instance.get_transform() * l_view_proj);
+					l_per_object_cbuffer.m_world_view_projection = l_render_instance.get_transform() * l_view_proj;
 					l_per_object_cbuffer.m_world = l_render_instance.get_transform();
 
 					if constexpr (need_matrix_transpose())
@@ -301,7 +316,7 @@ namespace black_cat
 					}
 					
 					graphic::bc_buffer l_buffer = m_per_object_cbuffer_parameter.get_buffer();
-					p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0); // TODO update part of buffer
+					p_render_thread.update_subresource(l_buffer, 0, &l_per_object_cbuffer, 0, 0);
 
 					p_render_thread.draw_indexed
 					(

@@ -284,7 +284,6 @@ namespace black_cat
 
 			dx_call(D3DCreateBlob(p_data_size, &l_compiled_shader));
 			std::memcpy(l_compiled_shader->GetBufferPointer(), p_data, p_data_size);
-			l_shader = l_shader;
 
 			return std::make_pair(l_compiled_shader, l_shader);
 		}
@@ -441,7 +440,6 @@ namespace black_cat
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_device<g_api_dx11>::bc_platform_device()
-			: m_pack()
 		{
 		}
 
@@ -458,7 +456,7 @@ namespace black_cat
 		{
 			if (is_initialized())
 			{
-				_destroy();
+				destroy();
 			}
 		}
 
@@ -511,7 +509,7 @@ namespace black_cat
 			l_pack.m_resource = l_dx_buffer;
 			l_pack.m_buffer = l_dx_buffer;
 
-			bc_buffer l_buffer(l_pack);
+			const bc_buffer l_buffer(l_pack);
 			bc_buffer_ref l_buffer_ptr(l_buffer);
 
 			l_dx_buffer->Release();
@@ -529,7 +527,7 @@ namespace black_cat
 			l_pack.m_resource = l_dx_texture;
 			l_pack.m_texture = l_dx_texture;
 
-			bc_texture2d l_texture2(l_pack);
+			const bc_texture2d l_texture2(l_pack);
 			bc_texture2d_ref l_texture_ptr(l_texture2);
 
 			l_dx_texture->Release();
@@ -547,7 +545,7 @@ namespace black_cat
 			l_pack.m_resource = l_dx_texture;
 			l_pack.m_texture = l_dx_texture;
 
-			bc_texture2d l_texture(l_pack);
+			const bc_texture2d l_texture(l_pack);
 			bc_texture2d_ref l_texture_ptr(l_texture);
 
 			l_dx_texture->Release();
@@ -588,7 +586,7 @@ namespace black_cat
 			bc_sampler_state::platform_pack l_pack;
 			l_pack.m_sampler_state = l_dx_sampler;
 
-			bc_sampler_state l_sampler(l_pack);
+			const bc_sampler_state l_sampler(l_pack);
 			bc_sampler_state_ref l_sampler_ptr(l_sampler);
 
 			l_dx_sampler->Release();
@@ -605,11 +603,11 @@ namespace black_cat
 			const bc_shader_macro* p_macros,
 			bcUINT32 p_macro_count)
 		{
-			D3D_SHADER_MACRO* l_macros = nullptr;
-			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
+			const D3D_SHADER_MACRO* l_macros = nullptr;
 
-			if (p_macro_count> 0)
+			if (p_macro_count > 0)
 			{
+				core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
 				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 			}
 			
@@ -626,7 +624,7 @@ namespace black_cat
 			bc_compiled_shader::platform_pack l_pack;
 			l_pack.m_blob = l_dx_blob;
 
-			bc_compiled_shader l_shader(l_pack);
+			const bc_compiled_shader l_shader(l_pack);
 			bc_compiled_shader_ptr l_shader_ptr(l_shader);
 
 			l_dx_blob->Release();
@@ -638,19 +636,19 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_vertex_shader_ref bc_platform_device<g_api_dx11>::create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			auto l_dx_shader = _initialize_vertex_shader(static_cast<bc_device*>(this), p_data, p_data_size, p_function);
+			const auto l_dx_shader = _initialize_vertex_shader(this, p_data, p_data_size, p_function);
 
 			bc_vertex_shader::platform_pack l_pack;
 			l_pack.m_compiled_shader = l_dx_shader.first;
 			l_pack.m_shader = l_dx_shader.second;
 
-			bc_vertex_shader l_sahder(l_pack);
-			bc_vertex_shader_ref l_sahder_ptr(l_sahder);
+			const bc_vertex_shader l_shader(l_pack);
+			bc_vertex_shader_ref l_shader_ptr(l_shader);
 
 			l_dx_shader.first->Release();
 			l_dx_shader.second->Release();
 
-			return l_sahder_ptr;
+			return l_shader_ptr;
 		}
 
 		template<>
@@ -662,11 +660,11 @@ namespace black_cat
 			const bc_shader_macro* p_macros, 
 			bcUINT32 p_macro_count)
 		{
-			D3D_SHADER_MACRO* l_macros = nullptr;
-			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
+			const D3D_SHADER_MACRO* l_macros = nullptr;
 
 			if (p_macro_count> 0)
 			{
+				core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
 				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 			}
 			
@@ -683,7 +681,7 @@ namespace black_cat
 			bc_compiled_shader::platform_pack l_pack;
 			l_pack.m_blob = l_dx_shader;
 
-			bc_compiled_shader l_shader(l_pack);
+			const bc_compiled_shader l_shader(l_pack);
 			bc_compiled_shader_ptr l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
@@ -700,7 +698,7 @@ namespace black_cat
 			bc_hull_shader::platform_pack l_pack;
 			l_pack.m_shader = l_dx_shader;
 
-			bc_hull_shader l_shader(l_pack);
+			const bc_hull_shader l_shader(l_pack);
 			bc_hull_shader_ref l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
@@ -717,11 +715,11 @@ namespace black_cat
 			const bc_shader_macro* p_macros, 
 			bcUINT32 p_macro_count)
 		{
-			D3D_SHADER_MACRO* l_macros = nullptr;
-			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
+			const D3D_SHADER_MACRO* l_macros = nullptr;
 
 			if (p_macro_count> 0)
 			{
+				core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
 				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 			}
 			
@@ -738,7 +736,7 @@ namespace black_cat
 			bc_compiled_shader::platform_pack l_pack;
 			l_pack.m_blob = l_dx_shader;
 
-			bc_compiled_shader l_shader(l_pack);
+			const bc_compiled_shader l_shader(l_pack);
 			bc_compiled_shader_ptr l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
@@ -750,12 +748,12 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_domain_shader_ref bc_platform_device<g_api_dx11>::create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			auto* l_dx_shader = _initialize_domain_shader(static_cast<bc_device*>(this), p_data, p_data_size, p_function);
+			auto* l_dx_shader = _initialize_domain_shader(this, p_data, p_data_size, p_function);
 
 			bc_domain_shader::platform_pack l_pack;
 			l_pack.m_shader = l_dx_shader;
 
-			bc_domain_shader l_shader(l_pack);
+			const bc_domain_shader l_shader(l_pack);
 			bc_domain_shader_ref l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
@@ -772,11 +770,11 @@ namespace black_cat
 			const bc_shader_macro* p_macros, 
 			bcUINT32 p_macro_count)
 		{
-			D3D_SHADER_MACRO* l_macros = nullptr;
-			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
+			const D3D_SHADER_MACRO* l_macros = nullptr;
 
 			if (p_macro_count> 0)
 			{
+				core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
 				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 			}
 			
@@ -793,7 +791,7 @@ namespace black_cat
 			bc_compiled_shader::platform_pack l_pack;
 			l_pack.m_blob = l_dx_shader;
 
-			bc_compiled_shader l_shader(l_pack);
+			const bc_compiled_shader l_shader(l_pack);
 			bc_compiled_shader_ptr l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
@@ -805,12 +803,12 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_geometry_shader_ref bc_platform_device<g_api_dx11>::create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			auto* l_dx_shader = _initialize_geometry_shader(static_cast<bc_device*>(this), p_data, p_data_size, p_function);
+			auto* l_dx_shader = _initialize_geometry_shader(this, p_data, p_data_size, p_function);
 
 			bc_geometry_shader::platform_pack l_pack;
 			l_pack.m_shader = l_dx_shader;
 
-			bc_geometry_shader l_shader(l_pack);
+			const bc_geometry_shader l_shader(l_pack);
 			bc_geometry_shader_ref l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
@@ -827,11 +825,11 @@ namespace black_cat
 			const bc_shader_macro* p_macros, 
 			bcUINT32 p_macro_count)
 		{
-			D3D_SHADER_MACRO* l_macros = nullptr;
-			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
+			const D3D_SHADER_MACRO* l_macros = nullptr;
 
 			if (p_macro_count> 0)
 			{
+				core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
 				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 			}
 			
@@ -848,7 +846,7 @@ namespace black_cat
 			bc_compiled_shader::platform_pack l_pack;
 			l_pack.m_blob = l_dx_shader;
 
-			bc_compiled_shader l_shader(l_pack);
+			const bc_compiled_shader l_shader(l_pack);
 			bc_compiled_shader_ptr l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
@@ -860,12 +858,12 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_pixel_shader_ref bc_platform_device<g_api_dx11>::create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			auto* l_dx_shader = _initialize_pixel_shader(static_cast<bc_device*>(this), p_data, p_data_size, p_function);
+			auto* l_dx_shader = _initialize_pixel_shader(this, p_data, p_data_size, p_function);
 
 			bc_pixel_shader::platform_pack l_pack;
 			l_pack.m_shader = l_dx_shader;
 
-			bc_pixel_shader l_shader(l_pack);
+			const bc_pixel_shader l_shader(l_pack);
 			bc_pixel_shader_ref l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
@@ -882,11 +880,11 @@ namespace black_cat
 			const bc_shader_macro* p_macros, 
 			bcUINT32 p_macro_count)
 		{
-			D3D_SHADER_MACRO* l_macros = nullptr;
-			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
+			const D3D_SHADER_MACRO* l_macros = nullptr;
 
 			if (p_macro_count> 0)
 			{
+				core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
 				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 			}
 			
@@ -903,7 +901,7 @@ namespace black_cat
 			bc_compiled_shader::platform_pack l_pack;
 			l_pack.m_blob = l_dx_shader;
 
-			bc_compiled_shader l_shader(l_pack);
+			const bc_compiled_shader l_shader(l_pack);
 			bc_compiled_shader_ptr l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
@@ -915,12 +913,12 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_compute_shader_ref bc_platform_device<g_api_dx11>::create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
 		{
-			auto* l_dx_shader = _initialize_compute_shader(static_cast<bc_device*>(this), p_data, p_data_size, p_function);
+			auto* l_dx_shader = _initialize_compute_shader(this, p_data, p_data_size, p_function);
 
 			bc_compute_shader::platform_pack l_pack;
 			l_pack.m_shader = l_dx_shader;
 
-			bc_compute_shader l_shader(l_pack);
+			const bc_compute_shader l_shader(l_pack);
 			bc_compute_shader_ref l_shader_ptr(l_shader);
 
 			l_dx_shader->Release();
@@ -963,12 +961,12 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_depth_stencil_view_ref bc_platform_device<g_api_dx11>::create_depth_stencil_view(const bci_resource& p_resource, const bc_depth_stencil_view_config& p_view_config)
 		{
-			auto* l_dx_view = _initialize_depth_stencil_view(static_cast<bc_device*>(this), &p_resource, &p_view_config);
+			auto* l_dx_view = _initialize_depth_stencil_view(this, &p_resource, &p_view_config);
 
 			bc_depth_stencil_view::platform_pack l_pack;
 			l_pack.m_depth_stencil_view = l_dx_view;
 
-			bc_depth_stencil_view l_depth_view(l_pack);
+			const bc_depth_stencil_view l_depth_view(l_pack);
 			bc_depth_stencil_view_ref l_depth_view_ptr(l_depth_view);
 
 			l_dx_view->Release();
@@ -980,12 +978,12 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_render_target_view_ref bc_platform_device<g_api_dx11>::create_render_target_view(const bci_resource& p_resource, const bc_render_target_view_config& p_view_config)
 		{
-			auto* l_dx_view = _initialize_render_target_view(static_cast<bc_device*>(this), &p_resource, &p_view_config);
+			auto* l_dx_view = _initialize_render_target_view(this, &p_resource, &p_view_config);
 
 			bc_render_target_view::platform_pack l_pack;
 			l_pack.m_render_target_view = l_dx_view;
 
-			bc_render_target_view l_render_view(l_pack);
+			const bc_render_target_view l_render_view(l_pack);
 			bc_render_target_view_ref l_render_view_ptr(l_render_view);
 
 			l_dx_view->Release();
@@ -1048,7 +1046,7 @@ namespace black_cat
 			l_dx_rasterizer_desc.MultisampleEnable = p_config.m_rasterizer_state_config.m_multisample_enable;
 			l_dx_rasterizer_desc.AntialiasedLineEnable = p_config.m_rasterizer_state_config.m_antialiased_line_enable;
 
-			for (auto& l_input_element : p_config.m_input_layout_config.m_input_elements)
+			for (const auto& l_input_element : p_config.m_input_layout_config.m_input_elements)
 			{
 				D3D11_INPUT_ELEMENT_DESC l_element_desc;
 				l_element_desc.SemanticName = l_input_element.m_semantic_name;
@@ -1089,7 +1087,7 @@ namespace black_cat
 			bc_device_pipeline_state::platform_pack l_pack;
 			l_pack.m_pipeline_state_proxy = l_pipeline_state_poxy;
 
-			bc_device_pipeline_state l_pipeline_state(l_pack);
+			const bc_device_pipeline_state l_pipeline_state(l_pack);
 			bc_device_pipeline_state_ref l_pipeline_state_ptr(l_pipeline_state);
 
 			l_pipeline_state_poxy->m_blend_state->Release();
@@ -1115,7 +1113,7 @@ namespace black_cat
 			bc_device_compute_state::platform_pack l_pack;
 			l_pack.m_compute_state_proxy = l_compute_state_proxy;
 
-			bc_device_compute_state l_compute_state(l_pack);
+			const bc_device_compute_state l_compute_state(l_pack);
 			bc_device_compute_state_ref l_compute_state_ptr(l_compute_state);
 
 			return l_compute_state_ptr;
@@ -1141,7 +1139,7 @@ namespace black_cat
 			l_pack.m_pipeline_proxy->m_context = m_pack.m_immediate_context.Get();
 			l_pack.m_pipeline_proxy->m_context_type = m_pack.m_immediate_context->GetType();
 
-			bc_device_pipeline l_pipeline(l_pack);
+			const bc_device_pipeline l_pipeline(l_pack);
 			bc_device_pipeline_ref l_pipeline_ptr(l_pipeline);
 
 			l_query->Release();
@@ -1171,7 +1169,7 @@ namespace black_cat
 			l_pack.m_pipeline_proxy->m_context = l_context;
 			l_pack.m_pipeline_proxy->m_context_type = l_context->GetType();
 
-			bc_device_pipeline l_pipeline(l_pack);
+			const bc_device_pipeline l_pipeline(l_pack);
 			bc_device_pipeline_ref l_pipeline_ptr(l_pipeline);
 
 			l_query->Release();
@@ -1184,13 +1182,13 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		bc_device_command_list_ref bc_platform_device<g_api_dx11>::create_command_list()
 		{
-			auto l_command_list_proxy = BC_NEW(bc_device_command_list_proxy, core::bc_alloc_type::unknown);
+			const auto l_command_list_proxy = BC_NEW(bc_device_command_list_proxy, core::bc_alloc_type::unknown);
 
 			bc_device_command_list::platform_pack l_pack;
 			l_pack.m_command_list_proxy = l_command_list_proxy;
 			l_pack.m_command_list_proxy->m_command_list = nullptr;
 
-			bc_device_command_list l_command_list(l_pack);
+			const bc_device_command_list l_command_list(l_pack);
 			bc_device_command_list_ref l_command_list_ptr(l_command_list);
 
 			return l_command_list_ptr;
@@ -1202,8 +1200,8 @@ namespace black_cat
 		{
 			bc_device_command_executor::platform_pack l_pack;
 			l_pack.m_device = this;
-			bc_device_command_executor l_pointer(l_pack);
 
+			const bc_device_command_executor l_pointer(l_pack);
 			return bc_device_command_executor_ref(l_pointer);
 		}
 
@@ -1249,9 +1247,7 @@ namespace black_cat
 			ComPtr<IDXGIFactory> l_factory;
 			CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(l_factory.GetAddressOf()));
 			
-			DXGI_SWAP_CHAIN_DESC l_swap_chain_desc;
-			std::memset(&l_swap_chain_desc, 0, sizeof(DXGI_SWAP_CHAIN_DESC));
-
+			DXGI_SWAP_CHAIN_DESC l_swap_chain_desc = {};
 			l_swap_chain_desc.BufferCount = 2;
 			l_swap_chain_desc.BufferDesc.Format = bc_graphic_cast(p_back_buffer_format);
 			l_swap_chain_desc.BufferDesc.Width = p_width;
@@ -1430,8 +1426,8 @@ namespace black_cat
 			ComPtr<IDXGIAdapter> l_current_adapter;
 			core::bc_vector_frame<ComPtr<IDXGIAdapter>> l_adapters;
 
-			core::bc_wstring_frame l_nvidia(L"nvidia");
-			core::bc_wstring_frame l_amd(L"amd");
+			const core::bc_wstring_frame l_nvidia(L"nvidia");
+			const core::bc_wstring_frame l_amd(L"amd");
 			while (l_factory->EnumAdapters(l_adapter_num++, l_current_adapter.ReleaseAndGetAddressOf()) != DXGI_ERROR_NOT_FOUND)
 			{
 				DXGI_ADAPTER_DESC l_adapter_desc;

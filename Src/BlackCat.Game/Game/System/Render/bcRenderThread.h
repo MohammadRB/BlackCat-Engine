@@ -6,6 +6,8 @@
 #include "GraphicImp/Device/bcDeviceOcclusionQuery.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
+#include "GraphicImp/Resource/View/bcRenderTargetView.h"
+#include "GraphicImp/Resource/View/bcDepthStencilView.h"
 #include "Game/bcExport.h"
 #include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/State/bcRenderState.h"
@@ -129,6 +131,10 @@ namespace black_cat
 			void dispatch_indirect(graphic::bc_buffer p_args, bcUINT p_offset);
 
 			void clear_buffers(const core::bc_vector4f* p_color, bcUINT32 p_count, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
+
+			void clear_render_target_view(graphic::bc_render_target_view p_view, const bcFLOAT* p_color);
+
+			void clear_depth_stencil_view(graphic::bc_depth_stencil_view p_view, bcFLOAT p_depth = 1.0f, bcUINT8 p_stencil = 0);
 
 			/*graphic::bc_mapped_resource map_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type);
 

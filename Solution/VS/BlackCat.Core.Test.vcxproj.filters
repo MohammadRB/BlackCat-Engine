@@ -56,5 +56,8 @@
     <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\Container\bcConcurrentQueue.h">
       <Filter>CoreTest\Container</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core.Test\CoreTest\Container\bcConcurrentQueue1.h">
+      <Filter>CoreTest\Container</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

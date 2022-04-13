@@ -31,11 +31,12 @@ namespace black_cat
 		m_state(p_other_instance->m_state)
 	{
 		m_state->m_instance_count++;
+		_reset_cascade_sizes(m_state->m_shadow_map_multiplier, core::bc_make_cspan(m_state->m_cascade_sizes));
 	}
 	
 	bc_base_cascaded_shadow_map_pass::bc_base_cascaded_shadow_map_pass(game::bc_render_pass_variable_t p_output_depth_buffers, 
 		bcFLOAT p_shadow_map_multiplier,
-		std::initializer_list<std::tuple<bcSIZE, bcUBYTE>> p_cascade_sizes)
+		std::initializer_list<bc_cascade_shadow_map_trait> p_cascade_sizes)
 		: m_my_index(0)
 	{
 		m_state = core::bc_make_shared<_bc_cascaded_shadow_map_pass_state>(core::bc_alloc_type::program);
@@ -44,17 +45,14 @@ namespace black_cat
 		m_state->m_back_buffer_height = 0;
 		m_state->m_output_depth_buffers_share_slot = p_output_depth_buffers;
 		m_state->m_shadow_map_size = 1;
-
-		core::bc_vector<core::bc_vector2i> l_cascade_sizes_int;
+		
 		core::bc_vector<core::bc_any> l_cascade_sizes;
-		l_cascade_sizes_int.reserve(p_cascade_sizes.size());
 		l_cascade_sizes.reserve(p_cascade_sizes.size() * 2);
 
 		for (auto l_cascade : p_cascade_sizes)
 		{
-			l_cascade_sizes_int.push_back(core::bc_vector2i(std::get<0>(l_cascade), std::get<1>(l_cascade)));
-			l_cascade_sizes.push_back(core::bc_any(l_cascade_sizes_int.back().x));
-			l_cascade_sizes.push_back(core::bc_any(l_cascade_sizes_int.back().y));
+			l_cascade_sizes.push_back(core::bc_any(l_cascade.m_distance));
+			l_cascade_sizes.push_back(core::bc_any(l_cascade.m_update_interval));
 		}
 
 		auto& l_global_config = bc_get_global_config();
@@ -62,14 +60,15 @@ namespace black_cat
 			.add_if_not_exist_config_key("render_shadow_map_cascades", core::bc_any(l_cascade_sizes))
 			.flush_changes();
 
-		_reset_cascade_sizes(p_shadow_map_multiplier, core::bc_make_cspan(l_cascade_sizes_int));
+		_reset_cascade_sizes(p_shadow_map_multiplier, core::bc_const_span<bc_cascade_shadow_map_trait>(p_cascade_sizes.begin(), p_cascade_sizes.size()));
 	}
 	
 	void bc_base_cascaded_shadow_map_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
 		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
-		
+
+		m_command_list = p_render_system.get_device().create_command_list();
 		initialize_pass(p_render_system);
 
 		if(m_my_index == 0)
@@ -103,8 +102,10 @@ namespace black_cat
 	{
 	}
 
-	void bc_base_cascaded_shadow_map_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
+	void bc_base_cascaded_shadow_map_pass::initialize_frame(const game::bc_concurrent_render_pass_render_context& p_context)
 	{
+		m_last_cameras.clear();
+
 		if (m_my_index == 0)
 		{
 			if (m_state->m_lights_query.is_executed())
@@ -112,14 +113,14 @@ namespace black_cat
 				m_state->m_lights = m_state->m_lights_query.get().get_lights();
 			}
 			
-			m_state->m_lights_query = core::bc_get_service<core::bc_query_manager>()->queue_query
+			m_state->m_lights_query = p_context.m_query_manager.queue_query
 			(
 				game::bc_scene_light_query(game::bc_light_type::direct)
 			);
 
 			while (m_state->m_light_states.size() < m_state->m_lights.size())
 			{
-				m_state->m_light_states.push_back(_create_light_instance(p_context.m_render_system));
+				m_state->m_light_states.push_back(_create_light_state(p_context.m_render_system));
 			}
 
 			while (m_state->m_light_states.size() > m_state->m_lights.size())
@@ -127,41 +128,49 @@ namespace black_cat
 				m_state->m_light_states.pop_back();
 			}
 
-			for (auto& l_light_state : m_state->m_light_states)
+			const auto l_cascade_count = m_state->m_cascade_sizes.size();
+			for (auto l_cascade_ite = 0U; l_cascade_ite < l_cascade_count; ++l_cascade_ite)
 			{
-				l_light_state.m_last_cameras.clear();
+				--std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
 			}
 		}
 
+		m_state->wait_for_sync_flag();
+
 		for (bcSIZE l_light_ite = 0; l_light_ite < m_state->m_lights.size(); ++l_light_ite)
 		{
-			auto& l_light_state = m_state->m_light_states[l_light_ite];
 			const auto* l_light = m_state->m_lights[l_light_ite].as_direct_light();
-			auto l_update_cascade_cameras = _get_light_stabilized_cascades(p_context.m_update_camera, *l_light);
-			auto l_render_cascade_cameras = _get_light_stabilized_cascades(p_context.m_render_camera, *l_light);
+			const auto l_cascade_count = m_state->m_cascade_sizes.size();
 
-			for (auto l_cascade_ite = 0U; l_cascade_ite < l_render_cascade_cameras.size(); ++l_cascade_ite)
+			m_last_update_cascade_cameras = _get_light_stabilized_cascades(p_context.m_update_camera, *l_light);
+			m_last_render_cascade_cameras = _get_light_stabilized_cascades(p_context.m_render_camera, *l_light);
+
+			for (auto l_cascade_ite = 0U; l_cascade_ite < l_cascade_count; ++l_cascade_ite)
 			{
-				l_light_state.m_last_cameras.push_back(game::bc_camera_instance(l_update_cascade_cameras[l_cascade_ite]));
-				auto& l_update_cascade_camera = l_light_state.m_last_cameras.back();
-				l_light_state.m_last_cameras.push_back(game::bc_camera_instance(l_render_cascade_cameras[l_cascade_ite]));
-				auto l_render_cascade_camera = l_light_state.m_last_cameras.back();
+				const auto l_update_interval = std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
+				if (l_update_interval == 0)
+				{
+					m_last_cameras.push_back(game::bc_camera_instance(m_last_update_cascade_cameras[l_cascade_ite]));
+					auto& l_update_cascade_camera = m_last_cameras.back();
+					m_last_cameras.push_back(game::bc_camera_instance(m_last_render_cascade_cameras[l_cascade_ite]));
+					auto& l_render_cascade_camera = m_last_cameras.back();
 
-				bc_cascaded_shadow_map_pass_init_frame_param l_param
-				(
-					p_context,
-					l_update_cascade_camera,
-					l_render_cascade_camera,
-					l_light_ite,
-					l_cascade_ite,
-					l_render_cascade_cameras.size()
-				);
-				initialize_frame_pass(l_param);
+					bc_cascaded_shadow_map_pass_init_frame_context l_param
+					(
+						p_context,
+						l_update_cascade_camera,
+						l_render_cascade_camera,
+						l_light_ite,
+						l_cascade_ite,
+						l_cascade_count
+					);
+					initialize_frame_pass(l_param);
+				}
 			}
 		}
 	}
 
-	void bc_base_cascaded_shadow_map_pass::execute(const game::bc_render_pass_render_context& p_context)
+	void bc_base_cascaded_shadow_map_pass::execute(const game::bc_concurrent_render_pass_render_context& p_context)
 	{
 		if(m_state->m_lights.empty() || m_state->m_cascade_sizes.empty())
 		{
@@ -174,50 +183,55 @@ namespace black_cat
 			l_direct_lights.push_back(*l_light.as_direct_light());
 		}
 
-		p_context.m_render_thread.start();
+		p_context.m_child_render_thread.start(*m_command_list);
 
 		for (bcSIZE l_light_ite = 0; l_light_ite < l_direct_lights.size(); ++l_light_ite)
 		{
-			auto& l_light = l_direct_lights[l_light_ite];
+			const auto& l_light = l_direct_lights[l_light_ite];
 			auto& l_light_state = m_state->m_light_states[l_light_ite];
-			auto& l_shadow_maps_container = get_shared_resource_throw<bc_cascaded_shadow_map_buffer_container>(m_state->m_output_depth_buffers_share_slot);
-
-			// Create render pass state instance
-			if(l_light_state.m_render_pass_states.size() < m_my_index + 1 || l_light_state.m_render_pass_states[m_my_index].empty())
+			const auto l_cascade_count = m_state->m_cascade_sizes.size();
+			
+			if (l_light_state.m_render_pass_states[m_my_index].empty())
 			{
-				l_light_state.m_render_pass_states.resize(std::max(m_my_index + 1, l_light_state.m_render_pass_states.size()));
 				l_light_state.m_render_pass_states[m_my_index] = create_render_pass_states
 				(
-					p_context.m_render_system, 
-					l_light_state.m_depth_buffer.get(), 
+					p_context.m_render_system,
+					l_light_state.m_depth_buffer.get(),
 					l_light_state.m_depth_buffer_views
 				);
 			}
-			
-			auto l_cascade_ite = 0U;
-			auto l_update_cascade_cameras = _get_light_stabilized_cascades(p_context.m_update_camera, l_light);
-			auto l_render_cascade_cameras = _get_light_stabilized_cascades(p_context.m_render_camera, l_light);
-			
+
+			// Update shared resource so gbuffer light map pass can do its job
 			if (m_my_index == 0)
 			{
 				bc_cascaded_shadow_map_buffer_container::entry l_shadow_map_buffer;
 				l_shadow_map_buffer.m_shadow_map_size = m_state->m_shadow_map_size;
 				l_shadow_map_buffer.m_shadow_map_count = m_state->m_cascade_sizes.size();
 				l_shadow_map_buffer.m_resource_view = l_light_state.m_depth_buffer_resource_view.get();
-				std::copy(std::begin(m_state->m_cascade_sizes), std::end(m_state->m_cascade_sizes), std::back_inserter(l_shadow_map_buffer.m_cascade_sizes));
+				std::transform
+				(
+					std::begin(m_state->m_cascade_sizes),
+					std::end(m_state->m_cascade_sizes),
+					std::back_inserter(l_shadow_map_buffer.m_cascade_sizes),
+					[](const bc_cascade_shadow_map_trait& p_cascade)
+					{
+						return p_cascade.m_distance;
+					}
+				);
 
-				for (auto& l_render_cascade_camera : l_render_cascade_cameras)
+				for (auto l_cascade_ite = 0U; l_cascade_ite < l_cascade_count; ++l_cascade_ite)
 				{
-					const auto l_update_interval = --std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
+					const auto l_update_interval = std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
 					if (l_update_interval == 0)
 					{
+						const auto& l_render_cascade_camera = m_last_render_cascade_cameras[l_cascade_ite];
 						l_light_state.m_last_view_projections[l_cascade_ite] = l_render_cascade_camera.get_view() * l_render_cascade_camera.get_projection();
 					}
-					
+
 					l_shadow_map_buffer.m_view_projections.push_back(l_light_state.m_last_view_projections[l_cascade_ite]);
-					++l_cascade_ite;
 				}
-				
+
+				auto& l_shadow_maps_container = get_shared_resource_throw<bc_cascaded_shadow_map_buffer_container>(m_state->m_output_depth_buffers_share_slot);
 				l_shadow_maps_container.add(std::make_pair
 				(
 					l_light.get_direction(),
@@ -225,26 +239,17 @@ namespace black_cat
 				));
 			}
 
-			for(l_cascade_ite = 0U; l_cascade_ite < l_render_cascade_cameras.size(); ++l_cascade_ite)
+			for(auto l_cascade_ite = 0U; l_cascade_ite < l_cascade_count; ++l_cascade_ite)
 			{
-				auto& l_update_interval = std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
-
+				const auto l_update_interval = std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
 				if (l_update_interval == 0)
 				{
-					if (m_my_index == m_state->m_instance_count - 1) // If this is the last instance
-					{
-						l_update_interval = std::get<0>(m_state->m_cascade_update_intervals[l_cascade_ite]);
-					}
+					m_last_cameras.push_back(game::bc_camera_instance(m_last_update_cascade_cameras[l_cascade_ite]));
+					auto& l_update_cascade_camera = m_last_cameras.back();
+					m_last_cameras.push_back(game::bc_camera_instance(m_last_render_cascade_cameras[l_cascade_ite]));
+					auto& l_render_cascade_camera = m_last_cameras.back();
 
-					l_light_state.m_last_cameras.push_back(game::bc_camera_instance(l_update_cascade_cameras[l_cascade_ite]));
-					auto& l_update_cascade_camera = l_light_state.m_last_cameras.back();
-					l_light_state.m_last_cameras.push_back(game::bc_camera_instance(l_render_cascade_cameras[l_cascade_ite]));
-					auto l_render_cascade_camera = l_light_state.m_last_cameras.back();
-					
-					// Update global cbuffer with cascade camera
-					p_context.m_frame_renderer.update_global_cbuffer(p_context.m_render_thread, p_context.m_clock, l_render_cascade_camera);
-
-					bc_cascaded_shadow_map_pass_render_param l_param
+					bc_cascaded_shadow_map_pass_render_context l_param
 					(
 						p_context,
 						l_light_state.m_render_pass_states[m_my_index],
@@ -252,7 +257,7 @@ namespace black_cat
 						l_render_cascade_camera,
 						l_light_ite,
 						l_cascade_ite,
-						l_render_cascade_cameras.size()
+						l_cascade_count
 					);
 					execute_pass(l_param);
 				}
@@ -262,7 +267,7 @@ namespace black_cat
 			{
 				m_state->m_captured_camera = p_context.m_render_camera.get_extends();
 
-				for (auto& l_cascade_camera : l_render_cascade_cameras)
+				for (auto& l_cascade_camera : m_last_render_cascade_cameras)
 				{
 					game::bci_camera::extend l_extends;
 					l_cascade_camera.get_extend_points(l_extends);
@@ -273,14 +278,16 @@ namespace black_cat
 				m_state->m_capture_debug_shapes = false;
 			}
 		}
+		
+		p_context.m_child_render_thread.finish();
+		
+		m_state->wait_for_sync_flag();
 
-		// Restore global cbuffer to its default state
-		p_context.m_frame_renderer.update_global_cbuffer(p_context.m_render_thread, p_context.m_clock, p_context.m_render_camera);
-
-		p_context.m_render_thread.finish();
-
-		if(m_my_index == 0)
+		if (m_my_index == 0)
 		{
+			// Restore global cbuffer to its default state
+			p_context.m_frame_renderer.update_global_cbuffer(p_context.m_render_thread, p_context.m_clock, p_context.m_render_camera);
+
 			for (auto& l_captured_camera : m_state->m_captured_cascades)
 			{
 				p_context.m_render_system.get_shape_drawer().draw_wired_frustum(l_captured_camera);
@@ -289,15 +296,51 @@ namespace black_cat
 			{
 				p_param.m_render_system.get_shape_drawer().draw_wired_bound_box(l_captured_box);
 			}*/
-			p_context.m_render_system.get_shape_drawer().draw_wired_frustum(m_state->m_captured_camera);	
+			p_context.m_render_system.get_shape_drawer().draw_wired_frustum(m_state->m_captured_camera);
 		}
 	}
 
 	void bc_base_cascaded_shadow_map_pass::cleanup_frame(const game::bc_render_pass_render_context& p_context)
 	{
-		if(m_my_index == 0)
+		const auto l_cascade_count = m_state->m_cascade_sizes.size();
+
+		if (m_my_index == 0)
 		{
 			get_shared_resource_throw<bc_cascaded_shadow_map_buffer_container>(m_state->m_output_depth_buffers_share_slot).clear();
+			m_state->reset_sync_flag();
+
+			for (auto l_cascade_ite = 0U; l_cascade_ite < l_cascade_count; ++l_cascade_ite)
+			{
+				auto& l_update_interval = std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
+				if (l_update_interval == 0)
+				{
+					l_update_interval = std::get<0>(m_state->m_cascade_update_intervals[l_cascade_ite]);
+				}
+			}
+		}
+
+		for (bcSIZE l_light_ite = 0; l_light_ite < m_state->m_lights.size(); ++l_light_ite)
+		{
+			auto& l_light_state = m_state->m_light_states[l_light_ite];
+
+			for (auto l_cascade_ite = 0U; l_cascade_ite < l_cascade_count; ++l_cascade_ite)
+			{
+				const auto l_update_interval = std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
+
+				if(l_update_interval == 1)
+				{
+					p_context.m_render_thread.clear_depth_stencil_view(l_light_state.m_depth_buffer_views[l_cascade_ite].get());
+				}
+				
+				cleanup_frame_pass(bc_cascaded_shadow_map_pass_cleanup_context
+				(
+					p_context, 
+					l_light_state.m_render_pass_states[m_my_index], 
+					l_light_ite, 
+					l_cascade_ite, 
+					l_cascade_count
+				));
+			}
 		}
 	}
 
@@ -321,22 +364,22 @@ namespace black_cat
 
 		for(auto l_ite = 0U; l_ite < l_light_state_count; ++l_ite)
 		{
-			m_state->m_light_states.push_back(_create_light_instance(p_context.m_render_system));
+			m_state->m_light_states.push_back(_create_light_state(p_context.m_render_system));
 		}
 	}
 
 	void bc_base_cascaded_shadow_map_pass::destroy(game::bc_render_system& p_render_system)
 	{
+		destroy_pass(p_render_system);
+
 		if (m_my_index == 0)
 		{
 			get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_state->m_output_depth_buffers_share_slot)->clear();
 			unshare_resource(m_state->m_output_depth_buffers_share_slot);
 		}
-		
+
+		m_command_list.reset();
 		m_state->m_light_states.clear();
-
-		destroy_pass(p_render_system);
-
 		m_state.reset();
 	}
 
@@ -367,12 +410,21 @@ namespace black_cat
 			return;
 		}
 			
-		core::bc_vector_frame<core::bc_vector2i> l_cascade_sizes_int;
+		core::bc_vector_frame<bc_cascade_shadow_map_trait> l_cascade_sizes_int;
 		l_cascade_sizes_int.reserve(l_cascade_sizes.size());
 
 		for(auto l_ite = 0U; l_ite < l_cascade_sizes.size(); l_ite += 2)
 		{
-			l_cascade_sizes_int.push_back({ l_cascade_sizes[l_ite].as_throw<bcINT32>(), l_cascade_sizes[l_ite + 1].as_throw<bcINT32>() });
+			const auto l_cascade_distance = l_cascade_sizes[l_ite].as_throw<bcINT32>();
+			const auto l_cascade_update_interval = l_cascade_sizes[l_ite + 1].as_throw<bcINT32>();
+			l_cascade_sizes_int.push_back
+			(
+				bc_cascade_shadow_map_trait
+				{
+					static_cast<bcSIZE>(l_cascade_distance),
+					static_cast<bcUINT8>(l_cascade_update_interval)
+				}
+			);
 		}
 
 		_reset_cascade_sizes(l_shadow_map_multiplier, core::bc_make_cspan(l_cascade_sizes_int));
@@ -390,37 +442,27 @@ namespace black_cat
 		return m_my_index;
 	}
 
-	void bc_base_cascaded_shadow_map_pass::_reset_cascade_sizes(bcFLOAT p_shadow_map_multiplier, core::bc_const_span<core::bc_vector2i> p_cascades)
+	void bc_base_cascaded_shadow_map_pass::_reset_cascade_sizes(bcFLOAT p_shadow_map_multiplier, core::bc_const_span<bc_cascade_shadow_map_trait> p_cascades)
 	{
 		m_state->m_shadow_map_multiplier = p_shadow_map_multiplier;
 		m_state->m_shadow_map_size = (m_state->m_back_buffer_width + m_state->m_back_buffer_height) / 2 * m_state->m_shadow_map_multiplier;
-		m_state->m_cascade_sizes.assign(p_cascades.size(), 0);
-		m_state->m_cascade_update_intervals.assign(p_cascades.size(), { 0,0 });
+		m_state->m_cascade_sizes.assign(std::begin(p_cascades), std::end(p_cascades));
 		m_state->m_light_states.clear();
+		m_state->m_cascade_update_intervals.assign(p_cascades.size(), { 0,0 });
 
-		std::transform
-		(
-			std::cbegin(p_cascades),
-			std::cend(p_cascades),
-			std::begin(m_state->m_cascade_sizes),
-			[](const core::bc_vector2i& p_cascade_size)
-			{
-				return p_cascade_size.x;
-			}
-		);
 		std::transform
 		(
 			std::cbegin(p_cascades),
 			std::cend(p_cascades),
 			std::begin(m_state->m_cascade_update_intervals),
-			[](const core::bc_vector2i& p_cascade_size)
+			[](const bc_cascade_shadow_map_trait& p_cascade_size)
 			{
-				return std::make_tuple(p_cascade_size.y, p_cascade_size.y);
+				return std::make_tuple(p_cascade_size.m_update_interval, p_cascade_size.m_update_interval);
 			}
 		);
 	}
 
-	_bc_cascaded_shadow_map_light_state bc_base_cascaded_shadow_map_pass::_create_light_instance(game::bc_render_system& p_render_system)
+	_bc_cascaded_shadow_map_light_state bc_base_cascaded_shadow_map_pass::_create_light_state(game::bc_render_system& p_render_system)
 	{
 		const auto l_cascade_count = m_state->m_cascade_sizes.size();
 
@@ -451,8 +493,9 @@ namespace black_cat
 		_bc_cascaded_shadow_map_light_state l_instance;
 		l_instance.m_depth_buffer = p_render_system.get_device().create_texture2d(l_depth_buffer_config, nullptr);
 		l_instance.m_depth_buffer_resource_view = p_render_system.get_device().create_resource_view(l_instance.m_depth_buffer.get(), l_depth_buffer_resource_view_config);
-		l_instance.m_last_view_projections.reserve(l_cascade_count);
 		l_instance.m_depth_buffer_views.reserve(l_cascade_count);
+		l_instance.m_render_pass_states.resize(m_state->m_instance_count);
+		l_instance.m_last_view_projections.reserve(l_cascade_count);
 
 		for (auto l_ite = 0U; l_ite < l_cascade_count; ++l_ite)
 		{
@@ -462,20 +505,31 @@ namespace black_cat
 			l_instance.m_last_view_projections.push_back(core::bc_matrix4f::identity());
 			l_instance.m_depth_buffer_views.push_back(std::move(l_depth_stencil_view));
 		}
-
+		
 		return l_instance;
 	}
 
-	core::bc_vector_frame<bc_cascaded_shadow_map_camera> bc_base_cascaded_shadow_map_pass::_get_light_cascades(const game::bci_camera& p_camera, const game::bc_direct_light& p_light)
+	core::bc_vector<bc_cascaded_shadow_map_camera> bc_base_cascaded_shadow_map_pass::_get_light_cascades(const game::bci_camera& p_camera, const game::bc_direct_light& p_light)
 	{
 		game::bci_camera::extend l_camera_frustum_corners;
 		p_camera.get_extend_points(l_camera_frustum_corners);
 
 		core::bc_vector_frame<bcFLOAT> l_cascade_break_points;
+		l_cascade_break_points.reserve(m_state->m_cascade_sizes.size() + 1);
 		l_cascade_break_points.push_back(p_camera.get_near_clip());
-		l_cascade_break_points.insert(std::cend(l_cascade_break_points), std::begin(m_state->m_cascade_sizes), std::end(m_state->m_cascade_sizes));
+		std::transform
+		(
+			std::begin(m_state->m_cascade_sizes),
+			std::end(m_state->m_cascade_sizes),
+			std::back_inserter(l_cascade_break_points),
+			[](const bc_cascade_shadow_map_trait& p_cascade)
+			{
+				return p_cascade.m_distance;
+			}
+		);
 
-		core::bc_vector_frame<bc_cascaded_shadow_map_camera> l_cascade_cameras;
+		core::bc_vector<bc_cascaded_shadow_map_camera> l_cascade_cameras;
+		l_cascade_cameras.reserve(l_cascade_break_points.size());
 
 		const auto l_camera_position = p_camera.get_position();
 		const auto l_camera_far_plane_distance = p_camera.get_far_clip();
@@ -563,15 +617,26 @@ namespace black_cat
 		return l_cascade_cameras;
 	}
 
-	core::bc_vector_frame<bc_cascaded_shadow_map_camera> bc_base_cascaded_shadow_map_pass::_get_light_stabilized_cascades(const game::bc_camera_instance& p_camera, const game::bc_direct_light& p_light)
+	core::bc_vector<bc_cascaded_shadow_map_camera> bc_base_cascaded_shadow_map_pass::_get_light_stabilized_cascades(const game::bc_camera_instance& p_camera, const game::bc_direct_light& p_light)
 	{
 		const auto& l_camera_extends = p_camera.get_extends();
 
 		core::bc_vector_frame<bcFLOAT> l_cascade_break_points;
+		l_cascade_break_points.reserve(m_state->m_cascade_sizes.size() + 1);
 		l_cascade_break_points.push_back(p_camera.get_near_clip());
-		l_cascade_break_points.insert(std::cend(l_cascade_break_points), std::begin(m_state->m_cascade_sizes), std::end(m_state->m_cascade_sizes));
+		std::transform
+		(
+			std::begin(m_state->m_cascade_sizes),
+			std::end(m_state->m_cascade_sizes),
+			std::back_inserter(l_cascade_break_points),
+			[](const bc_cascade_shadow_map_trait& p_cascade)
+			{
+				return p_cascade.m_distance;
+			}
+		);
 
-		core::bc_vector_frame<bc_cascaded_shadow_map_camera> l_cascade_cameras;
+		core::bc_vector<bc_cascaded_shadow_map_camera> l_cascade_cameras;
+		l_cascade_cameras.reserve(l_cascade_break_points.size());
 
 		const auto l_camera_position = p_camera.get_position();
 		const auto l_camera_far_plane_distance = p_camera.get_far_clip();

@@ -11,7 +11,7 @@
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "Game/System/Render/State/bcRenderPassState.h"
-#include "Game/System/Render/Pass/bcConcurrentRenderPass.h"
+#include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/Query/bcSceneDecalQuery.h"
 #include "App/bcExport.h"
@@ -25,7 +25,7 @@ namespace black_cat
 		class bc_render_instance;
 	}
 	
-	class BC_DLL bc_gbuffer_decal_pass : public game::bci_concurrent_render_pass
+	class BC_DLL bc_gbuffer_decal_pass : public game::bci_render_pass
 	{
 		BC_RENDER_PASS(gb_dcl)
 
@@ -37,9 +37,9 @@ namespace black_cat
 		
 		void update(const game::bc_render_pass_update_context& p_context) override;
 		
-		void initialize_frame(const game::bc_concurrent_render_pass_render_context& p_context) override;
+		void initialize_frame(const game::bc_render_pass_render_context& p_context) override;
 		
-		void execute(const game::bc_concurrent_render_pass_render_context& p_context) override;
+		void execute(const game::bc_render_pass_render_context& p_context) override;
 
 		void cleanup_frame(const game::bc_render_pass_render_context& p_context) override;
 
@@ -52,7 +52,7 @@ namespace black_cat
 		void draw_decal_bounds(bool p_value);
 		
 	private:
-		void _render_decals(const game::bc_concurrent_render_pass_render_context& p_context,
+		void _render_decals(const game::bc_render_pass_render_context& p_context,
 			const game::bc_render_pass_state& p_render_pass_state,
 			const decal_group_container& p_instances,
 			decal_group_container* p_non_culling_instances);
@@ -60,8 +60,7 @@ namespace black_cat
 		void _create_decal_render_state(game::bc_render_system& p_render_system, const game::bc_mesh_material& p_material);
 
 		static constexpr bcUINT32 s_max_instance_per_draw = 300;
-
-		graphic::bc_device_command_list_ref m_command_list;
+		
 		graphic::bc_buffer_ref m_cube_vb;
 		graphic::bc_buffer_ref m_cube_ib;
 		graphic::bc_buffer_ref m_instance_buffer;

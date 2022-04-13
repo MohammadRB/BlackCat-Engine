@@ -52,7 +52,13 @@ namespace black_cat
 			core::bc_query_manager& m_query_manager;
 			bc_render_system& m_render_system;
 		};
-		
+
+		struct _bc_frame_renderer_global_cbuffer_data
+		{
+			bc_direct_light m_global_light{ {0,0,0}, {0,0,0}, 0, {0,0,0}, 0 };
+			bc_direct_wind m_global_wind{ {0,0,0}, 0 };
+		};
+
 		class BC_GAME_DLL bc_frame_renderer
 		{
 		public:
@@ -106,6 +112,7 @@ namespace black_cat
 			bc_render_thread_manager* m_thread_manager;
 			bc_render_pass_manager* m_render_pass_manager;
 
+			_bc_frame_renderer_global_cbuffer_data m_global_cbuffer_data;
 			graphic::bc_buffer_ref m_global_cbuffer;
 			graphic::bc_buffer_ref m_per_object_cbuffer;
 			graphic::bc_constant_buffer_parameter m_global_cbuffer_parameter;

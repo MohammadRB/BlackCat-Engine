@@ -21,25 +21,25 @@ namespace black_cat
 		m_command_list = l_device.create_command_list();
 
 		after_reset(game::bc_render_pass_reset_context
+		(
+			p_render_system,
+			l_device,
+			l_device_swap_buffer,
+			graphic::bc_device_parameters
 			(
-				p_render_system,
-				l_device,
-				l_device_swap_buffer,
-				graphic::bc_device_parameters
-				(
-					0,
-					0,
-					graphic::bc_format::unknown,
-					graphic::bc_texture_ms_config(1, 0)
-				),
-				graphic::bc_device_parameters
-				(
-					l_device_swap_buffer.get_back_buffer_width(),
-					l_device_swap_buffer.get_back_buffer_height(),
-					l_device_swap_buffer.get_back_buffer_format(),
-					l_device_swap_buffer.get_back_buffer_texture().get_sample_count()
-				)
-			));
+				0,
+				0,
+				graphic::bc_format::unknown,
+				graphic::bc_texture_ms_config(1, 0)
+			),
+			graphic::bc_device_parameters
+			(
+				l_device_swap_buffer.get_back_buffer_width(),
+				l_device_swap_buffer.get_back_buffer_height(),
+				l_device_swap_buffer.get_back_buffer_format(),
+				l_device_swap_buffer.get_back_buffer_texture().get_sample_count()
+			)
+		));
 	}
 
 	void bc_gbuffer_vegetable_pass::update(const game::bc_render_pass_update_context& p_context)

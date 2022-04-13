@@ -521,6 +521,16 @@ namespace black_cat
 			m_pipeline->clear_buffers(p_color, p_count, p_depth, p_stencil);
 		}
 
+		void bc_render_thread::clear_render_target_view(graphic::bc_render_target_view p_view, const bcFLOAT* p_color)
+		{
+			m_pipeline->clear_render_target_view(p_view, p_color);
+		}
+
+		void bc_render_thread::clear_depth_stencil_view(graphic::bc_depth_stencil_view p_view, bcFLOAT p_depth, bcUINT8 p_stencil)
+		{
+			m_pipeline->clear_depth_stencil_view(p_view, p_depth, p_stencil);
+		}
+
 		/*graphic::bc_mapped_resource bc_render_thread::map_resource(graphic::bc_iresource& p_resource, bcUINT p_subresource, graphic::bc_resource_map p_map_type)
 		{
 			return m_pipeline->map_resource(p_resource, p_subresource, p_map_type);
@@ -559,7 +569,7 @@ namespace black_cat
 		void bc_render_thread::start(graphic::bc_device_command_list p_command_list) noexcept
 		{
 			BC_ASSERT(!m_command_list.is_valid());
-
+			
 			m_command_list = p_command_list;
 			m_pipeline->start_command_list();
 		}

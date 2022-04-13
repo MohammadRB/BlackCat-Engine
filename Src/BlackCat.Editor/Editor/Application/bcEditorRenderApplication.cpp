@@ -158,6 +158,8 @@ namespace black_cat
 					auto& l_input_system = m_game_system->get_input_system();
 					auto& l_camera = *l_input_system.get_camera();
 					auto* l_scene = m_game_system->get_scene();
+
+					//m_game_system->get_render_system().get_render_pass<bc_cascaded_shadow_map_pass>()->capture_debug_shapes();
 				}
 				
 				return;

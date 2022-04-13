@@ -766,16 +766,16 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline<g_api_dx11>::bind_om_render_targets(bcUINT p_target_count, const bc_render_target_view* p_targets, bc_depth_stencil_view p_depth)
+		void bc_platform_device_pipeline<g_api_dx11>::bind_om_render_targets(bcUINT p_view_count, const bc_render_target_view* p_views, bc_depth_stencil_view p_depth)
 		{
-			BC_ASSERT(p_target_count <= bc_render_api_info::number_of_om_render_target_slots());
+			BC_ASSERT(p_view_count <= bc_render_api_info::number_of_om_render_target_slots());
 
 			m_pack.m_pipeline_proxy->m_output_merger_stage.get_required_state().m_render_target_views.set_to_initial_state();
 			m_pack.m_pipeline_proxy->m_output_merger_stage.get_required_state().m_depth_target_view.set_to_initial_state();
 
-			for (bcUINT l_index = 0; l_index <p_target_count; ++l_index)
+			for (bcUINT l_index = 0; l_index <p_view_count; ++l_index)
 			{
-				m_pack.m_pipeline_proxy->m_output_merger_stage.get_required_state().m_render_target_views.set(l_index, p_targets[l_index]);
+				m_pack.m_pipeline_proxy->m_output_merger_stage.get_required_state().m_render_target_views.set(l_index, p_views[l_index]);
 			}
 			m_pack.m_pipeline_proxy->m_output_merger_stage.get_required_state().m_depth_target_view.set(p_depth);
 		}
@@ -980,28 +980,49 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_device_pipeline<g_api_dx11>::clear_buffers(const core::bc_vector4f* p_color, bcUINT32 p_count, bcFLOAT p_depth, bcUINT p_stencil)
+		void bc_platform_device_pipeline<g_api_dx11>::clear_buffers(const core::bc_vector4f* p_color, bcUINT32 p_count, bcFLOAT p_depth, bcUINT8 p_stencil)
 		{
 			constexpr bcUINT32 l_target_count = bc_render_api_info::number_of_om_render_target_slots();
-			Microsoft::WRL::ComPtr<ID3D11RenderTargetView> l_target_views[l_target_count];
-			Microsoft::WRL::ComPtr<ID3D11DepthStencilView> l_depth_view;
+			ID3D11RenderTargetView* l_target_views[l_target_count];
+			ID3D11DepthStencilView* l_depth_view;
 
-			m_pack.m_pipeline_proxy->m_context->OMGetRenderTargets(l_target_count, l_target_views[0].GetAddressOf(), l_depth_view.GetAddressOf());
+			m_pack.m_pipeline_proxy->m_context->OMGetRenderTargets(l_target_count, &l_target_views[0], &l_depth_view);
 
-			for (bcUINT l_i = 0; l_i <p_count; ++l_i)
+			for (bcUINT l_i = 0; l_i < p_count; ++l_i)
 			{
-				auto* l_render_target = l_target_views[l_i].Get();
+				auto* l_render_target = l_target_views[l_i];
 				if (l_render_target != nullptr)
 				{
-					bcFLOAT l_colors[] = { p_color[l_i].x, p_color[l_i].y, p_color[l_i].z, p_color[l_i].w };
+					const bcFLOAT l_colors[] = { p_color[l_i].x, p_color[l_i].y, p_color[l_i].z, p_color[l_i].w };
 					m_pack.m_pipeline_proxy->m_context->ClearRenderTargetView(l_render_target, l_colors);
 				}
 			}
 
 			if (l_depth_view != nullptr)
 			{
-				m_pack.m_pipeline_proxy->m_context->ClearDepthStencilView(l_depth_view.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, p_depth, p_stencil);
+				m_pack.m_pipeline_proxy->m_context->ClearDepthStencilView(l_depth_view, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, p_depth, p_stencil);
 			}
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::clear_render_target_view(bc_render_target_view p_view, const bcFLOAT* p_color)
+		{
+			const bcFLOAT l_color[] = { p_color[0], p_color[1], p_color[2], p_color[3] };
+			m_pack.m_pipeline_proxy->m_context->ClearRenderTargetView(p_view.get_platform_pack().m_render_target_view, l_color);
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::clear_depth_stencil_view(bc_depth_stencil_view p_view, bcFLOAT p_depth, bcUINT8 p_stencil)
+		{
+			m_pack.m_pipeline_proxy->m_context->ClearDepthStencilView
+			(
+				p_view.get_platform_pack().m_depth_stencil_view, 
+				D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 
+				p_depth, 
+				p_stencil
+			);
 		}
 
 		template<>

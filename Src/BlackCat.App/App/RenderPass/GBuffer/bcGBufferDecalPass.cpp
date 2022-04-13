@@ -94,8 +94,7 @@ namespace black_cat
 			.as_structured_buffer();
 		auto l_cube_vb_data = graphic::bc_subresource_data(&l_cube_vertices[0], 0, 0);
 		auto l_cube_ib_data = graphic::bc_subresource_data(&l_cube_indices[0], 0, 0);
-
-		m_command_list = l_device.create_command_list();
+		
 		m_cube_vb = l_device.create_buffer(l_cube_vb_config, &l_cube_vb_data);
 		m_cube_ib = l_device.create_buffer(l_cube_ib_config, &l_cube_ib_data);
 		m_instance_buffer = l_device.create_buffer(l_instance_buffer_config, nullptr);
@@ -154,7 +153,7 @@ namespace black_cat
 	{
 	}
 
-	void bc_gbuffer_decal_pass::initialize_frame(const game::bc_concurrent_render_pass_render_context& p_context)
+	void bc_gbuffer_decal_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
 	{
 		if (m_query_result.is_executed())
 		{
@@ -169,7 +168,7 @@ namespace black_cat
 		m_query_result = p_context.m_query_manager.queue_ext_query(m_query);
 	}
 
-	void bc_gbuffer_decal_pass::execute(const game::bc_concurrent_render_pass_render_context& p_context)
+	void bc_gbuffer_decal_pass::execute(const game::bc_render_pass_render_context& p_context)
 	{
 		decal_group_container l_decal_groups;
 		decal_group_container l_non_culling_decals;
@@ -396,18 +395,17 @@ namespace black_cat
 		m_instance_buffer.reset();
 		m_cube_vb.reset();
 		m_cube_ib.reset();
-		m_command_list.reset();
 	}
 
-	void bc_gbuffer_decal_pass::_render_decals(const game::bc_concurrent_render_pass_render_context& p_context,
+	void bc_gbuffer_decal_pass::_render_decals(const game::bc_render_pass_render_context& p_context,
 		const game::bc_render_pass_state& p_render_pass_state,
 		const decal_group_container& p_instances,
 		decal_group_container* p_non_culling_instances)
 	{
 		const auto l_view_proj = p_context.m_render_camera.get_view() * p_context.m_render_camera.get_projection();
 		
-		p_context.m_child_render_thread.start(*m_command_list);
-		p_context.m_child_render_thread.bind_render_pass_state(p_render_pass_state);
+		p_context.m_render_thread.start();
+		p_context.m_render_thread.bind_render_pass_state(p_render_pass_state);
 
 		for (const auto& l_entry : p_instances)
 		{
@@ -423,7 +421,7 @@ namespace black_cat
 			// TODO for unknown bug
 			BC_ASSERT((*l_render_state_ite).second->get_shader_views()[0].is_valid());
 
-			p_context.m_child_render_thread.bind_render_state(*l_render_state_ite->second);
+			p_context.m_render_thread.bind_render_state(*l_render_state_ite->second);
 
 			core::bc_vector_frame<bc_decal_instance_parameter> l_instance_buffer_data(s_max_instance_per_draw);
 			auto l_instance_buffer_ite = 0U;
@@ -472,8 +470,8 @@ namespace black_cat
 
 				if (l_instance_buffer_ite % s_max_instance_per_draw == 0)
 				{
-					p_context.m_child_render_thread.update_subresource(*m_instance_buffer, 0, l_instance_buffer_data.data(), 0, 0);
-					p_context.m_child_render_thread.draw_indexed_instanced
+					p_context.m_render_thread.update_subresource(*m_instance_buffer, 0, l_instance_buffer_data.data(), 0, 0);
+					p_context.m_render_thread.draw_indexed_instanced
 					(
 						l_render_state_ite->second->get_index_count(),
 						l_instance_buffer_ite,
@@ -488,8 +486,8 @@ namespace black_cat
 
 			if (l_instance_buffer_ite > 0)
 			{
-				p_context.m_child_render_thread.update_subresource(*m_instance_buffer, 0, l_instance_buffer_data.data(), 0, 0);
-				p_context.m_child_render_thread.draw_indexed_instanced
+				p_context.m_render_thread.update_subresource(*m_instance_buffer, 0, l_instance_buffer_data.data(), 0, 0);
+				p_context.m_render_thread.draw_indexed_instanced
 				(
 					l_render_state_ite->second->get_index_count(),
 					l_instance_buffer_ite,
@@ -499,11 +497,11 @@ namespace black_cat
 				);
 			}
 
-			p_context.m_child_render_thread.unbind_render_state(*l_render_state_ite->second);
+			p_context.m_render_thread.unbind_render_state(*l_render_state_ite->second);
 		}
 
-		p_context.m_child_render_thread.unbind_render_pass_state(p_render_pass_state);
-		p_context.m_child_render_thread.finish();
+		p_context.m_render_thread.unbind_render_pass_state(p_render_pass_state);
+		p_context.m_render_thread.finish();
 	}
 
 	void bc_gbuffer_decal_pass::_create_decal_render_state(game::bc_render_system& p_render_system, const game::bc_mesh_material& p_material)

@@ -20,7 +20,7 @@ namespace black_cat
 
 	bc_skinned_cascaded_shadow_map_pass::bc_skinned_cascaded_shadow_map_pass(game::bc_render_pass_variable_t p_output_depth_buffers,
 		bcFLOAT p_shadow_map_multiplier,
-		std::initializer_list<std::tuple<bcSIZE, bcUBYTE>> p_cascade_sizes)
+		std::initializer_list<bc_cascade_shadow_map_trait> p_cascade_sizes)
 		: bc_base_cascaded_shadow_map_pass(p_output_depth_buffers, p_shadow_map_multiplier, p_cascade_sizes)
 	{
 	}
@@ -45,9 +45,9 @@ namespace black_cat
 		);
 	}
 
-	void bc_skinned_cascaded_shadow_map_pass::initialize_frame_pass(const bc_cascaded_shadow_map_pass_init_frame_param& p_param)
+	void bc_skinned_cascaded_shadow_map_pass::initialize_frame_pass(const bc_cascaded_shadow_map_pass_init_frame_context& p_context)
 	{
-		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
+		const auto l_cascade_absolute_index = p_context.m_light_index * p_context.m_cascade_count + p_context.m_cascade_index;
 		if (m_scene_query_results.size() < l_cascade_absolute_index + 1)
 		{
 			m_scene_queries.resize(l_cascade_absolute_index + 1);
@@ -64,38 +64,40 @@ namespace black_cat
 		(
 			game::bc_scene_graph_render_state_query
 			(
-				game::bc_actor_render_camera(p_param.m_update_camera, p_param.m_update_cascade_camera),
-				p_param.m_frame_renderer.create_buffer()
+				game::bc_actor_render_camera(p_context.m_update_camera, p_context.m_update_cascade_camera),
+				p_context.m_frame_renderer.create_buffer()
 			)
-			.with(game::bc_camera_frustum(p_param.m_update_cascade_camera))
+			.with(game::bc_camera_frustum(p_context.m_update_cascade_camera))
 			.only<game::bc_skinned_mesh_component>()
 		);
-		m_scene_query_results[l_cascade_absolute_index] = p_param.m_query_manager.queue_ext_query(m_scene_queries[l_cascade_absolute_index]);
+		m_scene_query_results[l_cascade_absolute_index] = p_context.m_query_manager.queue_ext_query(m_scene_queries[l_cascade_absolute_index]);
 	}
 
-	void bc_skinned_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_param& p_param)
+	void bc_skinned_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_context& p_context)
 	{
-		const auto l_cascade_absolute_index = p_param.m_light_index * p_param.m_cascade_count + p_param.m_cascade_index;
+		const auto l_cascade_absolute_index = p_context.m_light_index * p_context.m_cascade_count + p_context.m_cascade_index;
 		const auto& l_render_buffer = m_scene_render_states[l_cascade_absolute_index];
+		const auto& l_render_pass_state = *p_context.m_render_pass_states[p_context.m_cascade_index];
+
+		// Update global cbuffer with cascade camera
+		p_context.m_frame_renderer.update_global_cbuffer(p_context.m_child_render_thread, p_context.m_clock, p_context.m_render_cascade_camera);
+
+		p_context.m_child_render_thread.bind_render_pass_state(l_render_pass_state);
 		
-		const auto& l_render_pass_state = *p_param.m_render_pass_states[p_param.m_cascade_index];
-		p_param.m_render_thread.bind_render_pass_state(l_render_pass_state);
+		p_context.m_frame_renderer.render_skinned_buffer(p_context.m_child_render_thread, l_render_buffer, p_context.m_render_cascade_camera);
 
-		if(my_index() == 0)
-		{
-			core::bc_vector<core::bc_vector4f> l_clear_buffers(p_param.m_cascade_count, core::bc_vector4f(1));
-			p_param.m_render_thread.clear_buffers(l_clear_buffers.data(), p_param.m_cascade_count);
-		}
+		p_context.m_child_render_thread.unbind_render_pass_state(l_render_pass_state);
+	}
 
-		p_param.m_frame_renderer.render_skinned_buffer(p_param.m_render_thread, l_render_buffer, p_param.m_render_cascade_camera);
-
-		p_param.m_render_thread.unbind_render_pass_state(l_render_pass_state);
+	void bc_skinned_cascaded_shadow_map_pass::cleanup_frame_pass(const bc_cascaded_shadow_map_pass_cleanup_context& p_context)
+	{
 	}
 
 	void bc_skinned_cascaded_shadow_map_pass::destroy_pass(game::bc_render_system& p_render_system)
 	{
 		m_device_pipeline.reset();
 		m_scene_query_results.clear();
+		m_scene_render_states.clear();
 	}
 
 	core::bc_vector<game::bc_render_pass_state_ptr> bc_skinned_cascaded_shadow_map_pass::create_render_pass_states(game::bc_render_system& p_render_system,

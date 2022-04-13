@@ -65,7 +65,7 @@ namespace black_cat
 
 	inline void bc_xbot_idle_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
-		if(m_ragdoll_enabled)
+		if(m_ragdoll_enabled || p_context.m_is_double_update)
 		{
 			return;
 		}

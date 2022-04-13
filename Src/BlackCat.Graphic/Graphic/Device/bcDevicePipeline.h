@@ -111,7 +111,7 @@ namespace black_cat
 
 			void bind_om_stencil_ref(bcUINT32 p_stencil_ref);
 
-			void bind_om_render_targets(bcUINT p_target_count, const bc_render_target_view* p_targets, bc_depth_stencil_view p_depth);
+			void bind_om_render_targets(bcUINT p_view_count, const bc_render_target_view* p_views, bc_depth_stencil_view p_depth);
 
 			void unbind_om_render_targets();
 
@@ -135,7 +135,11 @@ namespace black_cat
 
 			void dispatch_indirect(bc_buffer p_args, bcUINT p_offset);
 
-			void clear_buffers(const core::bc_vector4f* p_color, bcUINT32 p_count, bcFLOAT p_depth = 1.0f, bcUINT p_stencil = 0);
+			void clear_buffers(const core::bc_vector4f* p_color, bcUINT32 p_count, bcFLOAT p_depth = 1.0f, bcUINT8 p_stencil = 0);
+
+			void clear_render_target_view(bc_render_target_view p_view, const bcFLOAT* p_color);
+
+			void clear_depth_stencil_view(bc_depth_stencil_view p_view, bcFLOAT p_depth = 1.0f, bcUINT8 p_stencil = 0);
 
 			void update_subresource(bci_resource& p_resource, bcUINT p_dst_subresource, const void *p_src_data, bcUINT p_src_row_pitch, bcUINT p_src_depth_pitch);
 
