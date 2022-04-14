@@ -150,7 +150,7 @@ namespace black_cat
 		void bc_thread_manager::_push_worker()
 		{
 			const auto l_max_thread_count = max_thread_count();
-			const auto l_spawned_thread_count = spawned_thread_count();
+			auto l_spawned_thread_count = spawned_thread_count();
 			if (l_spawned_thread_count >= l_max_thread_count)
 			{
 				return;
@@ -158,6 +158,12 @@ namespace black_cat
 
 			{
 				platform::bc_shared_mutex_guard l_guard(m_threads_mutex);
+
+				l_spawned_thread_count = spawned_thread_count();
+				if (l_spawned_thread_count >= l_max_thread_count)
+				{
+					return;
+				}
 
 				m_threads.push_back(bc_make_unique<_thread_data>
 				(

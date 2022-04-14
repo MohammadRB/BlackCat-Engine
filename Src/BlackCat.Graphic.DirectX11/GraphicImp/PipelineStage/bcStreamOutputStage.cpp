@@ -46,8 +46,7 @@ namespace black_cat
 		{
 			ID3D11DeviceContext* l_context = p_pipeline.get_platform_pack().m_pipeline_proxy->m_context;
 
-			if (m_required_state.m_stream_buffers.update_needed() ||
-				m_required_state.m_stream_offsets.update_needed())
+			if (m_required_state.m_stream_buffers.update_needed() || m_required_state.m_stream_offsets.update_needed())
 			{
 				ID3D11Buffer* l_buffers[bc_render_api_info::number_of_so_streams()];
 				bcUINT* l_offsets = m_required_state.m_stream_offsets.get_first_slot();

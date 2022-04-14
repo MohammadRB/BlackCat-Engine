@@ -41,6 +41,8 @@ namespace black_cat
 
 		void detach_weapon() noexcept;
 
+		void drop_weapon() noexcept;
+
 		void shoot_weapon() noexcept;
 
 		void enable_ragdoll(core::bc_string_view p_body_part_force, const core::bc_vector3f& p_force) noexcept;

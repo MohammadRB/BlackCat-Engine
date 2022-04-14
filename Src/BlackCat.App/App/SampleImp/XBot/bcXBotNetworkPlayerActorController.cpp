@@ -84,7 +84,7 @@ namespace black_cat
 		auto* l_weapon = get_weapon();
 		if (l_weapon)
 		{
-			bc_xbot_actor_controller::detach_weapon();
+			bc_xbot_actor_controller::drop_weapon();
 		}
 
 		auto l_weapon_actor = get_scene()->create_actor(p_entity, core::bc_matrix4f::translation_matrix(get_position()));
@@ -111,6 +111,22 @@ namespace black_cat
 		if (get_network_component().get_network_type() == game::bc_network_type::server)
 		{
 			m_network_system->send_message(bc_xbot_weapon_detach_network_message(get_actor()));
+		}
+	}
+
+	void bc_xbot_network_player_actor_controller::drop_weapon() noexcept
+	{
+		auto* l_weapon = get_weapon();
+		if (!l_weapon)
+		{
+			return;
+		}
+
+		bc_xbot_actor_controller::drop_weapon();
+
+		if (get_network_component().get_network_type() == game::bc_network_type::server)
+		{
+			m_network_system->send_message(bc_xbot_weapon_drop_network_message(get_actor()));
 		}
 	}
 

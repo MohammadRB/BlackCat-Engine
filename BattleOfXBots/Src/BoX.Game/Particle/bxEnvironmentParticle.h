@@ -18,7 +18,7 @@ namespace box
 	{
 		return game::bc_particle_builder()
 			.emitter({ 0, 0, 0 }, { 0, 1, 0 }, std::numeric_limits<bcFLOAT>::max(), 0, 0)
-			.with_emission_position_deviation(10)
+			.with_emission_position_deviation(5)
 			.with_emission_direction_deviation(180)
 			.with_texture(11)
 			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step1, 1.f)

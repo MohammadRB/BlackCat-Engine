@@ -84,16 +84,16 @@ namespace black_cat
 			if (m_required_state.m_constant_buffers.update_needed())
 			{
 				ID3D11Buffer* l_constant_buffers[bc_render_api_info::number_of_shader_constant_buffer()];
+				const bcUINT32 l_dirty_slot_start = m_required_state.m_constant_buffers.get_dirty_start();
+				const bcUINT32 l_dirty_slot_num = m_required_state.m_constant_buffers.get_dirty_count();
+				const bcUINT32 l_dirty_slot_end = l_dirty_slot_start + l_dirty_slot_num;
 
-				for (bcUINT i = 0; i < bc_render_api_info::number_of_shader_constant_buffer(); ++i)
+				for (auto i = l_dirty_slot_start; i < l_dirty_slot_end; ++i)
 				{
 					bc_buffer l_buffer = m_required_state.m_constant_buffers.get(i);
 					l_constant_buffers[i] = l_buffer.is_valid() ? l_buffer.get_platform_pack().m_buffer : nullptr;
 				}
-
-				const bcUINT l_dirty_slot_start = m_required_state.m_constant_buffers.get_dirty_start();
-				const bcUINT l_dirty_slot_num = m_required_state.m_constant_buffers.get_dirty_count();
-
+				
 				l_context->CSSetConstantBuffers(l_dirty_slot_start, l_dirty_slot_num, &l_constant_buffers[l_dirty_slot_start]);
 			}
 		}
@@ -107,16 +107,16 @@ namespace black_cat
 			if (m_required_state.m_sampler_states.update_needed())
 			{
 				ID3D11SamplerState* l_sampler_states[bc_render_api_info::number_of_shader_sampler()];
+				const bcUINT32 l_dirty_slot_start = m_required_state.m_sampler_states.get_dirty_start();
+				const bcUINT32 l_dirty_slot_num = m_required_state.m_sampler_states.get_dirty_count();
+				const bcUINT32 l_dirty_slot_end = l_dirty_slot_start + l_dirty_slot_num;
 
-				for (bcUINT i = 0; i < bc_render_api_info::number_of_shader_sampler(); ++i)
+				for (auto i = l_dirty_slot_start; i < l_dirty_slot_end; ++i)
 				{
 					bc_sampler_state l_sampler_state = m_required_state.m_sampler_states.get(i);
 					l_sampler_states[i] = l_sampler_state.is_valid() ? l_sampler_state.get_platform_pack().m_sampler_state : nullptr;
 				}
-
-				const bcUINT l_dirty_slot_start = m_required_state.m_sampler_states.get_dirty_start();
-				const bcUINT l_dirty_slot_num = m_required_state.m_sampler_states.get_dirty_count();
-
+				
 				l_context->CSSetSamplers(l_dirty_slot_start, l_dirty_slot_num, &l_sampler_states[l_dirty_slot_start]);
 			}
 		}
@@ -130,16 +130,16 @@ namespace black_cat
 			if (m_required_state.m_shader_resource_views.update_needed())
 			{
 				ID3D11ShaderResourceView* l_views[bc_render_api_info::number_of_shader_resource()];
+				const bcUINT32 l_dirty_slot_start = m_required_state.m_shader_resource_views.get_dirty_start();
+				const bcUINT32 l_dirty_slot_num = m_required_state.m_shader_resource_views.get_dirty_count();
+				const bcUINT32 l_dirty_slot_end = l_dirty_slot_start + l_dirty_slot_num;
 
-				for (bcUINT i = 0; i < bc_render_api_info::number_of_shader_resource(); ++i)
+				for (auto l_i = l_dirty_slot_start; l_i < l_dirty_slot_end; ++l_i)
 				{
-					bc_resource_view l_shader_view = m_required_state.m_shader_resource_views.get(i);
-					l_views[i] = l_shader_view.is_valid() ? l_shader_view.get_platform_pack().m_shader_view : nullptr;
+					bc_resource_view l_shader_view = m_required_state.m_shader_resource_views.get(l_i);
+					l_views[l_i] = l_shader_view.is_valid() ? l_shader_view.get_platform_pack().m_shader_view : nullptr;
 				}
-
-				const bcUINT l_dirty_slot_start = m_required_state.m_shader_resource_views.get_dirty_start();
-				const bcUINT l_dirty_slot_num = m_required_state.m_shader_resource_views.get_dirty_count();
-
+				
 				l_context->CSSetShaderResources(l_dirty_slot_start, l_dirty_slot_num, &l_views[l_dirty_slot_start]);
 			}
 
@@ -147,17 +147,17 @@ namespace black_cat
 			{
 				ID3D11UnorderedAccessView* l_ua_views[bc_render_api_info::number_of_ps_cs_uav_resource()];
 				bcUINT l_initial_counts[bc_render_api_info::number_of_ps_cs_uav_resource()];
+				const bcUINT32 l_dirty_slot_start = m_required_state.m_unordered_access_views.get_dirty_start();
+				const bcUINT32 l_dirty_slot_num = m_required_state.m_unordered_access_views.get_dirty_count();
+				const bcUINT32 l_dirty_slot_end = l_dirty_slot_start + l_dirty_slot_num;
 
-				for (bcUINT i = 0; i < bc_render_api_info::number_of_ps_cs_uav_resource(); ++i)
+				for (auto i = l_dirty_slot_start; i < l_dirty_slot_end; ++i)
 				{
 					bc_resource_view l_shader_view = m_required_state.m_unordered_access_views.get(i);
 					l_ua_views[i] = l_shader_view.is_valid() ? l_shader_view.get_platform_pack().m_unordered_shader_view : nullptr;
 					l_initial_counts[i] = m_initial_counts[i];
 				}
-
-				const bcUINT l_dirty_slot_start = m_required_state.m_unordered_access_views.get_dirty_start();
-				const bcUINT l_dirty_slot_num = m_required_state.m_unordered_access_views.get_dirty_count();
-
+				
 				l_context->CSSetUnorderedAccessViews(l_dirty_slot_start, l_dirty_slot_num, &l_ua_views[l_dirty_slot_start], l_initial_counts);
 			}
 		}

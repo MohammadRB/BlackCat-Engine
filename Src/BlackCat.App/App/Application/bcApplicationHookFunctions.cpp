@@ -242,6 +242,7 @@ namespace black_cat
 			game::bc_scene_replicate_network_message,
 			bc_xbot_weapon_attach_network_message,
 			bc_xbot_weapon_detach_network_message,
+			bc_xbot_weapon_drop_network_message,
 			bc_xbot_weapon_shoot_network_message,
 			bc_xbot_start_grenade_throw_network_message,
 			bc_xbot_grenade_throw_network_message,

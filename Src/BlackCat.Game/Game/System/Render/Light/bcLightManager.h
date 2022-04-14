@@ -43,8 +43,9 @@ namespace black_cat
 			void destroy_light(bc_light* p_light);
 
 		private:
-			container_t m_lights;
 			mutable platform::bc_shared_mutex m_lights_lock;
+			bc_light::id_t m_id_counter;
+			container_t m_lights;
 		};
 	}
 }

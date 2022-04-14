@@ -86,13 +86,11 @@ namespace black_cat
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_om_render_target_slots(); ++i)
 				{
 					bc_render_target_view l_target_view = m_required_state.m_render_target_views.get(i);
-					l_render_target_views[i] = l_target_view.is_valid() ?
-						                           l_target_view.get_platform_pack().m_render_target_view :
-						                           nullptr;
+					l_render_target_views[i] = l_target_view.is_valid() ? l_target_view.get_platform_pack().m_render_target_view : nullptr;
 				}
-				l_depth_stencil_view = m_required_state.m_depth_target_view.get().is_valid() ?
-					                       m_required_state.m_depth_target_view.get().get_platform_pack().m_depth_stencil_view :
-					                       nullptr;
+
+				l_depth_stencil_view = m_required_state.m_depth_target_view.get().is_valid() ? m_required_state.m_depth_target_view.get().get_platform_pack().m_depth_stencil_view : nullptr;
+
 				for (bcUINT i = 0; i < bc_render_api_info::number_of_ps_cs_uav_resource(); ++i)
 				{
 					bc_resource_view l_view = p_pixel_stage.get_required_state().m_unordered_access_views.get(i);

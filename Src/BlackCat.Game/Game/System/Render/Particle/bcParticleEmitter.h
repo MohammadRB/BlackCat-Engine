@@ -24,7 +24,7 @@ namespace black_cat
 			bcUINT16 m_direction_deviation;
 			bcUINT16 m_emission_direction_deviation;
 			bcFLOAT m_emission_position_deviation;
-			core::bc_vector3f m_emission_position_deviation_force;
+			core::bc_vector3f m_emission_position_deviation_plane;
 			bcUINT16 m_sprite_index;
 			bcUINT16 m_velocity_curve_index;
 			bcFLOAT m_velocity_curve_duration;
@@ -98,7 +98,7 @@ namespace black_cat
 			bcFLOAT m_energy;
 			bcFLOAT m_emission_direction_deviation;
 			bcFLOAT m_emission_position_deviation;
-			core::bc_vector3f m_emission_position_deviation_force;
+			core::bc_vector3f m_emission_position_deviation_plane;
 			bcUINT32 m_sprite_index;
 			core::bc_vector3f m_particles_color;
 			bcFLOAT m_particles_color_intensity;

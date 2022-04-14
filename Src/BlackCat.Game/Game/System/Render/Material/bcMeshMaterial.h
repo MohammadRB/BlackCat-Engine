@@ -41,16 +41,18 @@ namespace black_cat
 
 		class bc_mesh_material : public core::bc_ref_count
 		{
+		public:
+			using id_t = bcUINT32;
 			friend class bc_material_manager;
 
 		public:
-			bc_mesh_material();
-
 			bc_mesh_material(bc_mesh_material&&) noexcept;
 
 			~bc_mesh_material();
 
 			bc_mesh_material& operator=(bc_mesh_material&&) noexcept;
+
+			id_t get_id() const noexcept;
 
 			const core::bc_vector4f& get_diffuse() const noexcept;
 
@@ -73,8 +75,10 @@ namespace black_cat
 			graphic::bc_buffer get_parameters_cbuffer() const noexcept;
 
 		private:
-			bc_mesh_material_parameter m_parameters;
+			bc_mesh_material();
 
+			id_t m_id;
+			bc_mesh_material_parameter m_parameters;
 			graphic::bc_texture2d_content_ptr m_diffuse_map;
 			graphic::bc_texture2d_content_ptr m_normal_map;
 			graphic::bc_texture2d_content_ptr m_specular_map;
@@ -84,9 +88,10 @@ namespace black_cat
 			graphic::bc_buffer_ref m_parameter_cbuffer;
 		};
 
-		using bc_mesh_material_ptr = core::bc_ref_count_ptr< bc_mesh_material, _bc_mesh_material_ptr_deleter >;
+		using bc_mesh_material_ptr = core::bc_ref_count_ptr<bc_mesh_material, _bc_mesh_material_ptr_deleter>;
 
 		inline bc_mesh_material::bc_mesh_material()
+			: m_id(-1)
 		{
 			m_parameters.m_specular_intensity = 1;
 			m_parameters.m_specular_power = 1;
@@ -97,6 +102,11 @@ namespace black_cat
 		inline bc_mesh_material::~bc_mesh_material() = default;
 
 		inline bc_mesh_material& bc_mesh_material::operator=(bc_mesh_material&&) noexcept = default;
+
+		inline bc_mesh_material::id_t bc_mesh_material::get_id() const noexcept
+		{
+			return m_id;
+		}
 
 		inline const core::bc_vector4f& bc_mesh_material::get_diffuse() const noexcept
 		{

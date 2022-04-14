@@ -56,7 +56,7 @@ vertex_output vs(uint p_instance_index : SV_InstanceID)
 float3 direct_light_shading(float3 p_normal)
 {
 	const float l_dot = max(0.2f, dot(p_normal, -g_global_light_direction));
-	const float3 l_diffuse_light = g_global_light_color * g_global_light_intensity * l_dot;
+	const float3 l_diffuse_light = g_global_light_color * g_global_light_intensity * min(0.8f, l_dot);
 	
 	return l_diffuse_light;
 }

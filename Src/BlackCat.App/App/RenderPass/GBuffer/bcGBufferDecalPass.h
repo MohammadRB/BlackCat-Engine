@@ -75,7 +75,7 @@ namespace black_cat
 		game::bc_render_pass_state_ptr m_render_pass_state;
 		game::bc_render_pass_state_ptr m_render_pass_state_for_non_culling;
 		game::bc_render_pass_state_ptr m_render_pass_state_for_debug_bounds;
-		core::bc_unordered_map<const game::bc_mesh_material*, game::bc_render_state_ptr> m_render_states; // Use raw pointer to let materials get destroyed
+		core::bc_unordered_map<game::bc_mesh_material::id_t, game::bc_render_state_ptr> m_render_states;
 
 		game::bc_scene_decal_query m_query;
 		core::bc_query_result<core::bci_query> m_query_result;

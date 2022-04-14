@@ -27,7 +27,7 @@ namespace black_cat
 			
 			bc_particle_builder1& with_direction_deviation(bcUINT16 p_angle) noexcept;
 
-			bc_particle_builder1& with_emission_position_deviation(bcFLOAT p_radius, const core::bc_vector3f& p_deviation_force = core::bc_vector3f(0)) noexcept;
+			bc_particle_builder1& with_emission_position_deviation(bcFLOAT p_radius, const core::bc_vector3f& p_deviation_plane = core::bc_vector3f(1)) noexcept;
 
 			bc_particle_builder1& with_emission_direction_deviation(bcUINT16 p_angle) noexcept;
 

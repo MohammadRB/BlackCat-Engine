@@ -12,19 +12,6 @@ namespace black_cat
 {
 	namespace game
 	{
-		/*core::bc_vector3f project_point_to_screen_space(const bc_camera_instance& p_camera, const core::bc_matrix4f& p_view_proj, const core::bc_vector3f& p_point)
-		{
-			auto l_point = p_view_proj * core::bc_vector4f(p_point, 1);
-			l_point.x /= l_point.w;
-			l_point.y /= l_point.w;
-			l_point.z /= l_point.w;
-			l_point.z = (p_camera.get_near_clip() * p_camera.get_far_clip()) / 
-				(p_camera.get_far_clip() - l_point.z * (p_camera.get_far_clip() - p_camera.get_near_clip())) / 
-				(p_camera.get_far_clip() - p_camera.get_near_clip());
-
-			return { l_point.x, l_point.y, l_point.z };
-		}*/
-
 		bc_light_manager::bc_light_manager()
 			: m_lights(200)
 		{
@@ -49,7 +36,7 @@ namespace black_cat
 			{
 				platform::bc_shared_mutex_guard l_lock(m_lights_lock);
 
-				m_lights.push_back(bc_light(p_light));
+				m_lights.push_back(bc_light(m_id_counter++, p_light));
 				return bc_light_ptr(&m_lights.back(), _bc_light_ptr_deleter(this));
 			}
 		}
@@ -59,7 +46,7 @@ namespace black_cat
 			{
 				platform::bc_shared_mutex_guard l_lock(m_lights_lock);
 				
-				m_lights.push_back(bc_light(p_light));
+				m_lights.push_back(bc_light(m_id_counter++, p_light));
 				return bc_light_ptr(&m_lights.back(), _bc_light_ptr_deleter(this));
 			}
 		}
@@ -69,7 +56,7 @@ namespace black_cat
 			{
 				platform::bc_shared_mutex_guard l_lock(m_lights_lock);
 				
-				m_lights.push_back(bc_light(p_light));
+				m_lights.push_back(bc_light(m_id_counter++, p_light));
 				return bc_light_ptr(&m_lights.back(), _bc_light_ptr_deleter(this));
 			}
 		}

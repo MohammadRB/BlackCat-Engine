@@ -6,6 +6,7 @@
 #include "Core/Math/bcMatrix4f.h"
 #include "Core/Math/bcVector3f.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
+#include "Game/System/Render/Light/bcLightInstance.h"
 #include "App/bcException.h"
 
 namespace black_cat
@@ -14,20 +15,22 @@ namespace black_cat
 	{
 	public:
 		struct entry;
-		using value_type = std::pair<core::bc_vector3f, entry>;
+		using value_type = std::pair<game::bc_light_instance::id_t, entry>;
 
 	public:
-		bcSIZE size() const noexcept;
+		value_type& get_by_index(bcSIZE p_index);
 		
-		value_type& get(bcSIZE p_index);
-		
-		const value_type& get(bcSIZE p_index) const;
+		const value_type& get_by_index(bcSIZE p_index) const;
 
-		value_type& get(const core::bc_vector3f& p_light_direction);
+		value_type& get_by_id(game::bc_light_instance::id_t p_light_id);
 		
-		const value_type& get(const core::bc_vector3f& p_light_direction) const;
+		const value_type& get_by_id(game::bc_light_instance::id_t p_light_id) const;
+
+		bcINT32 find_index(game::bc_light_instance::id_t p_light_id) const;
 
 		void add(value_type&& p_item);
+
+		bcSIZE size() const noexcept;
 
 		void clear();
 
@@ -43,28 +46,28 @@ namespace black_cat
 		core::bc_vector_frame<core::bc_matrix4f> m_view_projections;
 		graphic::bc_resource_view m_resource_view;
 	};
-
-	inline bcSIZE bc_cascaded_shadow_map_buffer_container::size() const noexcept
-	{
-		return m_depth_buffers.size();
-	}
-
-	inline bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get(bcSIZE p_index)
+	
+	inline bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get_by_index(bcSIZE p_index)
 	{
 		return m_depth_buffers.at(p_index);
 	}
 
-	inline const bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get(bcSIZE p_index) const
+	inline const bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get_by_index(bcSIZE p_index) const
 	{
-		return const_cast<bc_cascaded_shadow_map_buffer_container&>(*this).get(p_index);
+		return const_cast<bc_cascaded_shadow_map_buffer_container&>(*this).get_by_index(p_index);
 	}
 
-	inline bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get(const core::bc_vector3f& p_light_direction)
+	inline bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get_by_id(game::bc_light_instance::id_t p_light_id)
 	{
-		const auto l_iterator = std::find_if(std::cbegin(m_depth_buffers), std::cend(m_depth_buffers), [&](const value_type& p_entry)
+		const auto l_iterator = std::find_if
+		(
+			std::cbegin(m_depth_buffers), 
+			std::cend(m_depth_buffers), 
+			[&](const value_type& p_entry)
 			{
-				return p_entry.first == p_light_direction;
-			});
+				return p_entry.first == p_light_id;
+			}
+		);
 
 		if (l_iterator == std::cend(m_depth_buffers))
 		{
@@ -74,14 +77,39 @@ namespace black_cat
 		return *l_iterator;
 	}
 
-	inline const bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get(const core::bc_vector3f& p_light_direction) const
+	inline const bc_cascaded_shadow_map_buffer_container::value_type& bc_cascaded_shadow_map_buffer_container::get_by_id(game::bc_light_instance::id_t p_light_id) const
 	{
-		return const_cast<bc_cascaded_shadow_map_buffer_container&>(*this).get(p_light_direction);
+		return const_cast<bc_cascaded_shadow_map_buffer_container&>(*this).get_by_id(p_light_id);
+	}
+
+	inline bcINT32 bc_cascaded_shadow_map_buffer_container::find_index(game::bc_light_instance::id_t p_light_id) const
+	{
+		const auto l_iterator = std::find_if
+		(
+			std::cbegin(m_depth_buffers),
+			std::cend(m_depth_buffers),
+			[&](const value_type& p_entry)
+			{
+				return p_entry.first == p_light_id;
+			}
+		);
+
+		if (l_iterator == std::cend(m_depth_buffers))
+		{
+			return -1;
+		}
+
+		return std::distance(std::cbegin(m_depth_buffers), l_iterator);
 	}
 
 	inline void bc_cascaded_shadow_map_buffer_container::add(value_type&& p_item)
 	{
 		m_depth_buffers.push_back(std::move(p_item));
+	}
+
+	inline bcSIZE bc_cascaded_shadow_map_buffer_container::size() const noexcept
+	{
+		return m_depth_buffers.size();
 	}
 
 	inline void bc_cascaded_shadow_map_buffer_container::clear()

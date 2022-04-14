@@ -122,6 +122,8 @@ namespace black_cat
 
 		void detach_weapon() noexcept;
 
+		void drop_weapon() noexcept;
+
 		bool shoot_weapon(game::bc_network_client_id p_player_id = game::bc_actor::invalid_id) noexcept;
 
 		void set_weapon_rotation(bcFLOAT p_rotation) noexcept;

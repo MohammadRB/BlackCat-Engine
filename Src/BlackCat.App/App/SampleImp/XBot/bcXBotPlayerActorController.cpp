@@ -534,7 +534,7 @@ namespace black_cat
 		}
 	}
 
-	void bc_xbot_player_actor_controller::_attach_weapon(const bcCHAR* p_entity)
+	void bc_xbot_player_actor_controller::_attach_weapon(const bcCHAR* p_entity) noexcept
 	{
 		const bool l_can_attach = can_attach_weapon(p_entity);
 		if (!l_can_attach)
@@ -545,7 +545,7 @@ namespace black_cat
 		const auto* l_weapon = get_weapon();
 		if (l_weapon)
 		{
-			bc_xbot_actor_controller::detach_weapon();
+			return;
 		}
 
 		auto l_weapon_actor = get_scene()->create_actor(p_entity, core::bc_matrix4f::translation_matrix(get_position()));
@@ -559,7 +559,7 @@ namespace black_cat
 		weapon_attached(l_weapon_actor);
 	}
 
-	void bc_xbot_player_actor_controller::_detach_weapon()
+	void bc_xbot_player_actor_controller::_detach_weapon() noexcept
 	{
 		auto* l_weapon = get_weapon();
 		if (!l_weapon)
@@ -575,7 +575,23 @@ namespace black_cat
 		}
 	}
 
-	void bc_xbot_player_actor_controller::_shoot_weapon()
+	void bc_xbot_player_actor_controller::_drop_weapon() noexcept
+	{
+		auto* l_weapon = get_weapon();
+		if (!l_weapon)
+		{
+			return;
+		}
+
+		bc_xbot_actor_controller::drop_weapon();
+
+		if (m_network_system->get_network_type() != game::bc_network_type::not_started)
+		{
+			m_network_system->send_message(bc_xbot_weapon_drop_network_message(get_actor()));
+		}
+	}
+
+	void bc_xbot_player_actor_controller::_shoot_weapon() noexcept
 	{
 		const bool l_can_shoot = m_weapon_obstacle_rotation_velocity.get_value() <= 0 && can_shoot_weapon();
 		if (!l_can_shoot)

@@ -20,7 +20,7 @@ namespace black_cat
 			: bc_perspective_camera(p_back_buffer_width, p_back_buffer_height, p_height_fov, p_near_clip, p_far_clip),
 			m_move_speed(p_move_speed),
 			m_rotate_speed(p_rotate_speed),
-			m_pointing_smooth_frames(2),
+			m_pointing_smooth_frames(4),
 			m_movement_drag_time(0.25),
 			m_movement_drag_timer(0),
 			m_w_pressed(false),
@@ -100,14 +100,11 @@ namespace black_cat
 			_update_pointing();
 			_update_movement();
 			_update_velocity(p_clock.m_elapsed_second);
-
-			if (m_rmb_pressed)
-			{
-				const bcFLOAT l_pi = (core::g_pi / 2.0f) - 0.01f;
-				m_pointing_angle += core::bc_vector2f(m_pointing_velocity.y, m_pointing_velocity.x);
-				m_pointing_angle.x = std::min(l_pi, m_pointing_angle.x);
-				m_pointing_angle.x = std::max(-l_pi, m_pointing_angle.x);
-			}
+			
+			const bcFLOAT l_pi = (core::g_pi / 2.0f) - 0.01f;
+			m_pointing_angle += core::bc_vector2f(m_pointing_velocity.y, m_pointing_velocity.x);
+			m_pointing_angle.x = std::min(l_pi, m_pointing_angle.x);
+			m_pointing_angle.x = std::max(-l_pi, m_pointing_angle.x);
 			
 			core::bc_matrix3f l_y_rotation;
 			core::bc_matrix3f l_x_rotation;
@@ -148,33 +145,29 @@ namespace black_cat
 
 		core::bc_matrix4f bc_free_camera::create_view_matrix(const core::bc_vector3f& p_up) noexcept
 		{
-			if(!m_update_pointing_angle) // TODO remove this magical flag
+			// TODO remove this magical flag
+			if(!m_update_pointing_angle)
 			{
 				m_update_pointing_angle = true;
 				return bci_camera::create_view_matrix(p_up);
 			}
 			
-			const auto l_source_vec = core::bc_vector3f::normalize(get_look_at() - get_position());
-			core::bc_matrix3f l_rotation;
-			l_rotation.rotation_between_two_vector_lh(core::bc_vector3f::forward(), l_source_vec);
+			const auto l_look_at_vector = core::bc_vector3f::normalize(get_look_at() - get_position());
+			const auto l_right_vector = core::bc_vector3f::cross(core::bc_vector3f::up(), l_look_at_vector);
+			const auto l_up_vector = core::bc_vector3f::cross(l_look_at_vector, l_right_vector);
 
-			bcFLOAT l_x_angle = std::acos(core::bc_vector3f::dot(core::bc_vector3f::right(), l_rotation.get_row(0)));
-			bcFLOAT l_y_angle = std::acos(core::bc_vector3f::dot(core::bc_vector3f::up(), l_rotation.get_row(1)));
+			bcFLOAT l_y_angle = std::acos(core::bc_vector3f::dot(core::bc_vector3f::right(), l_right_vector));
+			bcFLOAT l_x_angle = std::acos(core::bc_vector3f::dot(core::bc_vector3f::up(), l_up_vector));
 
-			if (l_source_vec.x < 0)
+			if (l_look_at_vector.x < 0)
 			{
-				l_x_angle *= -1;
+				l_y_angle *= -1;
 			}
 
-			m_pointing_angle.x = l_y_angle;
-			m_pointing_angle.y = l_x_angle;
+			m_pointing_angle.x = l_x_angle;
+			m_pointing_angle.y = l_y_angle;
 
 			return bci_camera::create_view_matrix(p_up);
-			
-			/*core::bc_matrix3f l_new_rotation;
-			l_new_rotation.rotation_zyx_lh(core::bc_vector3f(l_y_angle, l_x_angle, 0));
-			auto l_new_vec = core::bc_vector3f::normalize(l_rotation * core::bc_vector3f::forward());
-			auto l_new_vec1 = core::bc_vector3f::normalize(l_new_rotation * core::bc_vector3f::forward());*/
 		}
 
 		void bc_free_camera::_update_pointing()
@@ -217,8 +210,7 @@ namespace black_cat
 		{
 			m_pointing_velocity = m_pointing_delta * m_rotate_speed * p_elapsed_second;
 
-			// Normalize vector so if moving 2 dirs (left & forward), 
-			// the camera doesn't move faster than if moving in 1 dir
+			// Normalize vector in case if moving in 2 directions the camera doesn't move faster than if moving in 1 dir
 			const auto l_move_speed = m_shift_pressed ? m_move_speed * 4 : m_ctrl_pressed ? m_move_speed * 0.25f : m_move_speed;
 			const auto l_acceleration = core::bc_vector3f::normalize(m_movement_direction) * l_move_speed * p_elapsed_second;
 

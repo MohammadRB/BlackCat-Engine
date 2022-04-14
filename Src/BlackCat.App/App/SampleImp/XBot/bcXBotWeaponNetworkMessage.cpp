@@ -113,7 +113,7 @@ namespace black_cat
 
 	void bc_xbot_weapon_detach_network_message::execute(const game::bc_network_message_server_context& p_context) noexcept
 	{
-		if(m_is_self_replicate || m_actor == nullptr)
+		if (m_is_self_replicate || m_actor == nullptr)
 		{
 			return;
 		}
@@ -131,8 +131,8 @@ namespace black_cat
 			return;
 		}
 
-		const auto* l_mediate_component = m_actor.get_component<game::bc_controller_component>();
-		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
+		const auto* l_controller_component = m_actor.get_component<game::bc_controller_component>();
+		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_controller_component->get_controller());
 
 		l_xbot_controller->detach_weapon();
 	}
@@ -148,6 +148,76 @@ namespace black_cat
 		if (!l_net_id)
 		{
 			core::bc_log(core::bc_log_type::error, bcL("Failed to deserialize actor network id in xbot weapon detach message"));
+			return;
+		}
+
+		m_actor_net_id = *l_net_id;
+		std::tie(m_actor, m_is_self_replicate) = p_context.m_visitor.get_actor(m_actor_net_id);
+	}
+
+	bc_xbot_weapon_drop_network_message::bc_xbot_weapon_drop_network_message() noexcept
+		: bci_network_message(message_name()),
+		m_actor_net_id(0),
+		m_is_self_replicate(false)
+	{
+	}
+
+	bc_xbot_weapon_drop_network_message::bc_xbot_weapon_drop_network_message(const game::bc_actor& p_actor) noexcept
+		: bci_network_message(message_name()),
+		m_is_self_replicate(false)
+	{
+		const auto* l_parent_network_component = p_actor.get_component<game::bc_network_component>();
+		m_actor_net_id = l_parent_network_component->get_network_id();
+	}
+
+	bc_xbot_weapon_drop_network_message::bc_xbot_weapon_drop_network_message(bc_xbot_weapon_drop_network_message&&) noexcept = default;
+
+	bc_xbot_weapon_drop_network_message::~bc_xbot_weapon_drop_network_message() = default;
+
+	bc_xbot_weapon_drop_network_message& bc_xbot_weapon_drop_network_message::operator=(bc_xbot_weapon_drop_network_message&&) noexcept = default;
+
+	bool bc_xbot_weapon_drop_network_message::need_acknowledgment() const noexcept
+	{
+		return true;
+	}
+
+	void bc_xbot_weapon_drop_network_message::execute(const game::bc_network_message_server_context& p_context) noexcept
+	{
+		if(m_is_self_replicate || m_actor == nullptr)
+		{
+			return;
+		}
+
+		const auto* l_controller_component = m_actor.get_component<game::bc_controller_component>();
+		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_controller_component->get_controller());
+
+		l_xbot_controller->drop_weapon();
+	}
+
+	void bc_xbot_weapon_drop_network_message::execute(const game::bc_network_message_client_context& p_context) noexcept
+	{
+		if (m_is_self_replicate || m_actor == nullptr)
+		{
+			return;
+		}
+
+		const auto* l_mediate_component = m_actor.get_component<game::bc_controller_component>();
+		auto* l_xbot_controller = static_cast<bc_xbot_network_player_actor_controller*>(l_mediate_component->get_controller());
+
+		l_xbot_controller->drop_weapon();
+	}
+
+	void bc_xbot_weapon_drop_network_message::serialize_message(const game::bc_network_message_serialization_context& p_context)
+	{
+		p_context.m_params.add("nid", core::bc_any(m_actor_net_id));
+	}
+
+	void bc_xbot_weapon_drop_network_message::deserialize_message(const game::bc_network_message_deserialization_context& p_context)
+	{
+		const auto* l_net_id = p_context.m_params.find("nid")->second.as<game::bc_actor_network_id>();
+		if (!l_net_id)
+		{
+			core::bc_log(core::bc_log_type::error, bcL("Failed to deserialize actor network id in xbot weapon drop message"));
 			return;
 		}
 

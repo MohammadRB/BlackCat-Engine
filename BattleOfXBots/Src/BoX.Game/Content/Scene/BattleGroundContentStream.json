@@ -16,6 +16,18 @@
           "content_parameter": {}
         },
         {
+          "content_title": "cliff_basalt",
+          "content_loader": "texture2d",
+          "content_file": "Content\\Texture\\TerrainTextures1\\cliff_basalt.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "cliff_basalt_nrm",
+          "content_loader": "texture2d",
+          "content_file": "Content\\Texture\\TerrainTextures1\\cliff_basalt_nrm.dds",
+          "content_parameter": {}
+        },
+        {
           "content_title": "plain_grass",
           "content_loader": "texture2d",
           "content_file": "Content\\Texture\\TerrainTextures1\\plain_grass.dds",
@@ -73,18 +85,6 @@
           "content_title": "forrest_ground_nrm",
           "content_loader": "texture2d",
           "content_file": "Content\\Texture\\TerrainTextures1\\forrest_ground_nrm.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "rocks_ground",
-          "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\TerrainTextures1\\rocks_ground.dds",
-          "content_parameter": {}
-        },
-        {
-          "content_title": "rocks_ground_nrm",
-          "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\TerrainTextures1\\rocks_ground_nrm.dds",
           "content_parameter": {}
         },
         {
@@ -156,43 +156,43 @@
             "height_detail": 10,
             "materials": [
               {
-                "mesh_material": "terrain_material_1",
-                "collider_material": "terrain_material_1",
+                "mesh_material": "cliff_is2",
+                "collider_material": "cliff_is2",
                 "scale": 25.0
               },
               {
-                "mesh_material": "terrain_material_2",
-                "collider_material": "terrain_material_2",
+                "mesh_material": "cliff_basalt",
+                "collider_material": "cliff_basalt",
+                "scale": 25.0
+              },
+              {
+                "mesh_material": "plain_grass",
+                "collider_material": "plain_grass",
                 "scale": 10.0
               },
               {
-                "mesh_material": "terrain_material_3",
-                "collider_material": "terrain_material_3",
+                "mesh_material": "cobblestone_floor",
+                "collider_material": "cobblestone_floor",
                 "scale": 10.0
               },
               {
-                "mesh_material": "terrain_material_4",
-                "collider_material": "terrain_material_4",
+                "mesh_material": "ground_crack",
+                "collider_material": "ground_crack",
                 "scale": 10.0
               },
               {
-                "mesh_material": "terrain_material_5",
-                "collider_material": "terrain_material_5",
+                "mesh_material": "spring_soil",
+                "collider_material": "spring_soil",
                 "scale": 10.0
               },
               {
-                "mesh_material": "terrain_material_6",
-                "collider_material": "terrain_material_6",
+                "mesh_material": "forrest_ground",
+                "collider_material": "forrest_ground",
                 "scale": 10.0
               },
               {
-                "mesh_material": "terrain_material_7",
-                "collider_material": "terrain_material_7",
-                "scale": 10.0
-              },
-              {
-                "mesh_material": "terrain_material_8",
-                "collider_material": "terrain_material_8",
+                "mesh_material": "sandstone_cracks",
+                "collider_material": "sandstone_cracks",
                 "scale": 10.0
               }
             ]
@@ -213,7 +213,7 @@
           "content_loader": "mesh",
           "content_file": "Content\\Model\\Architecture\\concrete_wall_base_16m.fbx",
           "content_parameter": {
-            "auto_scale": 40.0,
+            "auto_scale": 45.0,
             "collider": "concrete_wall_base_16m.fbx",
             "high_detail_query_shape": false
           }
@@ -401,6 +401,14 @@
           "content_file": "Content\\Model\\Nature\\grass\\bigpatch_medium.fbx",
           "content_parameter": {
             "auto_scale": 18.0
+          }
+        },
+        {
+          "content_title": "bigpatch_big",
+          "content_loader": "mesh",
+          "content_file": "Content\\Model\\Nature\\grass\\bigpatch_big.fbx",
+          "content_parameter": {
+            "auto_scale": 20.0
           }
         },
         {

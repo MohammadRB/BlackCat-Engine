@@ -11,7 +11,7 @@
       "height": 15.0,
       "depth": 15.0,
       "group": 1,
-      "auto_remove": false
+      "auto_remove": true
     },
     {
       "name": "bullet_soil",

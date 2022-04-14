@@ -35,7 +35,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 		const float l_randoms_range[] = { (l_randoms[0] - .5f) * 2, (l_randoms[1] - .5f) * 2, (l_randoms[2] - .5f) * 2 };
 		const float l_random = l_randoms_range[l_ite % 3];
 
-		const float3 l_new_particle_position = float3(l_randoms_range[0], l_randoms_range[1], l_randoms_range[2]) * l_emitter.m_emission_position_deviation_force * l_emitter.m_emission_position_deviation;
+		const float3 l_new_particle_position = float3(l_randoms_range[0], l_randoms_range[1], l_randoms_range[2]) * l_emitter.m_emission_position_deviation_plane * l_emitter.m_emission_position_deviation;
 		const float3 l_new_particle_dir = normalize
 		(
 			float3

@@ -15,6 +15,7 @@ namespace black_cat
 	{
 		_bc_particle_emitter_instance::_bc_particle_emitter_instance(const bc_particle_emitter_trait& p_trait) noexcept
 			: bc_particle_emitter_trait(p_trait),
+			m_prev_position(),
 			m_age(0),
 			m_energy(0),
 			m_particles_count_to_spawn(0),
@@ -28,7 +29,7 @@ namespace black_cat
 		{
 			if(m_particles_total_count != 0)
 			{
-				const auto l_particles_to_spawn = static_cast<bcUINT16>(p_spawn_energy * m_particles_total_count);
+				const auto l_particles_to_spawn = static_cast<bcUINT16>(m_particles_total_count * p_spawn_energy);
 				m_particles_count_to_spawn = l_particles_to_spawn - m_spawned_particles_count;
 				m_spawned_particles_count += m_particles_count_to_spawn;
 			}
@@ -102,7 +103,7 @@ namespace black_cat
 					l_ite.m_position = l_rotation * l_ite.m_position + p_pos;
 					l_ite.m_prev_position = l_ite.m_position;
 					l_ite.m_direction = l_rotation * l_ite.m_direction;
-					l_ite.m_emission_position_deviation_force = l_rotation * l_ite.m_emission_position_deviation_force;
+					l_ite.m_emission_position_deviation_plane = l_rotation * l_ite.m_emission_position_deviation_plane;
 					l_ite.m_lifetime_seconds += .0001f; // to avoid division by zero
 
 					if (p_color)
@@ -223,7 +224,7 @@ namespace black_cat
 						l_emitter.m_energy = p_emitter.m_energy;
 						l_emitter.m_emission_direction_deviation = p_emitter.m_emission_direction_deviation;
 						l_emitter.m_emission_position_deviation = p_emitter.m_emission_position_deviation;
-						l_emitter.m_emission_position_deviation_force = p_emitter.m_emission_position_deviation_force;
+						l_emitter.m_emission_position_deviation_plane = p_emitter.m_emission_position_deviation_plane;
 						l_emitter.m_sprite_index = p_emitter.m_sprite_index;
 						l_emitter.m_particles_color = p_emitter.m_particles_color;
 						l_emitter.m_particles_color_intensity = p_emitter.m_particles_color_intensity;
@@ -311,7 +312,7 @@ namespace black_cat
 					l_ite->m_position = l_rotation * l_ite->m_position + p_pos;
 					l_ite->m_prev_position = l_ite->m_position;
 					l_ite->m_direction = l_rotation * l_ite->m_direction;
-					l_ite->m_emission_position_deviation_force = l_rotation * l_ite->m_emission_position_deviation_force;
+					l_ite->m_emission_position_deviation_plane = l_rotation * l_ite->m_emission_position_deviation_plane;
 					l_ite->m_lifetime_seconds = -1;
 
 					if (p_color)

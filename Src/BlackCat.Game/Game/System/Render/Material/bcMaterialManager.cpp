@@ -225,7 +225,7 @@ namespace black_cat
 			const auto l_hash = string_hash()(p_name);
 
 			{
-				platform::bc_mutex_guard l_guard(m_materials_mutex);
+				platform::bc_lock_guard l_guard(m_materials_mutex);
 
 				const auto l_entry = m_materials.find(l_hash);
 				if (l_entry != std::cend(m_materials))
@@ -413,7 +413,7 @@ namespace black_cat
 			bool l_was_found = true;
 
 			{
-				platform::bc_mutex_guard l_guard(m_materials_mutex);
+				platform::bc_lock_guard l_guard(m_materials_mutex);
 
 				l_ite = m_collider_materials.find(p_hash);
 				if (l_ite == std::cend(m_collider_materials))
@@ -425,10 +425,8 @@ namespace black_cat
 
 			if (!l_was_found)
 			{
-				const auto l_warning_msg = core::bc_estring_frame(bcL("No collider material was found for material with hash ")) +
-						core::bc_to_estring_frame(p_hash) +
-						bcL(". Using default material instead.");
-				core::bc_log(core::bc_log_type::info, l_warning_msg.c_str());
+				const auto l_msg = core::bc_string_stream_frame() << "No collider material was found with hash '" << p_hash << "'. Default material will be used instead.";
+				core::bc_log(core::bc_log_type::warning) << l_msg.str() << core::bc_lend;
 			}
 
 			bc_collider_material_description l_material;
@@ -444,7 +442,7 @@ namespace black_cat
 		bc_collider_material_description bc_material_manager::find_collider_material_throw(bc_collider_material_description::hash_t p_hash) const
 		{
 			{
-				platform::bc_mutex_guard l_guard(m_materials_mutex);
+				platform::bc_lock_guard l_guard(m_materials_mutex);
 
 				const auto l_ite = m_collider_materials.find(p_hash);
 				if (l_ite == std::cend(m_collider_materials))
@@ -462,7 +460,7 @@ namespace black_cat
 			const auto l_hash = string_hash()(p_name);
 			
 			{
-				platform::bc_mutex_guard l_guard(m_materials_mutex);
+				platform::bc_lock_guard l_guard(m_materials_mutex);
 
 				const auto l_ite = m_collider_materials.find(l_hash);
 				if (l_ite == std::cend(m_collider_materials))
@@ -480,7 +478,7 @@ namespace black_cat
 			const auto* l_material = static_cast<_bc_material_manager_material*>(p_material);
 
 			{
-				platform::bc_lock_guard<platform::bc_mutex> l_guard(m_materials_mutex);
+				platform::bc_lock_guard l_guard(m_materials_mutex);
 
 				const auto l_entry = m_materials.find(l_material->m_hash);
 
@@ -517,12 +515,12 @@ namespace black_cat
 
 			p_color = core::bc_vector4f(l_color.x / 255.0, l_color.y / 255.0, l_color.z / 255.0, l_color.w / 255.0);
 
-			auto l_hash = p_color.to_rgba();
+			const auto l_hash = p_color.to_rgba();
 
 			{
 				// We need to put all of these operations in one mutex block because after we found out that we do not
 				// have this texture, creation and storing of texture must occur atomically
-				platform::bc_mutex_guard l_guard(m_materials_mutex);
+				platform::bc_lock_guard l_guard(m_materials_mutex);
 
 				auto l_color_map_entry = m_default_color_textures.find(l_hash);
 				if (l_color_map_entry != std::cend(m_default_color_textures))
@@ -555,7 +553,6 @@ namespace black_cat
 
 		bc_mesh_material_ptr bc_material_manager::_store_mesh_material(core::bc_alloc_type p_alloc_type, const bcCHAR* p_name, bc_mesh_material p_material)
 		{
-			auto& l_device = m_render_system->get_device();
 			auto l_hash = string_hash()(p_name);
 			auto l_material = core::bc_make_unique<_bc_material_manager_material>(p_alloc_type, l_hash, std::move(p_material));
 
@@ -584,19 +581,24 @@ namespace black_cat
 				.as_constant_buffer();
 			auto l_parameters_cbuffer_data = graphic::bc_subresource_data(&l_material->m_parameters, 0, 0);
 
+			auto& l_device = m_render_system->get_device();
 			l_material->m_diffuse_map_view = l_device.create_resource_view(l_diffuse_map, l_diffuse_map_view_config);
 			l_material->m_normal_map_view = l_device.create_resource_view(l_normal_map, l_normal_map_view_config);
 			l_material->m_specular_map_view = l_device.create_resource_view(l_specular_map, l_specular_map_view_config);
 			l_material->m_parameter_cbuffer = l_device.create_buffer(l_parameters_cbuffer_config, &l_parameters_cbuffer_data);
 
 			{
-				platform::bc_lock_guard<platform::bc_mutex> l_guard(m_materials_mutex);
+				platform::bc_lock_guard l_guard(m_materials_mutex);
 
 				auto l_ite = m_materials.insert(mesh_material_map::value_type(l_hash, core::bc_unique_ptr<bc_mesh_material>(std::move(l_material))));
 				if (!l_ite.second)
 				{
-					auto l_msg = core::bc_string_stream_frame() << "material with name '" << p_name << "' already exist in the materials map";
-					throw bc_invalid_operation_exception(l_msg.str().c_str());
+					const auto l_msg = core::bc_string_stream_frame() << "material with name '" << p_name << "' already exist in the materials map. newly loaded one will be discarded";
+					core::bc_log(core::bc_log_type::error) << l_msg.str() << core::bc_lend;
+				}
+				else
+				{
+					l_ite.first->second->m_id = m_id_counter++;
 				}
 
 				return bc_mesh_material_ptr(l_ite.first->second.get(), _bc_mesh_material_ptr_deleter(this));

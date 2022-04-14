@@ -53,10 +53,10 @@ namespace black_cat
 			return *this;
 		}
 
-		bc_particle_builder1& bc_particle_builder1::with_emission_position_deviation(bcFLOAT p_radius, const core::bc_vector3f& p_deviation_force) noexcept
+		bc_particle_builder1& bc_particle_builder1::with_emission_position_deviation(bcFLOAT p_radius, const core::bc_vector3f& p_deviation_plane) noexcept
 		{
 			m_emitter.m_emission_position_deviation = p_radius;
-			m_emitter.m_emission_position_deviation_force = p_deviation_force;
+			m_emitter.m_emission_position_deviation_plane = p_deviation_plane;
 			return *this;
 		}
 
@@ -159,7 +159,7 @@ namespace black_cat
 			l_emitter.m_direction_deviation = 0;
 			l_emitter.m_emission_position_deviation = 0;
 			l_emitter.m_emission_direction_deviation = 45;
-			l_emitter.m_emission_position_deviation_force = core::bc_vector3f(0);
+			l_emitter.m_emission_position_deviation_plane = core::bc_vector3f(0);
 			l_emitter.m_sprite_index = 0;
 			l_emitter.m_velocity_curve_index = _find_curve_index(s_curve_constant);
 			l_emitter.m_velocity_curve_duration = p_lifetime_seconds;

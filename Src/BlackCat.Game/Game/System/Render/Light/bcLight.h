@@ -42,6 +42,8 @@ namespace black_cat
 
 		class BC_GAME_DLL bc_light : public core::bc_ref_count, platform::bc_no_copy
 		{
+		public:
+			using id_t = bcUINT32;
 			friend class bc_light_manager;
 
 		public:
@@ -60,6 +62,11 @@ namespace black_cat
 			{
 				m_transformation = p_transformation;
 				_calculate_bound_box();
+			}
+
+			id_t get_id() const noexcept
+			{
+				return m_id;
 			}
 
 			bc_light_type get_type() const noexcept
@@ -85,14 +92,15 @@ namespace black_cat
 			const bc_spot_light* as_spot_light() const noexcept;
 
 		private:
-			explicit bc_light(const bc_direct_light& p_light);
+			explicit bc_light(id_t p_id, const bc_direct_light& p_light);
 
-			explicit bc_light(const bc_point_light& p_light);
+			explicit bc_light(id_t p_id, const bc_point_light& p_light);
 
-			explicit bc_light(const bc_spot_light& p_light);
+			explicit bc_light(id_t p_id, const bc_spot_light& p_light);
 
 			void _calculate_bound_box();
 
+			id_t m_id;
 			bc_light_type m_type;
 			std::variant<bc_direct_light, bc_point_light, bc_spot_light> m_light;
 			core::bc_matrix4f m_transformation;

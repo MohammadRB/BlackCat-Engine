@@ -8,7 +8,7 @@ namespace black_cat
 	namespace game
 	{
 		bc_light_instance::bc_light_instance(const bc_light& p_light) noexcept
-			: m_id(reinterpret_cast<bcINTPTR>(&p_light)),
+			: m_id(p_light.get_id()),
 			m_type(p_light.get_type()),
 			m_light(bc_direct_light({0,0,0}, {0,0,0}, 0, {0,0,0}, 0)),
 			m_bound_box(p_light.get_bound_box())

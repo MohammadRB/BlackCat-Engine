@@ -87,11 +87,13 @@ namespace black_cat
 
 		void _start_grenade_throw(const bcCHAR* p_entity);
 
-		void _attach_weapon(const bcCHAR* p_entity);
+		void _attach_weapon(const bcCHAR* p_entity) noexcept;
 
-		void _detach_weapon();
+		void _detach_weapon() noexcept;
 
-		void _shoot_weapon();
+		void _drop_weapon() noexcept;
+
+		void _shoot_weapon() noexcept;
 
 		void _build_weapon_obstacle_query(core::bc_query_manager& p_query_manager, const bc_xbot_weapon& p_weapon) noexcept;
 

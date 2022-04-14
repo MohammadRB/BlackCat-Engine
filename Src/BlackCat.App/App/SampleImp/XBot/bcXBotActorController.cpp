@@ -582,14 +582,35 @@ namespace black_cat
 	{
 		m_state_machine->detach_weapon();
 
-		auto* l_rigid_dynamic_component = m_weapon->m_actor.get_component<game::bc_rigid_dynamic_component>();
-		if (l_rigid_dynamic_component)
+		if (auto* l_rigid_dynamic_component = m_weapon->m_actor.get_component<game::bc_rigid_dynamic_component>())
+		{
+			l_rigid_dynamic_component->set_kinematic(false);
+			l_rigid_dynamic_component->set_enable(false);
+
+			{
+				game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
+
+				auto l_rigid_dynamic = l_rigid_dynamic_component->get_dynamic_body();
+				const auto l_rigid_dynamic_pose = l_rigid_dynamic.get_global_pose();
+				l_rigid_dynamic.set_global_pose(physics::bc_transform(l_rigid_dynamic_pose.get_position() + get_look_direction(), l_rigid_dynamic_pose.get_matrix3()));
+			}
+		}
+
+		m_scene->remove_actor(m_weapon->m_actor);
+		m_weapon.reset();
+	}
+
+	void bc_xbot_actor_controller::drop_weapon() noexcept
+	{
+		m_state_machine->detach_weapon();
+
+		if (auto* l_rigid_dynamic_component = m_weapon->m_actor.get_component<game::bc_rigid_dynamic_component>())
 		{
 			l_rigid_dynamic_component->set_kinematic(false);
 
 			{
-				physics::bc_scene_lock l_lock(&get_scene()->get_px_scene());
-
+				game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
+				
 				auto l_rigid_dynamic = l_rigid_dynamic_component->get_dynamic_body();
 				const auto l_rigid_dynamic_pose = l_rigid_dynamic.get_global_pose();
 				l_rigid_dynamic.set_global_pose(physics::bc_transform(l_rigid_dynamic_pose.get_position() + get_look_direction(), l_rigid_dynamic_pose.get_matrix3()));
@@ -636,7 +657,7 @@ namespace black_cat
 
 		if(m_weapon.has_value())
 		{
-			detach_weapon();
+			drop_weapon();
 		}
 
 		m_state_machine->transfer_state<bc_xbot_ragdoll_state>();

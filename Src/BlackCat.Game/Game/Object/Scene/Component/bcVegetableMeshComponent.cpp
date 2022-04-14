@@ -87,8 +87,7 @@ namespace black_cat
 
 		void bc_vegetable_mesh_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as< bc_world_transform_actor_event >(p_context.m_event);
-			if (l_world_transform_event)
+			if (const auto* l_world_transform_event = core::bci_message::as< bc_world_transform_actor_event >(p_context.m_event))
 			{
 				bc_mesh_component::set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());
 				return;
@@ -101,8 +100,7 @@ namespace black_cat
 				return;
 			}*/
 
-			const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event);
-			if (l_bullet_hit_event)
+			if (const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event))
 			{
 				bc_mesh_component::process_bullet_hit
 				(

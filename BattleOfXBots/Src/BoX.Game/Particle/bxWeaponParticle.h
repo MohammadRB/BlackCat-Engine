@@ -85,7 +85,7 @@ namespace box
 				.with_particles_rotation(5)
 				.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step4)
 				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step5, 0.08f)
-				.emit_particles_with_total_count(20, 1.5f * l_emitter_energy, 110 * l_emitter_energy, 0.03f);
+				.emit_particles_with_total_count(20, 1.5f * l_emitter_energy, 110 * l_emitter_energy, 0.045f);
 		}
 
 		l_builder.emitter(core::bc_vector3f(0, -0.1f, 0), core::bc_vector3f::up())

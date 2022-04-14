@@ -177,17 +177,11 @@ namespace black_cat
 			return;
 		}
 		
-		core::bc_vector_frame<game::bc_direct_light> l_direct_lights;
-		for (auto& l_light : m_state->m_lights)
-		{
-			l_direct_lights.push_back(*l_light.as_direct_light());
-		}
-
 		p_context.m_child_render_thread.start(*m_command_list);
 
-		for (bcSIZE l_light_ite = 0; l_light_ite < l_direct_lights.size(); ++l_light_ite)
+		for (bcSIZE l_light_ite = 0; l_light_ite < m_state->m_lights.size(); ++l_light_ite)
 		{
-			const auto& l_light = l_direct_lights[l_light_ite];
+			const auto& l_light = *m_state->m_lights[l_light_ite].as_direct_light();
 			auto& l_light_state = m_state->m_light_states[l_light_ite];
 			const auto l_cascade_count = m_state->m_cascade_sizes.size();
 			
@@ -234,7 +228,7 @@ namespace black_cat
 				auto& l_shadow_maps_container = get_shared_resource_throw<bc_cascaded_shadow_map_buffer_container>(m_state->m_output_depth_buffers_share_slot);
 				l_shadow_maps_container.add(std::make_pair
 				(
-					l_light.get_direction(),
+					m_state->m_lights[l_light_ite].get_id(),
 					l_shadow_map_buffer
 				));
 			}

@@ -411,11 +411,11 @@ namespace black_cat
 		{
 			const auto* l_decal_material = l_entry.first;
 
-			auto l_render_state_ite = m_render_states.find(l_decal_material);
+			auto l_render_state_ite = m_render_states.find(l_decal_material->get_id());
 			if (l_render_state_ite == std::end(m_render_states))
 			{
 				_create_decal_render_state(p_context.m_render_system, *l_decal_material);
-				l_render_state_ite = m_render_states.find(l_decal_material);
+				l_render_state_ite = m_render_states.find(l_decal_material->get_id());
 			}
 
 			// TODO for unknown bug
@@ -525,6 +525,6 @@ namespace black_cat
 			}
 		);
 
-		m_render_states.insert(std::make_pair(&p_material, std::move(l_render_state)));
+		m_render_states.insert(std::make_pair(p_material.get_id(), std::move(l_render_state)));
 	}
 }

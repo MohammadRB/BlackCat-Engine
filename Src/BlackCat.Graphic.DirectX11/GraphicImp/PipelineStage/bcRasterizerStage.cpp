@@ -46,8 +46,7 @@ namespace black_cat
 		{
 			ID3D11DeviceContext* l_context = p_pipeline.get_platform_pack().m_pipeline_proxy->m_context;
 
-			if (m_required_state.m_viewports.update_needed() ||
-				m_required_state.m_viewport_count.update_needed())
+			if (m_required_state.m_viewports.update_needed() || m_required_state.m_viewport_count.update_needed())
 			{
 				D3D11_VIEWPORT l_viewports[bc_render_api_info::number_of_rs_viewport_scissorrect()];
 
@@ -58,10 +57,10 @@ namespace black_cat
 					{
 						l_viewports[i] = D3D11_VIEWPORT
 						{
-							static_cast< bcFLOAT >(l_viewport->m_top_left_x),
-							static_cast< bcFLOAT >(l_viewport->m_top_left_y),
-							static_cast< bcFLOAT >(l_viewport->m_width),
-							static_cast< bcFLOAT >(l_viewport->m_height),
+							static_cast<bcFLOAT>(l_viewport->m_top_left_x),
+							static_cast<bcFLOAT>(l_viewport->m_top_left_y),
+							static_cast<bcFLOAT>(l_viewport->m_width),
+							static_cast<bcFLOAT>(l_viewport->m_height),
 							l_viewport->m_min_depth,
 							l_viewport->m_max_depth
 						};

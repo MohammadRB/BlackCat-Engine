@@ -18,7 +18,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_light_instance
 		{
 		public:
-			using id_t = bcINTPTR;
+			using id_t = bc_light::id_t;
 			
 		public:
 			explicit bc_light_instance(const bc_light& p_light) noexcept;

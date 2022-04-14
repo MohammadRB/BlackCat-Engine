@@ -457,6 +457,18 @@
       ]
     },
     {
+      "name": "veg_bigpatch_big",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "bigpatch_big",
+            "view_distance": 150.0
+          }
+        }
+      ]
+    },
+    {
       "name": "veg_Palm_Tree_Large_d",
       "components": [
         {

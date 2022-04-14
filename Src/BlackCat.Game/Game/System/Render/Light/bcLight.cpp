@@ -26,25 +26,28 @@ namespace black_cat
 			m_manager->destroy_light(p_light);
 		}
 
-		bc_light::bc_light(const bc_direct_light& p_light)
-			: m_light(p_light),
+		bc_light::bc_light(id_t p_id, const bc_direct_light& p_light)
+			: m_id(p_id),
 			m_type(bc_light_type::direct),
+			m_light(p_light),
 			m_transformation(core::bc_matrix4f::identity())
 		{
 			_calculate_bound_box();
 		}
 
-		bc_light::bc_light(const bc_point_light& p_light)
-			: m_light(p_light),
+		bc_light::bc_light(id_t p_id, const bc_point_light& p_light)
+			: m_id(p_id),
 			m_type(bc_light_type::point),
+			m_light(p_light),
 			m_transformation(core::bc_matrix4f::identity())
 		{
 			_calculate_bound_box();
 		}
 
-		bc_light::bc_light(const bc_spot_light& p_light)
-			: m_light(p_light),
+		bc_light::bc_light(id_t p_id, const bc_spot_light& p_light)
+			: m_id(p_id),
 			m_type(bc_light_type::spot),
+			m_light(p_light),
 			m_transformation(core::bc_matrix4f::identity())
 		{
 			_calculate_bound_box();
