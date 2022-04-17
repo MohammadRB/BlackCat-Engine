@@ -69,7 +69,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "concrete_wall_simple_4m",
-            "view_distance": 300.0
+            "view_distance": 500.0
           }
         },
         {
@@ -89,7 +89,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "concrete_wall_base_16m",
-            "view_distance": 300.0
+            "view_distance": 500.0
           }
         },
         {
@@ -173,7 +173,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "support_building_d",
-            "view_distance": 500.0
+            "view_distance": 700.0
           }
         },
         {
@@ -251,7 +251,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "container_small_blue",
-            "view_distance": 450.0
+            "view_distance": 550.0
           }
         },
         {
@@ -271,7 +271,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "container_small_red",
-            "view_distance": 450.0
+            "view_distance": 550.0
           }
         },
         {
@@ -445,24 +445,48 @@
       ]
     },
     {
-      "name": "veg_bigpatch_medium",
+      "name": "veg_grass_short",
       "components": [
         {
           "name": "vegetable_mesh",
           "parameters": {
-            "mesh": "bigpatch_medium",
+            "mesh": "grass_short",
             "view_distance": 150.0
           }
         }
       ]
     },
     {
-      "name": "veg_bigpatch_big",
+      "name": "veg_grass_big_short",
       "components": [
         {
           "name": "vegetable_mesh",
           "parameters": {
-            "mesh": "bigpatch_big",
+            "mesh": "grass_big_short",
+            "view_distance": 150.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_grass_tall",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "grass_tall",
+            "view_distance": 150.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "veg_grass_big_tall",
+      "components": [
+        {
+          "name": "vegetable_mesh",
+          "parameters": {
+            "mesh": "grass_big_tall",
             "view_distance": 150.0
           }
         }

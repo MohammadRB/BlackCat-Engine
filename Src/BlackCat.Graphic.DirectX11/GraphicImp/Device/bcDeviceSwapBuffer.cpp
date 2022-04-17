@@ -195,7 +195,7 @@ namespace black_cat
 		BC_GRAPHICIMP_DLL
 		void bc_platform_device_swap_buffer<g_api_dx11>::present()
 		{
-			m_pack.m_swap_chain->Present(m_pack.m_vsync ? 1 : 0, 0);
+			const auto l_result = m_pack.m_swap_chain->Present(m_pack.m_vsync ? 1 : 0, 0);
 		}
 		
 		template<>

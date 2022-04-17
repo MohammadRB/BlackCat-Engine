@@ -70,7 +70,7 @@ namespace black_cat
 
 		bool bc_terrain_material_smooth_ui_command::update(terrain_update_context& p_context)
 		{
-			auto* l_height_map_component = p_context.m_terrain.get_component<game::bc_height_map_component>();
+			const auto* l_height_map_component = p_context.m_terrain.get_component<game::bc_height_map_component>();
 			auto& l_dx11_height_map = static_cast<const bc_editor_height_map_dx11&>(l_height_map_component->get_height_map());
 
 			bc_terrain_material_smooth_ui_command_parameter_cbuffer l_cbuffer_parameters;
@@ -103,14 +103,15 @@ namespace black_cat
 
 		void bc_terrain_material_smooth_ui_command_render_task::execute(game::bc_render_system& p_render_system, game::bc_render_thread& p_render_thread)
 		{
-			const auto l_height_map_width = static_cast<bcFLOAT>(m_height_map.get_width());
-			const auto l_height_map_height = static_cast<bcFLOAT>(m_height_map.get_height());
-			const auto l_texture_map_width = static_cast<bcFLOAT>(m_height_map.get_texture_map().get_width());
-			const auto l_texture_map_height = static_cast<bcFLOAT>(m_height_map.get_texture_map().get_height());
+			const auto l_height_map_width = m_height_map.get_width();
+			const auto l_height_map_height = m_height_map.get_height();
+			const auto l_texture_map_width = m_height_map.get_texture_map().get_width();
+			const auto l_texture_map_height = m_height_map.get_texture_map().get_height();
 
-			m_shader_parameter.m_tool_center_x = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_center_x) / l_height_map_width) * l_texture_map_width;
-			m_shader_parameter.m_tool_center_z = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_center_z) / l_height_map_height) * l_texture_map_height;
-			m_shader_parameter.m_tool_radius = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_radius) / l_height_map_width) * l_texture_map_width;
+			// covert coordinates from height map space to texture map space
+			m_shader_parameter.m_tool_center_x = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_center_x) / static_cast<bcFLOAT>(l_height_map_width)) * l_texture_map_width;
+			m_shader_parameter.m_tool_center_z = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_center_z) / static_cast<bcFLOAT>(l_height_map_height)) * l_texture_map_height;
+			m_shader_parameter.m_tool_radius = (static_cast<bcFLOAT>(m_shader_parameter.m_tool_radius) / static_cast<bcFLOAT>(l_height_map_width)) * l_texture_map_width;
 			
 			const auto l_tool_diameter = m_shader_parameter.m_tool_radius * 2;
 			const auto l_thread_group_count = (l_tool_diameter / 32) + 1;

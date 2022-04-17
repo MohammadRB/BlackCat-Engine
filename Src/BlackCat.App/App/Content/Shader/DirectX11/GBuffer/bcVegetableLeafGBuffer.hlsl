@@ -32,6 +32,7 @@ struct bc_vs_output
     float3 m_normal			: NORMAL0;
     float3 m_tangent		: TANGENT0;
     float3 m_binormal		: BINORMAL0;
+    float m_alpha           : TEXCOORD1;
 };
 
 struct bc_ps_output
@@ -59,6 +60,7 @@ bc_vs_output gbuffer_vegetable_leaf_vs(bc_vs_input p_input)
     l_output.m_position = mul(float4(l_position, 1), g_view_projection);
     l_output.m_texcoord = p_input.m_texcoord;
     l_output.m_normal = normalize(mul(p_input.m_normal, (float3x3) g_world));
+    l_output.m_alpha =  l_output.m_position.z / l_output.m_position.w; // TODO calculate correct alpha multiplier
 
     if (g_has_normal_map)
     {
@@ -74,8 +76,8 @@ bc_ps_output gbuffer_vegetable_leaf_ps(bc_vs_output p_input)
     bc_ps_output l_output;
 
     float4 l_diffuse_map = g_tex2d_diffuse.Sample(g_sam_sampler, p_input.m_texcoord);
-    
-	clip(l_diffuse_map.w - 0.4);
+
+	clip(l_diffuse_map.a - (0.35 * p_input.m_alpha));
 
     float4 l_specular_map = g_tex2d_specular.Sample(g_sam_sampler, p_input.m_texcoord);
     float3 l_normal = p_input.m_normal;

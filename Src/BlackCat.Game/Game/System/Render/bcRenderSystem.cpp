@@ -92,7 +92,7 @@ namespace black_cat
 		{
 			m_frame_renderer->update(bc_frame_renderer_update_context(p_update_params.m_clock, p_update_params.m_camera));
 		}
-
+		
 		void bc_render_system::render(const render_context& p_render_param)
 		{
 			if(m_swap_buffer->is_valid())

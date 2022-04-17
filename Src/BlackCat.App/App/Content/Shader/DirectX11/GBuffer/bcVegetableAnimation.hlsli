@@ -14,13 +14,13 @@ float3 bc_vegetable_animation(float3 p_local_pos, float3 p_world_pos, float p_he
 	const float l_wind_power_scale = l_wind_power / g_vegetable_max_wind_power;
 
 	const float l_time_frequency = p_time * l_wind_power_scale;
-    float l_noise = bc_noise(l_time_frequency / 13 + length(p_world_pos), 0.2f);
+    float l_noise = bc_noise(l_time_frequency / 13 + length(p_world_pos / 10), 0.2f);
     l_noise = (l_noise / 2.0f + 0.5f) - 0.3f;
 
 	const float l_xz_length = length(p_local_pos.xz);
 	const float l_xyz_length = length(p_local_pos.xyz);
 
-	const float l_wind_power_influence = l_xz_length + l_wind_power * 1.25;
+	const float l_wind_power_influence = l_xz_length + l_wind_power * 1.1;
 	const float l_height_influence = pow(saturate(p_local_pos.y / p_height), 2);
 	const float l_vertex_moment_length = l_noise * l_wind_power_influence * l_height_influence;
 	const float3 l_vertex_moment = normalize(p_wind_dir) * l_vertex_moment_length;

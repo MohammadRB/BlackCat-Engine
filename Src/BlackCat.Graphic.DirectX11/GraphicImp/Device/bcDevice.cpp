@@ -1289,7 +1289,7 @@ namespace black_cat
 			D3D11_MAPPED_SUBRESOURCE l_mapped_resource;
 
 			{
-				platform::bc_lock_guard<platform::bc_mutex> l_guard(m_pack.m_immediate_context_mutex);
+				platform::bc_lock_guard l_guard(m_pack.m_immediate_context_mutex);
 
 				dx_call(m_pack.m_immediate_context->Map
 				(
@@ -1313,7 +1313,7 @@ namespace black_cat
 		void bc_platform_device<g_api_dx11>::unmap_resource(bci_resource& p_resource, bcUINT p_subresource)
 		{
 			{
-				platform::bc_lock_guard<platform::bc_mutex> l_guard(m_pack.m_immediate_context_mutex);
+				platform::bc_lock_guard l_guard(m_pack.m_immediate_context_mutex);
 
 				m_pack.m_immediate_context->Unmap(p_resource.get_resource_platform_pack().m_resource, p_subresource);
 			}

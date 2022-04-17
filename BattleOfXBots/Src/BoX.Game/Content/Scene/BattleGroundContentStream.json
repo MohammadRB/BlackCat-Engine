@@ -396,19 +396,31 @@
           }
         },
         {
-          "content_title": "bigpatch_medium",
+          "content_title": "grass_short",
           "content_loader": "mesh",
-          "content_file": "Content\\Model\\Nature\\grass\\bigpatch_medium.fbx",
+          "content_file": "Content\\Model\\Nature\\grass\\grass_short.fbx",
           "content_parameter": {
-            "auto_scale": 18.0
           }
         },
         {
-          "content_title": "bigpatch_big",
+          "content_title": "grass_big_short",
           "content_loader": "mesh",
-          "content_file": "Content\\Model\\Nature\\grass\\bigpatch_big.fbx",
+          "content_file": "Content\\Model\\Nature\\grass\\grass_big_short.fbx",
           "content_parameter": {
-            "auto_scale": 20.0
+          }
+        },
+        {
+          "content_title": "grass_tall",
+          "content_loader": "mesh",
+          "content_file": "Content\\Model\\Nature\\grass\\grass_tall.fbx",
+          "content_parameter": {
+          }
+        },
+        {
+          "content_title": "grass_big_tall",
+          "content_loader": "mesh",
+          "content_file": "Content\\Model\\Nature\\grass\\grass_big_tall.fbx",
+          "content_parameter": {
           }
         },
         {

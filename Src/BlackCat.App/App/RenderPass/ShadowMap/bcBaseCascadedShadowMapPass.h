@@ -41,9 +41,9 @@ namespace black_cat
 	{
 	public:
 		const bcFLOAT m_cascade_cameras_distance = 100;
-		bcSIZE m_instance_count;
-		bcSIZE m_back_buffer_width;
-		bcSIZE m_back_buffer_height;
+		bcUINT32 m_instance_count;
+		bcUINT32 m_back_buffer_width;
+		bcUINT32 m_back_buffer_height;
 		
 		game::bc_render_pass_variable_t m_output_depth_buffers_share_slot;
 		bcFLOAT m_shadow_map_multiplier;
@@ -60,18 +60,12 @@ namespace black_cat
 		core::bc_vector_movable<game::bci_camera::extend> m_captured_cascades;
 		core::bc_vector_movable<physics::bc_bound_box> m_captured_boxes;
 		
-		void wait_for_sync_flag() noexcept
+		void wait_for_sync_flag(bcUINT32 p_sync_id) noexcept
 		{
-			const auto l_sync_flag = m_sync_flag.fetch_add(1) + 1;
+			m_sync_flag.fetch_add(1);
 
-			// check both shared and local value because if a thread pass this check and increase the flag again
-			// while another thread still has not checked, the second thread will be caught in dead lock
-			while(m_sync_flag.load() % m_instance_count != 0)
+			while(m_sync_flag.load() / m_instance_count < p_sync_id)
 			{
-				if(l_sync_flag % m_instance_count == 0)
-				{
-					break;
-				}
 			}
 		}
 

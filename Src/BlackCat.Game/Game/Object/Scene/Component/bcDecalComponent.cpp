@@ -261,15 +261,8 @@ namespace black_cat
 						{
 							continue;
 						}
-
-						if (m_mesh_scale != 1)
-						{
-							l_decal->set_world_transform(core::bc_matrix4f::scale_matrix(m_mesh_scale) * l_world_transform_event->get_transform());
-						}
-						else
-						{
-							l_decal->set_world_transform(l_world_transform_event->get_transform());
-						}
+						
+						l_decal->set_world_transform(l_world_transform_event->get_transform());
 					}
 				};
 

@@ -135,7 +135,7 @@ namespace black_cat
 			}
 		}
 
-		m_state->wait_for_sync_flag();
+		m_state->wait_for_sync_flag(1);
 
 		for (bcSIZE l_light_ite = 0; l_light_ite < m_state->m_lights.size(); ++l_light_ite)
 		{
@@ -275,7 +275,7 @@ namespace black_cat
 		
 		p_context.m_child_render_thread.finish();
 		
-		m_state->wait_for_sync_flag();
+		m_state->wait_for_sync_flag(2);
 
 		if (m_my_index == 0)
 		{
@@ -323,7 +323,9 @@ namespace black_cat
 
 				if(l_update_interval == 1)
 				{
+					p_context.m_render_thread.start();
 					p_context.m_render_thread.clear_depth_stencil_view(l_light_state.m_depth_buffer_views[l_cascade_ite].get());
+					p_context.m_render_thread.finish();
 				}
 				
 				cleanup_frame_pass(bc_cascaded_shadow_map_pass_cleanup_context

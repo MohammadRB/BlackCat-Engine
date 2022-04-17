@@ -370,14 +370,23 @@ namespace black_cat
 					l_context.m_file = bc_stream(std::move(l_file_stream));
 					l_loader->content_file_open_failed(l_context);
 
-					const auto l_file_name = bc_to_exclusive_string(l_file_to_open.c_str());
-					const auto l_error_msg = bc_string_frame("Error in opening content file '") + l_file_name.c_str() + "'";
-
-					throw bc_io_exception(l_error_msg.c_str());
+					const auto l_error_msg = bc_string_stream_frame() << "Error in saving content file '" << l_file_to_open << "'.";
+					throw bc_io_exception(l_error_msg.str().c_str());
 				}
 
 				l_context.m_file = bc_stream(std::move(l_file_stream));
-				l_loader->content_processing(l_context);
+
+				try
+				{
+					l_loader->content_processing(l_context);
+				}
+				catch (const std::exception& l_exception)
+				{
+					l_context.m_file.close();
+
+					const auto l_error_msg = bc_string_stream_frame() << "Error in saving content file '" << l_file_to_open << "'. " << l_exception.what();
+					throw bc_io_exception(l_error_msg.str().c_str());
+				}
 
 				l_context.m_file.close();
 			}
@@ -512,10 +521,8 @@ namespace black_cat
 						l_context.m_file = bc_stream(std::move(l_file_stream));
 						p_loader->content_file_open_failed(l_context);
 						
-						auto l_file_name = bc_to_exclusive_string(p_file.data());
-						auto l_error_msg = bc_string_frame("Error in opening content file '") + l_file_name.c_str() + "'";
-
-						throw bc_io_exception(l_error_msg.c_str());
+						const auto l_error_msg = bc_string_stream_frame() << "Error in opening content file '" << p_file << "'";
+						throw bc_io_exception(l_error_msg.str().c_str());
 					}
 
 					l_context.m_file = bc_stream(std::move(l_file_stream));
@@ -534,11 +541,9 @@ namespace black_cat
 					{
 						l_context.m_file = bc_stream(std::move(l_offline_file_stream));
 						p_loader->content_file_open_failed(l_context);
-
-						auto l_file_name = bc_to_exclusive_string(p_offline_file.data());
-						auto l_error_msg = bc_string_frame("Error in opening content file '") + l_file_name.c_str() + "'";
-
-						throw bc_io_exception(l_error_msg.c_str());
+						
+						const auto l_error_msg = bc_string_stream_frame() << "Error in opening content file '" << p_offline_file << "'";
+						throw bc_io_exception(l_error_msg.str().c_str());
 					}
 
 					try
@@ -552,12 +557,9 @@ namespace black_cat
 
 						bc_path l_offline_file(p_offline_file);
 						l_offline_file.delete_path();
-
-						auto l_message = bc_string_frame("Error in loading content file '") + 
-							bc_to_exclusive_string(p_offline_file.data()).c_str() + 
-							"'. " + 
-							l_exception.what();
-						throw bc_io_exception(l_message.c_str());
+						
+						const auto l_error_msg = bc_string_stream_frame() << "Error in loading content file '" << p_offline_file << "'. " << l_exception.what();
+						throw bc_io_exception(l_error_msg.str().c_str());
 					}
 					
 					l_context.m_file.close();
@@ -571,10 +573,8 @@ namespace black_cat
 					l_context.m_file = bc_stream(std::move(l_file_stream));
 					p_loader->content_file_open_failed(l_context);
 					
-					auto l_file_name = bc_to_exclusive_string(l_file_to_open.data());
-					auto l_error_msg = bc_string_frame("Error in opening content file '") + l_file_name.c_str() + "'";
-
-					throw bc_io_exception(l_error_msg.c_str());
+					const auto l_error_msg = bc_string_stream_frame() << "Error in opening content file '" << l_file_to_open << "'";
+					throw bc_io_exception(l_error_msg.str().c_str());
 				}
 
 				l_context.m_file = bc_stream(std::move(l_file_stream));
@@ -595,11 +595,8 @@ namespace black_cat
 				{
 					l_context.m_file.close();
 
-					auto l_message = bc_string_frame("Error in loading content file '") +
-						bc_to_exclusive_string(l_file_to_open.data()).c_str() +
-						"'. " +
-						l_exception.what();
-					throw bc_io_exception(l_message.c_str());
+					const auto l_error_msg = bc_string_stream_frame() << "Error in loading content file '" << l_file_to_open << "'. " << l_exception.what();
+					throw bc_io_exception(l_error_msg.str().c_str());
 				}
 
 				l_context.m_file.close();

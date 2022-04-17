@@ -20,6 +20,7 @@
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/bcUtility.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat
@@ -29,7 +30,8 @@ namespace black_cat
 		bc_height_map_component::bc_height_map_component(bc_actor_id p_actor_id, bc_actor_component_id p_id)
 			: bci_actor_component(p_actor_id, p_id),
 			bc_render_component(),
-			bc_decal_resolver_component()
+			bc_decal_resolver_component(),
+			m_transform()
 		{
 		}
 
@@ -37,7 +39,8 @@ namespace black_cat
 			: bci_actor_component(std::move(p_other)),
 			bc_render_component(std::move(p_other)),
 			bc_decal_resolver_component(std::move(p_other)),
-			m_height_map(std::move(p_other.m_height_map))
+			m_height_map(std::move(p_other.m_height_map)),
+			m_transform(p_other.m_transform)
 		{
 		}
 
@@ -51,6 +54,7 @@ namespace black_cat
 			bc_render_component::operator=(std::move(p_other));
 			bc_decal_resolver_component::operator=(std::move(p_other));
 			m_height_map = std::move(p_other.m_height_map);
+			m_transform = p_other.m_transform;
 
 			return *this;
 		}
@@ -146,17 +150,8 @@ namespace black_cat
 			auto l_actor = get_actor();
 			const auto l_local_pos = p_world_position - m_transform.get_translation();
 			const auto l_world_pos = p_world_position - l_local_pos;
-			core::bc_matrix3f l_local_rotation;
-
-			if constexpr (graphic::bc_render_api_info::use_left_handed())
-			{
-				l_local_rotation.rotation_between_two_vector_lh(core::bc_vector3f::up(), p_dir);
-			}
-			else
-			{
-				l_local_rotation.rotation_between_two_vector_rh(core::bc_vector3f::up(), p_dir);
-			}
-
+			const auto l_local_rotation = bc_matrix3f_rotation_between_two_vector(core::bc_vector3f::up(), p_dir);
+			
 			auto* l_decal_component = l_actor.get_create_component<bc_decal_component>();
 			l_decal_component->add_decal
 			(

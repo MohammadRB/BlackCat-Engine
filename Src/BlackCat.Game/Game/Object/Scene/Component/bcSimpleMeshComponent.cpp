@@ -103,14 +103,7 @@ namespace black_cat
 				bc_mesh_component::set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());
 				return;
 			}
-
-			/*const auto* l_bound_box_event = core::bci_message::as<bc_bound_box_changed_actor_event>(p_context.m_event);
-			if(l_bound_box_event)
-			{
-				bc_mesh_component::update_view_distance(l_bound_box_event->get_bound_box());
-				return;
-			}*/
-
+			
 			if(const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event))
 			{
 				bc_mesh_component::process_bullet_hit

@@ -15,6 +15,7 @@
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/System/Animation/Job/bcMeshColliderSkinningAnimationJob.h"
+#include "Game/bcUtility.h"
 
 namespace black_cat
 {
@@ -389,20 +390,15 @@ namespace black_cat
 			core::bc_matrix3f& p_decal_local_rotation,
 			core::bc_matrix4f& p_decal_world_transform)
 		{
-			const auto l_inv_node_world_transform = p_attached_node_world_transform.inverse();
+			// We should remove any scale transform because calculation is based on world position which has scaled accordingly
+			auto l_node_world_transform = p_attached_node_world_transform;
+			l_node_world_transform.make_neutralize_scale();
+			const auto l_inv_node_world_transform = l_node_world_transform.inverse();
 
 			p_decal_local_position = (l_inv_node_world_transform * core::bc_vector4f(p_world_position, 1)).xyz();
 			p_decal_local_direction = core::bc_vector3f::normalize((l_inv_node_world_transform * core::bc_vector4f(p_world_direction, 0)).xyz());
-			p_decal_world_transform = p_attached_node_world_transform;
-
-			if constexpr (graphic::bc_render_api_info::use_left_handed())
-			{
-				p_decal_local_rotation.rotation_between_two_vector_lh(core::bc_vector3f::up(), p_decal_local_direction);
-			}
-			else
-			{
-				p_decal_local_rotation.rotation_between_two_vector_rh(core::bc_vector3f::up(), p_decal_local_direction);
-			}
+			p_decal_world_transform = l_node_world_transform;
+			p_decal_local_rotation = bc_matrix3f_rotation_between_two_vector(core::bc_vector3f::up(), p_decal_local_direction);
 		}
 
 		void bc_mesh_utility::calculate_skinned_mesh_decal(const core::bc_vector3f& p_world_position,
@@ -424,15 +420,7 @@ namespace black_cat
 			p_decal_local_direction = (p_attached_node_bind_pose_transform * core::bc_vector4f(p_decal_local_direction, 0)).xyz();
 			p_decal_local_direction.normalize();
 			p_decal_world_transform = p_attached_node_inv_bind_pose_transform * (p_attached_node_model_transform * p_attached_actor_world_transform);
-
-			if (graphic::bc_render_api_info::use_left_handed())
-			{
-				p_decal_local_rotation.rotation_between_two_vector_lh(core::bc_vector3f::up(), p_decal_local_direction);
-			}
-			else
-			{
-				p_decal_local_rotation.rotation_between_two_vector_rh(core::bc_vector3f::up(), p_decal_local_direction);
-			}
+			p_decal_local_rotation = bc_matrix3f_rotation_between_two_vector(core::bc_vector3f::up(), p_decal_local_direction);
 		}
 
 		void bc_mesh_utility::clear_mesh_render_states_cache()
