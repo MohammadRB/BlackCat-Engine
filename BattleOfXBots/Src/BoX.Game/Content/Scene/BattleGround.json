@@ -1,5 +1,5 @@
 {
-    "name": "Test",
+    "name": "BattleGround",
     "stream_files": [
         "Scene\\BattleGroundContentStream.json"
     ],
@@ -15,6 +15,7 @@
     "streams": [
         "terrain_textures",
         "textures",
+        "$wait",
         "models",
         "vegetables"
     ],

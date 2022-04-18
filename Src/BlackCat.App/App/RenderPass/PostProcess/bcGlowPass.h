@@ -57,9 +57,14 @@ namespace black_cat
 		graphic::bc_device_pipeline_state_ref m_glow_extract_device_pipeline_state;
 		game::bc_render_pass_state_ptr m_glow_extract_render_pass_state;
 		game::bc_render_state_ptr m_glow_extract_render_state;
-		graphic::bc_device_pipeline_state_ref m_blur_device_pipeline_state;
-		game::bc_render_pass_state_ptr m_blur_render_pass_state;
-		game::bc_render_state_ptr m_blur_render_state;
+
+		graphic::bc_device_pipeline_state_ref m_hor_blur_device_pipeline_state;
+		game::bc_render_pass_state_ptr m_hor_blur_render_pass_state;
+		game::bc_render_state_ptr m_hor_blur_render_state;
+		graphic::bc_device_pipeline_state_ref m_ver_blur_device_pipeline_state;
+		game::bc_render_pass_state_ptr m_ver_blur_render_pass_state;
+		game::bc_render_state_ptr m_ver_blur_render_state;
+
 		graphic::bc_device_pipeline_state_ref m_glow_apply_device_pipeline_state;
 		game::bc_render_pass_state_ptr m_glow_apply_render_pass_state;
 		game::bc_render_state_ptr m_glow_apply_render_state;

@@ -468,29 +468,29 @@ bc_ps_gbuffer_output gbuffer_ps(bc_ds_output p_input)
 {
 	bc_ps_gbuffer_output l_output;
 
-	bc_texture_data l_textures = get_texture(p_input.m_texcoord);
-	float3 l_diffuse = l_textures.m_diffuse;
-	float3 l_normal = normalize(l_textures.m_normal) * 2.0f - 1.0f;
-    float l_specular_intensity = l_textures.m_specular_intensity;
-    float l_specular_power = l_textures.m_specular_power;
+	const bc_texture_data l_textures = get_texture(p_input.m_texcoord);
+	const float3 l_diffuse = l_textures.m_diffuse;
+	const float3 l_normal = normalize(l_textures.m_normal) * 2.0f - 1.0f;
+    const float l_specular_intensity = l_textures.m_specular_intensity;
+    const float l_specular_power = l_textures.m_specular_power;
 
-	float2 l_texel_space = float2(1, 1) / float2(g_width + 1, g_height + 1);
-	float2 l_left_tex = p_input.m_texcoord + float2(-l_texel_space.x, 0.0f);
-	float2 l_right_tex = p_input.m_texcoord + float2(l_texel_space.x, 0.0f);
-	float2 l_bottom_tex = p_input.m_texcoord + float2(0.0f, l_texel_space.y);
-	float2 l_top_tex = p_input.m_texcoord + float2(0.0f, -l_texel_space.y);
+	const float2 l_texel_space = float2(1, 1) / float2(g_width + 1, g_height + 1);
+	const float2 l_left_tex = p_input.m_texcoord + float2(-l_texel_space.x, 0.0f);
+	const float2 l_right_tex = p_input.m_texcoord + float2(l_texel_space.x, 0.0f);
+	const float2 l_bottom_tex = p_input.m_texcoord + float2(0.0f, l_texel_space.y);
+	const float2 l_top_tex = p_input.m_texcoord + float2(0.0f, -l_texel_space.y);
 
-	float l_left_height = get_height_linear(l_left_tex);
-	float l_right_height = get_height_linear(l_right_tex);
-	float l_bottom_height = get_height_linear(l_bottom_tex);
-	float l_top_height = get_height_linear(l_top_tex);
+	const float l_left_height = get_height_linear(l_left_tex);
+	const float l_right_height = get_height_linear(l_right_tex);
+	const float l_bottom_height = get_height_linear(l_bottom_tex);
+	const float l_top_height = get_height_linear(l_top_tex);
 
 	float3x3 l_tbn;
 	l_tbn[0] = normalize(float3(2.0f * g_xz_multiplier, l_right_height - l_left_height, 0.0f));
 	l_tbn[1] = normalize(float3(0.0f, l_bottom_height - l_top_height, -2.0f * g_xz_multiplier));
 	l_tbn[2] = normalize(cross(l_tbn[0], l_tbn[1]));
 
-	float3 l_final_normal = (mul(l_normal, l_tbn) + 1) / 2.0f;
+	const float3 l_final_normal = (mul(l_normal, l_tbn) + 1) / 2.0f;
     
     l_output.m_diffuse = float4(l_diffuse.xyz, 1);
     l_output.m_normal = float4(l_final_normal, 1);

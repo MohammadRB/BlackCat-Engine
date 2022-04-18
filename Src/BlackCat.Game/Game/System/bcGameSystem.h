@@ -178,6 +178,8 @@ namespace black_cat
 
 			void _destroy() override;
 
+			void _change_scene(const platform::bc_clock::update_param& p_clock);
+
 			void _event_handler(core::bci_event& p_event);
 
 			core::bc_query_manager* m_query_manager;

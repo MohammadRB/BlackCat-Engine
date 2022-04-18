@@ -47,36 +47,39 @@ namespace black_cat
 
 	void bc_cascaded_shadow_map_pass::initialize_frame_pass(const bc_cascaded_shadow_map_pass_init_frame_context& p_context)
 	{
-		const auto l_cascade_absolute_index = p_context.m_light_index * p_context.m_cascade_count + p_context.m_cascade_index;
-		if (m_scene_query_results.size() < l_cascade_absolute_index + 1)
+		if (m_scene_query_results.size() < p_context.m_cascade_absolute_index + 1)
 		{
-			m_scene_queries.resize(l_cascade_absolute_index + 1);
-			m_scene_query_results.resize(l_cascade_absolute_index + 1);
-			m_scene_render_states.resize(l_cascade_absolute_index + 1);
+			m_scene_queries.resize(p_context.m_cascade_absolute_index + 1);
+			m_scene_query_results.resize(p_context.m_cascade_absolute_index + 1);
+			m_scene_render_states.resize(p_context.m_cascade_absolute_index + 1);
+		}
+		
+		if (m_scene_query_results[p_context.m_cascade_absolute_index].is_executed())
+		{
+			m_scene_render_states[p_context.m_cascade_absolute_index] = m_scene_query_results[p_context.m_cascade_absolute_index]
+				.get<game::bc_scene_graph_render_state_query>()
+				.get_render_state_buffer();
 		}
 
-		if (m_scene_query_results[l_cascade_absolute_index].is_executed())
+		if (p_context.m_render_next_frame)
 		{
-			m_scene_render_states[l_cascade_absolute_index] = m_scene_query_results[l_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>().get_render_state_buffer();
-		}
-
-		m_scene_queries[l_cascade_absolute_index] = std::move
-		(
-			game::bc_scene_graph_render_state_query
+			m_scene_queries[p_context.m_cascade_absolute_index] = std::move
 			(
-				game::bc_actor_render_camera(p_context.m_update_camera, p_context.m_update_cascade_camera),
-				p_context.m_frame_renderer.create_buffer()
-			)
-			.with(game::bc_camera_frustum(p_context.m_update_cascade_camera))
-			.only<game::bc_simple_mesh_component>()
-		);
-		m_scene_query_results[l_cascade_absolute_index] = p_context.m_query_manager.queue_ext_query(m_scene_queries[l_cascade_absolute_index]);
+				game::bc_scene_graph_render_state_query
+				(
+					game::bc_actor_render_camera(p_context.m_update_camera, p_context.m_update_cascade_camera),
+					p_context.m_frame_renderer.create_buffer()
+				)
+				.with(game::bc_camera_frustum(p_context.m_update_cascade_camera))
+				.only<game::bc_simple_mesh_component>()
+			);
+			m_scene_query_results[p_context.m_cascade_absolute_index] = p_context.m_query_manager.queue_ext_query(m_scene_queries[p_context.m_cascade_absolute_index]);
+		}
 	}
 
 	void bc_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_context& p_context)
 	{
-		const auto l_cascade_absolute_index = p_context.m_light_index * p_context.m_cascade_count + p_context.m_cascade_index;
-		const auto& l_render_buffer = m_scene_render_states[l_cascade_absolute_index];
+		const auto& l_render_buffer = m_scene_render_states[p_context.m_cascade_absolute_index];
 		const auto& l_render_pass_state = *p_context.m_render_pass_states[p_context.m_cascade_index];
 
 		// Update global cbuffer with cascade camera
@@ -91,6 +94,9 @@ namespace black_cat
 
 	void bc_cascaded_shadow_map_pass::cleanup_frame_pass(const bc_cascaded_shadow_map_pass_cleanup_context& p_context)
 	{
+		// Because shadow maps may not be updated in every frame we should clear render state buffers to not hold
+		// reference to them for more than one frame
+		m_scene_render_states[p_context.m_cascade_absolute_index] = game::bc_render_state_buffer();
 	}
 
 	void bc_cascaded_shadow_map_pass::destroy_pass(game::bc_render_system& p_render_system)

@@ -89,7 +89,7 @@ namespace black_cat
 			return m_fps;
 		}
 
-		void bc_render_application::set_fps(bcUINT32 p_fps)
+		void bc_render_application::set_fps(bcINT32 p_fps)
 		{
 			if (p_fps > 0)
 			{
@@ -240,6 +240,7 @@ namespace black_cat
 
 					m_frame_watch.stop();
 					const auto l_frame_elapsed = m_frame_watch.restart();
+
 					m_fps_sampler.add_sample(l_elapsed);
 					m_fps = 1000.0f / m_fps_sampler.average_value();
 
@@ -254,18 +255,19 @@ namespace black_cat
 							l_sleep_time_error = 0;
 							continue;
 						}
-						
-						l_sleep_watch.start();
+
 						l_sleep_watch1.start();
 							
 						while(true)
 						{
+							l_sleep_watch.start();
 							platform::bc_thread::current_thread_yield_switch();
 							l_sleep_watch.stop();
 
 							const auto l_sleep_elapsed = l_sleep_watch.total_elapsed();
 							if(l_sleep_elapsed >= l_sleep_time)
 							{
+								l_sleep_watch.restart();
 								break;
 							}
 
@@ -274,9 +276,8 @@ namespace black_cat
 						
 						l_sleep_watch1.stop();
 						
-						const auto l_sleep_elapsed = l_sleep_watch.restart();
 						const auto l_sleep_total_elapsed = l_sleep_watch1.restart();
-						l_sleep_time_error = l_sleep_total_elapsed - l_sleep_elapsed;
+						l_sleep_time_error = l_sleep_total_elapsed - l_sleep_time;
 					}
 				}
 			}

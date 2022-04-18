@@ -255,10 +255,16 @@
       "stream_name": "engine_post_process_shaders",
       "stream_content": [
         {
-          "content_title": "gaussian_blur_ps",
+          "content_title": "gaussian_blur_hor_ps",
           "content_loader": "pixel_shader",
           "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcGaussianBlur.hlsl",
-          "content_parameter": { "function": "gaussian_blur_ps" }
+          "content_parameter": { "function": "gaussian_blur_hor_ps" }
+        },
+        {
+          "content_title": "gaussian_blur_ver_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcGaussianBlur.hlsl",
+          "content_parameter": { "function": "gaussian_blur_ver_ps" }
         },
         {
           "content_title": "light_flare_query_vs",

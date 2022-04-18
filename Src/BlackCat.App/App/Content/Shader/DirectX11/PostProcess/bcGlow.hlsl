@@ -56,7 +56,7 @@ bc_ps_output glow_apply_ps(bc_vs_output p_input)
 	bc_ps_output l_output;
 	
 	const float4 l_glow_blur = g_tex2d_input.Sample(g_sam_sampler, p_input.m_texcoord);
-	l_output.m_color = l_glow_blur;
+	l_output.m_color = float4(l_glow_blur.rgb, 1);
 
 	return l_output;
 }

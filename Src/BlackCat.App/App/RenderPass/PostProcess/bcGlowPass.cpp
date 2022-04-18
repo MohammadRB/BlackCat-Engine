@@ -39,7 +39,7 @@ namespace black_cat
 		auto& l_global_config = bc_get_global_config();
 		l_global_config
 			.add_if_not_exist_config_key("render_glow_threshold", core::bc_any(.8f))
-			.add_if_not_exist_config_key("render_glow_intensity", core::bc_any(2.f))
+			.add_if_not_exist_config_key("render_glow_intensity", core::bc_any(3.f))
 			.flush_changes();
 	}
 
@@ -76,12 +76,14 @@ namespace black_cat
 			.as_buffer(1, sizeof(_bc_glow_params_struct), graphic::bc_resource_usage::gpu_rw)
 			.as_constant_buffer();
 		m_glow_params_buffer = l_device.create_buffer(l_glow_params_buffer_config, nullptr);
+		m_glow_params_buffer->set_debug_name("glow_params_cbuffer");
 
 		const auto l_blur_params_buffer_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_buffer(1, sizeof(_bc_blur_params_struct), graphic::bc_resource_usage::gpu_rw)
 			.as_constant_buffer();
 		m_blur_params_buffer = l_device.create_buffer(l_blur_params_buffer_config, nullptr);
+		m_blur_params_buffer->set_debug_name("blue_params_cbuffer");
 
 		after_reset
 		(
@@ -143,18 +145,28 @@ namespace black_cat
 		p_context.m_render_thread.unbind_render_state(*m_glow_extract_render_state);
 		p_context.m_render_thread.unbind_render_pass_state(*m_glow_extract_render_pass_state);
 
-		// Blur
+		// Blur horizontal
 		m_intermediate_texture1_link.set_as_resource_view(l_intermediate_texture1.get_resource_view());
 		m_intermediate_texture2_link.set_as_render_target_view(l_intermediate_texture2.get_render_target_view());
 
-		p_context.m_render_thread.bind_render_pass_state(*m_blur_render_pass_state);
-		p_context.m_render_thread.bind_render_state(*m_blur_render_state);
+		p_context.m_render_thread.bind_render_pass_state(*m_hor_blur_render_pass_state);
+		p_context.m_render_thread.bind_render_state(*m_hor_blur_render_state);
 		p_context.m_render_thread.draw(0, 6);
-		p_context.m_render_thread.unbind_render_state(*m_blur_render_state);
-		p_context.m_render_thread.unbind_render_pass_state(*m_blur_render_pass_state);
+		p_context.m_render_thread.unbind_render_state(*m_hor_blur_render_state);
+		p_context.m_render_thread.unbind_render_pass_state(*m_hor_blur_render_pass_state);
+
+		// Blur vertical
+		m_intermediate_texture1_link.set_as_render_target_view(l_intermediate_texture1.get_render_target_view());
+		m_intermediate_texture2_link.set_as_resource_view(l_intermediate_texture2.get_resource_view());
+
+		p_context.m_render_thread.bind_render_pass_state(*m_ver_blur_render_pass_state);
+		p_context.m_render_thread.bind_render_state(*m_ver_blur_render_state);
+		p_context.m_render_thread.draw(0, 6);
+		p_context.m_render_thread.unbind_render_state(*m_ver_blur_render_state);
+		p_context.m_render_thread.unbind_render_pass_state(*m_ver_blur_render_pass_state);
 
 		// Apply
-		m_intermediate_texture2_link.set_as_resource_view(l_intermediate_texture2.get_resource_view());
+		m_intermediate_texture1_link.set_as_resource_view(l_intermediate_texture1.get_resource_view());
 
 		p_context.m_render_thread.bind_render_pass_state(*m_glow_apply_render_pass_state);
 		p_context.m_render_thread.bind_render_state(*m_glow_apply_render_state);
@@ -276,13 +288,13 @@ namespace black_cat
 			}
 		);
 
-		m_blur_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
+		m_hor_blur_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
 		(
 			"glow_extract_vs",
 			nullptr,
 			nullptr,
 			nullptr,
-			"gaussian_blur_ps",
+			"gaussian_blur_hor_ps",
 			game::bc_vertex_type::pos_tex,
 			game::bc_blend_type::opaque,
 			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
@@ -294,9 +306,9 @@ namespace black_cat
 			graphic::bc_format::D24_UNORM_S8_UINT,
 			game::bc_multi_sample_type::c1_q1
 		);
-		m_blur_render_pass_state = p_context.m_render_system.create_render_pass_state
+		m_hor_blur_render_pass_state = p_context.m_render_system.create_render_pass_state
 		(
-			*m_blur_device_pipeline_state,
+			*m_hor_blur_device_pipeline_state,
 			l_half_viewport,
 			{
 				graphic::bc_render_target_view_parameter(m_intermediate_texture2_link)
@@ -315,7 +327,62 @@ namespace black_cat
 				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::pixel, *m_blur_params_buffer)
 			}
 		);
-		m_blur_render_state = p_context.m_render_system.create_render_state
+		m_hor_blur_render_state = p_context.m_render_system.create_render_state
+		(
+			graphic::bc_primitive::trianglelist,
+			graphic::bc_buffer(),
+			0,
+			0,
+			graphic::bc_buffer(),
+			game::i16bit,
+			0,
+			0,
+			{
+			},
+			{
+			}
+		);
+
+		m_ver_blur_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
+		(
+			"glow_extract_vs",
+			nullptr,
+			nullptr,
+			nullptr,
+			"gaussian_blur_ver_ps",
+			game::bc_vertex_type::pos_tex,
+			game::bc_blend_type::opaque,
+			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
+			game::bc_rasterizer_type::fill_solid_cull_none,
+			0xffffffff,
+			{
+				l_render_target_texture.get_format()
+			},
+			graphic::bc_format::D24_UNORM_S8_UINT,
+			game::bc_multi_sample_type::c1_q1
+		);
+		m_ver_blur_render_pass_state = p_context.m_render_system.create_render_pass_state
+		(
+			*m_ver_blur_device_pipeline_state,
+			l_half_viewport,
+			{
+				graphic::bc_render_target_view_parameter(m_intermediate_texture1_link)
+			},
+			graphic::bc_depth_stencil_view(),
+			{
+				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, *m_point_sampler)
+			},
+			{
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, m_intermediate_texture2_link)
+			},
+			{
+			},
+			{
+				p_context.m_render_system.get_global_cbuffer(),
+				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::pixel, *m_blur_params_buffer)
+			}
+		);
+		m_ver_blur_render_state = p_context.m_render_system.create_render_state
 		(
 			graphic::bc_primitive::trianglelist,
 			graphic::bc_buffer(),
@@ -361,7 +428,7 @@ namespace black_cat
 				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, *m_linear_sampler)
 			},
 			{
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, m_intermediate_texture2_link)
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, m_intermediate_texture1_link)
 			},
 			{
 			},
@@ -408,9 +475,15 @@ namespace black_cat
 		m_glow_extract_device_pipeline_state.reset();
 		m_glow_extract_render_pass_state.reset();
 		m_glow_extract_render_state.reset();
-		m_blur_device_pipeline_state.reset();
-		m_blur_render_pass_state.reset();
-		m_blur_render_state.reset();
+
+		m_hor_blur_device_pipeline_state.reset();
+		m_hor_blur_render_pass_state.reset();
+		m_hor_blur_render_state.reset();
+
+		m_ver_blur_device_pipeline_state.reset();
+		m_ver_blur_render_pass_state.reset();
+		m_ver_blur_render_state.reset();
+
 		m_glow_apply_device_pipeline_state.reset();
 		m_glow_apply_render_pass_state.reset();
 		m_glow_apply_render_state.reset();

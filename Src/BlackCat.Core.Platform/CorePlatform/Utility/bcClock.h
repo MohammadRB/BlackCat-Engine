@@ -203,7 +203,7 @@ namespace black_cat
 		template<bc_platform TPlatform>
 		void bc_platform_clock<TPlatform>::fixed_step(small_time p_delta) noexcept
 		{
-			if (p_delta <0)
+			if (p_delta < 0)
 			{
 				p_delta = -1;
 			}
@@ -237,7 +237,7 @@ namespace black_cat
 				return;
 			}
 
-			const bool l_is_fixed = m_fixed_step != -1;
+			const bool l_is_fixed = m_fixed_step >= 0;
 			big_clock l_current_clock = query_elapsed_clocks();
 
 			if (!l_is_fixed)

@@ -99,7 +99,7 @@ namespace black_cat
 				else
 				{
 					l_ite->second = std::move(l_stream_files);
-					core::bc_log(bc_log_type::warning) << "content stream with name '" << *l_stream->m_stream_name << "' already exist. old stream will be replaced." << core::bc_lend;
+					core::bc_log(bc_log_type::warning) << "content stream description with name '" << *l_stream->m_stream_name << "' already exist. old stream will be replaced." << core::bc_lend;
 				}
 			}
 		}

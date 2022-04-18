@@ -193,7 +193,7 @@ namespace black_cat
 
 	void bc_xbot_player_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
-		if(p_context.m_is_double_update)
+		if(!get_scene() || p_context.m_is_double_update)
 		{
 			return;
 		}

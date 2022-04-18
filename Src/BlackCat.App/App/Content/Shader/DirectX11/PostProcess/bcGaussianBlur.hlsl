@@ -12,47 +12,38 @@ cbuffer g_cb_params							: register(BC_RENDER_PASS_STATE_CB1)
 	uint g_input_height						: packoffset(c0.y);
 }
 
-// https://www.shadertoy.com/view/XdfGDH
-float kernel(in int p_i, in float p_sigma)
+static const float g_offset[] = { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0 };
+static const float g_weight[] = { 0.1061154, 0.1028506, 0.09364651, 0.0801001, 0.06436224, 0.04858317, 0.03445063, 0.02294906 };
+static const float g_size = 2.5;
+
+float4 gaussian_blur_hor_ps(float4 p_position : SV_POSITION, float2 p_texcoord : TEXCOORD0) : SV_Target0
 {
-	return 0.39894 * exp(-0.5 * p_i * p_i / (p_sigma * p_sigma)) / p_sigma;
+	float4 l_color = g_tex2d_input.Sample(g_sampler, p_texcoord) * g_weight[0];
+	float4 l_fragment_color = float4(0, 0, 0, 0);
+	
+	for (int i = 1; i < 8; i++)
+	{
+		const float l_offset = (g_offset[i] / g_input_width) * g_size;
+		l_fragment_color += g_tex2d_input.Sample(g_sampler, p_texcoord + float2(l_offset, 0)) * g_weight[i];
+		l_fragment_color += g_tex2d_input.Sample(g_sampler, p_texcoord - float2(l_offset, 0)) * g_weight[i];
+	}
+
+	l_color += l_fragment_color;
+	return l_color;
 }
 
-float4 gaussian_blur_ps(float4 p_position : SV_POSITION, float2 p_texcoord : TEXCOORD0) : SV_Target0
+float4 gaussian_blur_ver_ps(float4 p_position : SV_POSITION, float2 p_texcoord : TEXCOORD0) : SV_Target0
 {
-	const int l_size = 1;
-	const int l_radius = 21;
-	const int l_kernel_size = (l_radius - 1) / 2;
-	float l_kernel[l_radius];
-	float4 l_final_color = 0.0;
+	float4 l_color = g_tex2d_input.Sample(g_sampler, p_texcoord) * g_weight[0];
+	float4 l_fragment_color = float4(0, 0, 0, 0);
 
-	// Create the 1-D kernel
-	float l_sigma = 11.0;
-	float l_normalization_factor = 0.0;
-	for (int l_k_ite = 0; l_k_ite <= l_kernel_size; ++l_k_ite)
+	for (int i = 1; i < 8; i++)
 	{
-		l_kernel[l_kernel_size + l_k_ite] = l_kernel[l_kernel_size - l_k_ite] = kernel(l_k_ite, l_sigma);
+		const float l_offset = (g_offset[i] / g_input_height) * g_size;
+		l_fragment_color += g_tex2d_input.Sample(g_sampler, p_texcoord + float2(0, l_offset)) * g_weight[i];
+		l_fragment_color += g_tex2d_input.Sample(g_sampler, p_texcoord - float2(0, l_offset)) * g_weight[i];
 	}
 
-	// Get the normalization factor (as the gaussian has been clamped)
-	for (int l_ite = 0; l_ite < l_radius; ++l_ite)
-	{
-		l_normalization_factor += l_kernel[l_ite];
-	}
-
-	[unroll]
-	for (int l_i = -l_kernel_size; l_i <= l_kernel_size; ++l_i)
-	{
-		[unroll]
-		for (int l_j = -l_kernel_size; l_j <= l_kernel_size; ++l_j)
-		{
-			l_final_color += 
-				l_kernel[l_kernel_size + l_j] *
-				l_kernel[l_kernel_size + l_i] *
-				g_tex2d_input.Sample(g_sampler, p_texcoord + (float2(float(l_i * l_size), float(l_j * l_size)) / float2(g_input_width, g_input_height)));
-
-		}
-	}
-
-	return float4((l_final_color / (l_normalization_factor * l_normalization_factor)).rgb, 1.0);
+	l_color += l_fragment_color;
+	return l_color;
 }

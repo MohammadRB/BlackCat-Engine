@@ -39,7 +39,7 @@ namespace black_cat
 			 * \brief Specify an upper range for application fps or use a value lower than 0 for unlimited fps.
 			 * \param p_fps 
 			 */
-			void set_fps(bcUINT32 p_fps);
+			void set_fps(bcINT32 p_fps);
 
 			bcINT32 run();
 

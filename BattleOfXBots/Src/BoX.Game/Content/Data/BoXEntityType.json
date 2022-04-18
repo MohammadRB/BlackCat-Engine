@@ -101,7 +101,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "grenade",
-            "view_distance": 110.0,
+            "view_distance": 125.0,
             "materials": {
               "bodyMesh": "grenade"
             }
@@ -139,7 +139,7 @@
           "name": "simple_mesh",
           "parameters": {
             "mesh": "smoke_grenade",
-            "view_distance": 110.0,
+            "view_distance": 125.0,
             "materials": {
               "bodyMesh": "smoke_grenade"
             }

@@ -113,7 +113,7 @@ namespace black_cat
 				}
 			}
 
-			std::sort
+			/*std::sort
 			(
 				std::begin(l_components_with_update),
 				std::end(l_components_with_update),
@@ -121,7 +121,7 @@ namespace black_cat
 				{
 					return p_first->m_component_priority < p_second->m_component_priority;
 				}
-			);
+			);*/
 
 			core::bc_concurrency::concurrent_for_each
 			(

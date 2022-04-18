@@ -72,59 +72,60 @@ namespace black_cat
 
 	void bc_vegetable_cascaded_shadow_map_pass::initialize_frame_pass(const bc_cascaded_shadow_map_pass_init_frame_context& p_context)
 	{
-		const auto l_cascade_absolute_index = p_context.m_light_index * p_context.m_cascade_count + p_context.m_cascade_index;
-		if (m_leaf_query_results.size() < l_cascade_absolute_index + 1)
+		if (m_leaf_query_results.size() < p_context.m_cascade_absolute_index + 1)
 		{
-			m_leaf_queries.resize(l_cascade_absolute_index + 1);
-			m_leaf_query_results.resize(l_cascade_absolute_index + 1);
-			m_leaf_render_states.resize(l_cascade_absolute_index + 1);
+			m_leaf_queries.resize(p_context.m_cascade_absolute_index + 1);
+			m_leaf_query_results.resize(p_context.m_cascade_absolute_index + 1);
+			m_leaf_render_states.resize(p_context.m_cascade_absolute_index + 1);
 		}
-		if (m_trunk_query_results.size() < l_cascade_absolute_index + 1)
+		if (m_trunk_query_results.size() < p_context.m_cascade_absolute_index + 1)
 		{
-			m_trunk_queries.resize(l_cascade_absolute_index + 1);
-			m_trunk_query_results.resize(l_cascade_absolute_index + 1);
-			m_trunk_render_states.resize(l_cascade_absolute_index + 1);
-		}
-
-		if (m_leaf_query_results[l_cascade_absolute_index].is_executed())
-		{
-			m_leaf_render_states[l_cascade_absolute_index] = m_leaf_query_results[l_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>().get_render_state_buffer();
-		}
-		if (m_trunk_query_results[l_cascade_absolute_index].is_executed())
-		{
-			m_trunk_render_states[l_cascade_absolute_index] = m_trunk_query_results[l_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>().get_render_state_buffer();
+			m_trunk_queries.resize(p_context.m_cascade_absolute_index + 1);
+			m_trunk_query_results.resize(p_context.m_cascade_absolute_index + 1);
+			m_trunk_render_states.resize(p_context.m_cascade_absolute_index + 1);
 		}
 
-		m_leaf_queries[l_cascade_absolute_index] = std::move
-		(
-			game::bc_scene_graph_render_state_query
+		if (m_leaf_query_results[p_context.m_cascade_absolute_index].is_executed())
+		{
+			m_leaf_render_states[p_context.m_cascade_absolute_index] = m_leaf_query_results[p_context.m_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>().get_render_state_buffer();
+		}
+		if (m_trunk_query_results[p_context.m_cascade_absolute_index].is_executed())
+		{
+			m_trunk_render_states[p_context.m_cascade_absolute_index] = m_trunk_query_results[p_context.m_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>().get_render_state_buffer();
+		}
+
+		if (p_context.m_render_next_frame)
+		{
+			m_leaf_queries[p_context.m_cascade_absolute_index] = std::move
 			(
-				game::bc_actor_render_camera(p_context.m_update_camera, p_context.m_update_cascade_camera),
-				p_context.m_frame_renderer.create_buffer()
-			)
-			.with(game::bc_camera_frustum(p_context.m_update_cascade_camera))
-			.only<game::bc_vegetable_mesh_component>(true)
-		);
-		m_trunk_queries[l_cascade_absolute_index] = std::move
-		(
-			game::bc_scene_graph_render_state_query
+				game::bc_scene_graph_render_state_query
+				(
+					game::bc_actor_render_camera(p_context.m_update_camera, p_context.m_update_cascade_camera),
+					p_context.m_frame_renderer.create_buffer()
+				)
+				.with(game::bc_camera_frustum(p_context.m_update_cascade_camera))
+				.only<game::bc_vegetable_mesh_component>(true)
+			);
+			m_trunk_queries[p_context.m_cascade_absolute_index] = std::move
 			(
-				game::bc_actor_render_camera(p_context.m_update_camera, p_context.m_update_cascade_camera),
-				p_context.m_frame_renderer.create_buffer()
-			)
-			.with(game::bc_camera_frustum(p_context.m_update_cascade_camera))
-			.only<game::bc_vegetable_mesh_component>(false)
-		);
+				game::bc_scene_graph_render_state_query
+				(
+					game::bc_actor_render_camera(p_context.m_update_camera, p_context.m_update_cascade_camera),
+					p_context.m_frame_renderer.create_buffer()
+				)
+				.with(game::bc_camera_frustum(p_context.m_update_cascade_camera))
+				.only<game::bc_vegetable_mesh_component>(false)
+			);
 
-		m_leaf_query_results[l_cascade_absolute_index] = p_context.m_query_manager.queue_ext_query(m_leaf_queries[l_cascade_absolute_index]);
-		m_trunk_query_results[l_cascade_absolute_index] = p_context.m_query_manager.queue_ext_query(m_trunk_queries[l_cascade_absolute_index]);
+			m_leaf_query_results[p_context.m_cascade_absolute_index] = p_context.m_query_manager.queue_ext_query(m_leaf_queries[p_context.m_cascade_absolute_index]);
+			m_trunk_query_results[p_context.m_cascade_absolute_index] = p_context.m_query_manager.queue_ext_query(m_trunk_queries[p_context.m_cascade_absolute_index]);
+		}
 	}
 
 	void bc_vegetable_cascaded_shadow_map_pass::execute_pass(const bc_cascaded_shadow_map_pass_render_context& p_context)
 	{
-		const auto l_cascade_absolute_index = p_context.m_light_index * p_context.m_cascade_count + p_context.m_cascade_index;
-		const auto& l_leaf_render_buffer = m_leaf_render_states[l_cascade_absolute_index];
-		const auto& l_trunk_render_buffer = m_trunk_render_states[l_cascade_absolute_index];
+		const auto& l_leaf_render_buffer = m_leaf_render_states[p_context.m_cascade_absolute_index];
+		const auto& l_trunk_render_buffer = m_trunk_render_states[p_context.m_cascade_absolute_index];
 		
 		// Update global cbuffer with cascade camera
 		p_context.m_frame_renderer.update_global_cbuffer(p_context.m_child_render_thread, p_context.m_clock, p_context.m_render_cascade_camera);
@@ -148,6 +149,10 @@ namespace black_cat
 
 	void bc_vegetable_cascaded_shadow_map_pass::cleanup_frame_pass(const bc_cascaded_shadow_map_pass_cleanup_context& p_context)
 	{
+		// Because shadow maps may not be updated in every frame we should clear render state buffers to not hold
+		// reference to them for more than one frame
+		m_leaf_render_states[p_context.m_cascade_absolute_index] = game::bc_render_state_buffer();
+		m_trunk_render_states[p_context.m_cascade_absolute_index] = game::bc_render_state_buffer();
 	}
 
 	void bc_vegetable_cascaded_shadow_map_pass::destroy_pass(game::bc_render_system& p_render_system)

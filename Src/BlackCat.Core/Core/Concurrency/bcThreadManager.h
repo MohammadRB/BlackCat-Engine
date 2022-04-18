@@ -11,7 +11,7 @@
 #include "Core/Memory/bcAlloc.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
-#include "Core/Container/bcConcurrentQueue.h"
+#include "Core/Container/bcConcurrentQueue1.h"
 #include "Core/Container/bcDeque.h"
 #include "Core/Concurrency/bcTask.h"
 #include "Core/Utility/bcServiceManager.h"
@@ -25,31 +25,6 @@ namespace black_cat
 {
 	namespace core
 	{
-		struct bc_interrupt_flag
-		{
-		public:
-			bc_interrupt_flag();
-
-			bc_interrupt_flag(bool pFlag);
-
-			bc_interrupt_flag(const bc_interrupt_flag& p_other) = delete;
-
-			bc_interrupt_flag(bc_interrupt_flag&& p_other) = delete;
-
-			~bc_interrupt_flag();
-
-			bc_interrupt_flag& operator =(const bc_interrupt_flag& p_other) = delete;
-
-			bc_interrupt_flag& operator =(bc_interrupt_flag&& p_other) = delete;
-
-			bool test_and_set();
-
-			void clear();
-
-		private:
-			platform::bc_atomic_flag m_flag;
-		};
-
 		enum class bc_task_creation_option : bcUBYTE
 		{
 			policy_none = bc_enum::value(0),
@@ -95,11 +70,13 @@ namespace black_cat
 		private:
 			void _initialize(bcSIZE p_hardware_thread_count, bcSIZE p_reserved_thread_count);
 
+			void _push_worker();
+
+			void _pop_worker();
+
 			void _restart_workers();
 
 			void _stop_workers();
-
-			void _push_worker();
 
 			void _join_workers();
 
@@ -107,22 +84,25 @@ namespace black_cat
 
 			void _worker_spin(bcUINT32 p_my_index);
 
-			static constexpr bcSIZE s_worker_switch_threshold = 20;
-			static constexpr bcSIZE s_new_thread_threshold = 5;
-			static constexpr bcSIZE s_num_thread_in_spin = 0;
+			static const bcSIZE s_push_thread_threshold;
+			static const bcSIZE s_pop_thread_threshold;
+			static const bcSIZE s_thread_sleep_threshold;
+			static const bcSIZE s_thread_in_spin_count;
 
 			bcUINT32 m_hardware_thread_count;
 			bcUINT32 m_reserved_thread_count;
 			platform::bc_atomic<bool> m_done;
 			platform::bc_atomic<bcUINT32> m_spawned_thread_count;
-			platform::bc_atomic<bcUINT32> m_num_thread_in_spin;
+			platform::bc_atomic<bcUINT32> m_thread_in_spin_count;
 			platform::bc_atomic<bcUINT32> m_task_count;
+			platform::bc_atomic<bcUINT32> m_low_contention_task_count;
+
 			platform::bc_mutex m_cvariable_mutex;
 			platform::bc_condition_variable m_cvariable;
 
 			mutable platform::bc_shared_mutex m_threads_mutex;
 			bc_vector_program<bc_unique_ptr<_thread_data>> m_threads;
-			bc_concurrent_queue<task_wrapper_type> m_global_queue;
+			bc_concurrent_queue1<task_wrapper_type> m_global_queue;
 			platform::bc_thread_local<_thread_data> m_my_data;
 			bc_concurrent_memory_pool m_tasks_pool;
 		};
@@ -132,10 +112,10 @@ namespace black_cat
 			friend class bc_thread_manager;
 
 		public:
-			_thread_data(bcUINT32 p_my_index, platform::bc_thread&& p_thread)
+			_thread_data(bcUINT32 p_my_index, platform::bc_thread&& p_thread) noexcept
 				: m_my_index(p_my_index),
-				m_interrupt_flag(),
-				m_thread(std::move(p_thread))
+				m_thread(std::move(p_thread)),
+				m_done(false)
 			{
 			}
 
@@ -148,26 +128,32 @@ namespace black_cat
 			_thread_data& operator=(const _thread_data&) = delete;
 
 			_thread_data& operator=(_thread_data&&) = delete;
-
-			bcUINT32 index() const
+			
+			bool test_and_set_interrupt_flag() noexcept
 			{
-				return m_my_index;
+				return m_interrupt_flag.test_and_set(platform::bc_memory_order::relaxed);
 			}
 
-			bc_interrupt_flag& interrupt_flag()
+			void clear_interrupt_flag() noexcept
 			{
-				return m_interrupt_flag;
+				m_interrupt_flag.clear(platform::bc_memory_order::relaxed);
 			}
 
-			platform::bc_thread& thread()
+			void set_done() noexcept
 			{
-				return m_thread;
+				m_done.store(true, platform::bc_memory_order::relaxed);
+			}
+
+			bool is_done() const noexcept
+			{
+				return m_done.load(platform::bc_memory_order::relaxed);
 			}
 
 		private:
 			bcUINT32 m_my_index;
-			bc_interrupt_flag m_interrupt_flag;
 			platform::bc_thread m_thread;
+			platform::bc_atomic_flag m_interrupt_flag;
+			platform::bc_atomic<bool> m_done;
 		};
 
 		template<typename T>
@@ -215,14 +201,23 @@ namespace black_cat
 			const auto l_task_count = m_task_count.fetch_add(1, platform::bc_memory_order::relaxed) + 1;
 
 			// If number of steady threads in work spin method is higher than zero there is no need to notify a thread
-			if constexpr (s_num_thread_in_spin == 0)
+			if (s_thread_in_spin_count == 0)
 			{
 				m_cvariable.notify_one();
 			}
 
-			if (l_task_count >= s_new_thread_threshold)
+			if (l_task_count >= s_push_thread_threshold)
 			{
 				_push_worker();
+			}
+			else
+			{
+				const auto l_low_contention_task_count = m_low_contention_task_count.fetch_add(1, platform::bc_memory_order::relaxed) + 1;
+				if(l_low_contention_task_count >= s_pop_thread_threshold)
+				{
+					m_low_contention_task_count.store(0, platform::bc_memory_order::relaxed);
+					_pop_worker();
+				}
 			}
 
 			return l_task;

@@ -202,18 +202,18 @@ namespace black_cat
 
 	void bc_render_application::app_swap_frame(const platform::bc_clock::update_param& p_clock)
 	{
+		m_swap_watch.start();
+
 		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 		auto* l_counter_value_manager = core::bc_get_service<core::bc_counter_value_manager>();
 
 		m_update_watch.restart();
 		m_render_watch.restart();
 
-		l_counter_value_manager->add_counter("fps", get_fps());
 		l_counter_value_manager->add_counter("frame_time", get_ft());
+		l_counter_value_manager->add_counter("fps", get_fps());
 		l_counter_value_manager->add_counter("update_time", m_update_watch.average_total_elapsed());
 		l_counter_value_manager->add_counter("render_time", m_render_watch.average_total_elapsed());
-
-		m_swap_watch.start();
 		
 		m_game_system->swap_frame(p_clock);
 		application_swap_frame(p_clock);

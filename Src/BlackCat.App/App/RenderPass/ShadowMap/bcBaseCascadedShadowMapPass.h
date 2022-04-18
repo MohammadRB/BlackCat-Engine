@@ -86,13 +86,18 @@ namespace black_cat
 			const game::bc_camera_instance& p_render_cascade_camera,
 			bcSIZE p_light_index,
 			bcSIZE p_cascade_index,
-			bcSIZE p_cascade_count)
+			bcSIZE p_cascade_count,
+			bool p_render_next_frame,
+			bool p_render_this_frame)
 			: bc_concurrent_render_pass_render_context(p_context),
 			m_update_cascade_camera(p_update_cascade_camera),
 			m_render_cascade_camera(p_render_cascade_camera),
 			m_light_index(p_light_index),
 			m_cascade_index(p_cascade_index),
-			m_cascade_count(p_cascade_count)
+			m_cascade_count(p_cascade_count),
+			m_cascade_absolute_index(p_light_index * p_cascade_count + p_cascade_index),
+			m_render_next_frame(p_render_next_frame),
+			m_render_this_frame(p_render_this_frame)
 		{
 		}
 
@@ -101,6 +106,9 @@ namespace black_cat
 		bcSIZE m_light_index;
 		bcSIZE m_cascade_index;
 		bcSIZE m_cascade_count;
+		bcSIZE m_cascade_absolute_index;
+		bool m_render_next_frame;
+		bool m_render_this_frame;
 	};
 	
 	class bc_cascaded_shadow_map_pass_render_context : public game::bc_concurrent_render_pass_render_context
@@ -119,7 +127,8 @@ namespace black_cat
 			m_render_cascade_camera(p_render_cascade_camera),
 			m_light_index(p_light_index),
 			m_cascade_index(p_cascade_index),
-			m_cascade_count(p_cascade_count)
+			m_cascade_count(p_cascade_count),
+			m_cascade_absolute_index(p_light_index* p_cascade_count + p_cascade_index)
 		{
 		}
 
@@ -129,6 +138,7 @@ namespace black_cat
 		bcSIZE m_light_index;
 		bcSIZE m_cascade_index;
 		bcSIZE m_cascade_count;
+		bcSIZE m_cascade_absolute_index;
 	};
 
 	class bc_cascaded_shadow_map_pass_cleanup_context : public game::bc_render_pass_render_context
@@ -143,7 +153,8 @@ namespace black_cat
 			m_render_pass_states(p_render_states),
 			m_light_index(p_light_index),
 			m_cascade_index(p_cascade_index),
-			m_cascade_count(p_cascade_count)
+			m_cascade_count(p_cascade_count),
+			m_cascade_absolute_index(p_light_index* p_cascade_count + p_cascade_index)
 		{
 		}
 
@@ -151,6 +162,7 @@ namespace black_cat
 		bcSIZE m_light_index;
 		bcSIZE m_cascade_index;
 		bcSIZE m_cascade_count;
+		bcSIZE m_cascade_absolute_index;
 	};
 
 	class BC_DLL bc_base_cascaded_shadow_map_pass : public game::bci_concurrent_render_pass

@@ -37,7 +37,7 @@ float3 bc_vegetable_animation(float3 p_local_pos, float3 p_world_pos, float p_he
         
 		float3 l_noise_dir = 0;
         l_noise_dir.xz = 1 - abs(normalize(p_local_pos.xz));
-        l_new_pos += l_noise_dir * l_noise_leaf;
+        l_new_pos += (l_noise_dir * l_noise_leaf);
     }
 
     return l_new_pos - p_local_pos;

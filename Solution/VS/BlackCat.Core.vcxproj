@@ -215,6 +215,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadLocal.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcAllocator.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcArray.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcConcurrentQueue1.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcIteratorAdapter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcDeque.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcSboVector.h" />

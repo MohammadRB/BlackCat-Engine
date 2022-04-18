@@ -128,10 +128,13 @@ namespace black_cat
 				m_state->m_light_states.pop_back();
 			}
 
-			const auto l_cascade_count = m_state->m_cascade_sizes.size();
-			for (auto l_cascade_ite = 0U; l_cascade_ite < l_cascade_count; ++l_cascade_ite)
+			if(!m_state->m_lights.empty())
 			{
-				--std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
+				const auto l_cascade_count = m_state->m_cascade_sizes.size();
+				for (auto l_cascade_ite = 0U; l_cascade_ite < l_cascade_count; ++l_cascade_ite)
+				{
+					--std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
+				}
 			}
 		}
 
@@ -147,25 +150,25 @@ namespace black_cat
 
 			for (auto l_cascade_ite = 0U; l_cascade_ite < l_cascade_count; ++l_cascade_ite)
 			{
-				const auto l_update_interval = std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
-				if (l_update_interval == 0)
-				{
-					m_last_cameras.push_back(game::bc_camera_instance(m_last_update_cascade_cameras[l_cascade_ite]));
-					auto& l_update_cascade_camera = m_last_cameras.back();
-					m_last_cameras.push_back(game::bc_camera_instance(m_last_render_cascade_cameras[l_cascade_ite]));
-					auto& l_render_cascade_camera = m_last_cameras.back();
+				const auto l_update_interval = std::get<0>(m_state->m_cascade_update_intervals[l_cascade_ite]);
+				const auto l_current_update_interval = std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
+				m_last_cameras.push_back(game::bc_camera_instance(m_last_update_cascade_cameras[l_cascade_ite]));
+				auto& l_update_cascade_camera = m_last_cameras.back();
+				m_last_cameras.push_back(game::bc_camera_instance(m_last_render_cascade_cameras[l_cascade_ite]));
+				auto& l_render_cascade_camera = m_last_cameras.back();
 
-					bc_cascaded_shadow_map_pass_init_frame_context l_param
-					(
-						p_context,
-						l_update_cascade_camera,
-						l_render_cascade_camera,
-						l_light_ite,
-						l_cascade_ite,
-						l_cascade_count
-					);
-					initialize_frame_pass(l_param);
-				}
+				bc_cascaded_shadow_map_pass_init_frame_context l_param
+				(
+					p_context,
+					l_update_cascade_camera,
+					l_render_cascade_camera,
+					l_light_ite,
+					l_cascade_ite,
+					l_cascade_count,
+					l_update_interval == 1 || (l_update_interval > 1 && l_current_update_interval == 1),
+					l_current_update_interval == 0
+				);
+				initialize_frame_pass(l_param);
 			}
 		}
 	}
@@ -313,7 +316,7 @@ namespace black_cat
 			}
 		}
 
-		for (bcSIZE l_light_ite = 0; l_light_ite < m_state->m_lights.size(); ++l_light_ite)
+		for (auto l_light_ite = 0U; l_light_ite < m_state->m_lights.size(); ++l_light_ite)
 		{
 			auto& l_light_state = m_state->m_light_states[l_light_ite];
 
@@ -323,6 +326,7 @@ namespace black_cat
 
 				if(l_update_interval == 1)
 				{
+					// Cascade will be rendered next frame and its depth buffer must be cleared
 					p_context.m_render_thread.start();
 					p_context.m_render_thread.clear_depth_stencil_view(l_light_state.m_depth_buffer_views[l_cascade_ite].get());
 					p_context.m_render_thread.finish();

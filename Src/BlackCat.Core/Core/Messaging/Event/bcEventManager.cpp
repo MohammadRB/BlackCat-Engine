@@ -104,7 +104,7 @@ namespace black_cat
 
 		bcUINT32 bc_event_manager::_process_events_in_queue(const platform::bc_clock::update_param& p_clock,
 			platform::bc_clock::big_clock& p_last_elapsed,
-			bc_concurrent_queue<_bc_queued_event>& p_global_queue,
+			bc_concurrent_queue1<_bc_queued_event>& p_global_queue,
 			bc_list<_bc_queued_event, bc_memory_pool_allocator<_bc_queued_event>>& p_local_queue)
 		{
 			bcUINT32 l_processed_event_count = 0;

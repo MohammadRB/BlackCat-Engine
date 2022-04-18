@@ -88,7 +88,6 @@ namespace box
 		auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
 		auto& l_game_console = m_game_system->get_console();
 		auto& l_input_system = m_game_system->get_input_system();
-		auto& l_file_system = m_game_system->get_file_system();
 		auto& l_render_system = m_game_system->get_render_system();
 		auto& l_script_system = m_game_system->get_script_system();
 		auto& l_global_config = bc_get_global_config();
@@ -116,12 +115,12 @@ namespace box
 		l_input_system.add_camera(std::move(l_camera));
 
 		l_render_system.add_render_pass(bc_gbuffer_initialize_pass());
-		l_render_system.add_render_pass(bc_gbuffer_terrain_pass_dx11());
 		l_render_system.add_render_pass(bc_gbuffer_pass());
 		l_render_system.add_render_pass(bc_gbuffer_vegetable_pass());
 		l_render_system.add_render_pass(bc_gbuffer_skinned_pass());
+		l_render_system.add_render_pass(bc_gbuffer_terrain_pass_dx11());
 		l_render_system.add_render_pass(bc_gbuffer_decal_pass());
-		l_render_system.add_render_pass(bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 3, { {50, 1}, {100, 1} }));
+		l_render_system.add_render_pass(bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 2, { {40, 1}, {70, 1}, {130, 2} }));
 		l_render_system.add_render_pass(bc_vegetable_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
 		l_render_system.add_render_pass(bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
 		l_render_system.add_render_pass(bc_gbuffer_light_map_pass
@@ -147,8 +146,8 @@ namespace box
 		l_render_system.add_render_pass(bx_bullet_trail_pass
 		(
 			constant::g_rpass_back_buffer_texture, 
-			constant::g_rpass_back_buffer_render_view, 
-			l_file_system.get_content_texture_path(bcL("BulletTrail.dds"))
+			constant::g_rpass_back_buffer_render_view,
+			bcL("Texture\\Flare\\BulletTrail.dds")
 		));
 		l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 		l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));

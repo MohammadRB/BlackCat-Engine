@@ -284,10 +284,10 @@ namespace black_cat
 		game::bc_mesh_builder& p_builder)
 	{
 		auto& l_device = p_render_system.get_device();
-		core::bc_vector_movable< game::bc_vertex_pos_tex_nor_tan > l_vertices;
-		core::bc_vector_movable< game::bc_vertex_pos_tex_nor_tan_bon > l_skinned_vertices;
-		core::bc_vector_movable< bcUINT16 > l_16bit_indices;
-		core::bc_vector_movable< bcUINT32 > l_32bit_indices;
+		core::bc_vector_movable<game::bc_vertex_pos_tex_nor_tan> l_vertices;
+		core::bc_vector_movable<game::bc_vertex_pos_tex_nor_tan_bon> l_skinned_vertices;
+		core::bc_vector_movable<bcUINT16> l_16bit_indices;
+		core::bc_vector_movable<bcUINT32> l_32bit_indices;
 		graphic::bc_buffer_ref l_vertex_buffer;
 		graphic::bc_buffer_ref l_index_buffer;
 		bcSIZE l_index_count = 0;

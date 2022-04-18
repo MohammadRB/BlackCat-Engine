@@ -9,7 +9,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Container/bcBitVector.h"
-#include "Core/Container/bcConcurrentQueue.h"
+#include "Core/Container/bcConcurrentQueue1.h"
 #include "Core/Concurrency/bcThreadManager.h"
 #include "Core/Concurrency/bcTask.h"
 #include "Core/Concurrency/bcConcurrency.h"
@@ -148,7 +148,7 @@ namespace black_cat
 			template<class TAbstract, class TDerived, class ...TDeriveds>
 			friend class bc_abstract_component_register;
 			using actor_container_type = core::bc_vector_movable<_bc_actor_entry>;
-			using double_update_actor_container_type = core::bc_concurrent_queue<bc_actor>;
+			using double_update_actor_container_type = core::bc_concurrent_queue1<bc_actor>;
 			using component_container_type = core::bc_unordered_map_program<bc_actor_component_hash, _bc_actor_component_entry>;
 
 		public:

@@ -288,7 +288,7 @@ namespace black_cat
 				core::bc_stop_watch l_watch;
 				l_watch.start();
 
-				core::bc_concurrent_queue<bc_queue_test_entry, bc_test_allocator<bc_queue_test_entry>> l_queue;
+				core::bc_concurrent_queue1<bc_queue_test_entry, bc_test_allocator<bc_queue_test_entry>> l_queue;
 				//const bc_pool_allocator<bc_queue_test_entry> l_allocator(l_pool);
 				//core::bc_concurrent_queue<bc_queue_test_entry, bc_pool_allocator<bc_queue_test_entry>> l_queue(l_allocator);
 				//moodycamel::ConcurrentQueue<bc_queue_test_entry> l_moody_queue;

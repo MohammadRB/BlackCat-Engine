@@ -35,7 +35,7 @@ namespace black_cat
 		l_global_config
 				.add_if_not_exist_config_key("render_edge_aa_min_depth_threshold", core::bc_any(.02f * l_global_config.get_scene_global_scale()))
 				.add_if_not_exist_config_key("render_edge_aa_max_depth_threshold", core::bc_any(.16f * l_global_config.get_scene_global_scale()))
-				.add_if_not_exist_config_key("render_edge_aa_normal_threshold", core::bc_any(.4f))
+				.add_if_not_exist_config_key("render_edge_aa_normal_threshold", core::bc_any(.3f))
 				.add_if_not_exist_config_key("render_edge_aa_sample_count", core::bc_any(4))
 				.flush_changes();
 	}

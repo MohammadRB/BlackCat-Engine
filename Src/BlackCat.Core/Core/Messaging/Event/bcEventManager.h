@@ -12,7 +12,7 @@
 #include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Container/bcList.h"
-#include "Core/Container/bcConcurrentQueue.h"
+#include "Core/Container/bcConcurrentQueue1.h"
 #include "Core/Utility/bcObjectPoolAllocator.h"
 #include "Core/Utility/bcServiceManager.h"
 
@@ -117,7 +117,7 @@ namespace black_cat
 
 			bcUINT32 _process_events_in_queue(const platform::bc_clock::update_param& p_clock,
 				platform::bc_clock::big_clock& p_last_elapsed,
-				bc_concurrent_queue<_bc_queued_event>& p_global_queue,
+				bc_concurrent_queue1<_bc_queued_event>& p_global_queue,
 				bc_list<_bc_queued_event, bc_memory_pool_allocator<_bc_queued_event>>& p_local_queue);
 
 			platform::bc_shared_mutex m_handlers_mutex;
@@ -126,8 +126,8 @@ namespace black_cat
 			bc_concurrent_memory_pool m_queue_pool;
 			bc_list<_bc_queued_event, bc_memory_pool_allocator<_bc_queued_event>> m_local_queue;
 			bc_list<_bc_queued_event, bc_memory_pool_allocator<_bc_queued_event>> m_render_local_queue;
-			bc_concurrent_queue<_bc_queued_event> m_global_queue;
-			bc_concurrent_queue<_bc_queued_event> m_render_global_queue;
+			bc_concurrent_queue1<_bc_queued_event> m_global_queue;
+			bc_concurrent_queue1<_bc_queued_event> m_render_global_queue;
 			platform::bc_clock::big_clock m_last_elapsed;
 			platform::bc_clock::big_clock m_render_last_elapsed;
 		};
