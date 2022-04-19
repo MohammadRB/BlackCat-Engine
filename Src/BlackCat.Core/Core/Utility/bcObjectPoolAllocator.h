@@ -10,14 +10,13 @@ namespace black_cat
 	namespace core
 	{
 		template<typename T>
-		class bc_memory_pool_allocator
+		class bc_object_pool_allocator
 		{
-		private:
 			template<typename TOther>
-			friend class bc_memory_pool_allocator;
+			friend class bc_object_pool_allocator;
 
 		public:
-			using this_type = bc_memory_pool_allocator<T>;
+			using this_type = bc_object_pool_allocator<T>;
 			using value_type = T;
 			using pointer = value_type*;
 			using const_pointer = const value_type*;
@@ -30,49 +29,50 @@ namespace black_cat
 			using propagate_on_container_swap = std::true_type;
 			using is_movable_type = std::false_type;
 
-			template< typename TOther >
+			template<typename TOther>
 			struct rebind
 			{
-				using other = bc_memory_pool_allocator<TOther>;
+				using other = bc_object_pool_allocator<TOther>;
 			};
 
 		public:
-			bc_memory_pool_allocator() noexcept
+			bc_object_pool_allocator() noexcept
 				: m_memory_pool(nullptr)
-			{	
+			{
 			}
 
-			bc_memory_pool_allocator(bc_concurrent_memory_pool& p_memory_pool) noexcept
+			bc_object_pool_allocator(bc_concurrent_memory_pool& p_memory_pool) noexcept
 				: m_memory_pool(&p_memory_pool)
 			{
 			}
 
-			bc_memory_pool_allocator(const this_type& p_other) noexcept
+			bc_object_pool_allocator(const this_type& p_other) noexcept
+				: m_memory_pool(p_other.m_memory_pool)
 			{
-				operator=(p_other);
 			}
 
 			template< typename TOther >
-			bc_memory_pool_allocator(const bc_memory_pool_allocator<TOther>& p_other) noexcept
+			bc_object_pool_allocator(const bc_object_pool_allocator<TOther>& p_other) noexcept
+				: m_memory_pool(p_other.m_memory_pool)
 			{
-				operator=(p_other);
 			}
 
-			bc_memory_pool_allocator(this_type&& p_other) noexcept
+			bc_object_pool_allocator(this_type&& p_other) noexcept
+				: m_memory_pool(p_other.m_memory_pool)
 			{
-				operator=(std::move(p_other));
+				p_other.m_memory_pool = nullptr;
 			}
 
-			~bc_memory_pool_allocator() = default;
+			~bc_object_pool_allocator() = default;
 
-			this_type& operator =(const this_type& p_other) noexcept
+			this_type& operator=(const this_type& p_other) noexcept
 			{
 				m_memory_pool = p_other.m_memory_pool;
 				return *this;
 			}
 
 			template<typename TOther>
-			this_type& operator =(const bc_memory_pool_allocator<TOther>& p_other) noexcept
+			this_type& operator=(const bc_object_pool_allocator<TOther>& p_other) noexcept
 			{
 				m_memory_pool = p_other.m_memory_pool;
 				return *this;
@@ -81,6 +81,7 @@ namespace black_cat
 			this_type& operator =(this_type&& p_other) noexcept
 			{
 				m_memory_pool = p_other.m_memory_pool;
+				p_other.m_memory_pool = nullptr;
 				return *this;
 			}
 
@@ -96,20 +97,11 @@ namespace black_cat
 
 			pointer allocate(size_type p_count, const void* p_hint = nullptr)
 			{
-				if (p_count > 1)
-				{
-					throw bc_invalid_operation_exception("Allocation of more that one object is not supported in memory pool allocator");
-				}
-				if (!m_memory_pool)
-				{
-					throw bc_invalid_operation_exception("Uninitialized memory pool");
-				}
-				if (m_memory_pool->entry_size() != sizeof(value_type))
-				{
-					throw bc_invalid_operation_exception("Memory pool with different size than one that is expected");
-				}
-
-				pointer l_pointer = static_cast<pointer>(m_memory_pool->alloc());
+				BC_ASSERT(p_count == 1);
+				BC_ASSERT(m_memory_pool != nullptr);
+				BC_ASSERT(m_memory_pool->entry_size() >= sizeof(value_type));
+				
+				auto l_pointer = static_cast<pointer>(m_memory_pool->alloc());
 				if (!l_pointer)
 				{
 					l_pointer = static_cast<pointer>(BC_ALLOC_THROW(sizeof(value_type), bc_alloc_type::unknown));
@@ -118,21 +110,12 @@ namespace black_cat
 				return l_pointer;
 			}
 
-			void deallocate(pointer p_pointer, size_type n = 0)
+			void deallocate(pointer p_pointer, size_type p_count = 1)
 			{
-				if (n > 1)
-				{
-					throw bc_invalid_operation_exception("Allocation of more that one object is not supported in memory pool allocator");
-				}
-				if (!m_memory_pool)
-				{
-					throw bc_invalid_operation_exception("Uninitialized memory pool");
-				}
-				if (m_memory_pool->entry_size() != sizeof(T))
-				{
-					throw bc_invalid_operation_exception("Memory pool with different size than one that is expected");
-				}
-
+				BC_ASSERT(p_count == 1);
+				BC_ASSERT(m_memory_pool != nullptr);
+				BC_ASSERT(m_memory_pool->entry_size() >= sizeof(value_type));
+				
 				if(m_memory_pool->contain_pointer(p_pointer))
 				{
 					m_memory_pool->free(p_pointer);

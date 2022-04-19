@@ -4,6 +4,7 @@
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
+#include "Game/Object/Scene/Component/bcCallbackComponent.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/bcJsonParse.h"
 #include "App/SampleImp/XBot/bcXBotRagdollNetworkMessage.h"
@@ -29,6 +30,12 @@ namespace box
 
 	void bx_player_actor_controller::killed(game::bc_network_client_id p_killer_id, core::bc_string_view p_body_part_force, const core::bc_vector3f& p_force) noexcept
 	{
+		if (auto* l_weapon = get_weapon())
+		{
+			auto* l_callback_component = l_weapon->m_actor.get_create_component<game::bc_callback_component>();
+			l_callback_component->set_as_auto_remove(8000);
+		}
+
 		bc_xbot_actor_controller::enable_ragdoll(p_body_part_force, p_force);
 
 		bx_player_killed_event l_event(p_killer_id, get_actor());
@@ -49,7 +56,7 @@ namespace box
 		const auto l_max_side_length = std::max(std::max(l_bound_box_extends.x, l_bound_box_extends.y), l_bound_box_extends.z) * 2;
 		const auto l_camera_y_offset = l_max_side_length * 3.5f;
 		const auto l_camera_z_offset = l_max_side_length * -1.5f;
-		const auto l_camera_look_at_offset = l_max_side_length * 1.25f;
+		const auto l_camera_look_at_offset = l_max_side_length * 1.70f;
 
 		set_camera_offsets(l_camera_y_offset, l_camera_z_offset, l_camera_look_at_offset);
 

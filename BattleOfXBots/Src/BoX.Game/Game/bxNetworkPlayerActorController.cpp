@@ -1,9 +1,11 @@
 // [01/01/2022 MRB]
 
 #include "Core/Messaging/Event/bcEventManager.h"
-#include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
-#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/System/Network/bcNetworkSystem.h"
+#include "Game/Object/Scene/ActorComponent/bcActor.hpp"
+#include "Game/Object/Scene/Component/bcCallbackComponent.h"
+#include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "BoX.Game/Game/bxNetworkPlayerActorController.h"
 #include "BoX.Game/Network/bxPlayerKilledNetworkMessage.h"
 #include "BoX.Game/bxEvent.h"
@@ -95,6 +97,12 @@ namespace box
 
 		if (l_health_hit && m_health <= 0)
 		{
+			if(auto* l_weapon = get_weapon())
+			{
+				auto* l_callback_component = l_weapon->m_actor.get_create_component<game::bc_callback_component>();
+				l_callback_component->set_as_auto_remove(8000);
+			}
+
 			bc_xbot_actor_controller::enable_ragdoll();
 
 			// Let ragdoll component add needed force in case if has received the event before controller

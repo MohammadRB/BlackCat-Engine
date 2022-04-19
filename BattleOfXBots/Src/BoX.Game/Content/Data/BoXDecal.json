@@ -14,6 +14,19 @@
       "auto_remove": true
     },
     {
+      "name": "explosion_blast2",
+      "material_name": "decal_material",
+      "u0": 0,
+      "v0": 670,
+      "u1": 512,
+      "v1": 1130,
+      "width": 15.0,
+      "height": 15.0,
+      "depth": 15.0,
+      "group": 1,
+      "auto_remove": true
+    },
+    {
       "name": "bullet_soil",
       "material_name": "decal_material",
       "u0": 780,

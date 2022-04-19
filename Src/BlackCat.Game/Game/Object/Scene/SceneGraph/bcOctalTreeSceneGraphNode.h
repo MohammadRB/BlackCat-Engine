@@ -18,7 +18,7 @@ namespace black_cat
 		class _bc_octal_tree_graph_node_entry : public bci_scene_graph_node_entry
 		{
 		public:
-			using graph_node_entry_allocator = core::bc_memory_pool_allocator<_bc_octal_tree_graph_node_entry>;
+			using graph_node_entry_allocator = core::bc_object_pool_allocator<_bc_octal_tree_graph_node_entry>;
 			using graph_node_entry_list = core::bc_list<_bc_octal_tree_graph_node_entry, graph_node_entry_allocator>;
 			using internal_iterator = graph_node_entry_list::iterator;
 

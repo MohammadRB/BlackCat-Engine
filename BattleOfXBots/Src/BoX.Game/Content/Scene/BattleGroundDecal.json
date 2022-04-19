@@ -289,6 +289,20 @@
       "auto_remove": false
     },
     {
+      "name": "number_0",
+      "material_name": "decal_numbers",
+      "u0": 348,
+      "v0": 174,
+      "u1": 512,
+      "v1": 348,
+      "width": 5.0,
+      "height": 5.0,
+      "depth": 3.0,
+      "group": 2,
+      "view_distance": 150.0,
+      "auto_remove": false
+    },
+    {
       "name": "number_1",
       "material_name": "decal_numbers",
       "u0": 0,
@@ -321,7 +335,7 @@
       "material_name": "decal_numbers",
       "u0": 348,
       "v0": 0,
-      "u1": 522,
+      "u1": 512,
       "v1": 174,
       "width": 5.0,
       "height": 5.0,
@@ -356,6 +370,48 @@
       "depth": 3.0,
       "group": 2,
       "view_distance": 150.0,
+      "auto_remove": false
+    },
+    {
+      "name": "number_6",
+      "material_name": "decal_numbers",
+      "u0": 0,
+      "v0": 348,
+      "u1": 174,
+      "v1": 512,
+      "width": 5.0,
+      "height": 5.0,
+      "depth": 3.0,
+      "group": 2,
+      "view_distance": 150.0,
+      "auto_remove": false
+    },
+    {
+      "name": "text_enemy",
+      "material_name": "decal_texts",
+      "u0": 0,
+      "v0": 0,
+      "u1": 920,
+      "v1": 145,
+      "width": 22.0,
+      "height": 5.0,
+      "depth": 3.0,
+      "group": 2,
+      "view_distance": 200.0,
+      "auto_remove": false
+    },
+    {
+      "name": "text_ir",
+      "material_name": "decal_texts",
+      "u0": 0,
+      "v0": 150,
+      "u1": 850,
+      "v1": 480,
+      "width": 20.0,
+      "height": 10.0,
+      "depth": 3.0,
+      "group": 2,
+      "view_distance": 200.0,
       "auto_remove": false
     }
   ]

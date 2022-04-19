@@ -119,13 +119,25 @@
         {
           "content_title": "decal_numbers",
           "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\Decal\\Number\\numbers.dds",
+          "content_file": "Content\\Texture\\Decal\\Art\\numbers.dds",
           "content_parameter": {}
         },
         {
           "content_title": "decal_numbers_nrm",
           "content_loader": "texture2d",
-          "content_file": "Content\\Texture\\Decal\\Number\\numbers_nrm.dds",
+          "content_file": "Content\\Texture\\Decal\\Art\\numbers_nrm.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "decal_texts",
+          "content_loader": "texture2d",
+          "content_file": "Content\\Texture\\Decal\\Art\\texts.dds",
+          "content_parameter": {}
+        },
+        {
+          "content_title": "decal_texts_nrm",
+          "content_loader": "texture2d",
+          "content_file": "Content\\Texture\\Decal\\Art\\texts_nrm.dds",
           "content_parameter": {}
         },
         {

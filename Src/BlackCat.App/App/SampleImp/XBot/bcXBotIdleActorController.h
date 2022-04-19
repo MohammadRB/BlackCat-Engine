@@ -5,6 +5,7 @@
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "Game/Object/Scene/Component/bcRigidControllerComponent.h"
+#include "Game/Object/Scene/Component/bcCallbackComponent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "App/SampleImp/XBot/bcXBotActorController.h"
 #include "App/bcExport.h"
@@ -15,7 +16,9 @@ namespace black_cat
 	{
 	private:
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
-		
+
+		void added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
+
 		void load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
 		
 		void load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
@@ -31,7 +34,8 @@ namespace black_cat
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 
 		void throw_grenade(game::bc_actor& p_grenade) noexcept override;
-
+	
+	private:
 		game::bc_physics_system* m_physics_system = nullptr;
 		game::bc_human_ragdoll_component* m_ragdoll_component = nullptr;
 		game::bc_rigid_controller_component* m_rigid_controller_component = nullptr;
@@ -45,6 +49,14 @@ namespace black_cat
 		m_physics_system = &p_context.m_game_system.get_physics_system();
 		m_ragdoll_component = p_context.m_actor.get_component<game::bc_human_ragdoll_component>();
 		m_rigid_controller_component = p_context.m_actor.get_component<game::bc_rigid_controller_component>();
+	}
+
+	inline void bc_xbot_idle_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
+	{
+		bc_xbot_actor_controller::added_to_scene(p_context, p_scene);
+
+		//auto l_weapon = get_scene()->create_actor("xbot_rifle", core::bc_matrix4f::translation_matrix(get_position()));
+		//attach_weapon(l_weapon);
 	}
 
 	inline void bc_xbot_idle_actor_controller::load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context)
@@ -89,11 +101,17 @@ namespace black_cat
 	inline void bc_xbot_idle_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
 	{
 		bc_xbot_actor_controller::handle_event(p_context);
-		
-		const auto* l_bullet_hit_event = core::bci_message::as<game::bc_bullet_hit_actor_event>(p_context.m_event);
-		if (l_bullet_hit_event)
+
+		if (const auto* l_bullet_hit_event = core::bci_message::as<game::bc_bullet_hit_actor_event>(p_context.m_event))
 		{
-			enable_ragdoll();
+			if (auto* l_weapon = get_weapon())
+			{
+				auto* l_callback_component = l_weapon->m_actor.get_create_component<game::bc_callback_component>();
+				l_callback_component->set_as_auto_remove(8000);
+			}
+
+			bc_xbot_actor_controller::enable_ragdoll();
+
 			m_ragdoll_component->handle_event(p_context);
 			m_ragdoll_enabled = true;
 		}

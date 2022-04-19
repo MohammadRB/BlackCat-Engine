@@ -348,7 +348,7 @@
       "controller": "explosion",
       "parameters": {
         "emitter_name": "big_explosion",
-        "decal_name": "explosion_blast1",
+        "decal_name": "explosion_blast2",
         "force_amount": 20000.0,
         "force_radius": 40.0
       },

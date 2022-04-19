@@ -8,8 +8,8 @@ namespace black_cat
 	namespace core
 	{
 		bc_event_manager::bc_event_manager()
-			: m_local_queue(bc_memory_pool_allocator<_bc_queued_event>(m_queue_pool)),
-			m_render_local_queue(bc_memory_pool_allocator<_bc_queued_event>(m_queue_pool)),
+			: m_local_queue(bc_object_pool_allocator<_bc_queued_event>(m_queue_pool)),
+			m_render_local_queue(bc_object_pool_allocator<_bc_queued_event>(m_queue_pool)),
 			m_last_elapsed(0),
 			m_render_last_elapsed(0)
 		{
@@ -105,7 +105,7 @@ namespace black_cat
 		bcUINT32 bc_event_manager::_process_events_in_queue(const platform::bc_clock::update_param& p_clock,
 			platform::bc_clock::big_clock& p_last_elapsed,
 			bc_concurrent_queue1<_bc_queued_event>& p_global_queue,
-			bc_list<_bc_queued_event, bc_memory_pool_allocator<_bc_queued_event>>& p_local_queue)
+			bc_list<_bc_queued_event, bc_object_pool_allocator<_bc_queued_event>>& p_local_queue)
 		{
 			bcUINT32 l_processed_event_count = 0;
 			_bc_queued_event l_event(nullptr, 0);

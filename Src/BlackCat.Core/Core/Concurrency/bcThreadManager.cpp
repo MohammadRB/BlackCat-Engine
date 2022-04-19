@@ -13,6 +13,8 @@ namespace black_cat
 		constexpr bcSIZE bc_thread_manager::s_thread_in_spin_count = 0;
 		
 		bc_thread_manager::bc_thread_manager(bcSIZE p_hardware_thread_count, bcSIZE p_reserved_thread_count) noexcept
+			: m_hardware_thread_count(0),
+			m_reserved_thread_count(0)
 		{
 			_initialize(p_hardware_thread_count, p_reserved_thread_count);
 		}
@@ -83,6 +85,24 @@ namespace black_cat
 			m_thread_in_spin_count.store(0, platform::bc_memory_order::relaxed);
 			m_task_count.store(0, platform::bc_memory_order::relaxed);
 
+			const auto l_pool_size = m_hardware_thread_count * 2 + m_reserved_thread_count;
+			platform::bc_basic_hardware_info l_hardware_info{};
+			platform::bc_hardware_info::get_basic_info(l_hardware_info);
+
+			m_queue_pool.initialize
+			(
+				l_pool_size,
+				std::max(sizeof(task_queue_type::node_type), l_hardware_info.m_cache_line_size),
+				bc_alloc_type::program
+			);
+			m_task_pool.initialize
+			(
+				l_pool_size,
+				std::max(sizeof(bc_task_link<void>), l_hardware_info.m_cache_line_size),
+				bc_alloc_type::program
+			);
+			m_queue.reset(task_queue_type(bc_object_pool_allocator<task_wrapper_type>(m_queue_pool)));
+
 			try
 			{
 				m_threads.reserve(m_hardware_thread_count + m_reserved_thread_count);
@@ -97,16 +117,6 @@ namespace black_cat
 				_stop_workers();
 				throw;
 			}
-
-			platform::bc_basic_hardware_info l_hardware_info{};
-			platform::bc_hardware_info::get_basic_info(l_hardware_info);
-
-			m_tasks_pool.initialize
-			(
-				m_hardware_thread_count * 2 + m_reserved_thread_count, 
-				std::max(sizeof(bc_task_link<void>), l_hardware_info.m_cache_line_size),
-				bc_alloc_type::program
-			);
 		}
 
 		void bc_thread_manager::_push_worker()
@@ -248,7 +258,7 @@ namespace black_cat
 
 		bool bc_thread_manager::_pop_task_from_global_queue(task_wrapper_type& p_task)
 		{
-			return m_global_queue.pop(p_task);
+			return m_queue->pop(p_task);
 		}
 
 		void bc_thread_manager::_worker_spin(bcUINT32 p_my_index)
@@ -259,7 +269,7 @@ namespace black_cat
 				m_my_data.set(m_threads[p_my_index].get());
 			}
 
-			m_thread_in_spin_count.fetch_add(1);
+			m_thread_in_spin_count.fetch_add(1, platform::bc_memory_order::relaxed);
 
 			bcUINT32 l_without_task = 0;
 			task_wrapper_type l_task;
@@ -269,8 +279,8 @@ namespace black_cat
 				if (_pop_task_from_global_queue(l_task))
 				{
 					l_without_task = 0;
-					m_task_count.fetch_sub(1);
-					m_thread_in_spin_count.fetch_sub(1);
+					m_task_count.fetch_sub(1, platform::bc_memory_order::relaxed);
+					m_thread_in_spin_count.fetch_sub(1, platform::bc_memory_order::relaxed);
 
 					// If number of steady threads in worker spin method is zero there is no need to notify another thread
 					if constexpr (s_thread_in_spin_count != 0)
@@ -281,7 +291,7 @@ namespace black_cat
 					l_task();
 					l_task.reset();
 
-					m_thread_in_spin_count.fetch_add(1);
+					m_thread_in_spin_count.fetch_add(1, platform::bc_memory_order::relaxed);
 				}
 				else
 				{
@@ -295,7 +305,7 @@ namespace black_cat
 					{
 						l_without_task = 0;
 
-						if (m_thread_in_spin_count.load() > s_thread_in_spin_count)
+						if (m_thread_in_spin_count.load(platform::bc_memory_order::relaxed) > s_thread_in_spin_count)
 						{
 							{
 								platform::bc_unique_lock l_guard(m_cvariable_mutex);
@@ -308,6 +318,12 @@ namespace black_cat
 
 									m_thread_in_spin_count.fetch_add(1, platform::bc_memory_order::relaxed);
 								}
+							}
+
+							// If this thread is going to exit, another thread should be woke up to steal a task
+							if (m_my_data->is_done())
+							{
+								m_cvariable.notify_one();
 							}
 						}
 					}

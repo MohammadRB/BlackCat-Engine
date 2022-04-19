@@ -549,8 +549,7 @@ namespace black_cat
 		}
 
 		auto l_weapon_mass = 0.f;
-		auto* l_rigid_dynamic_component = p_weapon.get_component<game::bc_rigid_dynamic_component>();
-		if (l_rigid_dynamic_component)
+		if (auto* l_rigid_dynamic_component = p_weapon.get_component<game::bc_rigid_dynamic_component>())
 		{
 			l_rigid_dynamic_component->set_kinematic(true);
 

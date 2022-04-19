@@ -542,8 +542,7 @@ namespace black_cat
 			return;
 		}
 
-		const auto* l_weapon = get_weapon();
-		if (l_weapon)
+		if (get_weapon())
 		{
 			return;
 		}

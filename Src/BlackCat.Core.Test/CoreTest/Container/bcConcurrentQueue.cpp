@@ -2,14 +2,14 @@
 
 #include "CoreTest/CoreTestPCH.h"
 
-//#include "Core/Container/bcConcurrentQueue.h"
+#include "Core/Container/bcConcurrentQueue1.h"
 #include "Core/Utility/bcObjectPoolAllocator.h"
 #include "Core/Utility/bcStopWatch.h"
 #include "CoreTest/bcTestFixture.h"
 
 #include "concurrentqueue.h"
 #include "bcConcurrentQueue.h"
-#include "bcConcurrentQueue1.h"
+//#include "bcConcurrentQueue1.h"
 
 namespace black_cat
 {
@@ -282,15 +282,15 @@ namespace black_cat
 				constexpr auto l_pop_thread_count = 4U;
 				constexpr auto l_thread_item_count = 10000U;
 
-				//core::bc_concurrent_memory_pool l_pool;
-				//l_pool.initialize(l_thread_item_count * l_push_thread_count + 1, sizeof(core::bc_concurrent_queue<bc_queue_test_entry>::node_type), core::bc_alloc_type::program);
+				core::bc_concurrent_memory_pool l_pool;
+				l_pool.initialize(l_thread_item_count * l_push_thread_count + 1, sizeof(core::bc_concurrent_queue<bc_queue_test_entry>::node_type), core::bc_alloc_type::program);
 
 				core::bc_stop_watch l_watch;
 				l_watch.start();
 
+				const bc_pool_allocator<bc_queue_test_entry> l_allocator(l_pool);
+				//core::bc_concurrent_queue<bc_queue_test_entry, bc_test_allocator<bc_queue_test_entry>> l_queue;
 				core::bc_concurrent_queue1<bc_queue_test_entry, bc_test_allocator<bc_queue_test_entry>> l_queue;
-				//const bc_pool_allocator<bc_queue_test_entry> l_allocator(l_pool);
-				//core::bc_concurrent_queue<bc_queue_test_entry, bc_pool_allocator<bc_queue_test_entry>> l_queue(l_allocator);
 				//moodycamel::ConcurrentQueue<bc_queue_test_entry> l_moody_queue;
 
 				std::vector<std::thread> l_push_threads;

@@ -125,14 +125,14 @@ namespace black_cat
 
 		for(const auto& l_stream : l_json_document->m_streams)
 		{
+			l_stream_names.push_back(l_stream->c_str());
+
 			if (*l_stream == "$wait")
 			{
 				// Before submitting new task wait for previous ones to finish
 				core::bc_concurrency::when_all(std::cbegin(l_stream_tasks), std::cend(l_stream_tasks));
 				continue;
 			}
-
-			l_stream_names.push_back(l_stream->c_str());
 
 			auto l_task = l_content_stream_manager.load_content_stream_async(core::bc_alloc_type::unknown, l_stream->c_str());
 			l_stream_tasks.push_back(std::move(l_task));

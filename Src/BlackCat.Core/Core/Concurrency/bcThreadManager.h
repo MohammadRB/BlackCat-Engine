@@ -18,6 +18,8 @@
 #include "Core/Utility/bcDelegate.hpp"
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Utility/bcObjectPool.h"
+#include "Core/Utility/bcObjectPoolAllocator.h"
+#include "Core/Utility/bcNullable.h"
 #include "Core/bcExport.h"
 #include "Core/bcConstant.h"
 
@@ -37,6 +39,7 @@ namespace black_cat
 
 		private:
 			using task_wrapper_type = bc_delegate<void()>;
+			using task_queue_type = bc_concurrent_queue1_a<task_wrapper_type, bc_object_pool_allocator>;
 			class _thread_data;
 
 		public:
@@ -102,9 +105,11 @@ namespace black_cat
 
 			mutable platform::bc_shared_mutex m_threads_mutex;
 			bc_vector_program<bc_unique_ptr<_thread_data>> m_threads;
-			bc_concurrent_queue1<task_wrapper_type> m_global_queue;
 			platform::bc_thread_local<_thread_data> m_my_data;
-			bc_concurrent_memory_pool m_tasks_pool;
+			
+			bc_concurrent_memory_pool m_queue_pool;
+			bc_concurrent_memory_pool m_task_pool;
+			bc_nullable<task_queue_type> m_queue;
 		};
 
 		class bc_thread_manager::_thread_data
@@ -169,7 +174,7 @@ namespace black_cat
 			}
 
 			bool l_task_allocated_from_pool;
-			auto* l_allocated_task_link = static_cast<bc_task_link<T>*>(m_tasks_pool.alloc());
+			auto* l_allocated_task_link = static_cast<bc_task_link<T>*>(m_task_pool.alloc());
 
 			if(l_allocated_task_link)
 			{
@@ -189,7 +194,7 @@ namespace black_cat
 				if(l_task_allocated_from_pool)
 				{
 					l_allocated_task_link->~bc_task_link();
-					m_tasks_pool.free(l_allocated_task_link);
+					m_task_pool.free(l_allocated_task_link);
 				}
 				else
 				{
@@ -197,8 +202,9 @@ namespace black_cat
 				}
 			});
 
-			m_global_queue.push(std::move(l_task_wrapper));
-			const auto l_task_count = m_task_count.fetch_add(1, platform::bc_memory_order::relaxed) + 1;
+			m_queue->push(std::move(l_task_wrapper));
+			// Do not use relax ordering to prevent cvariable notification move before
+			const auto l_task_count = m_task_count.fetch_add(1) + 1;
 
 			// If number of steady threads in work spin method is higher than zero there is no need to notify a thread
 			if (s_thread_in_spin_count == 0)
@@ -208,6 +214,7 @@ namespace black_cat
 
 			if (l_task_count >= s_push_thread_threshold)
 			{
+				m_low_contention_task_count.store(0, platform::bc_memory_order::relaxed);
 				_push_worker();
 			}
 			else

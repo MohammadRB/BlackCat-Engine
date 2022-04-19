@@ -91,6 +91,11 @@ namespace black_cat
 			auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
 			for (auto& l_stream : m_loaded_streams)
 			{
+				if(l_stream == "$wait")
+				{
+					continue;
+				}
+
 				l_content_stream_manager->unload_content_stream(l_stream.c_str());
 			}
 		}
