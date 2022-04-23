@@ -185,26 +185,28 @@ namespace black_cat
 
 			if (l_vb_size < l_vertices_count * sizeof(core::bc_vector3f))
 			{
-				graphic::bc_buffer_config l_vb_config = graphic::bc_resource_builder().as_buffer
+				const auto l_vb_config = graphic::bc_resource_builder().as_buffer
 				(
 					l_vertices_capacity,
 					sizeof(core::bc_vector3f),
 					graphic::bc_resource_usage::gpu_rw
 				).as_vertex_buffer();
-				graphic::bc_subresource_data l_vb_data(l_vertices_data, 0, 0);
+				const auto l_vb_data = graphic::bc_subresource_data(l_vertices_data, 0, 0);
+
 				m_vb = l_device.create_buffer(l_vb_config, &l_vb_data);
 				l_requires_render_state_update = true;
 			}
 
 			if (l_ib_size < l_indices_count * sizeof(bcUINT32))
 			{
-				graphic::bc_buffer_config l_ib_config = graphic::bc_resource_builder().as_buffer
+				const auto l_ib_config = graphic::bc_resource_builder().as_buffer
 				(
 					l_indices_capacity,
 					sizeof(bcUINT32),
 					graphic::bc_resource_usage::gpu_rw
 				).as_index_buffer();
-				graphic::bc_subresource_data l_ib_data(l_indices_data, 0, 0);
+				const auto l_ib_data = graphic::bc_subresource_data(l_indices_data, 0, 0);
+
 				m_ib = l_device.create_buffer(l_ib_config, &l_ib_data);
 				l_requires_render_state_update = true;
 			}

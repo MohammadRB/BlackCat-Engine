@@ -14,15 +14,11 @@ namespace black_cat
 		public:
 			bc_stop_watch() noexcept;
 
-			bc_stop_watch(const bc_stop_watch&) = delete;
-
-			bc_stop_watch(bc_stop_watch&&) = delete;
+			bc_stop_watch(const bc_stop_watch&) = default;
 
 			~bc_stop_watch() = default;
 
-			bc_stop_watch& operator=(const bc_stop_watch&) = delete;
-			
-			bc_stop_watch& operator=(bc_stop_watch&&) = delete;
+			bc_stop_watch& operator=(const bc_stop_watch&) = default;
 
 			void start() noexcept;
 
@@ -35,7 +31,7 @@ namespace black_cat
 			platform::bc_clock::small_time average_total_elapsed() const noexcept;
 
 		private:
-			bc_value_sampler<platform::bc_clock::small_time, 64> m_sampler;
+			bc_value_sampler<platform::bc_clock::small_time> m_sampler;
 			
 			platform::bc_clock::big_clock m_clock_per_milliseconds;
 			platform::bc_clock::big_clock m_start_clock;

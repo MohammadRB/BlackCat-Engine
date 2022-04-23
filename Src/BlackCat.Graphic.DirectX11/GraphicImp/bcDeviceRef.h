@@ -66,6 +66,12 @@ namespace black_cat
 		class bc_platform_vertex_shader;
 
 		template<bc_render_api TApi>
+		class bc_platform_device_clock_query;
+
+		template<bc_render_api TApi>
+		class bc_platform_device_timestamp_query;
+
+		template<bc_render_api TApi>
 		class bc_platform_device_occlusion_query;
 
 		template<bc_render_api TApi>
@@ -142,6 +148,14 @@ namespace black_cat
 		void BC_GRAPHICIMP_DLL _add_ref(bc_platform_vertex_shader<g_api_dx11>& p_shader);
 
 		void BC_GRAPHICIMP_DLL _release(bc_platform_vertex_shader<g_api_dx11>& p_shader);
+
+		void BC_GRAPHICIMP_DLL _add_ref(bc_platform_device_clock_query<g_api_dx11>& p_query);
+
+		void BC_GRAPHICIMP_DLL _release(bc_platform_device_clock_query<g_api_dx11>& p_query);
+
+		void BC_GRAPHICIMP_DLL _add_ref(bc_platform_device_timestamp_query<g_api_dx11>& p_query);
+
+		void BC_GRAPHICIMP_DLL _release(bc_platform_device_timestamp_query<g_api_dx11>& p_query);
 
 		void BC_GRAPHICIMP_DLL _add_ref(bc_platform_device_occlusion_query<g_api_dx11>& p_query);
 

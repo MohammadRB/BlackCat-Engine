@@ -6,34 +6,37 @@
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcStopWatch.h"
-#include "GraphicImp/Device/bcDevice.h"
-#include "Game/bcExport.h"
+#include "GraphicImp/Device/Query/bcDeviceTimeStampQuery.h"
+#include "Game/System/Render/bcDeviceQuery.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/Pass/bcConcurrentRenderPass.h"
 #include "Game/System/Render/Pass/bcRenderPassResourceManager.h"
 #include "Game/System/Render/Pass/bcIntermediateTextureManager.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
 	namespace game
 	{
 		class bc_render_system;
-		class bc_scene;
-		struct bc_render_system_update_context;
 
 		struct _bc_render_pass_entry
 		{
-		public:
+			using device_query = bc_device_query<graphic::bc_device_timestamp_query, 1>;
+
 			const bcCHAR* m_name;
 			bool m_is_concurrent;
 			core::bc_unique_ptr<bci_render_pass> m_pass;
-			core::bc_unique_ptr<core::bc_stop_watch> m_stop_watch;
+
+			core::bc_stop_watch m_stop_watch;
+			device_query m_device_query;
+			core::bc_value_sampler<platform::bc_clock::small_time, 32> m_device_elapsed_sampler{ 0 };
 		};
 
 		class BC_GAME_DLL bc_render_pass_manager : public platform::bc_no_copy
 		{
 		public:
-			explicit bc_render_pass_manager(graphic::bc_device& p_device) noexcept;
+			explicit bc_render_pass_manager(bc_render_system& p_render_system) noexcept;
 
 			bc_render_pass_manager(bc_render_pass_manager&&) noexcept;
 			
@@ -76,9 +79,13 @@ namespace black_cat
 
 			bci_render_pass* _get_pass(const bcCHAR* p_name);
 
+			bc_render_system* m_render_system;
 			core::bc_vector<_bc_render_pass_entry> m_passes;
 			bc_render_pass_resource_manager m_resource_manager;
 			bc_intermediate_texture_manager m_texture_manager;
+
+			_bc_render_pass_entry::device_query m_device_start_query;
+			bool m_all_queries_fetched;
 		};
 
 		template<typename TPass>

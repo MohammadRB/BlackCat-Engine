@@ -104,6 +104,11 @@ namespace black_cat
 
 	void bc_base_cascaded_shadow_map_pass::initialize_frame(const game::bc_concurrent_render_pass_render_context& p_context)
 	{
+		if (m_state->m_cascade_sizes.empty())
+		{
+			return;
+		}
+
 		m_last_cameras.clear();
 
 		if (m_my_index == 0)
@@ -139,6 +144,11 @@ namespace black_cat
 		}
 
 		m_state->wait_for_sync_flag(1);
+
+		if (m_state->m_lights.empty())
+		{
+			return;
+		}
 
 		for (bcSIZE l_light_ite = 0; l_light_ite < m_state->m_lights.size(); ++l_light_ite)
 		{
@@ -184,7 +194,6 @@ namespace black_cat
 
 		for (bcSIZE l_light_ite = 0; l_light_ite < m_state->m_lights.size(); ++l_light_ite)
 		{
-			const auto& l_light = *m_state->m_lights[l_light_ite].as_direct_light();
 			auto& l_light_state = m_state->m_light_states[l_light_ite];
 			const auto l_cascade_count = m_state->m_cascade_sizes.size();
 			
@@ -397,12 +406,12 @@ namespace black_cat
 			.read_config_key("render_shadow_map_multiplier", l_shadow_map_multiplier_param)
 			.read_config_key("render_shadow_map_cascades", l_cascade_sizes_param);
 
-		if (!l_shadow_map_multiplier_param.is<bcFLOAT>() || !l_cascade_sizes_param.is<core::bc_vector<core::bc_any>>())
+		if (!l_shadow_map_multiplier_param.cast_to_double().first || !l_cascade_sizes_param.is<core::bc_vector<core::bc_any>>())
 		{
 			return;
 		}
 
-		const auto l_shadow_map_multiplier = l_shadow_map_multiplier_param.as_throw<bcFLOAT>();
+		const auto l_shadow_map_multiplier = static_cast<bcFLOAT>(l_shadow_map_multiplier_param.cast_to_double_throw());
 		const auto& l_cascade_sizes = l_cascade_sizes_param.as_throw<core::bc_vector<core::bc_any>>();
 
 		if(l_cascade_sizes.size() % 2 != 0)
@@ -415,16 +424,9 @@ namespace black_cat
 
 		for(auto l_ite = 0U; l_ite < l_cascade_sizes.size(); l_ite += 2)
 		{
-			const auto l_cascade_distance = l_cascade_sizes[l_ite].as_throw<bcINT32>();
-			const auto l_cascade_update_interval = l_cascade_sizes[l_ite + 1].as_throw<bcINT32>();
-			l_cascade_sizes_int.push_back
-			(
-				bc_cascade_shadow_map_trait
-				{
-					static_cast<bcSIZE>(l_cascade_distance),
-					static_cast<bcUINT8>(l_cascade_update_interval)
-				}
-			);
+			const auto l_cascade_distance = static_cast<bcUINT32>(l_cascade_sizes[l_ite].cast_to_int_throw());
+			const auto l_cascade_update_interval = static_cast<bcUINT32>(l_cascade_sizes[l_ite + 1].cast_to_int_throw());
+			l_cascade_sizes_int.push_back(bc_cascade_shadow_map_trait{ l_cascade_distance, l_cascade_update_interval });
 		}
 
 		_reset_cascade_sizes(l_shadow_map_multiplier, core::bc_make_cspan(l_cascade_sizes_int));

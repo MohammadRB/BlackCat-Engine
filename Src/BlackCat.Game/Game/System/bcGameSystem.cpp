@@ -243,11 +243,12 @@ namespace black_cat
 
 			m_query_manager->process_query_queue(p_clock);
 			m_query_manager->swap_frame();
+			m_render_system->swap_frame(bc_render_system::swap_context(p_clock));
 		}
 
 		void bc_game_system::render_swap_frame(const platform::bc_clock::update_param& p_clock)
 		{
-			m_render_system->swap(bc_render_system::swap_context(p_clock));
+			m_render_system->render_swap_frame(bc_render_system::swap_context(p_clock));
 		}
 
 		void bc_game_system::_initialize(bc_game_system_parameter p_parameter)

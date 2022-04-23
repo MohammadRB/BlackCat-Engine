@@ -23,8 +23,8 @@ namespace black_cat
 {
 	struct bc_cascade_shadow_map_trait
 	{
-		bcSIZE m_distance;
-		bcUINT8 m_update_interval;
+		bcUINT32 m_distance;
+		bcUINT32 m_update_interval;
 	};
 
 	class _bc_cascaded_shadow_map_light_state

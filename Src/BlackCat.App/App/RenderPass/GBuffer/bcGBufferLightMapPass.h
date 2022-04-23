@@ -41,7 +41,6 @@ namespace black_cat
 	private:
 		constexpr static bcSIZE m_shader_thread_group_size = 16;
 		constexpr static bcSIZE m_shader_shadow_map_cascade_count = 4;
-		constexpr static bcSIZE m_shader_shadow_map_array_count = 1;
 		constexpr static bcSIZE m_shader_shadow_map_count = 1;
 		constexpr static bcSIZE m_num_direct_lights = 2;
 		constexpr static bcSIZE m_num_point_lights = 100;
@@ -56,6 +55,7 @@ namespace black_cat
 		graphic::bc_resource_view_ref m_normal_map_view;
 		graphic::bc_resource_view_ref m_specular_map_view;
 
+		graphic::bc_sampler_state_ref m_linear_sampler;
 		graphic::bc_sampler_state_ref m_pcf_sampler;
 		graphic::bc_buffer_ref m_parameters_cbuffer;
 		graphic::bc_buffer_ref m_direct_lights_buffer;
@@ -67,7 +67,7 @@ namespace black_cat
 		graphic::bc_buffer_ref m_shadow_maps_buffer;
 		graphic::bc_resource_view_ref m_shadow_maps_buffer_view;
 
-		core::bc_array<graphic::bc_shader_parameter_link, m_shader_shadow_map_array_count + m_shader_shadow_map_count> m_shadow_map_parameters;
+		core::bc_array<graphic::bc_shader_parameter_link, m_shader_shadow_map_count> m_shadow_map_parameters;
 
 		graphic::bc_texture2d_ref m_output_texture;
 		graphic::bc_resource_view_ref m_output_texture_view;

@@ -221,7 +221,7 @@ namespace black_cat
 		// Associate light depth maps to their structures
 		if (l_shadow_map_buffer_container != nullptr)
 		{
-			BC_ASSERT(l_shadow_map_buffer_container->size() <= m_shader_shadow_map_array_count);
+			BC_ASSERT(l_shadow_map_buffer_container->size() <= m_shader_shadow_map_count);
 
 			// Reset all parameters
 			for (auto& l_shadow_map_parameter : m_shadow_map_parameters)
@@ -244,6 +244,16 @@ namespace black_cat
 					std::begin(l_shadow_map_buffer_entry.second.m_cascade_sizes),
 					std::end(l_shadow_map_buffer_entry.second.m_cascade_sizes),
 					std::begin(l_shadow_map_struct.m_cascade_sizes)
+				);
+				// Due to an unknown error when we have only one cascade without making all matrices identity shader read corrupted values
+				std::for_each
+				(
+					std::begin(l_shadow_map_struct.m_view_projections),
+					std::end(l_shadow_map_struct.m_view_projections),
+					[](core::bc_matrix4f& p_mat)
+					{
+						p_mat.make_identity();
+					}
 				);
 				std::transform
 				(
@@ -447,6 +457,16 @@ namespace black_cat
 		m_normal_map_view = p_context.m_device.create_resource_view(*l_normal_map, l_normal_map_view_config);
 		m_specular_map_view = p_context.m_device.create_resource_view(*l_specular_map, l_specular_map_view_config);
 
+		auto l_linear_sampler_config = l_resource_configure
+			.as_resource()
+			.as_sampler_state
+			(
+				graphic::bc_filter::min_mag_linear_mip_point,
+				graphic::bc_texture_address_mode::clamp,
+				graphic::bc_texture_address_mode::clamp,
+				graphic::bc_texture_address_mode::clamp
+			)
+			.as_sampler_state();
 		auto l_pcf_sampler_config = l_resource_configure
 			.as_resource()
 			.as_sampler_state
@@ -459,6 +479,7 @@ namespace black_cat
 			.with_comparison(graphic::bc_comparison_func::less)
 			.as_sampler_state();
 
+		m_linear_sampler = p_context.m_device.create_sampler_state(l_linear_sampler_config);
 		m_pcf_sampler = p_context.m_device.create_sampler_state(l_pcf_sampler_config);
 
 		auto l_output_texture_config = l_resource_configure
@@ -515,7 +536,8 @@ namespace black_cat
 		(
 			m_device_compute_state.get(),
 			{
-				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::compute, m_pcf_sampler.get())
+				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::compute, m_linear_sampler.get()),
+				graphic::bc_sampler_parameter(1, graphic::bc_shader_type::compute, m_pcf_sampler.get())
 			},
 			std::move(l_resource_views),
 			{

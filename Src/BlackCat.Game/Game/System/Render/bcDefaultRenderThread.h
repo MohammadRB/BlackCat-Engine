@@ -54,12 +54,12 @@ namespace black_cat
 			bc_default_render_thread& operator=(bc_default_render_thread&&) noexcept = default;
 
 			/**
-			 * \brief Start capturing command lists and put pipeline to lock state
+			 * \brief Start executing commands and put pipeline to lock state
 			 */
 			void start() noexcept;
 
 			/**
-			 * \brief Stop capturing command lists and reset pipeline state and lock
+			 * \brief Stop executing commands and reset pipeline state and unlock
 			 */
 			void finish() noexcept;
 

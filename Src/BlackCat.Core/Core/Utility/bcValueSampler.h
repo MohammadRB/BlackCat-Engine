@@ -9,7 +9,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		template<typename TValue, bcUINT32 TSampleCount>
+		template<typename TValue, bcUINT32 TSampleCount = 64>
 		class bc_value_sampler
 		{
 		public:

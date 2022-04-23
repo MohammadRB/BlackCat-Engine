@@ -41,11 +41,16 @@ namespace black_cat
 		extern graphic::bc_pipeline_stage _convert_shader_type_to_pipeline_stage(graphic::bc_shader_type p_shader_types);
 
 		bc_render_system::bc_render_system()
-			: m_content_stream(nullptr)
+			: m_device_timestamps_are_ready(true),
+			m_device_elapsed_sampler(0),
+			m_content_stream(nullptr)
 		{
 		}
 
 		bc_render_system::bc_render_system(bc_render_system&& p_other) noexcept
+			: m_device_timestamps_are_ready(true),
+			m_device_elapsed_sampler(0),
+			m_content_stream(nullptr)
 		{
 			operator=(std::move(p_other));
 		}
@@ -61,6 +66,13 @@ namespace black_cat
 		bc_render_system& bc_render_system::operator=(bc_render_system&& p_other) noexcept
 		{
 			m_device = std::move(p_other.m_device);
+			m_device_swap_buffer = std::move(p_other.m_device_swap_buffer);
+			m_device_clock_query = std::move(p_other.m_device_clock_query);
+			m_device_start_query = std::move(p_other.m_device_start_query);
+			m_device_end_query = std::move(p_other.m_device_end_query);
+			m_device_timestamps_are_ready = p_other.m_device_timestamps_are_ready;
+			m_device_elapsed_sampler = p_other.m_device_elapsed_sampler;
+
 			m_content_stream = p_other.m_content_stream;
 			m_thread_manager = std::move(p_other.m_thread_manager);
 			m_material_manager = std::move(p_other.m_material_manager);
@@ -72,7 +84,6 @@ namespace black_cat
 			m_window_resize_handle = std::move(p_other.m_window_resize_handle);
 			m_app_active_handle = std::move(p_other.m_app_active_handle);
 			m_device_reset_handle = std::move(p_other.m_device_reset_handle);
-			m_frame_render_finish_handle = std::move(p_other.m_frame_render_finish_handle);
 			m_config_change_handle = std::move(p_other.m_config_change_handle);
 
 			m_render_pass_states = std::move(p_other.m_render_pass_states);
@@ -82,10 +93,22 @@ namespace black_cat
 			m_window_resize_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
 			m_app_active_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
 			m_device_reset_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
-			m_frame_render_finish_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
 			m_config_change_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler));
 			
 			return *this;
+		}
+		
+		void bc_render_system::add_render_task(bci_render_task& p_task)
+		{
+			core::bc_task<void> l_cpu_task = core::bc_concurrency::start_task<void>([this, &p_task]()
+			{
+				const auto l_render_thread_guard = m_thread_manager->get_available_thread_wait();
+				auto& l_render_thread = *l_render_thread_guard.get_thread();
+
+				p_task.execute(*this, l_render_thread);
+			});
+
+			p_task._set_cpu_task(std::move(l_cpu_task));
 		}
 
 		void bc_render_system::update(const update_context& p_update_params)
@@ -95,14 +118,49 @@ namespace black_cat
 		
 		void bc_render_system::render(const render_context& p_render_param)
 		{
-			if(m_swap_buffer->is_valid())
+			if(m_device_swap_buffer->is_valid())
 			{
+				m_device_clock_query.start(m_thread_manager->get_default_render_thread());
+				if(m_device_timestamps_are_ready)
+				{
+					m_device_start_query.end(m_thread_manager->get_default_render_thread());
+				}
+
 				m_frame_renderer->render(bc_frame_renderer_render_context(p_render_param.m_clock, p_render_param.m_query_manager, *this));
-				m_swap_buffer->present();
 			}
 		}
 
-		void bc_render_system::swap(const swap_context& p_swap_context)
+		void bc_render_system::present()
+		{
+			if (m_device_swap_buffer->is_valid())
+			{
+				m_device_swap_buffer->present();
+
+				if (m_device_timestamps_are_ready)
+				{
+					m_device_end_query.end(m_thread_manager->get_default_render_thread());
+				}
+				m_device_clock_query.end(m_thread_manager->get_default_render_thread());
+				m_device_clock_query.get_data(m_thread_manager->get_default_render_thread());
+
+				m_device_timestamps_are_ready = m_device_start_query.get_data(m_thread_manager->get_default_render_thread()).first &&
+												m_device_end_query.get_data(m_thread_manager->get_default_render_thread()).first;
+
+				if(m_device_timestamps_are_ready)
+				{
+					const auto l_device_elapsed_clocks = m_device_end_query.get_last_data() - m_device_start_query.get_last_data();
+					const auto l_device_elapsed_ms = static_cast<platform::bc_clock::small_time>(l_device_elapsed_clocks) / get_device_clock() * 1000.f;
+					m_device_elapsed_sampler.add_sample(l_device_elapsed_ms);
+				}
+			}
+		}
+
+		void bc_render_system::swap_frame(const swap_context& p_swap_context)
+		{
+			m_shape_drawer->clear_swap_buffers();
+		}
+
+		void bc_render_system::render_swap_frame(const swap_context& p_swap_context)
 		{
 			if(m_device_reset_event.has_value())
 			{
@@ -110,21 +168,21 @@ namespace black_cat
 				(
 					*this,
 					*m_device_reset_event->m_device,
-					m_swap_buffer.get(),
+					m_device_swap_buffer.get(),
 					m_device_reset_event->m_old_parameters,
 					m_device_reset_event->m_new_parameters
 				));
 
-				if (m_swap_buffer->is_valid())
+				if (m_device_swap_buffer->is_valid())
 				{
-					m_swap_buffer->resize_back_buffer(m_device, m_device_reset_event->m_new_parameters.m_width, m_device_reset_event->m_new_parameters.m_height);
+					m_device_swap_buffer->resize_back_buffer(m_device, m_device_reset_event->m_new_parameters.m_width, m_device_reset_event->m_new_parameters.m_height);
 				}
 
 				m_render_pass_manager->after_reset(bc_render_pass_reset_context
 				(
 					*this,
 					*m_device_reset_event->m_device,
-					m_swap_buffer.get(),
+					m_device_swap_buffer.get(),
 					m_device_reset_event->m_old_parameters,
 					m_device_reset_event->m_new_parameters
 				));
@@ -139,27 +197,14 @@ namespace black_cat
 				(
 					*this,
 					m_device,
-					m_swap_buffer.get(),
+					m_device_swap_buffer.get(),
 					l_global_config
 				));
 
 				m_config_change_event.reset();
 			}
 		}
-
-		void bc_render_system::add_render_task(bci_render_task& p_task)
-		{
-			core::bc_task<void> l_cpu_task = core::bc_concurrency::start_task<void>([this, &p_task]()
-			{
-				const auto l_render_thread_guard = m_thread_manager->get_available_thread_wait();
-				auto& l_render_thread = *l_render_thread_guard.get_thread();
-
-				p_task.execute(*this, l_render_thread);
-			});
-
-			p_task._set_cpu_task(std::move(l_cpu_task));
-		}
-
+		
 		graphic::bc_device_pipeline_state_ref bc_render_system::create_device_pipeline_state(const bcCHAR* p_vertex_shader_name,
 			const bcCHAR* p_hull_shader_name,
 			const bcCHAR* p_domain_shader_name,
@@ -391,11 +436,18 @@ namespace black_cat
 
 		void bc_render_system::_initialize(bc_render_system_parameter p_parameter)
 		{
+			platform::bc_basic_hardware_info l_hw_info{};
+			platform::bc_hardware_info::get_basic_info(l_hw_info);
+
 			m_device.initialize();
+			m_device_clock_query = bc_device_query<graphic::bc_device_clock_query>({ m_device.create_clock_query(), m_device.create_clock_query() });
+			m_device_start_query = bc_device_query<graphic::bc_device_timestamp_query, 1>({ m_device.create_timestamp_query() });
+			m_device_end_query = bc_device_query<graphic::bc_device_timestamp_query, 1>({ m_device.create_timestamp_query() });
+			m_device_timestamps_are_ready = true;
 
 			if(p_parameter.m_render_output.is_valid())
 			{
-				m_swap_buffer = m_device.create_swap_buffer
+				m_device_swap_buffer = m_device.create_swap_buffer
 				(
 					p_parameter.m_device_backbuffer_width,
 					p_parameter.m_device_backbuffer_height,
@@ -406,19 +458,16 @@ namespace black_cat
 			
 			const auto l_alloc_type = m_device.set_allocator_alloc_type(core::bc_alloc_type::program);
 			
-			platform::bc_basic_hardware_info l_hw_info{};
-			platform::bc_hardware_info::get_basic_info(l_hw_info);
-
-			m_render_pass_states.initialize(20, core::bc_alloc_type::program);
+			m_render_pass_states.initialize(40, core::bc_alloc_type::program);
 			m_render_states.initialize(500, core::bc_alloc_type::program);
-			m_compute_states.initialize(20, core::bc_alloc_type::program);
+			m_compute_states.initialize(10, core::bc_alloc_type::program);
 			
 			m_content_stream = &p_parameter.m_content_stream;
 			m_thread_manager = core::bc_make_unique<bc_render_thread_manager>(core::bc_alloc_type::program , bc_render_thread_manager(*this, std::max(1U, l_hw_info.m_processor_count / 2)));
 			m_material_manager = core::bc_make_unique<bc_material_manager>(core::bc_alloc_type::program, bc_material_manager(*m_content_stream, *this, p_parameter.m_physics_system));
 			m_decal_manager = core::bc_make_unique<bc_decal_manager>(core::bc_alloc_type::program, bc_decal_manager(*m_material_manager));
 			m_particle_manager = core::bc_make_unique<bc_particle_manager>(core::bc_alloc_type::program);
-			m_render_pass_manager = core::bc_make_unique<bc_render_pass_manager>(core::bc_alloc_type::program, bc_render_pass_manager(m_device));
+			m_render_pass_manager = core::bc_make_unique<bc_render_pass_manager>(core::bc_alloc_type::program, bc_render_pass_manager(*this));
 			m_shape_drawer = core::bc_make_unique<bc_shape_drawer>(core::bc_alloc_type::program);
 			m_frame_renderer = core::bc_make_unique<bc_frame_renderer>(core::bc_alloc_type::program, bc_frame_renderer(m_device, *m_thread_manager, *m_render_pass_manager));
 
@@ -438,10 +487,6 @@ namespace black_cat
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
 			);
-			m_frame_render_finish_handle = l_event_manager->register_event_listener<core::bc_event_frame_swap>
-			(
-				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
-			);
 			m_config_change_handle = l_event_manager->register_event_listener<bc_event_global_config_changed>
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_render_system::_event_handler)
@@ -457,7 +502,6 @@ namespace black_cat
 			m_device_reset_handle.reset();
 			m_app_active_handle.reset();
 			m_window_resize_handle.reset();
-			m_frame_render_finish_handle.reset();
 			m_config_change_handle.reset();
 
 			m_frame_renderer.reset();
@@ -471,7 +515,7 @@ namespace black_cat
 			m_render_states.destroy();
 			m_compute_states.destroy();
 
-			m_swap_buffer.reset();
+			m_device_swap_buffer.reset();
 			m_device.destroy();
 		}
 		
@@ -479,21 +523,20 @@ namespace black_cat
 		{
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
-			const auto* l_window_resize_event = core::bci_message::as<platform::bc_app_event_window_resize>(p_event);
-			if(l_window_resize_event)
+			if(const auto* l_window_resize_event = core::bci_message::as<platform::bc_app_event_window_resize>(p_event))
 			{
-				if(!m_swap_buffer->is_valid())
+				if(!m_device_swap_buffer->is_valid())
 				{
 					return;
 				}
 				
 				// If nothing has change do not continue
-				if (l_window_resize_event->width() == m_swap_buffer->get_back_buffer_width() && l_window_resize_event->height() == m_swap_buffer->get_back_buffer_height())
+				if (l_window_resize_event->width() == m_device_swap_buffer->get_back_buffer_width() && l_window_resize_event->height() == m_device_swap_buffer->get_back_buffer_height())
 				{
 					return;
 				}
 
-				const auto l_device_back_buffer = m_swap_buffer->get_back_buffer_texture();
+				const auto l_device_back_buffer = m_device_swap_buffer->get_back_buffer_texture();
 
 				graphic::bc_device_parameters l_old_parameters
 				(
@@ -514,7 +557,7 @@ namespace black_cat
 				l_event_manager->queue_event(graphic::bc_app_event_device_reset
 				(
 					m_device,
-					m_swap_buffer.get(),
+					m_device_swap_buffer.get(),
 					l_old_parameters,
 					l_new_parameters,
 					true
@@ -523,27 +566,15 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_device_reset_event = core::bci_message::as<graphic::bc_app_event_device_reset>(p_event);
-			if(l_device_reset_event)
+			if(const auto* l_device_reset_event = core::bci_message::as<graphic::bc_app_event_device_reset>(p_event))
 			{
 				m_device_reset_event.reset(*l_device_reset_event);
-				
 				return;
 			}
-
-			const auto* l_frame_swap_event = core::bci_message::as<core::bc_event_frame_swap>(p_event);
-			if (l_frame_swap_event)
-			{
-				m_shape_drawer->clear_swap_buffers();
-
-				return;
-			}
-
-			const auto* l_config_change_event = core::bci_message::as<bc_event_global_config_changed>(p_event);
-			if(l_config_change_event)
+			
+			if(const auto* l_config_change_event = core::bci_message::as<bc_event_global_config_changed>(p_event))
 			{
 				m_config_change_event.reset(*l_config_change_event);
-
 				return;
 			}
 		}

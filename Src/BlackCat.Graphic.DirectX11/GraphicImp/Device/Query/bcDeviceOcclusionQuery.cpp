@@ -1,7 +1,7 @@
 // [04/29/2021 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
-#include "GraphicImp/Device/bcDeviceOcclusionQuery.h"
+#include "GraphicImp/Device/Query/bcDeviceOcclusionQuery.h"
 #include "GraphicImp/bcExport.h"
 
 namespace black_cat

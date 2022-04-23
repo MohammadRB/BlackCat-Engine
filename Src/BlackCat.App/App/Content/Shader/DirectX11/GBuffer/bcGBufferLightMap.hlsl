@@ -72,10 +72,10 @@ StructuredBuffer<point_light> g_point_lights		: register(BC_COMPUTE_STATE_T5);
 StructuredBuffer<spot_light> g_spot_lights			: register(BC_COMPUTE_STATE_T6);
 StructuredBuffer<cascade_shadow_map> g_shadow_maps	: register(BC_COMPUTE_STATE_T7);
 
-Texture2DArray<float4> g_light_shadow_map_1			: register(BC_COMPUTE_STATE_T8);
-Texture2D<float4> g_light_shadow_map_2				: register(BC_COMPUTE_STATE_T9);
+Texture2DArray<float> g_light_shadow_map_1			: register(BC_COMPUTE_STATE_T8);
 
-SamplerComparisonState g_pcf_sampler				: register(BC_COMPUTE_STATE_S0);
+SamplerState g_linear_sampler				        : register(BC_COMPUTE_STATE_S0);
+SamplerComparisonState g_pcf_sampler				: register(BC_COMPUTE_STATE_S1);
 
 RWTexture2D<float4> g_output_texture                : register(BC_COMPUTE_STATE_U0);
 
@@ -162,33 +162,17 @@ bool is_pixel_in_light_range(float3 p_position, float3 p_light_min_bound, float3
     return l_is_in_light_box;
 }
 
-float read_light_shadow_map(uint p_shadow_map_index, int3 p_texcoord)
+float read_light_shadow_map(uint p_shadow_map_index, float3 p_texcoord)
 {
-    switch (p_shadow_map_index)
-    {
-        case 0:
-            return g_light_shadow_map_1.Load(int4(p_texcoord, 0)).x;
-        case 1:
-            return g_light_shadow_map_2.Load(int3(p_texcoord.xy, 0)).x;
-    }
-
-    return 0;
+    return g_light_shadow_map_1.SampleLevel(g_linear_sampler, p_texcoord, 0);
 }
 
-float read_pcf_light_shadow_map(uint p_shadow_map_index, SamplerComparisonState p_pcf_sampler, float3 p_texcoord, float p_compare_value)
+float read_pcf_light_shadow_map(uint p_shadow_map_index, float3 p_texcoord, float p_compare_value)
 {
-    switch (p_shadow_map_index)
-    {
-        case 0:
-            return g_light_shadow_map_1.SampleCmpLevelZero(p_pcf_sampler, p_texcoord, p_compare_value).x;
-        case 1:
-            return g_light_shadow_map_2.SampleCmpLevelZero(p_pcf_sampler, p_texcoord.xy, p_compare_value).x;
-    }
-
-    return 0;
+    return g_light_shadow_map_1.SampleCmpLevelZero(g_pcf_sampler, p_texcoord, p_compare_value);
 }
 
-float read_poison_disk_shadow_map(uint p_shadow_map_index, SamplerComparisonState p_pcf_sampler, float3 p_texcoord, float p_sample_radius, float p_compare_value)
+float read_poison_disk_shadow_map(uint p_shadow_map_index, float3 p_texcoord, float p_sample_radius, float p_compare_value)
 {
     float l_visibility = 0.0f;
 
@@ -197,7 +181,8 @@ float read_poison_disk_shadow_map(uint p_shadow_map_index, SamplerComparisonStat
     {
         float3 l_texcoord = p_texcoord;
         l_texcoord.xy = p_texcoord.xy + POISSON_DISK[i] / p_sample_radius;
-        l_visibility += read_pcf_light_shadow_map(p_shadow_map_index, p_pcf_sampler, l_texcoord, p_compare_value) * (1.0 / 4.0);
+        l_visibility += read_pcf_light_shadow_map(p_shadow_map_index, l_texcoord, p_compare_value) * (1.0 / 4.0);
+        //l_visibility += (read_light_shadow_map(p_shadow_map_index, l_texcoord) > p_compare_value) * (1.0 / 4.0);
     }
 
     return l_visibility;
@@ -215,7 +200,7 @@ float calculate_shadow_bias(float3 p_light_dir, float3 p_normal)
 float2 direct_light_shadow_map(direct_light p_light, float3 p_position, float p_linear_depth, float p_shadow_bias)
 {
 	float l_result = 1;
-	
+    
 	if (p_light.m_shadow_map_index == -1) 
 	{
 		return float2(l_result, -1);
@@ -246,7 +231,7 @@ float2 direct_light_shadow_map(direct_light p_light, float3 p_position, float p_
 
 	const float l_bias = BIAS_SCALE[l_cascade_index] * p_shadow_bias;
 	const float l_poisson_disk_sample_radius = l_shadow_map_data.m_shadow_map_size / POISSON_DISK_SCALE[l_cascade_index];
-    l_result = read_poison_disk_shadow_map(p_light.m_shadow_map_index, g_pcf_sampler, float3(l_cascade_texcoord_normal, l_cascade_index), l_poisson_disk_sample_radius, l_cascade_projection_z - l_bias);
+    l_result = read_poison_disk_shadow_map(p_light.m_shadow_map_index, float3(l_cascade_texcoord_normal, l_cascade_index), l_poisson_disk_sample_radius, l_cascade_projection_z - l_bias);
 
 	return float2(l_result, l_cascade_index);
 }

@@ -12,7 +12,7 @@ namespace black_cat
 			: m_enabled_logs(bc_log_type::all),
 			m_logs_ptr(0)
 		{
-			m_logs.resize(20, std::make_pair(bc_log_type::info, bc_estring()));
+			m_logs.resize(25, std::make_pair(bc_log_type::info, bc_estring()));
 		}
 
 		void bc_logger::set_enabled_log_types(bc_log_type p_types) noexcept
@@ -140,7 +140,7 @@ namespace black_cat
 			{
 				platform::bc_shared_mutex_shared_guard l_listeners_lock(m_listener_mutex);
 
-				auto l_logs_ptr = m_logs_ptr.load(platform::bc_memory_order::relaxed);
+				auto l_logs_ptr = m_logs_ptr.load(platform::bc_memory_order::relaxed) + 1; // Start from last logs
 				for (auto l_ite = 0U; l_ite != m_logs.size(); ++l_ite, l_logs_ptr = (l_logs_ptr + 1) % m_logs.size())
 				{
 					auto& [l_type, l_log] = m_logs[l_logs_ptr];					

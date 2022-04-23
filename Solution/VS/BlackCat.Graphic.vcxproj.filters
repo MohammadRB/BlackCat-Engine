@@ -37,6 +37,9 @@
     <Filter Include="Graphic\Font">
       <UniqueIdentifier>{99c1a9ea-381c-4be9-aed6-a492abb9915c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphic\Device\Query">
+      <UniqueIdentifier>{79661da1-6d41-47db-909c-139fb77857ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandList.h">
@@ -225,9 +228,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Resource\bcResourceBuilder.h">
       <Filter>Graphic\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceOcclusionQuery.h">
-      <Filter>Graphic\Device</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceSwapBuffer.h">
       <Filter>Graphic\Device</Filter>
     </ClInclude>
@@ -239,6 +239,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Font\bcSpriteBatch.h">
       <Filter>Graphic\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Query\bcDeviceTimeStampQuery.h">
+      <Filter>Graphic\Device\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Query\bcDeviceOcclusionQuery.h">
+      <Filter>Graphic\Device\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Query\bcDeviceClockQuery.h">
+      <Filter>Graphic\Device\Query</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

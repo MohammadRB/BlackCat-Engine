@@ -19,11 +19,15 @@ namespace black_cat
 
 			virtual ~_bc_parameter_pack_object() = default;
 
-			virtual bcSIZE size() const = 0;
+			virtual bcSIZE size() const noexcept = 0;
 
 			virtual _bc_parameter_pack_object* copy(void* p_buffer) = 0;
 
 			virtual _bc_parameter_pack_object* move(void* p_buffer) = 0;
+
+			virtual bool cast(bcINT64& p_int) const noexcept = 0;
+
+			virtual bool cast(bcDOUBLE& p_double) const noexcept = 0;
 		};
 
 		template<typename T>
@@ -38,7 +42,7 @@ namespace black_cat
 
 			~_bc_parameter_pack_concrete_object() override = default;
 
-			bcSIZE size() const override
+			bcSIZE size() const noexcept override
 			{
 				return sizeof(_bc_parameter_pack_concrete_object<T>);
 			}
@@ -57,6 +61,28 @@ namespace black_cat
 				new (l_buffer) _bc_parameter_pack_concrete_object(std::move(m_value));
 				
 				return l_buffer;
+			}
+
+			bool cast(bcINT64& p_int) const noexcept override
+			{
+				if constexpr (std::is_arithmetic_v<T>)
+				{
+					p_int = static_cast<bcINT64>(m_value);
+					return true;
+				}
+
+				return false;
+			}
+
+			bool cast(bcDOUBLE& p_double) const noexcept override
+			{
+				if constexpr (std::is_arithmetic_v<T>)
+				{
+					p_double = static_cast<bcDOUBLE>(m_value);
+					return true;
+				}
+
+				return false;
 			}
 
 			T m_value;
@@ -93,7 +119,7 @@ namespace black_cat
 			void set_value(T&& p_data);
 
 			template<typename T>
-			bool is() const;
+			bool is() const noexcept;
 
 			/**
 			 * \brief Cast underlying type to requested type.
@@ -101,10 +127,10 @@ namespace black_cat
 			 * \return Return null if underlying type mismatch
 			 */
 			template<typename T>
-			T* as();
+			T* as() noexcept;
 
 			template<typename T>
-			const T* as() const;
+			const T* as() const noexcept;
 
 			/**
 			 * \brief Cast underlying type to requested type. Throw bad_cast exception if underlying type mismatch
@@ -116,6 +142,14 @@ namespace black_cat
 
 			template<typename T>
 			const T& as_throw() const;
+
+			std::pair<bool, bcINT64> cast_to_int() const noexcept;
+
+			bcINT64 cast_to_int_throw() const;
+
+			std::pair<bool, bcDOUBLE> cast_to_double() const noexcept;
+
+			bcDOUBLE cast_to_double_throw() const;
 
 			template<typename T>
 			T release_as();
@@ -278,7 +312,7 @@ namespace black_cat
 		}
 
 		template<typename T>
-		bool bc_parameter_pack::is() const
+		bool bc_parameter_pack::is() const noexcept
 		{
 			using T1 = decay_t<T>;
 			
@@ -291,7 +325,7 @@ namespace black_cat
 		}
 
 		template <typename T>
-		T* bc_parameter_pack::as()
+		T* bc_parameter_pack::as() noexcept
 		{
 			using T1 = decay_t<T>;
 			
@@ -310,7 +344,7 @@ namespace black_cat
 		}
 
 		template<typename T>
-		const T* bc_parameter_pack::as() const
+		const T* bc_parameter_pack::as() const noexcept
 		{
 			return const_cast<bc_parameter_pack&>(*this).as<T>();
 		}
@@ -334,6 +368,54 @@ namespace black_cat
 			return const_cast<bc_parameter_pack&>(*this).as_throw<T>();
 		}
 
+		inline std::pair<bool, bcINT64> bc_parameter_pack::cast_to_int() const noexcept
+		{
+			if (!has_value())
+			{
+				return {false, 0};
+			}
+
+			bcINT64 l_int;
+			auto l_result = m_object->cast(l_int);
+
+			return { l_result, l_int };
+		}
+
+		inline bcINT64 bc_parameter_pack::cast_to_int_throw() const
+		{
+			const auto l_cast = cast_to_int();
+			if(!l_cast.first)
+			{
+				throw bc_bad_cast_exception();
+			}
+
+			return l_cast.second;
+		}
+
+		inline std::pair<bool, bcDOUBLE> bc_parameter_pack::cast_to_double() const noexcept
+		{
+			if (!has_value())
+			{
+				return { false, 0 };
+			}
+
+			bcDOUBLE l_double;
+			auto l_result = m_object->cast(l_double);
+
+			return { l_result, l_double };
+		}
+
+		inline bcDOUBLE bc_parameter_pack::cast_to_double_throw() const
+		{
+			const auto l_cast = cast_to_double();
+			if (!l_cast.first)
+			{
+				throw bc_bad_cast_exception();
+			}
+
+			return l_cast.second;
+		}
+
 		template<typename T>
 		T bc_parameter_pack::release_as()
 		{
@@ -343,7 +425,7 @@ namespace black_cat
 
 			return l_data;
 		}
-
+		
 		inline void bc_parameter_pack::reset()
 		{
 			// Free allocated memory

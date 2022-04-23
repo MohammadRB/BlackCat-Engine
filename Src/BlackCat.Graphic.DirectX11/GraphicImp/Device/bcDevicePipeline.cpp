@@ -1144,6 +1144,27 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::start_query(bc_device_clock_query& p_query)
+		{
+			m_pack.m_pipeline_proxy->m_context->Begin(p_query.get_platform_pack().m_query);
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::end_query(bc_device_clock_query& p_query)
+		{
+			m_pack.m_pipeline_proxy->m_context->End(p_query.get_platform_pack().m_query);
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::end_query(bc_device_timestamp_query& p_query)
+		{
+			m_pack.m_pipeline_proxy->m_context->End(p_query.get_platform_pack().m_query);
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline<g_api_dx11>::start_query(bc_device_occlusion_query& p_query)
 		{
 			m_pack.m_pipeline_proxy->m_context->Begin(p_query.get_platform_pack().m_query);
@@ -1158,11 +1179,64 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
+		std::pair<bool, bcUINT64> bc_platform_device_pipeline<g_api_dx11>::get_query_data(bc_device_clock_query& p_query)
+		{
+			if (m_pack.m_pipeline_proxy->m_context_type != D3D11_DEVICE_CONTEXT_IMMEDIATE)
+			{
+				core::bc_log(core::bc_log_type::warning, bcL("get data of query was called on a differed context. The result is false"));
+				return std::make_pair(false, 0);
+			}
+
+			D3D11_QUERY_DATA_TIMESTAMP_DISJOINT l_data;
+			const auto l_result = m_pack.m_pipeline_proxy->m_context->GetData(p_query.get_platform_pack().m_query, &l_data, sizeof(D3D11_QUERY_DATA_TIMESTAMP_DISJOINT), 0);
+
+			if (l_result == S_OK)
+			{
+				if(!l_data.Disjoint)
+				{
+					return std::make_pair(true, l_data.Frequency);
+				}
+				else
+				{
+					return std::make_pair(true, 0);
+				}
+			}
+			else
+			{
+				return std::make_pair(false, l_data.Frequency);
+			}
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		std::pair<bool, bcUINT64> bc_platform_device_pipeline<g_api_dx11>::get_query_data(bc_device_timestamp_query& p_query)
+		{
+			if (m_pack.m_pipeline_proxy->m_context_type != D3D11_DEVICE_CONTEXT_IMMEDIATE)
+			{
+				core::bc_log(core::bc_log_type::warning, bcL("get data of query was called on a differed context. The result is false"));
+				return std::make_pair(false, 0);
+			}
+
+			bcUINT64 l_data;
+			const auto l_result = m_pack.m_pipeline_proxy->m_context->GetData(p_query.get_platform_pack().m_query, &l_data, sizeof(bcUINT64), 0);
+
+			if (l_result == S_OK)
+			{
+				return std::make_pair(true, l_data);
+			}
+			else
+			{
+				return std::make_pair(false, l_data);
+			}
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
 		std::pair<bool, bcUINT64> bc_platform_device_pipeline<g_api_dx11>::get_query_data(bc_device_occlusion_query& p_query)
 		{
 			if(m_pack.m_pipeline_proxy->m_context_type != D3D11_DEVICE_CONTEXT_IMMEDIATE)
 			{
-				core::bc_log(core::bc_log_type::warning, bcL("get data of occlusion query was called on a differed context. The result is false"));
+				core::bc_log(core::bc_log_type::warning, bcL("get data of query was called on a differed context. The result is false"));
 				return std::make_pair(false, 0);
 			}
 

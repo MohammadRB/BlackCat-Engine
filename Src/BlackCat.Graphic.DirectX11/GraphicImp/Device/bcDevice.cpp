@@ -5,18 +5,16 @@
 #include <wincodec.h>
 #include <locale>
 #include <cwctype>
-#include "CorePlatform/CorePlatformPCH.h"
+#include "CorePlatformImp/bcUtility.h"
 #include "Core/Container/bcAllocator.h"
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcSpan.h"
 #include "Core/File/bcPath.h"
 #include "Core/Utility/bcServiceManager.h"
-#include "CorePlatformImp/bcUtility.h"
-#include "GraphicImp/bcExport.h"
-// Because explicit specialization of device pack must be included first and 
-// some other header files has included bcDevice.h we must put this header at 
-// top of other header files
+#include "Core/Utility/bcLogger.h"
+// Because explicit specialization of device pack must be included first and some other header files
+// have included bcDevice.h we must put this header at top of other header files
 #include "GraphicImp/Device/bcDevice.h"
-#include "GraphicImp/bcUtility.h"
 #include "GraphicImp/Resource/bcResource.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
@@ -37,10 +35,14 @@
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
-#include "GraphicImp/Device/bcDeviceOcclusionQuery.h"
+#include "GraphicImp/Device/Query/bcDeviceClockQuery.h"
+#include "GraphicImp/Device/Query/bcDeviceTimeStampQuery.h"
+#include "GraphicImp/Device/Query/bcDeviceOcclusionQuery.h"
 #include "GraphicImp/Device/bcDeviceSwapBuffer.h"
 #include "GraphicImp/Font/bcSpriteBatch.h"
 #include "GraphicImp/Font/bcSpriteFont.h"
+#include "GraphicImp/bcUtility.h"
+#include "GraphicImp/bcExport.h"
 #include "3rdParty/DirectXTK/Include/DDSTextureLoader.h"
 #include "3rdParty/DirectXTK/Include/WICTextureLoader.h"
 #include "3rdParty/DirectXTK/Include/ScreenGrab.h"
@@ -1224,6 +1226,36 @@ namespace black_cat
 
 			return bc_sprite_font(std::move(l_pack));
 		}
+		
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_device_clock_query_ref bc_platform_device<g_api_dx11>::create_clock_query()
+		{
+			bc_device_clock_query::platform_pack l_pack;
+
+			D3D11_QUERY_DESC l_desc;
+			l_desc.Query = D3D11_QUERY_TIMESTAMP_DISJOINT;
+			l_desc.MiscFlags = 0;
+
+			dx_call(m_pack.m_device->CreateQuery(&l_desc, &l_pack.m_query));
+
+			return bc_device_clock_query_ref(bc_device_clock_query(l_pack));
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
+		bc_device_timestamp_query_ref bc_platform_device<g_api_dx11>::create_timestamp_query()
+		{
+			bc_device_timestamp_query::platform_pack l_pack;
+
+			D3D11_QUERY_DESC l_desc;
+			l_desc.Query = D3D11_QUERY_TIMESTAMP;
+			l_desc.MiscFlags = 0;
+
+			dx_call(m_pack.m_device->CreateQuery(&l_desc, &l_pack.m_query));
+
+			return bc_device_timestamp_query_ref(bc_device_timestamp_query(l_pack));
+		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
@@ -1234,7 +1266,7 @@ namespace black_cat
 			D3D11_QUERY_DESC l_desc;
 			l_desc.Query = D3D11_QUERY_OCCLUSION;
 			l_desc.MiscFlags = 0;
-			
+
 			dx_call(m_pack.m_device->CreateQuery(&l_desc, &l_pack.m_query));
 
 			return bc_device_occlusion_query_ref(bc_device_occlusion_query(l_pack));
@@ -1426,42 +1458,61 @@ namespace black_cat
 			ComPtr<IDXGIAdapter> l_current_adapter;
 			core::bc_vector_frame<ComPtr<IDXGIAdapter>> l_adapters;
 
-			const core::bc_wstring_frame l_nvidia(L"nvidia");
-			const core::bc_wstring_frame l_amd(L"amd");
 			while (l_factory->EnumAdapters(l_adapter_num++, l_current_adapter.ReleaseAndGetAddressOf()) != DXGI_ERROR_NOT_FOUND)
 			{
-				DXGI_ADAPTER_DESC l_adapter_desc;
-				l_current_adapter->GetDesc(&l_adapter_desc);
-
-				core::bc_wstring_frame l_adapter_title = l_adapter_desc.Description;
-				
-				auto l_nvidia_pos = std::search(std::begin(l_adapter_title), std::end(l_adapter_title), std::begin(l_nvidia), std::end(l_nvidia), [](bcWCHAR p_1, bcWCHAR p_2)
-				{
-					return std::towlower(p_1) == std::towlower(p_2);
-				});
-				if(l_nvidia_pos != std::end(l_adapter_title))
-				{
-					l_adapters.insert(std::begin(l_adapters), l_current_adapter);
-					continue;
-				}
-
-				auto l_amd_pos = std::search(std::begin(l_adapter_title), std::end(l_adapter_title), std::begin(l_amd), std::end(l_amd), [](bcWCHAR p_1, bcWCHAR p_2)
-				{
-					return std::towlower(p_1) == std::towlower(p_2);
-				});
-				if (l_amd_pos != std::end(l_adapter_title))
-				{
-					l_adapters.insert(std::begin(l_adapters), l_current_adapter);
-					continue;
-				}
-
 				l_adapters.push_back(l_current_adapter);
 			}
 
+			constexpr core::bc_array<core::bc_wstring_view, 3> l_preferred_adapters = { L"nvidia", L"amd", L"intel" };
+			std::sort
+			(
+				std::begin(l_adapters),
+				std::end(l_adapters),
+				[&](const ComPtr<IDXGIAdapter>& p_adapter1, const ComPtr<IDXGIAdapter>& p_adapter2)
+				{
+					const auto l_get_adapter_rank = [](IDXGIAdapter& p_adapter, core::bc_const_span<core::bc_wstring_view> p_preferred_adapters)
+					{
+						DXGI_ADAPTER_DESC l_adapter_desc;
+						p_adapter.GetDesc(&l_adapter_desc);
+
+						core::bc_wstring_view l_adapter_title = l_adapter_desc.Description;
+
+						auto l_adapter_rank = 0U;
+						for (auto l_preferred_adapter : p_preferred_adapters)
+						{
+							auto l_adapter_ite = std::search
+							(
+								std::begin(l_adapter_title),
+								std::end(l_adapter_title),
+								std::begin(l_preferred_adapter),
+								std::end(l_preferred_adapter),
+								[](bcWCHAR p_1, bcWCHAR p_2)
+								{
+									return std::towlower(p_1) == std::towlower(p_2);
+								}
+							);
+							if (l_adapter_ite != std::end(l_adapter_title))
+							{
+								return l_adapter_rank;
+							}
+
+							++l_adapter_rank;
+						}
+
+						return std::numeric_limits<bcSIZE>::max();
+					};
+
+					const auto l_adapter1_rank = l_get_adapter_rank(*p_adapter1.Get(), core::bc_make_cspan(l_preferred_adapters));
+					const auto l_adapter2_rank = l_get_adapter_rank(*p_adapter2.Get(), core::bc_make_cspan(l_preferred_adapters));
+
+					return l_adapter1_rank < l_adapter2_rank;
+				}
+			);
+			
 			bcUINT l_device_flags = 0;
 			// Because we create device with specific adapter we must use D3D_DRIVER_TYPE_UNKNOWN
-			D3D_DRIVER_TYPE l_device_driver_type = D3D_DRIVER_TYPE_UNKNOWN;
-			D3D_FEATURE_LEVEL l_device_feature_levels[] = { D3D_FEATURE_LEVEL_11_0 };
+			constexpr D3D_DRIVER_TYPE l_device_driver_type = D3D_DRIVER_TYPE_UNKNOWN;
+			constexpr D3D_FEATURE_LEVEL l_device_feature_levels[] = { D3D_FEATURE_LEVEL_11_0 };
 			D3D_FEATURE_LEVEL l_device_created_feature;
 
 #ifdef  BC_DEBUG
@@ -1486,6 +1537,10 @@ namespace black_cat
 
 				if (SUCCEEDED(l_result))
 				{
+					DXGI_ADAPTER_DESC l_adapter_desc;
+					l_adapter->GetDesc(&l_adapter_desc);
+
+					core::bc_log(core::bc_log_type::info) << l_adapters.size() << " adapters were found. selected " << l_adapter_desc.Description << core::bc_lend;
 					break;
 				}
 			}

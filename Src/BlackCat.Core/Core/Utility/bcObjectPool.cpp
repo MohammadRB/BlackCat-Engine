@@ -55,19 +55,13 @@ namespace black_cat
 		void* bc_concurrent_memory_pool::alloc() noexcept
 		{
 			void* l_result = nullptr;
-			bool l_reached_end = false;
-			bcINT32 l_block = -1;
-			bcUINT32 l_allocated_block = m_allocated_block.load(platform::bc_memory_order::relaxed);
+			bcUINT32 l_block = -1;
+			bcUINT32 l_search_block = m_allocated_block.load(platform::bc_memory_order::relaxed);
+			bcUINT32 l_current_search_block = l_search_block;
 
-			for (bcUINT32 l_ite = l_allocated_block; (l_ite != l_allocated_block || !l_reached_end); ++l_ite)
-			{
-				if (l_ite >= m_num_bit_blocks)
-				{
-					l_ite = 0;
-					l_reached_end = true;
-				}
-				
-				auto l_current_block = m_blocks[l_ite].load(platform::bc_memory_order::relaxed);
+			for (bcUINT32 l_ite = 0; l_ite < m_num_bit_blocks; ++l_ite, l_current_search_block = (l_current_search_block + 1) % m_num_bit_blocks)
+			{				
+				auto l_current_block = m_blocks[l_current_search_block].load(platform::bc_memory_order::relaxed);
 
 				while (true)
 				{
@@ -78,7 +72,7 @@ namespace black_cat
 					}
 
 					const bit_block_type l_current_block_changed = l_current_block | (static_cast<bit_block_type>(1) << l_free_bit);
-					if (m_blocks[l_ite].compare_exchange_strong
+					if (m_blocks[l_current_search_block].compare_exchange_strong
 					(
 						&l_current_block,
 						l_current_block_changed,
@@ -86,22 +80,22 @@ namespace black_cat
 						platform::bc_memory_order::relaxed
 					))
 					{
-						l_block = l_ite * s_bit_block_size + l_free_bit;
+						l_block = l_current_search_block * s_bit_block_size + l_free_bit;
 
-						m_allocated_block.compare_exchange_strong(&l_allocated_block, l_ite, platform::bc_memory_order::relaxed);
+						m_allocated_block.compare_exchange_strong(&l_search_block, l_current_search_block, platform::bc_memory_order::relaxed);
 
 						break;
 					}
 				}
 
-				if (l_block != -1)
+				if (l_block != -1U)
 				{
 					break;
 				}
 			}
 
 			// Any free block were found
-			if (l_block != -1 || l_block <= m_num_block)
+			if (l_block != -1U || l_block <= m_num_block)
 			{
 				l_result = reinterpret_cast<void*>(static_cast<bcUBYTE*>(m_heap) + l_block * m_block_size);
 			}

@@ -11,7 +11,7 @@
 
 StructuredBuffer<particle> g_particles				: register(BC_RENDER_PASS_STATE_T0);
 StructuredBuffer<alive_particle> g_alive_indices	: register(BC_RENDER_PASS_STATE_T1);
-Texture2D<float4> g_depth_buffer					: register(BC_RENDER_PASS_STATE_T2);
+Texture2D<float> g_depth_buffer						: register(BC_RENDER_PASS_STATE_T2);
 Texture2D<float4> g_sprites							: register(BC_RENDER_PASS_STATE_T3);
 
 SamplerState g_linear_sampler						: register(BC_RENDER_PASS_STATE_S0);
@@ -119,10 +119,10 @@ void gs(point vertex_output p_input[1], inout TriangleStream<geometry_output> p_
 float4 ps(geometry_output p_input) : SV_Target0
 {
 	const float2 l_ss_texcoord = bc_clip_space_to_texcoord(p_input.m_cs_position);
-	const float l_depth_buffer = g_depth_buffer.Sample(g_point_sampler, l_ss_texcoord).x;
+	const float l_depth_buffer = g_depth_buffer.Sample(g_point_sampler, l_ss_texcoord);
 	clip(l_depth_buffer - (p_input.m_cs_position.z / p_input.m_cs_position.w));
 
-	const float l_alpha = g_sprites.Sample(g_linear_sampler, p_input.m_texcoord).x;
+	const float l_alpha = g_sprites.Sample(g_linear_sampler, p_input.m_texcoord).r;
 	clip(l_alpha - 0.05f);
 
 	const float l_depth_buffer_linear = bc_convert_to_linear_depth(l_depth_buffer, g_near_plane, g_far_plane) * (g_far_plane - g_near_plane);

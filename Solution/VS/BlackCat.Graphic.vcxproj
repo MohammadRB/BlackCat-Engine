@@ -26,7 +26,8 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\bcRenderApiInfo.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDevice.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceComputeState.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceOcclusionQuery.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Query\bcDeviceClockQuery.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Query\bcDeviceOcclusionQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceSwapBuffer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceInfo.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDeviceOutput.h" />
@@ -34,6 +35,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\bcDevicePipelineState.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandExecutor.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Command\bcDeviceCommandList.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Device\Query\bcDeviceTimeStampQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Font\bcSpriteBatch.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\Font\bcSpriteFont.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic\Graphic\GraphicPCH.h" />

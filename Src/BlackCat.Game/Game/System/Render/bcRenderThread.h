@@ -3,7 +3,9 @@
 #pragma once
 
 #include "GraphicImp/Device/bcDevicePipeline.h"
-#include "GraphicImp/Device/bcDeviceOcclusionQuery.h"
+#include "GraphicImp/Device/Query/bcDeviceClockQuery.h"
+#include "GraphicImp/Device/Query/bcDeviceTimeStampQuery.h"
+#include "GraphicImp/Device/Query/bcDeviceOcclusionQuery.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
@@ -166,9 +168,19 @@ namespace black_cat
 			 */
 			graphic::bc_device_command_list finish() noexcept;
 
+			void start_query(graphic::bc_device_clock_query& p_query);
+
+			void end_query(graphic::bc_device_clock_query& p_query);
+			
+			void end_query(graphic::bc_device_timestamp_query& p_query);
+
 			void start_query(graphic::bc_device_occlusion_query& p_query);
 
 			void end_query(graphic::bc_device_occlusion_query& p_query);
+
+			std::pair<bool, bcUINT64> get_query_data(graphic::bc_device_clock_query& p_query);
+
+			std::pair<bool, bcUINT64> get_query_data(graphic::bc_device_timestamp_query& p_query);
 
 			std::pair<bool, bcUINT64> get_query_data(graphic::bc_device_occlusion_query& p_query);
 			

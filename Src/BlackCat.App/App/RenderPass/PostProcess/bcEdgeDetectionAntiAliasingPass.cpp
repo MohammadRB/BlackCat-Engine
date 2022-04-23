@@ -224,12 +224,17 @@ namespace black_cat
 			.read_config_key("render_edge_aa_normal_threshold", l_normal_threshold_value)
 			.read_config_key("render_edge_aa_sample_count", l_sample_count_value);
 
-		if (l_min_depth_threshold_value.is<bcFLOAT>() && l_max_depth_threshold_value.is<bcFLOAT>() && l_normal_threshold_value.is<bcFLOAT>() && l_sample_count_value.is<bcINT32>())
+		auto [l_min_depth_read, l_min_depth] = l_min_depth_threshold_value.cast_to_double();
+		auto [l_max_depth_read, l_max_depth] = l_max_depth_threshold_value.cast_to_double();
+		auto [l_normal_threshold_read, l_normal_threshold] = l_normal_threshold_value.cast_to_double();
+		auto [l_sample_count_read, l_sample_count] = l_sample_count_value.cast_to_int();
+
+		if (l_min_depth_read && l_max_depth_read && l_normal_threshold_read && l_sample_count_read)
 		{
-			m_min_depth_threshold = l_min_depth_threshold_value.as_throw<bcFLOAT>();
-			m_max_depth_threshold = l_max_depth_threshold_value.as_throw<bcFLOAT>();
-			m_normal_threshold = l_normal_threshold_value.as_throw<bcFLOAT>();
-			m_sample_count = l_sample_count_value.as_throw<bcINT32>();
+			m_min_depth_threshold = static_cast<bcFLOAT>(l_min_depth);
+			m_max_depth_threshold = static_cast<bcFLOAT>(l_max_depth);
+			m_normal_threshold = static_cast<bcFLOAT>(l_normal_threshold);
+			m_sample_count = static_cast<bcUINT32>(l_sample_count);
 
 			if(m_sample_count <= 0)
 			{

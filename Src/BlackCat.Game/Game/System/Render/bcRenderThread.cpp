@@ -588,6 +588,21 @@ namespace black_cat
 			return l_command_list;
 		}
 
+		void bc_render_thread::start_query(graphic::bc_device_clock_query& p_query)
+		{
+			m_pipeline->start_query(p_query);
+		}
+
+		void bc_render_thread::end_query(graphic::bc_device_clock_query& p_query)
+		{
+			m_pipeline->end_query(p_query);
+		}
+		
+		void bc_render_thread::end_query(graphic::bc_device_timestamp_query& p_query)
+		{
+			m_pipeline->end_query(p_query);
+		}
+
 		void bc_render_thread::start_query(graphic::bc_device_occlusion_query& p_query)
 		{
 			m_pipeline->start_query(p_query);
@@ -596,6 +611,16 @@ namespace black_cat
 		void bc_render_thread::end_query(graphic::bc_device_occlusion_query& p_query)
 		{
 			m_pipeline->end_query(p_query);
+		}
+
+		std::pair<bool, bcUINT64> bc_render_thread::get_query_data(graphic::bc_device_clock_query& p_query)
+		{
+			return m_pipeline->get_query_data(p_query);
+		}
+
+		std::pair<bool, bcUINT64> bc_render_thread::get_query_data(graphic::bc_device_timestamp_query& p_query)
+		{
+			return m_pipeline->get_query_data(p_query);
 		}
 
 		std::pair<bool, bcUINT64> bc_render_thread::get_query_data(graphic::bc_device_occlusion_query& p_query)

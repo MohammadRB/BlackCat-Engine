@@ -4,7 +4,7 @@
 
 #include "Core/Container/bcVector.h"
 #include "Core/Messaging/Query/bcQueryResult.h"
-#include "GraphicImp/Device/bcDeviceOcclusionQuery.h"
+#include "GraphicImp/Device/Query/bcDeviceOcclusionQuery.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/Shader/Parameter/bcShaderParameterLink.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"

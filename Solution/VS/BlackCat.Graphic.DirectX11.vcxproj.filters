@@ -37,6 +37,9 @@
     <Filter Include="GraphicImp\Font">
       <UniqueIdentifier>{35a4ca94-4827-4fbc-abc4-e94bca96fd6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GraphicImp\Device\Query">
+      <UniqueIdentifier>{7cf0d377-67c7-4813-a4d6-3e2d4b893134}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandList.cpp">
@@ -150,9 +153,6 @@
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceBuilder.cpp">
       <Filter>GraphicImp\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceOcclusionQuery.cpp">
-      <Filter>GraphicImp\Device</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceSwapBuffer.cpp">
       <Filter>GraphicImp\Device</Filter>
     </ClCompile>
@@ -161,6 +161,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteBatch.cpp">
       <Filter>GraphicImp\Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Query\bcDeviceOcclusionQuery.cpp">
+      <Filter>GraphicImp\Device\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Query\bcDeviceTimeStampQuery.cpp">
+      <Filter>GraphicImp\Device\Query</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Query\bcDeviceClockQuery.cpp">
+      <Filter>GraphicImp\Device\Query</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -320,9 +329,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Resource\bcResourceBuilder.h">
       <Filter>GraphicImp\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceOcclusionQuery.h">
-      <Filter>GraphicImp\Device</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceSwapBuffer.h">
       <Filter>GraphicImp\Device</Filter>
     </ClInclude>
@@ -334,6 +340,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteBatch.h">
       <Filter>GraphicImp\Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Query\bcDeviceOcclusionQuery.h">
+      <Filter>GraphicImp\Device\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Query\bcDeviceTimeStampQuery.h">
+      <Filter>GraphicImp\Device\Query</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Query\bcDeviceClockQuery.h">
+      <Filter>GraphicImp\Device\Query</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

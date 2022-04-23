@@ -462,10 +462,13 @@ namespace black_cat
 			.read_config_key("render_glow_threshold", l_threshold_value)
 			.read_config_key("render_glow_intensity", l_intensity_value);
 
-		if (l_threshold_value.is<bcFLOAT>() && l_intensity_value.is<bcFLOAT>())
+		auto [l_threshold_read, l_threshold] = l_threshold_value.cast_to_double();
+		auto [l_intensity_read, l_intensity] = l_intensity_value.cast_to_double();
+
+		if (l_threshold_read && l_intensity_read)
 		{
-			m_glow_threshold = *l_threshold_value.as<bcFLOAT>();
-			m_glow_intensity = *l_intensity_value.as<bcFLOAT>();
+			m_glow_threshold = static_cast<bcFLOAT>(l_threshold);
+			m_glow_intensity = static_cast<bcFLOAT>(l_intensity);
 			m_parameters_changed = true;
 		}
 	}

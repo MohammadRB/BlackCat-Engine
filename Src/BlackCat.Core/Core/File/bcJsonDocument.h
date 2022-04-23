@@ -387,74 +387,25 @@ namespace black_cat
 				p_json_value.SetBool(p_value);
 			}
 
-			void _load(const bc_json_value_object& p_json_value, bcINT8& p_value)
-			{
-				if (!p_json_value.IsNumber())
-				{
-					throw bc_io_exception("bad json format. expected int value.");
-				}
-
-				p_value = p_json_value.GetInt();
-			}
-
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcINT8& p_value)
-			{
-				p_json_value.SetInt(p_value);
-			}
-			
-			void _load(const bc_json_value_object& p_json_value, bcUINT8& p_value)
-			{
-				if (!p_json_value.IsNumber())
-				{
-					throw bc_io_exception("bad json format. expected uint value.");
-				}
-
-				p_value = p_json_value.GetUint();
-			}
-
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcUINT8& p_value)
-			{
-				p_json_value.SetUint(p_value);
-			}
-
-			void _load(const bc_json_value_object& p_json_value, bcINT16& p_value)
-			{
-				if (!p_json_value.IsNumber())
-				{
-					throw bc_io_exception("bad json format. expected int value.");
-				}
-
-				p_value = p_json_value.GetInt();
-			}
-
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcINT16& p_value)
-			{
-				p_json_value.SetInt(p_value);
-			}
-
-			void _load(const bc_json_value_object& p_json_value, bcUINT16& p_value)
-			{
-				if (!p_json_value.IsNumber())
-				{
-					throw bc_io_exception("bad json format. expected uint value.");
-				}
-
-				p_value = p_json_value.GetUint();
-			}
-
-			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcUINT16& p_value)
-			{
-				p_json_value.SetUint(p_value);
-			}
-			
 			void _load(const bc_json_value_object& p_json_value, bcINT32& p_value)
 			{
-				if (!p_json_value.IsNumber())
+				if (p_json_value.IsNumber())
 				{
-					throw bc_io_exception("bad json format. expected int value.");
+					p_value = static_cast<bcINT32>(p_json_value.GetInt());
+					return;
+				}
+				if (p_json_value.IsFloat())
+				{
+					p_value = static_cast<bcINT32>(p_json_value.GetFloat());
+					return;
+				}
+				if (p_json_value.IsDouble())
+				{
+					p_value = static_cast<bcINT32>(p_json_value.GetDouble());
+					return;
 				}
 
-				p_value = p_json_value.GetInt();
+				throw bc_io_exception("bad json format. expected int value.");
 			}
 
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcINT32& p_value)
@@ -464,12 +415,23 @@ namespace black_cat
 
 			void _load(const bc_json_value_object& p_json_value, bcUINT32& p_value)
 			{
-				if (!p_json_value.IsNumber())
+				if (p_json_value.IsNumber())
 				{
-					throw bc_io_exception("bad json format. expected uint value.");
+					p_value = static_cast<bcUINT32>(p_json_value.GetUint());
+					return;
+				}
+				if (p_json_value.IsFloat())
+				{
+					p_value = static_cast<bcUINT32>(p_json_value.GetFloat());
+					return;
+				}
+				if (p_json_value.IsDouble())
+				{
+					p_value = static_cast<bcUINT32>(p_json_value.GetDouble());
+					return;
 				}
 
-				p_value = p_json_value.GetUint();
+				throw bc_io_exception("bad json format. expected uint value.");
 			}
 
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcUINT32& p_value)
@@ -479,12 +441,23 @@ namespace black_cat
 
 			void _load(const bc_json_value_object& p_json_value, bcINT64& p_value)
 			{
-				if (!p_json_value.IsNumber())
+				if (p_json_value.IsNumber())
 				{
-					throw bc_io_exception("bad json format. expected int value.");
+					p_value = static_cast<bcINT64>(p_json_value.GetInt64());
+					return;
+				}
+				if (p_json_value.IsFloat())
+				{
+					p_value = static_cast<bcINT64>(p_json_value.GetFloat());
+					return;
+				}
+				if (p_json_value.IsDouble())
+				{
+					p_value = static_cast<bcINT64>(p_json_value.GetDouble());
+					return;
 				}
 
-				p_value = p_json_value.GetInt64();
+				throw bc_io_exception("bad json format. expected int value.");
 			}
 
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcINT64& p_value)
@@ -494,12 +467,23 @@ namespace black_cat
 
 			void _load(const bc_json_value_object& p_json_value, bcUINT64& p_value)
 			{
-				if (!p_json_value.IsNumber())
+				if (p_json_value.IsNumber())
 				{
-					throw bc_io_exception("bad json format. expected uint value.");
+					p_value = static_cast<bcUINT64>(p_json_value.GetUint64());
+					return;
+				}
+				if (p_json_value.IsFloat())
+				{
+					p_value = static_cast<bcUINT64>(p_json_value.GetFloat());
+					return;
+				}
+				if (p_json_value.IsDouble())
+				{
+					p_value = static_cast<bcUINT64>(p_json_value.GetDouble());
+					return;
 				}
 
-				p_value = p_json_value.GetUint64();
+				throw bc_io_exception("bad json format. expected uint value.");
 			}
 
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcUINT64& p_value)
@@ -509,12 +493,23 @@ namespace black_cat
 
 			void _load(const bc_json_value_object& p_json_value, bcFLOAT& p_value)
 			{
-				if (!p_json_value.IsFloat())
+				if (p_json_value.IsFloat())
 				{
-					throw bc_io_exception("bad json format. expected float value.");
+					p_value = p_json_value.GetFloat();
+					return;
+				}
+				if (p_json_value.IsDouble())
+				{
+					p_value = static_cast<bcFLOAT>(p_json_value.GetDouble());
+					return;
+				}
+				if (p_json_value.IsNumber())
+				{
+					p_value = static_cast<bcFLOAT>(p_json_value.GetInt());
+					return;
 				}
 
-				p_value = p_json_value.GetFloat();
+				throw bc_io_exception("bad json format. expected float value.");
 			}
 
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcFLOAT& p_value)
@@ -524,12 +519,23 @@ namespace black_cat
 
 			void _load(const bc_json_value_object& p_json_value, bcDOUBLE& p_value)
 			{
-				if (!p_json_value.IsDouble())
+				if (p_json_value.IsDouble())
 				{
-					throw bc_io_exception("bad json format. expected double value.");
+					p_value = p_json_value.GetDouble();
+					return;
+				}
+				if (p_json_value.IsFloat())
+				{
+					p_value = static_cast<bcDOUBLE>(p_json_value.GetFloat());
+					return;
+				}
+				if (p_json_value.IsNumber())
+				{
+					p_value = static_cast<bcDOUBLE>(p_json_value.GetInt());
+					return;
 				}
 
-				p_value = p_json_value.GetDouble();
+				throw bc_io_exception("bad json format. expected double value.");
 			}
 
 			void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcDOUBLE& p_value)

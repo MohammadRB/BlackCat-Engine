@@ -153,39 +153,40 @@ namespace black_cat
 
 	void bc_render_application::app_render(const platform::bc_clock::update_param& p_clock)
 	{
+		auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
+		auto& l_render_system = m_game_system->get_render_system();
+
 		m_render_watch.start();
-		
-		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
 		core::bc_event_frame_render_start l_event_frame_start;
-		l_event_manager->process_event(l_event_frame_start);
+		l_event_manager.process_event(l_event_frame_start);
 		
 		m_game_system->render_game(p_clock);
-		application_render(bc_application_render_context
-		{
-			p_clock,
-			*m_query_manager,
-			m_game_system->get_render_system()
-		});
+		application_render(bc_application_render_context{ p_clock,*m_query_manager, l_render_system });
+		l_render_system.present();
 
 		core::bc_event_frame_render_finish l_event_frame_finish;
-		l_event_manager->process_event(l_event_frame_finish);
+		l_event_manager.process_event(l_event_frame_finish);
 
 		m_render_watch.stop();
 	}
 
 	void bc_render_application::app_pause_idle(const platform::bc_clock::update_param& p_clock)
 	{
+		auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
+
 		platform::bc_app_event_pause_state l_pause_event(platform::bc_app_event_pause_state::state::paused);
-		core::bc_get_service<core::bc_event_manager>()->process_event(l_pause_event);
-		core::bc_get_service<core::bc_event_manager>()->process_event_queue(p_clock);
+		l_event_manager.process_event(l_pause_event);
+		l_event_manager.process_event_queue(p_clock);
 
 		application_pause_idle(p_clock);
 	}
 
 	void bc_render_application::app_render_pause_idle(const platform::bc_clock::update_param& p_clock)
 	{
-		core::bc_get_service<core::bc_event_manager>()->process_render_event_queue(p_clock);
+		auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
+
+		l_event_manager.process_render_event_queue(p_clock);
 		application_render_pause_idle(p_clock);
 	}
 
@@ -204,27 +205,29 @@ namespace black_cat
 	{
 		m_swap_watch.start();
 
-		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
-		auto* l_counter_value_manager = core::bc_get_service<core::bc_counter_value_manager>();
+		auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
+		auto& l_counter_value_manager = *core::bc_get_service<core::bc_counter_value_manager>();
+		auto& l_render_system = m_game_system->get_render_system();
 
 		m_update_watch.restart();
 		m_render_watch.restart();
 
-		l_counter_value_manager->add_counter("frame_time", get_ft());
-		l_counter_value_manager->add_counter("fps", get_fps());
-		l_counter_value_manager->add_counter("update_time", m_update_watch.average_total_elapsed());
-		l_counter_value_manager->add_counter("render_time", m_render_watch.average_total_elapsed());
+		l_counter_value_manager.add_counter("frame_time", get_ft());
+		l_counter_value_manager.add_counter("fps", get_fps());
+		l_counter_value_manager.add_counter("update_time", m_update_watch.average_total_elapsed());
+		l_counter_value_manager.add_counter("render_time", m_render_watch.average_total_elapsed());
+		l_counter_value_manager.add_counter("gpu_time", l_render_system.get_device_time());
 		
 		m_game_system->swap_frame(p_clock);
 		application_swap_frame(p_clock);
 		
 		core::bc_event_frame_swap l_event_frame_swap(get_fps());
-		l_event_manager->process_event(l_event_frame_swap);
+		l_event_manager.process_event(l_event_frame_swap);
 
 		m_swap_watch.stop();
 		m_swap_watch.restart();
 
-		l_counter_value_manager->add_counter("swap_time", m_swap_watch.average_total_elapsed());
+		l_counter_value_manager.add_counter("swap_time", m_swap_watch.average_total_elapsed());
 	}
 
 	void bc_render_application::app_render_swap_frame(const platform::bc_clock::update_param& p_clock)

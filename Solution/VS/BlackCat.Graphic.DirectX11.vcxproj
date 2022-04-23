@@ -24,13 +24,15 @@
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\bcUtility.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDevice.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceComputeState.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceOcclusionQuery.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Query\bcDeviceClockQuery.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Query\bcDeviceOcclusionQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceOutput.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDevicePipeline.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDevicePipelineState.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceSwapBuffer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandExecutor.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandList.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Query\bcDeviceTimeStampQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteBatch.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteFont.h" />
     <ClInclude Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\GraphicImpPCH.h" />
@@ -83,7 +85,9 @@
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\bcDeviceSwapBuffer.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandExecutor.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceCommandList.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Command\bcDeviceOcclusionQuery.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Query\bcDeviceClockQuery.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Query\bcDeviceOcclusionQuery.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Device\Query\bcDeviceTimeStampQuery.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteBatch.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\Font\bcSpriteFont.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Graphic.DirectX11\GraphicImp\GraphicImpPCH.cpp">

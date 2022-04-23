@@ -10,6 +10,7 @@
 #include "Core/Utility/bcInitializable.h"
 #include "Core/Utility/bcNullable.h"
 #include "Core/Utility/bcObjectPool.h"
+#include "Core/Utility/bcValueSampler.h"
 #include "Graphic/bcEvent.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDeviceSwapBuffer.h"
@@ -17,7 +18,9 @@
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
+#include "GraphicImp/Device/Query/bcDeviceClockQuery.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
+#include "Game/System/Input/bcCameraInstance.h"
 #include "Game/System/Render/Pass/bcRenderPassManager.h"
 #include "Game/System/Render/State/bcRenderPassState.h"
 #include "Game/System/Render/State/bcStateConfigs.h"
@@ -28,7 +31,7 @@
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/System/Render/bcFrameRenderer.h"
-#include "Game/System/Input/bcCameraInstance.h"
+#include "Game/System/Render/bcDeviceQuery.h"
 #include "Game/System/bcGameSystemParameter.h"
 #include "Game/bcEvent.h"
 #include "Game/bcExport.h"
@@ -112,7 +115,11 @@ namespace black_cat
 			graphic::bc_device_swap_buffer& get_device_swap_buffer() noexcept;
 
 			const graphic::bc_device_swap_buffer& get_device_swap_buffer() const noexcept;
-			
+
+			bcUINT64 get_device_clock() const noexcept;
+
+			bcFLOAT get_device_time() const noexcept;
+
 			bc_material_manager& get_material_manager() noexcept;
 			
 			const bc_material_manager& get_material_manager() const noexcept;
@@ -146,18 +153,22 @@ namespace black_cat
 
 			template<typename TPass>
 			bool remove_render_pass();
+
+			/**
+			 * \brief \b ThreadSafe
+			 * \param p_task
+			 */
+			void add_render_task(bci_render_task& p_task);
 			
 			void update(const update_context& p_update_params);
 
 			void render(const render_context& p_render_param);
 
-			void swap(const swap_context& p_swap_context);
+			void present();
 
-			/**
-			 * \brief \b ThreadSafe
-			 * \param p_task 
-			 */
-			void add_render_task(bci_render_task& p_task);
+			void swap_frame(const swap_context& p_swap_context);
+
+			void render_swap_frame(const swap_context& p_swap_context);
 
 			/**
 			 * \brief \b ThreadSafe
@@ -292,7 +303,13 @@ namespace black_cat
 			void _destroy_compute_state(bc_compute_state* p_compute_state);
 
 			graphic::bc_device m_device;
-			graphic::bc_device_swap_buffer_ref m_swap_buffer;
+			graphic::bc_device_swap_buffer_ref m_device_swap_buffer;
+			bc_device_query<graphic::bc_device_clock_query> m_device_clock_query;
+			bc_device_query<graphic::bc_device_timestamp_query, 1> m_device_start_query;
+			bc_device_query<graphic::bc_device_timestamp_query, 1> m_device_end_query;
+			bool m_device_timestamps_are_ready;
+			core::bc_value_sampler<platform::bc_clock::small_time, 32> m_device_elapsed_sampler;
+
 			core::bc_concurrent_object_pool<bc_render_pass_state> m_render_pass_states;
 			core::bc_concurrent_object_pool<bc_render_state> m_render_states;
 			core::bc_concurrent_object_pool<bc_compute_state> m_compute_states;
@@ -309,7 +326,6 @@ namespace black_cat
 			core::bc_event_listener_handle m_window_resize_handle;
 			core::bc_event_listener_handle m_app_active_handle;
 			core::bc_event_listener_handle m_device_reset_handle;
-			core::bc_event_listener_handle m_frame_render_finish_handle;
 			core::bc_event_listener_handle m_config_change_handle;
 			core::bc_nullable<graphic::bc_app_event_device_reset> m_device_reset_event;
 			core::bc_nullable<bc_event_global_config_changed> m_config_change_event;
@@ -327,12 +343,22 @@ namespace black_cat
 
 		inline graphic::bc_device_swap_buffer& bc_render_system::get_device_swap_buffer() noexcept
 		{
-			return m_swap_buffer.get();
+			return m_device_swap_buffer.get();
 		}
 
 		inline const graphic::bc_device_swap_buffer& bc_render_system::get_device_swap_buffer() const noexcept
 		{
-			return m_swap_buffer.get();
+			return m_device_swap_buffer.get();
+		}
+
+		inline bcUINT64 bc_render_system::get_device_clock() const noexcept
+		{
+			return m_device_clock_query.get_last_data();
+		}
+
+		inline bcFLOAT bc_render_system::get_device_time() const noexcept
+		{
+			return m_device_elapsed_sampler.average_value();
 		}
 
 		inline bc_material_manager& bc_render_system::get_material_manager() noexcept
@@ -400,33 +426,22 @@ namespace black_cat
 		void bc_render_system::add_render_pass(TPass p_pass)
 		{
 			m_render_pass_manager->add_pass<TPass>(std::move(p_pass));
-
-			auto l_pass = m_render_pass_manager->get_pass<TPass>();
-
-			l_pass->initialize_resources(*this);
 		}
 
 		template<class TPass, class TPassBefore>
 		void bc_render_system::add_render_pass_before(TPass p_pass)
 		{
 			m_render_pass_manager->add_pass_before<TPass, TPassBefore>(std::move(p_pass));
-
-			auto l_pass = m_render_pass_manager->get_pass<TPass>();
-
-			l_pass->initialize_resources(*this);
 		}
 
 		template<typename TPass>
 		bool bc_render_system::remove_render_pass()
 		{
 			auto* l_pass = m_render_pass_manager->get_pass<TPass>();
-
 			if (!l_pass)
 			{
 				return false;
 			}
-
-			l_pass->destroy(m_device);
 
 			return m_render_pass_manager->remove_pass<TPass>();
 		}

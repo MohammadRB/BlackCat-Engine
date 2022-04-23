@@ -2,15 +2,15 @@
 
 #pragma once
 
-// Because explicit specialization of template classes must seen first by compiler
-// in every 'imp' file we include all 'imp' files that are used
 #include "GraphicImp/bcDeviceReference.h"
 #include "GraphicImp/bcDeviceRef.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "GraphicImp/Device/bcDeviceComputeState.h"
 #include "GraphicImp/Device/Command/bcDeviceCommandList.h"
-#include "GraphicImp/Device/bcDeviceOcclusionQuery.h"
+#include "GraphicImp/Device/Query/bcDeviceClockQuery.h"
+#include "GraphicImp/Device/Query/bcDeviceTimeStampQuery.h"
+#include "GraphicImp/Device/Query/bcDeviceOcclusionQuery.h"
 #include "GraphicImp/Shader/Parameter/bcConstantBufferParameter.h"
 #include "GraphicImp/Shader/Parameter/bcSamplerParameter.h"
 #include "GraphicImp/Shader/Parameter/bcResourceViewParameter.h"

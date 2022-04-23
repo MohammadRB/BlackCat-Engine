@@ -150,6 +150,16 @@ namespace black_cat
 		using bc_sprite_font = bc_platform_sprite_font<g_current_render_api>;
 
 		template<bc_render_api>
+		class bc_platform_device_clock_query;
+		using bc_device_clock_query = bc_platform_device_clock_query<g_current_render_api>;
+		using bc_device_clock_query_ref = bc_device_ref<bc_device_clock_query>;
+
+		template<bc_render_api>
+		class bc_platform_device_timestamp_query;
+		using bc_device_timestamp_query = bc_platform_device_timestamp_query<g_current_render_api>;
+		using bc_device_timestamp_query_ref = bc_device_ref<bc_device_timestamp_query>;
+
+		template<bc_render_api>
 		class bc_platform_device_occlusion_query;
 		using bc_device_occlusion_query = bc_platform_device_occlusion_query<g_current_render_api>;
 		using bc_device_occlusion_query_ref = bc_device_ref<bc_device_occlusion_query>;
@@ -274,6 +284,10 @@ namespace black_cat
 			bc_sprite_batch create_sprite_batch();
 
 			bc_sprite_font create_sprite_font(core::bc_estring_view p_font_file);
+
+			bc_device_clock_query_ref create_clock_query();
+
+			bc_device_timestamp_query_ref create_timestamp_query();
 
 			bc_device_occlusion_query_ref create_occlusion_query();
 
