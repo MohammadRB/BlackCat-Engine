@@ -43,35 +43,35 @@ static const float2 g_quad_tex[] =
 
 struct bc_query_vs_input
 {
-	float3 m_position				: POSITION0;
+	float3 m_position						: POSITION0;
 };
 
 struct bc_query_vs_output
 {
-	float4 m_position				: SV_POSITION;
+	float4 m_position						: SV_POSITION;
 };
 
 struct bc_vs_output
 {
-	uint m_instance_index			: TEXCOORD0;
+	uint m_instance_index					: TEXCOORD0;
 };
 
 struct bc_gs_output
 {
-	float4 m_pos					: SV_Position;
-	float2 m_texcoord				: TEXCOORD0;
-	float3 m_color					: TEXCOORD1;
-	float m_intensity : TEXCOORD2;
-	int m_texture_index : TEXCOORD3;
-	float m_u0 : TEXCOORD4;
-	float m_v0 : TEXCOORD5;
-	float m_u1 : TEXCOORD6;
-	float m_v1 : TEXCOORD7;
+	float4 m_pos							: SV_Position;
+	float2 m_texcoord						: TEXCOORD0;
+	float3 m_color							: TEXCOORD1;
+	float m_intensity						: TEXCOORD2;
+	int m_texture_index						: TEXCOORD3;
+	float m_u0								: TEXCOORD4;
+	float m_v0								: TEXCOORD5;
+	float m_u1								: TEXCOORD6;
+	float m_v1								: TEXCOORD7;
 };
 
 struct bc_ps_output
 {
-	float4 m_color					: SV_Target;
+	float4 m_color							: SV_Target;
 };
 
 float4 sample_mask_texture(uint p_texture_index, float2 p_texcoord)

@@ -10,7 +10,7 @@ namespace black_cat
 	{
 		graphic::bc_blend_state_config bc_graphic_state_configs::bc_blend_config(bc_blend_type p_value)
 		{
-			graphic::bc_blend_state_config l_config;
+			graphic::bc_blend_state_config l_config{};
 
 			switch (p_value)
 			{
@@ -31,7 +31,7 @@ namespace black_cat
 				}
 				break;
 			}
-			case bc_blend_type::blending_overwrite_alpha:
+			case bc_blend_type::blend_overwrite_alpha:
 			{
 				l_config.m_alpha_to_coverage_enable = false;
 				l_config.m_independent_blend_enable = false;
@@ -48,7 +48,7 @@ namespace black_cat
 				}
 				break;
 			}
-			case bc_blend_type::blending_preserve_alpha:
+			case bc_blend_type::blend_preserve_alpha:
 			{
 				l_config.m_alpha_to_coverage_enable = false;
 				l_config.m_independent_blend_enable = false;
@@ -65,7 +65,75 @@ namespace black_cat
 				}
 				break;
 			}
-			case bc_blend_type::additive_overwrite_alpha:
+			case bc_blend_type::blend_blend_alpha:
+			{
+				l_config.m_alpha_to_coverage_enable = false;
+				l_config.m_independent_blend_enable = false;
+				for (bcUINT32 i = 0; i < graphic::bc_render_api_info::number_of_om_render_target_slots(); i++)
+				{
+					l_config.m_render_target[i].m_blend_enable = true;
+					l_config.m_render_target[i].m_src_blend = graphic::bc_blend::src_alpha;
+					l_config.m_render_target[i].m_dest_blend = graphic::bc_blend::inv_src_alpha;
+					l_config.m_render_target[i].m_blend_op = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_src_blend_alpha = graphic::bc_blend::src_alpha;
+					l_config.m_render_target[i].m_dest_blend_alpha = graphic::bc_blend::inv_src_alpha;
+					l_config.m_render_target[i].m_blend_op_alpha = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_render_target_write_mask = static_cast<bcUINT8>(graphic::bc_color_write::all);
+				}
+				break;
+			}
+			case bc_blend_type::blend_add_alpha:
+			{
+				l_config.m_alpha_to_coverage_enable = false;
+				l_config.m_independent_blend_enable = false;
+				for (bcUINT32 i = 0; i < graphic::bc_render_api_info::number_of_om_render_target_slots(); i++)
+				{
+					l_config.m_render_target[i].m_blend_enable = true;
+					l_config.m_render_target[i].m_src_blend = graphic::bc_blend::src_alpha;
+					l_config.m_render_target[i].m_dest_blend = graphic::bc_blend::inv_src_alpha;
+					l_config.m_render_target[i].m_blend_op = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_src_blend_alpha = graphic::bc_blend::src_alpha;
+					l_config.m_render_target[i].m_dest_blend_alpha = graphic::bc_blend::one;
+					l_config.m_render_target[i].m_blend_op_alpha = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_render_target_write_mask = static_cast<bcUINT8>(graphic::bc_color_write::all);
+				}
+				break;
+			}
+			case bc_blend_type::add_inv_blend_alpha:
+			{
+				l_config.m_alpha_to_coverage_enable = false;
+				l_config.m_independent_blend_enable = false;
+				for (bcUINT32 i = 0; i < graphic::bc_render_api_info::number_of_om_render_target_slots(); i++)
+				{
+					l_config.m_render_target[i].m_blend_enable = true;
+					l_config.m_render_target[i].m_src_blend = graphic::bc_blend::one;
+					l_config.m_render_target[i].m_dest_blend = graphic::bc_blend::inv_src_alpha;
+					l_config.m_render_target[i].m_blend_op = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_src_blend_alpha = graphic::bc_blend::src_alpha;
+					l_config.m_render_target[i].m_dest_blend_alpha = graphic::bc_blend::inv_src_alpha;
+					l_config.m_render_target[i].m_blend_op_alpha = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_render_target_write_mask = static_cast<bcUINT8>(graphic::bc_color_write::all);
+				}
+				break;
+			}
+			case bc_blend_type::blend_add_inv_alpha:
+			{
+				l_config.m_alpha_to_coverage_enable = false;
+				l_config.m_independent_blend_enable = false;
+				for (bcUINT32 i = 0; i < graphic::bc_render_api_info::number_of_om_render_target_slots(); i++)
+				{
+					l_config.m_render_target[i].m_blend_enable = true;
+					l_config.m_render_target[i].m_src_blend = graphic::bc_blend::src_alpha;
+					l_config.m_render_target[i].m_dest_blend = graphic::bc_blend::inv_src_alpha;
+					l_config.m_render_target[i].m_blend_op = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_src_blend_alpha = graphic::bc_blend::one;
+					l_config.m_render_target[i].m_dest_blend_alpha = graphic::bc_blend::inv_src_alpha;
+					l_config.m_render_target[i].m_blend_op_alpha = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_render_target_write_mask = static_cast<bcUINT8>(graphic::bc_color_write::all);
+				}
+				break;
+			}
+			case bc_blend_type::add_overwrite_alpha:
 			{
 				l_config.m_alpha_to_coverage_enable = false;
 				l_config.m_independent_blend_enable = false;
@@ -82,7 +150,7 @@ namespace black_cat
 				}
 				break;
 			}
-			case bc_blend_type::additive_preserve_alpha:
+			case bc_blend_type::add_preserve_alpha:
 			{
 				l_config.m_alpha_to_coverage_enable = false;
 				l_config.m_independent_blend_enable = false;
@@ -93,6 +161,40 @@ namespace black_cat
 					l_config.m_render_target[i].m_dest_blend = graphic::bc_blend::one;
 					l_config.m_render_target[i].m_blend_op = graphic::bc_blend_op::add;
 					l_config.m_render_target[i].m_src_blend_alpha = graphic::bc_blend::zero;
+					l_config.m_render_target[i].m_dest_blend_alpha = graphic::bc_blend::one;
+					l_config.m_render_target[i].m_blend_op_alpha = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_render_target_write_mask = static_cast<bcUINT8>(graphic::bc_color_write::all);
+				}
+				break;
+			}
+			case bc_blend_type::add_blend_alpha:
+			{
+				l_config.m_alpha_to_coverage_enable = false;
+				l_config.m_independent_blend_enable = false;
+				for (bcUINT32 i = 0; i < graphic::bc_render_api_info::number_of_om_render_target_slots(); i++)
+				{
+					l_config.m_render_target[i].m_blend_enable = true;
+					l_config.m_render_target[i].m_src_blend = graphic::bc_blend::src_alpha;
+					l_config.m_render_target[i].m_dest_blend = graphic::bc_blend::one;
+					l_config.m_render_target[i].m_blend_op = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_src_blend_alpha = graphic::bc_blend::src_alpha;
+					l_config.m_render_target[i].m_dest_blend_alpha = graphic::bc_blend::inv_src_alpha;
+					l_config.m_render_target[i].m_blend_op_alpha = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_render_target_write_mask = static_cast<bcUINT8>(graphic::bc_color_write::all);
+				}
+				break;
+			}
+			case bc_blend_type::add_add_alpha:
+			{
+				l_config.m_alpha_to_coverage_enable = false;
+				l_config.m_independent_blend_enable = false;
+				for (bcUINT32 i = 0; i < graphic::bc_render_api_info::number_of_om_render_target_slots(); i++)
+				{
+					l_config.m_render_target[i].m_blend_enable = true;
+					l_config.m_render_target[i].m_src_blend = graphic::bc_blend::src_alpha;
+					l_config.m_render_target[i].m_dest_blend = graphic::bc_blend::one;
+					l_config.m_render_target[i].m_blend_op = graphic::bc_blend_op::add;
+					l_config.m_render_target[i].m_src_blend_alpha = graphic::bc_blend::src_alpha;
 					l_config.m_render_target[i].m_dest_blend_alpha = graphic::bc_blend::one;
 					l_config.m_render_target[i].m_blend_op_alpha = graphic::bc_blend_op::add;
 					l_config.m_render_target[i].m_render_target_write_mask = static_cast<bcUINT8>(graphic::bc_color_write::all);
@@ -108,7 +210,7 @@ namespace black_cat
 
 		graphic::bc_depth_stencil_state_config bc_graphic_state_configs::bc_depth_stencil_config(bc_depth_stencil_type p_value)
 		{
-			graphic::bc_depth_stencil_state_config l_config;
+			graphic::bc_depth_stencil_state_config l_config{};
 
 			auto l_depth_config = bc_depth_stencil_type::depth_off;
 			auto l_stencil_config = bc_depth_stencil_type::stencil_off;

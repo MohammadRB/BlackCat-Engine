@@ -88,7 +88,7 @@ namespace box
 				.emit_particles_with_total_count(20, 1.5f * l_emitter_energy, 110 * l_emitter_energy, 0.045f);
 		}
 
-		l_builder.emitter(core::bc_vector3f(0, -0.1f, 0), core::bc_vector3f::up())
+		l_builder.emitter(core::bc_vector3f(0, .25f, 0), core::bc_vector3f::up())
 			.with_emission_position_deviation(1, { 1.f, .2f, 1.f })
 			.with_emission_direction_deviation(180)
 			.with_texture(4)
@@ -130,7 +130,7 @@ namespace box
 				.emit_particles_with_total_count(20, 1.5f * l_emitter_energy, 110 * l_emitter_energy, 0.06f);
 		}
 
-		l_builder.emitter(core::bc_vector3f(0, 0, 0), core::bc_vector3f::up())
+		l_builder.emitter(core::bc_vector3f(0, .5f, 0), core::bc_vector3f::up())
 			.with_emission_position_deviation(1, { 1.f, 0.2f, 1.f })
 			.with_emission_direction_deviation(180)
 			.with_texture(4)
@@ -172,7 +172,7 @@ namespace box
 				.emit_particles_with_total_count(20, 1.5f * l_emitter_energy, 110 * l_emitter_energy, 0.06f);
 		}
 
-		l_builder.emitter(core::bc_vector3f(0, 0, 0), core::bc_vector3f::up())
+		l_builder.emitter(core::bc_vector3f(0, .25f, 0), core::bc_vector3f::up())
 			.with_emission_position_deviation(1, { 1.f, .2f, 1.f })
 			.with_emission_direction_deviation(180)
 			.with_texture(4)
@@ -205,7 +205,7 @@ namespace box
 				.with_direction_deviation(30)
 				.with_emission_direction_deviation(100)
 				.with_texture(10)
-				.with_particles_color({ 0.9f, 0.3f, 0.01f }, 4.0)
+				.with_particles_color({ 0.9f, 0.2f, 0.01f }, 8.0f)
 				.with_particle_size(0.02f, 0.07f)
 				.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step3)
 				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step5, 0.09f)

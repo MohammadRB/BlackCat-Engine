@@ -74,10 +74,12 @@ namespace black_cat
 	
 	bc_gbuffer_light_map_pass::bc_gbuffer_light_map_pass(game::bc_render_pass_variable_t p_csm_buffers_container,
 		game::bc_render_pass_variable_t p_output_texture,
-		game::bc_render_pass_variable_t p_output_texture_view)
+		game::bc_render_pass_variable_t p_output_texture_read_view,
+		game::bc_render_pass_variable_t p_output_texture_render_view)
 		: m_csm_buffers_container_share_slot(p_csm_buffers_container),
 		m_output_texture_share_slot(p_output_texture),
-		m_output_texture_view_share_slot(p_output_texture_view)
+		m_output_texture_read_view_share_slot(p_output_texture_read_view),
+		m_output_texture_render_view_share_slot(p_output_texture_render_view)
 	{
 	}
 
@@ -492,9 +494,9 @@ namespace black_cat
 				1,
 				graphic::bc_format::R8G8B8A8_UNORM,
 				graphic::bc_resource_usage::gpu_rw,
-				core::bc_enum::mask_or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered }))
+				core::bc_enum::mask_or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::render_target, graphic::bc_resource_view_type::unordered }))
 			.as_normal_texture();
-		auto l_output_texture_view_config = l_resource_configure
+		auto l_output_texture_read_view_config = l_resource_configure
 			.as_resource_view()
 			.as_texture_view(l_output_texture_config.get_format())
 			.as_tex2d_shader_view(0, -1)
@@ -504,10 +506,15 @@ namespace black_cat
 			.as_texture_view(l_output_texture_config.get_format())
 			.as_tex2d_unordered_shader_view(0)
 			.on_texture2d();
+		auto l_output_texture_render_view_config = l_resource_configure
+			.as_resource_view()
+			.as_texture_view(l_output_texture_config.get_format())
+			.as_tex2d_render_target_view(0);
 
 		m_output_texture = p_context.m_device.create_texture2d(l_output_texture_config, nullptr);
-		m_output_texture_view = p_context.m_device.create_resource_view(m_output_texture.get(), l_output_texture_view_config);
+		m_output_texture_read_view = p_context.m_device.create_resource_view(m_output_texture.get(), l_output_texture_read_view_config);
 		m_output_texture_unordered_view = p_context.m_device.create_resource_view(m_output_texture.get(), l_output_texture_unordered_view_config);
+		m_output_texture_render_view = p_context.m_device.create_render_target_view(m_output_texture.get(), l_output_texture_render_view_config);
 
 		game::bc_compute_state_resource_view_array l_resource_views = 
 		{
@@ -554,7 +561,8 @@ namespace black_cat
 		share_resource(constant::g_rpass_render_target_read_view_2, m_normal_map_view.get());
 		share_resource(constant::g_rpass_render_target_read_view_3, m_specular_map_view.get());
 		share_resource(m_output_texture_share_slot, m_output_texture.get());
-		share_resource(m_output_texture_view_share_slot, m_output_texture_view.get());
+		share_resource(m_output_texture_read_view_share_slot, m_output_texture_read_view.get());
+		share_resource(m_output_texture_render_view_share_slot, m_output_texture_render_view.get());
 	}
 
 	void bc_gbuffer_light_map_pass::destroy(game::bc_render_system& p_render_system)
@@ -564,7 +572,7 @@ namespace black_cat
 		unshare_resource(constant::g_rpass_render_target_read_view_2);
 		unshare_resource(constant::g_rpass_render_target_read_view_3);
 		unshare_resource(m_output_texture_share_slot);
-		unshare_resource(m_output_texture_view_share_slot);
+		unshare_resource(m_output_texture_read_view_share_slot);
 		
 		m_compute_state.reset();
 		m_device_compute_state.reset();

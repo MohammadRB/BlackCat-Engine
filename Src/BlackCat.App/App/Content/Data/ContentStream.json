@@ -235,19 +235,31 @@
           "content_title": "particle_render_vs",
           "content_loader": "vertex_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
-          "content_parameter": { "function": "vs" }
+          "content_parameter": { "function": "render_vs" }
         },
         {
           "content_title": "particle_render_gs",
           "content_loader": "geometry_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
-          "content_parameter": { "function": "gs" }
+          "content_parameter": { "function": "render_gs" }
         },
         {
           "content_title": "particle_render_ps",
           "content_loader": "pixel_shader",
           "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
-          "content_parameter": { "function": "ps" }
+          "content_parameter": { "function": "render_ps" }
+        },
+        {
+          "content_title": "particle_merge_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
+          "content_parameter": { "function": "merge_vs" }
+        },
+        {
+          "content_title": "particle_merge_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "content\\shader\\directx11\\particle\\bcParticleRender.hlsl",
+          "content_parameter": { "function": "merge_ps" }
         }
       ]
     },

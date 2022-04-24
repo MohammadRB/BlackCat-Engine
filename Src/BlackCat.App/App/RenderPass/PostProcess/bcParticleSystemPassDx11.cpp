@@ -83,9 +83,10 @@ namespace black_cat
 	bc_particle_system_pass_dx11::bc_particle_system_pass_dx11(game::bc_render_pass_variable_t p_render_target_texture,
 		game::bc_render_pass_variable_t p_render_target_view, 
 		core::bc_estring_view p_sprites_content_path)
-		: m_render_target_texture(p_render_target_texture),
-		m_render_target_view(p_render_target_view),
-		m_sprites_content_path(p_sprites_content_path)
+		: m_render_target_texture_param(p_render_target_texture),
+		m_render_target_view_param(p_render_target_view),
+		m_sprites_content_path(p_sprites_content_path),
+		m_intermediate_texture_config()
 	{
 		m_emitters_query_result.reserve(s_emitters_count);
 	}
@@ -344,15 +345,18 @@ namespace black_cat
 			p_context.m_render_thread.unbind_compute_state(*m_emission_compute);
 		}
 
+		// Simulate
 		const game::bc_compute_state_unordered_view_initial_count_array l_initial_count = { -1, 0, m_dead_particles_initial_count, -1, -1, -1, -1, -1 };
 		p_context.m_render_thread.bind_compute_state(*m_simulation_compute, &l_initial_count);
 		p_context.m_render_thread.dispatch(std::max(1U, s_particles_count / s_simulation_shader_group_size), 1, 1);
 		p_context.m_render_thread.unbind_compute_state(*m_simulation_compute);
 
+		// Sort
 		p_context.m_render_thread.copy_structure_count(*m_draw_args_buffer, sizeof(bcUINT32), *m_alive_particles1_unordered_view);
 
 		_execute_sort_shader(p_context);
 
+		// Update lights
 		if(!m_lights_query_result.empty())
 		{
 			std::partial_sort
@@ -386,6 +390,15 @@ namespace black_cat
 			l_lights.m_lights[l_cbuffer_ite + 1].w = l_light.get_particle_intensity();
 		}
 
+		// Render
+		const auto l_intermediate_texture = get_intermediate_texture(m_intermediate_texture_config);
+		const auto l_intermediate_texture_view = l_intermediate_texture.get_resource_view();
+		const auto l_intermediate_texture_render_target_view = l_intermediate_texture.get_render_target_view();
+		const auto l_intermediate_texture_clear_color = core::bc_vector4f(0);
+
+		m_intermediate_texture_link.set_as_render_target_view(l_intermediate_texture_render_target_view);
+		p_context.m_render_thread.clear_render_target_view(l_intermediate_texture_render_target_view, &l_intermediate_texture_clear_color.x);
+
 		p_context.m_render_thread.update_subresource(m_lights_cbuffer.get(), 0, &l_lights, 0, 0);
 		
 		p_context.m_render_thread.bind_render_pass_state(*m_render_pass_state);
@@ -395,7 +408,18 @@ namespace black_cat
 		p_context.m_render_thread.get_pipeline().unbind_ia_primitive_topology();
 		p_context.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::input_assembler_stage);
 		p_context.m_render_thread.unbind_render_pass_state(*m_render_pass_state);
-		
+
+		// Merge
+		m_intermediate_texture_link.set_as_resource_view(l_intermediate_texture_view);
+
+		p_context.m_render_thread.bind_render_pass_state(*m_merge_pass_state);
+		p_context.m_render_thread.get_pipeline().bind_ia_primitive_topology(graphic::bc_primitive::trianglelist);
+		p_context.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::input_assembler_stage);
+		p_context.m_render_thread.draw(0, 6);
+		p_context.m_render_thread.get_pipeline().unbind_ia_primitive_topology();
+		p_context.m_render_thread.get_pipeline().pipeline_apply_states(graphic::bc_pipeline_stage::input_assembler_stage);
+		p_context.m_render_thread.unbind_render_pass_state(*m_merge_pass_state);
+
 		p_context.m_render_thread.finish();
 
 		m_dead_particles_initial_count = -1;
@@ -467,7 +491,11 @@ namespace black_cat
 	{
 		m_depth_buffer_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
 		m_depth_buffer_shader_view = get_shared_resource_throw<graphic::bc_resource_view>(constant::g_rpass_depth_stencil_read_view);
-		
+		const auto l_render_target = get_shared_resource_throw<graphic::bc_texture2d>(m_render_target_texture_param);
+		const auto l_render_render_view = get_shared_resource_throw<graphic::bc_render_target_view>(m_render_target_view_param);
+		const auto l_viewport = graphic::bc_viewport::default_config(l_render_target.get_width(), l_render_target.get_height());
+		const auto l_half_viewport = graphic::bc_viewport::default_config(l_render_target.get_width() / 2, l_render_target.get_height() / 2);
+
 		m_emission_compute = p_context.m_render_system.create_compute_state
 		(
 			m_emission_compute_state.get(),
@@ -580,11 +608,24 @@ namespace black_cat
 			}
 		);
 
-		const auto l_render_target = get_shared_resource_throw<graphic::bc_texture2d>(m_render_target_texture);
-		const auto l_render_render_view = get_shared_resource_throw<graphic::bc_render_target_view>(m_render_target_view);
-		const auto l_viewport = graphic::bc_viewport::default_config(l_render_target.get_width(), l_render_target.get_height());
-		
-		m_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
+		m_intermediate_texture_config = graphic::bc_graphic_resource_builder()
+			.as_resource()
+			.as_texture2d
+			(
+				l_render_target.get_width() / 2,
+				l_render_target.get_height() / 2,
+				false,
+				1,
+				l_render_target.get_format(),
+				graphic::bc_resource_usage::gpu_rw,
+				core::bc_enum::mask_or
+				({
+					graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::render_target
+				})
+			)
+			.as_render_target_texture();
+
+		m_render_pipeline_state = p_context.m_render_system.create_device_pipeline_state
 		(
 			"particle_render_vs",
 			nullptr,
@@ -592,22 +633,22 @@ namespace black_cat
 			"particle_render_gs",
 			"particle_render_ps",
 			game::bc_vertex_type::none,
-			game::bc_blend_type::blending_overwrite_alpha,
+			game::bc_blend_type::blend_add_inv_alpha,
 			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0x1,
 			{
-				l_render_target.get_format()
+				m_intermediate_texture_config.get_format()
 			},
 			graphic::bc_format::unknown,
 			game::bc_multi_sample_type::c1_q1
 		);
 		m_render_pass_state = p_context.m_render_system.create_render_pass_state
 		(
-			m_device_pipeline_state.get(),
-			l_viewport,
+			m_render_pipeline_state.get(),
+			l_half_viewport,
 			{
-				graphic::bc_render_target_view_parameter(l_render_render_view)
+				graphic::bc_render_target_view_parameter(m_intermediate_texture_link)
 			},
 			graphic::bc_depth_stencil_view(),
 			{
@@ -626,6 +667,49 @@ namespace black_cat
 				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::geometry, m_lights_cbuffer.get())
 			}
 		);
+
+		m_merge_pipeline_state = p_context.m_render_system.create_device_pipeline_state
+		(
+			"particle_merge_vs",
+			nullptr,
+			nullptr,
+			nullptr,
+			"particle_merge_ps",
+			game::bc_vertex_type::none,
+			game::bc_blend_type::add_inv_blend_alpha,
+			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
+			game::bc_rasterizer_type::fill_solid_cull_none,
+			0x1,
+			{
+				l_render_target.get_format()
+			},
+			graphic::bc_format::unknown,
+			game::bc_multi_sample_type::c1_q1
+		);
+		m_merge_pass_state = p_context.m_render_system.create_render_pass_state
+		(
+			m_merge_pipeline_state.get(),
+			l_viewport,
+			{
+				graphic::bc_render_target_view_parameter(l_render_render_view)
+			},
+			graphic::bc_depth_stencil_view(),
+			{
+				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_linear_sampler.get()),
+				graphic::bc_sampler_parameter(1, graphic::bc_shader_type::pixel, m_point_sampler.get())
+			},
+			{
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, graphic::bc_resource_view()),
+				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::pixel, graphic::bc_resource_view()),
+				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::pixel, graphic::bc_resource_view()),
+				graphic::bc_resource_view_parameter(3, graphic::bc_shader_type::pixel, graphic::bc_resource_view()),
+				graphic::bc_resource_view_parameter(4, graphic::bc_shader_type::pixel, m_intermediate_texture_link),
+			},
+			{},
+			{
+				p_context.m_render_system.get_global_cbuffer()
+			}
+		);
 	}
 
 	void bc_particle_system_pass_dx11::destroy(game::bc_render_system& p_render_system)
@@ -639,8 +723,10 @@ namespace black_cat
 
 		m_linear_sampler.reset();
 		m_point_sampler.reset();
-		m_device_pipeline_state.reset();
+		m_render_pipeline_state.reset();
 		m_render_pass_state.reset();
+		m_merge_pipeline_state.reset();
+		m_merge_pass_state.reset();
 
 		m_emission_compute_state.reset();
 		m_emission_compute.reset();

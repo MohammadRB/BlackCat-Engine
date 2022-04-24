@@ -242,7 +242,7 @@ namespace black_cat
 			"sprite_icon_gs",
 			"sprite_icon_ps",
 			game::bc_vertex_type::none,
-			game::bc_blend_type::blending_overwrite_alpha,
+			game::bc_blend_type::blend_overwrite_alpha,
 			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_less_no_write, game::bc_depth_stencil_type::stencil_off }),
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0x1,

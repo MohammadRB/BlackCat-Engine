@@ -22,7 +22,8 @@ namespace black_cat
 	public:
 		bc_gbuffer_light_map_pass(game::bc_render_pass_variable_t p_csm_buffers_container,
 			game::bc_render_pass_variable_t p_output_texture, 
-			game::bc_render_pass_variable_t p_output_texture_view);
+			game::bc_render_pass_variable_t p_output_texture_read_view,
+			game::bc_render_pass_variable_t p_output_texture_render_view);
 
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 
@@ -48,7 +49,8 @@ namespace black_cat
 
 		game::bc_render_pass_variable_t m_csm_buffers_container_share_slot;
 		game::bc_render_pass_variable_t m_output_texture_share_slot;
-		game::bc_render_pass_variable_t m_output_texture_view_share_slot;
+		game::bc_render_pass_variable_t m_output_texture_read_view_share_slot;
+		game::bc_render_pass_variable_t m_output_texture_render_view_share_slot;
 
 		graphic::bc_resource_view_ref m_depth_stencil_view;
 		graphic::bc_resource_view_ref m_diffuse_map_view;
@@ -70,8 +72,9 @@ namespace black_cat
 		core::bc_array<graphic::bc_shader_parameter_link, m_shader_shadow_map_count> m_shadow_map_parameters;
 
 		graphic::bc_texture2d_ref m_output_texture;
-		graphic::bc_resource_view_ref m_output_texture_view;
+		graphic::bc_resource_view_ref m_output_texture_read_view;
 		graphic::bc_resource_view_ref m_output_texture_unordered_view;
+		graphic::bc_render_target_view_ref m_output_texture_render_view;
 
 		graphic::bc_device_compute_state_ref m_device_compute_state;
 		game::bc_compute_state_ptr m_compute_state;

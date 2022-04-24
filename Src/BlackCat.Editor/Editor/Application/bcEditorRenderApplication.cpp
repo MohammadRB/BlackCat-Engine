@@ -60,6 +60,7 @@ namespace black_cat
 
 		void bc_editor_render_app::application_initialize(const bc_application_initialize_context& p_context)
 		{
+			auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
 			auto& l_render_system = m_game_system->get_render_system();
 			auto& l_input_system = m_game_system->get_input_system();
 			auto& l_global_config = bc_get_global_config();
@@ -93,21 +94,22 @@ namespace black_cat
 			l_render_system.add_render_pass(bc_gbuffer_light_map_pass
 			(
 				constant::g_rpass_direct_light_depth_buffers, 
-				constant::g_rpass_deferred_rendering_g_buffer_texture,
-				constant::g_rpass_deferred_rendering_g_buffer_texture_view
-			));
-			l_render_system.add_render_pass(bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_g_buffer_texture));
-			l_render_system.add_render_pass(bc_edge_detection_anti_aliasing_pass
-			(
-				constant::g_rpass_deferred_rendering_g_buffer_texture_view, 
-				constant::g_rpass_back_buffer_texture, 
-				constant::g_rpass_back_buffer_render_view
+				constant::g_rpass_deferred_rendering_gbuffer_texture,
+				constant::g_rpass_deferred_rendering_gbuffer_read_view,
+				constant::g_rpass_deferred_rendering_gbuffer_render_view
 			));
 			l_render_system.add_render_pass(bc_particle_system_pass_dx11
 			(
-				constant::g_rpass_back_buffer_texture, 
-				constant::g_rpass_back_buffer_render_view, 
+				constant::g_rpass_deferred_rendering_gbuffer_texture,
+				constant::g_rpass_deferred_rendering_gbuffer_render_view,
 				bcL("Texture\\Particle\\Particle.dds")
+			));
+			l_render_system.add_render_pass(bc_back_buffer_write_pass(constant::g_rpass_deferred_rendering_gbuffer_texture));
+			l_render_system.add_render_pass(bc_edge_detection_anti_aliasing_pass
+			(
+				constant::g_rpass_deferred_rendering_gbuffer_read_view,
+				constant::g_rpass_back_buffer_texture, 
+				constant::g_rpass_back_buffer_render_view
 			));
 			l_render_system.add_render_pass(bc_light_flare_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 			l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
@@ -133,7 +135,7 @@ namespace black_cat
 			l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
 
 			game::bc_event_editor_mode l_editor_mode_event(true);
-			core::bc_get_service<core::bc_event_manager>()->process_event(l_editor_mode_event);
+			l_event_manager.process_event(l_editor_mode_event);
 		}
 
 		void bc_editor_render_app::application_load_content(const bc_application_load_context& p_context)

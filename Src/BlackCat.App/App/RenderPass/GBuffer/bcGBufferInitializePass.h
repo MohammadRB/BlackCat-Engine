@@ -35,14 +35,15 @@ namespace black_cat
 		void destroy(game::bc_render_system& p_render_system) override;
 
 	private:
-		graphic::bc_texture2d_ref m_depth_stencil;
-		graphic::bc_texture2d_ref m_diffuse_map;
-		graphic::bc_texture2d_ref m_normal_map;
-		graphic::bc_texture2d_ref m_specular_map;
+		graphic::bc_render_target_view_ref m_back_buffer_render_view;
+		graphic::bc_texture2d_ref m_depth_stencil_texture;
+		graphic::bc_texture2d_ref m_diffuse_map_texture;
+		graphic::bc_texture2d_ref m_normal_map_texture;
+		graphic::bc_texture2d_ref m_specular_map_texture;
 		graphic::bc_depth_stencil_view_ref m_depth_stencil_view;
-		graphic::bc_render_target_view_ref m_diffuse_map_view;
-		graphic::bc_render_target_view_ref m_normal_map_view;
-		graphic::bc_render_target_view_ref m_specular_map_view;
+		graphic::bc_render_target_view_ref m_diffuse_map_render_view;
+		graphic::bc_render_target_view_ref m_normal_map_render_view;
+		graphic::bc_render_target_view_ref m_specular_map_render_view;
 
 		constexpr static bcFLOAT m_light_wind_query_time_ms{ 1000 };
 		bcFLOAT m_light_wind_query_elapsed_ms{ m_light_wind_query_time_ms };

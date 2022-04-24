@@ -57,10 +57,12 @@ namespace black_cat
 		static constexpr bcSIZE s_lights_count = 10;
 		
 		bcINT32 m_dead_particles_initial_count = s_particles_count;
-		const game::bc_render_pass_variable_t m_render_target_texture;
-		const game::bc_render_pass_variable_t m_render_target_view;
+		const game::bc_render_pass_variable_t m_render_target_texture_param;
+		const game::bc_render_pass_variable_t m_render_target_view_param;
 		core::bc_estring_view m_sprites_content_path;
-		
+
+		graphic::bc_texture_config m_intermediate_texture_config;
+		graphic::bc_shader_parameter_link m_intermediate_texture_link;
 		graphic::bc_depth_stencil_view m_depth_buffer_view;
 		graphic::bc_resource_view m_depth_buffer_shader_view;
 		graphic::bc_texture2d_content_ptr m_sprites_texture;
@@ -101,8 +103,10 @@ namespace black_cat
 		
 		graphic::bc_sampler_state_ref m_linear_sampler;
 		graphic::bc_sampler_state_ref m_point_sampler;
-		graphic::bc_device_pipeline_state_ref m_device_pipeline_state;
+		graphic::bc_device_pipeline_state_ref m_render_pipeline_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;
+		graphic::bc_device_pipeline_state_ref m_merge_pipeline_state;
+		game::bc_render_pass_state_ptr m_merge_pass_state;
 
 		core::bc_query_result<game::bc_scene_particle_emitter_query> m_emitters_query;
 		core::bc_query_result<game::bc_scene_light_query> m_lights_query;

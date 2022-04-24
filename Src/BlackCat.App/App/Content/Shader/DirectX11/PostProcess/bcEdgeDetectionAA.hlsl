@@ -146,6 +146,11 @@ bc_ps_output edge_aa_ps(bc_vs_output p_input)
 	const float	l_normal_factor = get_normal_edge_factor(p_input.m_texcoord, l_pixel_size);
 	const float l_edge_factor = max(l_depth_factor, l_normal_factor);
 
+	if (l_edge_factor <= 0.0)
+	{
+		discard;
+	}
+
 	const float3 l_diffuse = g_tex2d_diffuse.Sample(g_sam_point, p_input.m_texcoord).xyz;
 	float3 l_neighbors_diffuse = l_diffuse;
 
@@ -159,5 +164,6 @@ bc_ps_output edge_aa_ps(bc_vs_output p_input)
 
 	l_output.m_color.xyz = (1 - l_edge_factor) * l_diffuse + l_edge_factor * l_neighbors_diffuse;
 	//l_output.m_color = l_edge_factor;
+
 	return l_output;
 }

@@ -19,10 +19,16 @@ namespace black_cat
 		enum class bc_blend_type
 		{
 			opaque,
-			blending_overwrite_alpha,
-			blending_preserve_alpha,
-			additive_overwrite_alpha,
-			additive_preserve_alpha
+			blend_overwrite_alpha,
+			blend_preserve_alpha,
+			blend_blend_alpha,
+			blend_add_alpha,
+			add_inv_blend_alpha,
+			blend_add_inv_alpha,
+			add_overwrite_alpha,
+			add_preserve_alpha,
+			add_blend_alpha,
+			add_add_alpha
 		};
 
 		enum class bc_depth_stencil_type

@@ -13,9 +13,6 @@
 
 namespace black_cat
 {
-	/**
-	 * \brief Write input texture to device back buffer and share 'back_buffer_texture' and 'back_buffer_render_view' variables
-	 */
 	class BC_DLL bc_back_buffer_write_pass : public game::bci_render_pass
 	{
 		BC_RENDER_PASS(bb_wrt)
@@ -41,7 +38,6 @@ namespace black_cat
 		game::bc_render_pass_variable_t m_input_texture;
 
 		graphic::bc_sampler_state_ref m_sampler_state;
-		graphic::bc_render_target_view_ref m_back_buffer_render_view;
 		graphic::bc_resource_view_ref m_input_texture_view;
 
 		graphic::bc_device_pipeline_state_ref m_pipeline_state;

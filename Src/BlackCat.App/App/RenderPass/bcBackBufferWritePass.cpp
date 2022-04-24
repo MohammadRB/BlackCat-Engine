@@ -98,7 +98,6 @@ namespace black_cat
 	{
 		// Release references to back-buffer
 		m_render_pass_state.reset();
-		m_back_buffer_render_view.reset();
 	}
 
 	void bc_back_buffer_write_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
@@ -115,22 +114,18 @@ namespace black_cat
 
 		auto l_resource_configure = graphic::bc_graphic_resource_builder();
 
-		auto l_input_texture = *get_shared_resource<graphic::bc_texture2d>(m_input_texture);
-		auto l_back_buffer_texture = p_context.m_device_swap_buffer.get_back_buffer_texture();
+		const auto l_back_buffer_texture = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_back_buffer_texture);
+		const auto l_back_buffer_render_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_back_buffer_render_view);
+		const auto l_input_texture = *get_shared_resource<graphic::bc_texture2d>(m_input_texture);
+		const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
 
-		auto l_input_texture_view_config = l_resource_configure
-			.as_resource_view()
-			.as_texture_view(l_input_texture.get_format())
-			.as_tex2d_shader_view(0, 1)
-			.on_texture2d();
-		auto l_back_buffer_view_config = l_resource_configure
-			.as_resource_view()
-			.as_texture_view(l_back_buffer_texture.get_format())
-			.as_tex2d_render_target_view(0);
+		const auto l_input_texture_view_config = l_resource_configure
+		                                         .as_resource_view()
+		                                         .as_texture_view(l_input_texture.get_format())
+		                                         .as_tex2d_shader_view(0, 1)
+		                                         .on_texture2d();
 
 		m_input_texture_view = p_context.m_device.create_resource_view(l_input_texture, l_input_texture_view_config);
-		m_back_buffer_render_view = p_context.m_device.create_render_target_view(l_back_buffer_texture, l_back_buffer_view_config);
-		const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
 
 		m_pipeline_state = p_context.m_render_system.create_device_pipeline_state
 		(
@@ -153,7 +148,7 @@ namespace black_cat
 			m_pipeline_state.get(),
 			l_viewport,
 			{
-				graphic::bc_render_target_view_parameter(m_back_buffer_render_view.get())
+				graphic::bc_render_target_view_parameter(l_back_buffer_render_view)
 			},
 			graphic::bc_depth_stencil_view(),
 			{
@@ -168,9 +163,6 @@ namespace black_cat
 				p_context.m_render_system.get_global_cbuffer()
 			}
 		);
-
-		share_resource(constant::g_rpass_back_buffer_texture, l_back_buffer_texture);
-		share_resource(constant::g_rpass_back_buffer_render_view, m_back_buffer_render_view.get());
 	}
 
 	void bc_back_buffer_write_pass::destroy(game::bc_render_system& p_render_system)
@@ -180,7 +172,6 @@ namespace black_cat
 		m_pipeline_state.reset();
 
 		m_input_texture_view.reset();
-		m_back_buffer_render_view.reset();
 		m_sampler_state.reset();
 	}
 }

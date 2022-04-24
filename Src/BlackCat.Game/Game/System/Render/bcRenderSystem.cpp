@@ -118,40 +118,46 @@ namespace black_cat
 		
 		void bc_render_system::render(const render_context& p_render_param)
 		{
-			if(m_device_swap_buffer->is_valid())
+			if(!m_device_swap_buffer->is_valid())
 			{
-				m_device_clock_query.start(m_thread_manager->get_default_render_thread());
-				if(m_device_timestamps_are_ready)
-				{
-					m_device_start_query.end(m_thread_manager->get_default_render_thread());
-				}
-
-				m_frame_renderer->render(bc_frame_renderer_render_context(p_render_param.m_clock, p_render_param.m_query_manager, *this));
+				return;
 			}
+
+			m_device_clock_query.start(m_thread_manager->get_default_render_thread());
+
+			if(m_device_timestamps_are_ready)
+			{
+				m_device_start_query.end(m_thread_manager->get_default_render_thread());
+			}
+
+			m_frame_renderer->render(bc_frame_renderer_render_context(p_render_param.m_clock, p_render_param.m_query_manager, *this));
 		}
 
 		void bc_render_system::present()
 		{
-			if (m_device_swap_buffer->is_valid())
+			if (!m_device_swap_buffer->is_valid())
 			{
-				m_device_swap_buffer->present();
+				return;
+			}
 
-				if (m_device_timestamps_are_ready)
-				{
-					m_device_end_query.end(m_thread_manager->get_default_render_thread());
-				}
-				m_device_clock_query.end(m_thread_manager->get_default_render_thread());
-				m_device_clock_query.get_data(m_thread_manager->get_default_render_thread());
+			if (m_device_timestamps_are_ready)
+			{
+				m_device_end_query.end(m_thread_manager->get_default_render_thread());
+			}
 
-				m_device_timestamps_are_ready = m_device_start_query.get_data(m_thread_manager->get_default_render_thread()).first &&
-												m_device_end_query.get_data(m_thread_manager->get_default_render_thread()).first;
+			m_device_swap_buffer->present();
 
-				if(m_device_timestamps_are_ready)
-				{
-					const auto l_device_elapsed_clocks = m_device_end_query.get_last_data() - m_device_start_query.get_last_data();
-					const auto l_device_elapsed_ms = static_cast<platform::bc_clock::small_time>(l_device_elapsed_clocks) / get_device_clock() * 1000.f;
-					m_device_elapsed_sampler.add_sample(l_device_elapsed_ms);
-				}
+			m_device_clock_query.end(m_thread_manager->get_default_render_thread());
+			m_device_clock_query.get_data(m_thread_manager->get_default_render_thread());
+
+			m_device_timestamps_are_ready = m_device_start_query.get_data(m_thread_manager->get_default_render_thread()).first &&
+					m_device_end_query.get_data(m_thread_manager->get_default_render_thread()).first;
+
+			if(m_device_timestamps_are_ready)
+			{
+				const auto l_device_elapsed_clocks = m_device_end_query.get_last_data() - m_device_start_query.get_last_data();
+				const auto l_device_elapsed_ms = static_cast<platform::bc_clock::small_time>(l_device_elapsed_clocks) / get_device_clock() * 1000.f;
+				m_device_elapsed_sampler.add_sample(l_device_elapsed_ms);
 			}
 		}
 

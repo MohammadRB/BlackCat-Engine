@@ -68,16 +68,17 @@ namespace box
 				.with_emission_direction_deviation(180)
 				.with_texture(1)
 				.with_particles_color(m_color, 1)
-				.with_particle_size(4.0f, 10.0f)
+				.with_particle_size(2.0f, 10.0f)
+				.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step5)
 				.with_particles_rotation(20)
 				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step2, 4.5)
-				.emit_particles_with_per_second_count(10, 20, 10, 0.1f)
+				.emit_particles_with_per_second_count(8, 20, 10, 0.1f)
 				.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up(), m_smoke_time, 0, 0)
 				.with_texture(4)
-				.emit_particles_with_per_second_count(10, 20, 21, 0.1f)
+				.emit_particles_with_per_second_count(8, 20, 21, 0.1f)
 				.duplicate_last(core::bc_vector3f(0), core::bc_vector3f::up(), m_smoke_time, 0, 0)
 				.with_texture(5)
-				.emit_particles_with_per_second_count(10, 20, 19, 0.1f);
+				.emit_particles_with_per_second_count(8, 20, 19, 0.1f);
 
 			const auto l_actor_position = p_context.m_actor.get_component<game::bc_mediate_component>()->get_position();
 			auto* l_emitter_component = p_context.m_actor.get_create_component<game::bc_particle_emitter_component>();

@@ -406,7 +406,7 @@ namespace black_cat
 			nullptr,
 			"glow_apply_ps",
 			game::bc_vertex_type::pos_tex,
-			game::bc_blend_type::additive_preserve_alpha,
+			game::bc_blend_type::add_preserve_alpha,
 			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0xffffffff,

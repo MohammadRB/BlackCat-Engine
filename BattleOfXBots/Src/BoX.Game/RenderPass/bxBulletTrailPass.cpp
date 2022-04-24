@@ -192,7 +192,7 @@ namespace box
 			"bullet_trail_gs",
 			"bullet_trail_ps",
 			game::bc_vertex_type::none,
-			game::bc_blend_type::additive_overwrite_alpha,
+			game::bc_blend_type::add_overwrite_alpha,
 			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_less_no_write, game::bc_depth_stencil_type::stencil_off }),
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0xffffffff,

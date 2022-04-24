@@ -12,11 +12,11 @@ cbuffer g_cb_params						: register(BC_RENDER_PASS_STATE_CB1)
 	float g_intensity					: packoffset(c0.y);
 }
 
-static const float2 g_quad[] =
+static const float2 g_billboard_quad[] =
 {
 	float2(-1, 1), float2(1, 1), float2(-1, -1), float2(1, 1), float2(1, -1), float2(-1, -1)
 };
-static const float2 g_quad_tex[] =
+static const float2 g_billboard_quad_tex[] =
 {
 	float2(0, 0), float2(1, 0), float2(0, 1), float2(1, 0), float2(1, 1), float2(0, 1)
 };
@@ -35,8 +35,8 @@ struct bc_ps_output
 bc_vs_output glow_extract_vs(uint p_vertex_id : SV_VertexID)
 {
 	bc_vs_output l_output;
-	l_output.m_position = float4(g_quad[p_vertex_id], 0, 1);
-	l_output.m_texcoord = g_quad_tex[p_vertex_id];
+	l_output.m_position = float4(g_billboard_quad[p_vertex_id], 0, 1);
+	l_output.m_texcoord = g_billboard_quad_tex[p_vertex_id];
 
 	return l_output;
 }
