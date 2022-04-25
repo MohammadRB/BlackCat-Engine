@@ -164,8 +164,9 @@
           "content_parameter": {
             "xz_multiplier": 1,
             "y_multiplier": 512,
+            "scale": 3, 
             "distance_detail": 100,
-            "height_detail": 10,
+            "height_detail": 2,
             "materials": [
               {
                 "mesh_material": "cliff_is2",

@@ -37,10 +37,11 @@ namespace black_cat
 		bcUINT32 m_xz_multiplier;
 		BC_CBUFFER_ALIGN
 		bcFLOAT m_y_multiplier;
+		bcUINT32 m_scale;
 		bcFLOAT m_physics_y_scale;
 		bcUINT32 m_distance_detail;
-		bcUINT32 m_height_detail;
 		BC_CBUFFER_ALIGN
+		bcUINT32 m_height_detail;
 		bcUINT32 m_texturemap_width;
 		bcUINT32 m_texturemap_height;
 	};
@@ -314,26 +315,28 @@ namespace black_cat
 			)
 		);
 
-		const auto* l_xz_multiplier_value = p_context.m_parameters.get_value<bcINT32>("xz_multiplier");
-		const auto* l_y_multiplier_value = p_context.m_parameters.get_value<bcINT32>("y_multiplier");
-		const auto* l_distance_detail_value = p_context.m_parameters.get_value<bcINT32>("distance_detail");
-		const auto* l_height_detail_value = p_context.m_parameters.get_value<bcINT32>("height_detail");
-		const auto* l_material_names_value = p_context.m_parameters.get_value<core::bc_vector<core::bc_any>>("materials");
+		const auto* l_xz_multiplier_param = p_context.m_parameters.get_value<bcINT32>("xz_multiplier");
+		const auto* l_y_multiplier_param = p_context.m_parameters.get_value<bcINT32>("y_multiplier");
+		const auto* l_scale_param = p_context.m_parameters.get_value<bcINT32>("scale");
+		const auto* l_distance_detail_param = p_context.m_parameters.get_value<bcINT32>("distance_detail");
+		const auto* l_height_detail_param = p_context.m_parameters.get_value<bcINT32>("height_detail");
+		const auto* l_material_names_param = p_context.m_parameters.get_value<core::bc_vector<core::bc_any>>("materials");
 
-		bcUINT16 l_xz_multiplier = bc_null_default(l_xz_multiplier_value, 1);
-		bcFLOAT l_y_multiplier = bc_null_default(l_y_multiplier_value, 512);
-		bcUINT16 l_distance_detail = bc_null_default(l_distance_detail_value, 100);
-		bcUINT16 l_height_detail = bc_null_default(l_height_detail_value, 20);
+		bcUINT32 l_xz_multiplier = bc_null_default(l_xz_multiplier_param, 1);
+		bcFLOAT l_y_multiplier = bc_null_default(l_y_multiplier_param, 512);
+		bcUINT32 l_scale = bc_null_default(l_scale_param, 1);
+		bcUINT32 l_distance_detail = bc_null_default(l_distance_detail_param, 100);
+		bcUINT32 l_height_detail = bc_null_default(l_height_detail_param, 20);
 		core::bc_vector<std::tuple<core::bc_string, core::bc_string, bcFLOAT>> l_material_names;
 
-		if (l_material_names_value != nullptr)
+		if (l_material_names_param != nullptr)
 		{
-			l_material_names.reserve(l_material_names_value->size());
+			l_material_names.reserve(l_material_names_param->size());
 
 			std::transform
 			(
-				std::cbegin(*l_material_names_value),
-				std::cend(*l_material_names_value),
+				std::cbegin(*l_material_names_param),
+				std::cend(*l_material_names_param),
 				std::back_inserter(l_material_names),
 				[](const core::bc_any& p_material)
 				{
@@ -384,9 +387,9 @@ namespace black_cat
 
 				l_vertex.m_position = core::bc_vector3f
 				(
-					l_x * s_chunk_size * l_xz_multiplier,
+					l_x * static_cast<bcINT32>(s_chunk_size * l_xz_multiplier),
 					0,
-					l_z * s_chunk_size * l_xz_multiplier
+					l_z * static_cast<bcINT32>(s_chunk_size * l_xz_multiplier)
 				);
 				l_vertex.m_texcoord = core::bc_vector2f
 				(
@@ -431,6 +434,7 @@ namespace black_cat
 		l_parameter.m_chunk_size = s_chunk_size;
 		l_parameter.m_xz_multiplier = l_xz_multiplier;
 		l_parameter.m_y_multiplier = l_y_multiplier;
+		l_parameter.m_scale = l_scale;
 		l_parameter.m_physics_y_scale = l_physics_system.get_height_field_y_scale();
 		l_parameter.m_distance_detail = l_distance_detail;
 		l_parameter.m_height_detail = l_height_detail;

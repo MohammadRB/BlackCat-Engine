@@ -20,6 +20,7 @@
 #include "BoX.Game/Game/bxRocketActorController.h"
 #include "BoX.Game/Game/bxGrenadeActorController.h"
 #include "BoX.Game/Game/bxSmokeGrenadeActorController.h"
+#include "BoX.Game/Game/bxEnvironmentLightController.h"
 #include "BoX.Game/Particle/bxExplosionParticle.h"
 #include "BoX.Game/Particle/bxWeaponParticle.h"
 #include "BoX.Game/Particle/bxEnvironmentParticle.h"
@@ -58,6 +59,7 @@ namespace box
 			game::bc_actor_controller_register<bx_rocket_controller>("rocket"),
 			game::bc_actor_controller_register<bx_grenade_actor_controller>("grenade"),
 			game::bc_actor_controller_register<bx_smoke_grenade_actor_controller>("smoke_grenade"),
+			game::bc_actor_controller_register<bx_environment_light_controller>("environment_light"),
 			game::bc_actor_controller_register<bx_player_actor_controller>("box_player"),
 			game::bc_actor_controller_register<bx_network_player_actor_controller>("box_network_player")
 		);

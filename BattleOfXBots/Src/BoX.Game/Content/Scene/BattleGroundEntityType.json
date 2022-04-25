@@ -2,6 +2,7 @@
   "entities": [
     {
       "name": "env_sun_light",
+      "controller": "environment_light",
       "components": [
         {
           "name": "light",
@@ -23,7 +24,7 @@
             "type": "spot",
             "position": [ 0.0, 0.0, 0.0 ],
             "direction": [ 1.0, -0.5, 0.0 ],
-            "color": [ 0.79, 0.78, 0.68, 1.2 ],
+            "color": [ 0.79, 0.78, 0.68, 1.8 ],
             "length": 100.0,
             "angle": 130.0,
             "flare_surface": [ 0.5, 0.5, 0.5 ],

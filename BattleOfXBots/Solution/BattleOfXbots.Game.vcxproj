@@ -271,6 +271,7 @@
     <ClCompile Include="..\Src\BoX.Game\Application\bxApplicationHookFunctions.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Application\bxPlayerService.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Application\bxSceneCheckPoint.cpp" />
+    <ClCompile Include="..\Src\BoX.Game\Game\bxEnvironmentLightController.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Game\bxExplosionActorController.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Game\bxFireActorController.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Game\bxGrenadeActorController.cpp" />
@@ -297,6 +298,7 @@
     <ClInclude Include="..\Src\BoX.Game\Application\bxServerNetworkMessageVisitor.h" />
     <ClInclude Include="..\Src\BoX.Game\bxEvent.h" />
     <ClInclude Include="..\Src\BoX.Game\bxExport.h" />
+    <ClInclude Include="..\Src\BoX.Game\Game\bxEnvironmentLightController.h" />
     <ClInclude Include="..\Src\BoX.Game\Game\bxExplosionActorController.h" />
     <ClInclude Include="..\Src\BoX.Game\Game\bxFireActorController.h" />
     <ClInclude Include="..\Src\BoX.Game\Game\bxGrenadeActorController.h" />

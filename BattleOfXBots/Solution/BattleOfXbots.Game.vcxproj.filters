@@ -102,6 +102,9 @@
     <ClCompile Include="..\Src\BoX.Game\Game\bxSmokeGrenadeActorController.cpp">
       <Filter>BoX.Game\Game</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Game\bxEnvironmentLightController.cpp">
+      <Filter>BoX.Game\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\BoX.Game\Application\bxApplicationHookFunctions.h">
@@ -184,6 +187,9 @@
     </ClInclude>
     <ClInclude Include="..\Src\BoX.Game\Particle\bxEnvironmentParticle.h">
       <Filter>BoX.Game\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Game\bxEnvironmentLightController.h">
+      <Filter>BoX.Game\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

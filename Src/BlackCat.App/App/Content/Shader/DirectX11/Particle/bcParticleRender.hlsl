@@ -97,7 +97,8 @@ void render_gs(point render_vertex_output p_input[1], inout TriangleStream<rende
 	const float3 l_billboard_up = normalize(float3(g_view._12, g_view._22, g_view._32));
 
 	const float3 l_direct_light_shading = direct_light_shading(l_particle.m_direction);
-	const float3 l_ambient_shading = g_global_light_ambient_color * g_global_light_ambient_intensity;
+	// multiply ambient with color intensity to allow particles with high intensity reflect additive color in dark ambient
+	const float3 l_ambient_shading = g_global_light_ambient_color * g_global_light_ambient_intensity * max(l_particle.m_color_intensity, 1.f);
 	
 	float2 l_quad[4];
 	render_geometry_output l_output_vertices[4];
@@ -139,7 +140,7 @@ float4 render_ps(render_geometry_output p_input) : SV_Target0
 	const float l_soft_fade = saturate(l_depth_diff / (g_global_scale / 2.f));
 	
 	const float4 l_light_shading = p_input.m_light_shading * l_alpha;
-	const float3 l_color_diffuse = (p_input.m_color.rgb * p_input.m_ambient_shading) + (p_input.m_direct_light_shading * p_input.m_ambient_shading);
+	const float3 l_color_diffuse = p_input.m_color.rgb * p_input.m_ambient_shading + p_input.m_direct_light_shading * p_input.m_ambient_shading;
 	float3 l_final_diffuse = lerp(l_color_diffuse, l_light_shading.rgb, l_light_shading.a);
 
 	// it is important to multiply alpha with color intensity to simulate additive particles

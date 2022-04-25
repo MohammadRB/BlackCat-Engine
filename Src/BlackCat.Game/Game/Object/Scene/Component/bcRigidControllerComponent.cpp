@@ -54,8 +54,7 @@ namespace black_cat
 			auto& l_physics_system = p_context.m_game_system.get_physics_system();
 			auto& l_physics = l_physics_system.get_physics();
 
-			const auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>();
-			if (l_mesh_component)
+			if (const auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>())
 			{
 				m_px_body = l_physics.create_rigid_dynamic(physics::bc_transform(p_context.m_transform));
 				l_physics_system.set_game_actor(*m_px_body, p_context.m_actor);
@@ -75,8 +74,7 @@ namespace black_cat
 
 				const auto l_mass_value = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_mass), 1);
 				const auto l_cmass_value = p_context.m_parameters.get_value_vector3f(constant::g_param_rigid_cmass);
-				m_px_body->update_mass_inertia(l_mass_value, l_cmass_value.get());
-				m_px_body->set_mass(l_mass_value);
+				m_px_body->set_mass_update_inertia(l_mass_value, l_cmass_value.get());
 
 				added_to_scene(p_context.m_scene.get_px_scene(), *m_px_body);
 

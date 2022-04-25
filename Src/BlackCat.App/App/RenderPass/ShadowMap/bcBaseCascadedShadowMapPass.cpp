@@ -606,7 +606,7 @@ namespace black_cat
 
 			//const auto l_light_camera_pos = l_light_frustum_center + (-p_light.get_direction() * -l_min_vs.z);
 			//const auto l_light_cascade_extends = l_max_vs - l_min_vs;
-			l_cascade_cameras.push_back(bc_cascaded_shadow_map_camera(l_cascade_camera_pos, l_frustum_center, l_max_vs.x - l_min_vs.x, l_max_vs.y - l_min_vs.y, 0.1, l_max_vs.z));
+			l_cascade_cameras.push_back(bc_cascaded_shadow_map_camera(l_cascade_camera_pos, l_frustum_center, l_max_vs.x - l_min_vs.x, l_max_vs.y - l_min_vs.y, 0.1f, l_max_vs.z));
 			//l_cascade_cameras.push_back(bc_cascaded_shadow_map_camera(l_light_camera_pos, l_light_frustum_center, l_light_cascade_extends.x, l_light_cascade_extends.y, 0.1, l_light_cascade_extends.z));
 
 			if (m_state->m_capture_debug_shapes)
@@ -679,9 +679,9 @@ namespace black_cat
 
 			const auto l_max = core::bc_vector3f(l_frustum_sphere_radius);
 			const auto l_min = -l_max;
-			const auto l_width = (l_max.x - l_min.x) * .92f;
-			const auto l_height = (l_max.y - l_min.y) * .92f;
-			const auto l_depth = (l_frustum_sphere_radius) * .92f;
+			const auto l_width = l_max.x - l_min.x;
+			const auto l_height = l_max.y - l_min.y;
+			const auto l_depth = l_frustum_sphere_radius;
 			//const auto l_camera_back_distance = -l_min.z;
 			const auto l_camera_back_distance = std::max(l_depth, m_state->m_cascade_cameras_distance);
 			const auto l_camera_pos = l_frustum_center + (-p_light.get_direction() * l_camera_back_distance);

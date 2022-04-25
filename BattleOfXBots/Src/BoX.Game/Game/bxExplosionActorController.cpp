@@ -196,7 +196,7 @@ namespace box
 			{
 				auto& l_px_scene = m_scene->get_px_scene();
 				auto l_query_buffer = physics::bc_scene_overlap_query_buffer(100);
-				core::bc_vector<game::bc_overlap_hit> l_overlap_result;
+				core::bc_vector<game::bc_overlap_hit> l_hits;
 
 				{
 					physics::bc_scene_shared_lock l_lock(&l_px_scene);
@@ -210,34 +210,42 @@ namespace box
 					);
 
 					const auto l_num_touches = l_query_buffer.get_touch_count();
-					l_overlap_result.reserve(l_num_touches);
+					l_hits.reserve(l_num_touches);
 
 					for (auto l_ite = 0U; l_ite < l_num_touches; ++l_ite)
 					{
 						const auto l_hit = l_query_buffer.get_touch(l_ite);
 						const auto l_find_ite = std::find_if
 						(
-							std::begin(l_overlap_result),
-							std::end(l_overlap_result),
+							std::begin(l_hits),
+							std::end(l_hits),
 							[&](const game::bc_overlap_hit& p_entry)
 							{
 								return p_entry.get_px_actor() == l_hit.get_actor();
 							}
 						);
-						if (l_find_ite != std::end(l_overlap_result))
+						if (l_find_ite != std::end(l_hits))
 						{
 							continue;
 						}
 
-						const auto l_actor_is_visible = _test_actor_visibility(l_px_scene, l_hit, p_explosion_position);
-						if (l_actor_is_visible)
-						{
-							l_overlap_result.push_back(l_hit);
-						}
+						l_hits.push_back(l_hit);
 					}
+
+					const auto l_remove_ite = std::remove_if
+					(
+						std::begin(l_hits),
+						std::end(l_hits),
+						[&](const auto& l_hit)
+						{
+							const auto l_actor_is_visible = _test_actor_visibility(l_px_scene, l_hit, p_explosion_position);
+							return !l_actor_is_visible;
+						}
+					);
+					l_hits.erase(l_remove_ite, std::end(l_hits));
 				}
 
-				return core::bc_any(std::move(l_overlap_result));
+				return core::bc_any(std::move(l_hits));
 			}
 		);
 		return p_query_manager.queue_query(std::move(l_scene_query));
@@ -245,11 +253,12 @@ namespace box
 
 	bool bx_explosion_actor_controller::_test_actor_visibility(const physics::bc_scene& p_px_scene, const game::bc_overlap_hit& p_hit, const core::bc_vector3f& p_explosion_position) const
 	{
-		const auto& l_hit_mediate_component = *p_hit.get_actor().get_component<game::bc_mediate_component>();
+		const auto l_hit_actor = p_hit.get_actor();
+		const auto& l_hit_mediate_component = *l_hit_actor.get_component<game::bc_mediate_component>();
 		const auto& l_hit_bound_box = l_hit_mediate_component.get_bound_box();
-		const auto l_hit_position = l_hit_bound_box.get_center();
-		const auto l_hit_direction = l_hit_position - p_explosion_position;
-		const auto l_ray = physics::bc_ray(p_explosion_position, core::bc_vector3f::normalize(l_hit_direction), core::bc_vector3f::length_sq(l_hit_direction));
+		const auto l_ray_target = l_hit_bound_box.get_center();
+		const auto l_ray_direction = l_ray_target - p_explosion_position;
+		const auto l_ray = physics::bc_ray(p_explosion_position, core::bc_vector3f::normalize(l_ray_direction), l_ray_direction.magnitude());
 		auto l_ray_hit_buffer = physics::bc_scene_ray_query_buffer();
 
 		const auto l_hit_result = p_px_scene.raycast
@@ -259,8 +268,8 @@ namespace box
 			physics::bc_hit_flag::hit_info,
 			physics::bc_query_flags::statics
 		);
-
-		// if no hit it means actor is visible because we search for static actors
-		return !l_hit_result || (l_hit_result && static_cast<game::bc_ray_hit>(l_ray_hit_buffer.get_block()).get_actor() == p_hit.get_actor());
+		
+		// if there is no hit it means actor is visible because we search for static actors
+		return !l_hit_result || (l_hit_result && static_cast<game::bc_ray_hit>(l_ray_hit_buffer.get_block()).get_actor() == l_hit_actor);
 	}
 }

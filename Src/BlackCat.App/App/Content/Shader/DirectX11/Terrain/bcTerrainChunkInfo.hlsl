@@ -6,20 +6,23 @@
 
 // == Resource ===================================================================================
 
-Texture2D<float> g_heightmap				: register(BC_COMPUTE_STATE_T0);
-RWStructuredBuffer<int3> g_chunk_info		: register(BC_COMPUTE_STATE_U0);
+Texture2D<float> g_heightmap				    : register(BC_COMPUTE_STATE_T0);
+RWStructuredBuffer<int3> g_chunk_info		    : register(BC_COMPUTE_STATE_U0);
 
-cbuffer g_cb_parameter						: register(BC_COMPUTE_STATE_CB0)
+cbuffer g_cb_parameter                          : register(BC_COMPUTE_STATE_CB0)
 {
-    uint g_width							: packoffset(c0.x);
-    uint g_height							: packoffset(c0.y);
-    uint g_chunk_size						: packoffset(c0.z);
-    uint g_xz_multiplier					: packoffset(c0.w);
-    float g_y_multiplier					: packoffset(c1.x);
-	float g_physics_y_scale					: packoffset(c1.y);
-    uint g_distance_detail					: packoffset(c1.z);		// Distance from camera that render will happen with full detail
-    uint g_height_detail					: packoffset(c1.w);		// Lower values result in higher details
-};
+    uint g_width								: packoffset(c0.x);
+    uint g_height								: packoffset(c0.y);
+    uint g_chunk_size							: packoffset(c0.z);
+    uint g_xz_multiplier						: packoffset(c0.w);
+    float g_y_multiplier                        : packoffset(c1.x);
+    uint g_scale                                : packoffset(c1.y);
+    float g_physics_y_scale                     : packoffset(c1.z);
+    uint g_distance_detail						: packoffset(c1.w);	// Distance from camera that render will happen with full detail
+    uint g_height_detail						: packoffset(c2.x);	// higher values result in higher details
+    uint g_texture_map_width					: packoffset(c2.y);
+    uint g_texture_map_height					: packoffset(c2.z);
+}
 
 // == Helper ======================================================================================
 
@@ -84,10 +87,10 @@ void main(uint3 p_group_id : SV_GroupID,
     {
         if (p_group_thread_id.x % l_divider == 0 && p_group_thread_id.y % l_divider == 0)
         {
-            float l_height1 = gs_height[p_group_thread_id.x][p_group_thread_id.y].z;
-            float l_height2 = gs_height[p_group_thread_id.x + l_step][p_group_thread_id.y].z;
-            float l_height3 = gs_height[p_group_thread_id.x][p_group_thread_id.y + l_step].z;
-            float l_height4 = gs_height[p_group_thread_id.x + l_step][p_group_thread_id.y + l_step].z;
+	        const float l_height1 = gs_height[p_group_thread_id.x][p_group_thread_id.y].z;
+	        const float l_height2 = gs_height[p_group_thread_id.x + l_step][p_group_thread_id.y].z;
+	        const float l_height3 = gs_height[p_group_thread_id.x][p_group_thread_id.y + l_step].z;
+	        const float l_height4 = gs_height[p_group_thread_id.x + l_step][p_group_thread_id.y + l_step].z;
 
             float l_min = min(min(l_height1, l_height2), min(l_height3, l_height4));
             float l_max = max(max(l_height1, l_height2), max(l_height3, l_height4));
@@ -103,7 +106,7 @@ void main(uint3 p_group_id : SV_GroupID,
     // first thread is the last thread that leave while loop
     if (p_group_thread_id.x == 0 && p_group_thread_id.y == 0)
     {
-        uint l_chunk_index = get_chunk_index(p_dispatch_thread_id.xy);
+	    const uint l_chunk_index = get_chunk_index(p_dispatch_thread_id.xy);
          // Convert float min max to int because interlocked operations only work with ints
         int2 l_thread_group_minmax = int2(floor(gs_height[0][0].x), ceil(gs_height[0][0].y));
 
@@ -242,12 +245,12 @@ void main(uint3 p_group_id : SV_GroupID,
     {
         if (p_group_thread_id.x % l_divider == 0 && p_group_thread_id.y % l_divider == 0)
         {
-            float l_distance1 = gs_height[p_group_thread_id.x][p_group_thread_id.y].z;
-            float l_distance2 = gs_height[p_group_thread_id.x + l_step][p_group_thread_id.y].z;
-            float l_distance3 = gs_height[p_group_thread_id.x][p_group_thread_id.y + l_step].z;
-            float l_distance4 = gs_height[p_group_thread_id.x + l_step][p_group_thread_id.y + l_step].z;
+	        const float l_distance1 = gs_height[p_group_thread_id.x][p_group_thread_id.y].z;
+            const float l_distance2 = gs_height[p_group_thread_id.x + l_step][p_group_thread_id.y].z;
+            const float l_distance3 = gs_height[p_group_thread_id.x][p_group_thread_id.y + l_step].z;
+            const float l_distance4 = gs_height[p_group_thread_id.x + l_step][p_group_thread_id.y + l_step].z;
 
-            float l_distance = (l_distance1 + l_distance2 + l_distance3 + l_distance4) / 4;
+            const float l_distance = (l_distance1 + l_distance2 + l_distance3 + l_distance4) / 4;
 
             gs_height[p_group_thread_id.x][p_group_thread_id.y].z = l_distance;
         }
@@ -259,7 +262,7 @@ void main(uint3 p_group_id : SV_GroupID,
     // Use first thread in group to write plane distance result
     if (p_group_thread_id.x == 0 && p_group_thread_id.y == 0)
     {
-        uint l_chunk_index = get_chunk_index(p_dispatch_thread_id.xy);
+	    const uint l_chunk_index = get_chunk_index(p_dispatch_thread_id.xy);
          // Convert float min max to int because interlocked operations only work with ints
         float l_thread_group_distance = gs_height[0][0].z;
 

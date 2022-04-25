@@ -6,7 +6,7 @@
 #define THREAD_GROUP_SIZE 16
 #define SHADER_SHADOW_MAP_CASCADE_COUNT 4
 
-static const float BIAS_SCALE[SHADER_SHADOW_MAP_CASCADE_COUNT] = { .95f,.85f,.50f,.35f };
+static const float BIAS_SCALE[SHADER_SHADOW_MAP_CASCADE_COUNT] = { .95f,.85f,.60f,.35f };
 static const float POISSON_DISK_SCALE[SHADER_SHADOW_MAP_CASCADE_COUNT] = { .85f,.70f,.35f,.10f };
 static const float2 POISSON_DISK[4] =
 {
@@ -399,10 +399,10 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 		const uint l_point_light_index = gs_visible_point_light_indices[l_p];
 		const point_light l_light = g_point_lights[l_point_light_index];
 
-        if (!is_pixel_in_light_range(l_world_position, l_light.m_min_bound, l_light.m_max_bound))
+        /*if (!is_pixel_in_light_range(l_world_position, l_light.m_min_bound, l_light.m_max_bound))
         {
             continue;
-        }
+        }*/
 
         l_light_map += point_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
 	}
@@ -412,10 +412,10 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 		const uint l_spot_light_index = gs_visible_spot_light_indices[l_s];
 		const spot_light l_light = g_spot_lights[l_spot_light_index];
 
-        if (!is_pixel_in_light_range(l_world_position, l_light.m_min_bound, l_light.m_max_bound))
+        /*if (!is_pixel_in_light_range(l_world_position, l_light.m_min_bound, l_light.m_max_bound))
         {
             continue;
-        }
+        }*/
 
         l_light_map += spot_light_shading(l_light, g_camera_position, l_world_position, l_normal, l_specular_intensity, l_specular_power);
     }

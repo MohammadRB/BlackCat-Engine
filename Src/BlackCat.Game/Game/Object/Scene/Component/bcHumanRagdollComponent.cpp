@@ -222,15 +222,13 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event);
-			if (l_scene_add_event)
+			if (const auto* l_scene_add_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event))
 			{
 				m_px_scene = &l_scene_add_event->get_scene().get_px_scene();
 				return;
 			}
 
-			const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event);
-			if (l_scene_remove_event)
+			if (const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event))
 			{
 				set_enable(false);
 				m_px_scene = nullptr;

@@ -115,6 +115,6 @@ namespace black_cat
 		virtual std::pair< graphic::bc_texture_config, graphic::bc_resource_view_config > get_texture_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const;
 
 	private:
-		constexpr static bcUINT16 s_chunk_size = 64;
+		constexpr static bcUINT32 s_chunk_size = 64;
 	};
 }

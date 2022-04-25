@@ -14,13 +14,14 @@ cbuffer g_cb_parameter						: register(BC_COMPUTE_STATE_CB0)
     uint g_height							: packoffset(c0.y);
     uint g_chunk_size						: packoffset(c0.z);
     uint g_xz_multiplier					: packoffset(c0.w);
-    float g_y_multiplier					: packoffset(c1.x);
-	float g_physics_y_scale					: packoffset(c1.y);
-    uint g_distance_detail					: packoffset(c1.z);
-    uint g_height_detail					: packoffset(c1.w);
-	uint g_texturemap_width					: packoffset(c2.x);
-	uint g_texturemap_height				: packoffset(c2.y);
-};
+    float g_y_multiplier                    : packoffset(c1.x);
+    uint g_scale							: packoffset(c1.y);
+    float g_physics_y_scale                 : packoffset(c1.z);
+    uint g_distance_detail					: packoffset(c1.w);
+    uint g_height_detail					: packoffset(c2.x);
+    uint g_texture_map_width				: packoffset(c2.y);
+    uint g_texture_map_height				: packoffset(c2.z);
+}
 
 cbuffer g_cb_parameter1						: register(BC_COMPUTE_STATE_CB1)
 {

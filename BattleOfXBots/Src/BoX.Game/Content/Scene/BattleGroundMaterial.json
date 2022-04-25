@@ -85,8 +85,8 @@
     {
       "name": "decal_nature1",
       "diffuse_color": [ 1.0, 1.0, 1.0, 1.0 ],
-      "specular_intensity": 0.1,
-      "specular_power": 0.1,
+      "specular_intensity": 0.0,
+      "specular_power": 0.0,
       "diffuse_map": "decal_nature1",
       "normal_map": "decal_nature1_nrm",
       "specular_map": null
