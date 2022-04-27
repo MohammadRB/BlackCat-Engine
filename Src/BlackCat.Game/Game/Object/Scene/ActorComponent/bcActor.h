@@ -2,18 +2,11 @@
 
 #pragma once
 
-#include "Core/Container/bcVector.h"
 #include "CorePlatform/bcType.h"
+#include "Core/Container/bcVector.h"
+#include "Core/File/bcJsonDocument.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorExtensions.h"
-
-namespace black_cat
-{
-	namespace core
-	{
-		class bc_data_driven_parameter;
-	}
-}
 
 namespace black_cat
 {
@@ -75,7 +68,7 @@ namespace black_cat
 			void create_component();
 
 			template<class TComponent>
-			void create_component(const core::bc_data_driven_parameter& p_instance_parameters);
+			void create_component(const core::bc_json_key_value& p_instance_parameters);
 
 			template<class TComponent>
 			void remove_component();

@@ -5,14 +5,14 @@
 #include "Core/bcConstant.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcUnorderedMap.h"
+#include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcDelegate.hpp"
-#include "Core/Utility/bcDataDrivenParameter.h"
-#include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.hpp"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
+#include "Game/bcExport.h"
 
 namespace black_cat
 {
@@ -102,7 +102,7 @@ namespace black_cat
 			 */
 			bc_actor create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform);
 
-			bc_actor create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter& p_instance_parameters);
+			bc_actor create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_json_key_value& p_instance_parameters);
 
 			/**
 			 * \brief Remove actor and all of it's components
@@ -114,7 +114,7 @@ namespace black_cat
 			void create_entity_component(bc_actor& p_actor);
 
 			template<class TComponent>
-			void create_entity_component(bc_actor& p_actor, const core::bc_data_driven_parameter& p_instance_parameters);
+			void create_entity_component(bc_actor& p_actor, const core::bc_json_key_value& p_instance_parameters);
 
 			template<class ...TCAdapter>
 			void register_component_types(TCAdapter... p_components);
@@ -135,9 +135,9 @@ namespace black_cat
 			template<class TComponent>
 			void _actor_component_entity_initialization(const bc_actor_component_initialize_entity_context& p_context) const;
 
-			bc_actor _create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter* p_instance_parameters);
+			bc_actor _create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_json_key_value* p_instance_parameters);
 
-			core::bc_data_driven_parameter m_empty_parameters;
+			core::bc_json_key_value m_empty_parameters;
 			core::bc_content_stream_manager& m_content_stream_manager;
 			bc_actor_component_manager& m_actor_component_manager;
 			bc_game_system& m_game_system;
@@ -150,14 +150,14 @@ namespace black_cat
 		{
 			core::bc_string_program m_entity_name;
 			core::bc_string_program m_controller_name;
-			core::bc_data_driven_parameter m_parameters;
+			core::bc_json_key_value m_parameters;
 			core::bc_vector_program<_bc_entity_component_data> m_components;
 		};
 
 		struct _bc_entity_component_data
 		{
 			bc_actor_component_hash m_component_hash;
-			core::bc_data_driven_parameter m_component_parameters;
+			core::bc_json_key_value m_component_parameters;
 		};
 
 		struct _bc_entity_component_callbacks
@@ -174,7 +174,7 @@ namespace black_cat
 		}
 
 		template<class TComponent>
-		void bc_entity_manager::create_entity_component(bc_actor& p_actor, const core::bc_data_driven_parameter& p_instance_parameters)
+		void bc_entity_manager::create_entity_component(bc_actor& p_actor, const core::bc_json_key_value& p_instance_parameters)
 		{
 			const auto* l_mediate_component = p_actor.get_component<bc_mediate_component>();
 			m_actor_component_manager.create_component<TComponent>(p_actor);

@@ -267,7 +267,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat.App\App\Loader\bcVertexShaderLoader.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcBackBufferWritePass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcIconDrawPass.h" />
-    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcTextDrawPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcCounterValueDrawPass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcShapeDrawPass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferDecalPass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferInitializePass.h" />
@@ -324,7 +324,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcVertexShaderLoader.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcBackBufferWritePass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcIconDrawPass.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcTextDrawPass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcCounterValueDrawPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcShapeDrawPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferDecalPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferInitializePass.cpp" />

@@ -119,8 +119,10 @@ namespace box
 			{
 				_reset_game(*m_scene);
 			}
-
-			_respawn_dead_players(p_context.m_clock);
+			else
+			{
+				_respawn_dead_players(p_context.m_clock);
+			}
 		}
 
 		_send_game_state_to_clients(p_context.m_clock);
@@ -356,13 +358,15 @@ namespace box
 	{
 		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
 		const auto l_checkpoint_path = bx_scene_checkpoint::get_checkpoint_path(p_scene, bcL("server_checkpoint"));
+		auto l_checkpoint_params = core::bc_content_loader_parameter();
+		l_checkpoint_params.add_or_update("scene", core::bc_any(&p_scene));
 
 		auto l_check_point = l_content_manager.load<bx_scene_checkpoint>
 		(
 			l_checkpoint_path.get_string_frame().c_str(),
 			{},
 			core::bc_content_loader_parameter(),
-			core::bc_content_loader_parameter().add_or_update("scene", &p_scene)
+			std::move(l_checkpoint_params)
 		);
 	}
 

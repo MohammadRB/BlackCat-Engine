@@ -38,11 +38,11 @@ namespace black_cat
 
 			bc_network_client_id get_network_client_id() const noexcept;
 
-			void set_network_client_id(bc_network_client_id p_id) noexcept;
-
 			bc_actor_network_id get_network_id() const noexcept;
+			
+			void set_network_ids(bc_network_client_id p_network_client_id, bc_actor_network_id p_network_id) noexcept;
 
-			void set_network_id(bc_actor_network_id p_id) noexcept;
+			void set_as_invalid_network_state() noexcept;
 
 			bc_network_type get_network_type() const noexcept;
 			
@@ -109,20 +109,21 @@ namespace black_cat
 		{
 			return m_network_client_id;
 		}
-
-		inline void bc_network_component::set_network_client_id(bc_network_client_id p_id) noexcept
-		{
-			m_network_client_id = p_id;
-		}
-
+		
 		inline bc_actor_network_id bc_network_component::get_network_id() const noexcept
 		{
 			return m_network_id;
 		}
-
-		inline void bc_network_component::set_network_id(bc_actor_network_id p_id) noexcept
+		
+		inline void bc_network_component::set_network_ids(bc_network_client_id p_network_client_id, bc_actor_network_id p_network_id) noexcept
 		{
-			m_network_id = p_id;
+			m_network_client_id = p_network_client_id;
+			m_network_id = p_network_id;
+		}
+
+		inline void bc_network_component::set_as_invalid_network_state() noexcept
+		{
+			m_network_id = bc_actor::invalid_id;
 		}
 
 		inline bc_network_type bc_network_component::get_network_type() const noexcept

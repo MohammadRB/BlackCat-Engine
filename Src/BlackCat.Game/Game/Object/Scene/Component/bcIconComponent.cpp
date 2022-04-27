@@ -3,6 +3,7 @@
 #include "Game/GamePCH.h"
 #include "Game/Object/Scene/Component/bcIconComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat
@@ -23,22 +24,25 @@ namespace black_cat
 
 		void bc_icon_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			const auto* l_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_icon_name);
+			const auto* l_name = static_cast<core::bc_string*>(nullptr);
+			json_parse::bc_load(p_context.m_parameters, constant::g_param_icon_name, l_name);
 			if(!l_name)
 			{
-				l_name = p_context.m_instance_parameters.get_value<core::bc_string>(constant::g_param_icon_name);
+				json_parse::bc_load(p_context.m_instance_parameters, constant::g_param_icon_name, l_name);
 			}
-
-			auto* l_size = p_context.m_parameters.get_value<bcUINT32>(constant::g_param_icon_size);
-			if (!l_size)
+			
+			bcUINT32 l_size;
+			const auto l_has_size = json_parse::bc_load(p_context.m_parameters, constant::g_param_icon_size, l_size);
+			if (!l_has_size)
 			{
-				l_size = p_context.m_instance_parameters.get_value<bcUINT32>(constant::g_param_icon_size);
+				json_parse::bc_load(p_context.m_instance_parameters, constant::g_param_icon_size, l_size);
 			}
-
-			const auto* l_type = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_icon_type);
-			if(!l_type)
+			
+			const auto* l_type = static_cast<core::bc_string*>(nullptr);
+			json_parse::bc_load(p_context.m_parameters, constant::g_param_icon_type, l_type);
+			if (!l_type)
 			{
-				l_type = p_context.m_instance_parameters.get_value<core::bc_string>(constant::g_param_icon_type);
+				json_parse::bc_load(p_context.m_instance_parameters, constant::g_param_icon_type, l_type);
 			}
 
 			if(l_name)
@@ -47,7 +51,7 @@ namespace black_cat
 			}
 			if(l_size)
 			{
-				m_size = *l_size;
+				m_size = l_size;
 			}
 			if(l_type)
 			{

@@ -245,7 +245,7 @@ namespace black_cat
 			}
 
 			core::bc_string l_json_str = l_json.write();
-			p_context.m_parameters.add(constant::g_param_decal_parameters, core::bc_any(std::move(l_json_str)));
+			p_context.m_parameters.add_or_update(constant::g_param_decal_parameters, core::bc_any(std::move(l_json_str)));
 		}
 
 		void bc_decal_component::handle_event(const bc_actor_component_event_context& p_context)

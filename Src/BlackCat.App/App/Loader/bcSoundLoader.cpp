@@ -6,6 +6,7 @@
 #include "SoundImp/Resource/bcSound.h"
 #include "Game/System/Sound/bcSoundSystem.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcJsonParse.h"
 #include "App/Loader/bcSoundLoader.h"
 #include "App/bcConstant.h"
 #include "App/bcException.h"
@@ -26,13 +27,16 @@ namespace black_cat
 	{
 		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
 		auto& l_device = l_game_system.get_sound_system().get_device();
-		auto* l_load_param = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_sound_load_mode);
-		auto* l_load_3d_param = p_context.m_parameters.get_value<bool>(constant::g_param_sound_load_3d);
+		const auto* l_load_param = static_cast<core::bc_string*>(nullptr); 
+		auto l_load_3d_param = false;
+
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_sound_load_mode, l_load_param);
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_sound_load_3d, l_load_3d_param);
 
 		auto l_mode = sound::bc_sound_mode::d3;
 		auto l_sound = sound::bc_sound_ref();
 
-		if(l_load_3d_param && *l_load_3d_param == false)
+		if(l_load_3d_param)
 		{
 			l_mode = sound::bc_sound_mode::none;
 		}

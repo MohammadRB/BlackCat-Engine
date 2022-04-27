@@ -74,8 +74,7 @@ namespace black_cat
 			const auto l_actor_network_id_value = p_context.m_ack_data.substr(l_split_pos + 1);
 
 			auto* l_network_component = m_actor.get_component<bc_network_component>();
-			l_network_component->set_network_client_id(core::bc_stoi(l_network_client_id_value));
-			l_network_component->set_network_id(core::bc_stoi(l_actor_network_id_value));
+			l_network_component->set_network_ids(core::bc_stoi(l_network_client_id_value), core::bc_stoi(l_actor_network_id_value));
 
 			p_context.m_visitor.replicate_actor(m_actor);
 		}
@@ -86,7 +85,7 @@ namespace black_cat
 
 			const auto* l_network_component = m_actor.get_component<bc_network_component>();
 			const bcCHAR* l_entity_name = l_network_component->get_network_entity_name();
-			p_context.m_params.add("ent", core::bc_any(core::bc_string(l_entity_name)));
+			p_context.m_params.add_or_update("ent", core::bc_any(core::bc_string(l_entity_name)));
 
 			core::bc_vector_frame<bci_actor_component*> l_components(10);
 			const bc_actor_component_network_write_context l_context(p_context.m_params, m_actor, true);

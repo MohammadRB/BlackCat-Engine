@@ -7,6 +7,7 @@
 #include "GraphicImp/Shader/bcHullShader.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcJsonParse.h"
 #include "App/bcConstant.h"
 #include "App/Loader/bcHullShaderLoader.h"
 
@@ -41,8 +42,11 @@ namespace black_cat
 	{
 		graphic::bc_device& l_device = core::bc_get_service<game::bc_game_system>()->get_render_system().get_device();
 		const auto l_file_path = core::bc_to_exclusive_string(p_context.m_file_path.data());
-		const auto& l_function = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_shader_function);
-		const auto* l_macros_value = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_shader_macro);
+		const auto* l_function = static_cast<core::bc_string*>(nullptr);
+		const auto* l_macros_value = static_cast<core::bc_json_key_value*>(nullptr);
+
+		json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_shader_function, l_function);
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_shader_macro, l_macros_value);
 
 		core::bc_vector<graphic::bc_shader_macro> l_macros_buffer;
 		const graphic::bc_shader_macro* l_macros = nullptr;
@@ -72,7 +76,7 @@ namespace black_cat
 		(
 			p_context.m_file_buffer.get(),
 			p_context.m_file_buffer_size,
-			l_function.c_str(),
+			l_function->c_str(),
 			l_file_path.c_str(),
 			l_macros,
 			l_macros_count
@@ -88,13 +92,15 @@ namespace black_cat
 	void bc_hull_shader_loader::content_processing(core::bc_content_loading_context& p_context) const
 	{
 		auto& l_device = core::bc_get_service<game::bc_game_system>()->get_render_system().get_device();
-		const auto& l_function = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_shader_function);
+		const auto* l_function = static_cast<core::bc_string*>(nullptr);
+
+		json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_shader_function, l_function);
 
 		graphic::bc_hull_shader_ref l_result = l_device.create_hull_shader
 		(
 			p_context.m_file_buffer.get(),
 			p_context.m_file_buffer_size,
-			l_function.c_str()
+			l_function->c_str()
 		);
 
 		p_context.set_result(graphic::bc_hull_shader_content(std::move(l_result)));

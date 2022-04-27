@@ -120,6 +120,7 @@ namespace black_cat
 			_thread_data(bcUINT32 p_my_index, platform::bc_thread&& p_thread) noexcept
 				: m_my_index(p_my_index),
 				m_thread(std::move(p_thread)),
+				m_done_request(false),
 				m_done(false)
 			{
 			}
@@ -144,6 +145,16 @@ namespace black_cat
 				m_interrupt_flag.clear(platform::bc_memory_order::relaxed);
 			}
 
+			void set_done_request() noexcept
+			{
+				m_done_request.store(true, platform::bc_memory_order::relaxed);
+			}
+
+			bool is_done_requested() const noexcept
+			{
+				return m_done_request.load(platform::bc_memory_order::relaxed);
+			}
+
 			void set_done() noexcept
 			{
 				m_done.store(true, platform::bc_memory_order::relaxed);
@@ -154,10 +165,17 @@ namespace black_cat
 				return m_done.load(platform::bc_memory_order::relaxed);
 			}
 
+			void reset_done_flags() noexcept
+			{
+				m_done_request.store(false, platform::bc_memory_order::relaxed);
+				m_done.store(false, platform::bc_memory_order::relaxed);
+			}
+
 		private:
 			bcUINT32 m_my_index;
 			platform::bc_thread m_thread;
 			platform::bc_atomic_flag m_interrupt_flag;
+			platform::bc_atomic<bool> m_done_request;
 			platform::bc_atomic<bool> m_done;
 		};
 

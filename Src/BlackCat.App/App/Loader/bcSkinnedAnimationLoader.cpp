@@ -8,6 +8,7 @@
 #include "Core/bcUtility.h"
 #include "Graphic/bcRenderApiInfo.h"
 #include "Game/System/Animation/bcSkinnedAnimation.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 #include "App/Loader/bcSkinnedAnimationLoader.h"
 #include "App/bcException.h"
@@ -174,7 +175,9 @@ namespace black_cat
 	{
 		Assimp::Importer l_importer;
 
-		const auto* const* l_ai_scene_value = p_context.m_instance_parameters.get_value<const aiScene*>("aiScene");
+		const aiScene* const* l_ai_scene_value = nullptr;
+		json_parse::bc_load(p_context.m_instance_parameters, "aiScene", l_ai_scene_value);
+
 		const auto* l_ai_scene = l_ai_scene_value ? *l_ai_scene_value : nullptr;
 		if (!l_ai_scene)
 		{
@@ -208,7 +211,8 @@ namespace black_cat
 		core::bc_vector_frame< ozz::unique_ptr< ozz::animation::Animation>> l_ozz_animations;
 		l_ozz_animations.reserve(l_ozz_raw_animations.size());
 
-		bool l_additive_animation = bc_null_default(p_context.m_parameters.get_value<bool>(constant::g_param_animation_additive), false);
+		bool l_additive_animation = false;
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_animation_additive, l_additive_animation);
 		
 		std::transform
 		(

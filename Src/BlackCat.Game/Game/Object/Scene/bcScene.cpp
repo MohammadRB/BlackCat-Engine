@@ -169,7 +169,7 @@ namespace black_cat
 			return l_actor;
 		}
 
-		bc_actor bc_scene::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter& p_instance_parameters) noexcept
+		bc_actor bc_scene::create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_json_key_value& p_instance_parameters) noexcept
 		{
 			auto l_actor = m_entity_manager->create_entity(*this, p_entity_name, p_world_transform, p_instance_parameters);
 			if (!l_actor.is_valid())
@@ -222,15 +222,15 @@ namespace black_cat
 					std::end(m_changed_actors),
 					[&p_actor](decltype(m_changed_actors)::reference p_entry)
 					{
-						if(std::get<bc_actor>(p_entry) != p_actor)
+						auto& [l_state, l_actor] = p_entry;
+						if(l_actor != p_actor)
 						{
 							return false;
 						}
-
-						const auto l_actor_state = std::get<_bc_scene_actor_state>(p_entry);
-						const auto l_is_in_update_list = l_actor_state == _bc_scene_actor_state::update;
-						const auto l_is_in_remove_list = l_actor_state == _bc_scene_actor_state::remove_from_graph || l_actor_state == _bc_scene_actor_state::removed_from_graph;
-						return l_is_in_update_list && l_is_in_remove_list;
+						
+						const auto l_is_in_update_list = l_state == _bc_scene_actor_state::update;
+						const auto l_is_in_remove_list = l_state == _bc_scene_actor_state::remove_from_graph || l_state == _bc_scene_actor_state::removed_from_graph;
+						return l_is_in_update_list || l_is_in_remove_list;
 					}
 				);
 				if (l_to_update_remove_ite != std::end(m_changed_actors))

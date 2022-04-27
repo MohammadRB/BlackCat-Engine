@@ -124,7 +124,7 @@ namespace black_cat
 				m_network_actors.insert(std::make_pair(l_actor_network_id, p_actor));
 			}
 			
-			l_network_component->set_network_id(l_actor_network_id);
+			l_network_component->set_network_ids(bc_network_client::invalid_id, l_actor_network_id);
 			
 			send_message(bc_actor_replicate_network_message(p_actor));
 		}
@@ -152,8 +152,7 @@ namespace black_cat
 				m_network_actors.erase(l_ite);
 			}
 
-			l_network_component->set_network_client_id(bc_network_client::invalid_id);
-			l_network_component->set_network_id(bc_actor::invalid_id);
+			l_network_component->set_as_invalid_network_state();
 
 			send_message(bc_actor_remove_network_message(l_network_id));
 		}
@@ -181,8 +180,7 @@ namespace black_cat
 				m_network_actors.erase(l_ite);
 			}
 
-			l_network_component->set_network_client_id(bc_network_client::invalid_id);
-			l_network_component->set_network_id(bc_actor::invalid_id);
+			l_network_component->set_as_invalid_network_state();
 		}
 
 		void bc_network_server_manager::send_message(bc_network_message_ptr p_message)
@@ -425,7 +423,7 @@ namespace black_cat
 				if (l_msg_ite == std::end(l_messages))
 				{
 					// It is possible multiple ack message arrive but only one of them will see original message
-					core::bc_log(core::bc_log_type::warning) << "no message was found with id " << p_ack_id << " to acknowledge" << core::bc_lend;
+					//core::bc_log(core::bc_log_type::warning) << "no message was found with id " << p_ack_id << " to acknowledge" << core::bc_lend;
 					return;
 				}
 
@@ -483,8 +481,7 @@ namespace black_cat
 			const auto l_ping = l_client->get_rtt_time() / 2;
 			const auto l_remote_ping = l_client->get_remote_rtt_time() / 2;
 
-			l_network_component->set_network_client_id(l_client->get_id());
-			l_network_component->set_network_id(l_actor_network_id);
+			l_network_component->set_network_ids(l_client->get_id(), l_actor_network_id);
 			l_network_component->set_ping(l_ping, l_remote_ping);
 
 			{
@@ -533,8 +530,7 @@ namespace black_cat
 			}
 
 			// Mark as invalid to prevent double removal via network component
-			l_network_component->set_network_client_id(bc_network_client::invalid_id);
-			l_network_component->set_network_id(bc_actor::invalid_id);
+			l_network_component->set_as_invalid_network_state();
 
 			m_game_system->get_scene()->remove_actor(p_actor);
 		}
@@ -883,7 +879,6 @@ namespace black_cat
 				}
 
 				m_hook->scene_changed(l_scene_change_event->get_scene());
-
 				return;
 			}
 		}

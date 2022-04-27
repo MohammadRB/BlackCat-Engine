@@ -119,7 +119,7 @@ namespace black_cat
 			 */
 			bc_actor create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform) noexcept;
 
-			bc_actor create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter& p_instance_parameters) noexcept;
+			bc_actor create_actor(const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_json_key_value& p_instance_parameters) noexcept;
 
 			/**
 			 * \brief ThreadSafe

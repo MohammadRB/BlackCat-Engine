@@ -18,6 +18,7 @@
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 #include "Game/bcException.h"
 
@@ -76,7 +77,9 @@ namespace black_cat
 				m_px_actor_ref = l_physics.create_rigid_static(physics::bc_transform(p_context.m_transform));
 				l_physics_system.set_game_actor(*m_px_actor_ref, p_context.m_actor);
 
-				const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_collider_materials);
+				const auto* l_materials = static_cast<core::bc_json_key_value*>(nullptr);
+				json_parse::bc_load(p_context.m_parameters, constant::g_param_mesh_collider_materials, l_materials);
+
 				l_physics_system.create_px_shapes_from_mesh(l_material_manager, m_px_actor_ref.get(), l_mesh_component->get_mesh(), l_materials);
 
 				added_to_scene(p_context.m_scene.get_px_scene(), m_px_actor_ref.get());

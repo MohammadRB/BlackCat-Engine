@@ -15,7 +15,7 @@ namespace black_cat
 
 		bc_hull_shader_loader(bc_hull_shader_loader&&) noexcept;
 
-		~bc_hull_shader_loader();
+		~bc_hull_shader_loader() override;
 
 		bc_hull_shader_loader& operator=(bc_hull_shader_loader&&) noexcept;
 

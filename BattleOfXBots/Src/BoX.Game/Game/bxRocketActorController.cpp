@@ -10,6 +10,7 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcUtility.h"
 #include "Game/bcConstant.h"
 #include "BoX.Game/Game/bxRocketActorController.h"
@@ -18,8 +19,8 @@ namespace box
 {
 	void bx_rocket_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
-		m_explosion_entity = p_context.m_parameters.get_value_throw<core::bc_string>("explosion_entity").c_str();
-		m_speed = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_speed);
+		json_parse::bc_load_throw(p_context.m_parameters, "explosion_entity", m_explosion_entity);
+		json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_bullet_speed, m_speed);
 	}
 
 	void bx_rocket_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)

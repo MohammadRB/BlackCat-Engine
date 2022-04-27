@@ -68,7 +68,7 @@ namespace black_cat
 				l_array[l_ite].set_value(std::move(l_entry));
 			}
 
-			p_key_value.add(std::move(p_key), core::bc_any(std::move(l_array)));
+			p_key_value.add_or_update(std::move(p_key), core::bc_any(std::move(l_array)));
 		}
 	}
 }

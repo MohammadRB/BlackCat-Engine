@@ -7,10 +7,10 @@
 #include "Core/bcExport.h"
 #include "Core/bcException.h"
 #include "Core/Container/bcAllocator.h"
-#include "Core/Utility/bcDataDrivenParameter.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/File/bcJsonDocument.h"
 #include "Core/File/bcStream.h"
 #include "Core/Content/bcContent.h"
+#include "Core/Utility/bcNullable.h"
 
 namespace black_cat
 {
@@ -18,7 +18,7 @@ namespace black_cat
 	{
 		class bc_content_manager;
 
-		using bc_content_loader_parameter = bc_data_driven_parameter;
+		using bc_content_loader_parameter = bc_json_key_value;
 		
 		class bc_content_loader_result
 		{

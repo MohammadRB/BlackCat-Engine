@@ -21,9 +21,9 @@
 #include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcException.h"
 #include "Game/bcConstant.h"
-#include "Game/bcJsonParse.h"
 
 namespace black_cat
 {
@@ -110,8 +110,10 @@ namespace black_cat
 				throw bc_invalid_argument_exception("ragdoll component needs skinned_mesh and rigid_controller components");
 			}
 
-			const auto& l_joints_value = p_context.m_parameters.get_value_throw<core::bc_json_key_value>(constant::g_param_ragdoll_joints);
-			_fill_colliders_map(l_joints_value);
+			const auto* l_joints_value = static_cast<core::bc_json_key_value*>(nullptr);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_ragdoll_joints, l_joints_value);
+			
+			_fill_colliders_map(*l_joints_value);
 			_validate_mesh_colliders();
 
 			// the vector which transform body part origin into local origin

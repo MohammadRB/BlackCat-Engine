@@ -6,7 +6,6 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Math/bcMatrix4f.h"
 #include "Core/File/bcJsonDocument.h"
-#include "Core/Utility/bcDataDrivenParameter.h"
 #include "Core/bcConstant.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
@@ -32,8 +31,8 @@ namespace black_cat
 
 		struct bc_actor_component_initialize_context
 		{
-			bc_actor_component_initialize_context(const core::bc_data_driven_parameter& p_parameters,
-				const core::bc_data_driven_parameter& p_instance_parameters,
+			bc_actor_component_initialize_context(const core::bc_json_key_value& p_parameters,
+				const core::bc_json_key_value& p_instance_parameters,
 				const core::bc_content_stream_manager& p_stream_manager,
 				bc_game_system& p_game_system,
 				bc_scene& p_scene,
@@ -49,8 +48,8 @@ namespace black_cat
 			{
 			}
 
-			const core::bc_data_driven_parameter& m_parameters;
-			const core::bc_data_driven_parameter& m_instance_parameters;
+			const core::bc_json_key_value& m_parameters;
+			const core::bc_json_key_value& m_instance_parameters;
 			const core::bc_content_stream_manager& m_stream_manager;
 			bc_game_system& m_game_system;
 			bc_scene& m_scene;
@@ -60,8 +59,8 @@ namespace black_cat
 
 		struct bc_actor_component_initialize_entity_context
 		{
-			bc_actor_component_initialize_entity_context(const core::bc_data_driven_parameter& p_parameters,
-				const core::bc_data_driven_parameter& p_instance_parameters,
+			bc_actor_component_initialize_entity_context(const core::bc_json_key_value& p_parameters,
+				const core::bc_json_key_value& p_instance_parameters,
 				const core::bc_content_stream_manager& p_stream_manager,
 				bc_game_system& p_game_system,
 				bc_scene& p_scene,
@@ -77,8 +76,8 @@ namespace black_cat
 			{
 			}
 
-			const core::bc_data_driven_parameter& m_parameters;
-			const core::bc_data_driven_parameter& m_instance_parameters;
+			const core::bc_json_key_value& m_parameters;
+			const core::bc_json_key_value& m_instance_parameters;
 			const core::bc_content_stream_manager& m_stream_manager;
 			bc_game_system& m_game_system;
 			bc_scene& m_scene;

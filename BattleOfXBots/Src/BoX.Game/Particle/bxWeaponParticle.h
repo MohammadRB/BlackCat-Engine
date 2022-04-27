@@ -46,7 +46,7 @@ namespace box
 		l_builder.emitter(core::bc_vector3f(0), core::bc_vector3f::up())
 			.with_emission_direction_deviation(180)
 			.with_texture(4)
-			.with_particles_color({ 0.9f, 0.5f, 0.1f }, 3.0)
+			.with_particles_color({ 0.9f, 0.5f, 0.1f }, 2.2)
 			.with_particle_size(0.3f, 0.9f)
 			.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step4)
 			.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step5, 0.08f)

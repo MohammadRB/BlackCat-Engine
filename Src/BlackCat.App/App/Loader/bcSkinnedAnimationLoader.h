@@ -14,7 +14,7 @@ namespace black_cat
 
 		bc_skinned_animation_loader(bc_skinned_animation_loader&&) noexcept = default;
 
-		~bc_skinned_animation_loader() = default;
+		~bc_skinned_animation_loader() override = default;
 
 		bc_skinned_animation_loader& operator=(bc_skinned_animation_loader&&) noexcept = default;
 		

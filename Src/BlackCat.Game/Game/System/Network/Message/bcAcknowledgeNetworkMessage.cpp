@@ -42,8 +42,8 @@ namespace black_cat
 
 		void bc_acknowledge_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
-			p_context.m_params.add("ack_id", core::bc_any(m_ack_id));
-			p_context.m_params.add("ack_data", core::bc_any(m_ack_data));
+			p_context.m_params.add_or_update("ack_id", core::bc_any(m_ack_id));
+			p_context.m_params.add_or_update("ack_data", core::bc_any(m_ack_data));
 		}
 
 		void bc_acknowledge_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)

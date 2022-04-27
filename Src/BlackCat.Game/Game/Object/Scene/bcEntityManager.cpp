@@ -114,7 +114,7 @@ namespace black_cat
 					std::end(l_json_component_parameters),
 					[&](core::bc_json_key_value::value_type& p_parameter)
 					{
-						l_component_parameters.add_or_update(p_parameter.first.c_str(), std::move(p_parameter.second));
+						l_component_parameters.add_or_update(std::move(p_parameter.first), std::move(p_parameter.second));
 					}
 				);
 			}
@@ -189,7 +189,7 @@ namespace black_cat
 			return _create_entity(p_scene, p_entity_name, p_world_transform, nullptr);
 		}
 
-		bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter& p_instance_parameters)
+		bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_json_key_value& p_instance_parameters)
 		{
 			return _create_entity(p_scene, p_entity_name, p_world_transform , &p_instance_parameters);
 		}
@@ -199,7 +199,7 @@ namespace black_cat
 			m_actor_component_manager.remove_actor(p_entity);
 		}
 
-		bc_actor bc_entity_manager::_create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_data_driven_parameter* p_instance_parameters)
+		bc_actor bc_entity_manager::_create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_json_key_value* p_instance_parameters)
 		{
 			const auto l_hash = string_hash()(p_entity_name);
 			const auto l_entity_entry = m_entities.find(l_hash);

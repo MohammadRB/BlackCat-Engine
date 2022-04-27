@@ -19,6 +19,7 @@
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcException.h"
 #include "Game/bcConstant.h"
 #include "Game/bcUtility.h"
@@ -103,17 +104,18 @@ namespace black_cat
 		void bc_skinned_mesh_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			bc_mesh_component::initialize(p_context);
-			
-			const auto& l_animation_names = p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>(constant::g_param_animations);
+
+			const core::bc_vector<core::bc_any>* l_animation_names = nullptr;
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_animations, l_animation_names);
 
 			m_animation_manager = &p_context.m_game_system.get_animation_system();
 			m_model_transforms = bc_sub_mesh_mat4_transform(*get_mesh().get_root_node());
 			m_collider_model_transforms = bc_sub_mesh_px_transform(*get_mesh().get_root_node());
-			m_animations.reserve(l_animation_names.size());
-			m_all_animations.reserve(l_animation_names.size());
+			m_animations.reserve(l_animation_names->size());
+			m_all_animations.reserve(l_animation_names->size());
 			bool l_has_invalid_skeletons = false;
 			
-			for(auto& l_animation_name : l_animation_names)
+			for(auto& l_animation_name : *l_animation_names)
 			{
 				bc_skinned_animation_ptr l_skinned_animation = p_context.m_stream_manager.find_content_throw<bc_skinned_animation>(l_animation_name.as_throw<core::bc_string>().c_str());
 

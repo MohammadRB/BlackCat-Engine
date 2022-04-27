@@ -15,7 +15,7 @@ namespace black_cat
 
 		bc_geometry_shader_loader(bc_geometry_shader_loader&&) noexcept;
 
-		~bc_geometry_shader_loader();
+		~bc_geometry_shader_loader() override;
 
 		bc_geometry_shader_loader& operator=(bc_geometry_shader_loader&&) noexcept;
 

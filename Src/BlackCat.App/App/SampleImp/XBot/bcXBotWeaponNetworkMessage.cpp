@@ -67,8 +67,8 @@ namespace black_cat
 
 	void bc_xbot_weapon_attach_network_message::serialize_message(const game::bc_network_message_serialization_context& p_context)
 	{
-		p_context.m_params.add("nid", core::bc_any(m_actor_net_id));
-		p_context.m_params.add("w_ent", core::bc_any(m_weapon_entity_name));
+		p_context.m_params.add_or_update("nid", core::bc_any(m_actor_net_id));
+		p_context.m_params.add_or_update("w_ent", core::bc_any(m_weapon_entity_name));
 	}
 
 	void bc_xbot_weapon_attach_network_message::deserialize_message(const game::bc_network_message_deserialization_context& p_context)
@@ -139,7 +139,7 @@ namespace black_cat
 
 	void bc_xbot_weapon_detach_network_message::serialize_message(const game::bc_network_message_serialization_context& p_context)
 	{
-		p_context.m_params.add("nid", core::bc_any(m_actor_net_id));
+		p_context.m_params.add_or_update("nid", core::bc_any(m_actor_net_id));
 	}
 
 	void bc_xbot_weapon_detach_network_message::deserialize_message(const game::bc_network_message_deserialization_context& p_context)
@@ -209,7 +209,7 @@ namespace black_cat
 
 	void bc_xbot_weapon_drop_network_message::serialize_message(const game::bc_network_message_serialization_context& p_context)
 	{
-		p_context.m_params.add("nid", core::bc_any(m_actor_net_id));
+		p_context.m_params.add_or_update("nid", core::bc_any(m_actor_net_id));
 	}
 
 	void bc_xbot_weapon_drop_network_message::deserialize_message(const game::bc_network_message_deserialization_context& p_context)
@@ -277,7 +277,7 @@ namespace black_cat
 
 	void bc_xbot_weapon_shoot_network_message::serialize_message(const game::bc_network_message_serialization_context& p_context)
 	{
-		p_context.m_params.add("nid", core::bc_any(m_actor_net_id));
+		p_context.m_params.add_or_update("nid", core::bc_any(m_actor_net_id));
 	}
 
 	void bc_xbot_weapon_shoot_network_message::deserialize_message(const game::bc_network_message_deserialization_context& p_context)

@@ -39,6 +39,7 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcUtility.h"
 #include "App/SampleImp/XBot/bcXBotActorController.h"
 #include "App/SampleImp/XBot/bcXBotUpdateAnimationJob.h"
@@ -160,26 +161,32 @@ namespace black_cat
 			throw bc_invalid_operation_exception("xbot actor must have skinned components");
 		}
 
-		m_local_origin = p_context.m_parameters.get_value_vector3f_throw("origin_ls");
-		m_local_forward = p_context.m_parameters.get_value_vector3f_throw("forward_ls");
-		m_right_hand_weapon_up = p_context.m_parameters.get_value_vector3f_throw("right_hand_weapon_up");
-		m_right_hand_weapon_forward = p_context.m_parameters.get_value_vector3f_throw("right_hand_weapon_forward");
-		m_right_hand_attachment_offset = p_context.m_parameters.get_value_vector3f_throw("right_hand_attachment_offset");
-		m_left_hand_weapon_up = p_context.m_parameters.get_value_vector3f_throw("left_hand_weapon_up");
-		m_left_hand_weapon_forward = p_context.m_parameters.get_value_vector3f_throw("left_hand_weapon_forward");
-		m_left_hand_attachment_offset = p_context.m_parameters.get_value_vector3f_throw("left_hand_attachment_offset");
-		const auto& l_upper_body_chain_value = p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>("upper_body_chain");
-		const auto& l_right_hand_chain_value = p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>("right_hand_chain");
-		const auto& l_left_hand_chain_value = p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>("left_hand_chain");
-		const auto& l_rifle_joint_value = p_context.m_parameters.get_value_throw<core::bc_string>("rifle_joint");
-		m_rifle_joint_offset = p_context.m_parameters.get_value_vector3f_throw("rifle_joint_offset");
-		m_grenade_anim_attach_time = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>("grenade_anim_attach_time"), 0);
-		m_grenade_anim_throw_time = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>("grenade_anim_throw_time"), 0);
+		json_parse::bc_load_throw(p_context.m_parameters, "origin_ls", m_local_origin);
+		json_parse::bc_load_throw(p_context.m_parameters, "forward_ls", m_local_forward);
+		json_parse::bc_load_throw(p_context.m_parameters, "right_hand_weapon_up", m_right_hand_weapon_up);
+		json_parse::bc_load_throw(p_context.m_parameters, "right_hand_weapon_forward", m_right_hand_weapon_forward);
+		json_parse::bc_load_throw(p_context.m_parameters, "right_hand_attachment_offset", m_right_hand_attachment_offset);
+		json_parse::bc_load_throw(p_context.m_parameters, "left_hand_weapon_up", m_left_hand_weapon_up);
+		json_parse::bc_load_throw(p_context.m_parameters, "left_hand_weapon_forward", m_left_hand_weapon_forward);
+		json_parse::bc_load_throw(p_context.m_parameters, "left_hand_attachment_offset", m_left_hand_attachment_offset);
+		json_parse::bc_load_throw(p_context.m_parameters, "rifle_joint_offset", m_rifle_joint_offset);
+		json_parse::bc_load_throw(p_context.m_parameters, "grenade_anim_attach_time", m_grenade_anim_attach_time);
+		json_parse::bc_load_throw(p_context.m_parameters, "grenade_anim_throw_time", m_grenade_anim_throw_time);
+
+		const core::bc_vector<core::bc_any>* l_upper_body_chain_value = nullptr;
+		const core::bc_vector<core::bc_any>* l_right_hand_chain_value = nullptr;
+		const core::bc_vector<core::bc_any>* l_left_hand_chain_value = nullptr;
+		const core::bc_string* l_rifle_joint_value = nullptr;
+
+		json_parse::bc_load_throw(p_context.m_parameters, "upper_body_chain", l_upper_body_chain_value);
+		json_parse::bc_load_throw(p_context.m_parameters, "right_hand_chain", l_right_hand_chain_value);
+		json_parse::bc_load_throw(p_context.m_parameters, "left_hand_chain", l_left_hand_chain_value);
+		json_parse::bc_load_throw(p_context.m_parameters, "rifle_joint", l_rifle_joint_value);
 
 		std::transform
 		(
-			std::begin(l_upper_body_chain_value),
-			std::end(l_upper_body_chain_value),
+			std::begin(*l_upper_body_chain_value),
+			std::end(*l_upper_body_chain_value),
 			std::back_inserter(m_upper_body_chain),
 			[](const core::bc_any& p_any)
 			{
@@ -188,8 +195,8 @@ namespace black_cat
 		);
 		std::transform
 		(
-			std::begin(l_right_hand_chain_value),
-			std::end(l_right_hand_chain_value),
+			std::begin(*l_right_hand_chain_value),
+			std::end(*l_right_hand_chain_value),
 			std::begin(m_right_hand_chain),
 			[this](const core::bc_any& p_any)
 			{
@@ -204,8 +211,8 @@ namespace black_cat
 		);
 		std::transform
 		(
-			std::begin(l_left_hand_chain_value),
-			std::end(l_left_hand_chain_value),
+			std::begin(*l_left_hand_chain_value),
+			std::end(*l_left_hand_chain_value),
 			std::begin(m_left_hand_chain),
 			[this](const core::bc_any& p_any)
 			{
@@ -218,7 +225,7 @@ namespace black_cat
 				return l_joint;
 			}
 		);
-		m_rifle_joint = m_skinned_mesh_component->get_skeleton()->find_joint_by_name(l_rifle_joint_value.c_str());
+		m_rifle_joint = m_skinned_mesh_component->get_skeleton()->find_joint_by_name(l_rifle_joint_value->c_str());
 
 		m_animation_pipeline = _create_animation_pipeline
 		(

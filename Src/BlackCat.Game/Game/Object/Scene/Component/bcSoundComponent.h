@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Core/Container/bcVector.h"
+#include "Core/Math/bcVector2f.h"
 #include "Core/Utility/bcNullable.h"
 #include "SoundImp/Resource/bcSound.h"
 #include "SoundImp/Resource/bcChannel.h"

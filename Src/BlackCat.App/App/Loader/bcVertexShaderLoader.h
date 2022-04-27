@@ -15,7 +15,7 @@ namespace black_cat
 
 		bc_vertex_shader_loader(bc_vertex_shader_loader&&) noexcept;
 
-		~bc_vertex_shader_loader();
+		~bc_vertex_shader_loader() override;
 
 		bc_vertex_shader_loader& operator=(bc_vertex_shader_loader&&) noexcept;
 

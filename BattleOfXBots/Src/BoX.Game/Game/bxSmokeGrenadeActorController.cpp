@@ -4,6 +4,7 @@
 #include "Game/Object/Scene/Component/bcSoundComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcUtility.h"
 #include "BoX.Game/Game/bxSmokeGrenadeActorController.h"
 
@@ -12,10 +13,12 @@ namespace box
 	void bx_smoke_grenade_actor_controller::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		bc_rigid_dynamic_network_actor_controller::initialize(p_context);
-		
-		m_lifetime = p_context.m_parameters.get_value_throw<bcFLOAT>("lifetime");
-		m_smoke_time = p_context.m_parameters.get_value_throw<bcFLOAT>("smoke_time");
-		m_color = bc_null_default(p_context.m_parameters.get_value_vector3f("color"), core::bc_vector3f(.7f));
+
+		m_color = core::bc_vector3f(.7f);
+
+		json_parse::bc_load_throw(p_context.m_parameters, "lifetime", m_lifetime);
+		json_parse::bc_load_throw(p_context.m_parameters, "smoke_time", m_smoke_time);
+		json_parse::bc_load(p_context.m_parameters, "color", m_color);
 	}
 
 	void bx_smoke_grenade_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)

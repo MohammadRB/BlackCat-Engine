@@ -23,11 +23,11 @@ namespace black_cat
 				m_id = s_id_counter.fetch_add(1, platform::bc_memory_order::relaxed);
 			}
 
-			p_context.m_params.add("msg_id", core::bc_any(m_id));
+			p_context.m_params.add_or_update("msg_id", core::bc_any(m_id));
 			
 			if(m_is_retry)
 			{
-				p_context.m_params.add("is_rty", core::bc_any(m_is_retry));
+				p_context.m_params.add_or_update("is_rty", core::bc_any(m_is_retry));
 			}
 
 			serialize_message(p_context);

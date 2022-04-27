@@ -19,7 +19,7 @@
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "App/RenderPass/bcBackBufferWritePass.h"
 #include "App/RenderPass/bcShapeDrawPass.h"
-#include "App/RenderPass/bcTextDrawPass.h"
+#include "App/RenderPass/bcCounterValueDrawPass.h"
 #include "App/RenderPass/GBuffer/bcGBufferDecalPass.h"
 #include "App/RenderPass/GBuffer/bcGBufferInitializePass.h"
 #include "App/RenderPass/GBuffer/bcGBufferLightMapPass.h"
@@ -152,7 +152,7 @@ namespace box
 		));
 		l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 		l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
-		l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
+		l_render_system.add_render_pass(bc_counter_value_draw_pass(constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
 		l_render_system.add_render_pass(bx_player_ui_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
 
 		m_player_spawn_event_handle = l_event_manager.register_event_listener<bx_player_spawned_event>
@@ -191,7 +191,6 @@ namespace box
 				auto& l_script_system = m_game_system->get_script_system();
 				l_script_system.run_script_throw(game::bc_script_context::app, L"client.connect('127.0.0.1', 6699);");
 			}
-
 			return;
 		}
 
@@ -411,13 +410,15 @@ namespace box
 	{
 		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
 		const auto l_checkpoint_path = bx_scene_checkpoint::get_checkpoint_path(p_scene, bcL("game_checkpoint"));
+		auto l_checkpoint_params = core::bc_content_loader_parameter();
+		l_checkpoint_params.add_or_update("scene", core::bc_any(&p_scene));
 
 		auto l_check_point = l_content_manager.load<bx_scene_checkpoint>
 		(
 			l_checkpoint_path.get_string_frame().c_str(),
 			{},
 			core::bc_content_loader_parameter(),
-			core::bc_content_loader_parameter().add_or_update("scene", &p_scene)
+			std::move(l_checkpoint_params)
 		);
 	}
 

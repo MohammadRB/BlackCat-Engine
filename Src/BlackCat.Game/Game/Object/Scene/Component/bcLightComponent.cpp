@@ -15,6 +15,7 @@
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/bcIconComponent.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcException.h"
 #include "Game/bcConstant.h"
 
@@ -38,14 +39,20 @@ namespace black_cat
 		{
 			auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();
 			auto& l_light_manager = p_context.m_scene.get_light_manager();
-			const auto& l_light_type = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_light_type);
-			const bcCHAR* l_light_icon_type;
+			const auto* l_light_type = static_cast<core::bc_string*>(nullptr);
+			const bcCHAR* l_light_icon_type = nullptr;
+
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_light_type, l_light_type);
 			
-			if(l_light_type == "direct")
+			if(*l_light_type == "direct")
 			{
-				const auto l_direction = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_light_direction);
-				const auto l_color = p_context.m_parameters.get_value_vector4f_throw(constant::g_param_light_color);
-				const auto l_ambient_color = p_context.m_parameters.get_value_vector4f_throw(constant::g_param_light_ambient_color);
+				core::bc_vector3f l_direction;
+				core::bc_vector4f l_color;
+				core::bc_vector4f l_ambient_color;
+
+				json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_light_direction, l_direction);
+				json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_light_color, l_color);
+				json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_light_ambient_color, l_ambient_color);
 
 				m_light = l_light_manager.add_light(bc_direct_light
 				(
@@ -57,32 +64,57 @@ namespace black_cat
 				));
 				l_light_icon_type = bc_icon_type::sun;
 			}
-			else if(l_light_type == "point")
+			else if(*l_light_type == "point")
 			{
-				const auto l_position = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_light_position);
-				const auto l_color = p_context.m_parameters.get_value_vector4f_throw(constant::g_param_light_color);
-				const auto l_radius = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_light_radius);
-				const auto l_particle_cast = bc_null_default(p_context.m_parameters.get_value<bool>(constant::g_param_light_particle_cast), false);
-				const auto l_particle_intensity = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_particle_intensity), l_color.w);
-				const auto l_flare_surface = p_context.m_parameters.get_value_vector3f(constant::g_param_light_flare_surface);
-				const auto* l_flare_mask_material = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_light_flare_mask_material);
+				core::bc_vector3f l_position;
+				core::bc_vector4f l_color;
+				bcFLOAT l_radius;
 
+				json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_light_position, l_position);
+				json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_light_color, l_color);
+				json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_light_radius, l_radius);
+
+				bool l_particle_cast = false;
+				bcFLOAT l_particle_intensity = l_color.w;
+				core::bc_vector3f l_flare_surface;
+				const core::bc_string* l_flare_mask_material = nullptr;
+
+				json_parse::bc_load(p_context.m_parameters, constant::g_param_light_particle_cast, l_particle_cast);
+				json_parse::bc_load(p_context.m_parameters, constant::g_param_light_particle_intensity, l_particle_intensity);
+				json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_surface, l_flare_surface);
+				json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_mask_material, l_flare_mask_material);
+				
 				core::bc_nullable<bc_light_flare> l_flare;
-				if(l_flare_surface != nullptr && l_flare_mask_material)
+				if(l_flare_mask_material)
 				{
 					const auto l_material = l_material_manager.load_mesh_material_throw(l_flare_mask_material->c_str());
+
+					bcFLOAT l_flare_intensity = l_color.w;
+					bcFLOAT l_flare_size = l_radius;
+					bcFLOAT l_flare_u0 = 0;
+					bcFLOAT l_flare_v0 = 0;
+					bcFLOAT l_flare_u1 = l_material->get_diffuse_map().get_width();
+					bcFLOAT l_flare_v1 = l_material->get_diffuse_map().get_height();
+
+					json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_intensity, l_flare_intensity);
+					json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_size, l_flare_size);
+					json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_mask_u0, l_flare_u0);
+					json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_mask_v0, l_flare_v0);
+					json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_mask_u1, l_flare_u1);
+					json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_mask_v1, l_flare_v1);
+
 					l_flare.reset(bc_light_flare
 					(
-						l_flare_surface->x,
-						l_flare_surface->y,
-						l_flare_surface->z,
-						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_intensity), l_color.w),
-						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_size), l_radius),
+						l_flare_surface.x,
+						l_flare_surface.y,
+						l_flare_surface.z,
+						l_flare_intensity,
+						l_flare_size,
 						l_material,
-						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_u0), 0),
-						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_v0), 0),
-						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_u1), l_material->get_diffuse_map().get_width()),
-						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_v1), l_material->get_diffuse_map().get_height())
+						l_flare_u0,
+						l_flare_v0,
+						l_flare_u1,
+						l_flare_v1
 					));
 				}
 
@@ -98,32 +130,55 @@ namespace black_cat
 				));
 				l_light_icon_type = bc_icon_type::light;
 			}
-			else if(l_light_type == "spot")
+			else if(*l_light_type == "spot")
 			{
-				const auto l_position = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_light_position);
-				const auto l_direction = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_light_direction);
-				const auto l_color = p_context.m_parameters.get_value_vector4f_throw(constant::g_param_light_color);
-				const auto l_length = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_light_length);
-				const auto l_angle = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_light_angle);
-				const auto l_flare_surface = p_context.m_parameters.get_value_vector3f(constant::g_param_light_flare_surface);
-				const auto* l_flare_mask_material = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_light_flare_mask_material);
+				core::bc_vector3f l_position;
+				core::bc_vector3f l_direction;
+				core::bc_vector4f l_color;
+				bcFLOAT l_length;
+				bcFLOAT l_angle;
+				core::bc_vector3f l_flare_surface;
+				const core::bc_string* l_flare_mask_material = nullptr;
+
+				json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_light_position, l_position);
+				json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_light_direction, l_direction);
+				json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_light_color, l_color);
+				json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_light_length, l_length);
+				json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_light_angle, l_angle);
+				json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_surface, l_flare_surface);
+				json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_mask_material, l_flare_mask_material);
 
 				core::bc_nullable<bc_light_flare> l_flare;
-				if (l_flare_surface != nullptr && l_flare_mask_material)
+				if (l_flare_mask_material)
 				{
 					const auto l_material = l_material_manager.load_mesh_material_throw(l_flare_mask_material->c_str());
+
+					bcFLOAT l_flare_intensity = l_color.w;
+					bcFLOAT l_flare_size = l_length / 2;
+					bcFLOAT l_flare_u0 = 0;
+					bcFLOAT l_flare_v0 = 0;
+					bcFLOAT l_flare_u1 = l_material->get_diffuse_map().get_width();
+					bcFLOAT l_flare_v1 = l_material->get_diffuse_map().get_height();
+
+					json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_intensity, l_flare_intensity);
+					json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_size, l_flare_size);
+					json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_mask_u0, l_flare_u0);
+					json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_mask_v0, l_flare_v0);
+					json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_mask_u1, l_flare_u1);
+					json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_mask_v1, l_flare_v1);
+
 					l_flare.reset(bc_light_flare
 					(
-						l_flare_surface->x,
-						l_flare_surface->y,
-						l_flare_surface->z,
-						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_intensity), l_color.w),
-						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_size), l_length / 2),
+						l_flare_surface.x,
+						l_flare_surface.y,
+						l_flare_surface.z,
+						l_flare_intensity,
+						l_flare_size,
 						l_material,
-						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_u0), 0),
-						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_v0), 0),
-						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_u1), l_material->get_diffuse_map().get_width()),
-						bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_light_flare_mask_v1), l_material->get_diffuse_map().get_height())
+						l_flare_u0,
+						l_flare_v0,
+						l_flare_u1,
+						l_flare_v1
 					));
 				}
 
@@ -141,7 +196,6 @@ namespace black_cat
 			}
 			else
 			{
-				BC_ASSERT(false);
 				throw bc_invalid_argument_exception("Invalid light type");
 			}
 

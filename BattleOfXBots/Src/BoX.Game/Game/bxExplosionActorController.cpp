@@ -18,6 +18,7 @@
 #include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 #include "BoX.Game/Game/bxExplosionActorController.h"
 
@@ -31,10 +32,16 @@ namespace box
 			m_light_component = nullptr;
 		}
 
-		m_emitter_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_particle_emitter_name)->c_str();
-		m_decal_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_decal_name)->c_str();
-		m_force_amount = *p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_force_amount);
-		m_force_radius = *p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_force_radius);
+		const core::bc_string* l_emitter_name;
+		const core::bc_string* l_decal_name;
+
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_particle_emitter_name, l_emitter_name);
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_decal_name, l_decal_name);
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_rigid_force_amount, m_force_amount);
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_rigid_force_radius, m_force_radius);
+
+		m_emitter_name = l_emitter_name->c_str();
+		m_decal_name = l_decal_name->c_str();
 
 		if(m_light_component)
 		{
@@ -46,17 +53,12 @@ namespace box
 			m_light_rise_per_second = m_light_radius * 0.7f / m_light_lifetime_second;
 		}
 
-		const auto* l_sound_component = p_context.m_actor.get_component<game::bc_sound_component>();
-		if(l_sound_component)
+		if(const auto* l_sound_component = p_context.m_actor.get_component<game::bc_sound_component>())
 		{
 			m_sound_lifetime_second = l_sound_component->get_max_length() / 1000.f;
 		}
 
-		const auto* l_player_id = p_context.m_instance_parameters.get_value<game::bc_network_client_id>(constant::g_param_player_id);
-		if (l_player_id)
-		{
-			m_player_id = *l_player_id;
-		}
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_player_id, m_player_id);
 	}
 
 	void bx_explosion_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)

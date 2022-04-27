@@ -16,6 +16,7 @@
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat
@@ -53,12 +54,17 @@ namespace black_cat
 
 		void bc_mesh_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			const auto& l_mesh_name = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_mesh);
-			const auto* l_sub_mesh_name = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_sub_mesh);
-			const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_materials);
-			const auto* l_view_distance_param = p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_mesh_view_distance);
-			const auto l_mesh = p_context.m_stream_manager.find_content_throw<bc_mesh>(l_mesh_name.c_str());
+			const core::bc_string* l_mesh_name = nullptr;
+			const core::bc_string* l_sub_mesh_name = nullptr;
+			const core::bc_json_key_value* l_materials = nullptr;
+			bcFLOAT l_view_distance_param = 0;
 
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_mesh, l_mesh_name);
+			json_parse::bc_load(p_context.m_parameters, constant::g_param_sub_mesh, l_sub_mesh_name);
+			json_parse::bc_load(p_context.m_parameters, constant::g_param_mesh_materials, l_materials);
+			json_parse::bc_load(p_context.m_parameters, constant::g_param_mesh_view_distance, l_view_distance_param);
+
+			const auto l_mesh = p_context.m_stream_manager.find_content_throw<bc_mesh>(l_mesh_name->c_str());
 			m_sub_mesh = l_sub_mesh_name ? bc_sub_mesh(l_mesh, l_sub_mesh_name->c_str()) : bc_sub_mesh(l_mesh);
 			m_world_transforms = bc_sub_mesh_mat4_transform(*m_sub_mesh.get_root_node());
 
@@ -71,9 +77,9 @@ namespace black_cat
 				m_render_state = m_sub_mesh.create_render_states(p_context.m_game_system.get_render_system());
 			}
 
-			if(l_view_distance_param)
+			if(l_view_distance_param > 0)
 			{
-				m_view_distance = *l_view_distance_param;
+				m_view_distance = l_view_distance_param;
 			}
 			else
 			{

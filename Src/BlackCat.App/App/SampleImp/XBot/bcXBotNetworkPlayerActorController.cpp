@@ -53,13 +53,11 @@ namespace black_cat
 		l_transform.set_translation(p_position + core::bc_vector3f::normalize(p_direction));
 		l_transform.set_rotation(p_rotation);
 
+		core::bc_json_key_value l_instance_params;
+		l_instance_params.add_or_update(constant::g_param_player_id, core::bc_any(l_player_id));
+
 		// grenade will be replicated by its network component
-		auto l_actor = get_scene()->create_actor
-		(
-			p_grenade_name.data(),
-			l_transform,
-			core::bc_data_driven_parameter(core::bc_alloc_type::frame).add_or_update(constant::g_param_player_id, l_player_id)
-		);
+		auto l_actor = get_scene()->create_actor(p_grenade_name.data(), l_transform, std::move(l_instance_params));
 		l_actor.mark_for_double_update();
 
 		auto* l_network_component = l_actor.get_component<game::bc_network_component>();
@@ -201,8 +199,8 @@ namespace black_cat
 	{
 		json_parse::bc_write(p_context.m_parameters, "pos", m_network_position);
 		json_parse::bc_write(p_context.m_parameters, "lk_dir", m_network_look_direction);
-		p_context.m_parameters.add("lk_sd", core::bc_any(m_network_look_side));
-		p_context.m_parameters.add
+		p_context.m_parameters.add_or_update("lk_sd", core::bc_any(m_network_look_side));
+		p_context.m_parameters.add_or_update
 		(
 			"keys",
 			core::bc_any(core::bc_vector<core::bc_any>
@@ -222,7 +220,7 @@ namespace black_cat
 			{
 				const auto* l_mediate_component = l_weapon->m_actor.get_component<game::bc_mediate_component>();
 				core::bc_string l_weapon_entity_name = l_mediate_component->get_entity_name();
-				p_context.m_parameters.add("wpn", core::bc_any(l_weapon_entity_name));
+				p_context.m_parameters.add_or_update("wpn", core::bc_any(l_weapon_entity_name));
 			}
 
 			if (get_ragdoll_enabled())

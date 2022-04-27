@@ -15,7 +15,7 @@ namespace black_cat
 
 		bc_pixel_shader_loader(bc_pixel_shader_loader&&) noexcept;
 
-		~bc_pixel_shader_loader();
+		~bc_pixel_shader_loader() override;
 
 		bc_pixel_shader_loader& operator=(bc_pixel_shader_loader&&) noexcept;
 

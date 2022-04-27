@@ -23,7 +23,8 @@ namespace black_cat
 			m_entity_name(nullptr),
 			m_added_to_scene(false),
 			m_scene(nullptr),
-			m_last_bound_box_change_time(0)
+			m_last_bound_box_change_time(0),
+			m_world_transform()
 		{
 		}
 

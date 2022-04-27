@@ -23,6 +23,7 @@
 #include "Game/System/Render/Material/bcMeshMaterial.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/Object/Mesh/bcHeightMap.h"
+#include "Game/bcJsonParse.h"
 #include "App/bcConstant.h"
 #include "App/Loader/bcHeightMapLoaderDx11.h"
 
@@ -225,8 +226,9 @@ namespace black_cat
 		bcUINT32 l_texel_size = l_height_map_copy_task.m_texel_size;
 		bcUBYTE* l_texture_data = l_height_map_copy_task.m_texture_buffer.get();
 		bcINT16* l_dest = l_heights.get();
-		const auto* l_y_multiplier_value = p_context.m_parameters.get_value<bcINT>("y_multiplier");
-		auto l_y_multiplier = bc_null_default(l_y_multiplier_value, 512);
+		bcINT32 l_y_multiplier = 512;
+
+		json_parse::bc_load(p_context.m_parameters, "y_multiplier", l_y_multiplier);
 
 		for (bcUINT32 l_i = 0, l_end = l_sample_count; l_i < l_end; ++l_i)
 		{
@@ -303,30 +305,32 @@ namespace black_cat
 		l_texture_map_file_path.set_filename((l_texture_map_file_path.get_filename_without_extension() + bcL("_texture_map")).c_str()).set_file_extension(bcL("dds"));
 		auto l_texture_map_file_relative = l_texture_map_file_path.get_string();
 
+		core::bc_json_key_value l_texture_loader_parameters;
+		l_texture_loader_parameters.add_or_update(constant::g_param_texture_config, core::bc_any(l_texture_map_texture_config));
+
 		graphic::bc_texture2d_content_ptr l_texture_map_texture = l_content_manager->load<graphic::bc_texture2d_content>
 		(
 			p_context.get_allocator_alloc_type(),
 			l_texture_map_file_relative.c_str(),
 			{},
 			p_context.m_parameters,
-			std::move
-			(
-				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_or_update(constant::g_param_texture_config, l_texture_map_texture_config)
-			)
+			std::move(l_texture_loader_parameters)
 		);
 
-		const auto* l_xz_multiplier_param = p_context.m_parameters.get_value<bcINT32>("xz_multiplier");
-		const auto* l_y_multiplier_param = p_context.m_parameters.get_value<bcINT32>("y_multiplier");
-		const auto* l_scale_param = p_context.m_parameters.get_value<bcINT32>("scale");
-		const auto* l_distance_detail_param = p_context.m_parameters.get_value<bcINT32>("distance_detail");
-		const auto* l_height_detail_param = p_context.m_parameters.get_value<bcINT32>("height_detail");
-		const auto* l_material_names_param = p_context.m_parameters.get_value<core::bc_vector<core::bc_any>>("materials");
+		bcINT32 l_xz_multiplier = 1;
+		bcINT32 l_y_multiplier = 512;
+		bcINT32 l_scale = 1;
+		bcINT32 l_distance_detail = 100;
+		bcINT32 l_height_detail = 2;
+		const core::bc_vector<core::bc_any>* l_material_names_param = nullptr;
 
-		bcUINT32 l_xz_multiplier = bc_null_default(l_xz_multiplier_param, 1);
-		bcFLOAT l_y_multiplier = bc_null_default(l_y_multiplier_param, 512);
-		bcUINT32 l_scale = bc_null_default(l_scale_param, 1);
-		bcUINT32 l_distance_detail = bc_null_default(l_distance_detail_param, 100);
-		bcUINT32 l_height_detail = bc_null_default(l_height_detail_param, 20);
+		json_parse::bc_load(p_context.m_parameters, "xz_multiplier", l_xz_multiplier);
+		json_parse::bc_load(p_context.m_parameters, "y_multiplier", l_y_multiplier);
+		json_parse::bc_load(p_context.m_parameters, "scale", l_scale);
+		json_parse::bc_load(p_context.m_parameters, "distance_detail", l_distance_detail);
+		json_parse::bc_load(p_context.m_parameters, "height_detail", l_height_detail);
+		json_parse::bc_load(p_context.m_parameters, "materials", l_material_names_param);
+
 		core::bc_vector<std::tuple<core::bc_string, core::bc_string, bcFLOAT>> l_material_names;
 
 		if (l_material_names_param != nullptr)

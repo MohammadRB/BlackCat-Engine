@@ -147,7 +147,7 @@ namespace black_cat
 						std::end(m_threads),
 						[](const auto& p_thread)
 						{
-							return p_thread->is_done();
+							return p_thread->is_done_requested() && p_thread->is_done();
 						}
 					);
 
@@ -163,7 +163,7 @@ namespace black_cat
 						l_spawned_thread->m_thread.join();
 					}
 
-					l_spawned_thread->m_done.store(false, platform::bc_memory_order::relaxed);
+					l_spawned_thread->reset_done_flags();
 					l_spawned_thread->m_thread = platform::bc_thread(&bc_thread_manager::_worker_spin, this, l_spawned_thread->m_my_index);
 				}
 				else
@@ -211,10 +211,10 @@ namespace black_cat
 					std::end(m_threads),
 					[](const auto& p_thread)
 					{
-						return !p_thread->is_done();
+						return !p_thread->is_done_requested();
 					}
 				);
-				(*l_alive_slot)->set_done();
+				(*l_alive_slot)->set_done_request();
 				m_spawned_thread_count.fetch_sub(1);
 			}
 		}
@@ -274,7 +274,7 @@ namespace black_cat
 			bcUINT32 l_without_task = 0;
 			task_wrapper_type l_task;
 
-			while (!m_done.load(platform::bc_memory_order::relaxed) && !m_my_data->is_done())
+			while (!m_done.load(platform::bc_memory_order::relaxed) && !m_my_data->is_done_requested())
 			{
 				if (_pop_task_from_global_queue(l_task))
 				{
@@ -321,7 +321,7 @@ namespace black_cat
 							}
 
 							// If this thread is going to exit, another thread should be woke up to steal a task
-							if (m_my_data->is_done())
+							if (m_my_data->is_done_requested())
 							{
 								m_cvariable.notify_one();
 							}
@@ -331,6 +331,7 @@ namespace black_cat
 			}
 
 			m_thread_in_spin_count.fetch_sub(1);
+			m_my_data->set_done();
 		}
 	}
 }

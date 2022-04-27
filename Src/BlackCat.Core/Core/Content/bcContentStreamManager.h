@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CorePlatformImp/Concurrency/bcMutex.h"
-#include "Core/bcExport.h"
-#include "Core/bcConstant.h"
 #include "Core/Memory/bcAlloc.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
@@ -12,8 +10,10 @@
 #include "Core/Content/bcContent.h"
 #include "Core/Content/bcContentManager.h"
 #include "Core/Utility/bcServiceManager.h"
-#include "Core/Utility/bcDataDrivenParameter.h"
+#include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcDelegate.h"
+#include "Core/bcConstant.h"
+#include "Core/bcExport.h"
 
 namespace black_cat
 {
@@ -35,7 +35,7 @@ namespace black_cat
 			bc_string_program m_title;
 			bc_string_program m_loader;
 			bc_estring_program m_file;
-			bc_data_driven_parameter m_parameters;
+			bc_json_key_value m_parameters;
 		};
 
 		/**

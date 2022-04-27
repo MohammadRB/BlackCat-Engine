@@ -16,6 +16,7 @@
 #include "Game/System/Render/bcRenderInstance.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat
@@ -53,8 +54,9 @@ namespace black_cat
 			bc_mesh_component::initialize(p_context);
 			set_render_states(bc_mesh_render_state());
 
-			const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_materials);
-
+			const core::bc_json_key_value* l_materials = nullptr;
+			json_parse::bc_load(p_context.m_parameters, constant::g_param_mesh_materials, l_materials);
+			
 			if (l_materials)
 			{
 				m_leaf_render_state = get_mesh().create_render_states

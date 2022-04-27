@@ -3,6 +3,9 @@
 #pragma once
 
 #include "Core/Memory/bcPtr.h"
+#include "Core/Container/bcArray.h"
+#include "Core/Container/bcVector.h"
+#include "Core/Container/bcString.h"
 #include "Core/Math/bcVector2f.h"
 #include "Core/bcConstant.h"
 #include "GraphicImp/Font/bcSpriteBatch.h"
@@ -12,12 +15,12 @@
 
 namespace black_cat
 {
-	class BC_DLL bc_text_draw_pass : public game::bci_render_pass
+	class BC_DLL bc_counter_value_draw_pass : public game::bci_render_pass
 	{
 		BC_RENDER_PASS(txt_drw)
 
 	public:
-		bc_text_draw_pass(game::bc_render_pass_variable_t p_back_buffer_view_parameter, core::bc_estring_view p_font_path);
+		bc_counter_value_draw_pass(game::bc_render_pass_variable_t p_back_buffer_view_parameter, core::bc_estring_view p_font_path);
 		
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 		
@@ -36,6 +39,10 @@ namespace black_cat
 	private:
 		game::bc_render_pass_variable_t m_back_buffer_view_parameter;
 		core::bc_estring_view m_font_path;
+
+		core::bc_array<core::bc_vector<core::bc_string>, 2> m_counter_values;
+		bcUINT32 m_counter_values_read_index;
+		bcFLOAT m_counter_values_update_interval;
 
 		graphic::bc_render_target_view m_back_buffer_view;
 		core::bc_unique_ptr<graphic::bc_sprite_batch> m_sprite_batch;

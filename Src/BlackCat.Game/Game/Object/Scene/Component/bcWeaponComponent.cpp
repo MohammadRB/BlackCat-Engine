@@ -14,6 +14,7 @@
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Sound/bcSoundManager.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcUtility.h"
 #include "Game/bcConstant.h"
 
@@ -64,10 +65,12 @@ namespace black_cat
 		
 		void bc_weapon_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();
-			const auto& l_class_value = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_weapon_class);
+			const core::bc_string* l_class_value = nullptr;
+			const core::bc_string* l_fire_particle_name;
 
-			if (l_class_value == "rifle")
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_class, l_class_value);
+
+			if (*l_class_value == "rifle")
 			{
 				m_class = bc_weapon_class::rifle;
 			}
@@ -75,36 +78,47 @@ namespace black_cat
 			{
 				throw bc_invalid_argument_exception("Weapon class value is invalid");
 			}
-			
-			m_up_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_up_ls);
-			m_forward_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_forward_ls);
-			m_right_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_right_ls);
-			m_main_hand_offset_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_main_hand_offset_ls);
-			m_second_hand_offset_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_second_hand_offset_ls);
-			m_fire_offset_ls = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_fire_offset_ls);
-			m_fire_particle_name = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_weapon_fire_particle).c_str();
-			m_fire_light_color = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_weapon_fire_light_color);
-			m_fire_light_radius = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_fire_light_radius);
-			m_fire_light_intensity = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_fire_light_intensity);
-			m_rate_of_fire_seconds = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_rate_of_fire_seconds);
-			m_bullet_speed = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_speed);
-			m_bullet_mass = p_context.m_parameters.get_value_throw<bcFLOAT>(constant::g_param_weapon_bullet_mass);
+
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_up_ls, m_up_ls);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_forward_ls, m_forward_ls);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_right_ls, m_right_ls);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_main_hand_offset_ls, m_main_hand_offset_ls);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_second_hand_offset_ls, m_second_hand_offset_ls);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_fire_offset_ls, m_fire_offset_ls);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_fire_particle, l_fire_particle_name);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_fire_light_color, m_fire_light_color);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_fire_light_radius, m_fire_light_radius);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_fire_light_intensity, m_fire_light_intensity);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_rate_of_fire_seconds, m_rate_of_fire_seconds);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_bullet_speed, m_bullet_speed);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_weapon_bullet_mass, m_bullet_mass);
+
+			m_fire_particle_name = *l_fire_particle_name;
 			m_scene = &p_context.m_scene;
 			m_sound_component = p_context.m_actor.get_component<bc_sound_component>();
 
-			const auto l_flare_surface = p_context.m_parameters.get_value_vector3f(constant::g_param_weapon_fire_light_flare_surface);
-			const auto* l_flare_mask_material = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_weapon_fire_light_flare_mask_material);
+			core::bc_vector3f l_flare_surface;
+			const core::bc_string* l_flare_mask_material = nullptr;
+			json_parse::bc_load(p_context.m_parameters, constant::g_param_weapon_fire_light_flare_surface, l_flare_surface);
+			json_parse::bc_load(p_context.m_parameters, constant::g_param_weapon_fire_light_flare_mask_material, l_flare_mask_material);
 			
-			if (l_flare_surface != nullptr && l_flare_mask_material)
+			if (l_flare_mask_material)
 			{
+				auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();
 				const auto l_material = l_material_manager.load_mesh_material_throw(l_flare_mask_material->c_str());
+
+				bcFLOAT l_fire_light_intensity = m_fire_light_intensity;
+				bcFLOAT l_fire_light_radius = m_fire_light_radius;
+				json_parse::bc_load(p_context.m_parameters, constant::g_param_weapon_fire_light_flare_intensity, l_fire_light_intensity);
+				json_parse::bc_load(p_context.m_parameters, constant::g_param_weapon_fire_light_flare_size, l_fire_light_radius);
+
 				m_fire_light_flare.reset(bc_light_flare
 				(
-					l_flare_surface->x,
-					l_flare_surface->y,
-					l_flare_surface->z,
-					bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_weapon_fire_light_flare_intensity), m_fire_light_intensity),
-					bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_weapon_fire_light_flare_size), m_fire_light_radius),
+					l_flare_surface.x,
+					l_flare_surface.y,
+					l_flare_surface.z,
+					l_fire_light_intensity,
+					l_fire_light_radius,
 					l_material,
 					0,
 					0,

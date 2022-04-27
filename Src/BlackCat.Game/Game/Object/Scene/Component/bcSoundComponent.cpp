@@ -102,10 +102,12 @@ namespace black_cat
 		void bc_sound_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			auto l_add_icon = false;
-			const auto& l_sounds = p_context.m_parameters.get_value_throw<core::bc_vector<core::bc_any>>("sounds");
-			m_sounds.reserve(l_sounds.size());
+			const core::bc_vector<core::bc_any>* l_sounds = nullptr;
+			json_parse::bc_load_throw(p_context.m_parameters, "sounds", l_sounds);
+			
+			m_sounds.reserve(l_sounds->size());
 
-			for (auto& l_entry : l_sounds)
+			for (auto& l_entry : *l_sounds)
 			{
 				auto& l_sound_params = l_entry.as_throw<core::bc_json_key_value>();
 

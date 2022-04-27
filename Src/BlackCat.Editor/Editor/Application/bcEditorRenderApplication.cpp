@@ -29,7 +29,7 @@
 #include "App/RenderPass/PostProcess/bcEdgeDetectionAntiAliasingPass.h"
 #include "App/RenderPass/bcIconDrawPass.h"
 #include "App/RenderPass/bcShapeDrawPass.h"
-#include "App/RenderPass/bcTextDrawPass.h"
+#include "App/RenderPass/bcCounterValueDrawPass.h"
 #include "App/RenderPass/bcBackBufferWritePass.h"
 #include "App/bcConstant.h"
 #include "Editor/Application/bcEditorHeightMapLoaderDx11.h"
@@ -132,7 +132,7 @@ namespace black_cat
 				64
 			));
 			l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
-			l_render_system.add_render_pass(bc_text_draw_pass(constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
+			l_render_system.add_render_pass(bc_counter_value_draw_pass(constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
 
 			game::bc_event_editor_mode l_editor_mode_event(true);
 			l_event_manager.process_event(l_editor_mode_event);

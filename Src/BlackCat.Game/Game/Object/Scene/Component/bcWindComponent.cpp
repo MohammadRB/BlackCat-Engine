@@ -7,6 +7,7 @@
 #include "Game/Object/Scene/Component/bcIconComponent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat
@@ -137,21 +138,29 @@ namespace black_cat
 
 		void bc_wind_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			const auto& l_wind_type = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_wind_type);
+			const core::bc_string* l_wind_type = nullptr;
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_wind_type, l_wind_type);
 
-			if (l_wind_type == "direct")
+			if (*l_wind_type == "direct")
 			{
-				const auto l_direction = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_wind_direction);
-				const auto l_power = p_context.m_parameters.get_value_throw<bcFLOAT>("power");
+				core::bc_vector3f l_direction;
+				bcFLOAT l_power;
+
+				json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_wind_direction, l_direction);
+				json_parse::bc_load_throw(p_context.m_parameters, "power", l_power);
 
 				const bc_direct_wind l_direct_wind(l_direction, l_power);
 				m_wind = bc_wind(l_direct_wind);
 			}
-			else if (l_wind_type == "point")
+			else if (*l_wind_type == "point")
 			{
-				const auto l_position = p_context.m_parameters.get_value_vector3f_throw(constant::g_param_wind_position);
-				const auto l_power = p_context.m_parameters.get_value_throw<bcFLOAT>("power");
-				const auto l_radius = p_context.m_parameters.get_value_throw<bcFLOAT>("radius");
+				core::bc_vector3f l_position;
+				bcFLOAT l_power;
+				bcFLOAT l_radius;
+
+				json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_wind_position, l_position);
+				json_parse::bc_load_throw(p_context.m_parameters, "power", l_power);
+				json_parse::bc_load_throw(p_context.m_parameters, "radius", l_radius);
 
 				const bc_point_wind l_wind_point(l_position, l_power, l_radius);
 				m_wind = bc_wind(l_wind_point);

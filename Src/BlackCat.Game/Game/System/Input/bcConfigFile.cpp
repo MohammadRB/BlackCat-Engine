@@ -29,7 +29,7 @@ namespace black_cat
 
 			if (l_entry == std::end(l_key_values))
 			{
-				l_key_values.add(core::bc_string(p_key), std::move(p_value));
+				l_key_values.add_or_update(core::bc_string(p_key), std::move(p_value));
 			}
 
 			return *this;
@@ -42,7 +42,7 @@ namespace black_cat
 			
 			if(l_entry == std::end(l_key_values))
 			{
-				l_entry = l_key_values.add(std::make_pair(core::bc_string(p_key), std::move(p_value)));
+				l_entry = l_key_values.add_or_update(std::make_pair(core::bc_string(p_key), std::move(p_value)));
 			}
 			else
 			{

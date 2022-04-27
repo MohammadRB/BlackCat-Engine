@@ -131,7 +131,7 @@ namespace black_cat
 			bc_content_ptr<TContent> load(bc_estring_view p_file,
 				bc_estring_view p_file_variant,
 				const bc_content_loader_parameter& p_parameters,
-				bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter(bc_alloc_type::frame));
+				bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter());
 
 			/**
 			 * \brief Load specified content from file or if it's loaded earlier return a pointer to it.
@@ -149,20 +149,20 @@ namespace black_cat
 				bc_estring_view p_file,
 				bc_estring_view p_file_variant,
 				const bc_content_loader_parameter& p_parameters,
-				bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter(bc_alloc_type::frame));
+				bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter());
 
 			template<class TContent>
 			bc_task<bc_content_ptr<TContent>> load_async(bc_estring_view p_file,
 				bc_estring_view p_file_variant,
 				const bc_content_loader_parameter& p_parameters,
-				bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter(bc_alloc_type::frame));
+				bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter());
 
 			template<class TContent>
 			bc_task<bc_content_ptr<TContent>> load_async(bc_alloc_type p_alloc_type,
 				bc_estring_view p_file,
 				bc_estring_view p_file_variant,
 				const bc_content_loader_parameter& p_parameters,
-				bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter(bc_alloc_type::frame));
+				bc_content_loader_parameter p_instance_parameters = bc_content_loader_parameter());
 						
 			template<class TContent>
 			void save(TContent& p_content);

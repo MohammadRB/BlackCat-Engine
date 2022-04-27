@@ -12,6 +12,7 @@
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcNetworkReplicateActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRigidDynamicSleepActorEvent.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat
@@ -45,22 +46,25 @@ namespace black_cat
 		void bc_network_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
 			m_network_type = p_context.m_game_system.get_network_system().get_network_type();
-			const auto& l_data_dir_param = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_network_data_dir);
-			const auto* l_network_entity_name_param = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_network_entity_name);
+
+			const auto* l_data_dir_param = static_cast<core::bc_string*>(nullptr);
+			const auto* l_network_entity_name_param = static_cast<core::bc_string*>(nullptr);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_network_data_dir, l_data_dir_param);
+			json_parse::bc_load(p_context.m_parameters, constant::g_param_network_entity_name, l_network_entity_name_param);
 			
-			if(l_data_dir_param == "replicate")
+			if(*l_data_dir_param == "replicate")
 			{
 				m_data_dir = bc_actor_network_data_dir::replicate;
 			}
-			else if(l_data_dir_param == "replicate_sync")
+			else if(*l_data_dir_param == "replicate_sync")
 			{
 				m_data_dir = bc_actor_network_data_dir::replicate_sync;
 			}
-			else if(l_data_dir_param == "replicate_sync_from_client")
+			else if(*l_data_dir_param == "replicate_sync_from_client")
 			{
 				m_data_dir = bc_actor_network_data_dir::replicate_sync_from_client;
 			}
-			else if(l_data_dir_param == "replicate_sync_to_server_client")
+			else if(*l_data_dir_param == "replicate_sync_to_server_client")
 			{
 				if(m_network_type == bc_network_type::server)
 				{
@@ -142,8 +146,8 @@ namespace black_cat
 
 		void bc_network_component::write_network_instance(const bc_actor_component_network_write_context& p_context)
 		{
-			p_context.m_parameters.add("cid", core::bc_any(m_network_client_id));
-			p_context.m_parameters.add("nid", core::bc_any(m_network_id));
+			p_context.m_parameters.add_or_update("cid", core::bc_any(m_network_client_id));
+			p_context.m_parameters.add_or_update("nid", core::bc_any(m_network_id));
 		}
 
 		void bc_network_component::update(const bc_actor_component_update_content& p_context)

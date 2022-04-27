@@ -10,6 +10,7 @@
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcJsonParse.h"
 #include "App/bcConstant.h"
 #include "App/Loader/bcTextureLoader.h"
 
@@ -91,7 +92,8 @@ namespace black_cat
 		}
 
 		auto& l_device = core::bc_get_service<game::bc_game_system>()->get_render_system().get_device();
-		const auto* l_config = p_context.m_instance_parameters.get_value<graphic::bc_texture_config>(constant::g_param_texture_config);
+		const auto* l_config = static_cast<graphic::bc_texture_config*>(nullptr);
+		json_parse::bc_load(p_context.m_instance_parameters, constant::g_param_texture_config, l_config);
 
 		l_config = l_config ? l_config : &s_default_config;
 

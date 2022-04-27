@@ -15,7 +15,7 @@ namespace black_cat
 
 		bc_compute_shader_loader(bc_compute_shader_loader&&) noexcept;
 
-		~bc_compute_shader_loader();
+		~bc_compute_shader_loader() override;
 
 		bc_compute_shader_loader& operator=(bc_compute_shader_loader&&) noexcept;
 

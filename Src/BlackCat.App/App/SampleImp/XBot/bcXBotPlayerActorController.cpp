@@ -114,13 +114,25 @@ namespace black_cat
 		m_physics_system = &p_context.m_game_system.get_physics_system();
 		m_network_system = &p_context.m_game_system.get_network_system();
 
-		m_rifle_name = p_context.m_parameters.get_value_throw<core::bc_string>("rifle_name").c_str();
-		m_grenade_name = p_context.m_parameters.get_value_throw<core::bc_string>("grenade_name").c_str();
-		m_threw_grenade_name = p_context.m_parameters.get_value_throw<core::bc_string>("threw_grenade_name").c_str();
-		m_smoke_grenade_name = p_context.m_parameters.get_value_throw<core::bc_string>("smoke_grenade_name").c_str();
-		m_threw_smoke_grenade_name = p_context.m_parameters.get_value_throw<core::bc_string>("threw_smoke_grenade_name").c_str();
-		m_grenade_throw_time = p_context.m_parameters.get_value_throw<bcFLOAT>("grenade_throw_time");
-		m_grenade_throw_force = p_context.m_parameters.get_value_throw<bcFLOAT>("grenade_throw_force");
+		const core::bc_string* l_rifle_name;
+		const core::bc_string* l_grenade_name;
+		const core::bc_string* l_threw_grenade_name;
+		const core::bc_string* l_smoke_grenade_name;
+		const core::bc_string* l_threw_smoke_grenade_name;
+
+		json_parse::bc_load_throw(p_context.m_parameters, "rifle_name", l_rifle_name);
+		json_parse::bc_load_throw(p_context.m_parameters, "grenade_name", l_grenade_name);
+		json_parse::bc_load_throw(p_context.m_parameters, "threw_grenade_name", l_threw_grenade_name);
+		json_parse::bc_load_throw(p_context.m_parameters, "smoke_grenade_name", l_smoke_grenade_name);
+		json_parse::bc_load_throw(p_context.m_parameters, "threw_smoke_grenade_name", l_threw_smoke_grenade_name);
+		json_parse::bc_load_throw(p_context.m_parameters, "grenade_throw_time", m_grenade_throw_time);
+		json_parse::bc_load_throw(p_context.m_parameters, "grenade_throw_force", m_grenade_throw_force);
+
+		m_rifle_name = l_rifle_name->c_str();
+		m_grenade_name = l_grenade_name->c_str();
+		m_threw_grenade_name = l_threw_grenade_name->c_str();
+		m_smoke_grenade_name = l_smoke_grenade_name->c_str();
+		m_threw_smoke_grenade_name = l_threw_smoke_grenade_name->c_str();
 
 		if(get_replication_side() == game::bc_actor_replication_side::origin)
 		{
@@ -149,8 +161,8 @@ namespace black_cat
 		const auto l_velocity = get_velocity();
 		json_parse::bc_write(p_context.m_parameters, "pos", get_position());
 		json_parse::bc_write(p_context.m_parameters, "lk_dir", get_look_direction());
-		p_context.m_parameters.add("lk_sd", core::bc_any(l_velocity.m_look_side));
-		p_context.m_parameters.add
+		p_context.m_parameters.add_or_update("lk_sd", core::bc_any(l_velocity.m_look_side));
+		p_context.m_parameters.add_or_update
 		(
 			"keys", 
 			core::bc_any(core::bc_vector<core::bc_any>
@@ -170,7 +182,7 @@ namespace black_cat
 			{
 				const auto* l_mediate_component = l_weapon->m_actor.get_component<game::bc_mediate_component>();
 				core::bc_string l_weapon_entity_name = l_mediate_component->get_entity_name();
-				p_context.m_parameters.add("wpn", core::bc_any(std::move(l_weapon_entity_name)));
+				p_context.m_parameters.add_or_update("wpn", core::bc_any(std::move(l_weapon_entity_name)));
 			}
 
 			if(get_ragdoll_enabled())

@@ -227,15 +227,22 @@ namespace black_cat
 				return const_cast<bc_json_key_value*>(this)->find(p_key);
 			}
 
-			iterator add(value_type p_value)
+			iterator add_or_update(value_type p_value)
 			{
+				const auto l_ite = find(p_value.first);
+				if(l_ite != end())
+				{
+					l_ite->second = std::move(p_value.second);
+					return l_ite;
+				}
+
 				m_key_values.push_back(std::move(p_value));
 				return m_key_values.rbegin().base();
 			}
 
-			iterator add(bc_string p_key, bc_any p_value)
+			iterator add_or_update(bc_string p_key, bc_any p_value)
 			{
-				return add(std::make_pair(std::move(p_key), std::move(p_value)));
+				return add_or_update(std::make_pair(std::move(p_key), std::move(p_value)));
 			}
 
 			void remove(const bcCHAR* p_key)
@@ -740,7 +747,7 @@ namespace black_cat
 
 						_load(l_object_member.value, l_value);
 
-						p_value.add(std::make_pair(std::move(l_key), std::move(l_value)));
+						p_value.add_or_update(std::make_pair(std::move(l_key), std::move(l_value)));
 					}
 				}
 				else

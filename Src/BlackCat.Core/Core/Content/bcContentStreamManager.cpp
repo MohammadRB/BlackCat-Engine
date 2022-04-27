@@ -5,7 +5,6 @@
 #include "Core/Container/bcList.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/File/bcFileStream.h"
-#include "Core/File/bcJsonDocument.h"
 #include "Core/File/bcPath.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Content/bcContent.h"
@@ -73,21 +72,9 @@ namespace black_cat
 						bc_string_program(*l_stream_content->m_content_title),
 						bc_string_program(*l_stream_content->m_content_loader),
 						bc_estring_program(l_file_path.get_string_frame()),
-						bc_data_driven_parameter()
+						std::move(*l_stream_content->m_content_parameter)
 					};
-
-					auto& l_content_params = *l_stream_content->m_content_parameter;
-
-					std::for_each
-					(
-						std::begin(l_content_params),
-						std::end(l_content_params),
-						[&l_stream_file](bc_json_key_value::value_type& p_parameter)
-						{
-							l_stream_file.m_parameters.add_or_update(p_parameter.first.c_str(), std::move(p_parameter.second));
-						}
-					);
-
+					
 					l_stream_files.push_back(std::move(l_stream_file));
 				}
 

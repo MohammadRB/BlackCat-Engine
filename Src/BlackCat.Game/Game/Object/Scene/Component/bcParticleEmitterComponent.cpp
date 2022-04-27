@@ -10,6 +10,7 @@
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat
@@ -52,9 +53,12 @@ namespace black_cat
 		{
 			m_scene = &p_context.m_scene;
 
-			const auto* l_emitter_name_param = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_particle_emitter_name);
-			const auto l_particle_color_param = p_context.m_parameters.get_value_vector3f(constant::g_param_particle_color);
+			const core::bc_string* l_emitter_name_param = nullptr;
+			core::bc_vector3f l_particle_color_param;
 
+			json_parse::bc_load(p_context.m_parameters, constant::g_param_particle_emitter_name, l_emitter_name_param);
+			const auto l_has_color = json_parse::bc_load(p_context.m_parameters, constant::g_param_particle_color, l_particle_color_param);
+			
 			if(l_emitter_name_param)
 			{
 				add_emitter
@@ -62,7 +66,7 @@ namespace black_cat
 					l_emitter_name_param->c_str(), 
 					p_context.m_transform.get_translation(), 
 					core::bc_vector3f::up(),
-					l_particle_color_param.get()
+					l_has_color ? &l_particle_color_param : nullptr
 				);
 			}
 

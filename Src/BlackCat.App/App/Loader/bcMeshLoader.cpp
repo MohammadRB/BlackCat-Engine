@@ -28,6 +28,7 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Physics/bcPhysicsShapeUtility.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 #include "App/Loader/bcMeshColliderLoader.h"
 #include "App/Loader/bcMeshLoader.h"
@@ -79,10 +80,11 @@ namespace black_cat
 
 		const auto l_file_path = core::bc_path(p_context.m_file_path);
 		const auto l_mesh_name = l_file_path.get_filename();
-		const auto* l_auto_scale = p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_mesh_auto_scale);
-		if(l_auto_scale)
+		bcFLOAT l_auto_scale;
+
+		if(json_parse::bc_load(p_context.m_parameters, constant::g_param_mesh_auto_scale, l_auto_scale))
 		{
-			l_builder.with_auto_scale(*l_auto_scale);
+			l_builder.with_auto_scale(l_auto_scale);
 		}
 
 		std::pair<core::bc_estring_view, core::bc_path> l_lod_paths[3]
@@ -98,21 +100,28 @@ namespace black_cat
 			{
 				continue;
 			}
-			
+
+			core::bc_json_key_value l_loader_parameters;
+			l_loader_parameters.add_or_update(constant::g_param_mesh_is_lod, core::bc_any(true));
+
 			auto l_lod_mesh = p_context.m_content_manager.load<game::bc_mesh>
 			(
 				p_context.get_allocator_alloc_type(),
 				l_lod_path.second.get_string_frame().c_str(),
 				core::bc_estring_frame(p_context.m_file_variant) + l_lod_path.first.data(),
 				p_context.m_parameters,
-				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_or_update(constant::g_param_mesh_is_lod, true)
+				std::move(l_loader_parameters)
 			);
 
 			l_builder.with_lod(std::move(l_lod_mesh));
 		}
 
-		const auto* l_collider_file_name_param = p_context.m_parameters.get_value<core::bc_string>(constant::g_param_mesh_collider);
-		const auto l_is_lod = bc_null_default(p_context.m_instance_parameters.get_value<bool>(constant::g_param_mesh_is_lod), false);
+		const auto* l_collider_file_name_param = static_cast<core::bc_string*>(nullptr);
+		auto l_is_lod = false;
+
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_mesh_collider, l_collider_file_name_param);
+		json_parse::bc_load(p_context.m_instance_parameters, constant::g_param_mesh_is_lod, l_is_lod);
+
 		core::bc_estring_frame l_collider_file_name;
 		
 		if (!l_collider_file_name_param)
@@ -142,13 +151,16 @@ namespace black_cat
 				l_collider_ai_scene = l_scene;
 			}
 
+			core::bc_json_key_value l_loader_parameters;
+			l_loader_parameters.add_or_update("aiScene", core::bc_any(l_collider_ai_scene));
+
 			l_mesh_collider = p_context.m_content_manager.load<game::bc_mesh_collider>
 			(
 				p_context.get_allocator_alloc_type(),
 				l_collider_file_path.get_string_frame().c_str(),
 				p_context.m_file_variant,
 				p_context.m_parameters,
-				core::bc_content_loader_parameter(core::bc_alloc_type::frame).add_or_update("aiScene", l_collider_ai_scene)
+				std::move(l_loader_parameters)
 			);
 		}
 		else
@@ -298,7 +310,9 @@ namespace black_cat
 		bool l_has_texcoord = p_ai_mesh.HasTextureCoords(0);
 		bool l_has_normal = p_ai_mesh.HasNormals();
 		bool l_has_tangent = p_ai_mesh.HasTangentsAndBitangents();
-		bool l_has_skinned = p_ai_mesh.HasBones() && bc_null_default(p_context.m_parameters.get_value<bool>(constant::g_param_mesh_skinned), false);
+		bool l_has_skinned = false;
+
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_mesh_skinned, l_has_skinned);
 
 		if (l_has_skinned)
 		{

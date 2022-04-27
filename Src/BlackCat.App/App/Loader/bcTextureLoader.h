@@ -15,7 +15,7 @@ namespace black_cat
 
 		bc_texture_loader(bc_texture_loader&&) noexcept;
 
-		~bc_texture_loader();
+		~bc_texture_loader() override;
 
 		bc_texture_loader& operator=(bc_texture_loader&&) noexcept;
 

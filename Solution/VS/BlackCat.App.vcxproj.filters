@@ -135,7 +135,7 @@
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcVegetableCascadedShadowMapPass.h">
       <Filter>BlackCat\RenderPass\ShadowMap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcTextDrawPass.h">
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\bcCounterValueDrawPass.h">
       <Filter>BlackCat\RenderPass</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.App\App\Application\bcApplicationHookFuncations.h">
@@ -284,7 +284,7 @@
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcVegetableCascadedShadowMapPass.cpp">
       <Filter>BlackCat\RenderPass\ShadowMap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcTextDrawPass.cpp">
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\bcCounterValueDrawPass.cpp">
       <Filter>BlackCat\RenderPass</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcSkinnedAnimationLoader.cpp">

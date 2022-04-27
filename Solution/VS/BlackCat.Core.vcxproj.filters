@@ -168,9 +168,6 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryProxy.h">
       <Filter>Core\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcDataDrivenParameter.h">
-      <Filter>Core\Utility</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcDelegate.hpp">
       <Filter>Core\Utility</Filter>
     </ClInclude>

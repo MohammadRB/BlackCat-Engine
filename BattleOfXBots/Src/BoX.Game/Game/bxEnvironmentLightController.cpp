@@ -51,28 +51,46 @@ namespace box
 			throw bc_invalid_operation_exception("environment light controller needs light component with direct light.");
 		}
 
-		m_time_change_per_seconds = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>("time_change_per_second"), 0.5f);
-		m_sunrise_time = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>("sunrise_time"), 6.0f);
-		m_daylight_time = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>("daylight_time"), 13.0f);
-		m_sunset_time = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>("sunset_time"), 18.0f);
-		m_nightlight_time = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>("nightlight_time"), 21.0f);
+		m_time_change_per_seconds = 0.05f;
+		m_sunrise_time = 6.0f;
+		m_daylight_time = 13.0f;
+		m_sunset_time = 18.0f;
+		m_nightlight_time = 21.0f;
 
-		m_sunrise_direction = bc_null_default(p_context.m_parameters.get_value_vector3f("sunrise_direction"), { 1.f, -.5f, 0.f });
-		m_sunrise_color = bc_null_default(p_context.m_parameters.get_value_vector4f("sunrise_color"), { .95f, .5f, .4f, 1.f });
-		m_sunrise_ambient_color = bc_null_default(p_context.m_parameters.get_value_vector4f("sunrise_ambient_color"), { 0.66f, 0.68f, 0.70f, 0.5f });
+		m_sunrise_direction = { 1.f, -.5f, 0.f };
+		m_sunrise_color = { .95f, .5f, .4f, 1.f };
+		m_sunrise_ambient_color = { 0.66f, 0.68f, 0.70f, 0.5f };
 
-		m_daylight_direction = bc_null_default(p_context.m_parameters.get_value_vector3f("daylight_direction"), { 0.f, -.7f, -.7f });
-		m_daylight_color = bc_null_default(p_context.m_parameters.get_value_vector4f("daylight_color"), { 0.79f, 0.78f, 0.68f, 1.1f });
-		m_daylight_ambient_color = bc_null_default(p_context.m_parameters.get_value_vector4f("_daylight_ambient_color"), { 0.66f, 0.68f, 0.70f, 0.8f });
+		m_daylight_direction = { 0.f, -.7f, -.7f };
+		m_daylight_color = { 0.79f, 0.78f, 0.68f, 1.1f };
+		m_daylight_ambient_color = { 0.66f, 0.68f, 0.70f, 0.8f };
 
-		m_sunset_direction = bc_null_default(p_context.m_parameters.get_value_vector3f("sunset_direction"), { -1.f, -.5f, 0.f });
-		m_sunset_color = bc_null_default(p_context.m_parameters.get_value_vector4f("sunset_color"), { .94f, .58f, .1f, 1.f });
-		m_sunset_ambient_color = bc_null_default(p_context.m_parameters.get_value_vector4f("sunset_ambient_color"), { 0.66f, 0.68f, 0.70f, 0.5f });
+		m_sunset_direction = { -1.f, -.5f, 0.f };
+		m_sunset_color = { .94f, .58f, .1f, 1.f };
+		m_sunset_ambient_color = { 0.66f, 0.68f, 0.70f, 0.5f };
 
-		m_nightlight_direction = bc_null_default(p_context.m_parameters.get_value_vector3f("nightlight_direction"), { 0.f, -.7f, .7f });
-		m_nightlight_color = bc_null_default(p_context.m_parameters.get_value_vector4f("nightlight_color"), { .62f, .89f, .92f, 0.6f });
-		m_nightlight_ambient_color = bc_null_default(p_context.m_parameters.get_value_vector4f("nightlight_ambient_color"), { 0.66f, 0.68f, 0.70f, 0.3f });
+		m_nightlight_direction = { 0.f, -.7f, .7f };
+		m_nightlight_color = { .62f, .89f, .92f, 0.6f };
+		m_nightlight_ambient_color = { 0.66f, 0.68f, 0.70f, 0.3f };
 
+		json_parse::bc_load(p_context.m_parameters, "time_change_per_second", m_time_change_per_seconds);
+		json_parse::bc_load(p_context.m_parameters, "sunrise_time", m_sunrise_time);
+		json_parse::bc_load(p_context.m_parameters, "daylight_time", m_daylight_time);
+		json_parse::bc_load(p_context.m_parameters, "sunset_time", m_sunset_time);
+		json_parse::bc_load(p_context.m_parameters, "nightlight_time", m_nightlight_time);
+
+		json_parse::bc_load(p_context.m_parameters, "sunrise_direction", m_sunrise_direction);
+		json_parse::bc_load(p_context.m_parameters, "sunrise_color", m_sunrise_color);
+		json_parse::bc_load(p_context.m_parameters, "sunrise_ambient_color", m_sunrise_ambient_color);
+
+		json_parse::bc_load(p_context.m_parameters, "daylight_direction", m_daylight_direction);
+		json_parse::bc_load(p_context.m_parameters, "daylight_color", m_daylight_color);
+		json_parse::bc_load(p_context.m_parameters, "daylight_ambient_color", m_daylight_ambient_color);
+
+		json_parse::bc_load(p_context.m_parameters, "nightlight_direction", m_nightlight_direction);
+		json_parse::bc_load(p_context.m_parameters, "nightlight_color", m_nightlight_color);
+		json_parse::bc_load(p_context.m_parameters, "nightlight_ambient_color", m_nightlight_ambient_color);
+		
 		m_sunrise_direction = core::bc_vector3f::normalize(m_sunrise_direction);
 		m_daylight_direction = core::bc_vector3f::normalize(m_daylight_direction);
 		m_sunset_direction = core::bc_vector3f::normalize(m_sunset_direction);
@@ -87,7 +105,7 @@ namespace box
 	void bx_environment_light_controller::update(const game::bc_actor_component_update_content& p_context)
 	{
 		return;
-		
+
 		m_current_time += m_time_change_per_seconds * p_context.m_clock.m_elapsed_second;
 		m_current_time = std::fmodf(m_current_time, 24.f);
 

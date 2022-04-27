@@ -186,7 +186,7 @@ namespace black_cat
 			l_array[0].set_value(p_value.x);
 			l_array[1].set_value(p_value.y);
 
-			p_key_value.add(std::move(p_key), core::bc_any(std::move(l_array)));
+			p_key_value.add_or_update(std::move(p_key), core::bc_any(std::move(l_array)));
 		}
 
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_vector2i& p_value) noexcept
@@ -222,7 +222,7 @@ namespace black_cat
 			l_array[0].set_value(p_value.x);
 			l_array[1].set_value(p_value.y);
 
-			p_key_value.add(std::move(p_key), core::bc_any(std::move(l_array)));
+			p_key_value.add_or_update(std::move(p_key), core::bc_any(std::move(l_array)));
 		}
 
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_vector3f& p_value) noexcept
@@ -261,7 +261,7 @@ namespace black_cat
 			l_array[1].set_value(p_value.y);
 			l_array[2].set_value(p_value.z);
 
-			p_key_value.add(std::move(p_key), core::bc_any(std::move(l_array)));
+			p_key_value.add_or_update(std::move(p_key), core::bc_any(std::move(l_array)));
 		}
 
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_vector3i& p_value) noexcept
@@ -300,7 +300,7 @@ namespace black_cat
 			l_array[1].set_value(p_value.y);
 			l_array[2].set_value(p_value.z);
 
-			p_key_value.add(std::move(p_key), core::bc_any(std::move(l_array)));
+			p_key_value.add_or_update(std::move(p_key), core::bc_any(std::move(l_array)));
 		}
 
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_vector4f& p_value) noexcept
@@ -342,7 +342,7 @@ namespace black_cat
 			l_array[2].set_value(p_value.z);
 			l_array[3].set_value(p_value.w);
 
-			p_key_value.add(std::move(p_key), core::bc_any(std::move(l_array)));
+			p_key_value.add_or_update(std::move(p_key), core::bc_any(std::move(l_array)));
 		}
 
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_vector4i& p_value) noexcept
@@ -384,7 +384,7 @@ namespace black_cat
 			l_array[2].set_value(p_value.z);
 			l_array[3].set_value(p_value.w);
 
-			p_key_value.add(std::move(p_key), core::bc_any(std::move(l_array)));
+			p_key_value.add_or_update(std::move(p_key), core::bc_any(std::move(l_array)));
 		}
 
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_matrix3f& p_value) noexcept
@@ -435,16 +435,16 @@ namespace black_cat
 			l_array[4].set_value(l_y.y);
 			l_array[5].set_value(l_y.z);
 
-			p_key_value.add(std::move(p_key), core::bc_any(std::move(l_array)));
+			p_key_value.add_or_update(std::move(p_key), core::bc_any(std::move(l_array)));
 		}
 
 		template<typename T>
 		void bc_write(core::bc_json_key_value& p_key_value, core::bc_string p_key, const T& p_value) noexcept
 		{
-			p_key_value.add(std::move(p_key), core::bc_any(p_value));
+			p_key_value.add_or_update(std::move(p_key), core::bc_any(p_value));
 		}
 
-		template<typename T>
+		template<typename T, typename = std::enable_if_t<!std::is_pointer_v<T>>>
 		bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, T& p_value) noexcept
 		{
 			const auto l_value = p_key_value.find(p_key);
@@ -461,6 +461,45 @@ namespace black_cat
 
 			p_value = *l_concrete_value;
 			return true;
+		}
+
+		template<typename T>
+		bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, const T*& p_value) noexcept
+		{
+			const auto l_value = p_key_value.find(p_key);
+			if (l_value == std::cend(p_key_value))
+			{
+				return false;
+			}
+
+			auto* l_concrete_value = l_value->second.as<std::decay_t<T>>();
+			if (!l_concrete_value)
+			{
+				return false;
+			}
+
+			p_value = l_concrete_value;
+			return true;
+		}
+
+		template<typename T, typename = std::enable_if_t<!std::is_pointer_v<T>>>
+		void bc_load_throw(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, T& p_value) noexcept
+		{
+			const auto l_found = bc_load(p_key_value, p_key, p_value);
+			if (!l_found)
+			{
+				throw bc_key_not_found_exception("json key was not found in json key value");
+			}
+		}
+
+		template<typename T>
+		void bc_load_throw(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, const T*& p_value) noexcept
+		{
+			const auto l_found = bc_load(p_key_value, p_key, p_value);
+			if (!l_found)
+			{
+				throw bc_key_not_found_exception("json key was not found in json key value");
+			}
 		}
 	}
 }

@@ -12,6 +12,7 @@
 #include "Game/System/Render/State/bcVertexLayout.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Physics/bcPhysicsShapeUtility.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 #include "App/Loader/bcMeshColliderLoader.h"
 #include "App/Loader/bcMeshLoaderUtility.h"
@@ -36,7 +37,9 @@ namespace black_cat
 	{
 		Assimp::Importer l_importer;
 
-		const auto* const* l_scene_value = p_context.m_instance_parameters.get_value<const aiScene*>("aiScene");
+		const aiScene* const* l_scene_value = nullptr;
+		json_parse::bc_load(p_context.m_instance_parameters, "aiScene", l_scene_value);
+
 		const auto* l_scene = l_scene_value ? *l_scene_value : nullptr;
 		if (!l_scene)
 		{
@@ -66,7 +69,9 @@ namespace black_cat
 		core::bc_unordered_map_frame<core::bc_string_view, core::bc_vector_frame<const aiNode*>> l_px_node_mapping;
 		core::bc_vector<std::tuple<core::bc_string_view, core::bc_string_view, physics::bc_transform>> l_px_joint_mapping;
 		
-		const bool l_is_skinned = bc_null_default(p_context.m_parameters.get_value<bool>(constant::g_param_mesh_skinned), false);
+		bool l_is_skinned = false;
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_mesh_skinned, l_is_skinned);
+		
 		if(l_is_skinned)
 		{
 			bc_mesh_loader_utility::calculate_node_mapping(*l_scene->mRootNode, l_node_mapping);
@@ -79,7 +84,9 @@ namespace black_cat
 			bc_mesh_loader_utility::calculate_px_node_mapping(*l_scene, *l_scene->mRootNode, l_px_node_mapping);
 		}
 		
-		const bool l_generate_high_detail_query_shape = bc_null_default(p_context.m_parameters.get_value<bool>(constant::g_param_high_detail_query_shape), true);
+		bool l_generate_high_detail_query_shape = true;
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_high_detail_query_shape, l_generate_high_detail_query_shape);
+
 		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
 		game::bc_mesh_collider_builder l_builder;
 

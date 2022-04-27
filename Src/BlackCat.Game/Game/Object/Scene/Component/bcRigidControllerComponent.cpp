@@ -13,6 +13,7 @@
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 
 namespace black_cat
@@ -58,8 +59,10 @@ namespace black_cat
 			{
 				m_px_body = l_physics.create_rigid_dynamic(physics::bc_transform(p_context.m_transform));
 				l_physics_system.set_game_actor(*m_px_body, p_context.m_actor);
+
+				const auto* l_materials = static_cast<core::bc_json_key_value*>(nullptr);
+				json_parse::bc_load(p_context.m_parameters, constant::g_param_mesh_collider_materials, l_materials);
 				
-				const auto* l_materials = p_context.m_parameters.get_value<core::bc_json_key_value>(constant::g_param_mesh_collider_materials);
 				l_physics_system.create_px_shapes_from_mesh(l_material_manager, m_px_body.get(), l_mesh_component->get_mesh(), l_materials);
 
 				core::bc_vector_frame<physics::bc_shape> l_rigid_shapes(m_px_body->get_shape_count());
@@ -72,9 +75,12 @@ namespace black_cat
 
 				set_kinematic(true);
 
-				const auto l_mass_value = bc_null_default(p_context.m_parameters.get_value<bcFLOAT>(constant::g_param_rigid_mass), 1);
-				const auto l_cmass_value = p_context.m_parameters.get_value_vector3f(constant::g_param_rigid_cmass);
-				m_px_body->set_mass_update_inertia(l_mass_value, l_cmass_value.get());
+				bcFLOAT l_mass_value = 1;
+				core::bc_vector3f l_cmass_value;
+				json_parse::bc_load(p_context.m_parameters, constant::g_param_rigid_mass, l_mass_value);
+				const auto l_has_cmass = json_parse::bc_load(p_context.m_parameters, constant::g_param_rigid_cmass, l_cmass_value);
+				
+				m_px_body->set_mass_update_inertia(l_mass_value, l_has_cmass ? &l_cmass_value : nullptr);
 
 				added_to_scene(p_context.m_scene.get_px_scene(), *m_px_body);
 

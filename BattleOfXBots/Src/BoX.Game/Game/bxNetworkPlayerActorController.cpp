@@ -38,7 +38,7 @@ namespace box
 	void bx_network_player_actor_controller::write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context)
 	{
 		bc_xbot_network_player_actor_controller::write_replicated_network_instance(p_context);
-		p_context.m_parameters.add("hth", core::bc_any(m_health));
+		p_context.m_parameters.add_or_update("hth", core::bc_any(m_health));
 	}
 
 	void bx_network_player_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)

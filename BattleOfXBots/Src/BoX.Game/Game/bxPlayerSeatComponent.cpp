@@ -5,6 +5,7 @@
 #include "Game/Object/Scene/Component/bcIconComponent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
+#include "Game/bcJsonParse.h"
 #include "App/bcException.h"
 #include "BoX.Game/Game/bxPlayerSeatComponent.h"
 
@@ -23,13 +24,14 @@ namespace box
 
 	void bx_player_seat_component::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
-		const auto& l_team_value = p_context.m_parameters.get_value_throw<core::bc_string>(g_param_team);
+		const core::bc_string* l_team_value = nullptr;
+		json_parse::bc_load_throw(p_context.m_parameters, g_param_team, l_team_value);
 
-		if(l_team_value == "red")
+		if(*l_team_value == "red")
 		{
 			m_team = bx_team::red;
 		}
-		else if(l_team_value == "blue")
+		else if(*l_team_value == "blue")
 		{
 			m_team = bx_team::blue;
 		}

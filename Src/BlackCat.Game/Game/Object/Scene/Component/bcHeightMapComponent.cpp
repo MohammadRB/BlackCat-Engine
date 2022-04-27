@@ -20,6 +20,7 @@
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/bcJsonParse.h"
 #include "Game/bcUtility.h"
 #include "Game/bcConstant.h"
 
@@ -66,8 +67,10 @@ namespace black_cat
 
 		void bc_height_map_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			const auto& l_height_map_name = p_context.m_parameters.get_value_throw<core::bc_string>(constant::g_param_heightmap);
-			m_height_map = p_context.m_stream_manager.find_content_throw<bc_height_map>(l_height_map_name.c_str());
+			const auto* l_height_map_name = static_cast<core::bc_string*>(nullptr);
+			json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_heightmap, l_height_map_name);
+
+			m_height_map = p_context.m_stream_manager.find_content_throw<bc_height_map>(l_height_map_name->c_str());
 		}
 
 		void bc_height_map_component::load_instance(const bc_actor_component_load_context& p_context)
@@ -85,8 +88,7 @@ namespace black_cat
 
 		void bc_height_map_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
-			if(l_world_transform_event)
+			if(const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event))
 			{
 				m_transform.translate(l_world_transform_event->get_transform().get_translation());
 				
@@ -105,8 +107,7 @@ namespace black_cat
 				));
 			}
 
-			const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event);
-			if(l_bullet_hit_event)
+			if(const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event))
 			{
 				const auto l_material_index = m_height_map->get_px_height_field().get_triangle_material(l_bullet_hit_event->get_hit_face_index());
 				const auto& l_material = m_height_map->get_material(l_material_index);

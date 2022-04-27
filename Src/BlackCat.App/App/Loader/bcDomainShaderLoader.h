@@ -15,7 +15,7 @@ namespace black_cat
 
 		bc_domain_shader_loader(bc_domain_shader_loader&&) noexcept;
 
-		~bc_domain_shader_loader();
+		~bc_domain_shader_loader() override;
 
 		bc_domain_shader_loader& operator=(bc_domain_shader_loader&&) noexcept;
 

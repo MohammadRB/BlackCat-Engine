@@ -47,7 +47,7 @@ namespace black_cat
 			else
 			{
 				core::bc_content_loader_parameter l_instance_parameters;
-				l_instance_parameters.add_or_update("scene", l_scene);
+				l_instance_parameters.add_or_update("scene", core::bc_any(l_scene));
 
 				auto l_check_point = l_content_manager.load<game::bc_scene_checkpoint>
 				(

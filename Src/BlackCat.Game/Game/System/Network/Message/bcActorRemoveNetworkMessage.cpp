@@ -55,7 +55,7 @@ namespace black_cat
 
 		void bc_actor_remove_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
-			p_context.m_params.add("nid", core::bc_any(m_net_id));
+			p_context.m_params.add_or_update("nid", core::bc_any(m_net_id));
 		}
 
 		void bc_actor_remove_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)
