@@ -124,7 +124,7 @@ namespace black_cat
 				m_network_actors.insert(std::make_pair(l_actor_network_id, p_actor));
 			}
 			
-			l_network_component->set_network_ids(bc_network_client::invalid_id, l_actor_network_id);
+			l_network_component->set_network_ids(l_network_component->get_network_client_id(), l_actor_network_id);
 			
 			send_message(bc_actor_replicate_network_message(p_actor));
 		}

@@ -143,6 +143,7 @@ namespace black_cat
 				while (l_num_to_free && l_begin != l_end)
 				{
 					bc_decal_instance& l_instance = *l_begin;
+
 					if (!l_instance.get_decal()->get_auto_remove())
 					{
 						++l_begin;
@@ -179,6 +180,32 @@ namespace black_cat
 			);
 
 			return l_task;
+		}
+
+		void bc_decal_manager_container::clear_temp_decals()
+		{
+			auto l_begin = std::begin(m_decal_instances_pool);
+			const auto l_end = std::end(m_decal_instances_pool);
+
+			while (l_begin != l_end)
+			{
+				bc_decal_instance& l_instance = *l_begin;
+
+				if (!l_instance.get_decal()->get_auto_remove())
+				{
+					++l_begin;
+					continue;
+				}
+
+				if (!l_instance.get_actor().is_valid())
+				{
+					l_begin = m_decal_instances_pool.erase(l_begin);
+					continue;
+				}
+
+				l_instance.get_actor().add_event(bc_remove_decal_actor_event(l_instance));
+				++l_begin;
+			}
 		}
 
 		void bc_decal_manager_container::destroy_decal_instance(bc_decal_instance* p_instance)

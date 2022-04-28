@@ -4,6 +4,7 @@
 
 #include "Core/Container/bcString.h"
 #include "Game/System/Network/Message/bcNetworkMessage.h"
+#include "BoX.Game/Application/bxDefinitions.h"
 #include "BoX.Game/bxExport.h"
 
 namespace box
@@ -14,5 +15,7 @@ namespace box
 	{
 	public:
 		virtual core::bc_string change_player_team(game::bc_network_client_id p_client_id, bx_team p_team) = 0;
+
+		virtual void message_received(game::bc_network_client_id p_client_id, core::bc_string p_msg) = 0;
 	};
 }

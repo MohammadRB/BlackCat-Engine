@@ -105,6 +105,9 @@
     <ClCompile Include="..\Src\BoX.Game\Game\bxEnvironmentLightController.cpp">
       <Filter>BoX.Game\Game</Filter>
     </ClCompile>
+    <ClCompile Include="..\Src\BoX.Game\Application\bxPlayerListService.cpp">
+      <Filter>BoX.Game\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Src\BoX.Game\Application\bxApplicationHookFunctions.h">
@@ -190,6 +193,12 @@
     </ClInclude>
     <ClInclude Include="..\Src\BoX.Game\Game\bxEnvironmentLightController.h">
       <Filter>BoX.Game\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Application\bxPlayerListService.h">
+      <Filter>BoX.Game\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Src\BoX.Game\Network\bxGameMessageNetworkMessage.h">
+      <Filter>BoX.Game\Network</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

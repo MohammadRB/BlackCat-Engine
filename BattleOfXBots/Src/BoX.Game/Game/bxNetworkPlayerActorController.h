@@ -3,6 +3,7 @@
 #pragma once
 
 #include "App/SampleImp/XBot/bcXBotNetworkPlayerActorController.h"
+#include "BoX.Game/Application/bxPlayerListService.h"
 #include "BoX.Game/bxExport.h"
 
 namespace black_cat
@@ -28,6 +29,8 @@ namespace box
 
 		bx_network_player_actor_controller& operator=(bx_network_player_actor_controller&&) noexcept = default;
 
+		void killed(game::bc_network_client_id p_killer_id, core::bc_string_view p_body_part_force, const core::bc_vector3f& p_force) noexcept;
+
 	private:
 		void load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
 
@@ -48,6 +51,7 @@ namespace box
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 
 		core::bc_event_manager* m_event_manager;
+		bxi_player_list_service* m_player_service;
 
 		bcUBYTE m_health_recover_per_second;
 		bcUBYTE m_health_damage_per_thousands_force;

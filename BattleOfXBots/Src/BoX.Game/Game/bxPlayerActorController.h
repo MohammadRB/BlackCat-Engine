@@ -76,6 +76,7 @@ namespace box
 		bcUBYTE m_grenade_load_time;
 		bcUBYTE m_smoke_load_time;
 
+		bcFLOAT m_elapsed_since_last_shoot;
 		bcFLOAT m_network_health;
 		bcFLOAT m_rifle_heat;
 		bcFLOAT m_grenade_load;

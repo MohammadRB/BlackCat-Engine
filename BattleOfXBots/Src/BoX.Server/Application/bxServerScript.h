@@ -34,7 +34,7 @@ namespace box
 
 		platform::bc_script_variable load_scene(const platform::bc_script_variable& p_scene_name);
 		
-		platform::bc_script_variable send(const platform::bc_script_variable& p_str_content);
+		platform::bc_script_variable say(const platform::bc_script_variable& p_str_content);
 
 	private:
 		game::bc_game_system* m_game_system;

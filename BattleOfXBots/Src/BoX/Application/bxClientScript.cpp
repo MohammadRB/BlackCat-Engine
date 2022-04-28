@@ -1,9 +1,9 @@
 // [06/26/2021 MRB]
 
 #include "PlatformImp/Script/bcScriptString.h"
-#include "Game/System/Network/Message/bcStringNetworkMessage.h"
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/System/bcGameSystem.h"
+#include "BoX.Game/Network/bxGameMessageNetworkMessage.h"
 #include "BoX/Application/bxClientScript.h"
 
 namespace box
@@ -33,19 +33,19 @@ namespace box
 			m_game_system->get_network_system().start_client(*m_network_client_hook, *m_message_visitor, l_address);
 		}
 		
-		return platform::bc_script_variable();
+		return {};
 	}
 
-	platform::bc_script_variable bx_client_script::send(const platform::bc_script_variable& p_str_content)
+	platform::bc_script_variable bx_client_script::say(const platform::bc_script_variable& p_str_content)
 	{
 		if (!p_str_content.is_string())
 		{
-			return platform::bc_script_variable();
+			return {};
 		}
 
 		auto l_str = core::bc_to_string(p_str_content.as_string().data());
-		m_game_system->get_network_system().send_message(game::bc_string_network_message(std::move(l_str)));
+		m_game_system->get_network_system().send_message(bx_game_message_network_message(std::move(l_str)));
 
-		return platform::bc_script_variable();
+		return {};
 	}
 }

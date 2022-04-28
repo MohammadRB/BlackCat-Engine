@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Core/Messaging/Event/bcEventListenerHandle.h"
 #include "Core/Messaging/Query/bcQueryResult.h"
 #include "GraphicImp/Device/bcDevicePipelineState.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
@@ -45,6 +46,12 @@ namespace black_cat
 	public:
 		explicit bc_shape_draw_pass(game::bc_render_pass_variable_t p_render_target_view);
 
+		bc_shape_draw_pass(bc_shape_draw_pass&& p_other) noexcept;
+
+		~bc_shape_draw_pass() override = default;
+
+		bc_shape_draw_pass& operator=(bc_shape_draw_pass&& p_other) noexcept;
+
 		void set_hovered_actor(const game::bc_actor& p_actor);
 
 		void set_selected_actor(const game::bc_actor& p_actor);
@@ -74,6 +81,8 @@ namespace black_cat
 		void set_parameters(bool p_draw_scene_graph_debug);
 
 	private:
+		void _event_handler(core::bci_event& p_event);
+
 		game::bc_render_pass_variable_t m_render_target_view_variable;
 
 		graphic::bc_device_pipeline_state_ref m_device_pipeline_state;
@@ -85,5 +94,7 @@ namespace black_cat
 		game::bc_actor m_selected_actor;
 		game::bc_decal_instance* m_hovered_decal;
 		game::bc_decal_instance* m_selected_decal;
+
+		core::bc_event_listener_handle m_editor_event_handle;
 	};
 }

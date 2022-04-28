@@ -11,6 +11,7 @@
 #include "App/Loader/bcHeightMapLoaderDx11.h"
 #include "BoX.Game/Application/bxApplicationHookFunctions.h"
 #include "BoX.Game/Application/bxPlayerService.h"
+#include "BoX.Game/Application/bxPlayerListService.h"
 #include "BoX.Game/Application/bxSceneCheckPoint.h"
 #include "BoX.Game/Game/bxPlayerActorController.h"
 #include "BoX.Game/Game/bxNetworkPlayerActorController.h"
@@ -29,12 +30,14 @@
 #include "BoX.Game/Network/bxPlayerKilledNetworkMessage.h"
 #include "BoX.Game/Network/bxGameStateNetworkMessage.h"
 #include "BoX.Game/Network/bxGameResetNetworkMessage.h"
+#include "BoX.Game/Network/bxGameMessageNetworkMessage.h"
 
 namespace box
 {
 	void bx_start_game_services(const game::bc_engine_application_parameter& p_parameters)
 	{
 		core::bc_register_service(core::bc_make_service<bx_player_service>(*core::bc_get_service<core::bc_event_manager>()));
+		core::bc_register_service<bxi_player_list_service>(core::bc_make_service<bx_player_list_service>());
 	}
 
 	void bx_register_game_loaders(const game::bc_engine_application_parameter& p_parameters, bool p_is_editor)
@@ -73,7 +76,8 @@ namespace box
 			bx_player_spawn_network_message,
 			bx_player_killed_network_message,
 			bx_game_state_network_message,
-			bx_game_reset_network_message
+			bx_game_reset_network_message,
+			bx_game_message_network_message
 		>();
 	}
 

@@ -73,6 +73,8 @@ namespace box
 
 		void reset_game() override;
 
+		void message_received(core::bc_string p_msg) override;
+
 		// Private methods
 
 		void _create_scene_checkpoint(game::bc_scene& p_scene);
@@ -80,17 +82,18 @@ namespace box
 		void _restore_scene_checkpoint(game::bc_scene& p_scene);
 
 		void _reset_game(game::bc_scene& p_scene);
-
+	
+	private:
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
 		platform::bc_script_context* m_client_script_context = nullptr;
 		platform::bc_script_object_ref m_client_script_object;
 		bx_player_service* m_player_service = nullptr;
+		game::bc_scene* m_scene{ nullptr };
 
 		bx_app_state m_state = bx_app_state::initial;
 		core::bc_task<bx_team> m_team_select_task;
 		bcUINT32 m_current_game_time = 0;
-		game::bc_scene* m_scene{ nullptr };
-		core::bc_vector3f m_spawn_position;
+		core::bc_vector3f m_spawn_position{};
 		bx_team m_team{};
 		game::bc_actor m_player_actor;
 		bool m_is_dead = false;

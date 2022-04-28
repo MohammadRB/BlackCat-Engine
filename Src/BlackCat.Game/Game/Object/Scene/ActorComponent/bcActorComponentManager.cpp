@@ -47,17 +47,7 @@ namespace black_cat
 					l_components_with_event.push_back(&l_entry.second);
 				}
 			}
-
-			std::sort
-			(
-				std::begin(l_components_with_event),
-				std::end(l_components_with_event),
-				[](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
-				{
-					return p_first->m_component_priority < p_second->m_component_priority;
-				}
-			);
-
+			
 			do
 			{
 				m_read_event_pool = m_write_event_pool;
@@ -86,7 +76,7 @@ namespace black_cat
 					(
 						std::begin(l_actor_indices),
 						std::end(l_actor_indices),
-						[&](decltype(l_actor_indices)::value_type p_actor_index)
+						[&](auto p_actor_index)
 						{
 							_clear_actor_events(p_actor_index);
 						}
@@ -112,17 +102,7 @@ namespace black_cat
 					l_components_with_update.push_back(&l_entry.second);
 				}
 			}
-
-			/*std::sort
-			(
-				std::begin(l_components_with_update),
-				std::end(l_components_with_update),
-				[](const _bc_actor_component_entry* p_first, const _bc_actor_component_entry* p_second)
-				{
-					return p_first->m_component_priority < p_second->m_component_priority;
-				}
-			);*/
-
+			
 			core::bc_concurrency::concurrent_for_each
 			(
 				std::begin(l_components_with_update),
@@ -168,9 +148,9 @@ namespace black_cat
 
 		void bc_actor_component_manager::double_update_actors(const platform::bc_clock::update_param& p_clock)
 		{
-			const auto l_read_event_pool = m_read_event_pool;
-			const auto l_write_event_pool = m_write_event_pool;
-			
+			const auto l_read_event_pool_backup = m_read_event_pool;
+			const auto l_write_event_pool_backup = m_write_event_pool;
+
 			bc_actor l_actor;
 			core::bc_vector_frame<bci_actor_component*> l_components;
 			l_components.reserve(10);
@@ -178,11 +158,14 @@ namespace black_cat
 			while (m_double_update_actors.pop(l_actor))
 			{
 				actor_get_components(l_actor, std::back_inserter(l_components));
+				bcSIZE l_write_event_pool_size;
+				bcSIZE l_write_event_pool_new_size;
 
 				do
 				{
 					m_read_event_pool = m_write_event_pool;
 					m_write_event_pool = (m_write_event_pool + 1) % 2;
+					l_write_event_pool_size = m_event_pools[m_write_event_pool].size();
 
 					auto* l_events = actor_get_events(l_actor);
 
@@ -199,9 +182,10 @@ namespace black_cat
 						}
 					}
 
+					l_write_event_pool_new_size = m_event_pools[m_write_event_pool].size();
 					_clear_actor_events(l_actor.get_id());
 				}
-				while (m_event_pools[m_write_event_pool].size());
+				while (l_write_event_pool_new_size > l_write_event_pool_size);
 
 				for (bci_actor_component* l_component : l_components)
 				{
@@ -211,8 +195,8 @@ namespace black_cat
 				l_components.clear();
 			}
 
-			m_read_event_pool = l_read_event_pool;
-			m_write_event_pool = l_write_event_pool;
+			m_read_event_pool = l_read_event_pool_backup;
+			m_write_event_pool = l_write_event_pool_backup;
 		}
 	}	
 }

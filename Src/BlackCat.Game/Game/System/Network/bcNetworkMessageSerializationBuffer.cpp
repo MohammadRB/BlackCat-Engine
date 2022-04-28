@@ -6,6 +6,7 @@
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/File/bcJsonDocument.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/System/Network/bcNetworkMessageSerializationBuffer.h"
 
@@ -59,13 +60,15 @@ namespace black_cat
 			: m_network_system(&p_network_system),
 			m_memory_buffer(core::bc_alloc_type::unknown_movable)
 		{
+			const auto l_global_scale = bc_get_global_config().get_scene_global_scale();
+			m_decimal_places = static_cast<bcUINT32>(std::ceilf(std::log10f(l_global_scale * 100.f))); // precision for 100 unit per 1 meter in scene
 		}
 
 		std::pair<bcUINT32, core::bc_memory_stream*> bc_network_message_serialization_buffer::serialize(bci_network_message_serialization_visitor& p_visitor,
 			const core::bc_const_span<bc_network_message_ptr>& p_messages)
 		{
 			core::bc_json_document<bc_network_packet> l_json_packet;
-			l_json_packet.set_max_decimal_places(2);
+			l_json_packet.set_max_decimal_places(m_decimal_places);
 
 			for (const auto& l_command : p_messages)
 			{

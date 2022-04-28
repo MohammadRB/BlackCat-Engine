@@ -15,6 +15,7 @@
 #include "App/Application/bcRenderApplication.h"
 #include "BoX.Game/Application/bxDefinitions.h"
 #include "BoX.Game/Application/bxGameState.h"
+#include "BoX.Game/Application/bxPlayerListService.h"
 #include "BoX.Game/Application/bxServerNetworkMessageVisitor.h"
 
 namespace box
@@ -27,25 +28,6 @@ namespace box
 		server_started,
 		scene_loaded,
 		game_started
-	};
-
-	struct bx_client
-	{
-		platform::bc_network_address m_address;
-		game::bc_network_client_id m_id;
-		core::bc_string m_name;
-
-		core::bc_vector3f m_seat;
-		core::bc_nullable<bx_team> m_team;
-		game::bc_actor m_player_actor;
-		bool m_is_dead = false;
-		bcFLOAT m_dead_passed_time = 0;
-	};
-
-	struct bx_player_seat
-	{
-		game::bc_network_client_id m_client_id;
-		core::bc_vector3f m_position;
 	};
 
 	class bx_server_application : public bc_render_application, game::bci_network_server_manager_hook, bx_server_network_message_visitor
@@ -102,6 +84,8 @@ namespace box
 
 		core::bc_string change_player_team(game::bc_network_client_id p_client_id, bx_team p_team) override;
 
+		void message_received(game::bc_network_client_id p_client_id, core::bc_string p_msg) override;
+
 		// Private methods
 
 		void _send_game_state_to_clients(const platform::bc_clock::update_param& p_clock);
@@ -109,30 +93,25 @@ namespace box
 		void _create_scene_checkpoint(game::bc_scene& p_scene);
 
 		void _restore_scene_checkpoint(game::bc_scene& p_scene);
-
-		void _remove_client(game::bc_network_client_id p_id);
-
+		
 		void _reset_game(game::bc_scene& p_scene);
-
-		std::pair<bool, core::bc_vector3f> _assign_seat(game::bc_network_client_id p_client_id, bx_team p_team);
-
+		
 		void _respawn_dead_players(const platform::bc_clock::update_param& p_clock);
 
+	private:
 		const bcECHAR* m_app_name{ nullptr };
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
 		platform::bc_script_context* m_server_script_context{ nullptr };
 		platform::bc_script_object_ref m_server_script_object;
 		game::bc_network_system* m_network_system{ nullptr };
-
+		bx_player_list_service* m_player_service{ nullptr };
+		game::bc_scene* m_scene{ nullptr };
+		
+		bcFLOAT m_game_time;
+		const bcFLOAT m_respawn_time = 8;
 		bx_app_state m_state = bx_app_state::initial;
-		const bcFLOAT m_game_time = 60;
-		const bcFLOAT m_respawn_time = 10;
 		bcFLOAT m_current_game_time = m_game_time;
 		bcFLOAT m_last_state_update_elapsed_ms = 0;
-		std::unordered_map<game::bc_network_client_id, bx_client> m_joined_clients;
-		core::bc_vector<bx_player_seat> m_red_player_seats;
-		core::bc_vector<bx_player_seat> m_blue_player_seats;
-		game::bc_scene* m_scene{ nullptr };
 
 		core::bc_vector<core::bc_string> m_info_messages;
 		core::bc_vector<bx_player_kill_state> m_killing_list;

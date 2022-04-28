@@ -58,7 +58,7 @@ namespace box
 			m_sound_lifetime_second = l_sound_component->get_max_length() / 1000.f;
 		}
 
-		json_parse::bc_load(p_context.m_parameters, constant::g_param_player_id, m_player_id);
+		json_parse::bc_load(p_context.m_instance_parameters, constant::g_param_player_id, m_player_id);
 	}
 
 	void bx_explosion_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)

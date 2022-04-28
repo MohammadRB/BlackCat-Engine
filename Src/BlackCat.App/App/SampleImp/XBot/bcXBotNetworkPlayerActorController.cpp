@@ -6,6 +6,7 @@
 #include "Core/Utility/bcLogger.h"
 #include "Game/System/Input/bcInputSystem.h"
 #include "Game/System/Network/bcNetworkSystem.h"
+#include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/Component/bcHumanRagdollComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/bcScene.h"
@@ -21,6 +22,8 @@ namespace black_cat
 	bc_xbot_network_player_actor_controller::bc_xbot_network_player_actor_controller() noexcept
 		: m_network_system(nullptr),
 		m_look_velocity(0, 1, 0.50f),
+		m_network_position(),
+		m_network_look_direction(),
 		m_network_look_side(0),
 		m_network_forward_pressed(false),
 		m_network_backward_pressed(false),
@@ -57,7 +60,7 @@ namespace black_cat
 		l_instance_params.add_or_update(constant::g_param_player_id, core::bc_any(l_player_id));
 
 		// grenade will be replicated by its network component
-		auto l_actor = get_scene()->create_actor(p_grenade_name.data(), l_transform, std::move(l_instance_params));
+		auto l_actor = get_scene()->create_actor(p_grenade_name.data(), l_transform, l_instance_params);
 		l_actor.mark_for_double_update();
 
 		auto* l_network_component = l_actor.get_component<game::bc_network_component>();

@@ -38,26 +38,16 @@ namespace black_cat
 		{
 			return;
 		}
-
-		const auto& l_actors_buffer = p_context.get_shared_query<game::bc_main_camera_scene_shared_query>().get_scene_buffer();
-
+		
 		if (m_hovered_actor.is_valid())
 		{
-			const auto l_ite = l_actors_buffer.find(m_hovered_actor);
-			if (l_ite != std::end(l_actors_buffer))
-			{
-				const auto* l_mediate_component = l_ite->get_component<game::bc_mediate_component>();
-				m_shape_drawer->draw_wired_bound_box(l_mediate_component->get_bound_box());
-			}
+			const auto* l_mediate_component = m_hovered_actor.get_component<game::bc_mediate_component>();
+			m_shape_drawer->draw_wired_bound_box(l_mediate_component->get_bound_box());
 		}
 
 		if(m_selected_actor.is_valid())
 		{
-			const auto l_ite = l_actors_buffer.find(m_selected_actor);
-			if (l_ite != std::end(l_actors_buffer))
-			{
-				l_ite->draw_debug(*m_shape_drawer);
-			}
+			m_selected_actor.draw_debug(*m_shape_drawer);
 		}
 
 		if(m_hovered_decal)
@@ -83,6 +73,45 @@ namespace black_cat
 		m_hovered_decal(nullptr),
 		m_selected_decal(nullptr)
 	{
+		auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
+		m_editor_event_handle = l_event_manager.register_event_listener<game::bc_event_editor_mode>
+		(
+			core::bc_event_manager::delegate_type(*this, &bc_shape_draw_pass::_event_handler)
+		);
+	}
+
+	bc_shape_draw_pass::bc_shape_draw_pass(bc_shape_draw_pass&& p_other) noexcept
+		: m_render_target_view_variable(p_other.m_render_target_view_variable),
+		m_device_pipeline_state(std::move(p_other.m_device_pipeline_state)),
+		m_render_pass_state(std::move(p_other.m_render_pass_state)),
+		m_draw_scene_graph_debug(p_other.m_draw_scene_graph_debug),
+		m_scene_debug_query(std::move(p_other.m_scene_debug_query)),
+		m_hovered_actor(std::move(p_other.m_hovered_actor)),
+		m_selected_actor(std::move(p_other.m_selected_actor)),
+		m_hovered_decal(p_other.m_hovered_decal),
+		m_selected_decal(p_other.m_selected_decal),
+		m_editor_event_handle(std::move(p_other.m_editor_event_handle))
+	{
+		m_editor_event_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_shape_draw_pass::_event_handler));
+	}
+
+	bc_shape_draw_pass& bc_shape_draw_pass::operator=(bc_shape_draw_pass&& p_other) noexcept
+	{
+		m_render_target_view_variable = p_other.m_render_target_view_variable;
+		m_device_pipeline_state = std::move(p_other.m_device_pipeline_state);
+		m_render_pass_state = std::move(p_other.m_render_pass_state);
+
+		m_draw_scene_graph_debug = p_other.m_draw_scene_graph_debug;
+		m_scene_debug_query = std::move(p_other.m_scene_debug_query);
+		m_hovered_actor = std::move(p_other.m_hovered_actor);
+		m_selected_actor = std::move(p_other.m_selected_actor);
+		m_hovered_decal = p_other.m_hovered_decal;
+		m_selected_decal = p_other.m_selected_decal;
+
+		m_editor_event_handle = std::move(p_other.m_editor_event_handle);
+		m_editor_event_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_shape_draw_pass::_event_handler));
+
+		return *this;
 	}
 
 	void bc_shape_draw_pass::set_hovered_actor(const game::bc_actor& p_actor)
@@ -249,5 +278,19 @@ namespace black_cat
 	void bc_shape_draw_pass::set_parameters(bool p_draw_scene_debug)
 	{
 		m_draw_scene_graph_debug = p_draw_scene_debug;
+	}
+
+	void bc_shape_draw_pass::_event_handler(core::bci_event& p_event)
+	{
+		if (const auto* l_editor_event = core::bci_message::as<game::bc_event_editor_mode>(p_event))
+		{
+			if(const auto l_is_game_mode = !l_editor_event->get_editor_mode())
+			{
+				// Because selected decal can be deleted by removing its owner actor during checkpoint restore process
+				// we should clear these weak references when switching to game mode
+				m_hovered_decal = nullptr;
+				m_selected_decal = nullptr;
+			}
+		}
 	}
 }

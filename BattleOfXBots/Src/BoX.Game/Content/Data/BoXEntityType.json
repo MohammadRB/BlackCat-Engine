@@ -284,7 +284,7 @@
         {
           "name": "network",
           "parameters": {
-            "data_dir": "replicate_sync_to_server_client"
+            "data_dir": "replicate_sync_from_client_server"
           }
         }
       ]
@@ -299,7 +299,7 @@
         {
           "name": "network",
           "parameters": {
-            "data_dir": "replicate_sync_to_server_client"
+            "data_dir": "replicate_sync_from_client_server"
           }
         }
       ]

@@ -70,8 +70,7 @@ namespace black_cat
 			);
 			m_selected_decal = _test_ray_against_actor(l_actor, l_ray);
 
-			auto* l_shape_draw_pass = p_context.m_game_system.get_render_system().get_render_pass<bc_shape_draw_pass>();
-			if (l_shape_draw_pass)
+			if (auto* l_shape_draw_pass = p_context.m_game_system.get_render_system().get_render_pass<bc_shape_draw_pass>())
 			{
 				if (m_is_decal_hover)
 				{

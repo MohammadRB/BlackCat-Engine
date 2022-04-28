@@ -64,7 +64,7 @@ namespace black_cat
 			{
 				m_data_dir = bc_actor_network_data_dir::replicate_sync_from_client;
 			}
-			else if(*l_data_dir_param == "replicate_sync_to_server_client")
+			else if(*l_data_dir_param == "replicate_sync_from_client_server")
 			{
 				if(m_network_type == bc_network_type::server)
 				{

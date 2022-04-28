@@ -51,6 +51,8 @@ namespace black_cat
 			l_actor_components.clear();
 		}
 
+		p_scene.get_decal_manager().clear_temp_decals();
+
 		return l_actors;
 	}
 

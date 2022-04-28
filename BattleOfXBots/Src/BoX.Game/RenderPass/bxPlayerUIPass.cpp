@@ -188,7 +188,7 @@ namespace box
 	void bx_player_ui_pass::_draw_info_messages()
 	{
 		const auto l_info_messages = m_player_service->get_info_messages();
-		const auto l_position = m_screen_size + core::bc_vector2i(-10, -100);
+		const auto l_position = m_screen_size + core::bc_vector2i(-10, -150);
 
 		_draw_messages(l_position, bx_text_align::left, { 1.f, 1.f, 1.f }, core::bc_make_cspan(l_info_messages));
 	}

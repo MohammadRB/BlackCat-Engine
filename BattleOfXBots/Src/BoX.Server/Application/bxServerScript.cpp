@@ -4,10 +4,9 @@
 #include "PlatformImp/Script/bcScriptString.h"
 #include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/Network/bcNetworkSystem.h"
-#include "Game/System/Network/Message/bcStringNetworkMessage.h"
-#include "Game/System/Network/Message/bcSceneChangeNetworkMessage.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "BoX.Game/Network/bxGameMessageNetworkMessage.h"
 #include "BoX.Server/Application/bxServerScript.h"
 
 namespace box
@@ -31,19 +30,19 @@ namespace box
 	{
 		if(!p_port.is_number())
 		{
-			return platform::bc_script_variable();
+			return {};
 		}
 
 		m_game_system->get_network_system().start_server(*m_network_server_hook, *m_message_visitor, p_port.as_integer());
-		
-		return platform::bc_script_variable();
+
+		return {};
 	}
 
 	platform::bc_script_variable bx_server_script::load_scene(const platform::bc_script_variable& p_scene_name)
 	{
 		if (!p_scene_name.is_string())
 		{
-			return platform::bc_script_variable();
+			return {};
 		}
 
 		const auto l_scene_name = p_scene_name.as_string().data();
@@ -67,19 +66,21 @@ namespace box
 			core::bc_log(core::bc_log_type::error) << "Error on loading scene '" << l_scene_name << "'. " << p_exception.what() << core::bc_lend;
 		}
 
-		return platform::bc_script_variable();
+		return {};
 	}
 
-	platform::bc_script_variable bx_server_script::send(const platform::bc_script_variable& p_str_content)
+	platform::bc_script_variable bx_server_script::say(const platform::bc_script_variable& p_str_content)
 	{
 		if(!p_str_content.is_string())
 		{
-			return platform::bc_script_variable();
+			return {};
 		}
 
 		auto l_str = core::bc_to_string(p_str_content.as_string().data());
-		m_game_system->get_network_system().send_message(game::bc_string_network_message(std::move(l_str)));
+		l_str = "SERVER: " + l_str;
+
+		m_game_system->get_network_system().send_message(bx_game_message_network_message(std::move(l_str)));
 		
-		return platform::bc_script_variable();
+		return {};
 	}
 }

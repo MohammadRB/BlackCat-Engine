@@ -50,6 +50,7 @@ namespace black_cat
 			bc_network_system* m_network_system;
 			core::bc_memory_stream m_memory_buffer;
 			core::bc_vector<bc_network_message_ptr> m_deserialize_buffer;
+			bcUINT32 m_decimal_places;
 		};
 	}	
 }

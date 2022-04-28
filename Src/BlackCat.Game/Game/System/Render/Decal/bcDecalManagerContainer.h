@@ -98,6 +98,8 @@ namespace black_cat
 
 			core::bc_task<void> update_decal_lifespans_async(const platform::bc_clock::update_param& p_clock) noexcept;
 
+			void clear_temp_decals();
+
 			void destroy_decal_instance(bc_decal_instance* p_instance);
 
 		private:

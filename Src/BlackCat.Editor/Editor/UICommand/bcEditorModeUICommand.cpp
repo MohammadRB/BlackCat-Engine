@@ -36,7 +36,9 @@ namespace black_cat
 				return false;
 			}
 
+			auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
 			auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
+
 			const auto l_checkpoint_path = game::bc_scene_checkpoint::get_checkpoint_path(*l_scene, bcL("editor_checkpoint"));
 
 			if(!m_editor_mode)
@@ -59,7 +61,7 @@ namespace black_cat
 			}
 			
 			game::bc_event_editor_mode l_event(m_editor_mode);
-			core::bc_get_service<core::bc_event_manager>()->process_event(l_event);
+			l_event_manager.process_event(l_event);
 			
 			return false;
 		}

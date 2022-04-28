@@ -44,9 +44,17 @@ namespace box
 		}
 
 		const auto* l_controller_component = m_actor.get_component<game::bc_controller_component>();
-		auto* l_xbot_controller = static_cast<bx_player_actor_controller*>(l_controller_component->get_controller());
 
-		l_xbot_controller->killed(m_killer_client_id, std::move(m_body_part_force), m_force);
+		if(m_is_self_replicate)
+		{
+			auto* l_xbot_controller = static_cast<bx_player_actor_controller*>(l_controller_component->get_controller());
+			l_xbot_controller->killed(m_killer_client_id, std::move(m_body_part_force), m_force);
+		}
+		else
+		{
+			auto* l_xbot_controller = static_cast<bx_network_player_actor_controller*>(l_controller_component->get_controller());
+			l_xbot_controller->killed(m_killer_client_id, std::move(m_body_part_force), m_force);
+		}
 	}
 
 	void bx_player_killed_network_message::serialize_message(const game::bc_network_message_serialization_context& p_context)
@@ -59,13 +67,11 @@ namespace box
 
 	void bx_player_killed_network_message::deserialize_message(const game::bc_network_message_deserialization_context& p_context)
 	{
-		game::bc_actor_network_id l_actor_net_id;
-
 		json_parse::bc_load(p_context.m_params, "kid", m_killer_client_id);
-		json_parse::bc_load(p_context.m_params, "nid", l_actor_net_id);
+		json_parse::bc_load(p_context.m_params, "nid", m_actor_net_id);
 		json_parse::bc_load(p_context.m_params, "prt", m_body_part_force);
 		json_parse::bc_load(p_context.m_params, "frc", m_force);
 
-		std::tie(m_actor, m_is_self_replicate) = p_context.m_visitor.get_actor(l_actor_net_id);
+		std::tie(m_actor, m_is_self_replicate) = p_context.m_visitor.get_actor(m_actor_net_id);
 	}
 }

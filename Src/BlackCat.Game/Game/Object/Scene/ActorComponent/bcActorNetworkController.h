@@ -5,7 +5,6 @@
 #include "Game/Object/Scene/ActorComponent/bcActorController.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/System/Network/bcNetworkDefinitions.h"
-#include "Game/System/bcGameSystem.h"
 
 namespace black_cat
 {

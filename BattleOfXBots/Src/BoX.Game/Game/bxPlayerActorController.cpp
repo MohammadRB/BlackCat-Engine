@@ -21,6 +21,7 @@ namespace box
 		m_rifle_cool_per_second(10),
 		m_grenade_load_time(30),
 		m_smoke_load_time(30),
+		m_elapsed_since_last_shoot(0),
 		m_network_health(100),
 		m_rifle_heat(0),
 		m_grenade_load(100),
@@ -89,9 +90,14 @@ namespace box
 	{
 		bc_xbot_player_actor_controller::update_origin_instance(p_context);
 
-		m_rifle_heat -= p_context.m_clock.m_elapsed_second * m_rifle_cool_per_second;
+		m_elapsed_since_last_shoot += p_context.m_clock.m_elapsed_second;
 		m_grenade_load += p_context.m_clock.m_elapsed_second * (100.f / m_grenade_load_time);
 		m_smoke_load += p_context.m_clock.m_elapsed_second * (100.f / m_smoke_load_time);
+
+		if(m_elapsed_since_last_shoot > 1.f)
+		{
+			m_rifle_heat -= p_context.m_clock.m_elapsed_second * m_rifle_cool_per_second;
+		}
 
 		m_rifle_heat = std::max(m_rifle_heat, 0.f);
 		m_grenade_load = std::min(m_grenade_load, 100.f);
@@ -171,7 +177,8 @@ namespace box
 
 	void bx_player_actor_controller::weapon_shoot(game::bc_actor& p_weapon) noexcept
 	{
-		m_rifle_heat += m_rifle_heat_per_shoot;
+		m_rifle_heat += static_cast<bcFLOAT>(m_rifle_heat_per_shoot);
 		m_rifle_heat = std::min(m_rifle_heat, 100.f);
+		m_elapsed_since_last_shoot = 0;
 	}
 }

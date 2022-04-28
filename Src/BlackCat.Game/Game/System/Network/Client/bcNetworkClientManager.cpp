@@ -354,7 +354,7 @@ namespace black_cat
 			}
 			else
 			{
-				core::bc_log(core::bc_log_type::info) << "connection to server failed with error '" << p_result.m_error_message << "'" << core::bc_lend;
+				core::bc_log(core::bc_log_type::error) << "connection to server failed with error '" << p_result.m_error_message << "'" << core::bc_lend;
 				bc_client_socket_state_machine::transfer_state<bc_client_socket_error_state>();
 				m_hook->connection_to_server_approved(m_server_address, p_result);
 			}
@@ -447,11 +447,10 @@ namespace black_cat
 				return;
 			}
 
-			const auto l_network_id = l_network_component->get_network_id();
-
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
 
+				const auto l_network_id = l_network_component->get_network_id();
 				const auto l_net_actors_ite = m_network_actors.find(l_network_id);
 				if(l_net_actors_ite == std::cend(m_network_actors))
 				{

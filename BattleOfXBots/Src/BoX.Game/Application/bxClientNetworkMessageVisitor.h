@@ -21,5 +21,7 @@ namespace box
 		virtual void spawn_player(const core::bc_vector3f& p_position, bx_team p_team) = 0;
 
 		virtual void reset_game() = 0;
+
+		virtual void message_received(core::bc_string p_msg) = 0;
 	};
 }

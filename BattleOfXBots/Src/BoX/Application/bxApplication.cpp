@@ -55,9 +55,8 @@ namespace box
 			platform::bc_script_context::scope l_scope(p_context);
 
 			auto l_client_prototype_builder = p_context.create_prototype_builder<bx_client_script>();
-			l_client_prototype_builder
-				.function(L"connect", &bx_client_script::connect)
-				.function(L"send", &bx_client_script::send);
+			l_client_prototype_builder.function(L"connect", &bx_client_script::connect)
+			                          .function(L"say", &bx_client_script::say);
 
 			auto l_client_prototype = p_context.create_prototype(l_client_prototype_builder);
 			const auto l_client_object = p_context.create_object(l_client_prototype, bx_client_script(*p_instance.m_game_system, p_instance, p_instance));
@@ -328,15 +327,17 @@ namespace box
 	void bx_application::scene_changed(game::bc_scene* p_scene) noexcept
 	{
 		m_scene = p_scene;
-		if(!m_scene)
+
+		if(m_scene)
 		{
-			return;
+			m_state = bx_app_state::scene_loaded;
+			m_team_select_task = m_player_service->ask_for_team();
+			_create_scene_checkpoint(*m_scene);
 		}
-
-		m_state = bx_app_state::scene_loaded;
-		m_team_select_task = m_player_service->ask_for_team();
-
-		_create_scene_checkpoint(*m_scene);
+		else
+		{
+			m_state = bx_app_state::initial;
+		}
 	}
 
 	void bx_application::message_packet_sent(const core::bc_memory_stream& p_packet, bcSIZE p_packet_size, core::bc_const_span<game::bc_network_message_ptr> p_messages) noexcept
@@ -395,6 +396,11 @@ namespace box
 		{
 			_reset_game(*m_scene);
 		}
+	}
+
+	void bx_application::message_received(core::bc_string p_msg)
+	{
+		m_player_service->add_info(core::bc_to_wstring(p_msg));
 	}
 
 	void bx_application::_create_scene_checkpoint(game::bc_scene& p_scene)

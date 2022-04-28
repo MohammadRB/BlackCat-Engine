@@ -15,6 +15,10 @@ namespace box
 		BC_EVENT(ply_spn)
 
 	public:
+		/**
+		 * \brief local player spawned
+		 * \param p_actor 
+		 */
 		explicit bx_player_spawned_event(game::bc_actor p_actor) noexcept
 			: bc_app_event(message_name()),
 			m_client_id(game::bc_network_client::invalid_id),
@@ -22,6 +26,11 @@ namespace box
 		{
 		}
 
+		/**
+		 * \brief network player spawned
+		 * \param p_client_id 
+		 * \param p_actor 
+		 */
 		bx_player_spawned_event(game::bc_network_client_id p_client_id, game::bc_actor p_actor) noexcept
 			: bc_app_event(message_name()),
 			m_client_id(p_client_id),
@@ -60,6 +69,11 @@ namespace box
 		BC_EVENT(ply_kil)
 
 	public:
+		/**
+		 * \brief local player killed
+		 * \param p_killer_client_id 
+		 * \param p_actor 
+		 */
 		bx_player_killed_event(game::bc_network_client_id p_killer_client_id, game::bc_actor p_actor) noexcept
 			: bc_app_event(message_name()),
 			m_killer_client_id(p_killer_client_id),
@@ -68,6 +82,12 @@ namespace box
 		{
 		}
 
+		/**
+		 * \brief network player killed
+		 * \param p_killer_client_id 
+		 * \param p_client_id 
+		 * \param p_actor 
+		 */
 		bx_player_killed_event(game::bc_network_client_id p_killer_client_id, game::bc_network_client_id p_client_id, game::bc_actor p_actor) noexcept
 			: bc_app_event(message_name()),
 			m_killer_client_id(p_killer_client_id),
@@ -113,6 +133,10 @@ namespace box
 		BC_EVENT(ply_rmv)
 
 	public:
+		/**
+		 * \brief local player removed
+		 * \param p_actor 
+		 */
 		explicit bx_player_removed_event(game::bc_actor p_actor) noexcept
 			: bc_app_event(message_name()),
 			m_client_id(game::bc_network_client::invalid_id),
@@ -120,6 +144,11 @@ namespace box
 		{
 		}
 
+		/**
+		 * \brief network player removed
+		 * \param p_client_id 
+		 * \param p_actor 
+		 */
 		bx_player_removed_event(game::bc_network_client_id p_client_id, game::bc_actor p_actor) noexcept
 			: bc_app_event(message_name()),
 			m_client_id(p_client_id),
