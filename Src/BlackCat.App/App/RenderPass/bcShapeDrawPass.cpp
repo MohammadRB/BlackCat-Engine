@@ -288,6 +288,7 @@ namespace black_cat
 			{
 				// Because selected decal can be deleted by removing its owner actor during checkpoint restore process
 				// we should clear these weak references when switching to game mode
+				m_hovered_actor = game::bc_actor();
 				m_hovered_decal = nullptr;
 				m_selected_decal = nullptr;
 			}

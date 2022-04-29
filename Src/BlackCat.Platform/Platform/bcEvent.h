@@ -77,7 +77,7 @@ namespace black_cat
 			BC_EVENT(app_fcs)
 
 		public:
-			explicit bc_app_event_window_focus(bc_window_id p_window_id, bool p_focus)
+			explicit bc_app_event_window_focus(bc_window::id p_window_id, bool p_focus)
 				: bc_app_event(message_name()),
 				m_window_id(p_window_id),
 				p_focus(p_focus)
@@ -90,7 +90,7 @@ namespace black_cat
 
 			bc_app_event_window_focus& operator =(const bc_app_event_window_focus&) = default;
 
-			bc_window_id get_window_id() const noexcept
+			bc_window::id get_window_id() const noexcept
 			{
 				return m_window_id;
 			}
@@ -101,7 +101,7 @@ namespace black_cat
 			}
 
 		private:
-			bc_window_id m_window_id;
+			bc_window::id m_window_id;
 			bool p_focus;
 		};
 
@@ -113,7 +113,7 @@ namespace black_cat
 			BC_EVENT(app_rsz)
 
 		public:
-			bc_app_event_window_resize(bc_window_id p_window_id, bcUINT32 p_width, bcUINT32 p_height, bool p_started_to_resizing)
+			bc_app_event_window_resize(bc_window::id p_window_id, bcUINT32 p_width, bcUINT32 p_height, bool p_started_to_resizing)
 				: bc_app_event(message_name()),
 				m_window_id(p_window_id),
 				m_width(p_width),
@@ -128,7 +128,7 @@ namespace black_cat
 
 			bc_app_event_window_resize& operator =(const bc_app_event_window_resize&) = default;
 
-			bc_window_id get_window_id() const noexcept
+			bc_window::id get_window_id() const noexcept
 			{
 				return m_window_id;
 			}
@@ -154,7 +154,7 @@ namespace black_cat
 			}
 			
 		private:
-			bc_window_id m_window_id;
+			bc_window::id m_window_id;
 			bcUINT32 m_width, m_height;
 			bool m_started_to_resizing;
 		};
@@ -175,7 +175,7 @@ namespace black_cat
 			};
 
 		public:
-			bc_app_event_window_state(bc_window_id p_window_id, state p_state)
+			bc_app_event_window_state(bc_window::id p_window_id, state p_state)
 				: bc_app_event(message_name()),
 				m_window_id(p_window_id),
 				m_state(p_state)
@@ -188,7 +188,7 @@ namespace black_cat
 
 			bc_app_event_window_state& operator =(const bc_app_event_window_state&) = default;
 
-			bc_window_id get_window_id() const noexcept
+			bc_window::id get_window_id() const noexcept
 			{
 				return m_window_id;
 			}
@@ -199,7 +199,7 @@ namespace black_cat
 			}
 
 		private:
-			bc_window_id m_window_id;
+			bc_window::id m_window_id;
 			state m_state;
 		};
 
@@ -211,7 +211,7 @@ namespace black_cat
 			BC_EVENT(app_cls)
 
 		public:
-			explicit bc_app_event_window_close(bc_window_id p_window_id) noexcept
+			explicit bc_app_event_window_close(bc_window::id p_window_id) noexcept
 				: bc_app_event(message_name()),
 				m_window_id(p_window_id)
 			{
@@ -223,13 +223,13 @@ namespace black_cat
 
 			bc_app_event_window_close& operator =(const bc_app_event_window_close&) = default;
 
-			bc_window_id get_window_id() const noexcept
+			bc_window::id get_window_id() const noexcept
 			{
 				return m_window_id;
 			}
 
 		private:
-			bc_window_id m_window_id;
+			bc_window::id m_window_id;
 		};
 
 		class bc_app_event_key : public core::bc_app_event

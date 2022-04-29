@@ -20,7 +20,7 @@ namespace black_cat
 			: bc_perspective_camera(p_back_buffer_width, p_back_buffer_height, p_height_fov, p_near_clip, p_far_clip),
 			m_move_speed(p_move_speed),
 			m_rotate_speed(p_rotate_speed),
-			m_pointing_smooth_frames(4),
+			m_pointing_smooth_frames(3),
 			m_movement_drag_time(0.25),
 			m_movement_drag_timer(0),
 			m_w_pressed(false),
@@ -112,7 +112,7 @@ namespace black_cat
 
 			core::bc_vector3f l_up, l_forward;
 			
-			if (graphic::bc_render_api_info::use_left_handed())
+			if constexpr (graphic::bc_render_api_info::use_left_handed())
 			{
 				l_y_rotation.rotation_euler_lh(core::bc_vector3f::up(), m_pointing_angle.y);
 				l_x_rotation.rotation_euler_lh(core::bc_vector3f::right(), m_pointing_angle.x);
@@ -172,7 +172,7 @@ namespace black_cat
 
 		void bc_free_camera::_update_pointing()
 		{
-			const bcFLOAT l_percent_of_new = 1.0f / m_pointing_smooth_frames;
+			const bcFLOAT l_percent_of_new = 1.0f / static_cast<bcFLOAT>(m_pointing_smooth_frames);
 			const bcFLOAT l_percent_of_old = 1.0f - l_percent_of_new;
 			m_pointing_delta.x = m_pointing_delta.x * l_percent_of_old + m_new_pointing_delta.x * l_percent_of_new;
 			m_pointing_delta.y = m_pointing_delta.y * l_percent_of_old + m_new_pointing_delta.y * l_percent_of_new;
@@ -249,7 +249,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_free_camera::_on_pointing(platform::bc_app_event_pointing& p_pointing_event) noexcept
+		void bc_free_camera::_on_pointing(const platform::bc_app_event_pointing& p_pointing_event) noexcept
 		{
 			if(m_rmb_pressed)
 			{
@@ -258,7 +258,7 @@ namespace black_cat
 			}
 		}
 		
-		void bc_free_camera::_on_key(platform::bc_app_event_key& p_key_event) noexcept
+		void bc_free_camera::_on_key(const platform::bc_app_event_key& p_key_event) noexcept
 		{
 			if (p_key_event.get_key() == platform::bc_key::kb_W)
 			{

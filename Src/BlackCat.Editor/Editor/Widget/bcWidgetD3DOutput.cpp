@@ -152,7 +152,7 @@ namespace black_cat
 		{
 			platform::bc_app_event_window_resize l_event = platform::bc_app_event_window_resize
 			(
-				reinterpret_cast<platform::bc_window_id>(m_win_id),
+				reinterpret_cast<platform::bc_window::id>(m_win_id),
 				p_resize->size().width(),
 				p_resize->size().height(),
 				false
@@ -164,7 +164,7 @@ namespace black_cat
 		{
 			platform::bc_app_event_window_focus l_event
 			(
-				reinterpret_cast<platform::bc_window_id>(m_win_id),
+				reinterpret_cast<platform::bc_window::id>(m_win_id),
 				p_event->gotFocus()
 			);
 			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
@@ -186,7 +186,7 @@ namespace black_cat
 
 			platform::bc_app_event_window_state l_event = platform::bc_app_event_window_state
 			(
-				reinterpret_cast<platform::bc_window_id>(m_win_id),
+				reinterpret_cast<platform::bc_window::id>(m_win_id),
 				l_state
 			);
 			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
@@ -194,7 +194,7 @@ namespace black_cat
 
 		void bc_widget_d3d_output::close_event(QCloseEvent* p_event)
 		{
-			platform::bc_app_event_window_close l_event(reinterpret_cast<platform::bc_window_id>(m_win_id));
+			platform::bc_app_event_window_close l_event(reinterpret_cast<platform::bc_window::id>(m_win_id));
 			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
 		}
 	}

@@ -10,29 +10,26 @@ namespace black_cat
 	{
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_window< platform::g_api_win32 >::bc_platform_window()
+		bc_platform_window<g_api_win32>::bc_platform_window()
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_window< platform::g_api_win32 >::bc_platform_window(bc_platform_window&& p_other) noexcept
-			: m_pack(std::move(p_other.m_pack))
+		bc_platform_window<g_api_win32>::bc_platform_window(bc_platform_window&& p_other) noexcept
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_window< platform::g_api_win32 >::~bc_platform_window()
+		bc_platform_window<g_api_win32>::~bc_platform_window()
 		{
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_window< platform::g_api_win32 >& bc_platform_window< platform::g_api_win32 >::operator=(bc_platform_window&& p_other) noexcept
+		bc_platform_window<g_api_win32>& bc_platform_window<g_api_win32>::operator=(bc_platform_window&& p_other) noexcept
 		{
-			m_pack = std::move(p_other.m_pack);
-
 			return *this;
 		}
 	}

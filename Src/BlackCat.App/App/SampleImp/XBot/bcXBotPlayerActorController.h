@@ -116,7 +116,6 @@ namespace black_cat
 		bcFLOAT m_camera_z_offset;
 		bcFLOAT m_camera_look_at_offset;
 		bcINT32 m_pointing_delta_x;
-		bcINT32 m_pointing_last_x;
 		bool m_forward_pressed;
 		bool m_backward_pressed;
 		bool m_right_pressed;

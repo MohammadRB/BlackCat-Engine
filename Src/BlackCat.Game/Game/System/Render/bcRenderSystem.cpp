@@ -531,13 +531,17 @@ namespace black_cat
 
 			if(const auto* l_window_resize_event = core::bci_message::as<platform::bc_app_event_window_resize>(p_event))
 			{
-				if(!m_device_swap_buffer->is_valid())
+				if(!m_device_swap_buffer->is_valid() || !l_window_resize_event->end_resizing())
 				{
 					return;
 				}
 				
-				// If nothing has change do not continue
-				if (l_window_resize_event->width() == m_device_swap_buffer->get_back_buffer_width() && l_window_resize_event->height() == m_device_swap_buffer->get_back_buffer_height())
+				if
+				(
+					// If nothing has change do not continue
+					l_window_resize_event->width() == m_device_swap_buffer->get_back_buffer_width() &&
+					l_window_resize_event->height() == m_device_swap_buffer->get_back_buffer_height()
+				)
 				{
 					return;
 				}

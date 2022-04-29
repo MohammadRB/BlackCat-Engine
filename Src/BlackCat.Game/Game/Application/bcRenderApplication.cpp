@@ -64,7 +64,8 @@ namespace black_cat
 			m_render_rate(0),
 			m_is_terminated(false),
 			m_paused(false),
-			m_termination_code(0)
+			m_termination_code(0),
+			m_last_output_window_state(platform::bc_window_state::normal)
 		{
 			g_application = this;
 		}
@@ -100,7 +101,7 @@ namespace black_cat
 				m_render_rate = -1;
 			}
 		}
-
+		
 		bcINT32 bc_render_application::run()
 		{
 			constexpr auto l_pause_sleep_ms = 50U;
@@ -323,7 +324,7 @@ namespace black_cat
 				m_clock = core::bc_make_unique<platform::bc_clock>(core::bc_alloc_type::program);
 
 				m_min_update_rate = 60;
-				m_render_rate = m_min_update_rate;
+				m_render_rate = static_cast<bcINT32>(m_min_update_rate);
 
 				m_is_terminated = false;
 				m_paused = false;
@@ -419,18 +420,41 @@ namespace black_cat
 
 			if(const auto* l_window_state_event = core::bci_message::as<platform::bc_app_event_window_state>(p_event))
 			{
-				if (l_window_state_event->get_window_id() == m_output_window->get_id())
+				if (l_window_state_event->get_window_id() != m_output_window->get_id())
 				{
-					if(l_window_state_event->get_state() == platform::bc_app_event_window_state::state::minimized)
-					{
-						platform::bc_app_event_pause_state l_active_event(platform::bc_app_event_pause_state::state::pause_request);
-						l_event_manager->process_event(l_active_event);
-					}
-					else if(l_window_state_event->get_state() == platform::bc_app_event_window_state::state::restored)
+					return;
+				}
+
+				if(l_window_state_event->get_state() == platform::bc_app_event_window_state::state::minimized)
+				{
+					platform::bc_app_event_pause_state l_active_event(platform::bc_app_event_pause_state::state::pause_request);
+					l_event_manager->process_event(l_active_event);
+
+					m_last_output_window_state = platform::bc_window_state::minimized;
+				}
+				else if(l_window_state_event->get_state() == platform::bc_app_event_window_state::state::restored)
+				{
+					// If window is restored from minimized state resume app
+					if(m_last_output_window_state == platform::bc_window_state::minimized)
 					{
 						platform::bc_app_event_pause_state l_active_event(platform::bc_app_event_pause_state::state::resume_request);
 						l_event_manager->process_event(l_active_event);
 					}
+					// If window is restored from maximized state resize app
+					else if(m_last_output_window_state == platform::bc_window_state::maximized)
+					{
+						platform::bc_app_event_window_resize l_resize_event(m_output_window->get_id(), m_output_window->get_width(), m_output_window->get_height(), false);
+						l_event_manager->process_event(l_resize_event);
+					}
+
+					m_last_output_window_state = platform::bc_window_state::normal;
+				}
+				else if(l_window_state_event->get_state() == platform::bc_app_event_window_state::state::maximized)
+				{
+					platform::bc_app_event_window_resize l_resize_event(m_output_window->get_id(), m_output_window->get_width(), m_output_window->get_height(), false);
+					l_event_manager->process_event(l_resize_event);
+
+					m_last_output_window_state = platform::bc_window_state::maximized;
 				}
 				return;
 			}
@@ -487,6 +511,12 @@ namespace black_cat
 			if (const auto* l_error_event = core::bci_message::as<core::bc_app_event_error>(p_event))
 			{
 				core::bc_log(core::bc_log_type::error) << l_error_event->get_message() << core::bc_lend;
+
+				if(!l_error_event->get_only_log())
+				{
+					const auto l_msg = core::bc_to_estring_frame(l_error_event->get_message().data());
+					m_app->show_messagebox(platform::bc_window::invalid_id, bcL("Error"), l_msg, platform::bc_messagebox_type::error, platform::bc_messagebox_button::ok);
+				}
 				return;
 			}
 
@@ -516,7 +546,6 @@ namespace black_cat
 				}
 
 				core::bc_get_service<core::bc_logger>()->set_enabled_log_types(l_log_types);
-
 				return;
 			}
 		}

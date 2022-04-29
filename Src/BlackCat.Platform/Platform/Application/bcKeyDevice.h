@@ -4,7 +4,7 @@
 
 #include "CorePlatform/bcType.h"
 #include "CorePlatform/bcPlatform.h"
-#include "Core/Messaging/Event/bcEventManager.h"
+#include "Core/Container/bcVector.h"
 
 namespace black_cat
 {
@@ -140,17 +140,16 @@ namespace black_cat
 			releasing = 4
 		};
 
-		template<bc_platform TPlatform >
+		template<bc_platform TPlatform>
 		struct bc_platform_key_device_pack
 		{
-			
 		};
 
-		template<bc_platform TPlatform >
+		template<bc_platform TPlatform>
 		class bc_platform_key_device
 		{
 		public:
-			using platform_pack = bc_platform_key_device_pack< TPlatform >;
+			using platform_pack = bc_platform_key_device_pack<TPlatform>;
 			friend class bc_human_interface_device;
 
 		public:
@@ -160,16 +159,15 @@ namespace black_cat
 
 			bc_platform_key_device& operator=(const bc_platform_key_device&) noexcept;
 
-			void update();
-
 			bc_key_state get_key_state(bc_key p_key) const noexcept;
+
+			core::bc_vector_frame<std::pair<bc_key, bc_key_state>> update();
 
 		private:
 			explicit bc_platform_key_device(bcUBYTE p_device_index);
 
-			bcBYTE m_device_index;
+			bcUBYTE m_device_index;
 			platform_pack m_pack;
-			core::bc_event_manager* m_event_manager;
 		};
 
 		using bc_key_device = bc_platform_key_device<g_current_platform>;

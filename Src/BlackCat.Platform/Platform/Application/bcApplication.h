@@ -14,8 +14,7 @@ namespace black_cat
 		struct bc_platform_application_parameter_pack
 		{
 		public:
-			bc_platform_application_parameter_pack(const bcECHAR* p_app_name,
-				const bcCHAR* p_commandline)
+			bc_platform_application_parameter_pack(const bcECHAR* p_app_name, const bcCHAR* p_commandline)
 				: m_app_name(p_app_name),
 				m_commandline(p_commandline)
 			{
@@ -70,6 +69,12 @@ namespace black_cat
 			void update();
 
 			void request_termination();
+
+			static bc_messagebox_value show_messagebox(bc_basic_window::id p_window, 
+				core::bc_estring_view p_caption, 
+				core::bc_estring_view p_text, 
+				bc_messagebox_type p_type, 
+				bc_messagebox_button p_button);
 
 		private:
 			platform_pack m_pack;

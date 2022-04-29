@@ -262,7 +262,7 @@ namespace black_cat
 				*core::bc_get_service<core::bc_content_manager>(),
 				*core::bc_get_service<core::bc_content_stream_manager>()
 			);
-			m_input_system = core::bc_make_unique<bc_input_system>(core::bc_alloc_type::program);
+			m_input_system = core::bc_make_unique<bc_input_system>(core::bc_alloc_type::program, p_parameter.m_output_window);
 			m_physics_system = core::bc_make_unique<bc_physics_system>(core::bc_alloc_type::program);
 			m_physics_system->initialize();
 			m_sound_system = core::bc_make_unique<bc_sound_system>(core::bc_alloc_type::program);
@@ -281,7 +281,7 @@ namespace black_cat
 				p_parameter.m_device_backbuffer_width,
 				p_parameter.m_device_backbuffer_height,
 				p_parameter.m_device_backbuffer_format,
-				std::move(p_parameter.m_render_output)
+				p_parameter.m_output_window ? p_parameter.m_output_window->get_device_output() : graphic::bc_device_output()
 			));
 			m_console = core::bc_make_unique<bc_game_console>(core::bc_alloc_type::program, *m_script_system);
 

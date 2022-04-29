@@ -14,7 +14,8 @@ namespace black_cat
 
 		struct bc_pointing_device_state
 		{
-			bc_pointing_device_state() : m_x(0), m_y(0), m_dx(0), m_dy(0)
+			bc_pointing_device_state()
+				: m_x(0), m_y(0), m_dx(0), m_dy(0)
 			{
 			}
 
@@ -24,17 +25,16 @@ namespace black_cat
 			bcINT16 m_dy;
 		};
 
-		template<bc_platform TPlatform >
+		template<bc_platform TPlatform>
 		struct bc_platform_pointing_device_pack
 		{
-
 		};
 
-		template<bc_platform TPlatform >
+		template<bc_platform TPlatform>
 		class bc_platform_pointing_device
 		{
 		public:
-			using platform_pack = bc_platform_pointing_device_pack< TPlatform >;
+			using platform_pack = bc_platform_pointing_device_pack<TPlatform>;
 			friend class bc_human_interface_device;
 
 		public:
@@ -44,9 +44,15 @@ namespace black_cat
 
 			bc_platform_pointing_device& operator=(const bc_platform_pointing_device&) noexcept;
 
-			void update();
+			bool get_visibility() const noexcept;
+
+			void set_visibility(bool p_show) noexcept;
 
 			bc_pointing_device_state get_state() const noexcept;
+
+			void set_position(bcINT16 p_x, bcINT16 p_y) noexcept;
+
+			bc_pointing_device_state update();
 
 		private:
 			explicit bc_platform_pointing_device(bcUBYTE p_device_index);

@@ -40,7 +40,7 @@ namespace black_cat
 			 * \param p_fps 
 			 */
 			void set_fps(bcINT32 p_fps);
-
+			
 			bcINT32 run();
 
 			/**
@@ -155,7 +155,7 @@ namespace black_cat
 			bci_render_application_output_window* m_output_window;
 			core::bc_unique_ptr<platform::bc_clock> m_clock;
 			core::bc_stop_watch m_frame_watch;
-			core::bc_value_sampler<platform::bc_clock::small_time, 64> m_fps_sampler;
+			core::bc_value_sampler<platform::bc_clock::small_time> m_fps_sampler;
 			platform::bc_clock::small_time m_fps;
 			bcUINT32 m_min_update_rate;
 			bcINT32 m_render_rate;
@@ -163,6 +163,7 @@ namespace black_cat
 			bool m_is_terminated;
 			bool m_paused;
 			bcINT32 m_termination_code;
+			platform::bc_window_state m_last_output_window_state;
 
 			core::bc_event_listener_handle m_event_handle_window_state;
 			core::bc_event_listener_handle m_event_handle_window_resize;

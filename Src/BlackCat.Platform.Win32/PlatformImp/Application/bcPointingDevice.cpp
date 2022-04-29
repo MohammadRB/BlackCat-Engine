@@ -19,9 +19,9 @@ namespace black_cat
 			}
 		}
 
-		template< >
+		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_pointing_device<platform::g_api_win32>::bc_platform_pointing_device(bcUBYTE p_device_index)
+		bc_platform_pointing_device<g_api_win32>::bc_platform_pointing_device(bcUBYTE p_device_index)
 			: m_device_index(p_device_index),
 			m_pack(),
 			m_event_manager(core::bc_get_service<core::bc_event_manager>())
@@ -29,24 +29,24 @@ namespace black_cat
 			_check_pointing_device_index(m_device_index);
 		}
 
-		template< >
+		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_pointing_device<platform::g_api_win32>::bc_platform_pointing_device(const bc_platform_pointing_device& p_other) noexcept
+		bc_platform_pointing_device<g_api_win32>::bc_platform_pointing_device(const bc_platform_pointing_device& p_other) noexcept
 			: m_device_index(p_other.m_device_index),
 			m_pack(p_other.m_pack),
 			m_event_manager(p_other.m_event_manager)
 		{
 		}
 
-		template< >
+		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_pointing_device<platform::g_api_win32>::~bc_platform_pointing_device()
+		bc_platform_pointing_device<g_api_win32>::~bc_platform_pointing_device()
 		{
 		}
 
-		template< >
+		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_pointing_device<platform::g_api_win32>& bc_platform_pointing_device<platform::g_api_win32>::operator=(const bc_platform_pointing_device& p_other) noexcept
+		bc_platform_pointing_device<g_api_win32>& bc_platform_pointing_device<g_api_win32>::operator=(const bc_platform_pointing_device& p_other) noexcept
 		{
 			m_pack = p_other.m_pack;
 			m_device_index = p_other.m_device_index;
@@ -55,32 +55,61 @@ namespace black_cat
 			return *this;
 		}
 
-		template< >
+		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_pointing_device<platform::g_api_win32>::update()
+		bc_pointing_device_state bc_platform_pointing_device<g_api_win32>::get_state() const noexcept
+		{
+			return m_pack.m_state;
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		void bc_platform_pointing_device<g_api_win32>::set_position(bcINT16 p_x, bcINT16 p_y) noexcept
+		{
+			SetCursorPos(p_x, p_y);
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		bool bc_platform_pointing_device<g_api_win32>::get_visibility() const noexcept
+		{
+			auto l_cursor_info = CURSORINFO{ sizeof(CURSORINFO) };
+			if (GetCursorInfo(&l_cursor_info))
+			{
+				return l_cursor_info.flags & CURSOR_SHOWING;
+			}
+
+			return false;
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		void bc_platform_pointing_device<g_api_win32>::set_visibility(bool p_show) noexcept
+		{
+			if (p_show)
+			{
+				while(ShowCursor(true) < 0);
+				//SetCursor(LoadCursor(nullptr, IDC_ARROW));
+			}
+			else
+			{
+				while (ShowCursor(false) >= 0);
+				//SetCursor(nullptr);
+			}
+		}
+
+		template<>
+		BC_PLATFORMIMP_DLL
+		bc_pointing_device_state bc_platform_pointing_device<g_api_win32>::update()
 		{
 			POINT l_point;
-			platform::win_call(GetCursorPos(&l_point) != 0);
-
-			const bcINT16 l_x = m_pack.m_state.m_x;
-			const bcINT16 l_y = m_pack.m_state.m_y;
-
+			win_call(GetCursorPos(&l_point) != 0);
+			
 			m_pack.m_state.m_dx = l_point.x - m_pack.m_state.m_x;
 			m_pack.m_state.m_dy = l_point.y - m_pack.m_state.m_y;
 			m_pack.m_state.m_x = l_point.x;
 			m_pack.m_state.m_y = l_point.y;
 
-			if (l_x != m_pack.m_state.m_x || l_y != m_pack.m_state.m_y)
-			{
-				bc_app_event_pointing l_event_pointing(m_pack.m_state);
-				m_event_manager->process_event(l_event_pointing);
-			}
-		}
-
-		template< >
-		BC_PLATFORMIMP_DLL
-		bc_pointing_device_state bc_platform_pointing_device<platform::g_api_win32>::get_state() const noexcept
-		{
 			return m_pack.m_state;
 		}
 	}

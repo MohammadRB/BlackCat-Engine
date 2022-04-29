@@ -4,9 +4,9 @@
 
 #include "CorePlatformImp/Concurrency/bcFuture.h"
 #include "CorePlatformImp/Concurrency/bcThread.h"
+#include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcDelegate.hpp"
-#include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/bcEvent.h"
 #include "Core/bcException.h"
 
@@ -171,14 +171,14 @@ namespace black_cat
 				{
 					auto l_msg = bc_string("Task with thread id " + bc_to_string(l_thread_id) + " exited with error: ") + p_exp.what();
 					m_promise.set_exception(std::make_exception_ptr(bc_thread_resource_exception(l_msg.c_str())));
-					bc_app_event_error l_error_event(std::move(l_msg));
+					bc_app_event_error l_error_event(std::move(l_msg), true);
 					bc_get_service<bc_event_manager>()->process_event(l_error_event);
 				}
 				catch (...)
 				{
 					auto l_msg = bc_string("Task with thread id " + bc_to_string(l_thread_id) + " exited with unknown error.");
 					m_promise.set_exception(std::make_exception_ptr(bc_thread_resource_exception(l_msg.c_str())));
-					bc_app_event_error l_error_event(std::move(l_msg));
+					bc_app_event_error l_error_event(std::move(l_msg), true);
 					bc_get_service<bc_event_manager>()->process_event(l_error_event);
 				}
 			}

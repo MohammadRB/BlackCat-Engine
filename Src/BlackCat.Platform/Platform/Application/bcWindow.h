@@ -9,8 +9,6 @@ namespace black_cat
 {
 	namespace platform
 	{
-		using bc_window_id = bcUINT32;
-
 		template<bc_platform>
 		struct bc_platform_window_pack
 		{
@@ -21,7 +19,8 @@ namespace black_cat
 		{
 		public:
 			using platform_pack = bc_platform_window_pack<TPlatform>;
-			using id = bc_window_id;
+			using id = bcSIZE;
+			constexpr static id invalid_id = static_cast<id>(0);
 
 		public:
 			bc_platform_window();
@@ -49,18 +48,9 @@ namespace black_cat
 			 */
 			virtual void close() = 0;
 
-			platform_pack& get_platform_pack()
-			{
-				return m_pack;
-			}
+			virtual platform_pack& get_platform_pack() = 0;
 
-			const platform_pack& get_platform_pack() const
-			{
-				return m_pack;
-			}
-
-		private:
-			platform_pack m_pack;
+			virtual const platform_pack& get_platform_pack() const = 0;
 		};
 
 		using bc_window = bc_platform_window<g_current_platform>;

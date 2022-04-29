@@ -112,6 +112,7 @@ namespace box
 		);
 		l_camera->set_look_at(l_camera_pos, l_camera_look_at);
 		l_input_system.add_camera(std::move(l_camera));
+		l_input_system.set_pointing_device_visibility(false);
 
 		l_render_system.add_render_pass(bc_gbuffer_initialize_pass());
 		l_render_system.add_render_pass(bc_gbuffer_pass());

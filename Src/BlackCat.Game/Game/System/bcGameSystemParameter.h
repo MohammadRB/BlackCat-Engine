@@ -52,7 +52,7 @@ namespace black_cat
 				m_device_backbuffer_width(0),
 				m_device_backbuffer_height(0),
 				m_device_backbuffer_format(graphic::bc_format::unknown),
-				m_render_output()
+				m_output_window(nullptr)
 			{
 			}
 
@@ -67,7 +67,7 @@ namespace black_cat
 				m_device_backbuffer_width(p_render_window.get_width()),
 				m_device_backbuffer_height(p_render_window.get_height()),
 				m_device_backbuffer_format(p_back_buffer_format),
-				m_render_output(p_render_window.get_device_output())
+				m_output_window(&p_render_window)
 			{
 			}
 
@@ -77,7 +77,7 @@ namespace black_cat
 			bcUINT32 m_device_backbuffer_width;
 			bcUINT32 m_device_backbuffer_height;
 			graphic::bc_format m_device_backbuffer_format;
-			graphic::bc_device_output m_render_output;
+			const bci_render_application_output_window* m_output_window;
 		};
 	}
 }

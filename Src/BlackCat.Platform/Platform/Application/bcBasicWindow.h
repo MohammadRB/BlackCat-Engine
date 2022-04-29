@@ -20,7 +20,7 @@ namespace black_cat
 			information
 		};
 
-		enum class bc_messagebox_buttom
+		enum class bc_messagebox_button
 		{
 			ok,
 			ok_cancel,
@@ -36,6 +36,13 @@ namespace black_cat
 			retry,
 			yes,
 			no
+		};
+
+		enum class bc_window_state
+		{
+			normal,
+			minimized,
+			maximized
 		};
 
 		template<bc_platform>
@@ -54,10 +61,8 @@ namespace black_cat
 			bcUINT32 m_height;
 		};
 
-		using bc_basic_window_parameter = bc_platform_basic_window_parameter_pack<g_current_platform>;
-
-		template<bc_platform>
-		struct bc_platform_basic_window_pack
+		template<bc_platform TPlatform>
+		struct bc_platform_basic_window_pack : bc_platform_window_pack<TPlatform>
 		{
 		};
 
@@ -65,13 +70,13 @@ namespace black_cat
 		class bc_platform_basic_window : public bc_platform_window<TPlatform>
 		{
 		public:
+			using parameter = bc_platform_basic_window_parameter_pack<TPlatform>;
 			using platform_pack = bc_platform_basic_window_pack<TPlatform>;
-			using parameter = bc_basic_window_parameter;
 			using bc_platform_window<TPlatform>::id;
 			friend class bc_platform_application<TPlatform>;
 
 		public:
-			explicit bc_platform_basic_window(const bc_basic_window_parameter& p_parameters);
+			explicit bc_platform_basic_window(const parameter& p_parameters);
 			
 			bc_platform_basic_window(bc_platform_basic_window&& p_other) noexcept;
 
@@ -105,7 +110,7 @@ namespace black_cat
 
 			void set_caption(const bcECHAR* p_caption) override;
 
-			bool is_minimized() const noexcept;
+			bc_window_state get_state() const noexcept;
 
 			void show(bool p_visible);
 
@@ -113,16 +118,14 @@ namespace black_cat
 
 			void update() override;
 
-			bc_messagebox_value show_messagebox(const bcECHAR* p_caption, const bcECHAR* p_text, bc_messagebox_type p_type, bc_messagebox_buttom p_button);
-
-			bc_messagebox_value show_messagebox(core::bc_estring_frame p_caption, core::bc_estring_frame p_text, bc_messagebox_type p_type, bc_messagebox_buttom p_button);
-
-			platform_pack& get_platform_pack()
+			bc_messagebox_value show_messagebox(core::bc_estring_view p_caption, core::bc_estring_view p_text, bc_messagebox_type p_type, bc_messagebox_button p_button);
+			
+			platform_pack& get_platform_pack() override
 			{
 				return m_pack;
 			}
 
-			const platform_pack& get_platform_pack() const
+			const platform_pack& get_platform_pack() const override
 			{
 				return m_pack;
 			}
@@ -131,6 +134,7 @@ namespace black_cat
 			platform_pack m_pack;
 		};
 
+		using bc_basic_window_parameter = bc_platform_basic_window_parameter_pack<g_current_platform>;
 		using bc_basic_window = bc_platform_basic_window<g_current_platform>;
 	}
 }

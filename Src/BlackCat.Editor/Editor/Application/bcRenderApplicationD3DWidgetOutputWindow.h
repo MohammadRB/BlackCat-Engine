@@ -22,11 +22,17 @@ namespace black_cat
 
 			bc_widget_d3d_output* get_widget() noexcept;
 
-			platform::bc_window_id get_id() const noexcept override;
+			platform::bc_window::id get_id() const noexcept override;
 
 			bcUINT32 get_width() const noexcept override;
 
 			bcUINT32 get_height() const noexcept override;
+
+			bcUINT32 get_left() const noexcept override;
+			
+			bcUINT32 get_top() const noexcept override;
+
+			platform::bc_window_state get_state() const noexcept override;
 
 			graphic::bc_device_output get_device_output() const override;
 
@@ -54,9 +60,9 @@ namespace black_cat
 			return m_d3d_widget;
 		}
 
-		inline platform::bc_window_id bc_render_application_d3dwidget_output_window::get_id() const noexcept
+		inline platform::bc_window::id bc_render_application_d3dwidget_output_window::get_id() const noexcept
 		{
-			return static_cast<platform::bc_window_id>(m_d3d_widget->winId());
+			return static_cast<platform::bc_window::id>(m_d3d_widget->winId());
 		}
 
 		inline bcUINT32 bc_render_application_d3dwidget_output_window::get_width() const noexcept
@@ -67,6 +73,21 @@ namespace black_cat
 		inline bcUINT32 bc_render_application_d3dwidget_output_window::get_height() const noexcept
 		{
 			return  m_d3d_widget->height();
+		}
+
+		inline bcUINT32 bc_render_application_d3dwidget_output_window::get_left() const noexcept
+		{
+			return m_d3d_widget->pos().x();
+		}
+
+		inline bcUINT32 bc_render_application_d3dwidget_output_window::get_top() const noexcept
+		{
+			return m_d3d_widget->pos().y();
+		}
+
+		inline platform::bc_window_state bc_render_application_d3dwidget_output_window::get_state() const noexcept
+		{
+			return platform::bc_window_state::normal;
 		}
 
 		inline graphic::bc_device_output bc_render_application_d3dwidget_output_window::get_device_output() const

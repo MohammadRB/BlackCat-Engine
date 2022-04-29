@@ -18,44 +18,47 @@ namespace black_cat
 			BC_EVENT(app_err)
 
 		public:
-			explicit bc_app_event_error(const bcCHAR* p_message)
+			explicit bc_app_event_error(bc_string p_message, bool p_only_log = false)
 				: bc_app_event(message_name()),
-				m_message(p_message)
-			{
-			}
-
-			explicit bc_app_event_error(bc_string p_message)
-				: bc_app_event(message_name()),
-				m_message(std::move(p_message))
+				m_message(std::move(p_message)),
+				m_only_log(p_only_log)
 			{
 			}
 
 			bc_app_event_error(const bc_app_event_error&) = default;
 
-			bc_app_event_error(bc_app_event_error&& p_other) noexcept(std::is_nothrow_move_constructible< bc_string >::value)
+			bc_app_event_error(bc_app_event_error&& p_other) noexcept(std::is_nothrow_move_constructible_v<bc_string>)
 				: bc_app_event(p_other),
-				m_message(std::move(p_other.m_message))
+				m_message(std::move(p_other.m_message)),
+				m_only_log(p_other.m_only_log)
 			{
 			}
 
-			~bc_app_event_error() = default;
+			~bc_app_event_error() override = default;
 
 			bc_app_event_error& operator =(const bc_app_event_error&) = default;
 
-			bc_app_event_error& operator =(bc_app_event_error&& p_other) noexcept(std::is_nothrow_move_assignable< bc_string >::value)
+			bc_app_event_error& operator =(bc_app_event_error&& p_other) noexcept(std::is_nothrow_move_assignable_v< bc_string >)
 			{
 				m_message = std::move(p_other.m_message);
+				m_only_log = p_other.m_only_log;
 
 				return *this;
 			}
 
-			const bc_string& get_message() const noexcept
+			bool get_only_log() const noexcept
+			{
+				return m_only_log;
+			}
+
+			bc_string_view get_message() const noexcept
 			{
 				return m_message;
 			}
 
 		private:
 			bc_string m_message;
+			bool m_only_log;
 		};
 
 		class bc_event_frame_update_start : public bc_app_event
@@ -70,7 +73,7 @@ namespace black_cat
 
 			bc_event_frame_update_start(const bc_event_frame_update_start&) = default;
 
-			~bc_event_frame_update_start() = default;
+			~bc_event_frame_update_start() override = default;
 
 			bc_event_frame_update_start& operator=(const bc_event_frame_update_start&) = default;
 		};
@@ -87,7 +90,7 @@ namespace black_cat
 
 			bc_event_frame_update_finish(const bc_event_frame_update_finish&) = default;
 
-			~bc_event_frame_update_finish() = default;
+			~bc_event_frame_update_finish() override = default;
 
 			bc_event_frame_update_finish& operator=(const bc_event_frame_update_finish&) = default;
 		};
@@ -104,7 +107,7 @@ namespace black_cat
 
 			bc_event_frame_render_start(const bc_event_frame_render_start&) = default;
 
-			~bc_event_frame_render_start() = default;
+			~bc_event_frame_render_start() override = default;
 
 			bc_event_frame_render_start& operator=(const bc_event_frame_render_start&) = default;
 		};
@@ -121,7 +124,7 @@ namespace black_cat
 
 			bc_event_frame_render_finish(const bc_event_frame_render_finish&) = default;
 
-			~bc_event_frame_render_finish() = default;
+			~bc_event_frame_render_finish() override = default;
 
 			bc_event_frame_render_finish& operator=(const bc_event_frame_render_finish&) = default;
 		};
@@ -139,7 +142,7 @@ namespace black_cat
 
 			bc_event_frame_swap(const bc_event_frame_swap&) = default;
 
-			~bc_event_frame_swap() = default;
+			~bc_event_frame_swap() override = default;
 
 			bc_event_frame_swap& operator=(const bc_event_frame_swap&) = default;
 

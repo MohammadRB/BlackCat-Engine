@@ -16,11 +16,17 @@ namespace black_cat
 		public:
 			virtual ~bci_render_application_output_window() = default;
 
-			virtual platform::bc_window_id get_id() const noexcept = 0;
+			virtual platform::bc_window::id get_id() const noexcept = 0;
 
 			virtual bcUINT32 get_width() const noexcept = 0;
 
 			virtual bcUINT32 get_height() const noexcept = 0;
+
+			virtual bcUINT32 get_left() const noexcept = 0;
+
+			virtual bcUINT32 get_top() const noexcept = 0;
+
+			virtual platform::bc_window_state get_state() const noexcept = 0;
 
 			virtual graphic::bc_device_output get_device_output() const = 0;
 
@@ -55,7 +61,7 @@ namespace black_cat
 				return m_window;
 			}
 
-			platform::bc_window_id get_id() const noexcept override
+			platform::bc_window::id get_id() const noexcept override
 			{
 				return m_window.get_id();
 			}
@@ -68,6 +74,21 @@ namespace black_cat
 			bcUINT32 get_height() const noexcept override
 			{
 				return m_window.get_height();
+			}
+
+			bcUINT32 get_left() const noexcept override
+			{
+				return m_window.get_left();
+			}
+
+			bcUINT32 get_top() const noexcept override
+			{
+				return m_window.get_top();
+			}
+
+			platform::bc_window_state get_state() const noexcept override
+			{
+				return m_window.get_state();
 			}
 
 			graphic::bc_device_output get_device_output() const override

@@ -10,7 +10,7 @@ namespace black_cat
 	namespace platform
 	{
 		template<>
-		struct bc_platform_window_pack< platform::g_api_win32 >
+		struct bc_platform_window_pack<g_api_win32>
 		{
 		};
 	}

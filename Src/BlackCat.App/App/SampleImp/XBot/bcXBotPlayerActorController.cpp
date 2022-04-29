@@ -44,7 +44,6 @@ namespace black_cat
 		m_camera_z_offset(0),
 		m_camera_look_at_offset(0),
 		m_pointing_delta_x(0),
-		m_pointing_last_x(0),
 		m_forward_pressed(false),
 		m_backward_pressed(false),
 		m_right_pressed(false),
@@ -89,7 +88,6 @@ namespace black_cat
 		m_camera_z_offset = p_other.m_camera_z_offset;
 		m_camera_look_at_offset = p_other.m_camera_look_at_offset;
 		m_pointing_delta_x = p_other.m_pointing_delta_x;
-		m_pointing_last_x = p_other.m_pointing_last_x;
 
 		m_weapon_shoot_velocity = p_other.m_weapon_shoot_velocity;
 		m_weapon_obstacle_query = std::move(p_other.m_weapon_obstacle_query);
@@ -414,8 +412,7 @@ namespace black_cat
 
 	void bc_xbot_player_actor_controller::_on_pointing(const platform::bc_app_event_pointing& p_pointing_event) noexcept
 	{
-		m_pointing_delta_x = p_pointing_event.get_state().m_x - m_pointing_last_x;
-		m_pointing_last_x = p_pointing_event.get_state().m_x;
+		m_pointing_delta_x = p_pointing_event.get_state().m_dx;
 	}
 
 	void bc_xbot_player_actor_controller::_on_key(const platform::bc_app_event_key& p_key_event) noexcept
