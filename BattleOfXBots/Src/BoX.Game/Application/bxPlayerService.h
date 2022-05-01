@@ -42,7 +42,7 @@ namespace box
 		platform::bc_clock::small_time m_lifetime;
 		bx_player_kill_state m_kill;
 	};
-
+	
 	class BX_GAME_DLL bx_player_service : public core::bci_service
 	{
 		BC_SERVICE(ply_srv)
@@ -64,6 +64,10 @@ namespace box
 
 		core::bc_vector_frame<bx_player_kill_state> get_kill_messages() const noexcept;
 
+		core::bc_vector_frame<core::bc_wstring> get_red_team_scores() const noexcept;
+
+		core::bc_vector_frame<core::bc_wstring> get_blue_team_scores() const noexcept;
+
 		bcUINT32 get_game_time() const noexcept;
 
 		void set_game_time(bcUINT32 p_time) noexcept;
@@ -84,6 +88,10 @@ namespace box
 
 		void set_smoke_load(bcINT32 p_load) noexcept;
 
+		bool get_show_scores() const noexcept;
+
+		void set_show_scores(bool p_show) noexcept;
+
 		core::bc_task<bx_team> ask_for_team() noexcept;
 
 		void add_info(core::bc_wstring p_message) noexcept;
@@ -92,11 +100,15 @@ namespace box
 
 		void add_kill(bx_player_kill_state p_kill);
 
+		void update_scores(const bx_game_score& p_scores);
+
 		void started_playing(bx_team p_team) noexcept;
 
 		void stopped_playing() noexcept;
 
 		void update(const platform::bc_clock::update_param& p_clock) override;
+
+		void game_reset() noexcept;
 
 	private:
 		void _event_handler(core::bci_event& p_event);
@@ -111,11 +123,15 @@ namespace box
 		bcINT32 m_weapon_heat;
 		bcINT32 m_grenade_load;
 		bcINT32 m_smoke_load;
+		bool m_show_scores;
+		bool m_scores_key_pressed;
 
 		mutable platform::bc_mutex m_messages_lock;
 		core::bc_vector<bx_player_ui_message> m_info_messages;
 		core::bc_vector<bx_player_ui_message> m_error_messages;
 		core::bc_vector<bx_player_kill_message> m_kill_list;
+		core::bc_vector<core::bc_wstring> m_red_team_scores;
+		core::bc_vector<core::bc_wstring> m_blue_team_scores;
 
 		core::bc_event_listener_handle m_key_handle;
 	};

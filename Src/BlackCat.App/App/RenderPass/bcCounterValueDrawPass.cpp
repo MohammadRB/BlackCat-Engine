@@ -3,20 +3,27 @@
 #include "App/AppPCH.h"
 
 #include "Core/Container/bcVector.h"
+#include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcCounterValueManager.h"
+#include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/bcGameSystem.h"
 #include "App/RenderPass/bcCounterValueDrawPass.h"
 
 namespace black_cat
 {
-	bc_counter_value_draw_pass::bc_counter_value_draw_pass(game::bc_render_pass_variable_t p_back_buffer_view_parameter, core::bc_estring_view p_font_path)
-		: m_back_buffer_view_parameter(p_back_buffer_view_parameter),
+	bc_counter_value_draw_pass::bc_counter_value_draw_pass(game::bc_render_pass_variable_t p_render_target_texture_param, 
+		game::bc_render_pass_variable_t p_render_target_view_parameter, 
+		core::bc_estring_view p_font_path)
+		: m_render_target_texture_param(p_render_target_texture_param),
+		m_render_target_view_param(p_render_target_view_parameter),
 		m_font_path(p_font_path),
 		m_counter_values_read_index(0),
-		m_counter_values_update_interval(1000)
+		m_counter_values_update_interval(1000),
+		m_char_bound()
 	{
 	}
 
@@ -25,7 +32,7 @@ namespace black_cat
 		auto& l_device = p_render_system.get_device();
 		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 		auto& l_game_system = *core::bc_get_service<game::bc_game_system>();
-		
+
 		m_sprite_batch = core::bc_make_unique<graphic::bc_sprite_batch>
 		(
 			p_render_system.get_device().create_sprite_batch()
@@ -34,8 +41,8 @@ namespace black_cat
 		(
 			p_render_system.get_device().create_sprite_font(l_game_system.get_file_system().get_content_path(m_font_path.data()))
 		);
-		m_text_bound = m_sprite_font->measure_string(L"Test");
-
+		m_char_bound = m_sprite_font->measure_string(L"T");
+		
 		after_reset(game::bc_render_pass_reset_context
 		(
 			p_render_system,
@@ -94,7 +101,7 @@ namespace black_cat
 		auto& l_counter_value_manager = *core::bc_get_service<core::bc_counter_value_manager>();
 		const auto l_text_position_calculator = [this](bcUINT32 p_row)
 		{
-			return core::bc_vector2i(10, 10 + p_row * (m_text_bound.y + 2));
+			return core::bc_vector2i(10, 10 + p_row * (m_char_bound.y + 2));
 		};
 
 		bcUINT32 l_counter_ite = 0;
@@ -103,7 +110,8 @@ namespace black_cat
 		core::bc_wstring_frame l_string_buffer;
 		l_string_buffer.reserve(300);
 
-		m_sprite_batch->begin(p_context.m_render_system.get_device(), p_context.m_render_system.get_device_swap_buffer(), m_back_buffer_view);
+		auto l_device_pipeline = p_context.m_render_thread.get_pipeline();
+		m_sprite_batch->begin(l_device_pipeline, m_render_target_texture, m_render_target_render_view);
 
 		const auto& l_counter_values = m_counter_values[m_counter_values_read_index];
 		for(const auto& l_counter_name : l_counter_values)
@@ -130,7 +138,7 @@ namespace black_cat
 			std::memset(&l_to_wstring_state, 0, sizeof(std::mbstate_t));
 		}
 
-		m_sprite_batch->end(p_context.m_render_system.get_device());
+		m_sprite_batch->end(l_device_pipeline);
 	}
 
 	void bc_counter_value_draw_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
@@ -139,7 +147,8 @@ namespace black_cat
 
 	void bc_counter_value_draw_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
-		m_back_buffer_view = *get_shared_resource<graphic::bc_render_target_view>(m_back_buffer_view_parameter);
+		m_render_target_texture = *get_shared_resource<graphic::bc_texture2d>(m_render_target_texture_param);
+		m_render_target_render_view = *get_shared_resource<graphic::bc_render_target_view>(m_render_target_view_param);
 	}
 
 	void bc_counter_value_draw_pass::destroy(game::bc_render_system& p_render_system)

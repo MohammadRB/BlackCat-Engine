@@ -8,9 +8,11 @@
 #include "GraphicImp/Font/bcSpriteBatch.h"
 #include "GraphicImp/Font/bcSpriteFont.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
+#include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/View/bcRenderTargetView.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "BoX.Game/Application/bxPlayerService.h"
+#include "BoX.Game/Application/bxGameState.h"
 #include "BoX.Game/bxExport.h"
 
 namespace box
@@ -27,7 +29,9 @@ namespace box
 		BC_RENDER_PASS(ply_ui)
 
 	public:
-		bx_player_ui_pass(game::bc_render_pass_variable_t p_back_buffer_texture, game::bc_render_pass_variable_t p_back_buffer_view, core::bc_estring_view p_font_path) noexcept;
+		bx_player_ui_pass(game::bc_render_pass_variable_t p_render_target_texture, 
+			game::bc_render_pass_variable_t p_render_target_view, 
+			core::bc_estring_view p_font_path) noexcept;
 
 		bx_player_ui_pass(bx_player_ui_pass&&) noexcept = default;
 
@@ -62,18 +66,20 @@ namespace box
 
 		void _draw_kill_messages();
 
+		void _draw_scores();
+
 		void _draw_messages(const core::bc_vector2i& p_position, bx_text_align p_align, const core::bc_vector3f& p_color, core::bc_const_span<core::bc_wstring> p_messages);
 
-		bx_player_service* m_player_service;
-		const core::bc_vector3f m_red_color{ 1, .65, .65 };
-		const core::bc_vector3f m_blue_color{ .65, .65, 1 };
+		game::bc_render_pass_variable_t m_render_target_texture_param;
+		game::bc_render_pass_variable_t m_render_target_view_param;
+		const core::bc_vector3f m_red_color{ 1.f, .65f, .65f };
+		const core::bc_vector3f m_blue_color{ .65f, .65f, 1.f };
 		const bcWCHAR* m_team_select_text = L"Select Your Team. Press R to join Red team or B to join Blue team.";
 
-		game::bc_render_pass_variable_t m_back_buffer_texture_parameter;
-		game::bc_render_pass_variable_t m_back_buffer_view_parameter;
+		bx_player_service* m_player_service;
 		core::bc_estring_view m_font_path;
-		graphic::bc_texture2d m_back_buffer_texture;
-		graphic::bc_render_target_view m_back_buffer_view;
+		graphic::bc_texture2d m_render_target_texture;
+		graphic::bc_render_target_view m_render_target_view;
 
 		core::bc_unique_ptr<graphic::bc_sprite_batch> m_sprite_batch;
 		core::bc_unique_ptr<graphic::bc_sprite_font> m_sprite_font;
@@ -81,5 +87,8 @@ namespace box
 		core::bc_vector2i m_screen_size;
 		core::bc_vector2f m_char_bound;
 		core::bc_vector2f m_team_select_bound;
+
+		graphic::bc_texture2d_content_ptr m_score_background_texture;
+		graphic::bc_resource_view_ref m_score_background_view;
 	};
 }

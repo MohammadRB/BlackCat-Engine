@@ -281,7 +281,6 @@
     <ClCompile Include="..\Src\BoX.Game\Game\bxNetworkPlayerActorController.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Game\bxPlayerActorController.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Game\bxPlayerSeatComponent.cpp" />
-    <ClCompile Include="..\Src\BoX.Game\Network\bxGameResetNetworkMessage.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Network\bxGameStateNetworkMessage.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Network\bxPlayerKilledNetworkMessage.cpp" />
     <ClCompile Include="..\Src\BoX.Game\Network\bxPlayerSpawnNetworkMessage.cpp" />
@@ -310,6 +309,7 @@
     <ClInclude Include="..\Src\BoX.Game\Game\bxPlayerActorController.h" />
     <ClInclude Include="..\Src\BoX.Game\Game\bxPlayerSeatComponent.h" />
     <ClInclude Include="..\Src\BoX.Game\Network\bxGameResetNetworkMessage.h" />
+    <ClInclude Include="..\Src\BoX.Game\Network\bxGameScoresNetworkMessage.h" />
     <ClInclude Include="..\Src\BoX.Game\Network\bxGameStateNetworkMessage.h" />
     <ClInclude Include="..\Src\BoX.Game\Network\bxGameMessageNetworkMessage.h" />
     <ClInclude Include="..\Src\BoX.Game\Network\bxPlayerKilledNetworkMessage.h" />

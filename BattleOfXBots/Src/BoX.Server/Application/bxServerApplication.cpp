@@ -9,7 +9,6 @@
 #include "SoundImp/Resource/bcChannelGroup.h"
 #include "Game/System/Sound/bcSoundSystem.h"
 #include "Game/System/Script/bcScriptBinding.h"
-#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "BoX.Game/Application/bxApplicationHookFunctions.h"
 #include "BoX.Game/Application/bxSceneCheckPoint.h"
@@ -18,6 +17,7 @@
 #include "BoX.Game/Network/bxGameStateNetworkMessage.h"
 #include "BoX.Game/Network/bxGameResetNetworkMessage.h"
 #include "BoX.Game/Network/bxGameMessageNetworkMessage.h"
+#include "BoX.Game/Network/bxGameScoresNetworkMessage.h"
 #include "BoX.Game/bxEvent.h"
 #include "BoX.Server/Application/bxServerApplication.h"
 #include "BoX.Server/Application/bxServerScript.h"
@@ -126,13 +126,23 @@ namespace box
 		{
 			m_current_game_time -= p_context.m_clock.m_elapsed_second;
 
-			if(m_current_game_time <= 0)
+			if(m_current_game_time > 0)
 			{
-				_reset_game(*m_scene);
+				_respawn_dead_players(p_context.m_clock);
 			}
 			else
 			{
-				_respawn_dead_players(p_context.m_clock);
+				_show_game_scores();
+			}
+		}
+
+		if(m_state == bx_app_state::game_scores)
+		{
+			m_current_scores_time -= p_context.m_clock.m_elapsed_second;
+
+			if(m_current_scores_time <= 0)
+			{
+				_reset_game(*m_scene);
 			}
 		}
 
@@ -154,20 +164,14 @@ namespace box
 	{
 		if(const auto* l_player_spawn_event = core::bci_message::as<bx_player_spawned_event>(p_event))
 		{
-			auto* l_player = m_player_service->find_player(l_player_spawn_event->get_client_id());
-			l_player->m_actor = l_player_spawn_event->get_actor();
-
+			m_player_service->player_spawned(l_player_spawn_event->get_client_id(), l_player_spawn_event->get_actor());
 			return;
 		}
 
 		if (const auto* l_player_kill_event = core::bci_message::as<bx_player_killed_event>(p_event))
 		{
-			auto* l_player = m_player_service->find_player(l_player_kill_event->get_client_id());
-			auto* l_killer = m_player_service->find_player(l_player_kill_event->get_killer_client_id());
-
-			l_player->m_is_dead = true;
-			l_player->m_dead_passed_time = 0;
-
+			auto [l_player, l_killer] = m_player_service->player_killed(l_player_kill_event->get_client_id(), l_player_kill_event->get_killer_client_id());
+			
 			bx_player_kill_state l_kill_state
 			{
 				*l_killer->m_team,
@@ -182,12 +186,7 @@ namespace box
 
 		if (const auto* l_player_remove_event = core::bci_message::as<bx_player_removed_event>(p_event))
 		{
-			auto* l_client_ite = m_player_service->find_player(l_player_remove_event->get_client_id());
-			if(l_client_ite) // If event is not caused by client disconnection
-			{
-				l_client_ite->m_actor = game::bc_actor();
-			}
-
+			m_player_service->player_removed(l_player_remove_event->get_client_id());
 			return;
 		}
 
@@ -276,10 +275,10 @@ namespace box
 
 	void bx_server_application::client_disconnected(const game::bc_network_client& p_client) noexcept
 	{
-		const auto l_message = core::bc_string_stream() << "'" << p_client.m_name << "'" << " leaved the game.";
+		const auto l_message = core::bc_string_stream() << "'" << p_client.m_name << "'" << " left the game.";
 		m_info_messages.push_back(l_message.str());
 
-		m_player_service->remove_player(p_client.m_id);
+		m_player_service->disconnect_player(p_client.m_id);
 	}
 
 	void bx_server_application::message_packet_sent(const game::bc_network_client& p_client, 
@@ -343,10 +342,11 @@ namespace box
 		if(m_last_state_update_elapsed_ms >= 500)
 		{
 			m_last_state_update_elapsed_ms = 0;
-
+			
 			const bx_game_state l_game_state
 			{
 				static_cast<bcUINT32>(m_current_game_time),
+				m_player_service->get_scores(),
 				std::move(m_info_messages),
 				std::move(m_killing_list)
 			};
@@ -378,10 +378,18 @@ namespace box
 			std::move(l_checkpoint_params)
 		);
 	}
-	
+
+	void bx_server_application::_show_game_scores()
+	{
+		m_state = bx_app_state::game_scores;
+		m_network_system->send_message(bx_game_scores_network_message());
+	}
+
 	void bx_server_application::_reset_game(game::bc_scene& p_scene)
 	{
 		m_current_game_time = m_game_time;
+		m_current_scores_time = m_scores_time;
+		m_state = bx_app_state::game_started;
 		m_player_service->reset_players();
 
 		_restore_scene_checkpoint(p_scene);
@@ -391,6 +399,12 @@ namespace box
 
 	void bx_server_application::_respawn_dead_players(const platform::bc_clock::update_param& p_clock)
 	{
+		// Game is gonna end
+		if(m_current_game_time <= 1)
+		{
+			return;
+		}
+
 		const auto l_respawned_players = m_player_service->respawn_dead_players(p_clock, m_respawn_time);
 
 		for (const auto l_player : l_respawned_players)

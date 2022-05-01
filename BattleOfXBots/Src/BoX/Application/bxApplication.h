@@ -20,7 +20,8 @@ namespace box
 		initial,
 		client_started,
 		scene_loaded,
-		game_started
+		game_started,
+		game_scores
 	};
 
 	class bx_application : public bc_render_application, game::bci_network_client_manager_hook, bx_client_network_message_visitor
@@ -71,6 +72,8 @@ namespace box
 
 		void spawn_player(const core::bc_vector3f& p_position, bx_team p_team) override;
 
+		void show_scores() override;
+
 		void reset_game() override;
 
 		void message_received(core::bc_string p_msg) override;
@@ -80,8 +83,6 @@ namespace box
 		void _create_scene_checkpoint(game::bc_scene& p_scene);
 
 		void _restore_scene_checkpoint(game::bc_scene& p_scene);
-
-		void _reset_game(game::bc_scene& p_scene);
 	
 	private:
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
@@ -92,7 +93,6 @@ namespace box
 
 		bx_app_state m_state = bx_app_state::initial;
 		core::bc_task<bx_team> m_team_select_task;
-		bcUINT32 m_current_game_time = 0;
 		core::bc_vector3f m_spawn_position{};
 		bx_team m_team{};
 		game::bc_actor m_player_actor;

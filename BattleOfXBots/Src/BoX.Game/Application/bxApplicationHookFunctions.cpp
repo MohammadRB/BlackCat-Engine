@@ -30,6 +30,7 @@
 #include "BoX.Game/Network/bxPlayerKilledNetworkMessage.h"
 #include "BoX.Game/Network/bxGameStateNetworkMessage.h"
 #include "BoX.Game/Network/bxGameResetNetworkMessage.h"
+#include "BoX.Game/Network/bxGameScoresNetworkMessage.h"
 #include "BoX.Game/Network/bxGameMessageNetworkMessage.h"
 
 namespace box
@@ -77,7 +78,8 @@ namespace box
 			bx_player_killed_network_message,
 			bx_game_state_network_message,
 			bx_game_reset_network_message,
-			bx_game_message_network_message
+			bx_game_message_network_message,
+			bx_game_scores_network_message
 		>();
 	}
 

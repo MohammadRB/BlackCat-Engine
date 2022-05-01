@@ -29,7 +29,7 @@ int WINAPI WinMain(HINSTANCE p_instance, HINSTANCE p_prev_instance, CHAR* p_cmd_
 			(
 				game::bc_render_application_basic_output_window
 				(
-					platform::bc_basic_window(platform::bc_basic_window_parameter(p_instance, bcL("BattleOfXbots"), 1024, 700))
+					platform::bc_basic_window(platform::bc_basic_window_parameter(p_instance, bcL("BattleOfXbots"), 1024, 720))
 				)
 			);
 			return l_output_window.get();

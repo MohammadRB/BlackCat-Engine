@@ -152,7 +152,7 @@ namespace box
 		));
 		l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
 		l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
-		l_render_system.add_render_pass(bc_counter_value_draw_pass(constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
+		l_render_system.add_render_pass(bc_counter_value_draw_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
 		l_render_system.add_render_pass(bx_player_ui_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
 
 		m_player_spawn_event_handle = l_event_manager.register_event_listener<bx_player_spawned_event>
@@ -194,8 +194,6 @@ namespace box
 			return;
 		}
 
-		m_player_service->set_game_time(m_current_game_time);
-
 		if(m_state == bx_app_state::scene_loaded)
 		{
 			if(m_team_select_task.valid() && m_team_select_task.is_ready())
@@ -215,7 +213,7 @@ namespace box
 				{
 					m_is_dead = false;
 					m_dead_passed_time = 0;
-
+					// Remove dead actor
 					m_scene->remove_actor(m_player_actor);
 				}
 			}
@@ -361,7 +359,8 @@ namespace box
 
 	void bx_application::update_game_state(const bx_game_state& p_state)
 	{
-		m_current_game_time = p_state.m_game_time;
+		m_player_service->set_game_time(p_state.m_game_time);
+		m_player_service->update_scores(p_state.m_scores);
 
 		for (auto& l_info : p_state.m_info_messages)
 		{
@@ -391,11 +390,27 @@ namespace box
 		m_player_service->started_playing(m_team);
 	}
 
+	void bx_application::show_scores()
+	{
+		m_state = bx_app_state::game_scores;
+		m_player_service->set_show_scores(true);
+		m_player_service->stopped_playing();
+
+		if(m_player_actor.is_valid())
+		{
+			m_scene->remove_actor(m_player_actor);
+		}
+	}
+
 	void bx_application::reset_game()
 	{
 		if(m_state >= bx_app_state::scene_loaded)
 		{
-			_reset_game(*m_scene);
+			m_state = bx_app_state::scene_loaded;
+			m_team_select_task = m_player_service->ask_for_team();
+			m_player_service->game_reset();
+
+			_restore_scene_checkpoint(*m_scene);
 		}
 	}
 
@@ -427,14 +442,5 @@ namespace box
 			core::bc_content_loader_parameter(),
 			std::move(l_checkpoint_params)
 		);
-	}
-
-	void bx_application::_reset_game(game::bc_scene& p_scene)
-	{
-		m_current_game_time = 0;
-		m_state = bx_app_state::scene_loaded;
-		m_team_select_task = m_player_service->ask_for_team();
-
-		_restore_scene_checkpoint(p_scene);
 	}
 }

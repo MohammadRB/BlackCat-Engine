@@ -26,8 +26,8 @@ namespace box
 	{
 		initial,
 		server_started,
-		scene_loaded,
-		game_started
+		game_started,
+		game_scores
 	};
 
 	class bx_server_application : public bc_render_application, game::bci_network_server_manager_hook, bx_server_network_message_visitor
@@ -93,7 +93,9 @@ namespace box
 		void _create_scene_checkpoint(game::bc_scene& p_scene);
 
 		void _restore_scene_checkpoint(game::bc_scene& p_scene);
-		
+
+		void _show_game_scores();
+
 		void _reset_game(game::bc_scene& p_scene);
 		
 		void _respawn_dead_players(const platform::bc_clock::update_param& p_clock);
@@ -109,8 +111,10 @@ namespace box
 		
 		bcFLOAT m_game_time;
 		const bcFLOAT m_respawn_time = 8;
+		const bcFLOAT m_scores_time = 8;
 		bx_app_state m_state = bx_app_state::initial;
 		bcFLOAT m_current_game_time = m_game_time;
+		bcFLOAT m_current_scores_time = m_scores_time;
 		bcFLOAT m_last_state_update_elapsed_ms = 0;
 
 		core::bc_vector<core::bc_string> m_info_messages;

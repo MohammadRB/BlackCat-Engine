@@ -14,7 +14,7 @@ namespace box
 
 	class BX_GAME_DLL bx_game_state_network_message : public game::bci_network_message
 	{
-		BC_NETWORK_MESSAGE(gme_ste)
+		BC_NETWORK_MESSAGE(gme_stu)
 
 	public:
 		bx_game_state_network_message() noexcept;

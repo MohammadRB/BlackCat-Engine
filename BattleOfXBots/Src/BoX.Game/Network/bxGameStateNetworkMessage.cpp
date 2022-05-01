@@ -14,9 +14,23 @@ namespace box
 		BC_JSON_VALUE(core::bc_string, killed_name);
 	};
 
+	BC_JSON_STRUCTURE(_bx_player_score)
+	{
+		BC_JSON_VALUE(core::bc_string, name);
+		BC_JSON_VALUE(bcINT32, kill);
+		BC_JSON_VALUE(bcINT32, death);
+	};
+
+	BC_JSON_STRUCTURE(_bx_game_score)
+	{
+		BC_JSON_ARRAY(_bx_player_score, red_team);
+		BC_JSON_ARRAY(_bx_player_score, blue_team);
+	};
+
 	BC_JSON_STRUCTURE(_bx_json_game_state)
 	{
 		BC_JSON_VALUE(bcINT32, game_time);
+		BC_JSON_OBJECT(_bx_game_score, scores);
 		BC_JSON_ARRAY(core::bc_string, info_messages);
 		BC_JSON_ARRAY(_bx_json_kill_state, killing_list);
 	};
@@ -43,6 +57,22 @@ namespace box
 	{
 		core::bc_json_document<_bx_json_game_state> l_json{};
 		*l_json->m_game_time = m_state.m_game_time;
+
+		for (auto& l_red_score : m_state.m_scores.m_red_team)
+		{
+			auto& l_entry = l_json->m_scores->m_red_team.new_entry();
+			*l_entry->m_name = l_red_score.m_name;
+			*l_entry->m_kill = l_red_score.m_kill_count;
+			*l_entry->m_death = l_red_score.m_death_count;
+		}
+
+		for (auto& l_blue_score : m_state.m_scores.m_blue_team)
+		{
+			auto& l_entry = l_json->m_scores->m_blue_team.new_entry();
+			*l_entry->m_name = l_blue_score.m_name;
+			*l_entry->m_kill = l_blue_score.m_kill_count;
+			*l_entry->m_death = l_blue_score.m_death_count;
+		}
 
 		for (auto& l_info : m_state.m_info_messages)
 		{
@@ -72,6 +102,26 @@ namespace box
 		l_json.load(l_json_str);
 
 		m_state.m_game_time = *l_json->m_game_time;
+
+		for(auto& l_entry : l_json->m_scores->m_red_team)
+		{
+			bx_player_score l_score;
+			l_score.m_name = *l_entry->m_name;
+			l_score.m_kill_count = *l_entry->m_kill;
+			l_score.m_death_count = *l_entry->m_death;
+
+			m_state.m_scores.m_red_team.push_back(l_score);
+		}
+
+		for (auto& l_entry : l_json->m_scores->m_blue_team)
+		{
+			bx_player_score l_score;
+			l_score.m_name = *l_entry->m_name;
+			l_score.m_kill_count = *l_entry->m_kill;
+			l_score.m_death_count = *l_entry->m_death;
+
+			m_state.m_scores.m_blue_team.push_back(l_score);
+		}
 
 		for(auto& l_entry : l_json->m_info_messages)
 		{
