@@ -172,7 +172,7 @@ namespace black_cat
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
 			const auto l_network_id = l_network_component->get_network_id();
 
-			if(l_network_id == bc_actor::invalid_id)
+			if(l_network_id == g_invalid_actor_network_id)
 			{
 				return;
 			}
@@ -212,7 +212,7 @@ namespace black_cat
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
 			const auto l_network_id = l_network_component->get_network_id();
 
-			if (l_network_id == bc_actor::invalid_id)
+			if (l_network_id == g_invalid_actor_network_id)
 			{
 				return;
 			}
@@ -422,7 +422,7 @@ namespace black_cat
 		void bc_network_client_manager::replicate_actor(bc_actor& p_actor)
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
-			if (!l_network_component || l_network_component->get_network_id() == bc_actor::invalid_id)
+			if (!l_network_component || l_network_component->get_network_id() == g_invalid_actor_network_id)
 			{
 				core::bc_log(core::bc_log_type::error, bcL("actor without network component or invalid network id cannot be added to network sync process"));
 				return;
@@ -441,7 +441,7 @@ namespace black_cat
 		void bc_network_client_manager::remove_actor(bc_actor& p_actor)
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
-			if (!l_network_component || l_network_component->get_network_id() == bc_actor::invalid_id)
+			if (!l_network_component || l_network_component->get_network_id() == g_invalid_actor_network_id)
 			{
 				core::bc_log(core::bc_log_type::error, bcL("actor without network component or invalid network id cannot be removed from network sync process"));
 				return;
@@ -540,7 +540,7 @@ namespace black_cat
 				for (auto& l_actor : m_sync_actors)
 				{
 					const auto* l_network_component = l_actor.get_component<bc_network_component>();
-					if(l_network_component->get_network_id() == bc_actor::invalid_id)
+					if(l_network_component->get_network_id() == g_invalid_actor_network_id)
 					{
 						// It is not replicated yet
 						continue;

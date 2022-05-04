@@ -157,6 +157,10 @@ namespace black_cat
 
 			while (m_double_update_actors.pop(l_actor))
 			{
+				// for each actor reset read and write indexes to read from last written pool
+				m_read_event_pool = l_read_event_pool_backup;
+				m_write_event_pool = l_write_event_pool_backup;
+
 				actor_get_components(l_actor, std::back_inserter(l_components));
 				bcSIZE l_write_event_pool_size;
 				bcSIZE l_write_event_pool_new_size;
@@ -183,7 +187,9 @@ namespace black_cat
 					}
 
 					l_write_event_pool_new_size = m_event_pools[m_write_event_pool].size();
-					_clear_actor_events(l_actor.get_id());
+
+					const auto l_actor_index = bc_actor_id::decompose_id(l_actor.get_id()).first;
+					_clear_actor_events(l_actor_index);
 				}
 				while (l_write_event_pool_new_size > l_write_event_pool_size);
 

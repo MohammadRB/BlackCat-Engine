@@ -50,7 +50,7 @@ namespace black_cat
 
 			bcFLOAT get_rate_of_fire_seconds() const noexcept;
 
-			bc_bullet shoot(const core::bc_vector3f& p_aim_direction_ws, bc_network_client_id p_player_id = bc_actor::invalid_id);
+			bc_bullet shoot(const core::bc_vector3f& p_aim_direction_ws, bc_network_client_id p_player_id = bc_network_client::invalid_id);
 			
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 

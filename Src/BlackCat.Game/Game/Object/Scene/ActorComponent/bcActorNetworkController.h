@@ -36,23 +36,62 @@ namespace black_cat
 			void write_network_instance(const bc_actor_component_network_write_context& p_context) final override;
 
 			void update(const bc_actor_component_update_content& p_context) final override;
+			
+			virtual void load_origin_network_instance(const bc_actor_component_network_load_context& p_context);
 
-		private:
-			virtual void load_origin_network_instance(const bc_actor_component_network_load_context& p_context) = 0;
+			virtual void load_replicated_network_instance(const bc_actor_component_network_load_context& p_context);
 
-			virtual void load_replicated_network_instance(const bc_actor_component_network_load_context& p_context) = 0;
+			virtual void write_origin_network_instance(const bc_actor_component_network_write_context& p_context);
 
-			virtual void write_origin_network_instance(const bc_actor_component_network_write_context& p_context) = 0;
+			virtual void write_replicated_network_instance(const bc_actor_component_network_write_context& p_context);
 
-			virtual void write_replicated_network_instance(const bc_actor_component_network_write_context& p_context) = 0;
+			virtual void update_origin_instance(const bc_actor_component_update_content& p_context);
 
-			virtual void update_origin_instance(const bc_actor_component_update_content& p_context) = 0;
-
-			virtual void update_replicated_instance(const bc_actor_component_update_content& p_context) = 0;
+			virtual void update_replicated_instance(const bc_actor_component_update_content& p_context);
 
 			bc_network_component* m_network_component {nullptr};
 			bc_actor_replication_side m_replication_side{ bc_actor_replication_side::origin };
 		};
+
+		inline bc_network_component& bc_actor_network_controller::get_network_component() const noexcept
+		{
+			return *m_network_component;
+		}
+
+		inline bc_network_type bc_actor_network_controller::get_network_type() const noexcept
+		{
+			return m_network_component->get_network_type();
+		}
+
+		inline bc_actor_network_data_dir bc_actor_network_controller::get_network_data_dir() const noexcept
+		{
+			return m_network_component->get_network_data_dir();
+		}
+
+		inline bc_actor_replication_side bc_actor_network_controller::get_replication_side() const noexcept
+		{
+			return m_replication_side;
+		}
+
+		inline bc_actor_network_id bc_actor_network_controller::get_actor_network_id() const noexcept
+		{
+			return m_network_component->get_network_id();
+		}
+
+		inline bc_network_client_id bc_actor_network_controller::get_network_client_id() const noexcept
+		{
+			return m_network_component->get_network_client_id();
+		}
+
+		inline bc_network_rtt bc_actor_network_controller::get_out_ping() const noexcept
+		{
+			return m_network_component->get_out_ping();
+		}
+
+		inline bc_network_rtt bc_actor_network_controller::get_in_ping() const noexcept
+		{
+			return m_network_component->get_in_ping();
+		}
 
 		inline void bc_actor_network_controller::initialize(const bc_actor_component_initialize_context& p_context)
 		{
@@ -101,44 +140,28 @@ namespace black_cat
 			}
 		}
 
-		inline bc_network_component& bc_actor_network_controller::get_network_component() const noexcept
+		inline void bc_actor_network_controller::load_origin_network_instance(const bc_actor_component_network_load_context& p_context)
 		{
-			return *m_network_component;
 		}
 
-		inline bc_network_type bc_actor_network_controller::get_network_type() const noexcept
+		inline void bc_actor_network_controller::load_replicated_network_instance(const bc_actor_component_network_load_context& p_context)
 		{
-			return m_network_component->get_network_type();
 		}
 
-		inline bc_actor_network_data_dir bc_actor_network_controller::get_network_data_dir() const noexcept
+		inline void bc_actor_network_controller::write_origin_network_instance(const bc_actor_component_network_write_context& p_context)
 		{
-			return m_network_component->get_network_data_dir();
 		}
 
-		inline bc_actor_replication_side bc_actor_network_controller::get_replication_side() const noexcept
+		inline void bc_actor_network_controller::write_replicated_network_instance(const bc_actor_component_network_write_context& p_context)
 		{
-			return m_replication_side;
 		}
 
-		inline bc_actor_network_id bc_actor_network_controller::get_actor_network_id() const noexcept
+		inline void bc_actor_network_controller::update_origin_instance(const bc_actor_component_update_content& p_context)
 		{
-			return m_network_component->get_network_id();
 		}
 
-		inline bc_network_client_id bc_actor_network_controller::get_network_client_id() const noexcept
+		inline void bc_actor_network_controller::update_replicated_instance(const bc_actor_component_update_content& p_context)
 		{
-			return m_network_component->get_network_client_id();
-		}
-
-		inline bc_network_rtt bc_actor_network_controller::get_out_ping() const noexcept
-		{
-			return m_network_component->get_out_ping();
-		}
-
-		inline bc_network_rtt bc_actor_network_controller::get_in_ping() const noexcept
-		{
-			return m_network_component->get_in_ping();
 		}
 	}	
 }

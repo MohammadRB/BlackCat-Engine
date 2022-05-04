@@ -145,42 +145,45 @@ namespace black_cat
 			);
 		}
 	}
-
-	void bc_xbot_player_actor_controller::load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context)
-	{
-	}
-
-	void bc_xbot_player_actor_controller::load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context)
-	{
-	}
-
+	
 	void bc_xbot_player_actor_controller::write_origin_network_instance(const game::bc_actor_component_network_write_context& p_context)
 	{
 		const auto l_velocity = get_velocity();
 		json_parse::bc_write(p_context.m_parameters, "pos", get_position());
 		json_parse::bc_write(p_context.m_parameters, "lk_dir", get_look_direction());
-		p_context.m_parameters.add_or_update("lk_sd", core::bc_any(l_velocity.m_look_side));
-		p_context.m_parameters.add_or_update
+		json_parse::bc_write(p_context.m_parameters, "lk_sd", core::bc_any(l_velocity.m_look_side));
+		json_parse::bc_write
 		(
-			"keys", 
-			core::bc_any(core::bc_vector<core::bc_any>
-			({
-				core::bc_any(l_velocity.m_forward_velocity > 0.f),
-				core::bc_any(l_velocity.m_backward_velocity > 0.f),
-				core::bc_any(l_velocity.m_right_velocity > 0.f),
-				core::bc_any(l_velocity.m_left_velocity > 0.f),
-				core::bc_any(l_velocity.m_walk_velocity > 0.f),
-			}))
+			p_context.m_parameters, 
+			"keys",
+			core::bc_any
+			(
+				core::bc_vector<core::bc_any>
+				(
+					{
+						core::bc_any(l_velocity.m_forward_velocity > 0.f),
+						core::bc_any(l_velocity.m_backward_velocity > 0.f),
+						core::bc_any(l_velocity.m_right_velocity > 0.f),
+						core::bc_any(l_velocity.m_left_velocity > 0.f),
+						core::bc_any(l_velocity.m_walk_velocity > 0.f),
+					}
+				)
+			)
 		);
+
+		const auto l_weapon_rotation = m_weapon_obstacle_rotation_velocity.get_value();
+		if(l_weapon_rotation > 0.f)
+		{
+			json_parse::bc_write(p_context.m_parameters, "wpn_r", l_weapon_rotation);
+		}
 
 		if(p_context.m_is_replication_write)
 		{
-			const auto* l_weapon = get_weapon();
-			if(l_weapon)
+			if(const auto* l_weapon = get_weapon())
 			{
 				const auto* l_mediate_component = l_weapon->m_actor.get_component<game::bc_mediate_component>();
-				core::bc_string l_weapon_entity_name = l_mediate_component->get_entity_name();
-				p_context.m_parameters.add_or_update("wpn", core::bc_any(std::move(l_weapon_entity_name)));
+				const core::bc_string l_weapon_entity_name = l_mediate_component->get_entity_name();
+				json_parse::bc_write(p_context.m_parameters, "wpn", l_weapon_entity_name);
 			}
 
 			if(get_ragdoll_enabled())
@@ -191,10 +194,6 @@ namespace black_cat
 		}
 	}
 	
-	void bc_xbot_player_actor_controller::write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context)
-	{
-	}
-
 	void bc_xbot_player_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		bc_xbot_actor_controller::added_to_scene(p_context, p_scene);
@@ -275,11 +274,7 @@ namespace black_cat
 			);
 		}
 	}
-
-	void bc_xbot_player_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
-	{
-	}
-
+	
 	void bc_xbot_player_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		bc_xbot_actor_controller::removed_from_scene(p_context, p_scene);
@@ -326,9 +321,7 @@ namespace black_cat
 	{
 		auto* l_scene = get_scene();
 		const auto* l_grenade_mediate_component = p_grenade.get_component<game::bc_mediate_component>();
-		const auto l_grenade_throw_power = std::max(0.3f, std::min(1.0f, m_grenade_throw_passed_time / m_grenade_throw_time)) *
-			m_grenade_throw_force *
-			get_bound_box_max_side_length();
+		const auto l_grenade_throw_power = std::max(0.3f, std::min(1.0f, m_grenade_throw_passed_time / m_grenade_throw_time)) * m_grenade_throw_force * get_bound_box_max_side_length();
 		const auto l_throw_direction = core::bc_vector3f::normalize(get_look_direction() + core::bc_vector3f(0, 0.2f, 0)) * l_grenade_throw_power;
 
 		const bcCHAR* l_threw_grenade_name = std::strcmp(l_grenade_mediate_component->get_entity_name(), m_grenade_name) == 0 ? m_threw_grenade_name : m_threw_smoke_grenade_name;
@@ -658,6 +651,7 @@ namespace black_cat
 
 			return core::bc_any(l_hit_distance);
 		});
+
 		m_weapon_obstacle_query = p_query_manager.queue_query(std::move(l_scene_query));
 	}
 }

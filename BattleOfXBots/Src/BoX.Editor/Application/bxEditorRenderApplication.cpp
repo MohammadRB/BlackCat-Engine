@@ -49,12 +49,12 @@ namespace box
 
 		bx_load_game_resources(p_context.m_stream_manager, *m_game_system);
 
-		auto* l_content_manager = core::bc_get_service<core::bc_content_manager>();
-		auto& l_file_system = m_game_system->get_file_system();
+		const auto& l_file_system = m_game_system->get_file_system();
+		auto& l_content_manager = p_context.m_stream_manager.get_content_manager();
 
-		auto l_scene = l_content_manager->load<game::bc_scene>
+		auto l_scene = l_content_manager.load<game::bc_scene>
 		(
-			l_file_system.get_content_scene_path(bcL("BattleGround.json")),
+			l_file_system.get_content_scene_path(bcL("BattleGround")),
 			{},
 			core::bc_content_loader_parameter()
 		);

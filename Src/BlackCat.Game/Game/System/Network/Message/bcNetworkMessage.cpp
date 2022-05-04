@@ -35,14 +35,15 @@ namespace black_cat
 
 		void bci_network_message::deserialize(const bc_network_message_deserialization_context& p_context)
 		{
-			auto* l_id = p_context.m_params.find("msg_id")->second.as<bc_network_message_id>();
-			if(!l_id)
+			// we should use cast function because message id is defined to be uint32 but in json serialization it will be written as int32
+			auto [l_has_id, l_id] = p_context.m_params.find("msg_id")->second.cast_to_int();
+			if(!l_has_id)
 			{
 				core::bc_log(core::bc_log_type::error, bcL("Failed to deserialize network message id"));
 				return;
 			}
 
-			m_id = *l_id;
+			m_id = static_cast<bc_network_message_id>(l_id);
 
 			const auto l_is_retry_param = p_context.m_params.find("is_rty");
 			if(l_is_retry_param != std::end(p_context.m_params))

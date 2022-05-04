@@ -250,9 +250,10 @@ namespace black_cat
 
 	void bc_xbot_actor_controller::added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
-		m_scene = &p_scene;
 		const auto* l_mediate_component = p_context.m_actor.get_component<game::bc_mediate_component>();
 		const auto l_bound_box_extends = l_mediate_component->get_bound_box().get_half_extends();
+
+		m_scene = &p_scene;
 		m_bound_box_max_side_length = std::max({ l_bound_box_extends.x, l_bound_box_extends.y, l_bound_box_extends.z }) * 2;
 
 		m_px_controller_material = p_context.m_game_system.get_render_system().get_material_manager().get_default_collider_material().m_px_material;

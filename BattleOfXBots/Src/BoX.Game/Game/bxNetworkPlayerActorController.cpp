@@ -96,8 +96,8 @@ namespace box
 		if(get_network_type() == game::bc_network_type::server && m_health > 0)
 		{
 			bool l_health_hit = false;
-			const game::bc_actor_network_id l_client_id = get_network_client_id();
-			game::bc_actor_network_id l_hit_client_id = game::bc_actor::invalid_id;
+			const auto l_client_id = get_network_client_id();
+			auto l_hit_client_id = game::g_invalid_actor_network_id;
 
 			if (const auto* l_bullet_hit_event = core::bci_message::as<game::bc_bullet_hit_actor_event>(p_context.m_event))
 			{

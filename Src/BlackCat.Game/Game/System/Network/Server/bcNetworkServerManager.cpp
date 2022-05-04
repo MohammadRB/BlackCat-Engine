@@ -134,7 +134,7 @@ namespace black_cat
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
 			const auto l_network_id = l_network_component->get_network_id();
 
-			if (l_network_id == bc_actor::invalid_id)
+			if (l_network_id == g_invalid_actor_network_id)
 			{
 				return;
 			}
@@ -162,7 +162,7 @@ namespace black_cat
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
 			const auto l_network_id = l_network_component->get_network_id();
 
-			if (l_network_id == bc_actor::invalid_id)
+			if (l_network_id == g_invalid_actor_network_id)
 			{
 				return;
 			}

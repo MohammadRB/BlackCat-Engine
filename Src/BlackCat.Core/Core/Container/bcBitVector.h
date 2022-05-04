@@ -39,10 +39,10 @@ namespace black_cat
 			
 			void make_false(bcUINT32 p_index);
 
+			void make_true(bcUINT32 p_index);
+
 			void make_all_false() noexcept;
 
-			void make_true(bcUINT32 p_index) noexcept;
-			
 			void make_all_true() noexcept;
 
 			bool find_first_false(bcUINT32& p_result, bcUINT32 p_search_start = 0) const noexcept;
@@ -69,5 +69,16 @@ namespace black_cat
 		{
 			return m_capacity;
 		}
+
+		inline void bc_bit_vector::make_false(bcUINT32 p_index)
+		{
+			set(p_index, false);
+		}
+
+		inline void bc_bit_vector::make_true(bcUINT32 p_index)
+		{
+			set(p_index, true);
+		}
+
 	}
 }

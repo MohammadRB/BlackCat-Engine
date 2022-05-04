@@ -244,6 +244,8 @@ namespace black_cat
 
 		void bc_scene::remove_actor(bc_actor p_actor) noexcept
 		{
+			BC_ASSERT(p_actor.is_valid_deep());
+
 			{
 				platform::bc_spin_mutex_guard l_lock_guard(m_actors_to_remove_lock);
 

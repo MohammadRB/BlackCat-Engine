@@ -14,13 +14,10 @@ namespace black_cat
 {
 	namespace game
 	{
-		inline bc_actor::bc_actor()
-			: m_index(invalid_id)
-		{
-		}
+		inline bc_actor::bc_actor() = default;
 
 		inline bc_actor::bc_actor(bc_actor_id p_index)
-			: m_index(p_index)
+			: m_id(p_index)
 		{
 		}
 
@@ -36,7 +33,7 @@ namespace black_cat
 
 		inline bc_actor_id bc_actor::get_id() const noexcept
 		{
-			return m_index;
+			return m_id;
 		}
 
 		inline const bc_actor_event* bc_actor::get_events() const noexcept
@@ -129,32 +126,37 @@ namespace black_cat
 			BC_ASSERT(is_valid());
 			
 			_get_entity_manager().remove_entity(*this);
-			m_index = invalid_id;
+			m_id = bc_actor_id();
 		}
 
 		inline bool bc_actor::is_valid() const noexcept
 		{
-			return m_index != invalid_id;
+			return m_id.is_valid();
+		}
+
+		inline bool bc_actor::is_valid_deep() const noexcept
+		{
+			return _get_manager().actor_is_valid(*this);
 		}
 
 		inline bool bc_actor::operator==(const bc_actor& p_other) const noexcept
 		{
-			return m_index == p_other.m_index;
+			return m_id == p_other.m_id;
 		}
 
 		inline bool bc_actor::operator!=(const bc_actor& p_other) const noexcept
 		{
-			return m_index != p_other.m_index;
+			return m_id != p_other.m_id;
 		}
 
 		inline bool bc_actor::operator==(std::nullptr_t) const noexcept
 		{
-			return m_index == invalid_id;
+			return !m_id.is_valid();
 		}
 
 		inline bool bc_actor::operator!=(std::nullptr_t) const noexcept
 		{
-			return m_index != invalid_id;
+			return m_id.is_valid();
 		}
 
 		inline bc_actor_component_manager& bc_actor::_get_manager() noexcept

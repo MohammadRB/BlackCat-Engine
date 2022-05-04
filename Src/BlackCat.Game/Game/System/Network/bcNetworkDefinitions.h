@@ -34,9 +34,12 @@ namespace black_cat
 			replicated
 		};
 
-		using bc_network_message_id = bcINT32; // it must be int because in json deserialization it is interpreted as int
+		using bc_actor_network_id = bcINT32;
+		using bc_network_message_id = bcUINT32;
 		using bc_network_message_hash = core::bc_string_cmp_hash;
 		using bc_network_packet_time = platform::bc_clock::big_clock;
 		using bc_network_rtt = platform::bc_clock::small_time;
+
+		constexpr bc_actor_network_id g_invalid_actor_network_id = static_cast<bc_actor_network_id>(-1);
 	}
 }

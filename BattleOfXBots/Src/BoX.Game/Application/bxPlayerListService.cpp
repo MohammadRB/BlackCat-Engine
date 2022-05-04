@@ -79,7 +79,7 @@ namespace box
 					return p_seat.m_client_id == l_player_ite->second.m_id;
 				}
 			);
-			l_seat_ite->m_client_id = game::bc_actor::invalid_id;
+			l_seat_ite->m_client_id = game::bc_network_client::invalid_id;
 		}
 
 		m_joined_players.erase(l_player_ite);
@@ -203,11 +203,11 @@ namespace box
 	{
 		for (auto& l_seat : m_blue_player_seats)
 		{
-			l_seat.m_client_id = game::bc_actor::invalid_id;
+			l_seat.m_client_id = game::bc_network_client::invalid_id;
 		}
 		for (auto& l_seat : m_red_player_seats)
 		{
-			l_seat.m_client_id = game::bc_actor::invalid_id;
+			l_seat.m_client_id = game::bc_network_client::invalid_id;
 		}
 
 		for (auto& [l_client_id, l_player] : m_joined_players)

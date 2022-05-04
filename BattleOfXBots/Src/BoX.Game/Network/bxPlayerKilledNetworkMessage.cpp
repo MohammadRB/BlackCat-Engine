@@ -12,7 +12,7 @@ namespace box
 	bx_player_killed_network_message::bx_player_killed_network_message() noexcept
 		: bci_network_message(message_name()),
 		m_killer_client_id(game::bc_network_client::invalid_id),
-		m_actor_net_id(game::bc_actor::invalid_id),
+		m_actor_net_id(game::g_invalid_actor_network_id),
 		m_is_self_replicate(false)
 	{
 	}

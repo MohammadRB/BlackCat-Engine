@@ -13,7 +13,7 @@ namespace black_cat
 	{
 		bc_actor_remove_network_message::bc_actor_remove_network_message()
 			: bci_network_message(message_name()),
-			m_net_id(bc_actor::invalid_id)
+			m_net_id(g_invalid_actor_network_id)
 		{
 		}
 
@@ -61,7 +61,7 @@ namespace black_cat
 		void bc_actor_remove_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)
 		{
 			const auto* l_actor_network_id = p_context.m_params.find("nid")->second.as<bc_actor_network_id>();
-			if (!l_actor_network_id || *l_actor_network_id == bc_actor::invalid_id)
+			if (!l_actor_network_id || *l_actor_network_id == g_invalid_actor_network_id)
 			{
 				core::bc_log(core::bc_log_type::error, bcL("Failed to deserialize actor network id in remove network message"));
 				return;

@@ -50,17 +50,11 @@ namespace black_cat
 	protected:
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;
 		
-		void load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
-		
 		void load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
-		
-		void write_origin_network_instance(const game::bc_actor_component_network_write_context& p_context) override;
 		
 		void write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context) override;
 		
 		void added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
-		
-		void update_origin_instance(const game::bc_actor_component_update_content& p_context) override;
 		
 		void update_replicated_instance(const game::bc_actor_component_update_content& p_context) override;
 		
@@ -77,6 +71,7 @@ namespace black_cat
 		core::bc_vector3f m_network_position;
 		core::bc_vector3f m_network_look_direction;
 		bcINT32 m_network_look_side;
+		bcFLOAT m_network_weapon_rotation;
 		bool m_network_forward_pressed;
 		bool m_network_backward_pressed;
 		bool m_network_right_pressed;

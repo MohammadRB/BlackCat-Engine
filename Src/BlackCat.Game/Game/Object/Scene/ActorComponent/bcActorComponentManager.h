@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/bcConstant.h"
@@ -16,6 +17,7 @@
 #include "Core/Utility/bcServiceManager.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Utility/bcObjectStackPool.h"
+#include "Game/Object/Scene/ActorComponent/bcActorId.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
@@ -92,11 +94,11 @@ namespace black_cat
 		struct _bc_actor_entry
 		{
 		public:
-			explicit _bc_actor_entry(bc_actor_id p_actor, bc_actor_id p_parent_index = bc_actor::invalid_id);
+			explicit _bc_actor_entry(bc_actor_id p_id, bc_actor_id p_parent_id = bc_actor_id());
 
 			_bc_actor_entry(const _bc_actor_entry& p_other);
 
-			~_bc_actor_entry();
+			~_bc_actor_entry() = default;
 
 			_bc_actor_entry& operator=(const _bc_actor_entry& p_other);
 
@@ -106,10 +108,10 @@ namespace black_cat
 
 			void clear_events(bcUINT32 p_active_event_pool) noexcept;
 
-			bc_actor_id m_actor_index;
-			bc_actor_id m_parent_index;
+			bc_actor_id m_actor_id;
+			bc_actor_id m_parent_id;
 			bc_actor_event* m_events[2];
-			platform::bc_spin_mutex m_mutex;
+			platform::bc_atomic_flag m_lock_flag;
 		};
 
 		struct _bc_actor_component_entry
@@ -121,19 +123,16 @@ namespace black_cat
 			_bc_actor_component_entry(bool p_is_abstract,
 				bool p_require_event,
 				bool p_require_update,
-				bcUINT32 p_component_priority,
 				core::bc_unique_ptr<bci_actor_component_container> p_container,
 				core::bc_vector_movable<deriveds_component_get_delegate> p_deriveds);
 			
 			_bc_actor_component_entry(_bc_actor_component_entry&& p_other) noexcept;
 
 			_bc_actor_component_entry& operator=(_bc_actor_component_entry&& p_other) noexcept;
-
-			static constexpr bcUINT32 s_invalid_priority_value = -1;
+			
 			bool m_is_abstract;
 			bool m_require_event;
 			bool m_require_update;
-			bcUINT32 m_component_priority;
 			core::bc_vector_movable<bc_actor_component_id> m_actor_to_component_index_map;
 			core::bc_unique_ptr<bci_actor_component_container> m_container;
 			core::bc_vector_movable<deriveds_component_get_delegate> m_deriveds;
@@ -147,7 +146,7 @@ namespace black_cat
 		private:
 			template<class TAbstract, class TDerived, class ...TDeriveds>
 			friend class bc_abstract_component_register;
-			using actor_container_type = core::bc_vector_movable<_bc_actor_entry>;
+			using actor_container_type = core::bc_vector<_bc_actor_entry>;
 			using double_update_actor_container_type = core::bc_concurrent_queue1<bc_actor>;
 			using component_container_type = core::bc_unordered_map_program<bc_actor_component_hash, _bc_actor_component_entry>;
 
@@ -170,6 +169,8 @@ namespace black_cat
 			bc_actor_event* actor_get_events(const bc_actor& p_actor) const noexcept;
 
 			void actor_clear_events(const bc_actor& p_actor) noexcept;
+
+			bool actor_is_valid(const bc_actor& p_actor) noexcept;
 
 			void mark_actor_for_double_update(const bc_actor& p_actor);
 			
@@ -222,10 +223,10 @@ namespace black_cat
 			template<class TComponent>
 			TComponent* _actor_get_component(const bc_actor& p_actor, std::false_type);
 
-			void _clear_actor_events(bc_actor_id p_actor);
+			void _clear_actor_events(bcUINT32 p_index);
 
 			template<class TComponent>
-			void _register_component_type(bcSIZE p_priority);
+			void _register_component_type();
 
 			template<class TComponent, class ...TDeriveds>
 			void _register_abstract_component_type();
@@ -259,26 +260,26 @@ namespace black_cat
 			p_component_manager._register_abstract_component_type<TAbstract, TDerived, TDeriveds...>();
 		}
 		
-		inline _bc_actor_entry::_bc_actor_entry(bc_actor_id p_actor, bc_actor_id p_parent_index)
-			: m_actor_index(p_actor),
-			m_parent_index(p_parent_index),
-			m_events{ nullptr, nullptr }
+		inline _bc_actor_entry::_bc_actor_entry(bc_actor_id p_id, bc_actor_id p_parent_id)
+			: m_actor_id(p_id),
+			m_parent_id(p_parent_id),
+			m_events{ nullptr, nullptr },
+			m_lock_flag(false)
 		{
 		}
 
 		inline _bc_actor_entry::_bc_actor_entry(const _bc_actor_entry& p_other)
-			: m_actor_index(p_other.m_actor_index),
-			m_parent_index(p_other.m_parent_index),
-			m_events{ p_other.m_events[0], p_other.m_events[1] }
+			: m_actor_id(p_other.m_actor_id),
+			m_parent_id(p_other.m_parent_id),
+			m_events{ p_other.m_events[0], p_other.m_events[1] },
+			m_lock_flag(false)
 		{
 		}
-
-		inline _bc_actor_entry::~_bc_actor_entry() = default;
-
+		
 		inline _bc_actor_entry& _bc_actor_entry::operator=(const _bc_actor_entry& p_other)
 		{
-			m_actor_index = p_other.m_actor_index;
-			m_parent_index = p_other.m_parent_index;
+			m_actor_id = p_other.m_actor_id;
+			m_parent_id = p_other.m_parent_id;
 			m_events[0] = p_other.m_events[0];
 			m_events[1] = p_other.m_events[1];
 			return *this;
@@ -286,24 +287,25 @@ namespace black_cat
 
 		inline void _bc_actor_entry::add_event(bcUINT32 p_active_event_pool, bc_actor_event* p_event) noexcept
 		{
+			while (m_lock_flag.test_and_set(platform::bc_memory_order::acquire)) {}
+
+			bc_actor_event* l_last_event = m_events[p_active_event_pool];
+
+			if(!l_last_event)
 			{
-				platform::bc_spin_mutex_guard l_lock(m_mutex);
+				m_events[p_active_event_pool] = p_event;
 
-				bc_actor_event* l_last_event = m_events[p_active_event_pool];
-
-				if(!l_last_event)
-				{
-					m_events[p_active_event_pool] = p_event;
-					return;
-				}
-				
-				while (l_last_event->get_next())
-				{
-					l_last_event = l_last_event->get_next();
-				}
-
-				l_last_event->set_next(p_event);
+				m_lock_flag.clear(platform::bc_memory_order::release);
+				return;
 			}
+				
+			while (l_last_event->get_next())
+			{
+				l_last_event = l_last_event->get_next();
+			}
+			l_last_event->set_next(p_event);
+
+			m_lock_flag.clear(platform::bc_memory_order::release);
 		}
 
 		inline bc_actor_event* _bc_actor_entry::get_events(bcUINT32 p_active_event_pool) const noexcept
@@ -315,26 +317,28 @@ namespace black_cat
 		{
 			m_events[p_active_event_pool] = nullptr;
 		}
-
+		
 		inline _bc_actor_component_entry::_bc_actor_component_entry(bool p_is_abstract,
 			bool p_require_event,
 			bool p_require_update,
-			bcUINT32 p_component_priority,
 			core::bc_unique_ptr<bci_actor_component_container> p_container,
 			core::bc_vector_movable<deriveds_component_get_delegate> p_deriveds)
 			: m_is_abstract(p_is_abstract),
 			m_require_event(p_require_event),
 			m_require_update(p_require_update),
-			m_component_priority(p_component_priority),
-			m_actor_to_component_index_map(),
 			m_container(std::move(p_container)),
 			m_deriveds(std::move(p_deriveds))
 		{
 		}
 
 		inline _bc_actor_component_entry::_bc_actor_component_entry(_bc_actor_component_entry&& p_other) noexcept
+			: m_is_abstract(p_other.m_is_abstract),
+			m_require_event(p_other.m_require_event),
+			m_require_update(p_other.m_require_update),
+			m_actor_to_component_index_map(std::move(p_other.m_actor_to_component_index_map)),
+			m_container(std::move(p_other.m_container)),
+			m_deriveds(std::move(p_other.m_deriveds))
 		{
-			operator=(std::move(p_other));
 		}
 
 		inline _bc_actor_component_entry& _bc_actor_component_entry::operator=(_bc_actor_component_entry&& p_other) noexcept
@@ -342,7 +346,6 @@ namespace black_cat
 			m_is_abstract = p_other.m_is_abstract;
 			m_require_event = p_other.m_require_event;
 			m_require_update = p_other.m_require_update;
-			m_component_priority = p_other.m_component_priority;
 			m_actor_to_component_index_map = std::move(p_other.m_actor_to_component_index_map);
 			m_container = std::move(p_other.m_container);
 			m_deriveds = std::move(p_other.m_deriveds);
@@ -351,30 +354,34 @@ namespace black_cat
 
 		inline bc_actor bc_actor_component_manager::create_actor(const bc_actor* p_parent)
 		{
-			bc_actor_id l_actor_index;
+			bc_actor_id l_actor_id;
+			const bc_actor_id l_parent_id = p_parent ? p_parent->get_id() : bc_actor_id();
 			bool l_actor_to_component_need_resize = false;
 			
 			{
 				platform::bc_shared_mutex_guard l_lock(m_actors_lock);
 
 				bcUINT32 l_free_slot;
-				const auto l_has_free_slot = m_actors_bit.find_first_false(l_free_slot);
-
-				if (l_has_free_slot)
+				if (m_actors_bit.find_first_false(l_free_slot))
 				{
-					new (&m_actors[l_free_slot]) _bc_actor_entry(l_free_slot, p_parent ? p_parent->get_id() : bc_actor::invalid_id);
+					auto& l_entry = m_actors[l_free_slot];
+					const auto [l_index, l_repeat_index] = bc_actor_id::decompose_id(l_entry.m_actor_id);
+					const auto l_new_repeat_index = bc_actor_id::generate_new_repeat_id(l_repeat_index);
+					l_actor_id = bc_actor_id::compose_id(l_free_slot, l_new_repeat_index);
+
+					new (&l_entry) _bc_actor_entry(l_actor_id, l_parent_id);
 					m_actors_bit.make_true(l_free_slot);
 				}
 				else
 				{
 					l_actor_to_component_need_resize = true;
 					l_free_slot = m_actors.size();
-					m_actors.push_back(_bc_actor_entry(l_free_slot, p_parent ? p_parent->get_id() : bc_actor::invalid_id));
+
+					l_actor_id = bc_actor_id::compose_id(l_free_slot, 0);
+					m_actors.push_back(_bc_actor_entry(l_actor_id, l_parent_id));
 					m_actors_bit.resize(m_actors.size());
 					m_actors_bit.make_true(l_free_slot);
 				}
-
-				l_actor_index = l_free_slot;
 			}
 
 			if(l_actor_to_component_need_resize)
@@ -385,19 +392,20 @@ namespace black_cat
 				}
 			}
 			
-			return bc_actor(l_actor_index);
+			return bc_actor(l_actor_id);
 		}
 
 		inline void bc_actor_component_manager::remove_actor(const bc_actor& p_actor)
 		{
-			const auto l_actor_index = p_actor.get_id();
+			BC_ASSERT(p_actor.is_valid());
+
+			const auto [l_actor_index, l_actor_repeat_index] = bc_actor_id::decompose_id(p_actor.get_id());
 
 			for(auto& l_component : m_components)
 			{
 				_bc_actor_component_entry& l_component_entry = l_component.second;
-
-				// It's an abstract component
-				if(l_component_entry.m_component_priority == _bc_actor_component_entry::s_invalid_priority_value)
+				
+				if(l_component_entry.m_is_abstract)
 				{
 					continue;
 				}
@@ -420,7 +428,7 @@ namespace black_cat
 				platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
 
 				BC_ASSERT(m_actors_bit[l_actor_index]);
-				
+
 				auto& l_actor_entry = m_actors[l_actor_index];
 				auto* l_events_pool = &m_event_pools[m_write_event_pool];
 				auto* l_actor_events = l_actor_entry.get_events(m_write_event_pool);
@@ -431,42 +439,73 @@ namespace black_cat
 					l_events_pool->free(l_actor_events);
 					l_actor_events = l_next;
 				}
-				
-				m_actors[l_actor_index].~_bc_actor_entry();
+
 				m_actors_bit.make_false(l_actor_index);
+				l_actor_entry.~_bc_actor_entry();
+				// Mark actor with invalid index but preserve repeat index for future actor creation
+				l_actor_entry.m_actor_id = bc_actor_id::compose_invalid_index(l_actor_repeat_index);
 			}
 		}
 
 		template<typename TEvent>
 		void bc_actor_component_manager::actor_add_event(const bc_actor& p_actor, TEvent&& p_event)
 		{
+			BC_ASSERT(p_actor.is_valid());
+
+			const auto l_actor_index = bc_actor_id::decompose_id(p_actor.get_id()).first;
 			auto* l_event = m_event_pools[m_write_event_pool].alloc<TEvent>(std::move(p_event));
 
 			{
 				platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
 
-				auto& l_actor_entry = m_actors[p_actor.get_id()];
+				auto& l_actor_entry = m_actors[l_actor_index];
 				l_actor_entry.add_event(m_write_event_pool, l_event);
 			}
 		}
 
 		inline bc_actor_event* bc_actor_component_manager::actor_get_events(const bc_actor& p_actor) const noexcept
 		{
+			BC_ASSERT(p_actor.is_valid());
+
+			const auto l_actor_index = bc_actor_id::decompose_id(p_actor.get_id()).first;
+
 			{
 				platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
 
-				const auto& l_actor_entry = m_actors[p_actor.get_id()];
+				const auto& l_actor_entry = m_actors[l_actor_index];
 				return l_actor_entry.get_events(m_read_event_pool);
 			}
 		}
 
 		inline void bc_actor_component_manager::actor_clear_events(const bc_actor& p_actor) noexcept
 		{
+			BC_ASSERT(p_actor.is_valid());
+
+			const auto l_actor_index = bc_actor_id::decompose_id(p_actor.get_id()).first;
+
 			{
 				platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
 
-				auto& l_actor_entry = m_actors[p_actor.get_id()];
+				auto& l_actor_entry = m_actors[l_actor_index];
 				l_actor_entry.clear_events(m_read_event_pool);
+			}
+		}
+
+		inline bool bc_actor_component_manager::actor_is_valid(const bc_actor& p_actor) noexcept
+		{
+			const auto l_actor_id = p_actor.get_id();
+			if(!l_actor_id.is_valid())
+			{
+				return false;
+			}
+
+			const auto l_actor_index = bc_actor_id::decompose_id(l_actor_id).first;
+			
+			{
+				platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
+
+				const auto& l_actor_entry = m_actors[l_actor_index];
+				return l_actor_entry.m_actor_id == l_actor_id;
 			}
 		}
 
@@ -480,27 +519,27 @@ namespace black_cat
 		{
 			static component_container_type::value_type* l_s_component_entry = _get_component_entry<TComponent>();
 
-			const auto l_actor_index = p_actor.get_id();
-			bc_actor_id l_parent_index;
-			
-			BC_ASSERT(l_actor_index != bc_actor::invalid_id);
+			BC_ASSERT(p_actor.is_valid());
+
+			const auto l_actor_id = p_actor.get_id();
+			const auto l_actor_index = bc_actor_id::decompose_id(l_actor_id).first;
+			bc_actor_id l_parent_id;
 			
 			{
 				platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
-				l_parent_index = m_actors[l_actor_index].m_parent_index;
+				l_parent_id = m_actors[l_actor_index].m_parent_id;
 			}
 			
-			auto l_component_index = bci_actor_component::invalid_id;
-			auto l_parent_component_index = bci_actor_component::invalid_id;
+			auto l_component_id = bci_actor_component::invalid_id;
+			auto l_parent_component_id = bci_actor_component::invalid_id;
 
 			// If actor has parent and it's parent has this component type we must create actor component
 			// after parent component in sorting order of container so parent component update earlier
-			if(l_parent_index != bc_actor::invalid_id)
+			if(l_parent_id.is_valid())
 			{
-				const TComponent* l_parent_component = actor_get_component<TComponent>(bc_actor(l_parent_index));
-				if(l_parent_component)
+				if(const TComponent* l_parent_component = actor_get_component<TComponent>(bc_actor(l_parent_id)))
 				{
-					l_parent_component_index = l_parent_component->get_id();
+					l_parent_component_id = l_parent_component->get_id();
 				}
 			}
 
@@ -510,16 +549,16 @@ namespace black_cat
 				// Cast to concrete container to avoid virtual calls
 				auto* l_concrete_container = static_cast<bc_actor_component_container<TComponent>*>(l_s_component_entry->second.m_container.get());
 
-				if(l_parent_component_index == bci_actor_component::invalid_id)
+				if(l_parent_component_id == bci_actor_component::invalid_id)
 				{
-					l_component_index = l_concrete_container->create(l_actor_index);
+					l_component_id = l_concrete_container->create(l_actor_id);
 				}
 				else
 				{
-					l_component_index = l_concrete_container->create_after(l_actor_index, l_parent_component_index);
+					l_component_id = l_concrete_container->create_after(l_actor_id, l_parent_component_id);
 				}
 
-				l_s_component_entry->second.m_actor_to_component_index_map[l_actor_index] = l_component_index;
+				l_s_component_entry->second.m_actor_to_component_index_map[l_actor_index] = l_component_id;
 			}
 		}
 
@@ -528,16 +567,16 @@ namespace black_cat
 		{
 			static component_container_type::value_type* l_component_entry = _get_component_entry<TComponent>();
 
-			const auto l_actor_index = p_actor.get_id();
+			BC_ASSERT(p_actor.is_valid());
 
-			BC_ASSERT(l_actor_index != bc_actor::invalid_id);
+			const auto l_actor_index = bc_actor_id::decompose_id(p_actor.get_id()).first;
 
 			{
 				platform::bc_shared_mutex_shared_guard l_lock(l_component_entry->second.m_lock);
 
-				auto l_component_index = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
+				auto l_component_id = l_component_entry->second.m_actor_to_component_index_map[l_actor_index];
 				// Actor has not this type of component
-				if (l_component_index == bci_actor_component::invalid_id)
+				if (l_component_id == bci_actor_component::invalid_id)
 				{
 					BC_ASSERT(false);
 					return;
@@ -545,8 +584,7 @@ namespace black_cat
 
 				// Cast to concrete container to avoid virtual calls
 				auto* l_concrete_container = static_cast<bc_actor_component_container<TComponent>*>(l_component_entry->second.m_container.get());
-
-				l_concrete_container->remove(l_component_index);
+				l_concrete_container->remove(l_component_id);
 
 				l_component_entry->second.m_actor_to_component_index_map[l_actor_index] = bci_actor_component::invalid_id;
 			}
@@ -579,11 +617,13 @@ namespace black_cat
 		template<class TIterator>
 		void bc_actor_component_manager::actor_get_components(const bc_actor& p_actor, TIterator p_destination) const
 		{
-			const auto l_actor_index = p_actor.get_id();
+			BC_ASSERT(p_actor.is_valid());
+
+			const auto l_actor_index = bc_actor_id::decompose_id(p_actor.get_id()).first;
 
 			for (auto& l_component_entry : m_components)
 			{
-				if(l_component_entry.second.m_component_priority == bci_actor_component::invalid_id)
+				if(l_component_entry.second.m_is_abstract)
 				{
 					continue; // It is an abstract component
 				}
@@ -591,10 +631,10 @@ namespace black_cat
 				{
 					platform::bc_shared_mutex_shared_guard l_lock(l_component_entry.second.m_lock);
 
-					const auto l_component_index = l_component_entry.second.m_actor_to_component_index_map[l_actor_index];
-					if (l_component_index != bci_actor_component::invalid_id)
+					const auto l_component_id = l_component_entry.second.m_actor_to_component_index_map[l_actor_index];
+					if (l_component_id != bci_actor_component::invalid_id)
 					{
-						*p_destination = l_component_entry.second.m_container->get(l_component_index);
+						*p_destination = l_component_entry.second.m_container->get(l_component_id);
 						++p_destination;
 					}
 				}
@@ -606,27 +646,19 @@ namespace black_cat
 		{
 			static_assert(!bc_actor_component_traits<TComponent>::component_is_abstract(), "Can't get actor from abstract component");
 
-			const bc_actor_id l_actor_index = p_component.get_actor_id();
-			return bc_actor(l_actor_index);
-
-			/*{
-				platform::bc_shared_mutex_shared_guard l_actors_lock(m_actors_lock);
-
-				return bc_actor(m_actors[l_actor_index].m_actor_id);
-			}*/
+			const bc_actor_id l_actor_id = p_component.get_actor_id();
+			return bc_actor(l_actor_id);
 		}
 
 		template<class ...TCAdapter>
 		void bc_actor_component_manager::register_component_types(TCAdapter... p_components)
 		{
-			bcSIZE l_counter = m_components.size();
-
 			auto l_expansion_list =
 			{
 				(
-					[this, &l_counter]()
+					[this]()
 					{
-						this->_register_component_type<typename TCAdapter::component_t>(l_counter++);
+						this->_register_component_type<typename TCAdapter::component_t>();
 						return true;
 					}()
 				)...
@@ -654,14 +686,14 @@ namespace black_cat
 			static component_container_type::value_type* l_component_entry = _get_component_entry<TComponent>();
 
 			// Is it abstract
-			BC_ASSERT(l_component_entry->second.m_component_priority == _bc_actor_component_entry::s_invalid_priority_value);
+			BC_ASSERT(l_component_entry->second.m_is_abstract);
 
 			for(auto& l_derived_get : l_component_entry->second.m_deriveds)
 			{
 				auto* l_derived_component = l_derived_get(p_actor);
 				if(l_derived_component != nullptr)
 				{
-					return reinterpret_cast<TComponent*>(l_derived_component);
+					return static_cast<TComponent*>(l_derived_component);
 				}
 			}
 
@@ -674,11 +706,10 @@ namespace black_cat
 			static component_container_type::value_type* l_component_entry = _get_component_entry<TComponent>();
 
 			// Isn't it abstract
-			BC_ASSERT(l_component_entry->second.m_component_priority != _bc_actor_component_entry::s_invalid_priority_value);
+			BC_ASSERT(!l_component_entry->second.m_is_abstract);
+			BC_ASSERT(p_actor.is_valid());
 
-			const auto l_actor_index = p_actor.get_id();
-
-			BC_ASSERT(l_actor_index != bc_actor::invalid_id);
+			const auto l_actor_index = bc_actor_id::decompose_id(p_actor.get_id()).first;
 
 			{
 				platform::bc_shared_mutex_shared_guard l_lock(l_component_entry->second.m_lock);
@@ -698,9 +729,9 @@ namespace black_cat
 			}
 		}
 
-		inline void bc_actor_component_manager::_clear_actor_events(bc_actor_id p_actor)
+		inline void bc_actor_component_manager::_clear_actor_events(bcUINT32 p_index)
 		{
-			auto& l_actor_entry = m_actors[p_actor];
+			auto& l_actor_entry = m_actors[p_index];
 			auto* l_events_pool = &m_event_pools[m_read_event_pool];
 			auto* l_actor_events = l_actor_entry.get_events(m_read_event_pool);
 
@@ -715,18 +746,10 @@ namespace black_cat
 		}
 
 		template<class TComponent>
-		void bc_actor_component_manager::_register_component_type(bcSIZE p_priority)
+		void bc_actor_component_manager::_register_component_type()
 		{
-			static_assert
-			(
-				std::is_base_of_v<bci_actor_component, TComponent>,
-				"TComponent must be inherited from bci_actor_component"
-			);
-			static_assert
-			(
-				!bc_actor_component_traits<TComponent>::component_is_abstract(),
-				"TComponent must not be an abstract component."
-			);
+			static_assert(std::is_base_of_v<bci_actor_component, TComponent>, "TComponent must be inherited from bci_actor_component");
+			static_assert(!bc_actor_component_traits<TComponent>::component_is_abstract(), "TComponent must not be an abstract component.");
 
 			// Initialize components container
 			constexpr auto l_hash = bc_actor_component_traits<TComponent>::component_hash();
@@ -735,7 +758,6 @@ namespace black_cat
 				bc_actor_component_traits<TComponent>::component_is_abstract(),
 				bc_actor_component_traits<TComponent>::component_require_event(),
 				bc_actor_component_traits<TComponent>::component_require_update(),
-				p_priority,
 				core::bc_make_unique<bc_actor_component_container<TComponent>>(core::bc_alloc_type::program),
 				core::bc_vector_movable<_bc_actor_component_entry::deriveds_component_get_delegate>()
 			);
@@ -746,16 +768,8 @@ namespace black_cat
 		template<class TComponent, class ...TDeriveds>
 		void bc_actor_component_manager::_register_abstract_component_type()
 		{
-			static_assert
-			(
-				std::is_base_of_v<bci_actor_abstract_component, TComponent>,
-				"TComponent must be inherited from bci_actor_abstract_component"
-			);
-			static_assert
-			(
-				bc_actor_component_traits<TComponent>::component_is_abstract(),
-				"TComponent is not an abstract component."
-			);
+			static_assert(std::is_base_of_v<bci_actor_abstract_component, TComponent>, "TComponent must be inherited from bci_actor_abstract_component");
+			static_assert(bc_actor_component_traits<TComponent>::component_is_abstract(), "TComponent is not an abstract component.");
 
 			constexpr auto l_hash = bc_actor_component_traits<TComponent>::component_hash();
 			_bc_actor_component_entry l_data
@@ -763,7 +777,6 @@ namespace black_cat
 				bc_actor_component_traits<TComponent>::component_is_abstract(),
 				bc_actor_component_traits<TComponent>::component_require_event(),
 				bc_actor_component_traits<TComponent>::component_require_update(),
-				_bc_actor_component_entry::s_invalid_priority_value,
 				nullptr,
 				core::bc_vector_movable<_bc_actor_component_entry::deriveds_component_get_delegate>
 				(
@@ -795,7 +808,7 @@ namespace black_cat
 		template<class TComponent>
 		bc_actor_component_manager::component_container_type::value_type* bc_actor_component_manager::_get_component_entry()
 		{
-			static_assert(std::is_base_of<bci_actor_component, TComponent>::value, "TComponent must inherit from bc_iactor_component");
+			static_assert(std::is_base_of_v<bci_actor_component, TComponent>, "TComponent must inherit from bc_iactor_component");
 
 			constexpr bc_actor_component_hash l_hash = bc_actor_component_traits<TComponent>::component_hash();
 			const auto l_entry = m_components.find(l_hash);
@@ -819,7 +832,7 @@ namespace black_cat
 			for (auto& l_component_entry : m_components)
 			{
 				// It's an abstract component
-				if(l_component_entry.second.m_component_priority == _bc_actor_component_entry::s_invalid_priority_value)
+				if(l_component_entry.second.m_is_abstract)
 				{
 					continue;
 				}

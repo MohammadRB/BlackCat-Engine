@@ -2,9 +2,8 @@
 
 #pragma once
 
-#include "CorePlatform/bcType.h"
-#include "Core/Container/bcVector.h"
 #include "Core/File/bcJsonDocument.h"
+#include "Game/Object/Scene/ActorComponent/bcActorId.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorExtensions.h"
 
@@ -16,15 +15,8 @@ namespace black_cat
 		class bc_entity_manager;
 		class bc_shape_drawer;
 
-		using bc_actor_id = bcINT32;
-		using bc_actor_network_id = bcINT32;
-
 		class bc_actor
 		{
-		public:
-			constexpr static bc_actor_id invalid_id = static_cast<bc_actor_id>(-1);
-
-		private:
 			friend class bc_actor_component_manager;
 
 		public:
@@ -80,6 +72,8 @@ namespace black_cat
 			void destroy();
 
 			bool is_valid() const noexcept;
+
+			bool is_valid_deep() const noexcept;
 			
 			bool operator==(const bc_actor& p_other) const noexcept;
 
@@ -94,7 +88,7 @@ namespace black_cat
 			
 			static bc_entity_manager& _get_entity_manager() noexcept;
 
-			bc_actor_id m_index;
+			bc_actor_id m_id;
 		};
 	}
 }

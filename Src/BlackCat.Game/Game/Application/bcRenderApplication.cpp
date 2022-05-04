@@ -159,7 +159,12 @@ namespace black_cat
 			);
 			l_render_thread.set_name(bcL("BC_RENDER_WORKER"));
 			l_render_thread.set_priority(platform::bc_thread_priority::highest);
-			
+
+			if(!m_output_window)
+			{
+				l_render_thread_state.m_terminate.store(true, platform::bc_memory_order::relaxed);
+			}
+
 			try
 			{
 				const platform::bc_clock::small_time l_min_update_elapsed = 1000.0f / static_cast<bcFLOAT>(m_min_update_rate);
@@ -221,7 +226,7 @@ namespace black_cat
 
 					l_local_elapsed = std::max(l_local_elapsed - l_min_update_elapsed * l_update_call_count, static_cast<platform::bc_clock::small_time>(0));
 					
-					while (l_render_thread_state.m_signal.load(platform::bc_memory_order::acquire) != bc_render_loop_state::signal::ready)
+					while (m_output_window && l_render_thread_state.m_signal.load(platform::bc_memory_order::acquire) != bc_render_loop_state::signal::ready)
 					{
 						app_swap_frame_idle(l_clock);
 					}
@@ -230,7 +235,7 @@ namespace black_cat
 
 					app_swap_frame(l_clock);
 
-					while (l_render_thread_state.m_signal.load(platform::bc_memory_order::acquire) != bc_render_loop_state::signal::ready)
+					while (m_output_window && l_render_thread_state.m_signal.load(platform::bc_memory_order::acquire) != bc_render_loop_state::signal::ready)
 					{
 						platform::bc_thread::current_thread_yield();
 					}
@@ -245,7 +250,8 @@ namespace black_cat
 					m_fps_sampler.add_sample(l_elapsed);
 					m_fps = 1000.0f / m_fps_sampler.average_value();
 
-					if (m_render_rate != -1) // Fixed render rate
+					// Fixed render rate
+					if (m_render_rate != -1)
 					{
 						const platform::bc_clock::small_time l_render_rate_fixed_elapsed = 1000.0f / static_cast<bcFLOAT>(m_render_rate);
 

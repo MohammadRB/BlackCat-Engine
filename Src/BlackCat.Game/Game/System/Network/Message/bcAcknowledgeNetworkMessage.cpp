@@ -6,6 +6,7 @@
 #include "Game/System/Network/Message/bcAcknowledgeNetworkMessage.h"
 #include "Game/System/Network/Server/bcNetworkServerManager.h"
 #include "Game/System/Network/Client/bcNetworkClientManager.h"
+#include "Game/bcJsonParse.h"
 
 namespace black_cat
 {
@@ -42,21 +43,23 @@ namespace black_cat
 
 		void bc_acknowledge_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
-			p_context.m_params.add_or_update("ack_id", core::bc_any(m_ack_id));
-			p_context.m_params.add_or_update("ack_data", core::bc_any(m_ack_data));
+			json_parse::bc_write(p_context.m_params, "ack_id", m_ack_id);
+			json_parse::bc_write(p_context.m_params, "ack_data", m_ack_data);
 		}
 
 		void bc_acknowledge_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)
 		{
-			auto* l_ack_id = p_context.m_params.find("ack_id")->second.as<bc_network_message_id>();
+			// we should use cast function because message id is defined to be uint32 but in json serialization it will be written as int32
+			auto [l_has_ack_id, l_ack_id] = p_context.m_params.find("ack_id")->second.cast_to_int();
 			auto* l_ack_data = p_context.m_params.find("ack_data")->second.as<core::bc_string>();
+
 			if (!l_ack_id)
 			{
 				core::bc_log(core::bc_log_type::error, bcL("Failed to deserialize acknowledge network message id"));
 				return;
 			}
 
-			m_ack_id = *l_ack_id;
+			m_ack_id = static_cast<bc_network_message_id>(l_ack_id);
 			m_ack_data = std::move(*l_ack_data);
 		}
 	}	

@@ -123,7 +123,7 @@ namespace black_cat
 
 		inline void bc_network_component::set_as_invalid_network_state() noexcept
 		{
-			m_network_id = bc_actor::invalid_id;
+			m_network_id = g_invalid_actor_network_id;
 		}
 
 		inline bc_network_type bc_network_component::get_network_type() const noexcept

@@ -12,7 +12,7 @@ namespace black_cat
 {
 	bc_xbot_weapon_attach_network_message::bc_xbot_weapon_attach_network_message() noexcept
 		: bci_network_message(message_name()),
-		m_actor_net_id(game::bc_actor::invalid_id),
+		m_actor_net_id(game::g_invalid_actor_network_id),
 		m_is_self_replicate(false)
 	{
 	}
@@ -227,7 +227,7 @@ namespace black_cat
 
 	bc_xbot_weapon_shoot_network_message::bc_xbot_weapon_shoot_network_message() noexcept
 		: bci_network_message(message_name()),
-		m_actor_net_id(game::bc_actor::invalid_id),
+		m_actor_net_id(game::g_invalid_actor_network_id),
 		m_is_self_replicate(false)
 	{
 	}

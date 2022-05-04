@@ -25,6 +25,7 @@ namespace black_cat
 		m_network_position(),
 		m_network_look_direction(),
 		m_network_look_side(0),
+		m_network_weapon_rotation(0),
 		m_network_forward_pressed(false),
 		m_network_backward_pressed(false),
 		m_network_right_pressed(false),
@@ -155,23 +156,23 @@ namespace black_cat
 		bc_xbot_actor_controller::initialize(p_context);
 		m_network_system = &p_context.m_game_system.get_network_system();
 	}
-
-	void bc_xbot_network_player_actor_controller::load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context)
-	{
-	}
-
+	
 	void bc_xbot_network_player_actor_controller::load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context)
 	{
+		core::bc_vector<core::bc_any> l_keys;
+		m_network_weapon_rotation = 0;
+
 		json_parse::bc_load(p_context.m_parameters, "pos", m_network_position);
 		json_parse::bc_load(p_context.m_parameters, "lk_dir", m_network_look_direction);
-		m_network_look_side = p_context.m_parameters.find("lk_sd")->second.as_throw<bcINT32>();
-		const auto* l_keys = &p_context.m_parameters.find("keys")->second.as_throw<core::bc_vector<core::bc_any>>();
-
-		m_network_forward_pressed = (*l_keys)[0].as_throw<bool>();
-		m_network_backward_pressed = (*l_keys)[1].as_throw<bool>();
-		m_network_right_pressed = (*l_keys)[2].as_throw<bool>();
-		m_network_left_pressed = (*l_keys)[3].as_throw<bool>();
-		m_network_walk_pressed = (*l_keys)[4].as_throw<bool>();
+		json_parse::bc_load(p_context.m_parameters, "lk_sd", m_network_look_side);
+		json_parse::bc_load(p_context.m_parameters, "wpn_r", m_network_weapon_rotation);
+		json_parse::bc_load(p_context.m_parameters, "keys", l_keys);
+		
+		m_network_forward_pressed = l_keys[0].as_throw<bool>();
+		m_network_backward_pressed = l_keys[1].as_throw<bool>();
+		m_network_right_pressed = l_keys[2].as_throw<bool>();
+		m_network_left_pressed = l_keys[3].as_throw<bool>();
+		m_network_walk_pressed = l_keys[4].as_throw<bool>();
 		
 		get_network_component().add_extrapolating_value("lk_dir", m_network_look_direction);
 
@@ -179,25 +180,25 @@ namespace black_cat
 		{
 			m_network_initial_data = core::bc_make_unique<_bc_xbot_network_initial_data>();
 
-			const auto l_weapon_param = p_context.m_parameters.find("wpn");
-			if(l_weapon_param != std::end(p_context.m_parameters))
-			{
-				m_network_initial_data->m_network_weapon_name = std::move(l_weapon_param->second.as_throw<core::bc_string>());
-			}
+			const core::bc_string* l_weapon = nullptr;
+			const bool* l_ragdoll = nullptr;
 
-			const auto l_ragdoll_param = p_context.m_parameters.find("rag");
-			if(l_ragdoll_param != std::end(p_context.m_parameters))
+			json_parse::bc_load(p_context.m_parameters, "wpn", l_weapon);
+			json_parse::bc_load(p_context.m_parameters, "rag", l_ragdoll);
+			
+			if(l_weapon)
+			{
+				m_network_initial_data->m_network_weapon_name = *l_weapon;
+			}
+			
+			if(l_ragdoll)
 			{
 				m_network_initial_data->m_network_ragdoll_enabled = true;
 				json_parse::bc_load(p_context.m_parameters, "rag", m_network_initial_data->m_ragdoll_transforms);
 			}
 		}
 	}
-
-	void bc_xbot_network_player_actor_controller::write_origin_network_instance(const game::bc_actor_component_network_write_context& p_context)
-	{
-	}
-
+	
 	void bc_xbot_network_player_actor_controller::write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context)
 	{
 		json_parse::bc_write(p_context.m_parameters, "pos", m_network_position);
@@ -216,14 +217,18 @@ namespace black_cat
 			}))
 		);
 
+		if (m_network_weapon_rotation > 0.f)
+		{
+			json_parse::bc_write(p_context.m_parameters, "wpn_r", m_network_weapon_rotation);
+		}
+
 		if (p_context.m_is_replication_write)
 		{
-			const auto* l_weapon = get_weapon();
-			if (l_weapon)
+			if (const auto* l_weapon = get_weapon())
 			{
 				const auto* l_mediate_component = l_weapon->m_actor.get_component<game::bc_mediate_component>();
-				core::bc_string l_weapon_entity_name = l_mediate_component->get_entity_name();
-				p_context.m_parameters.add_or_update("wpn", core::bc_any(l_weapon_entity_name));
+				const core::bc_string l_weapon_entity_name = l_mediate_component->get_entity_name();
+				json_parse::bc_write(p_context.m_parameters, "wpn", l_weapon_entity_name);
 			}
 
 			if (get_ragdoll_enabled())
@@ -255,14 +260,10 @@ namespace black_cat
 
 		m_network_initial_data.reset();
 	}
-
-	void bc_xbot_network_player_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
-	{
-	}
-
+	
 	void bc_xbot_network_player_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
 	{
-		if (p_context.m_is_double_update)
+		if (!get_scene() || p_context.m_is_double_update)
 		{
 			return;
 		}
@@ -276,6 +277,8 @@ namespace black_cat
 		{
 			m_look_velocity.release(p_context.m_clock.m_elapsed_second);
 		}
+
+		set_weapon_rotation(m_network_weapon_rotation);
 
 		bc_xbot_actor_controller::update(bc_xbot_input_update_context1
 		{

@@ -91,8 +91,8 @@ namespace black_cat
 				throw std::out_of_range("Index out of range");
 			}
 
-			const bcINT32 l_cell = p_index / (sizeof(block_t) * 8);
-			const bcINT32 l_bit = p_index % (sizeof(block_t) * 8);
+			const auto l_cell = p_index / (sizeof(block_t) * 8U);
+			const auto l_bit = p_index % (sizeof(block_t) * 8U);
 
 			if (p_value)
 			{
@@ -104,35 +104,9 @@ namespace black_cat
 			}
 		}
 
-		void bc_bit_vector::make_false(bcUINT32 p_index)
-		{
-			if (p_index >= m_capacity)
-			{
-				throw std::out_of_range("Index out of range");
-			}
-
-			const bcINT32 l_cell = p_index / (sizeof(block_t) * 8);
-			const bcINT32 l_bit = p_index % (sizeof(block_t) * 8);
-
-			m_blocks[l_cell] = (m_blocks[l_cell] & (~(static_cast<block_t>(1) << l_bit)));
-		}
-
 		void bc_bit_vector::make_all_false() noexcept
 		{
 			std::memset(m_blocks, static_cast<bcBYTE>(0), m_block_count * sizeof(block_t));
-		}
-
-		void bc_bit_vector::make_true(bcUINT32 p_index) noexcept
-		{
-			if (p_index >= m_capacity)
-			{
-				throw std::out_of_range("Index out of range");
-			}
-
-			const bcINT32 l_cell = p_index / (sizeof(block_t) * 8);
-			const bcINT32 l_bit = p_index % (sizeof(block_t) * 8);
-
-			m_blocks[l_cell] = (m_blocks[l_cell] | (static_cast<block_t>(1) << l_bit));
 		}
 
 		void bc_bit_vector::make_all_true() noexcept
