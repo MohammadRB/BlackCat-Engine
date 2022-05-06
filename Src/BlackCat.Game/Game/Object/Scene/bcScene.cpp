@@ -195,10 +195,10 @@ namespace black_cat
 
 		void bc_scene::update_actor(bc_actor p_actor) noexcept
 		{
-			{
+			/*{
 				platform::bc_spin_mutex_guard l_actors_to_remove_lock_guard(m_actors_to_remove_lock);
 
-				const auto l_to_remove_ite = std::find_if
+				const auto l_exist_in_remove_list = std::any_of
 				(
 					std::begin(m_actors_to_remove),
 					std::end(m_actors_to_remove),
@@ -207,33 +207,26 @@ namespace black_cat
 						return std::get<bc_actor>(p_entry) == p_actor;
 					}
 				);
-				if (l_to_remove_ite != std::end(m_actors_to_remove))
+				if (l_exist_in_remove_list)
 				{
 					return;
 				}
-			}
+			}*/
 
 			{
 				platform::bc_hybrid_mutex_guard l_changed_actors_lock_guard(m_changed_actors_lock, platform::bc_lock_operation::light);
 
-				const auto l_to_update_remove_ite = std::find_if
+				const auto l_exist_in_update_list = std::any_of
 				(
 					std::begin(m_changed_actors),
 					std::end(m_changed_actors),
 					[&p_actor](decltype(m_changed_actors)::reference p_entry)
 					{
 						auto& [l_state, l_actor] = p_entry;
-						if(l_actor != p_actor)
-						{
-							return false;
-						}
-						
-						const auto l_is_in_update_list = l_state == _bc_scene_actor_state::update;
-						const auto l_is_in_remove_list = l_state == _bc_scene_actor_state::remove_from_graph || l_state == _bc_scene_actor_state::removed_from_graph;
-						return l_is_in_update_list || l_is_in_remove_list;
+						return l_actor == p_actor;
 					}
 				);
-				if (l_to_update_remove_ite != std::end(m_changed_actors))
+				if (l_exist_in_update_list)
 				{
 					return;
 				}

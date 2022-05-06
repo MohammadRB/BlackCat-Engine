@@ -163,7 +163,12 @@ namespace black_cat
 		
 		m_game_system->render_game(p_clock);
 		application_render(bc_application_render_context{ p_clock,*m_query_manager, l_render_system });
+
+		m_render_watch.stop();
+
 		l_render_system.present();
+
+		m_render_watch.start();
 
 		core::bc_event_frame_render_finish l_event_frame_finish;
 		l_event_manager.process_event(l_event_frame_finish);

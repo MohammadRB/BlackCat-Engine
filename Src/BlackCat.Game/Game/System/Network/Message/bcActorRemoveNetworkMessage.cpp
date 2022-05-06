@@ -6,6 +6,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/System/Network/Message/bcActorRemoveNetworkMessage.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
+#include "Game/bcJsonParse.h"
 
 namespace black_cat
 {
@@ -31,7 +32,7 @@ namespace black_cat
 
 		void bc_actor_remove_network_message::execute(const bc_network_message_client_context& p_context) noexcept
 		{
-			if(m_actor == nullptr)
+			if(!m_actor.is_valid())
 			{
 				return;
 			}
@@ -41,7 +42,7 @@ namespace black_cat
 
 		void bc_actor_remove_network_message::execute(const bc_network_message_server_context& p_context) noexcept
 		{
-			if(m_actor == nullptr)
+			if(!m_actor.is_valid())
 			{
 				return;
 			}
@@ -55,22 +56,22 @@ namespace black_cat
 
 		void bc_actor_remove_network_message::serialize_message(const bc_network_message_serialization_context& p_context)
 		{
-			p_context.m_params.add_or_update("nid", core::bc_any(m_net_id));
+			json_parse::bc_write(p_context.m_params, "nid", m_net_id);
 		}
 
 		void bc_actor_remove_network_message::deserialize_message(const bc_network_message_deserialization_context& p_context)
 		{
-			const auto* l_actor_network_id = p_context.m_params.find("nid")->second.as<bc_actor_network_id>();
-			if (!l_actor_network_id || *l_actor_network_id == g_invalid_actor_network_id)
+			const auto l_has_net_id = json_parse::bc_load(p_context.m_params, "nid", m_net_id);
+			if (!l_has_net_id || m_net_id == g_invalid_actor_network_id)
 			{
-				core::bc_log(core::bc_log_type::error, bcL("Failed to deserialize actor network id in remove network message"));
+				core::bc_log(core::bc_log_type::error) << bcL("Failed to deserialize actor network id in remove network message") << core::bc_lend;
 				return;
 			}
 
-			m_actor = p_context.m_visitor.get_actor(*l_actor_network_id).m_actor;
+			m_actor = p_context.m_visitor.get_actor(m_net_id).m_actor;
 			if (!m_actor.is_valid())
 			{
-				core::bc_log(core::bc_log_type::warning, bcL("Failed to find network actor in remove network message"));
+				core::bc_log(core::bc_log_type::debug) << bcL("Failed to find network actor with network id ") << m_net_id << bcL(" in remove network message") << core::bc_lend;
 				return;
 			}
 		}

@@ -79,6 +79,8 @@ namespace black_cat
 
 			bc_octal_tree_graph_node& operator=(bc_octal_tree_graph_node&&) noexcept = default;
 
+			bool is_leaf_node() const noexcept;
+
 			iterator begin() noexcept override;
 
 			const_iterator begin() const noexcept override;
@@ -93,6 +95,8 @@ namespace black_cat
 
 			physics::bc_bound_box get_bound_box() const noexcept override;
 
+			bcSIZE get_actors_count() const noexcept override;
+
 			bool contains_actor(bc_actor& p_actor) const noexcept override;
 
 			bool intersects_actor(bc_actor& p_actor) const noexcept override;
@@ -100,8 +104,6 @@ namespace black_cat
 			void get_actor(const physics::bc_ray& p_ray, bc_scene_graph_ray_query_hit& p_result, bc_scene_graph_ray_query_filter_callback* p_filter = nullptr) const noexcept override;
 
 			void get_actors(const bc_camera_frustum& p_camera_frustum, bc_scene_graph_buffer& p_buffer) const noexcept override;
-
-			bool is_leaf_node() const noexcept;
 
 			bool add_actor(bc_actor& p_actor) noexcept override;
 

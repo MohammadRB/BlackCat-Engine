@@ -114,6 +114,8 @@ namespace black_cat
 			
 			bc_network_server_manager_client* _find_client(const platform::bc_network_address& p_address);
 
+			bc_network_server_manager_client* _find_client(bc_network_client_id p_id);
+
 			void _event_handler(core::bci_event& p_event);
 
 			core::bc_event_manager* m_event_manager;

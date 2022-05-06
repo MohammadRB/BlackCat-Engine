@@ -160,10 +160,12 @@ namespace black_cat
 		void bc_network_server_manager::actor_removed(bc_actor& p_actor)
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
+			const auto l_client_network_id = l_network_component->get_network_client_id();
 			const auto l_network_id = l_network_component->get_network_id();
 
 			if (l_network_id == g_invalid_actor_network_id)
 			{
+				core::bc_log(core::bc_log_type::error, bcL("actor with invalid network id cannot be removed from network sync process"));
 				return;
 			}
 
@@ -180,6 +182,16 @@ namespace black_cat
 				m_network_actors.erase(l_ite);
 			}
 
+			if(l_client_network_id != bc_network_client::invalid_id)
+			{
+				auto* l_client = _find_client(l_client_network_id);
+
+				{
+					platform::bc_lock_guard l_lock(*l_client);
+					l_client->erase_replicated_actor(p_actor);
+				}
+			}
+
 			l_network_component->set_as_invalid_network_state();
 		}
 
@@ -187,7 +199,7 @@ namespace black_cat
 		{
 			if (get_network_state() != bc_network_state::connected)
 			{
-				core::bc_log(core::bc_log_type::warning, bcL("Network is in error state. Message will be discarded."));
+				core::bc_log(core::bc_log_type::error, bcL("Network is in error state. Message will be discarded."));
 				return;
 			}
 
@@ -202,7 +214,7 @@ namespace black_cat
 		{
 			if(get_network_state() != bc_network_state::connected)
 			{
-				core::bc_log(core::bc_log_type::warning, bcL("Network is in error state. message will be discarded."));
+				core::bc_log(core::bc_log_type::error, bcL("Network is in error state. message will be discarded."));
 				return;
 			}
 
@@ -503,6 +515,12 @@ namespace black_cat
 		void bc_network_server_manager::remove_actor(const platform::bc_network_address& p_address, bc_actor& p_actor)
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
+			if (!l_network_component || l_network_component->get_network_id() == g_invalid_actor_network_id)
+			{
+				core::bc_log(core::bc_log_type::error, bcL("actor without network component or invalid network id cannot be removed from network sync process"));
+				return;
+			}
+
 			const auto l_actor_network_id = l_network_component->get_network_id();
 
 			{
@@ -511,7 +529,7 @@ namespace black_cat
 				const auto l_ite = m_network_actors.find(l_actor_network_id);
 				if (l_ite == std::cend(m_network_actors))
 				{
-					core::bc_log(core::bc_log_type::warning, bcL("actor was not found in network list to remove"));
+					core::bc_log(core::bc_log_type::error, bcL("actor was not found in network list to remove"));
 					return;
 				}
 
@@ -519,6 +537,7 @@ namespace black_cat
 			}
 
 			auto* l_client = _find_client(p_address);
+
 			{
 				platform::bc_lock_guard l_lock(*l_client);
 				l_client->erase_replicated_actor(p_actor);
@@ -835,6 +854,29 @@ namespace black_cat
 			return nullptr;
 		}
 
+		bc_network_server_manager_client* bc_network_server_manager::_find_client(bc_network_client_id p_id)
+		{
+			{
+				platform::bc_shared_mutex_shared_guard l_client_lock(m_clients_lock);
+
+				const auto l_ite = std::find_if
+				(
+					std::begin(m_clients),
+					std::end(m_clients),
+					[&](auto& p_client)
+					{
+						return p_id == p_client.get_id();
+					}
+				);
+				if (l_ite == std::end(m_clients))
+				{
+					return nullptr;
+				}
+
+				return &*l_ite;
+			}
+		}
+
 		bc_network_server_manager_client* bc_network_server_manager::_find_client(const platform::bc_network_address& p_address)
 		{
 			{
@@ -862,7 +904,7 @@ namespace black_cat
 		{
 			if(const auto* l_scene_change_event = core::bci_event::as<bc_event_scene_change>(p_event))
 			{
-				// TODO remove network actors
+				// Network actors should have been removed by their network component
 				m_scene_name = l_scene_change_event->get_scene()->get_name();
 				send_message(bc_scene_change_network_message(m_scene_name));
 

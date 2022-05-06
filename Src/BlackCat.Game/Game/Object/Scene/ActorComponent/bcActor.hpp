@@ -148,17 +148,7 @@ namespace black_cat
 		{
 			return m_id != p_other.m_id;
 		}
-
-		inline bool bc_actor::operator==(std::nullptr_t) const noexcept
-		{
-			return !m_id.is_valid();
-		}
-
-		inline bool bc_actor::operator!=(std::nullptr_t) const noexcept
-		{
-			return m_id.is_valid();
-		}
-
+		
 		inline bc_actor_component_manager& bc_actor::_get_manager() noexcept
 		{
 			static auto* s_manager = core::bc_get_service<bc_actor_component_manager>();

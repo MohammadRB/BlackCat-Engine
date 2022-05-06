@@ -11,11 +11,8 @@ namespace box
 {
 	void bx_player_list_service::scene_changed(game::bc_scene* p_scene)
 	{
-		if(!p_scene)
-		{
-			m_red_player_seats.clear();
-			m_blue_player_seats.clear();
-		}
+		m_red_player_seats.clear();
+		m_blue_player_seats.clear();
 
 		const auto l_player_seat_actors = p_scene->get_scene_graph().get_actors<bx_player_seat_component>();
 

@@ -49,7 +49,6 @@ namespace black_cat
 {
 	bc_xbot_actor_controller::bc_xbot_actor_controller() noexcept
 		: m_physics_system(nullptr),
-		m_scene(nullptr),
 		m_skinned_mesh_component(nullptr),
 		m_rigid_controller_component(nullptr),
 		m_human_ragdoll_component(nullptr),
@@ -75,12 +74,11 @@ namespace black_cat
 			if (m_state_machine->m_state.m_grenade_throw_time >= m_grenade_anim_attach_time &&
 				m_state_machine->m_state.m_grenade_throw_time <= m_grenade_anim_throw_time)
 			{
-				if (m_grenade->m_actor == nullptr)
+				if (!m_grenade->m_actor.is_valid())
 				{
 					m_grenade->m_actor = get_scene()->create_actor(m_grenade->m_entity_name, core::bc_matrix4f::translation_matrix(m_position));
 
-					auto* l_rigid_dynamic_component = m_grenade->m_actor.get_component<game::bc_rigid_dynamic_component>();
-					if (l_rigid_dynamic_component)
+					if (auto* l_rigid_dynamic_component = m_grenade->m_actor.get_component<game::bc_rigid_dynamic_component>())
 					{
 						l_rigid_dynamic_component->set_enable(false);
 						bc_actor_unmark_for_checkpoint(m_grenade->m_actor);
@@ -101,7 +99,7 @@ namespace black_cat
 				m_grenade->m_actor.add_event(game::bc_world_transform_actor_event(l_grenade_transform));
 				m_grenade->m_actor.mark_for_double_update();
 			}
-			else if (m_grenade->m_actor != nullptr)
+			else if (m_grenade->m_actor.is_valid())
 			{
 				throw_grenade(m_grenade->m_actor);
 				m_grenade.reset();
@@ -252,10 +250,8 @@ namespace black_cat
 	{
 		const auto* l_mediate_component = p_context.m_actor.get_component<game::bc_mediate_component>();
 		const auto l_bound_box_extends = l_mediate_component->get_bound_box().get_half_extends();
-
-		m_scene = &p_scene;
+		
 		m_bound_box_max_side_length = std::max({ l_bound_box_extends.x, l_bound_box_extends.y, l_bound_box_extends.z }) * 2;
-
 		m_px_controller_material = p_context.m_game_system.get_render_system().get_material_manager().get_default_collider_material().m_px_material;
 		m_rigid_controller_component->reset_controller(create_px_controller());
 
@@ -289,7 +285,7 @@ namespace black_cat
 	
 	void bc_xbot_actor_controller::update(const bc_xbot_input_update_context& p_context)
 	{
-		if (!m_scene)
+		if (!get_scene())
 		{
 			return;
 		}
@@ -380,7 +376,7 @@ namespace black_cat
 
 	void bc_xbot_actor_controller::update(const bc_xbot_input_update_context1& p_context)
 	{
-		if (!m_scene)
+		if (!get_scene())
 		{
 			return;
 		}
@@ -461,8 +457,10 @@ namespace black_cat
 
 	void bc_xbot_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
+		auto* l_scene = get_scene();
+
 		{
-			physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
+			physics::bc_scene_lock l_lock(&l_scene->get_px_scene());
 
 			auto* l_rigid_controller_component = p_context.m_actor.get_component<game::bc_rigid_controller_component>();
 			l_rigid_controller_component->reset_controller();
@@ -470,17 +468,17 @@ namespace black_cat
 
 		if (m_weapon.has_value())
 		{
-			m_scene->remove_actor(m_weapon->m_actor);
+			l_scene->remove_actor(m_weapon->m_actor);
 			m_weapon.reset();
 		}
 
 		if(m_grenade.has_value())
 		{
-			m_scene->remove_actor(m_grenade->m_actor);
+			l_scene->remove_actor(m_grenade->m_actor);
 			m_grenade.reset();
 		}
 
-		m_scene = nullptr;
+		l_scene = nullptr;
 		m_state_machine = nullptr;
 	}
 
@@ -497,7 +495,7 @@ namespace black_cat
 			if (l_px_controller.is_valid())
 			{
 				{
-					physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
+					physics::bc_scene_lock l_lock(&get_scene()->get_px_scene());
 					l_px_controller.set_foot_position(m_position - m_local_origin);
 				}
 			}
@@ -518,9 +516,10 @@ namespace black_cat
 		                                  .with_hit_callback(this);
 
 		{
-			physics::bc_scene_lock l_lock(&m_scene->get_px_scene());
+			auto* l_scene = get_scene();
+			physics::bc_scene_lock l_lock(&l_scene->get_px_scene());
 
-			auto l_px_controller = m_scene->get_px_scene().create_ccontroller(l_px_controller_desc);
+			auto l_px_controller = l_scene->get_px_scene().create_ccontroller(l_px_controller_desc);
 			l_px_controller->set_foot_position(m_position - m_local_origin);
 
 			auto l_px_controller_actor = l_px_controller->get_actor();
@@ -603,7 +602,7 @@ namespace black_cat
 			}
 		}
 
-		m_scene->remove_actor(m_weapon->m_actor);
+		get_scene()->remove_actor(m_weapon->m_actor);
 		m_weapon.reset();
 	}
 
@@ -644,7 +643,7 @@ namespace black_cat
 		}
 
 		const auto l_bullet = m_weapon->m_component->shoot(m_state_machine->m_state.m_look_direction, p_player_id);
-		m_scene->add_bullet(l_bullet);
+		get_scene()->add_bullet(l_bullet);
 
 		return true;
 	}
@@ -938,7 +937,7 @@ namespace black_cat
 			}
 		);
 
-		auto& l_px_scene = m_scene->get_px_scene();
+		auto& l_px_scene = get_scene()->get_px_scene();
 		auto l_px_controller = m_rigid_controller_component->get_controller();
 
 		{
@@ -952,7 +951,7 @@ namespace black_cat
 
 	void bc_xbot_actor_controller::_update_px_position(const core::bc_vector3f& p_position)
 	{
-		auto& l_px_scene = m_scene->get_px_scene();
+		auto& l_px_scene = get_scene()->get_px_scene();
 		auto l_px_controller = m_rigid_controller_component->get_controller();
 		
 		{

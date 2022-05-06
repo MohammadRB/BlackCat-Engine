@@ -30,7 +30,7 @@ namespace black_cat
 			virtual ~bci_actor_controller() = 0;
 
 		protected:
-			bc_scene* get_scene() const noexcept;
+			bc_scene* get_scene() noexcept;
 					
 			virtual void initialize(const bc_actor_component_initialize_context& p_context);
 
@@ -100,7 +100,7 @@ namespace black_cat
 		{
 		}
 
-		inline bc_scene* bci_actor_controller::get_scene() const noexcept
+		inline bc_scene* bci_actor_controller::get_scene() noexcept
 		{
 			return m_scene;
 		}

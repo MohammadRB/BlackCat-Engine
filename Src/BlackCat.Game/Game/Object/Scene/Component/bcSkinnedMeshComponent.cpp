@@ -88,16 +88,16 @@ namespace black_cat
 		{
 			if(p_animation_job)
 			{
-				m_animation_manager->schedule_job(*p_animation_job);
 				m_animation_played = true;
+				m_animation_manager->schedule_job(*p_animation_job);
 			}
 			else
 			{
 				auto l_actor = get_actor();
 				const auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
-				
-				_set_world_transform(l_actor, l_mediate_component->get_world_transform());
+
 				m_animation_played = false;
+				_set_world_transform(l_actor, l_mediate_component->get_world_transform());
 			}
 		}
 
@@ -150,22 +150,13 @@ namespace black_cat
 
 		void bc_skinned_mesh_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
-			if (l_world_transform_event)
+			if (const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event))
 			{
 				_set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());
 				return;
 			}
-
-			/*const auto* l_bound_box_event = core::bci_message::as<bc_bound_box_changed_actor_event>(p_context.m_event);
-			if (l_bound_box_event)
-			{
-				bc_mesh_component::update_view_distance(l_bound_box_event->get_bound_box());
-				return;
-			}*/
-
-			const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event);
-			if (l_bullet_hit_event)
+			
+			if (const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event))
 			{
 				bc_mesh_component::process_bullet_hit
 				(

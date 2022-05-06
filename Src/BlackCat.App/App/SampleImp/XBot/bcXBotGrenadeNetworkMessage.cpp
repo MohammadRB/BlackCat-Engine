@@ -43,7 +43,7 @@ namespace black_cat
 
 	void bc_xbot_start_grenade_throw_network_message::execute(const game::bc_network_message_server_context& p_context) noexcept
 	{
-		if (m_is_self_replicate || m_actor == nullptr)
+		if (m_is_self_replicate || !m_actor.is_valid())
 		{
 			return;
 		}
@@ -56,7 +56,7 @@ namespace black_cat
 
 	void bc_xbot_start_grenade_throw_network_message::execute(const game::bc_network_message_client_context& p_context) noexcept
 	{
-		if (m_is_self_replicate || m_actor == nullptr)
+		if (m_is_self_replicate || !m_actor.is_valid())
 		{
 			return;
 		}

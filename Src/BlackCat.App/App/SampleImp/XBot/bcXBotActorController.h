@@ -178,7 +178,6 @@ namespace black_cat
 
 		physics::bc_material m_px_controller_material;
 		game::bc_physics_system* m_physics_system;
-		game::bc_scene* m_scene;
 		game::bc_actor m_actor;
 		game::bc_skinned_mesh_component* m_skinned_mesh_component;
 		game::bc_rigid_controller_component* m_rigid_controller_component;
@@ -217,11 +216,6 @@ namespace black_cat
 		core::bc_nullable<bc_xbot_grenade> m_grenade;
 		sound::bc_channel m_running_sound;
 	};
-
-	inline game::bc_scene* bc_xbot_actor_controller::get_scene() noexcept
-	{
-		return m_scene;
-	}
 	
 	inline game::bc_actor& bc_xbot_actor_controller::get_actor() noexcept
 	{

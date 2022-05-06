@@ -327,11 +327,12 @@ namespace black_cat
 
 		void bc_game_system::_change_scene(const platform::bc_clock::update_param& p_clock)
 		{
+			const auto l_is_changed = m_scene != m_new_scene;
 			m_scene = std::move(m_new_scene);
 			m_new_scene = nullptr;
 			m_scene_changed = false;
 
-			if (m_scene)
+			if (m_scene && l_is_changed)
 			{
 				// Process actor events to apply initial transforms and update scene graph so actors can be queryable in scene change event.
 				auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
@@ -352,8 +353,11 @@ namespace black_cat
 				}
 			}
 
-			bc_event_scene_change l_scene_change_event(m_scene.get());
-			m_event_manager->process_event(l_scene_change_event);
+			if(l_is_changed)
+			{
+				bc_event_scene_change l_scene_change_event(m_scene.get());
+				m_event_manager->process_event(l_scene_change_event);
+			}
 		}
 
 		void bc_game_system::_event_handler(core::bci_event& p_event)

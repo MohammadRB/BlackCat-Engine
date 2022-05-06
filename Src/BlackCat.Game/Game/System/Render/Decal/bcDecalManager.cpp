@@ -114,7 +114,7 @@ namespace black_cat
 				else
 				{
 					l_ite->second = std::move(l_desc);
-					core::bc_log(core::bc_log_type::warning) << "decal description with name '" << *l_decal->m_name << "' already exist. old decal will be replaced." << core::bc_lend;
+					core::bc_log(core::bc_log_type::debug) << "decal description with name '" << *l_decal->m_name << "' already exist. old decal will be replaced." << core::bc_lend;
 				}
 			}
 		}

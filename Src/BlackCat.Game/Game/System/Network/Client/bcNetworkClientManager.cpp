@@ -246,7 +246,7 @@ namespace black_cat
 		{
 			if (get_network_state() != bc_network_state::connected)
 			{
-				core::bc_log(core::bc_log_type::warning, bcL("Network is in error state. message will be discarded."));
+				core::bc_log(core::bc_log_type::error, bcL("Network is in error state. message will be discarded."));
 				return;
 			}
 
@@ -454,7 +454,7 @@ namespace black_cat
 				const auto l_net_actors_ite = m_network_actors.find(l_network_id);
 				if(l_net_actors_ite == std::cend(m_network_actors))
 				{
-					core::bc_log(core::bc_log_type::warning, bcL("actor was not found in network list to remove"));
+					core::bc_log(core::bc_log_type::error, bcL("actor was not found in network list to remove"));
 					return;
 				}
 

@@ -96,7 +96,7 @@ namespace box
 
 		void _show_game_scores();
 
-		void _reset_game(game::bc_scene& p_scene);
+		void _reset_game(game::bc_scene& p_scene, bool p_restore_scene_checkpoint);
 		
 		void _respawn_dead_players(const platform::bc_clock::update_param& p_clock);
 

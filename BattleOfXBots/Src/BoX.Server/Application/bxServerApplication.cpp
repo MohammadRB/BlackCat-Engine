@@ -142,7 +142,7 @@ namespace box
 
 			if(m_current_scores_time <= 0)
 			{
-				_reset_game(*m_scene);
+				_reset_game(*m_scene, true);
 			}
 		}
 
@@ -242,8 +242,8 @@ namespace box
 
 		if(m_scene)
 		{
-			m_state = bx_app_state::game_started;
 			_create_scene_checkpoint(*m_scene);
+			_reset_game(*m_scene, false);
 		}
 		else
 		{
@@ -385,14 +385,17 @@ namespace box
 		m_network_system->send_message(bx_game_scores_network_message());
 	}
 
-	void bx_server_application::_reset_game(game::bc_scene& p_scene)
+	void bx_server_application::_reset_game(game::bc_scene& p_scene, bool p_restore_scene_checkpoint)
 	{
 		m_current_game_time = m_game_time;
 		m_current_scores_time = m_scores_time;
 		m_state = bx_app_state::game_started;
 		m_player_service->reset_players();
 
-		_restore_scene_checkpoint(p_scene);
+		if(p_restore_scene_checkpoint)
+		{
+			_restore_scene_checkpoint(p_scene);
+		}
 
 		m_network_system->send_message(bx_game_reset_network_message());
 	}

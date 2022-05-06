@@ -38,7 +38,7 @@ namespace box
 
 	void bx_player_killed_network_message::execute(const game::bc_network_message_client_context& p_context) noexcept
 	{
-		if (m_actor == nullptr)
+		if (!m_actor.is_valid())
 		{
 			return;
 		}

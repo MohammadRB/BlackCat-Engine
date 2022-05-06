@@ -15,9 +15,13 @@ namespace black_cat
 
 		enum class bc_log_type : bcUBYTE
 		{
+			// Informational messages which occur in normal application flow
 			info = 1,
+			// Informational messages which are used to troubleshoot issues which cannot be covered during debugging 
 			debug = 2,
+			// Runtime issues which require attention if is repeated
 			warning = 4,
+			// Runtime issues which require intervention
 			error = 8,
 			only_file = 16,
 			all = info | debug | warning | error

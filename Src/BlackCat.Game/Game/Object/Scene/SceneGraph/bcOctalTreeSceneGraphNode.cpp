@@ -172,6 +172,11 @@ namespace black_cat
 			}
 		}
 
+		bool bc_octal_tree_graph_node::is_leaf_node() const noexcept
+		{
+			return m_top_left_back == nullptr;
+		}
+
 		bci_scene_graph_node::iterator bc_octal_tree_graph_node::begin() noexcept
 		{
 			auto* l_min_node = _get_min_node();
@@ -223,6 +228,11 @@ namespace black_cat
 		physics::bc_bound_box bc_octal_tree_graph_node::get_bound_box() const noexcept
 		{
 			return m_bound_box;
+		}
+
+		bcSIZE bc_octal_tree_graph_node::get_actors_count() const noexcept
+		{
+			return m_actors_count.load(platform::bc_memory_order::relaxed);
 		}
 
 		bool bc_octal_tree_graph_node::contains_actor(bc_actor& p_actor) const noexcept
@@ -377,12 +387,7 @@ namespace black_cat
 				m_bottom_right_back->get_actors(p_camera_frustum, p_buffer);
 			}
 		}
-
-		bool bc_octal_tree_graph_node::is_leaf_node() const noexcept
-		{
-			return m_top_left_back == nullptr;
-		}
-
+		
 		bool bc_octal_tree_graph_node::add_actor(bc_actor& p_actor) noexcept
 		{
 			const auto& l_actor_bound_box = _get_actor_bound_box(p_actor);

@@ -168,9 +168,9 @@ namespace black_cat
 			try
 			{
 				const platform::bc_clock::small_time l_min_update_elapsed = 1000.0f / static_cast<bcFLOAT>(m_min_update_rate);
-				platform::bc_clock::big_time l_total_elapsed = 0;
-				platform::bc_clock::small_time l_elapsed = 0;
-				platform::bc_clock::small_time l_average_elapsed = 0;
+				platform::bc_clock::big_time l_clock_total_elapsed = 0;
+				platform::bc_clock::small_time l_clock_elapsed = 0;
+				platform::bc_clock::small_time l_clock_average_elapsed = 0;
 				platform::bc_clock::small_time l_local_elapsed = 0;
 				platform::bc_clock::small_time l_sleep_time_error = 0;
 				core::bc_stop_watch l_sleep_watch;
@@ -183,16 +183,16 @@ namespace black_cat
 					m_frame_watch.start();
 					m_clock->update();
 					
-					l_total_elapsed = m_clock->get_total_elapsed();
-					l_elapsed = m_clock->get_elapsed();
-					l_average_elapsed = m_fps_sampler.average_value();
+					l_clock_total_elapsed = m_clock->get_total_elapsed();
+					l_clock_elapsed = m_clock->get_elapsed();
+					l_clock_average_elapsed = m_fps_sampler.average_value();
 					
-					if (l_elapsed > 1000.0f)
+					if (l_clock_elapsed > 1000.0f)
 					{
-						l_elapsed = l_min_update_elapsed;
+						l_clock_elapsed = l_min_update_elapsed;
 					}
 
-					const auto l_clock = platform::bc_clock::update_param(l_total_elapsed, l_elapsed, l_average_elapsed);
+					const auto l_clock = platform::bc_clock::update_param(l_clock_total_elapsed, l_clock_elapsed, l_clock_average_elapsed);
 
 					m_app->update();
 					if(m_output_window)
@@ -214,13 +214,13 @@ namespace black_cat
 					l_render_thread_state.m_clock = l_clock;
 					l_render_thread_state.m_signal.store(bc_render_loop_state::signal::render, platform::bc_memory_order::release);
 
-					l_local_elapsed += l_elapsed;
+					l_local_elapsed += l_clock_elapsed;
 					const auto l_update_call_count = std::max(static_cast<bcUINT32>(std::floor(l_local_elapsed / l_min_update_elapsed)), 1U);
 					auto l_update_call_counter = l_update_call_count;
 
 					while (l_update_call_counter > 0)
 					{
-						app_update(platform::bc_clock::update_param(l_total_elapsed, l_elapsed, l_average_elapsed, std::min(l_elapsed, l_min_update_elapsed)), l_update_call_counter > 1);
+						app_update(platform::bc_clock::update_param(l_clock_total_elapsed, l_clock_elapsed, l_clock_average_elapsed, std::min(l_clock_elapsed, l_min_update_elapsed)), l_update_call_counter > 1);
 						--l_update_call_counter;
 					}
 
@@ -247,7 +247,7 @@ namespace black_cat
 					m_frame_watch.stop();
 					const auto l_frame_elapsed = m_frame_watch.restart();
 
-					m_fps_sampler.add_sample(l_elapsed);
+					m_fps_sampler.add_sample(l_clock_elapsed);
 					m_fps = 1000.0f / m_fps_sampler.average_value();
 
 					// Fixed render rate

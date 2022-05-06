@@ -65,6 +65,8 @@ namespace black_cat
 
 			virtual physics::bc_bound_box get_bound_box() const noexcept = 0;
 
+			virtual bcSIZE get_actors_count() const noexcept = 0;
+
 			virtual bool contains_actor(bc_actor& p_actor) const noexcept = 0;
 
 			virtual bool intersects_actor(bc_actor& p_actor) const noexcept = 0;

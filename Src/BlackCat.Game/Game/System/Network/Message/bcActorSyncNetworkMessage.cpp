@@ -60,7 +60,7 @@ namespace black_cat
 
 			if(!m_actor.is_valid())
 			{
-				core::bc_log(core::bc_log_type::warning) << "Failed to find actor with network id " << *l_actor_network_id << " in sync network message" << core::bc_lend;
+				core::bc_log(core::bc_log_type::debug) << "Failed to find actor with network id " << *l_actor_network_id << " in sync network message" << core::bc_lend;
 				return;
 			}
 			

@@ -108,11 +108,16 @@ namespace black_cat
 		{
 			if(m_graph_node)
 			{
+				const auto l_actors_count = m_graph_node->get_actors_count();
+				auto l_actors_iterated = 0U;
+
 				for (auto& l_actor : *m_graph_node)
 				{
 					l_actor.destroy();
+					l_actors_iterated++;
 				}
 
+				BC_ASSERT(l_actors_iterated == l_actors_count);
 				m_graph_node->clear();
 			}
 		}

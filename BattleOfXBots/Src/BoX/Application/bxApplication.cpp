@@ -329,9 +329,8 @@ namespace box
 
 		if(m_scene)
 		{
-			m_state = bx_app_state::scene_loaded;
-			m_team_select_task = m_player_service->ask_for_team();
 			_create_scene_checkpoint(*m_scene);
+			_reset_game(false);
 		}
 		else
 		{
@@ -404,14 +403,7 @@ namespace box
 
 	void bx_application::reset_game()
 	{
-		if(m_state >= bx_app_state::scene_loaded)
-		{
-			m_state = bx_app_state::scene_loaded;
-			m_team_select_task = m_player_service->ask_for_team();
-			m_player_service->game_reset();
-
-			_restore_scene_checkpoint(*m_scene);
-		}
+		_reset_game(true);
 	}
 
 	void bx_application::message_received(core::bc_string p_msg)
@@ -442,5 +434,17 @@ namespace box
 			core::bc_content_loader_parameter(),
 			std::move(l_checkpoint_params)
 		);
+	}
+
+	void bx_application::_reset_game(bool p_restore_scene_checkpoint)
+	{
+		m_state = bx_app_state::scene_loaded;
+		m_team_select_task = m_player_service->ask_for_team();
+		m_player_service->game_reset();
+
+		if(p_restore_scene_checkpoint)
+		{
+			_restore_scene_checkpoint(*m_scene);
+		}
 	}
 }

@@ -14,9 +14,10 @@ namespace black_cat
 		bc_global_config::bc_global_config(const bcECHAR* p_content_path, const bcECHAR* p_config_file_name)
 			: bc_config_file()
 		{
-			const bcECHAR* l_config_file_extension = bcL(".json");
+			constexpr core::bc_estring_view l_config_file_extension = bcL(".json");
 			core::bc_estring_frame l_config_file_name(p_config_file_name);
-			if(!core::bc_string_ends_with(l_config_file_name.c_str(), l_config_file_name.size(), l_config_file_extension, 5))
+
+			if(!core::bc_string_ends_with(l_config_file_name, l_config_file_extension))
 			{
 				l_config_file_name.append(l_config_file_extension);
 			}

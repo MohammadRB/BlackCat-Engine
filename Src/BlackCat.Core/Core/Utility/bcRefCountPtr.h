@@ -314,25 +314,16 @@ namespace black_cat
 		}
 
 		template<class T, class TDeleter>
-		bc_ref_count_ptr<T, TDeleter>& bc_ref_count_ptr<T, TDeleter>::operator=(
-			const bc_ref_count_ptr& p_other) noexcept
+		bc_ref_count_ptr<T, TDeleter>& bc_ref_count_ptr<T, TDeleter>::operator=(const bc_ref_count_ptr& p_other) noexcept
 		{
-			if (this != &p_other)
-			{
-				_assign(p_other);
-			}
-
+			_assign(p_other);
 			return *this;
 		}
 
 		template<class T, class TDeleter>
 		bc_ref_count_ptr<T, TDeleter>& bc_ref_count_ptr<T, TDeleter>::operator=(bc_ref_count_ptr&& p_other) noexcept
 		{
-			if (this != &p_other)
-			{
-				_assign(std::move(p_other));
-			}
-
+			_assign(std::move(p_other));
 			return *this;
 		}
 
@@ -340,11 +331,7 @@ namespace black_cat
 		template<class TOther>
 		bc_ref_count_ptr<T, TDeleter>& bc_ref_count_ptr<T, TDeleter>::operator=(const bc_ref_count_ptr<TOther, TDeleter>& p_other) noexcept
 		{
-			if (m_pointer != p_other.m_pointer)
-			{
-				_assign(p_other);
-			}
-
+			_assign(p_other);
 			return *this;
 		}
 
@@ -352,11 +339,7 @@ namespace black_cat
 		template<class TOther>
 		bc_ref_count_ptr<T, TDeleter>& bc_ref_count_ptr<T, TDeleter>::operator=(bc_ref_count_ptr<TOther, TDeleter>&& p_other) noexcept
 		{
-			if (m_pointer != p_other.m_pointer)
-			{
-				_assign(std::move(p_other));
-			}
-
+			_assign(std::move(p_other));
 			return *this;
 		}
 
@@ -474,21 +457,24 @@ namespace black_cat
 		template<typename T1>
 		void bc_ref_count_ptr<T, TDeleter>::_assign(const bc_ref_count_ptr<T1, TDeleter>& p_other)
 		{
-			_destruct();
-			_construct(static_cast<pointer>(p_other.get()), p_other.m_deleter);
+			if(m_pointer != static_cast<T*>(p_other.m_pointer))
+			{
+				_destruct();
+				_construct(static_cast<pointer>(p_other.get()), p_other.m_deleter);
+			}
 		}
 
 		template<class T, class TDeleter>
 		template<typename T1>
 		void bc_ref_count_ptr<T, TDeleter>::_assign(bc_ref_count_ptr<T1, TDeleter>&& p_other)
 		{
-			_destruct();
-
-			m_pointer = p_other.m_pointer;
-			m_deleter = std::move(p_other.m_deleter);
-
-			if (p_other.m_pointer)
+			if (m_pointer != static_cast<T*>(p_other.m_pointer))
 			{
+				_destruct();
+
+				m_pointer = p_other.m_pointer;
+				m_deleter = std::move(p_other.m_deleter);
+
 				p_other.m_pointer = nullptr;
 			}
 		}
@@ -663,23 +649,15 @@ namespace black_cat
 
 		template<class T, class TDeleter>
 		bc_ref_count_handle<T, TDeleter>& bc_ref_count_handle<T, TDeleter>::operator=(const bc_ref_count_handle& p_other) noexcept
-		{
-			if (this != &p_other)
-			{
-				_assign(p_other);
-			}
-
+		{	
+			_assign(p_other);
 			return *this;
 		}
 
 		template<class T, class TDeleter>
 		bc_ref_count_handle<T, TDeleter>& bc_ref_count_handle<T, TDeleter>::operator=(bc_ref_count_handle&& p_other) noexcept
 		{
-			if (this != &p_other)
-			{
-				_assign(std::move(p_other));
-			}
-
+			_assign(std::move(p_other));
 			return *this;
 		}
 
@@ -687,11 +665,7 @@ namespace black_cat
 		template<class TOther>
 		bc_ref_count_handle<T, TDeleter>& bc_ref_count_handle<T, TDeleter>::operator=(const bc_ref_count_handle<TOther, TDeleter>& p_other) noexcept
 		{
-			if (this != &p_other)
-			{
-				_assign(p_other);
-			}
-
+			_assign(p_other);
 			return *this;
 		}
 
@@ -699,11 +673,7 @@ namespace black_cat
 		template<class TOther>
 		bc_ref_count_handle<T, TDeleter>& bc_ref_count_handle<T, TDeleter>::operator=(bc_ref_count_handle<TOther, TDeleter>&& p_other) noexcept
 		{
-			if (this != &p_other)
-			{
-				_assign(std::move(p_other));
-			}
-
+			_assign(std::move(p_other));
 			return *this;
 		}
 
@@ -819,26 +789,32 @@ namespace black_cat
 		template<typename T1>
 		void bc_ref_count_handle<T, TDeleter>::_assign(const bc_ref_count_handle<T1, TDeleter>& p_other)
 		{
-			static_assert(std::is_convertible<T1, T>::value, "T1 must be convertible to T");
+			static_assert(std::is_convertible_v<T1, T>, "T1 must be convertible to T");
 
-			_destruct();
-			_construct(p_other.m_handle, p_other.m_deleter);
+			if (this != &p_other)
+			{
+				_destruct();
+				_construct(p_other.m_handle, p_other.m_deleter);
+			}
 		}
 
 		template<class T, class TDeleter>
 		template<typename T1>
 		void bc_ref_count_handle<T, TDeleter>::_assign(bc_ref_count_handle<T1, TDeleter>&& p_other)
 		{
-			static_assert(std::is_convertible<T1, T>::value, "T1 must be convertible to T");
+			static_assert(std::is_convertible_v<T1, T>, "T1 must be convertible to T");
 
-			_destruct();
-
-			m_handle = p_other.m_handle;
-			m_deleter = std::move(p_other.m_deleter);
-
-			if (p_other.m_handle != nullptr)
+			if (this != &p_other)
 			{
-				p_other.m_handle = nullptr;
+				_destruct();
+
+				m_handle = p_other.m_handle;
+				m_deleter = std::move(p_other.m_deleter);
+
+				if (p_other.m_handle != nullptr)
+				{
+					p_other.m_handle = nullptr;
+				}
 			}
 		}
 	}

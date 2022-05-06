@@ -270,6 +270,7 @@ namespace black_cat
 			// Make hash, combination of both file path and content name because some contents like shaders load from same file
 			const bc_estring_frame l_offline_file_path = _get_offline_file_path<TContent>(p_file, p_file_variant);
 			auto l_key = bc_path(l_offline_file_path).get_filename();
+			bc_string_to_lower(l_key);
 
 			{
 				platform::bc_shared_mutex_shared_guard l_guard(m_contents_mutex);
@@ -295,7 +296,7 @@ namespace black_cat
 
 			BC_ASSERT(l_content != nullptr);
 
-			return _store_new_content(l_key, p_file, p_file_variant, std::move(l_content));
+			return _store_new_content(std::move(l_key), p_file, p_file_variant, std::move(l_content));
 		}
 
 		template<class TContent>
@@ -435,7 +436,10 @@ namespace black_cat
 
 			bc_object_allocator::set_allocator_alloc_type(l_prev_alloc_type);
 
-			return _store_new_content(bc_estring(p_content_name), bcL("non-file content"), bcL(""), std::move(l_content));
+			auto l_key = bc_estring(p_content_name);
+			bc_string_to_lower(l_key);
+
+			return _store_new_content(std::move(l_key), bcL("non-file content"), bcL(""), std::move(l_content));
 		}
 
 		template<class TContent>

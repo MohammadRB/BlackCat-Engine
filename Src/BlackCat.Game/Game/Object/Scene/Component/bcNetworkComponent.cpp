@@ -21,31 +21,68 @@ namespace black_cat
 	{
 		bc_network_component::bc_network_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept
 			: bci_actor_component(p_actor_id, p_id),
+			m_network_system(nullptr),
+			m_network_entity_name(nullptr),
+			m_data_dir(bc_actor_network_data_dir::replicate),
+			m_replication_side(bc_actor_replication_side::origin),
 			m_network_client_id(bc_network_client::invalid_id),
 			m_network_id(g_invalid_actor_network_id),
-			m_network_type(bc_network_type::not_started),
-			m_data_dir(bc_actor_network_data_dir::replicate),
 			m_sync_enabled(true),
-			m_network_entity_name(nullptr),
 			m_out_ping(0),
 			m_in_ping(0)
 		{
 		}
 
-		bc_network_component::bc_network_component(bc_network_component&&) noexcept = default;
+		bc_network_component::bc_network_component(bc_network_component&& p_other) noexcept
+			: bci_actor_component(std::move(p_other)),
+			m_network_system(p_other.m_network_system),
+			m_network_entity_name(p_other.m_network_entity_name),
+			m_data_dir(p_other.m_data_dir),
+			m_replication_side(p_other.m_replication_side),
+			m_network_client_id(p_other.m_network_client_id),
+			m_network_id(p_other.m_network_id),
+			m_sync_enabled(p_other.m_sync_enabled),
+			m_out_ping(p_other.m_out_ping),
+			m_in_ping(p_other.m_in_ping)
+		{
+			p_other.set_as_invalid_network_state();
+		}
 
-		bc_network_component::~bc_network_component() = default;
+		bc_network_component::~bc_network_component()
+		{
+			_remove_from_network_manager(get_actor());
+		}
 
-		bc_network_component& bc_network_component::operator=(bc_network_component&&) noexcept = default;
+		bc_network_component& bc_network_component::operator=(bc_network_component&& p_other) noexcept
+		{
+			bci_actor_component::operator=(std::move(p_other));
+			m_network_system = p_other.m_network_system;
+			m_network_entity_name = p_other.m_network_entity_name;
+			m_data_dir = p_other.m_data_dir;
+			m_replication_side = p_other.m_replication_side;
+			m_network_client_id = p_other.m_network_client_id;
+			m_network_id = p_other.m_network_id;
+			m_sync_enabled = p_other.m_sync_enabled;
+			m_out_ping = p_other.m_out_ping;
+			m_in_ping = p_other.m_in_ping;
+
+			p_other.set_as_invalid_network_state();
+			return *this;
+		}
 
 		bc_actor bc_network_component::get_actor() const noexcept
 		{
 			return get_manager().component_get_actor(*this);
 		}
 
+		bc_network_type bc_network_component::get_network_type() const noexcept
+		{
+			return m_network_system->get_network_type();
+		}
+
 		void bc_network_component::initialize(const bc_actor_component_initialize_context& p_context)
 		{
-			m_network_type = p_context.m_game_system.get_network_system().get_network_type();
+			m_network_system = &p_context.m_game_system.get_network_system();
 
 			const auto* l_data_dir_param = static_cast<core::bc_string*>(nullptr);
 			const auto* l_network_entity_name_param = static_cast<core::bc_string*>(nullptr);
@@ -66,7 +103,7 @@ namespace black_cat
 			}
 			else if(*l_data_dir_param == "replicate_sync_from_client_server")
 			{
-				if(m_network_type == bc_network_type::server)
+				if(get_network_type() == bc_network_type::server)
 				{
 					m_data_dir = bc_actor_network_data_dir::replicate_sync_from_client;
 				}
@@ -80,12 +117,12 @@ namespace black_cat
 				throw bc_invalid_argument_exception("Invalid value for network data direction parameter");
 			}
 
-			if(m_network_type != bc_network_type::not_started)
+			if(get_network_type() != bc_network_type::not_started)
 			{
 				if
 				(
-					(m_network_type == bc_network_type::server && m_data_dir == bc_actor_network_data_dir::replicate_sync) ||
-					(m_network_type == bc_network_type::client && m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
+					(get_network_type() == bc_network_type::server && m_data_dir == bc_actor_network_data_dir::replicate_sync) ||
+					(get_network_type() == bc_network_type::client && m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
 				)
 				{
 					m_replication_side = bc_actor_replication_side::origin;
@@ -209,31 +246,7 @@ namespace black_cat
 
 			if (const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event))
 			{
-				auto& l_network_system = p_context.m_game_system.get_network_system();
-				const auto l_network_type = l_network_system.get_network_type();
-
-				if (l_network_type == bc_network_type::server)
-				{
-					if (m_data_dir == bc_actor_network_data_dir::replicate_sync)
-					{
-						l_network_system.remove_actor_from_sync(p_context.m_actor);
-					}
-					else if(m_network_id != g_invalid_actor_network_id)
-					{
-						l_network_system.actor_removed(p_context.m_actor);
-					}
-				}
-				else if (l_network_type == bc_network_type::client)
-				{
-					if (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
-					{
-						l_network_system.remove_actor_from_sync(p_context.m_actor);
-					}
-					else if (m_network_id != g_invalid_actor_network_id)
-					{
-						l_network_system.actor_removed(p_context.m_actor);
-					}
-				}
+				_remove_from_network_manager(p_context.m_actor);
 				
 				return;
 			}
@@ -318,6 +331,41 @@ namespace black_cat
 				<< " ping: " << m_in_ping
 				<< core::bc_lend;*/
 			return std::make_pair(true, l_extrapolated_value);
+		}
+
+		void bc_network_component::_remove_from_network_manager(bc_actor& p_actor)
+		{
+			if(m_network_id == g_invalid_actor_network_id)
+			{
+				return;
+			}
+
+			const auto l_network_type = get_network_type();
+
+			if (l_network_type == bc_network_type::server)
+			{
+				if (m_data_dir == bc_actor_network_data_dir::replicate_sync)
+				{
+					m_network_system->remove_actor_from_sync(p_actor);
+				}
+				else if (m_network_id != g_invalid_actor_network_id)
+				{
+					m_network_system->actor_removed(p_actor);
+				}
+			}
+			else if (l_network_type == bc_network_type::client)
+			{
+				if (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
+				{
+					m_network_system->remove_actor_from_sync(p_actor);
+				}
+				else if (m_network_id != g_invalid_actor_network_id)
+				{
+					m_network_system->actor_removed(p_actor);
+				}
+			}
+
+			set_as_invalid_network_state();
 		}
 	}
 }

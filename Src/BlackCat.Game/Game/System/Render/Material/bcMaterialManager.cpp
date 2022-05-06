@@ -172,7 +172,7 @@ namespace black_cat
 				else
 				{
 					l_ite->second = std::move(l_material);
-					core::bc_log(core::bc_log_type::warning)
+					core::bc_log(core::bc_log_type::debug)
 						<< "material description with name '"
 						<< *l_material_desc->m_name
 						<< "' already exist. old material will be replaced."
@@ -206,7 +206,7 @@ namespace black_cat
 				else
 				{
 					l_ite->second = std::move(l_material);
-					core::bc_log(core::bc_log_type::warning)
+					core::bc_log(core::bc_log_type::debug)
 						<< "collider material description with name '"
 						<< *l_material_desc->m_name
 						<< "' already exist. old material will be replaced."

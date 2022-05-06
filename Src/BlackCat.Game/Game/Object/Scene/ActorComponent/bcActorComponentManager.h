@@ -167,9 +167,7 @@ namespace black_cat
 			void actor_add_event(const bc_actor& p_actor, TEvent&& p_event);
 
 			bc_actor_event* actor_get_events(const bc_actor& p_actor) const noexcept;
-
-			void actor_clear_events(const bc_actor& p_actor) noexcept;
-
+			
 			bool actor_is_valid(const bc_actor& p_actor) noexcept;
 
 			void mark_actor_for_double_update(const bc_actor& p_actor);
@@ -223,7 +221,7 @@ namespace black_cat
 			template<class TComponent>
 			TComponent* _actor_get_component(const bc_actor& p_actor, std::false_type);
 
-			void _clear_actor_events(bcUINT32 p_index);
+			void _clear_actor_events(bcUINT32 p_index, bcUINT32 p_event_pool);
 
 			template<class TComponent>
 			void _register_component_type();
@@ -430,15 +428,9 @@ namespace black_cat
 				BC_ASSERT(m_actors_bit[l_actor_index]);
 
 				auto& l_actor_entry = m_actors[l_actor_index];
-				auto* l_events_pool = &m_event_pools[m_write_event_pool];
-				auto* l_actor_events = l_actor_entry.get_events(m_write_event_pool);
 
-				while (l_actor_events)
-				{
-					bc_actor_event* l_next = l_actor_events->get_next();
-					l_events_pool->free(l_actor_events);
-					l_actor_events = l_next;
-				}
+				_clear_actor_events(l_actor_index, m_read_event_pool);
+				_clear_actor_events(l_actor_index, m_write_event_pool);
 
 				m_actors_bit.make_false(l_actor_index);
 				l_actor_entry.~_bc_actor_entry();
@@ -476,21 +468,7 @@ namespace black_cat
 				return l_actor_entry.get_events(m_read_event_pool);
 			}
 		}
-
-		inline void bc_actor_component_manager::actor_clear_events(const bc_actor& p_actor) noexcept
-		{
-			BC_ASSERT(p_actor.is_valid());
-
-			const auto l_actor_index = bc_actor_id::decompose_id(p_actor.get_id()).first;
-
-			{
-				platform::bc_shared_mutex_shared_guard l_lock(m_actors_lock);
-
-				auto& l_actor_entry = m_actors[l_actor_index];
-				l_actor_entry.clear_events(m_read_event_pool);
-			}
-		}
-
+		
 		inline bool bc_actor_component_manager::actor_is_valid(const bc_actor& p_actor) noexcept
 		{
 			const auto l_actor_id = p_actor.get_id();
@@ -729,11 +707,11 @@ namespace black_cat
 			}
 		}
 
-		inline void bc_actor_component_manager::_clear_actor_events(bcUINT32 p_index)
+		inline void bc_actor_component_manager::_clear_actor_events(bcUINT32 p_index, bcUINT32 p_event_pool)
 		{
 			auto& l_actor_entry = m_actors[p_index];
-			auto* l_events_pool = &m_event_pools[m_read_event_pool];
-			auto* l_actor_events = l_actor_entry.get_events(m_read_event_pool);
+			auto* l_events_pool = &m_event_pools[p_event_pool];
+			auto* l_actor_events = l_actor_entry.get_events(p_event_pool);
 
 			while (l_actor_events)
 			{
@@ -742,7 +720,7 @@ namespace black_cat
 				l_actor_events = l_next;
 			}
 
-			l_actor_entry.clear_events(m_read_event_pool);
+			l_actor_entry.clear_events(p_event_pool);
 		}
 
 		template<class TComponent>

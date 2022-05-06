@@ -206,13 +206,10 @@ namespace black_cat
 			template<typename T1, typename TDeleter1>
 			void _assign(bc_unique_ptr<T1, TDeleter1>&& p_other)
 			{
-				if (this != reinterpret_cast<bc_unique_ptr<T, TDeleter>*>(&p_other))
-				{
-					reset(static_cast<T*>(p_other.release()));
-					static_cast<TDeleter&>(*this) = static_cast<deleter_type>(p_other.get_deleter());
+				reset(static_cast<T*>(p_other.release()));
+				static_cast<TDeleter&>(*this) = static_cast<TDeleter>(p_other.get_deleter());
 
-					p_other.m_pointer = nullptr;
-				}
+				p_other.m_pointer = nullptr;
 			}
 
 			pointer m_pointer;
@@ -608,7 +605,7 @@ namespace black_cat
 			template<typename T1>
 			void _assign(const bc_shared_ptr<T1>& p_other)
 			{
-				if (this != reinterpret_cast<const bc_shared_ptr<T>*>(&p_other)) // avoid self assignment
+				if (m_pointer != static_cast<T*>(p_other.m_pointer))
 				{
 					_destruct();
 					_construct
@@ -622,7 +619,7 @@ namespace black_cat
 			template<typename T1>
 			void _assign(bc_shared_ptr<T1>&& p_other)
 			{
-				if (this != reinterpret_cast<bc_shared_ptr<T>*>(&p_other)) // avoid self assignment
+				if (m_pointer != static_cast<T*>(p_other.m_pointer))
 				{
 					_destruct();
 					
@@ -1001,19 +998,13 @@ namespace black_cat
 			template<typename T1>
 			void _assign(const bc_handle_ptr<T1>& p_other)
 			{
-				if (static_cast<const void*>(this) != static_cast<const void*>(&p_other)) // avoid self assignment
-				{
-					reset(p_other.get());
-				}
+				reset(p_other.get());
 			}
 
 			template<typename T1>
 			void _assign(bc_handle_ptr<T1>&& p_other)
 			{
-				if (static_cast<const void*>(this) != static_cast<const void*>(&p_other)) // avoid self assignment
-				{
-					reset(p_other.release());
-				}
+				reset(p_other.release());
 			}
 
 			T* m_pointer;

@@ -129,15 +129,15 @@ namespace black_cat
 
 			if(l_has_free_slot)
 			{
-				new (&m_components[l_free_slot]) TComponent(p_actor_id, l_free_slot);
 				m_bit_block.make_true(l_free_slot);
+				new (&m_components[l_free_slot]) TComponent(p_actor_id, l_free_slot);
 			}
 			else
 			{
 				l_free_slot = m_components.size();
-				m_components.push_back(TComponent(p_actor_id, l_free_slot));
-				m_bit_block.resize(m_components.size());
+				m_bit_block.resize(m_components.size() + 1);
 				m_bit_block.make_true(l_free_slot);
+				m_components.push_back(TComponent(p_actor_id, l_free_slot));
 			}
 
 			return l_free_slot;
@@ -151,15 +151,15 @@ namespace black_cat
 
 			if (l_has_free_slot)
 			{
-				new (&m_components[l_free_slot]) TComponent(p_actor_id, l_free_slot);
 				m_bit_block.make_true(l_free_slot);
+				new (&m_components[l_free_slot]) TComponent(p_actor_id, l_free_slot);
 			}
 			else
 			{
-				l_free_slot = m_components.size() - 1;
-				m_components.push_back(TComponent(p_actor_id, l_free_slot));
-				m_bit_block.resize(m_components.size());
+				l_free_slot = m_components.size();
+				m_bit_block.resize(m_components.size() + 1);
 				m_bit_block.make_true(l_free_slot);
+				m_components.push_back(TComponent(p_actor_id, l_free_slot));
 			}
 
 			return l_free_slot;
@@ -168,8 +168,10 @@ namespace black_cat
 		template<class TComponent>
 		void bc_actor_component_container<TComponent>::remove(bc_actor_component_id p_id)
 		{
-			m_bit_block.make_false(p_id);
+			// First destroy component then modify its bit flag because components may want to do some cleanup
+			// which we must preserve their existence
 			m_components[p_id].~TComponent();
+			m_bit_block.make_false(p_id);
 		}
 
 		template<class TComponent>

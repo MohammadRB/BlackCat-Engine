@@ -2504,9 +2504,21 @@ namespace black_cat
 			return l_hash;
 		}
 
-		BC_CORE_DLL bool bc_string_ends_with(const bcCHAR* p_str, bcSIZE p_str_len, const bcCHAR* p_search_str, bcSIZE p_search_str_len);
+		BC_CORE_DLL void bc_string_to_lower(bc_string& p_str);
 
-		BC_CORE_DLL bool bc_string_ends_with(const bcWCHAR* p_str, bcSIZE p_str_len, const bcWCHAR* p_search_str, bcSIZE p_search_str_len);
+		BC_CORE_DLL void bc_string_to_lower(bc_wstring& p_str);
+
+		BC_CORE_DLL void bc_string_to_upper(bc_string& p_str);
+
+		BC_CORE_DLL void bc_string_to_upper(bc_wstring& p_str);
+
+		BC_CORE_DLL bool bc_string_begins_with(bc_string_view p_str, bc_string_view p_search_str);
+
+		BC_CORE_DLL bool bc_string_begins_with(bc_wstring_view p_str, bc_wstring_view p_search_str);
+
+		BC_CORE_DLL bool bc_string_ends_with(bc_string_view p_str, bc_string_view p_search_str);
+
+		BC_CORE_DLL bool bc_string_ends_with(bc_wstring_view p_str, bc_wstring_view p_search_str);
 		
 		// CRC32 Table (zlib polynomial)
 		static constexpr bcUINT32 _crc_table[256] = {

@@ -151,7 +151,7 @@ namespace black_cat
 			m_device_clock_query.get_data(m_thread_manager->get_default_render_thread());
 
 			m_device_timestamps_are_ready = m_device_start_query.get_data(m_thread_manager->get_default_render_thread()).first &&
-					m_device_end_query.get_data(m_thread_manager->get_default_render_thread()).first;
+											m_device_end_query.get_data(m_thread_manager->get_default_render_thread()).first;
 
 			if(m_device_timestamps_are_ready)
 			{

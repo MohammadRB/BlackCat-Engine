@@ -78,7 +78,7 @@ namespace black_cat
 						std::end(l_actor_indices),
 						[&](auto p_actor_index)
 						{
-							_clear_actor_events(p_actor_index);
+							_clear_actor_events(p_actor_index, m_read_event_pool);
 						}
 					);
 				}
@@ -189,7 +189,7 @@ namespace black_cat
 					l_write_event_pool_new_size = m_event_pools[m_write_event_pool].size();
 
 					const auto l_actor_index = bc_actor_id::decompose_id(l_actor.get_id()).first;
-					_clear_actor_events(l_actor_index);
+					_clear_actor_events(l_actor_index, m_read_event_pool);
 				}
 				while (l_write_event_pool_new_size > l_write_event_pool_size);
 

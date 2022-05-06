@@ -83,8 +83,9 @@ namespace box
 		void _create_scene_checkpoint(game::bc_scene& p_scene);
 
 		void _restore_scene_checkpoint(game::bc_scene& p_scene);
-	
-	private:
+
+		void _reset_game(bool p_restore_scene_checkpoint);
+
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
 		platform::bc_script_context* m_client_script_context = nullptr;
 		platform::bc_script_object_ref m_client_script_object;
