@@ -54,22 +54,22 @@ namespace black_cat
 		}
 
 		template<class TComponent>
+		const TComponent* bc_actor::get_component() const noexcept
+		{
+			return const_cast<bc_actor*>(this)->get_component<TComponent>();
+		}
+
+		template<class TComponent>
 		TComponent* bc_actor::get_create_component() noexcept
 		{
 			auto* l_component = get_component<TComponent>();
-			if(!l_component)
+			if (!l_component)
 			{
 				create_component<TComponent>();
 				l_component = get_component<TComponent>();
 			}
 
 			return l_component;
-		}
-
-		template<class TComponent>
-		const TComponent* bc_actor::get_component() const noexcept
-		{
-			return const_cast<bc_actor*>(this)->get_component<TComponent>();
 		}
 
 		template<class TIterator>
@@ -125,7 +125,7 @@ namespace black_cat
 		{
 			BC_ASSERT(is_valid());
 			
-			_get_entity_manager().remove_entity(*this);
+			_get_manager().remove_actor(*this);
 			m_id = bc_actor_id();
 		}
 
@@ -149,13 +149,12 @@ namespace black_cat
 			return m_id != p_other.m_id;
 		}
 		
-		inline bc_actor_component_manager& bc_actor::_get_manager() noexcept
+		inline bc_actor_component_manager_container& bc_actor::_get_manager() const noexcept
 		{
-			static auto* s_manager = core::bc_get_service<bc_actor_component_manager>();
-			return *s_manager;
+			return _get_entity_manager().get_actor_component_container(*this);
 		}
 
-		inline bc_entity_manager& bc_actor::_get_entity_manager() noexcept
+		inline bc_entity_manager& bc_actor::_get_entity_manager() const noexcept
 		{
 			static auto* s_manager = core::bc_get_service<bc_entity_manager>();
 			return *s_manager;

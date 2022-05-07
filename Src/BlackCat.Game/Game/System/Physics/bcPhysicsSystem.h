@@ -140,7 +140,7 @@ namespace black_cat
 
 		inline void bc_physics_system::set_game_shape_data(physics::bc_shape& p_px_shape, bc_px_shape_data& p_shape_data) noexcept
 		{
-			p_px_shape.set_data(reinterpret_cast<void*>(&p_shape_data));
+			p_px_shape.set_data(&p_shape_data);
 		}
 
 		inline bc_px_shape_data* bc_physics_system::alloc_shape_data() noexcept

@@ -4,7 +4,10 @@
 
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
+#include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 
 namespace black_cat
 {
@@ -13,14 +16,6 @@ namespace black_cat
 		class bc_scene;
 		class bc_shape_drawer;
 		class bc_controller_component;
-		struct bc_actor_component_initialize_context;
-		struct bc_actor_component_load_context;
-		struct bc_actor_component_write_context;
-		struct bc_actor_component_network_load_context;
-		struct bc_actor_component_network_write_context;
-		struct bc_actor_component_update_content;
-		struct bc_actor_component_event_context;
-		struct bc_actor_component_debug_draw_context;
 		
 		class bci_actor_controller
 		{
@@ -53,6 +48,8 @@ namespace black_cat
 			virtual void debug_draw(const bc_actor_component_debug_draw_context& p_context);
 
 		private:
+			void _handle_event(const bc_actor_component_event_context& p_context);
+
 			bc_scene* m_scene{ nullptr };
 		};
 
@@ -80,7 +77,6 @@ namespace black_cat
 
 		inline void bci_actor_controller::added_to_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene)
 		{
-			m_scene = &p_scene;
 		}
 
 		inline void bci_actor_controller::update(const bc_actor_component_update_content& p_context)
@@ -89,7 +85,6 @@ namespace black_cat
 
 		inline void bci_actor_controller::removed_from_scene(const bc_actor_component_event_context& p_context, bc_scene& p_scene)
 		{
-			m_scene = nullptr;
 		}
 		
 		inline void bci_actor_controller::handle_event(const bc_actor_component_event_context& p_context)
@@ -98,6 +93,23 @@ namespace black_cat
 
 		inline void bci_actor_controller::debug_draw(const bc_actor_component_debug_draw_context& p_context)
 		{
+		}
+
+		inline void bci_actor_controller::_handle_event(const bc_actor_component_event_context& p_context)
+		{
+			if (const auto* l_added_to_scene_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event))
+			{
+				m_scene = &l_added_to_scene_event->get_scene();
+				added_to_scene(p_context, l_added_to_scene_event->get_scene());
+			}
+
+			if (const auto* l_remove_from_scene_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event))
+			{
+				removed_from_scene(p_context, l_remove_from_scene_event->get_scene());
+				m_scene = nullptr;
+			}
+
+			handle_event(p_context);
 		}
 
 		inline bc_scene* bci_actor_controller::get_scene() noexcept

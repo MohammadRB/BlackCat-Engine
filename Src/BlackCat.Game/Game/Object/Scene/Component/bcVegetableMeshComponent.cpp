@@ -2,10 +2,10 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/bcUtility.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/File/bcJsonDocument.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Core/bcUtility.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"

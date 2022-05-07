@@ -51,7 +51,10 @@ namespace black_cat
 
 		void bc_rigid_body_component::remove_from_scene(physics::bc_scene& p_scene, physics::bc_rigid_body& p_body)
 		{
-			if(p_body.is_valid()) // rigid controller may contain invalid handle
+			// scene can be null because in scene destruction we add scene remove event to actors and one actor can
+			// have a remove event already in its event list
+			// rigid controller may contain invalid handle
+			if(m_scene && p_body.is_valid())
 			{
 				{
 					physics::bc_scene_lock l_lock(m_scene);

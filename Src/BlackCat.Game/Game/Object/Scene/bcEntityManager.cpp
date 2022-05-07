@@ -8,9 +8,12 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/Utility/bcParameterPack.h"
 #include "Core/Utility/bcLogger.h"
+#include "Game/Object/Scene/ActorComponent/bcActorId.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/bcEntityManager.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcControllerComponent.h"
 #include "Game/System/bcGameSystem.h"
@@ -120,10 +123,12 @@ namespace black_cat
 			}
 		}
 		
-		bc_entity_manager::bc_entity_manager(core::bc_content_stream_manager& p_content_stream_manager, bc_actor_component_manager& p_actor_manager, bc_game_system& p_game_system)
+		bc_entity_manager::bc_entity_manager(core::bc_content_stream_manager& p_content_stream_manager, core::bc_query_manager& p_query_manager, bc_game_system& p_game_system)
 			: m_content_stream_manager(p_content_stream_manager),
-			m_actor_component_manager(p_actor_manager),
-			m_game_system(p_game_system)
+			m_query_manager(p_query_manager),
+			m_game_system(p_game_system),
+			m_actor_component_container_index(0),
+			m_actor_component_containers{ nullptr }
 		{
 		}
 
@@ -184,6 +189,22 @@ namespace black_cat
 			return l_result;
 		}
 
+		core::bc_unique_ptr<bc_actor_component_manager_container> bc_entity_manager::create_actor_component_container() noexcept
+		{
+			// TODO find a way to validate destruction of previous managers
+			m_actor_component_container_index = bc_actor_id::generate_new_manager_id(m_actor_component_container_index);
+			auto l_container = core::bc_make_unique<bc_actor_component_manager_container>(bc_actor_component_manager_container
+			(
+				m_query_manager,
+				m_game_system,
+				m_actor_component_manager,
+				m_actor_component_container_index
+			));
+
+			m_actor_component_containers[m_actor_component_container_index] = l_container.get();
+			return l_container;
+		}
+		
 		bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform)
 		{
 			return _create_entity(p_scene, p_entity_name, p_world_transform, nullptr);
@@ -193,14 +214,10 @@ namespace black_cat
 		{
 			return _create_entity(p_scene, p_entity_name, p_world_transform , &p_instance_parameters);
 		}
-
-		void bc_entity_manager::remove_entity(const bc_actor& p_entity)
-		{
-			m_actor_component_manager.remove_actor(p_entity);
-		}
-
+		
 		bc_actor bc_entity_manager::_create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_json_key_value* p_instance_parameters)
 		{
+			auto& l_actor_component_manager = p_scene.get_actor_component_manager();
 			const auto l_hash = string_hash()(p_entity_name);
 			const auto l_entity_entry = m_entities.find(l_hash);
 			const auto& l_instance_parameters = p_instance_parameters ? *p_instance_parameters : m_empty_parameters;
@@ -213,8 +230,8 @@ namespace black_cat
 					throw bc_invalid_argument_exception("Invalid entity name");
 				}
 
-				l_actor = m_actor_component_manager.create_actor();
-				m_actor_component_manager.create_component<bc_mediate_component>(l_actor);
+				l_actor = l_actor_component_manager.create_actor();
+				l_actor_component_manager.create_component<bc_mediate_component>(l_actor);
 
 				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
 				{
@@ -325,7 +342,7 @@ namespace black_cat
 			{
 				if (l_actor.is_valid())
 				{
-					m_actor_component_manager.remove_actor(l_actor);
+					l_actor_component_manager.remove_actor(l_actor);
 					l_actor = bc_actor();
 				}
 

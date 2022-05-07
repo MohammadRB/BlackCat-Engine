@@ -11,7 +11,7 @@
 #include "Game/System/Render/bcShapeDrawer.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Animation/bcAnimationSystem.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcSkinnedMeshComponent.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"

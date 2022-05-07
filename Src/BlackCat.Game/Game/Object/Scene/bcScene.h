@@ -29,6 +29,7 @@ namespace black_cat
 	
 	namespace game
 	{
+		class bc_actor_component_manager_container;
 		class bc_entity_manager;
 		class bc_sound_manager;
 		
@@ -83,6 +84,10 @@ namespace black_cat
 			physics::bc_scene& get_px_scene() noexcept;
 
 			const physics::bc_scene& get_px_scene() const noexcept;
+
+			bc_actor_component_manager_container& get_actor_component_manager() noexcept;
+
+			const bc_actor_component_manager_container& get_actor_component_manager() const noexcept;
 
 			bc_bullet_manager& get_bullet_manager() noexcept;
 
@@ -174,6 +179,7 @@ namespace black_cat
 			bc_physics_system* m_physics;
 			bc_scene_graph m_scene_graph;
 			physics::bc_scene_ref m_px_scene;
+			core::bc_unique_ptr<bc_actor_component_manager_container> m_actor_component_manager;
 			core::bc_unique_ptr<bc_bullet_manager> m_bullet_manager;
 			core::bc_unique_ptr<bc_light_manager> m_light_manager;
 			core::bc_unique_ptr<bc_particle_manager_container> m_particle_manager;
@@ -248,6 +254,16 @@ namespace black_cat
 		inline const physics::bc_scene& bc_scene::get_px_scene() const noexcept
 		{
 			return m_px_scene.get();
+		}
+
+		inline bc_actor_component_manager_container& bc_scene::get_actor_component_manager() noexcept
+		{
+			return *m_actor_component_manager;
+		}
+
+		inline const bc_actor_component_manager_container& bc_scene::get_actor_component_manager() const noexcept
+		{
+			return *m_actor_component_manager;
 		}
 
 		inline bc_bullet_manager& bc_scene::get_bullet_manager() noexcept

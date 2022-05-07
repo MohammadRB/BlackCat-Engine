@@ -30,7 +30,7 @@ namespace black_cat
 
 			bc_network_component(bc_network_component&&) noexcept;
 
-			~bc_network_component() override;
+			~bc_network_component() override = default;
 
 			bc_network_component& operator=(bc_network_component&&) noexcept;
 
@@ -93,8 +93,6 @@ namespace black_cat
 			std::pair<bool, core::bc_vector3f> get_extrapolated_value(const bcCHAR* p_name, const platform::bc_clock::update_param& p_clock) const noexcept;
 
 		private:
-			void _remove_from_network_manager(bc_actor& p_actor);
-
 			bc_network_system* m_network_system;
 			const bcCHAR* m_network_entity_name;
 			bc_actor_network_data_dir m_data_dir;

@@ -4,7 +4,7 @@
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcIconComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"

@@ -7,7 +7,7 @@
 #include "Game/System/Physics/bcPxShapeData.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/bcGameSystem.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"

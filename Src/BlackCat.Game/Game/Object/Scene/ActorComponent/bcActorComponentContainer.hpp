@@ -2,9 +2,9 @@
 
 #pragma once
 
-// This file is to breaking dependency between bcActorComponentContainer and bcActorComponentManager
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+// This file has to be to break dependency between bcActorComponentContainer and bcActorComponentManagerContainer
 #include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 
 namespace black_cat
 {
@@ -14,7 +14,7 @@ namespace black_cat
 		void bc_actor_component_container<TComponent>::handle_events(const platform::bc_clock::update_param& p_clock,
 			core::bc_query_manager& p_query_manager,
 			bc_game_system& p_game_system,
-			bc_actor_component_manager& p_manager)
+			bc_actor_component_manager_container& p_manager)
 		{
 			const auto l_used_slots = m_bit_block.find_true_indices();
 
@@ -39,7 +39,7 @@ namespace black_cat
 		void bc_actor_component_container<TComponent>::update(const platform::bc_clock::update_param& p_clock,
 			core::bc_query_manager& p_query_manager,
 			bc_game_system& p_game_system,
-			bc_actor_component_manager& p_manager)
+			bc_actor_component_manager_container& p_manager)
 		{
 			const auto l_used_slots = m_bit_block.find_true_indices();
 

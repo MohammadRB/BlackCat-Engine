@@ -1,10 +1,8 @@
 // [04/07/2022 MRB]
 
 #include "Game/GamePCH.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/Component/bcControllerComponent.h"
-#include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
-#include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 
 namespace black_cat
 {
@@ -53,19 +51,7 @@ namespace black_cat
 
 		void bc_controller_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			if (const auto* l_added_to_scene_event = core::bci_message::as<bc_added_to_scene_actor_event>(p_context.m_event))
-			{
-				m_controller->added_to_scene(p_context, l_added_to_scene_event->get_scene());
-				return;
-			}
-
-			if (const auto* l_remove_from_scene_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event))
-			{
-				m_controller->removed_from_scene(p_context, l_remove_from_scene_event->get_scene());
-				return;
-			}
-
-			m_controller->handle_event(p_context);
+			m_controller->_handle_event(p_context);
 		}
 
 		void bc_controller_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)

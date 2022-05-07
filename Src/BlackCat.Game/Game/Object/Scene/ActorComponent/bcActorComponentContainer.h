@@ -18,7 +18,7 @@ namespace black_cat
 	namespace game
 	{
 		class bc_game_system;
-		class bc_actor_component_manager;
+		class bc_actor_component_manager_container;
 
 		class bci_actor_component_container
 		{
@@ -36,12 +36,12 @@ namespace black_cat
 			virtual void handle_events(const platform::bc_clock::update_param& p_clock,
 				core::bc_query_manager& p_query_manager,
 				bc_game_system& p_game_system,
-				bc_actor_component_manager& p_manager) = 0;
+				bc_actor_component_manager_container& p_manager) = 0;
 
 			virtual void update(const platform::bc_clock::update_param& p_clock,
 				core::bc_query_manager& p_query_manager,
 				bc_game_system& p_game_system,
-				bc_actor_component_manager& p_manager) = 0;
+				bc_actor_component_manager_container& p_manager) = 0;
 
 			virtual bcSIZE size() = 0;
 
@@ -79,12 +79,12 @@ namespace black_cat
 			void handle_events(const platform::bc_clock::update_param& p_clock,
 				core::bc_query_manager& p_query_manager,
 				bc_game_system& p_game_system,
-				bc_actor_component_manager& p_manager) override;
+				bc_actor_component_manager_container& p_manager) override;
 
 			void update(const platform::bc_clock::update_param& p_clock,
 				core::bc_query_manager& p_query_manager,
 				bc_game_system& p_game_system,
-				bc_actor_component_manager& p_manager) override;
+				bc_actor_component_manager_container& p_manager) override;
 
 			bcSIZE size() override;
 

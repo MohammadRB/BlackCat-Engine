@@ -4,7 +4,7 @@
 #include "Game/System/Network/Message/bcActorReplicateNetworkMessage.h"
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/System/bcGameSystem.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
@@ -12,6 +12,7 @@
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcNetworkReplicateActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRigidDynamicSleepActorEvent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 
@@ -47,12 +48,7 @@ namespace black_cat
 		{
 			p_other.set_as_invalid_network_state();
 		}
-
-		bc_network_component::~bc_network_component()
-		{
-			_remove_from_network_manager(get_actor());
-		}
-
+		
 		bc_network_component& bc_network_component::operator=(bc_network_component&& p_other) noexcept
 		{
 			bci_actor_component::operator=(std::move(p_other));
@@ -246,8 +242,37 @@ namespace black_cat
 
 			if (const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event))
 			{
-				_remove_from_network_manager(p_context.m_actor);
-				
+				if(m_network_id == g_invalid_actor_network_id)
+				{
+					return;
+				}
+
+				const auto l_network_type = get_network_type();
+
+				if (l_network_type == bc_network_type::server)
+				{
+					if (m_data_dir == bc_actor_network_data_dir::replicate_sync)
+					{
+						m_network_system->remove_actor_from_sync(p_context.m_actor);
+					}
+					else if (m_network_id != g_invalid_actor_network_id)
+					{
+						m_network_system->actor_removed(p_context.m_actor);
+					}
+				}
+				else if (l_network_type == bc_network_type::client)
+				{
+					if (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
+					{
+						m_network_system->remove_actor_from_sync(p_context.m_actor);
+					}
+					else if (m_network_id != g_invalid_actor_network_id)
+					{
+						m_network_system->actor_removed(p_context.m_actor);
+					}
+				}
+
+				set_as_invalid_network_state();
 				return;
 			}
 		}
@@ -331,41 +356,6 @@ namespace black_cat
 				<< " ping: " << m_in_ping
 				<< core::bc_lend;*/
 			return std::make_pair(true, l_extrapolated_value);
-		}
-
-		void bc_network_component::_remove_from_network_manager(bc_actor& p_actor)
-		{
-			if(m_network_id == g_invalid_actor_network_id)
-			{
-				return;
-			}
-
-			const auto l_network_type = get_network_type();
-
-			if (l_network_type == bc_network_type::server)
-			{
-				if (m_data_dir == bc_actor_network_data_dir::replicate_sync)
-				{
-					m_network_system->remove_actor_from_sync(p_actor);
-				}
-				else if (m_network_id != g_invalid_actor_network_id)
-				{
-					m_network_system->actor_removed(p_actor);
-				}
-			}
-			else if (l_network_type == bc_network_type::client)
-			{
-				if (m_data_dir == bc_actor_network_data_dir::replicate_sync_from_client)
-				{
-					m_network_system->remove_actor_from_sync(p_actor);
-				}
-				else if (m_network_id != g_invalid_actor_network_id)
-				{
-					m_network_system->actor_removed(p_actor);
-				}
-			}
-
-			set_as_invalid_network_state();
 		}
 	}
 }

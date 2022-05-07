@@ -33,6 +33,11 @@ namespace black_cat
 			return m_graph_node->get_bound_box();
 		}
 
+		bcSIZE bc_scene_graph::get_actors_count() const noexcept
+		{
+			return m_graph_node->get_actors_count();
+		}
+
 		bc_scene_graph::iterator bc_scene_graph::begin() noexcept
 		{
 			return m_graph_node->begin();
@@ -106,20 +111,22 @@ namespace black_cat
 
 		void bc_scene_graph::clear() noexcept
 		{
-			if(m_graph_node)
+			const auto l_actors_count = m_graph_node->get_actors_count();
+			auto l_actors_iterated = 0U;
+
+			for (auto& l_actor : *m_graph_node)
 			{
-				const auto l_actors_count = m_graph_node->get_actors_count();
-				auto l_actors_iterated = 0U;
-
-				for (auto& l_actor : *m_graph_node)
-				{
-					l_actor.destroy();
-					l_actors_iterated++;
-				}
-
-				BC_ASSERT(l_actors_iterated == l_actors_count);
-				m_graph_node->clear();
+				l_actor.destroy();
+				l_actors_iterated++;
 			}
+
+			BC_ASSERT(l_actors_iterated == l_actors_count);
+			m_graph_node->clear();
+		}
+
+		bool bc_scene_graph::is_valid() const noexcept
+		{
+			return m_graph_node != nullptr;
 		}
 	}
 }

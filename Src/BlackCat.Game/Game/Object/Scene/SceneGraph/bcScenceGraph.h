@@ -41,6 +41,8 @@ namespace black_cat
 
 			physics::bc_bound_box get_bound_box() const noexcept;
 
+			bcSIZE get_actors_count() const noexcept;
+
 			iterator begin() noexcept;
 
 			const_iterator begin() const noexcept;
@@ -92,6 +94,8 @@ namespace black_cat
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
 			void clear() noexcept;
+
+			bool is_valid() const noexcept;
 
 		private:
 			core::bc_unique_ptr<bci_scene_graph_node> m_graph_node;

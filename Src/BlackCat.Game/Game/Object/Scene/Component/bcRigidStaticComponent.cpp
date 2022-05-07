@@ -2,10 +2,11 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/bcUtility.h"
 #include "Core/Utility/bcJsonParse.h"
+#include "Core/bcUtility.h"
 #include "PhysicsImp/Fundation/bcScene.h"
 #include "PhysicsImp/Shape/bcShapeHeightField.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
@@ -13,6 +14,7 @@
 #include "Game/Object/Scene/Component/Event/bcHierarchyTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Game/System/Physics/bcPhysicsShapeUtility.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"

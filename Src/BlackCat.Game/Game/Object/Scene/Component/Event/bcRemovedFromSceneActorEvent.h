@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
 #include "Game/bcExport.h"
 
@@ -10,6 +9,8 @@ namespace black_cat
 {
 	namespace game
 	{
+		class bc_scene;
+
 		class BC_GAME_DLL bc_removed_from_scene_actor_event : public bc_actor_event
 		{
 			BC_EVENT(a_r_s)
@@ -19,7 +20,7 @@ namespace black_cat
 
 			bc_removed_from_scene_actor_event(const bc_removed_from_scene_actor_event&);
 
-			~bc_removed_from_scene_actor_event();
+			~bc_removed_from_scene_actor_event() override;
 
 			bc_removed_from_scene_actor_event& operator=(const bc_removed_from_scene_actor_event&);
 

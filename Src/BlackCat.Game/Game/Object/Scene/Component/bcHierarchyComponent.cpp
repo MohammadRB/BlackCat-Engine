@@ -5,7 +5,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Utility/bcParameterPack.h"
 #include "Game/Object/Scene/bcScene.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/Component/bcHierarchyComponent.h"
 #include "Game/bcJsonParse.h"

@@ -77,9 +77,7 @@ namespace black_cat
 		bc_xbot_actor_controller(bc_xbot_actor_controller&&) noexcept = default;
 
 		bc_xbot_actor_controller& operator=(bc_xbot_actor_controller&&) noexcept = default;
-
-		game::bc_scene* get_scene() noexcept;
-
+		
 		game::bc_actor& get_actor() noexcept;
 
 		bcFLOAT get_bound_box_max_side_length() const noexcept;

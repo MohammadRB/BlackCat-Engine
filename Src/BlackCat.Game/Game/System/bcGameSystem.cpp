@@ -6,7 +6,7 @@
 #include "Core/Messaging/Event/bcEventManager.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Game/Object/Scene/bcScene.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/System/Input/bcFileSystem.h"
 #include "Game/System/Input/bcInputSystem.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
@@ -53,7 +53,6 @@ namespace black_cat
 		void bc_game_system::update_game(const platform::bc_clock::update_param& p_clock, bool p_is_partial_update)
 		{
 			auto& l_event_manager = *m_event_manager;
-			auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
 			auto& l_file_system = m_file_system;
 			auto& l_input_system = m_input_system;
 			auto& l_physics_system = m_physics_system;
@@ -64,6 +63,7 @@ namespace black_cat
 			auto& l_animation_system = *m_animation_system;
 			auto& l_console = m_console;
 			auto* l_scene = m_scene.get();
+			auto* l_actor_component_manager = l_scene ? &l_scene->get_actor_component_manager() : static_cast<bc_actor_component_manager_container*>(nullptr);
 			auto* l_particle_manager = l_scene ? &l_scene->get_particle_manager() : static_cast<bc_particle_manager_container*>(nullptr);
 			auto* l_decal_manager = l_scene ? &l_scene->get_decal_manager() : static_cast<bc_decal_manager_container*>(nullptr);
 			auto* l_sound_manager = l_scene ? &l_scene->get_sound_manager() : static_cast<bc_sound_manager*>(nullptr);
@@ -108,15 +108,21 @@ namespace black_cat
 
 				core::bc_concurrency::when_all(l_scene_task);
 
-				l_actor_component_manager.process_actor_events(p_clock);
-				l_actor_component_manager.update_actors(p_clock);
+				if (l_scene)
+				{
+					l_actor_component_manager->process_actor_events(p_clock);
+					l_actor_component_manager->update_actors(p_clock);
+				}
 
 				l_network_task = l_network_system->update_async(p_clock);
 				l_animation_task = l_animation_system.run_scheduled_jobs_async(p_clock);
 
 				core::bc_concurrency::when_all(l_network_task, l_animation_task);
-				
-				l_actor_component_manager.double_update_actors(p_clock);
+
+				if (l_scene)
+				{
+					l_actor_component_manager->double_update_actors(p_clock);
+				}
 
 				if (l_camera.has_value())
 				{
@@ -179,7 +185,11 @@ namespace black_cat
 				l_file_system->update(p_clock);
 				l_input_system->update(p_clock);
 				l_event_manager.process_event_queue(p_clock);
-				l_actor_component_manager.process_actor_events(p_clock);
+
+				if(m_scene)
+				{
+					l_actor_component_manager->process_actor_events(p_clock);
+				}
 
 				core::bc_task<void> l_sound_task;
 				core::bc_task<void> l_scene_task;
@@ -335,7 +345,7 @@ namespace black_cat
 			if (m_scene && l_is_changed)
 			{
 				// Process actor events to apply initial transforms and update scene graph so actors can be queryable in scene change event.
-				auto& l_actor_component_manager = *core::bc_get_service<bc_actor_component_manager>();
+				auto& l_actor_component_manager = m_scene->get_actor_component_manager();
 				l_actor_component_manager.process_actor_events(p_clock);
 				l_actor_component_manager.update_actors(p_clock);
 				l_actor_component_manager.double_update_actors(p_clock);

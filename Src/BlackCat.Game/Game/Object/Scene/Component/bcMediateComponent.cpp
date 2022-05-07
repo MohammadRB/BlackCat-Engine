@@ -5,14 +5,15 @@
 #include "Core/Utility/bcJsonParse.h"
 #include "Core/Utility/bcLogger.h"
 #include "Game/System/Render/bcShapeDrawer.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcNetworkComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
+#include "Game/Object/Scene/bcScene.h"
 
 namespace black_cat
 {

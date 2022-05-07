@@ -170,13 +170,14 @@ namespace black_cat
 		void bc_network_client_manager::remove_actor_from_sync(bc_actor& p_actor)
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
-			const auto l_network_id = l_network_component->get_network_id();
-
-			if(l_network_id == g_invalid_actor_network_id)
+			if (!l_network_component || l_network_component->get_network_id() == g_invalid_actor_network_id)
 			{
+				core::bc_log(core::bc_log_type::error, bcL("actor without network component or invalid network id cannot be removed from network sync process"));
 				return;
 			}
 
+			const auto l_network_id = l_network_component->get_network_id();
+			
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
 
@@ -210,16 +211,16 @@ namespace black_cat
 		void bc_network_client_manager::actor_removed(bc_actor& p_actor)
 		{
 			auto* l_network_component = p_actor.get_component<bc_network_component>();
-			const auto l_network_id = l_network_component->get_network_id();
-
-			if (l_network_id == g_invalid_actor_network_id)
+			if (!l_network_component || l_network_component->get_network_id() == g_invalid_actor_network_id)
 			{
+				core::bc_log(core::bc_log_type::error, bcL("actor without network component or invalid network id cannot be removed from network sync process"));
 				return;
 			}
 
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
 
+				const auto l_network_id = l_network_component->get_network_id();
 				const auto l_net_actors_ite = m_network_actors.find(l_network_id);
 				if (l_net_actors_ite == std::cend(m_network_actors))
 				{

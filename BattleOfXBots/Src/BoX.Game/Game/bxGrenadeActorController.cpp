@@ -1,8 +1,10 @@
 // [11/05/2021 MRB]
 
 #include "Core/Utility/bcJsonParse.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcRemovedFromSceneActorEvent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/bcJsonParse.h"
 #include "Game/bcUtility.h"
 #include "BoX.Game/Game/bxGrenadeActorController.h"

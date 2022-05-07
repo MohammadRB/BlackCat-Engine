@@ -38,12 +38,9 @@
 #include "Game/System/Network/Message/bcActorRemoveNetworkMessage.h"
 #include "Game/System/Network/Message/bcSceneChangeNetworkMessage.h"
 #include "Game/System/Network/Message/bcSceneReplicateNetworkMessage.h"
-#include "Game/System/Physics/bcPhysicsSimulationCallback.h"
+#include "Game/System/Animation/bcSkinnedAnimation.h"
 #include "Game/System/bcGameSystem.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
-#include "Game/Object/Scene/bcEntityManager.h"
-#include "Game/Object/Scene/bcScene.h"
-#include "Game/Object/Scene/bcSceneCheckPoint.h"
+#include "Game/System/Physics/bcPhysicsSimulationCallback.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcControllerComponent.h"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
@@ -69,7 +66,9 @@
 #include "Game/Object/Scene/Component/bcSoundComponent.h"
 #include "Game/Object/Scene/Component/bcPickupProxyComponent.h"
 #include "Game/Object/Scene/Component/bcCallbackComponent.h"
-#include "Game/System/Animation/bcSkinnedAnimation.h"
+#include "Game/Object/Scene/bcEntityManager.h"
+#include "Game/Object/Scene/bcScene.h"
+#include "Game/Object/Scene/bcSceneCheckPoint.h"
 #include "App/Application/bcApplicationHookFuncations.h"
 #include "App/Loader/bcTextureLoader.h"
 #include "App/Loader/bcVertexShaderLoader.h"
@@ -129,15 +128,10 @@ namespace black_cat
 		core::bc_register_service(core::bc_make_service<core::bc_content_manager>());
 		core::bc_register_service(core::bc_make_service<core::bc_content_stream_manager>(*core::bc_get_service<core::bc_content_manager>()));
 		core::bc_register_service(core::bc_make_service<game::bc_game_system>());
-		core::bc_register_service(core::bc_make_service<game::bc_actor_component_manager>
-		(
-			*core::bc_get_service<core::bc_query_manager>(), 
-			*core::bc_get_service<game::bc_game_system>())
-		);
 		core::bc_register_service(core::bc_make_service<game::bc_entity_manager>
 		(
 			*core::bc_get_service<core::bc_content_stream_manager>(), 
-			*core::bc_get_service<game::bc_actor_component_manager>(),
+			*core::bc_get_service<core::bc_query_manager>(),
 			*core::bc_get_service<game::bc_game_system>()
 		));
 	}

@@ -11,14 +11,12 @@ namespace black_cat
 {
 	namespace game
 	{
-		class bc_actor_component_manager;
+		class bc_actor_component_manager_container;
 		class bc_entity_manager;
 		class bc_shape_drawer;
 
 		class bc_actor
 		{
-			friend class bc_actor_component_manager;
-
 		public:
 			bc_actor();
 
@@ -45,10 +43,10 @@ namespace black_cat
 			TComponent* get_component() noexcept;
 
 			template<class TComponent>
-			TComponent* get_create_component() noexcept;
+			const TComponent* get_component() const noexcept;
 
 			template<class TComponent>
-			const TComponent* get_component() const noexcept;
+			TComponent* get_create_component() noexcept;
 
 			template<class TIterator>
 			void get_components(TIterator p_destination) const;
@@ -80,9 +78,9 @@ namespace black_cat
 			bool operator!=(const bc_actor& p_other) const noexcept;
 
 		private:
-			static bc_actor_component_manager& _get_manager() noexcept;
+			bc_actor_component_manager_container& _get_manager() const noexcept;
 			
-			static bc_entity_manager& _get_entity_manager() noexcept;
+			bc_entity_manager& _get_entity_manager() const noexcept;
 
 			bc_actor_id m_id;
 		};

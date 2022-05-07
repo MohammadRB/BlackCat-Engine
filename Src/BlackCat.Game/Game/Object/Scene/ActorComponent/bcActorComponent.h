@@ -21,7 +21,7 @@ namespace black_cat
 	
 	namespace game
 	{
-		class bc_actor_component_manager;
+		class bc_actor_component_manager_container;
 		class bc_game_system;
 		class bc_scene;
 		class bc_shape_drawer;
@@ -210,7 +210,7 @@ namespace black_cat
 			
 			bc_actor_component_id get_id() const noexcept;
 			
-			virtual bc_actor get_actor() const noexcept = 0; // TODO provide default implementation
+			virtual bc_actor get_actor() const noexcept = 0;
 
 			/**
 			 * \brief Must be used to initialize component data members that are shared between instances of this component.
@@ -246,7 +246,7 @@ namespace black_cat
 
 			bci_actor_component& operator=(bci_actor_component&& p_other) noexcept;
 
-			static bc_actor_component_manager& get_manager() noexcept;
+			bc_actor_component_manager_container& get_manager() const noexcept;
 
 		private:
 			bc_actor_id m_actor_id;

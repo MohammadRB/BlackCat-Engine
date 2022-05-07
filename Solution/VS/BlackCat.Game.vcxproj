@@ -328,6 +328,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentContainer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentContainer.hpp" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentManager.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentManagerContainer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorEvent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorController.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorExtensions.h" />
@@ -533,6 +534,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcMeshUtility.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Mesh\bcSkinnedMeshCollider.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponent.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentManagerContainer.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcControllerComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\Component\bcSoundComponent.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Animation\bcAnimationSystem.cpp" />
@@ -551,7 +553,6 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Light\bcSpotLight.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Sound\bcSoundManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Sound\bcSoundSystem.cpp" />
-    <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorExtensions.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcEntityManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\bcScene.cpp" />

@@ -2,9 +2,9 @@
 
 #include "Game/GamePCH.h"
 
-#include "Core/bcUtility.h"
 #include "Core/Utility/bcJsonParse.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Core/bcUtility.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidDynamicComponent.h"
 #include "Game/Object/Scene/Component/bcCheckPointComponent.h"
@@ -15,7 +15,9 @@
 #include "Game/Object/Scene/Component/Event/bcNetworkReplicateActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcBulletHitActorEvent.h"
 #include "Game/Object/Scene/Component/Event/bcExplosionActorEvent.h"
+#include "Game/Object/Scene/bcScene.h"
 #include "Game/System/Render/bcRenderSystem.h"
+#include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
@@ -99,8 +101,7 @@ namespace black_cat
 
 		void bc_rigid_dynamic_component::handle_event(const bc_actor_component_event_context& p_context)
 		{
-			const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event);
-			if(l_world_transform_event)
+			if(const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event))
 			{
 				const auto l_transform_type = l_world_transform_event->get_transform_type();
 				if(l_transform_type == bc_transform_event_type::physics)
@@ -138,8 +139,7 @@ namespace black_cat
 				return;
 			}
 
-			const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event);
-			if(l_bullet_hit_event)
+			if(const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event))
 			{
 				const auto l_force = l_bullet_hit_event->calculate_applied_force();
 				
@@ -154,8 +154,7 @@ namespace black_cat
 				}
 			}
 
-			const auto* l_explosion_hit_event = core::bci_message::as<bc_explosion_actor_event>(p_context.m_event);
-			if (l_explosion_hit_event)
+			if (const auto* l_explosion_hit_event = core::bci_message::as<bc_explosion_actor_event>(p_context.m_event))
 			{
 				{
 					physics::bc_scene_lock l_lock(get_scene());
@@ -176,15 +175,13 @@ namespace black_cat
 				return;
 			}*/
 
-			const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event);
-			if (l_scene_remove_event)
+			if (const auto* l_scene_remove_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event))
 			{
 				remove_from_scene(l_scene_remove_event->get_scene().get_px_scene(), m_px_actor_ref.get());
 				return;
 			}
 
-			const auto* l_network_replicate_event = core::bci_message::as<bc_network_replicate_actor_event>(p_context.m_event);
-			if(l_network_replicate_event)
+			if(const auto* l_network_replicate_event = core::bci_message::as<bc_network_replicate_actor_event>(p_context.m_event))
 			{
 				const auto l_replication_side = l_network_replicate_event->get_replication_side();
 				if(l_replication_side == bc_actor_replication_side::replicated)

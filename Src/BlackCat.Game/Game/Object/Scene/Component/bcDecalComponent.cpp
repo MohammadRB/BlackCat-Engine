@@ -4,7 +4,7 @@
 
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Game/System/Input/bcGlobalConfig.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"

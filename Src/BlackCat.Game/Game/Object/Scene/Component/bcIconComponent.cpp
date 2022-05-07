@@ -2,7 +2,7 @@
 
 #include "Game/GamePCH.h"
 #include "Game/Object/Scene/Component/bcIconComponent.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 

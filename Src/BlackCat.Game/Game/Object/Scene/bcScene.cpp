@@ -7,6 +7,7 @@
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Content/bcContentStreamManager.h"
 #include "Game/System/Input/bcGlobalConfig.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/bcEntityManager.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
@@ -54,6 +55,7 @@ namespace black_cat
 			m_scene_graph(std::move(p_scene_graph)),
 			m_px_scene(std::move(p_px_scene))
 		{
+			m_actor_component_manager = m_entity_manager->create_actor_component_container();
 			m_bullet_manager = core::bc_make_unique<bc_bullet_manager>(bc_bullet_manager(*m_physics));
 			m_light_manager = core::bc_make_unique<bc_light_manager>(bc_light_manager());
 			m_particle_manager = core::bc_make_unique<bc_particle_manager_container>(p_game_system.get_render_system().get_particle_manager().create_container());
@@ -75,6 +77,7 @@ namespace black_cat
 			m_physics(p_other.m_physics),
 			m_scene_graph(std::move(p_other.m_scene_graph)),
 			m_px_scene(std::move(p_other.m_px_scene)),
+			m_actor_component_manager(std::move(p_other.m_actor_component_manager)),
 			m_bullet_manager(std::move(p_other.m_bullet_manager)),
 			m_light_manager(std::move(p_other.m_light_manager)),
 			m_particle_manager(std::move(p_other.m_particle_manager)),
@@ -85,9 +88,18 @@ namespace black_cat
 
 		bc_scene::~bc_scene()
 		{
-			m_scene_graph.clear();
-			m_px_scene.reset();
+			if (m_scene_graph.is_valid())
+			{
+				for (auto& l_actor : m_scene_graph)
+				{
+					l_actor.add_event(bc_removed_from_scene_actor_event(*this));
+				}
 
+				m_actor_component_manager->process_actor_events(platform::bc_clock::update_param{ 0,0,0 });
+
+				m_scene_graph.clear();
+			}
+			
 			auto* l_content_stream_manager = core::bc_get_service<core::bc_content_stream_manager>();
 			for (auto& l_stream : m_loaded_streams)
 			{
@@ -115,6 +127,7 @@ namespace black_cat
 			m_entity_manager = p_other.m_entity_manager;
 			m_physics = p_other.m_physics;
 			m_px_scene = std::move(p_other.m_px_scene);
+			m_actor_component_manager = std::move(p_other.m_actor_component_manager);
 			m_bullet_manager = std::move(p_other.m_bullet_manager);
 			m_light_manager = std::move(p_other.m_light_manager);
 			m_particle_manager = std::move(p_other.m_particle_manager);
@@ -376,7 +389,6 @@ namespace black_cat
 					}
 
 					m_actors_to_add.clear();
-					m_actors_to_add.shrink_to_fit();
 				}
 
 				{
