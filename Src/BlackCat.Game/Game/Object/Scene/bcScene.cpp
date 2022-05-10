@@ -423,6 +423,19 @@ namespace black_cat
 			return l_task;
 		}
 
+		void bc_scene::process_actor_events_and_reform_graph(const platform::bc_clock::update_param& p_clock) noexcept
+		{
+			// Update twice to add/remove actors in 'add/remove' lists
+
+			m_actor_component_manager->process_actor_events(p_clock);
+			update_graph(p_clock);
+
+			// It is important to process actor events after first 'update_graph' to send remove events before actors get removed
+			m_actor_component_manager->process_actor_events(p_clock);
+			// Pass large elapsed time to reform graph if graph uses deferred update
+			update_graph(platform::bc_clock::update_param(p_clock.m_total_elapsed, 10000, 10000));
+		}
+
 		void bc_scene::draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const
 		{
 			m_scene_graph.draw_debug_shapes(p_shape_drawer);

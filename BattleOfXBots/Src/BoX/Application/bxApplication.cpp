@@ -34,6 +34,7 @@
 #include "App/RenderPass/ShadowMap/bcCascadedShadowMapPass.h"
 #include "App/RenderPass/ShadowMap/bcSkinnedCascadedShadowMapPass.h"
 #include "App/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"
+#include "App/Loader/bcSceneCheckPointLoader.h"
 #include "App/bcConstant.h"
 #include "BoX.Game/Application/bxApplicationHookFunctions.h"
 #include "BoX.Game/Application/bxSceneCheckPoint.h"
@@ -194,7 +195,13 @@ namespace box
 			return;
 		}
 
-		if(m_state == bx_app_state::scene_loaded)
+		if (m_reset_game_and_restore_checkpoint)
+		{
+			_reset_game_and_restore_scene_checkpoint(*m_scene, p_context.m_clock);
+			m_reset_game_and_restore_checkpoint = false;
+		}
+
+		if (m_state == bx_app_state::scene_loaded)
 		{
 			if(m_team_select_task.valid() && m_team_select_task.is_ready())
 			{
@@ -330,7 +337,7 @@ namespace box
 		if(m_scene)
 		{
 			_create_scene_checkpoint(*m_scene);
-			_reset_game(false);
+			_reset_game(*m_scene);
 		}
 		else
 		{
@@ -403,7 +410,7 @@ namespace box
 
 	void bx_application::reset_game()
 	{
-		_reset_game(true);
+		m_reset_game_and_restore_checkpoint = true;
 	}
 
 	void bx_application::message_received(core::bc_string p_msg)
@@ -420,31 +427,32 @@ namespace box
 		l_content_manager.save_as(l_check_point, l_checkpoint_path.get_string_frame().c_str(), {});
 	}
 
-	void bx_application::_restore_scene_checkpoint(game::bc_scene& p_scene)
+	void bx_application::_restore_scene_checkpoint(game::bc_scene& p_scene, const platform::bc_clock::update_param& p_clock)
 	{
 		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
 		const auto l_checkpoint_path = bx_scene_checkpoint::get_checkpoint_path(p_scene, bcL("game_checkpoint"));
 		auto l_checkpoint_params = core::bc_content_loader_parameter();
-		l_checkpoint_params.add_or_update("scene", core::bc_any(&p_scene));
+		l_checkpoint_params.add_or_update("params", core::bc_any(bc_scene_checkpoint_loader_params{ &p_clock, &p_scene }));
 
 		auto l_check_point = l_content_manager.load<bx_scene_checkpoint>
 		(
 			l_checkpoint_path.get_string_frame().c_str(),
 			{},
-			core::bc_content_loader_parameter(),
+			{},
 			std::move(l_checkpoint_params)
 		);
 	}
 
-	void bx_application::_reset_game(bool p_restore_scene_checkpoint)
+	void bx_application::_reset_game(game::bc_scene& p_scene)
 	{
 		m_state = bx_app_state::scene_loaded;
 		m_team_select_task = m_player_service->ask_for_team();
 		m_player_service->game_reset();
+	}
 
-		if(p_restore_scene_checkpoint)
-		{
-			_restore_scene_checkpoint(*m_scene);
-		}
+	void bx_application::_reset_game_and_restore_scene_checkpoint(game::bc_scene& p_scene, const platform::bc_clock::update_param& p_clock)
+	{
+		_reset_game(p_scene);
+		_restore_scene_checkpoint(p_scene, p_clock);
 	}
 }

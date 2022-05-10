@@ -338,20 +338,22 @@ namespace black_cat
 		void bc_game_system::_change_scene(const platform::bc_clock::update_param& p_clock)
 		{
 			const auto l_is_changed = m_scene != m_new_scene;
+			if(!l_is_changed)
+			{
+				return;
+			}
+			
+			bc_event_scene_change l_before_change_event(m_scene.get(), true);
+			m_event_manager->process_event(l_before_change_event);
+
 			m_scene = std::move(m_new_scene);
 			m_new_scene = nullptr;
 			m_scene_changed = false;
 
-			if (m_scene && l_is_changed)
+			if (m_scene)
 			{
 				// Process actor events to apply initial transforms and update scene graph so actors can be queryable in scene change event.
-				auto& l_actor_component_manager = m_scene->get_actor_component_manager();
-				l_actor_component_manager.process_actor_events(p_clock);
-				l_actor_component_manager.update_actors(p_clock);
-				l_actor_component_manager.double_update_actors(p_clock);
-
-				// Pass large elapsed time to reform graph if graph uses deferred update
-				m_scene->update_graph(platform::bc_clock::update_param(p_clock.m_total_elapsed, 10000, 10000));
+				m_scene->process_actor_events_and_reform_graph(p_clock);
 
 				if (m_paused)
 				{
@@ -362,12 +364,9 @@ namespace black_cat
 					m_scene->resumed();
 				}
 			}
-
-			if(l_is_changed)
-			{
-				bc_event_scene_change l_scene_change_event(m_scene.get());
-				m_event_manager->process_event(l_scene_change_event);
-			}
+			
+			bc_event_scene_change l_after_change_event(m_scene.get(), false);
+			m_event_manager->process_event(l_after_change_event);
 		}
 
 		void bc_game_system::_event_handler(core::bci_event& p_event)

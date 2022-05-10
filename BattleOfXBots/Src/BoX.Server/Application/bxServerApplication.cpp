@@ -10,6 +10,7 @@
 #include "Game/System/Sound/bcSoundSystem.h"
 #include "Game/System/Script/bcScriptBinding.h"
 #include "Game/Object/Scene/bcScene.h"
+#include "App/Loader/bcSceneCheckPointLoader.h"
 #include "BoX.Game/Application/bxApplicationHookFunctions.h"
 #include "BoX.Game/Application/bxSceneCheckPoint.h"
 #include "BoX.Game/Game/bxPlayerSeatComponent.h"
@@ -142,7 +143,7 @@ namespace box
 
 			if(m_current_scores_time <= 0)
 			{
-				_reset_game(*m_scene, true);
+				_reset_game_and_restore_checkpoint(*m_scene, p_context.m_clock);
 			}
 		}
 
@@ -243,7 +244,7 @@ namespace box
 		if(m_scene)
 		{
 			_create_scene_checkpoint(*m_scene);
-			_reset_game(*m_scene, false);
+			_reset_game(*m_scene);
 		}
 		else
 		{
@@ -363,18 +364,18 @@ namespace box
 		l_content_manager.save_as(l_check_point, l_checkpoint_path.get_string_frame().c_str(), {});
 	}
 
-	void bx_server_application::_restore_scene_checkpoint(game::bc_scene& p_scene)
+	void bx_server_application::_restore_scene_checkpoint(game::bc_scene& p_scene, const platform::bc_clock::update_param& p_clock)
 	{
 		auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
 		const auto l_checkpoint_path = bx_scene_checkpoint::get_checkpoint_path(p_scene, bcL("server_checkpoint"));
 		auto l_checkpoint_params = core::bc_content_loader_parameter();
-		l_checkpoint_params.add_or_update("scene", core::bc_any(&p_scene));
+		l_checkpoint_params.add_or_update("params", core::bc_any(bc_scene_checkpoint_loader_params{ &p_clock, &p_scene }));
 
 		auto l_check_point = l_content_manager.load<bx_scene_checkpoint>
 		(
 			l_checkpoint_path.get_string_frame().c_str(),
 			{},
-			core::bc_content_loader_parameter(),
+			{},
 			std::move(l_checkpoint_params)
 		);
 	}
@@ -385,19 +386,20 @@ namespace box
 		m_network_system->send_message(bx_game_scores_network_message());
 	}
 
-	void bx_server_application::_reset_game(game::bc_scene& p_scene, bool p_restore_scene_checkpoint)
+	void bx_server_application::_reset_game(game::bc_scene& p_scene)
 	{
 		m_current_game_time = m_game_time;
 		m_current_scores_time = m_scores_time;
 		m_state = bx_app_state::game_started;
 		m_player_service->reset_players();
-
-		if(p_restore_scene_checkpoint)
-		{
-			_restore_scene_checkpoint(p_scene);
-		}
-
+		
 		m_network_system->send_message(bx_game_reset_network_message());
+	}
+
+	void bx_server_application::_reset_game_and_restore_checkpoint(game::bc_scene& p_scene, const platform::bc_clock::update_param& p_clock)
+	{
+		_reset_game(p_scene);
+		_restore_scene_checkpoint(p_scene, p_clock);
 	}
 
 	void bx_server_application::_respawn_dead_players(const platform::bc_clock::update_param& p_clock)

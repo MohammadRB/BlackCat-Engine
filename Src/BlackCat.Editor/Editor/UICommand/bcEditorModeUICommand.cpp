@@ -6,6 +6,7 @@
 #include "Core/File/bcPath.h"
 #include "Game/Object/Scene/bcSceneCheckPoint.h"
 #include "Game/bcEvent.h"
+#include "App/Loader/bcSceneCheckPointLoader.h"
 #include "Editor/UICommand/bcEditorModeUICommand.h"
 
 namespace black_cat
@@ -38,7 +39,6 @@ namespace black_cat
 
 			auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
 			auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
-
 			const auto l_checkpoint_path = game::bc_scene_checkpoint::get_checkpoint_path(*l_scene, bcL("editor_checkpoint"));
 
 			if(!m_editor_mode)
@@ -49,13 +49,13 @@ namespace black_cat
 			else
 			{
 				core::bc_content_loader_parameter l_instance_parameters;
-				l_instance_parameters.add_or_update("scene", core::bc_any(l_scene));
-
+				l_instance_parameters.add_or_update("params", core::bc_any(bc_scene_checkpoint_loader_params{&p_context.m_clock, l_scene}));
+				
 				auto l_check_point = l_content_manager.load<game::bc_scene_checkpoint>
 				(
 					l_checkpoint_path.get_string_frame().c_str(),
 					{},
-					core::bc_content_loader_parameter(),
+					{},
 					l_instance_parameters
 				);
 			}

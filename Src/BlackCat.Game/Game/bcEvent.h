@@ -102,9 +102,10 @@ namespace black_cat
 			BC_EVENT(scn_chg)
 			
 		public:
-			explicit bc_event_scene_change(bc_scene* p_scene)
+			bc_event_scene_change(bc_scene* p_scene, bool p_before_change)
 				: bc_app_event(message_name()),
-				m_scene(p_scene)
+				m_scene(p_scene),
+				m_before_change(p_before_change)
 			{
 			}
 
@@ -114,6 +115,16 @@ namespace black_cat
 
 			bc_event_scene_change& operator=(const bc_event_scene_change&) noexcept = default;
 
+			bool is_before_change() const noexcept
+			{
+				return m_before_change;
+			}
+
+			bool is_after_change() const noexcept
+			{
+				return !m_before_change;
+			}
+
 			bc_scene* get_scene() const noexcept
 			{
 				return m_scene;
@@ -121,6 +132,7 @@ namespace black_cat
 		
 		private:
 			bc_scene* m_scene;
+			bool m_before_change;
 		};
 	}
 }

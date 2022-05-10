@@ -24,7 +24,7 @@ namespace black_cat
 		BC_JSON_ARRAY(_bc_scene_check_point_actor, actors);
 	};
 
-	core::bc_vector_frame<game::bc_actor> bc_scene_checkpoint_loader_base::load_checkpoint_file(game::bc_scene& p_scene, core::bc_string_view p_file_content) const
+	core::bc_vector_frame<game::bc_actor> bc_scene_checkpoint_loader_base::load_json_checkpoint(game::bc_scene& p_scene, core::bc_string_view p_file_content) const
 	{
 		core::bc_json_document<_bc_scene_check_point_json> l_json_document;
 		l_json_document.load(p_file_content.data());
@@ -56,7 +56,7 @@ namespace black_cat
 		return l_actors;
 	}
 
-	core::bc_string_frame bc_scene_checkpoint_loader_base::save_checkpoint_file(const core::bc_vector_frame<game::bc_actor>& p_actors) const
+	core::bc_string_frame bc_scene_checkpoint_loader_base::save_json_checkpoint(const core::bc_vector_frame<game::bc_actor>& p_actors) const
 	{
 		core::bc_json_document<_bc_scene_check_point_json> l_json_document;
 		core::bc_vector_frame<game::bci_actor_component*> l_actor_components;

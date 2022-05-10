@@ -1,7 +1,6 @@
 #include "../bcHelper.hlsli"
 
 static const float g_vegetable_max_wind_power = 5;
-static const float g_vegetable_max_height = 20;
 
 float bc_saturate_wind_power(float p_wind_power)
 {

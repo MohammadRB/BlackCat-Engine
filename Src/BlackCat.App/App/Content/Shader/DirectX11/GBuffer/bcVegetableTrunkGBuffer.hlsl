@@ -42,7 +42,7 @@ bc_vs_output gbuffer_vegetable_trunk_vs(bc_vs_input p_input)
     (
 	    p_input.m_position,
 	    g_world,
-        min(g_vegetable_max_height, g_global_scale * 4),
+        g_global_scale * 3,
 	    false,
 	    g_global_wind_direction,
 	    g_global_wind_power,

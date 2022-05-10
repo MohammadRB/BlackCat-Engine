@@ -82,9 +82,11 @@ namespace box
 
 		void _create_scene_checkpoint(game::bc_scene& p_scene);
 
-		void _restore_scene_checkpoint(game::bc_scene& p_scene);
+		void _restore_scene_checkpoint(game::bc_scene& p_scene, const platform::bc_clock::update_param& p_clock);
 
-		void _reset_game(bool p_restore_scene_checkpoint);
+		void _reset_game(game::bc_scene& p_scene);
+
+		void _reset_game_and_restore_scene_checkpoint(game::bc_scene& p_scene, const platform::bc_clock::update_param& p_clock);
 
 		core::bc_unique_ptr<game::bc_default_game_console> m_console;
 		platform::bc_script_context* m_client_script_context = nullptr;
@@ -99,6 +101,7 @@ namespace box
 		game::bc_actor m_player_actor;
 		bool m_is_dead = false;
 		bcFLOAT m_dead_passed_time = 0;
+		bool m_reset_game_and_restore_checkpoint = { false };
 
 		core::bc_event_listener_handle m_player_spawn_event_handle;
 		core::bc_event_listener_handle m_player_kill_event_handle;

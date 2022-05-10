@@ -92,11 +92,13 @@ namespace box
 
 		void _create_scene_checkpoint(game::bc_scene& p_scene);
 
-		void _restore_scene_checkpoint(game::bc_scene& p_scene);
+		void _restore_scene_checkpoint(game::bc_scene& p_scene, const platform::bc_clock::update_param& p_clock);
 
 		void _show_game_scores();
 
-		void _reset_game(game::bc_scene& p_scene, bool p_restore_scene_checkpoint);
+		void _reset_game(game::bc_scene& p_scene);
+
+		void _reset_game_and_restore_checkpoint(game::bc_scene& p_scene, const platform::bc_clock::update_param& p_clock);
 		
 		void _respawn_dead_players(const platform::bc_clock::update_param& p_clock);
 

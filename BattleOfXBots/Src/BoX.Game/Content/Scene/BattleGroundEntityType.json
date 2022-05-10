@@ -452,7 +452,7 @@
           "name": "vegetable_mesh",
           "parameters": {
             "mesh": "grass_short",
-            "view_distance": 180.0
+            "view_distance": 200.0
           }
         }
       ]
@@ -464,7 +464,7 @@
           "name": "vegetable_mesh",
           "parameters": {
             "mesh": "grass_big_short",
-            "view_distance": 190.0
+            "view_distance": 200.0
           }
         }
       ]
@@ -476,7 +476,7 @@
           "name": "vegetable_mesh",
           "parameters": {
             "mesh": "grass_tall",
-            "view_distance": 180.0
+            "view_distance": 200.0
           }
         }
       ]
@@ -488,7 +488,7 @@
           "name": "vegetable_mesh",
           "parameters": {
             "mesh": "grass_big_tall",
-            "view_distance": 190.0
+            "view_distance": 200.0
           }
         }
       ]

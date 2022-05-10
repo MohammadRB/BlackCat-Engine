@@ -905,23 +905,31 @@ namespace black_cat
 		{
 			if(const auto* l_scene_change_event = core::bci_event::as<bc_event_scene_change>(p_event))
 			{
-				// Network actors should have been removed by their network component
-				m_scene_name = l_scene_change_event->get_scene()->get_name();
-				send_message(bc_scene_change_network_message(m_scene_name));
-
+				if(l_scene_change_event->is_before_change())
 				{
-					platform::bc_shared_mutex_shared_guard l_clients_lock(m_clients_lock);
-
-					for (auto& l_client : m_clients)
+					// Before scene change, disable clients sync to prevent sending game messages like 'actor replicate'
+					// until clients load new scene and request scene replication
 					{
+						platform::bc_shared_mutex_shared_guard l_clients_lock(m_clients_lock);
+
+						for (auto& l_client : m_clients)
 						{
-							platform::bc_lock_guard l_client_lock(l_client);
-							l_client.set_ready_for_sync(false);
+							{
+								platform::bc_lock_guard l_client_lock(l_client);
+								l_client.set_ready_for_sync(false);
+							}
 						}
 					}
 				}
+				else
+				{
+					// Network actors should have been removed by their network component
+					m_scene_name = l_scene_change_event->get_scene()->get_name();
+					send_message(bc_scene_change_network_message(m_scene_name));
 
-				m_hook->scene_changed(l_scene_change_event->get_scene());
+					m_hook->scene_changed(l_scene_change_event->get_scene());
+				}
+
 				return;
 			}
 		}

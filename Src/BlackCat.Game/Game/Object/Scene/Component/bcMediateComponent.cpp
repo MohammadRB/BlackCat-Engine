@@ -47,7 +47,7 @@ namespace black_cat
 				m_world_transform = l_transformation_event->get_transform();
 
 				// update prev box only once in case of multiple events per frame
-				if (m_last_bound_box_change_time < p_context.m_clock.m_total_elapsed)
+				if (static_cast<platform::bc_clock::big_time>(m_last_bound_box_change_time) < p_context.m_clock.m_total_elapsed)
 				{
 					m_prev_bound_box = m_bound_box;
 					m_last_bound_box_change_time = static_cast<platform::bc_clock::small_time>(p_context.m_clock.m_total_elapsed) + 1.f; // +1ms to avoid floating point precision problem
@@ -64,7 +64,7 @@ namespace black_cat
 			if (const auto* l_bound_box_event = core::bci_message::as<bc_bound_box_changed_actor_event>(p_context.m_event))
 			{
 				// update prev box only once in case of multiple events per frame
-				if (m_last_bound_box_change_time < p_context.m_clock.m_total_elapsed)
+				if (static_cast<platform::bc_clock::big_time>(m_last_bound_box_change_time) < p_context.m_clock.m_total_elapsed)
 				{
 					m_prev_bound_box = m_bound_box;
 					m_last_bound_box_change_time = static_cast<platform::bc_clock::small_time>(p_context.m_clock.m_total_elapsed) + 1.f; // +1ms to avoid floating point precision problem

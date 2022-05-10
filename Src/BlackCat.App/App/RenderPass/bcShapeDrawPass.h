@@ -96,5 +96,6 @@ namespace black_cat
 		game::bc_decal_instance* m_selected_decal;
 
 		core::bc_event_listener_handle m_editor_event_handle;
+		core::bc_event_listener_handle m_scene_change_event_handle;
 	};
 }

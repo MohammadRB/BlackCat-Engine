@@ -78,6 +78,10 @@ namespace black_cat
 		(
 			core::bc_event_manager::delegate_type(*this, &bc_shape_draw_pass::_event_handler)
 		);
+		m_scene_change_event_handle = l_event_manager.register_event_listener<game::bc_event_scene_change>
+		(
+			core::bc_event_manager::delegate_type(*this, &bc_shape_draw_pass::_event_handler)
+		);
 	}
 
 	bc_shape_draw_pass::bc_shape_draw_pass(bc_shape_draw_pass&& p_other) noexcept
@@ -90,9 +94,11 @@ namespace black_cat
 		m_selected_actor(std::move(p_other.m_selected_actor)),
 		m_hovered_decal(p_other.m_hovered_decal),
 		m_selected_decal(p_other.m_selected_decal),
-		m_editor_event_handle(std::move(p_other.m_editor_event_handle))
+		m_editor_event_handle(std::move(p_other.m_editor_event_handle)),
+		m_scene_change_event_handle(std::move(p_other.m_scene_change_event_handle))
 	{
 		m_editor_event_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_shape_draw_pass::_event_handler));
+		m_scene_change_event_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_shape_draw_pass::_event_handler));
 	}
 
 	bc_shape_draw_pass& bc_shape_draw_pass::operator=(bc_shape_draw_pass&& p_other) noexcept
@@ -109,7 +115,9 @@ namespace black_cat
 		m_selected_decal = p_other.m_selected_decal;
 
 		m_editor_event_handle = std::move(p_other.m_editor_event_handle);
+		m_scene_change_event_handle = std::move(p_other.m_scene_change_event_handle);
 		m_editor_event_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_shape_draw_pass::_event_handler));
+		m_scene_change_event_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_shape_draw_pass::_event_handler));
 
 		return *this;
 	}
@@ -292,6 +300,15 @@ namespace black_cat
 				m_hovered_decal = nullptr;
 				m_selected_decal = nullptr;
 			}
+			return;
+		}
+
+		if(const auto* l_scene_change_event = core::bci_message::as<game::bc_event_scene_change>(p_event))
+		{
+			m_selected_actor = game::bc_actor();
+			m_hovered_actor = game::bc_actor();
+			m_hovered_decal = nullptr;
+			m_selected_decal = nullptr;
 		}
 	}
 }

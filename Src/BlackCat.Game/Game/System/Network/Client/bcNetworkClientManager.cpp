@@ -682,12 +682,16 @@ namespace black_cat
 		{
 			if (const auto* l_scene_change_event = core::bci_message::as<bc_event_scene_change>(p_event))
 			{
-				if(l_scene_change_event->get_scene())
+				if(l_scene_change_event->is_after_change())
 				{
-					send_message(bc_scene_replicate_network_message());
+					if (l_scene_change_event->get_scene())
+					{
+						send_message(bc_scene_replicate_network_message());
+					}
+
+					m_hook->scene_changed(l_scene_change_event->get_scene());
 				}
-				
-				m_hook->scene_changed(l_scene_change_event->get_scene());
+
 				return;
 			}
 

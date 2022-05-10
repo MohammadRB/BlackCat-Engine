@@ -156,6 +156,13 @@ namespace black_cat
 			
 			core::bc_task<void> update_graph_async(const platform::bc_clock::update_param& p_clock) noexcept;
 
+			/**
+			 * \brief Process actor events to apply initial transforms and update graph.
+			 * \n This function must be called after scene or checkpoint load to process all changes in actors and scene graph
+			 * \param p_clock 
+			 */
+			void process_actor_events_and_reform_graph(const platform::bc_clock::update_param& p_clock) noexcept;
+
 			void draw_debug_shapes(bc_shape_drawer& p_shape_drawer) const;
 
 		private:
