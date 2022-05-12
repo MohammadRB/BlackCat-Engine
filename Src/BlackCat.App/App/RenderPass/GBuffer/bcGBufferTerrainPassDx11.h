@@ -17,7 +17,7 @@
 
 namespace black_cat
 {
-	class BC_DLL bc_gbuffer_terrain_pass_dx11 : public game::bci_concurrent_render_pass
+	class BC_DLL bc_gbuffer_terrain_pass_dx11 : public game::bci_render_pass
 	{
 		BC_RENDER_PASS(gb_trn)
 
@@ -26,9 +26,9 @@ namespace black_cat
 
 		void update(const game::bc_render_pass_update_context& p_context) override;
 
-		void initialize_frame(const game::bc_concurrent_render_pass_render_context& p_context) override;
+		void initialize_frame(const game::bc_render_pass_render_context& p_context) override;
 
-		void execute(const game::bc_concurrent_render_pass_render_context& p_context) override;
+		void execute(const game::bc_render_pass_render_context& p_context) override;
 
 		void cleanup_frame(const game::bc_render_pass_render_context& p_context) override;
 		

@@ -216,7 +216,7 @@ namespace box
 			if(m_is_dead)
 			{
 				m_dead_passed_time += p_context.m_clock.m_elapsed_second;
-				if(m_dead_passed_time >= 4)
+				if(m_dead_passed_time >= m_dead_body_time)
 				{
 					m_is_dead = false;
 					m_dead_passed_time = 0;

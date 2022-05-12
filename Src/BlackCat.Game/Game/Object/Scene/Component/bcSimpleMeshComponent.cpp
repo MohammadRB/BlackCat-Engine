@@ -35,9 +35,7 @@ namespace black_cat
 		{
 		}
 
-		bc_simple_mesh_component::~bc_simple_mesh_component()
-		{
-		}
+		bc_simple_mesh_component::~bc_simple_mesh_component() = default;
 
 		bc_simple_mesh_component& bc_simple_mesh_component::operator=(bc_simple_mesh_component&& p_other) noexcept
 		{
@@ -57,8 +55,7 @@ namespace black_cat
 		{
 			bc_mesh_component::initialize_entity(p_context);
 
-			auto* l_rigid_body_component = get_actor().get_component<bc_rigid_body_component>();
-			if (l_rigid_body_component)
+			if (const auto* l_rigid_body_component = get_actor().get_component<bc_rigid_body_component>())
 			{
 				const auto l_px_actor_type = l_rigid_body_component->get_body_type();
 				if (l_px_actor_type == physics::bc_actor_type::rigid_static)

@@ -15,6 +15,7 @@
 #include "Game/Object/Mesh/bcMeshUtility.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
+#include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
 #include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
@@ -67,6 +68,7 @@ namespace black_cat
 			const auto l_mesh = p_context.m_stream_manager.find_content_throw<bc_mesh>(l_mesh_name->c_str());
 			m_sub_mesh = l_sub_mesh_name ? bc_sub_mesh(l_mesh, l_sub_mesh_name->c_str()) : bc_sub_mesh(l_mesh);
 			m_world_transforms = bc_sub_mesh_mat4_transform(*m_sub_mesh.get_root_node());
+			m_view_distance = l_view_distance_param;
 
 			if(l_materials)
 			{
@@ -77,17 +79,17 @@ namespace black_cat
 				m_render_state = m_sub_mesh.create_render_states(p_context.m_game_system.get_render_system());
 			}
 
-			if(l_view_distance_param > 0)
-			{
-				m_view_distance = l_view_distance_param;
-			}
-			else
+			if(m_view_distance <= 0)
 			{
 				physics::bc_bound_box l_bound_box;
 				m_sub_mesh.calculate_absolute_transforms(core::bc_matrix4f::identity(), m_world_transforms, l_bound_box);
 
 				update_view_distance(l_bound_box);
 			}
+
+			// Create decal component in advance to prevent component creation in 'add_decal' implementations
+			// which will be called during concurrent event processing
+			p_context.m_actor.create_component<bc_decal_component>();
 		}
 
 		void bc_mesh_component::load_instance(const bc_actor_component_load_context& p_context)

@@ -205,32 +205,41 @@ namespace black_cat
 		void bc_decal_component::load_instance(const bc_actor_component_load_context& p_context)
 		{
 			const auto l_ite = p_context.m_parameters.find(constant::g_param_decal_parameters);
-			if(l_ite != std::end(p_context.m_parameters))
+			if(l_ite == std::end(p_context.m_parameters))
 			{
-				const auto& l_json_str = l_ite->second.as_throw<core::bc_string>();
-				if(!l_json_str.empty())
-				{
-					core::bc_json_document<_bc_decal_array_json> l_json;
-					l_json.load(l_json_str.c_str());
+				return;
+			}
 
-					for (auto& l_json_entry : l_json->m_decals)
-					{
-						add_decal
-						(
-							*l_json_entry->m_nm,
-							*l_json_entry->m_pos_ls,
-							bc_matrix3f_rotation_zyx(*l_json_entry->m_rot_ls),
-							static_cast<bc_actor_render_group>(*l_json_entry->m_rg),
-							core::bc_matrix4f::identity(),
-							*l_json_entry->m_ani
-						);
-					}
-				}
+			const auto& l_json_str = l_ite->second.as_throw<core::bc_string>();
+			if(l_json_str.empty())
+			{
+				return;
+			}
+
+			core::bc_json_document<_bc_decal_array_json> l_json;
+			l_json.load(l_json_str.c_str());
+
+			for (auto& l_json_entry : l_json->m_decals)
+			{
+				add_decal
+				(
+					*l_json_entry->m_nm,
+					*l_json_entry->m_pos_ls,
+					bc_matrix3f_rotation_zyx(*l_json_entry->m_rot_ls),
+					static_cast<bc_actor_render_group>(*l_json_entry->m_rg),
+					core::bc_matrix4f::identity(),
+					*l_json_entry->m_ani
+				);
 			}
 		}
 
 		void bc_decal_component::write_instance(const bc_actor_component_write_context& p_context)
 		{
+			if(m_persistent_decals.empty())
+			{
+				return;
+			}
+
 			core::bc_json_document<_bc_decal_array_json> l_json;
 			l_json.set_max_decimal_places(2);
 			

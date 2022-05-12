@@ -131,8 +131,19 @@ namespace black_cat
 		}
 
 		bc_frame_renderer::bc_frame_renderer(bc_frame_renderer&& p_other) noexcept
+			: m_thread_manager(p_other.m_thread_manager),
+			m_render_pass_manager(p_other.m_render_pass_manager),
+			m_global_cbuffer(std::move(p_other.m_global_cbuffer)),
+			m_per_object_cbuffer(std::move(p_other.m_per_object_cbuffer)),
+			m_global_cbuffer_parameter(p_other.m_global_cbuffer_parameter),
+			m_per_object_cbuffer_parameter(p_other.m_per_object_cbuffer_parameter),
+			m_update_camera(p_other.m_update_camera),
+			m_render_camera(p_other.m_render_camera),
+			m_update_camera_instance(p_other.m_update_camera_instance.load()),
+			m_render_camera_instance(p_other.m_render_camera_instance.load()),
+			m_render_thread_update_camera(p_other.m_render_thread_update_camera),
+			m_render_thread_render_camera(p_other.m_render_thread_render_camera)
 		{
-			operator=(std::move(p_other));
 		}
 
 		bc_frame_renderer::~bc_frame_renderer() = default;
@@ -144,13 +155,13 @@ namespace black_cat
 
 			m_global_cbuffer = std::move(p_other.m_global_cbuffer);
 			m_per_object_cbuffer = std::move(p_other.m_per_object_cbuffer);
-			m_global_cbuffer_parameter = std::move(p_other.m_global_cbuffer_parameter);
-			m_per_object_cbuffer_parameter = std::move(p_other.m_per_object_cbuffer_parameter);
+			m_global_cbuffer_parameter = p_other.m_global_cbuffer_parameter;
+			m_per_object_cbuffer_parameter = p_other.m_per_object_cbuffer_parameter;
 
-			m_render_camera = p_other.m_render_camera;
 			m_update_camera = p_other.m_update_camera;
-			m_render_camera_instance.store(p_other.m_render_camera_instance.load());
+			m_render_camera = p_other.m_render_camera;
 			m_update_camera_instance.store(p_other.m_update_camera_instance.load());
+			m_render_camera_instance.store(p_other.m_render_camera_instance.load());
 			
 			return *this;
 		}
@@ -289,11 +300,6 @@ namespace black_cat
 			
 			for (const auto& l_render_state_entry : p_buffer.get_instances())
 			{
-				if (l_render_state_entry.second.empty())
-				{
-					continue;
-				}
-
 				auto& l_render_state = *l_render_state_entry.first;
 				p_render_thread.bind_render_state(l_render_state);
 				
@@ -333,22 +339,17 @@ namespace black_cat
 		void bc_frame_renderer::render_skinned_buffer(bc_render_thread& p_render_thread, const bc_render_state_buffer& p_buffer, const bc_camera_instance& p_camera)
 		{
 			_bc_render_system_per_object_cbuffer l_per_object_cbuffer;
-			auto l_last_render_group = game::bc_actor_render_group::unknown;
+			auto l_last_render_group = bc_actor_render_group::unknown;
 			
 			for (const auto& l_render_state_entry : p_buffer.get_skinned_instances())
 			{
-				if (l_render_state_entry.second.empty())
-				{
-					continue;
-				}
-
 				auto& l_render_state = *l_render_state_entry.first;
 				p_render_thread.bind_render_state(l_render_state);
 
 				for (bc_skinned_render_instance& l_render_instance : l_render_state_entry.second)
 				{
 					BC_ASSERT(l_render_instance.get_num_transforms() <= g_max_skinned_transform);
-
+					
 					if (l_render_instance.get_render_group() != l_last_render_group)
 					{
 						l_last_render_group = l_render_instance.get_render_group();

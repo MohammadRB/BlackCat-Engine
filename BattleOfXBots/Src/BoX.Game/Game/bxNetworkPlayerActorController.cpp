@@ -18,6 +18,7 @@ namespace box
 		m_player_service(core::bc_get_service<bxi_player_list_service>()),
 		m_health_recover_per_second(10),
 		m_health_damage_per_thousands_force(8),
+		m_elapsed_since_last_damage(0),
 		m_health(100)
 	{
 	}
@@ -35,22 +36,7 @@ namespace box
 		bx_player_killed_event l_event(p_killer_id, get_network_client_id(), get_actor());
 		m_event_manager->process_event(l_event);
 	}
-
-	void bx_network_player_actor_controller::load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context)
-	{
-		bc_xbot_network_player_actor_controller::load_origin_network_instance(p_context);
-	}
-
-	void bx_network_player_actor_controller::load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context)
-	{
-		bc_xbot_network_player_actor_controller::load_replicated_network_instance(p_context);
-	}
-
-	void bx_network_player_actor_controller::write_origin_network_instance(const game::bc_actor_component_network_write_context& p_context)
-	{
-		bc_xbot_network_player_actor_controller::write_origin_network_instance(p_context);
-	}
-
+	
 	void bx_network_player_actor_controller::write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context)
 	{
 		bc_xbot_network_player_actor_controller::write_replicated_network_instance(p_context);
@@ -64,19 +50,20 @@ namespace box
 		bx_player_spawned_event l_event(get_network_client_id(), p_context.m_actor);
 		m_event_manager->process_event(l_event);
 	}
-
-	void bx_network_player_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
-	{
-		bc_xbot_network_player_actor_controller::update_origin_instance(p_context);
-	}
-
+	
 	void bx_network_player_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
 	{
 		bc_xbot_network_player_actor_controller::update_replicated_instance(p_context);
 
 		if(get_network_type() == game::bc_network_type::server)
 		{
-			m_health = m_health > 0.f ? m_health + p_context.m_clock.m_elapsed_second * m_health_recover_per_second : m_health;
+			m_elapsed_since_last_damage += p_context.m_clock.m_elapsed_second;
+
+			if (m_elapsed_since_last_damage > 1.f)
+			{
+				m_health += p_context.m_clock.m_elapsed_second * m_health_recover_per_second;
+			}
+
 			m_health = std::min(m_health, 100.f);
 		}
 	}
@@ -123,6 +110,11 @@ namespace box
 					m_health -= l_force.second / 1000.f * static_cast<bcFLOAT>(m_health_damage_per_thousands_force);
 					l_health_hit = true;
 				}
+			}
+
+			if(l_health_hit)
+			{
+				m_elapsed_since_last_damage = 0;
 			}
 
 			if (l_health_hit && m_health <= 0)

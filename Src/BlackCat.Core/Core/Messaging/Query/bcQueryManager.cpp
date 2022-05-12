@@ -118,8 +118,8 @@ namespace black_cat
 
 				const auto l_num_shared_queries = static_cast<bcSIZE>(std::distance(l_first_inserted_shared_query, std::end(m_executed_shared_queries)));
 				const auto l_num_queries = static_cast<bcSIZE>(std::distance(l_first_inserted_query, std::end(m_executed_queries)));
-				const auto l_num_shared_threads = std::min(bc_concurrency::hardware_worker_count(), l_num_shared_queries / 2U + 1);
-				const auto l_num_thread = std::min(bc_concurrency::hardware_worker_count(), l_num_queries / 2U + 1);
+				const auto l_num_shared_threads = std::min(bc_concurrency::hardware_worker_count(), l_num_shared_queries);
+				const auto l_num_thread = std::min(bc_concurrency::hardware_worker_count(), std::max(l_num_queries / 2U, 1U));
 
 				bc_concurrency::concurrent_for_each
 				(

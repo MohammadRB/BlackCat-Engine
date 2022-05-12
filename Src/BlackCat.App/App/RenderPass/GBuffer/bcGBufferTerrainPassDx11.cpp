@@ -86,7 +86,7 @@ namespace black_cat
 	{
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::initialize_frame(const game::bc_concurrent_render_pass_render_context& p_context)
+	void bc_gbuffer_terrain_pass_dx11::initialize_frame(const game::bc_render_pass_render_context& p_context)
 	{
 		core::bc_vector<game::bc_height_map_ptr> l_height_maps;
 
@@ -164,7 +164,7 @@ namespace black_cat
 		);
 	}
 
-	void bc_gbuffer_terrain_pass_dx11::execute(const game::bc_concurrent_render_pass_render_context& p_context)
+	void bc_gbuffer_terrain_pass_dx11::execute(const game::bc_render_pass_render_context& p_context)
 	{
 		const auto l_camera_extends = p_context.m_render_camera.get_extends();
 
@@ -176,15 +176,15 @@ namespace black_cat
 		l_parameter.m_frustum_planes[4] = _plane_from_3_point(l_camera_extends[2], l_camera_extends[6], l_camera_extends[7]);
 		l_parameter.m_frustum_planes[5] = _plane_from_3_point(l_camera_extends[7], l_camera_extends[4], l_camera_extends[0]);
 		
-		p_context.m_child_render_thread.start(*m_command_list);
-		p_context.m_child_render_thread.bind_render_pass_state(*m_render_pass_state.get());
+		p_context.m_render_thread.start();
+		p_context.m_render_thread.bind_render_pass_state(*m_render_pass_state.get());
 
-		p_context.m_child_render_thread.update_subresource(m_parameter_cbuffer.get(), 0, &l_parameter, 0, 0);
+		p_context.m_render_thread.update_subresource(m_parameter_cbuffer.get(), 0, &l_parameter, 0, 0);
 		
-		p_context.m_frame_renderer.render_buffer(p_context.m_child_render_thread, m_height_maps_render_buffer, p_context.m_render_camera);
+		p_context.m_frame_renderer.render_buffer(p_context.m_render_thread, m_height_maps_render_buffer, p_context.m_render_camera);
 
-		p_context.m_child_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
-		p_context.m_child_render_thread.finish();
+		p_context.m_render_thread.unbind_render_pass_state(*m_render_pass_state.get());
+		p_context.m_render_thread.finish();
 	}
 
 	void bc_gbuffer_terrain_pass_dx11::cleanup_frame(const game::bc_render_pass_render_context& p_context)
@@ -290,10 +290,10 @@ namespace black_cat
 		m_command_list.reset();
 		m_device_pipeline_state.reset();
 		m_chunk_info_device_compute_state.reset();
-		m_render_pass_state.reset();
 		m_parameter_cbuffer.reset();
 		m_height_map_sampler.reset();
 		m_texture_sampler.reset();
+		m_render_pass_state.reset();
 	}
 
 	void bc_gbuffer_terrain_pass_dx11::update_chunk_infos()

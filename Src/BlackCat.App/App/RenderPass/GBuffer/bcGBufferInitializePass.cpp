@@ -63,7 +63,7 @@ namespace black_cat
 
 		p_context.m_query_manager.queue_shared_query
 		(
-			game::bc_main_camera_scene_shared_query(l_frustum)
+			std::move(game::bc_main_camera_scene_shared_query(l_frustum).with_sort(p_context.m_update_camera.get_position()))
 		);
 		p_context.m_query_manager.queue_shared_query
 		(

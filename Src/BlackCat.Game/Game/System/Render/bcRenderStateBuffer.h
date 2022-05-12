@@ -16,10 +16,7 @@ namespace black_cat
 	{
 		struct _bc_render_state_buffer_entry_hash
 		{
-			using argument_type = bc_render_state_ptr;
-			using result_type = std::hash<void*>::result_type;
-
-			result_type operator ()(const argument_type& p_arg) const noexcept
+			bcSIZE operator ()(const bc_render_state_ptr& p_arg) const noexcept
 			{
 				return std::hash<void*>()(p_arg.get());
 			}
@@ -27,10 +24,7 @@ namespace black_cat
 
 		struct _bc_render_state_buffer_entry_equal
 		{
-			using first_argument_type = bc_render_state_ptr;
-			using second_argument_type = bc_render_state_ptr;
-
-			bool operator()(const first_argument_type& p_1, const second_argument_type& p_2) const
+			bool operator()(const bc_render_state_ptr& p_1, const bc_render_state_ptr& p_2) const
 			{
 				return p_1.get() == p_2.get();
 			}
@@ -38,10 +32,7 @@ namespace black_cat
 
 		struct _bc_render_state_buffer_decal_entry_hash
 		{
-			using argument_type = bc_decal_ptr;
-			using result_type = std::hash<void*>::result_type;
-
-			result_type operator ()(const argument_type& p_arg) const noexcept
+			bcSIZE operator ()(const bc_decal_ptr& p_arg) const noexcept
 			{
 				return std::hash<void*>()(p_arg.get());
 			}
@@ -49,10 +40,7 @@ namespace black_cat
 
 		struct _bc_render_state_buffer_decal_entry_equal
 		{
-			using first_argument_type = bc_decal_ptr;
-			using second_argument_type = bc_decal_ptr;
-
-			bool operator()(const first_argument_type& p_1, const second_argument_type& p_2) const
+			bool operator()(const bc_decal_ptr& p_1, const bc_decal_ptr& p_2) const
 			{
 				return p_1.get() == p_2.get();
 			}

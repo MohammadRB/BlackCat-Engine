@@ -94,6 +94,7 @@ namespace box
 		bx_player_service* m_player_service = nullptr;
 		game::bc_scene* m_scene{ nullptr };
 
+		const bcFLOAT m_dead_body_time = 5;
 		bx_app_state m_state = bx_app_state::initial;
 		core::bc_task<bx_team> m_team_select_task;
 		core::bc_vector3f m_spawn_position{};

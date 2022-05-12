@@ -18,7 +18,7 @@ namespace box
 
 	inline game::bc_particle_builder bx_big_explosion_particle::operator()(core::bc_random& p_random) const
 	{
-		core::bc_array<core::bc_vector3f, 30> l_random_directions;
+		core::bc_array<core::bc_vector3f, 20> l_random_directions;
 		bc_randomize_direction
 		(
 			p_random,
@@ -64,7 +64,7 @@ namespace box
 				.with_particle_size(1.0f, 5.0f)
 				.with_particle_size_curve(game::bc_particle_builder::s_curve_fast_step4)
 				.with_particle_velocity_curve(game::bc_particle_builder::s_curve_fast_step3, 2)
-				.emit_particles_with_total_count(30, 5, 4.0f * l_emitter_energy, 0.15f);
+				.emit_particles_with_total_count(50, 5, 4.0f * l_emitter_energy, 0.15f);
 		}
 
 		return l_builder;

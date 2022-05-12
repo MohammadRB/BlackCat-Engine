@@ -84,7 +84,7 @@ namespace black_cat
 		{
 			auto l_lambda = [=](const bc_scene_graph_buffer& p_scene_buffer, const bc_actor_render_camera& p_camera, bc_render_state_buffer& p_render_buffer, auto&&... p_render_args)
 			{
-				p_scene_buffer.render_actors< TComponent >(p_camera, p_render_buffer, p_render_args...);
+				p_scene_buffer.render_actors<TComponent>(p_camera, p_render_buffer, p_render_args...);
 			};
 			auto l_callable_lambda = std::bind(l_lambda, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::forward<TArgs>(p_render_args)...);
 			

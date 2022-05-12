@@ -130,8 +130,7 @@ namespace black_cat
 
 			for (bc_actor& l_actor : m_actors)
 			{
-				auto* l_component = l_actor.get_component<TComponent>();
-				if (l_component)
+				if (auto* l_component = l_actor.get_component<TComponent>())
 				{
 					l_buffer.add(l_actor);
 				}
@@ -146,8 +145,7 @@ namespace black_cat
 			
 			for(bc_actor& l_actor : m_actors)
 			{
-				auto* l_component = l_actor.get_component<bc_render_component>();
-				if(l_component)
+				if(const auto* l_component = l_actor.get_component<bc_render_component>())
 				{
 					l_component->render(l_render_context);
 				}
@@ -163,15 +161,14 @@ namespace black_cat
 			
 			for (bc_actor& l_actor : m_actors)
 			{
-				auto* l_component = static_cast<bc_render_component*>(l_actor.get_component<TRenderComponent>());
-				if (l_component)
+				if (const auto* l_component = static_cast<bc_render_component*>(l_actor.get_component<TRenderComponent>()))
 				{
 					l_component->render(l_render_context);
 				}
 			}
 		}
 
-		template<typename TRenderComponent, typename ... TArgs>
+		template<typename TRenderComponent, typename ...TArgs>
 		void bc_scene_graph_buffer::render_actors(const bc_actor_render_camera& p_camera, bc_render_state_buffer& p_buffer, TArgs&&... p_args) const
 		{
 			static_assert(std::is_base_of_v<bc_render_component, TRenderComponent>, "TComponent must inherit from bc_render_component");
@@ -180,8 +177,7 @@ namespace black_cat
 			
 			for (bc_actor& l_actor : m_actors)
 			{
-				auto* l_component = l_actor.get_component<TRenderComponent>();
-				if (l_component)
+				if (auto* l_component = l_actor.get_component<TRenderComponent>())
 				{
 					l_component->render(l_render_context, std::forward<TArgs>(p_args)...);
 				}

@@ -70,22 +70,7 @@ namespace box
 		bc_xbot_player_actor_controller::load_origin_network_instance(p_context);
 		json_parse::bc_load(p_context.m_parameters, "hth", m_network_health);
 	}
-
-	void bx_player_actor_controller::load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context)
-	{
-		bc_xbot_player_actor_controller::load_replicated_network_instance(p_context);
-	}
-
-	void bx_player_actor_controller::write_origin_network_instance(const game::bc_actor_component_network_write_context& p_context)
-	{
-		bc_xbot_player_actor_controller::write_origin_network_instance(p_context);
-	}
-
-	void bx_player_actor_controller::write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context)
-	{
-		bc_xbot_player_actor_controller::write_replicated_network_instance(p_context);
-	}
-
+	
 	void bx_player_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
 		bc_xbot_player_actor_controller::update_origin_instance(p_context);
@@ -108,12 +93,7 @@ namespace box
 		m_ui_service->set_grenade_load(m_grenade_load);
 		m_ui_service->set_smoke_load(m_smoke_load);
 	}
-
-	void bx_player_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
-	{
-		bc_xbot_player_actor_controller::update_replicated_instance(p_context);
-	}
-
+	
 	void bx_player_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
 		bc_xbot_player_actor_controller::removed_from_scene(p_context, p_scene);
