@@ -17,6 +17,8 @@ namespace black_cat
 
 		void bc_logger::set_enabled_log_types(bc_log_type p_types) noexcept
 		{
+			m_enabled_logs = core::bc_enum::none<bc_log_type>();
+
 			for (const auto l_type : { bc_log_type::info, bc_log_type::debug, bc_log_type::warning, bc_log_type::error })
 			{
 				if (!bc_enum::has(p_types, l_type))

@@ -533,19 +533,22 @@ namespace black_cat
 
 				for(const auto& l_log_type : l_log_types_array)
 				{
-					if(l_log_type == "info")
+					core::bc_string l_log_type_lowered = l_log_type;
+					core::bc_string_to_lower(l_log_type_lowered);
+
+					if(l_log_type_lowered == "info")
 					{
 						l_log_types = core::bc_enum::set(l_log_types, core::bc_log_type::info, true);
 					}
-					else if (l_log_type == "debug")
+					else if (l_log_type_lowered == "debug")
 					{
 						l_log_types = core::bc_enum::set(l_log_types, core::bc_log_type::debug, true);
 					}
-					else if (l_log_type == "warning")
+					else if (l_log_type_lowered == "warning")
 					{
 						l_log_types = core::bc_enum::set(l_log_types, core::bc_log_type::warning, true);
 					}
-					else if (l_log_type == "error")
+					else if (l_log_type_lowered == "error")
 					{
 						l_log_types = core::bc_enum::set(l_log_types, core::bc_log_type::error, true);
 					}

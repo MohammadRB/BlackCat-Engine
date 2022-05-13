@@ -27,19 +27,24 @@ namespace black_cat
 			bc_network_system& p_network_system,
 			bci_network_server_manager_hook& p_hook,
 			bci_network_message_visitor& p_message_visitor,
-			bcUINT16 p_port)
-			: bc_server_socket_state_machine(*BC_NEW(platform::bc_non_block_socket, core::bc_alloc_type::unknown)
+			bcUINT16 p_port,
+			bcUINT32 p_timeout_ms)
+			: bc_server_socket_state_machine
 			(
-				platform::bc_socket_address::inter_network,
-				platform::bc_socket_type::data_gram,
-				platform::bc_socket_protocol::udp
-			)),
+				*BC_NEW(platform::bc_non_block_socket, core::bc_alloc_type::unknown)
+				(
+					platform::bc_socket_address::inter_network,
+					platform::bc_socket_type::data_gram,
+					platform::bc_socket_protocol::udp
+				)
+			),
 			m_event_manager(&p_event_manager),
 			m_game_system(&p_game_system),
-			m_port(p_port),
-			m_socket_is_listening(false),
 			m_hook(&p_hook),
 			m_message_visitor(&p_message_visitor),
+			m_port(p_port),
+			m_timeout_ms(p_timeout_ms),
+			m_socket_is_listening(false),
 			m_clients(32, core::bc_alloc_type::program),
 			m_actor_network_id_counter(0),
 			m_memory_buffer(core::bc_alloc_type::unknown_movable),
@@ -59,16 +64,18 @@ namespace black_cat
 			: bc_server_socket_state_machine(std::move(p_other)),
 			m_event_manager(p_other.m_event_manager),
 			m_game_system(p_other.m_game_system),
-			m_port(p_other.m_port),
-			m_socket_is_listening(p_other.m_socket_is_listening),
-			m_socket(std::move(p_other.m_socket)),
 			m_hook(p_other.m_hook),
 			m_message_visitor(p_other.m_message_visitor),
+			m_port(p_other.m_port),
+			m_timeout_ms(p_other.m_timeout_ms),
+			m_socket(std::move(p_other.m_socket)),
+			m_socket_is_listening(p_other.m_socket_is_listening),
 			m_clients(std::move(p_other.m_clients)),
 			m_actor_network_id_counter(p_other.m_actor_network_id_counter.load()),
 			m_network_actors(std::move(p_other.m_network_actors)),
 			m_memory_buffer(std::move(p_other.m_memory_buffer)),
 			m_messages_buffer(std::move(p_other.m_messages_buffer)),
+			m_scene_name(std::move(p_other.m_scene_name)),
 			m_scene_change_event(std::move(p_other.m_scene_change_event))
 		{
 			m_scene_change_event.reassign(core::bc_event_manager::delegate_type(*this, &bc_network_server_manager::_event_handler));
@@ -81,18 +88,24 @@ namespace black_cat
 			bc_server_socket_state_machine::operator=(std::move(p_other));
 			m_event_manager = p_other.m_event_manager;
 			m_game_system = p_other.m_game_system;
-			m_port = p_other.m_port;
-			m_socket_is_listening = p_other.m_socket_is_listening;
-			m_socket = std::move(p_other.m_socket);
 			m_hook = p_other.m_hook;
 			m_message_visitor = p_other.m_message_visitor;
+			m_port = p_other.m_port;
+			m_timeout_ms = p_other.m_timeout_ms;
+
+			m_socket = std::move(p_other.m_socket);
+			m_socket_is_listening = p_other.m_socket_is_listening;
+
 			m_clients = std::move(p_other.m_clients);
+
 			m_actor_network_id_counter.store(p_other.m_actor_network_id_counter.load());
 			m_network_actors = std::move(p_other.m_network_actors);
+
 			m_memory_buffer = std::move(p_other.m_memory_buffer);
 			m_messages_buffer = std::move(p_other.m_messages_buffer);
-			m_scene_change_event = std::move(p_other.m_scene_change_event);
 
+			m_scene_name = std::move(p_other.m_scene_name);
+			m_scene_change_event = std::move(p_other.m_scene_change_event);
 			m_scene_change_event.reassign(core::bc_event_manager::delegate_type(*this, &bc_network_server_manager::_event_handler));
 			
 			return *this;
@@ -242,6 +255,8 @@ namespace black_cat
 				return;
 			}
 
+			_test_clients_connectivity(p_context.m_clock);
+
 			for(auto& l_client : m_clients)
 			{
 				if (p_context.m_send_rtt_message)
@@ -252,9 +267,10 @@ namespace black_cat
 					}
 				}
 
-				const auto l_elapsed_since_last_sync = bc_current_packet_time() - l_client.get_last_sync_time();
-				const auto l_rtt_time = l_client.get_rtt_time() / 2;
-				if (l_elapsed_since_last_sync > l_rtt_time)
+				const auto l_elapsed_since_last_sync = static_cast<bc_network_rtt>(bc_current_packet_time() - l_client.get_last_sync_time());
+				const auto l_ping_time = l_client.get_rtt_time() / 2;
+
+				if (l_elapsed_since_last_sync > l_ping_time)
 				{
 					_send_to_client(p_context.m_clock, l_client);
 					bc_server_socket_state_machine::update(p_context.m_clock);
@@ -278,8 +294,8 @@ namespace black_cat
 				const auto l_net_client = l_client->to_network_client();
 				m_hook->error_occurred(&l_net_client, p_state.get_last_exception());
 
-				bc_server_socket_state_machine::transfer_state<bc_server_socket_listening_state>();
 				client_disconnected(*l_client_address);
+				bc_server_socket_state_machine::transfer_state<bc_server_socket_listening_state>();
 			}
 			else
 			{
@@ -287,7 +303,6 @@ namespace black_cat
 				core::bc_log(core::bc_log_type::error) << (p_state.get_last_exception() ? (": " + p_state.get_last_exception()->get_full_message()) : "") << core::bc_lend;
 
 				m_socket_is_listening = false;
-
 				m_hook->error_occurred(nullptr, p_state.get_last_exception());
 			}
 		}
@@ -315,11 +330,11 @@ namespace black_cat
 			{
 				platform::bc_lock_guard l_client_lock(*l_client);
 
-				l_client->add_rtt_time(p_rtt);
-				l_client->set_remote_rtt_time(p_remote_rtt);
+				l_client->add_rtt_time(p_rtt, p_remote_rtt);
 
 				const auto l_ping = l_client->get_rtt_time() / 2;
 				const auto l_remote_ping = l_client->get_remote_rtt_time() / 2;
+
 				for (auto& l_actor : l_client->get_replicated_actors())
 				{
 					auto* l_network_component = l_actor.get_component<bc_network_component>();
@@ -574,6 +589,29 @@ namespace black_cat
 				}
 
 				return { l_ite->second, false };
+			}
+		}
+
+		void bc_network_server_manager::_test_clients_connectivity(const platform::bc_clock::update_param& p_clock)
+		{
+			auto l_ite = std::begin(m_clients);
+
+			while(l_ite != std::end(m_clients))
+			{
+				auto& l_client = *l_ite;
+
+				if(l_client.get_ready_for_sync())
+				{
+					l_client.add_timeout_elapsed(static_cast<bcUINT32>(p_clock.m_elapsed));
+				}
+
+				++l_ite;
+
+				if (l_client.get_timeout_elapsed() > m_timeout_ms)
+				{
+					bc_server_socket_state_machine::get_state<bc_server_socket_error_state>().set_last_exception(bc_network_timeout_exception(), &l_client.get_address());
+					bc_server_socket_state_machine::transfer_state<bc_server_socket_error_state>();
+				}
 			}
 		}
 

@@ -168,12 +168,13 @@ namespace black_cat
 		json_parse::bc_load(p_context.m_parameters, "wpn_r", m_network_weapon_rotation);
 		json_parse::bc_load(p_context.m_parameters, "keys", l_keys);
 		
-		m_network_forward_pressed = l_keys[0].as_throw<bool>();
-		m_network_backward_pressed = l_keys[1].as_throw<bool>();
-		m_network_right_pressed = l_keys[2].as_throw<bool>();
-		m_network_left_pressed = l_keys[3].as_throw<bool>();
-		m_network_walk_pressed = l_keys[4].as_throw<bool>();
-		
+		m_network_forward_pressed = l_keys[0].as_throw<bcINT32>();
+		m_network_backward_pressed = l_keys[1].as_throw<bcINT32>();
+		m_network_right_pressed = l_keys[2].as_throw<bcINT32>();
+		m_network_left_pressed = l_keys[3].as_throw<bcINT32>();
+		m_network_walk_pressed = l_keys[4].as_throw<bcINT32>();
+
+		get_network_component().add_extrapolating_value("pos", m_network_position);
 		get_network_component().add_extrapolating_value("lk_dir", m_network_look_direction);
 
 		if(p_context.m_is_replication_load)
@@ -209,11 +210,11 @@ namespace black_cat
 			"keys",
 			core::bc_any(core::bc_vector<core::bc_any>
 			({
-				core::bc_any(m_network_forward_pressed),
-				core::bc_any(m_network_backward_pressed),
-				core::bc_any(m_network_right_pressed),
-				core::bc_any(m_network_left_pressed),
-				core::bc_any(m_network_walk_pressed),
+				core::bc_any(static_cast<bcINT32>(m_network_forward_pressed)),
+				core::bc_any(static_cast<bcINT32>(m_network_backward_pressed)),
+				core::bc_any(static_cast<bcINT32>(m_network_right_pressed)),
+				core::bc_any(static_cast<bcINT32>(m_network_left_pressed)),
+				core::bc_any(static_cast<bcINT32>(m_network_walk_pressed)),
 			}))
 		);
 
@@ -268,7 +269,12 @@ namespace black_cat
 			return;
 		}
 
+		const auto l_extrapolated_pos = get_network_component().get_extrapolated_value("pos", p_context.m_clock).second;
 		const auto l_extrapolated_look_direction = get_network_component().get_extrapolated_value("lk_dir", p_context.m_clock).second;
+
+		m_network_position += l_extrapolated_pos;
+		set_weapon_rotation(m_network_weapon_rotation);
+
 		if(l_extrapolated_look_direction.magnitude() > 0.f)
 		{
 			m_look_velocity.push(p_context.m_clock.m_elapsed_second);
@@ -277,8 +283,6 @@ namespace black_cat
 		{
 			m_look_velocity.release(p_context.m_clock.m_elapsed_second);
 		}
-
-		set_weapon_rotation(m_network_weapon_rotation);
 
 		bc_xbot_actor_controller::update(bc_xbot_input_update_context1
 		{

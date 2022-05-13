@@ -291,8 +291,11 @@ namespace black_cat
 			
 			if(l_ite != std::end(m_extrapolators))
 			{
-				std::get<1>(*l_ite).add_sample(p_value);
-				std::get<2>(*l_ite) = 0;
+				auto& l_extrapolator = std::get<1>(*l_ite);
+				auto& l_extrapolator_elapsed = std::get<2>(*l_ite);
+
+				l_extrapolator.add_sample(p_value);
+				l_extrapolator_elapsed = 0;
 			}
 			else
 			{
@@ -313,7 +316,8 @@ namespace black_cat
 			);
 			if(l_ite != std::end(m_extrapolators))
 			{
-				return std::make_pair(true, std::get<1>(*l_ite).change_rate());
+				const auto& l_extrapolator = std::get<1>(*l_ite);
+				return std::make_pair(true, l_extrapolator.change_rate());
 			}
 
 			return std::make_pair(false, core::bc_vector3f());
@@ -337,24 +341,18 @@ namespace black_cat
 
 			auto& l_extrapolator = std::get<1>(*l_ite);
 			auto& l_extrapolator_elapsed = std::get<2>(*l_ite);
-			
-			const auto l_extrapolation_ratio = p_clock.m_average_elapsed / static_cast<platform::bc_clock::small_time>(m_in_ping);
-			auto l_extrapolated_value = l_extrapolator.change_rate();
-			l_extrapolated_value *= l_extrapolation_ratio;
 
 			l_extrapolator_elapsed += p_clock.m_average_elapsed;
-			if(l_extrapolator_elapsed > m_in_ping * 4)
+			if (l_extrapolator_elapsed > m_in_ping)
 			{
-				// If we had no new sample repeat last sample to prevent false extrapolation
+				// If we had no new sample, repeat last sample to prevent false extrapolation
 				l_extrapolator.add_sample();
-				l_extrapolator_elapsed = 0;
 			}
+
+			const auto l_extrapolation_ratio = std::min(p_clock.m_average_elapsed / static_cast<platform::bc_clock::small_time>(m_in_ping), 1.f);
+			auto l_extrapolated_value = l_extrapolator.change_rate();
+			l_extrapolated_value *= l_extrapolation_ratio;
 			
-			/*core::bc_log(core::bc_log_type::debug) << core::bc_only_file
-				<< "extrapolation ratio: " << l_extrapolation_ratio
-				<< " elapsed: " << p_clock.m_average_elapsed
-				<< " ping: " << m_in_ping
-				<< core::bc_lend;*/
 			return std::make_pair(true, l_extrapolated_value);
 		}
 	}

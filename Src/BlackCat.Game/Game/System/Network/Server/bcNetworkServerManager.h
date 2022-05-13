@@ -45,7 +45,8 @@ namespace black_cat
 				bc_network_system& p_network_system, 
 				bci_network_server_manager_hook& p_hook,
 				bci_network_message_visitor& p_message_visitor,
-				bcUINT16 p_port);
+				bcUINT16 p_port,
+				bcUINT32 p_timeout_ms);
 
 			bc_network_server_manager(bc_network_server_manager&&) noexcept;
 
@@ -101,7 +102,9 @@ namespace black_cat
 			bc_replicated_actor get_actor(bc_actor_network_id p_actor_network_id) override;
 
 			// Private methods
-			
+
+			void _test_clients_connectivity(const platform::bc_clock::update_param& p_clock);
+
 			void _add_message_to_clients(bc_network_message_ptr p_message, const platform::bc_network_address* p_exclude_client = nullptr);
 			
 			void _retry_messages_waiting_acknowledgment(const platform::bc_clock::update_param& p_clock, bc_network_server_manager_client& p_client);
@@ -120,12 +123,13 @@ namespace black_cat
 
 			core::bc_event_manager* m_event_manager;
 			bc_game_system* m_game_system;
-			
-			bcUINT16 m_port;
-			bool m_socket_is_listening;
-			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;
 			bci_network_server_manager_hook* m_hook;
 			bci_network_message_visitor* m_message_visitor;
+			bcUINT16 m_port;
+			bcUINT32 m_timeout_ms;
+
+			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;
+			bool m_socket_is_listening;
 
 			platform::bc_shared_mutex m_clients_lock;
 			core::bc_list_pool<bc_network_server_manager_client> m_clients;
@@ -137,8 +141,8 @@ namespace black_cat
 			core::bc_memory_stream m_memory_buffer;
 			bc_network_message_serialization_buffer m_messages_buffer;
 
-			core::bc_event_listener_handle m_scene_change_event;
 			core::bc_string m_scene_name;
+			core::bc_event_listener_handle m_scene_change_event;
 		};
 	}
 }

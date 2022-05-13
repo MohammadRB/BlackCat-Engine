@@ -117,8 +117,12 @@ namespace box
 		if(!g_server_started)
 		{
 			auto& l_script_system = m_game_system->get_script_system();
-			l_script_system.run_script_throw(game::bc_script_context::app, L"server.start(6699);");
+			l_script_system.run_script_throw(game::bc_script_context::app, L"server.start(6600);");
+#ifdef BC_DEBUG
 			l_script_system.run_script_throw(game::bc_script_context::app, L"server.load_scene('Test');");
+#else
+			l_script_system.run_script_throw(game::bc_script_context::app, L"server.load_scene('BattleGround');");
+#endif
 			g_server_started = true;
 			return;
 		}

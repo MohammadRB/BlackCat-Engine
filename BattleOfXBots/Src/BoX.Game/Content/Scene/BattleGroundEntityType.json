@@ -240,7 +240,10 @@
           "name": "rigid_dynamic",
           "parameters": {
             "mass": 15.0,
-            "cmass": [ 0.0, 2.0, 0.0 ]
+            "cmass": [ 0.0, 2.0, 0.0 ],
+            "collider_materials": {
+              "*": "wood"
+            }
           }
         }
       ]
@@ -507,7 +510,7 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "*": "wood"
+              "*": "tree_trunk"
             }
           }
         }
@@ -527,7 +530,7 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "*": "wood"
+              "*": "tree_trunk"
             }
           }
         }
@@ -547,7 +550,7 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "*": "wood"
+              "*": "tree_trunk"
             }
           }
         }
@@ -691,7 +694,7 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "*": "wood"
+              "*": "tree_trunk"
             }
           }
         }
@@ -711,7 +714,7 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "*": "wood"
+              "*": "tree_trunk"
             }
           }
         }
@@ -731,7 +734,7 @@
           "name": "rigid_static",
           "parameters": {
             "collider_materials": {
-              "*": "wood"
+              "*": "tree_trunk"
             }
           }
         }

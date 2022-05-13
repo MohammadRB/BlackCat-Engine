@@ -252,7 +252,15 @@ namespace black_cat
 			const bool l_global_config_has_changed = l_global_config_file_info.m_last_write_time.m_total_milliseconds > m_global_config_last_write_time;
 			if(l_global_config_has_changed)
 			{
-				m_global_config->reload();
+				try
+				{
+					m_global_config->reload();
+				}
+				catch (const std::exception& l_exception)
+				{
+					core::bc_log(core::bc_log_type::error) << "Error in accessing config file. " << l_exception.what() << core::bc_lend;
+					return;
+				}
 
 				bc_event_global_config_changed l_event(*m_global_config);
 				core::bc_get_service<core::bc_event_manager>()->process_event(l_event);

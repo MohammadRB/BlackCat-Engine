@@ -190,7 +190,7 @@ namespace box
 			if(g_client_start_time > g_client_start_delay)
 			{
 				auto& l_script_system = m_game_system->get_script_system();
-				l_script_system.run_script_throw(game::bc_script_context::app, L"client.connect('127.0.0.1', 6699);");
+				l_script_system.run_script_throw(game::bc_script_context::app, L"client.connect('127.0.0.1', 6600);");
 			}
 			return;
 		}
@@ -360,6 +360,7 @@ namespace box
 	void bx_application::error_occurred(const bc_network_exception* p_exception) noexcept
 	{
 		m_state = bx_app_state::initial;
+		m_player_service->stopped_playing();
 		m_game_system->set_scene(nullptr);
 	}
 

@@ -78,6 +78,18 @@ namespace black_cat
 		bcINT32 m_error_code;
 	};
 
+	class bc_network_timeout_exception : public bc_network_exception
+	{
+	public:
+		bc_network_timeout_exception();
+
+		bc_network_timeout_exception(const bc_network_timeout_exception&) = default;
+
+		~bc_network_timeout_exception() override = default;
+
+		bc_network_timeout_exception& operator=(const bc_network_timeout_exception&) = default;
+	};
+
 	inline bc_script_execute_exception::bc_script_execute_exception(const bcCHAR* p_message)
 		: bc_runtime_exception(p_message)
 	{
@@ -121,5 +133,10 @@ namespace black_cat
 	inline bcINT32 bc_network_exception::get_error_code() const noexcept
 	{
 		return m_error_code;
+	}
+
+	inline bc_network_timeout_exception::bc_network_timeout_exception()
+		: bc_network_exception(0, "timeout elapsed")
+	{
 	}
 }

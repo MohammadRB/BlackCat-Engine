@@ -52,9 +52,15 @@ namespace black_cat
 
 			bc_network_state get_network_state() const noexcept;
 
-			void start_server(bci_network_server_manager_hook& p_hook, bci_network_message_visitor& p_message_visitor, bcUINT16 p_port);
+			void start_server(bci_network_server_manager_hook& p_hook, 
+				bci_network_message_visitor& p_message_visitor,
+				bcUINT16 p_port, 
+				bcUINT32 p_timeout = 10'000);
 
-			void start_client(bci_network_client_manager_hook& p_hook, bci_network_message_visitor& p_message_visitor, const platform::bc_network_address& p_server_address);
+			void start_client(bci_network_client_manager_hook& p_hook, 
+				bci_network_message_visitor& p_message_visitor, 
+				const platform::bc_network_address& p_server_address, 
+				bcUINT32 p_timeout = 10'000);
 			
 			void add_actor_to_sync(bc_actor& p_actor);
 			

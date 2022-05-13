@@ -161,11 +161,11 @@ namespace black_cat
 				core::bc_vector<core::bc_any>
 				(
 					{
-						core::bc_any(l_velocity.m_forward_velocity > 0.f),
-						core::bc_any(l_velocity.m_backward_velocity > 0.f),
-						core::bc_any(l_velocity.m_right_velocity > 0.f),
-						core::bc_any(l_velocity.m_left_velocity > 0.f),
-						core::bc_any(l_velocity.m_walk_velocity > 0.f),
+						core::bc_any(static_cast<bcINT32>(l_velocity.m_forward_velocity > 0.f)),
+						core::bc_any(static_cast<bcINT32>(l_velocity.m_backward_velocity > 0.f)),
+						core::bc_any(static_cast<bcINT32>(l_velocity.m_right_velocity > 0.f)),
+						core::bc_any(static_cast<bcINT32>(l_velocity.m_left_velocity > 0.f)),
+						core::bc_any(static_cast<bcINT32>(l_velocity.m_walk_velocity > 0.f)),
 					}
 				)
 			)

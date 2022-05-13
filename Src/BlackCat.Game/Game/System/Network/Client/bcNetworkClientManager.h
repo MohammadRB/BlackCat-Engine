@@ -42,7 +42,8 @@ namespace black_cat
 				bc_network_system& p_network_system, 
 				bci_network_client_manager_hook& p_hook,
 				bci_network_message_visitor& p_message_visitor,
-				const platform::bc_network_address& p_server_address);
+				const platform::bc_network_address& p_server_address,
+				bcUINT32 p_timeout_ms);
 
 			bc_network_client_manager(bc_network_client_manager&&) noexcept;
 
@@ -74,9 +75,7 @@ namespace black_cat
 			void on_enter(bc_client_socket_connecting_state& p_state) override;
 			
 			void on_enter(bc_client_socket_connected_state& p_state) override;
-
-			void on_enter(bc_client_socket_sending_state& p_state) override;
-
+			
 			// Client visitor methods
 
 			void get_rtt_time(bc_network_rtt* p_rtt, bc_network_rtt* p_remote_rtt) noexcept override;
@@ -100,7 +99,9 @@ namespace black_cat
 			bc_replicated_actor get_actor(bc_actor_network_id p_actor_network_id) override;
 
 			// Private methods
-			
+
+			void _test_connectivity(const platform::bc_clock::update_param& p_clock);
+
 			void _retry_messages_waiting_acknowledgment(const platform::bc_clock::update_param& p_clock);
 			
 			void _send_to_server(const platform::bc_clock::update_param& p_clock);
@@ -110,13 +111,16 @@ namespace black_cat
 			void _event_handler(core::bci_event& p_event);
 
 			bc_game_system* m_game_system;
-			bool m_socket_is_connected;
-			bool m_socket_is_ready;
-			bc_network_client_id m_my_client_id;
-			platform::bc_network_address m_server_address;
-			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;
 			bci_network_client_manager_hook* m_hook;
 			bci_network_message_visitor* m_message_visitor;
+			platform::bc_network_address m_server_address;
+			bcUINT32 m_timeout_ms;
+
+			core::bc_unique_ptr<platform::bc_non_block_socket> m_socket;
+			bool m_socket_is_connected;
+			bool m_socket_is_ready;
+			bcUINT32 m_timeout_elapsed;
+			bc_network_client_id m_my_client_id;
 			bc_network_packet_time m_last_sync_time;
 			core::bc_value_sampler<bc_network_rtt, 32> m_rtt_sampler;
 			bc_network_rtt m_remote_rtt;
@@ -135,7 +139,7 @@ namespace black_cat
 			core::bc_memory_stream m_memory_buffer;
 			bc_network_message_serialization_buffer m_messages_buffer;
 
-			core::bc_event_listener_handle m_scene_change_event;
+			core::bc_event_listener_handle m_scene_change_handle;
 			core::bc_event_listener_handle m_config_change_handle;
 		};
 	}

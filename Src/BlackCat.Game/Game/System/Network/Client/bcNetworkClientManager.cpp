@@ -31,20 +31,26 @@ namespace black_cat
 			bc_network_system& p_network_system, 
 			bci_network_client_manager_hook& p_hook,
 			bci_network_message_visitor& p_message_visitor,
-			const platform::bc_network_address& p_server_address)
-			: bc_client_socket_state_machine(*BC_NEW(platform::bc_non_block_socket, core::bc_alloc_type::unknown)
+			const platform::bc_network_address& p_server_address,
+			bcUINT32 p_timeout_ms)
+			: bc_client_socket_state_machine
+			(
+				*BC_NEW(platform::bc_non_block_socket, core::bc_alloc_type::unknown)
 				(
 					platform::bc_socket_address::inter_network,
 					platform::bc_socket_type::data_gram,
 					platform::bc_socket_protocol::udp
-				)),
+				)
+			),
 			m_game_system(&p_game_system),
-			m_socket_is_connected(false),
-			m_socket_is_ready(false),
-			m_my_client_id(bc_network_client::invalid_id),
-			m_server_address(p_server_address),
 			m_hook(&p_hook),
 			m_message_visitor(&p_message_visitor),
+			m_server_address(p_server_address),
+			m_timeout_ms(p_timeout_ms),
+			m_socket_is_connected(false),
+			m_socket_is_ready(false),
+			m_timeout_elapsed(0),
+			m_my_client_id(bc_network_client::invalid_id),
 			m_last_sync_time(0),
 			m_rtt_sampler(100),
 			m_remote_rtt(100),
@@ -54,7 +60,7 @@ namespace black_cat
 			m_messages_buffer(p_network_system)
 		{
 			m_socket.reset(&bc_client_socket_state_machine::get_socket());
-			m_scene_change_event = core::bc_get_service<core::bc_event_manager>()->register_event_listener<bc_event_scene_change>
+			m_scene_change_handle = core::bc_get_service<core::bc_event_manager>()->register_event_listener<bc_event_scene_change>
 			(
 				core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler)
 			);
@@ -71,13 +77,15 @@ namespace black_cat
 		bc_network_client_manager::bc_network_client_manager(bc_network_client_manager&& p_other) noexcept
 			: bc_client_socket_state_machine(std::move(p_other)),
 			m_game_system(p_other.m_game_system),
-			m_socket_is_connected(p_other.m_socket_is_connected),
-			m_socket_is_ready(p_other.m_socket_is_ready),
-			m_my_client_id(p_other.m_my_client_id),
-			m_server_address(p_other.m_server_address),
-			m_socket(std::move(p_other.m_socket)),
 			m_hook(p_other.m_hook),
 			m_message_visitor(p_other.m_message_visitor),
+			m_server_address(p_other.m_server_address),
+			m_timeout_ms(p_other.m_timeout_ms),
+			m_socket(std::move(p_other.m_socket)),
+			m_socket_is_connected(p_other.m_socket_is_connected),
+			m_socket_is_ready(p_other.m_socket_is_ready),
+			m_timeout_elapsed(p_other.m_timeout_elapsed),
+			m_my_client_id(p_other.m_my_client_id),
 			m_last_sync_time(p_other.m_last_sync_time),
 			m_rtt_sampler(p_other.m_rtt_sampler),
 			m_remote_rtt(p_other.m_remote_rtt),
@@ -90,10 +98,10 @@ namespace black_cat
 			m_executed_messages(std::move(p_other.m_executed_messages)),
 			m_memory_buffer(std::move(p_other.m_memory_buffer)),
 			m_messages_buffer(std::move(p_other.m_messages_buffer)),
-			m_scene_change_event(std::move(p_other.m_scene_change_event)),
+			m_scene_change_handle(std::move(p_other.m_scene_change_handle)),
 			m_config_change_handle(std::move(p_other.m_config_change_handle))
 		{
-			m_scene_change_event.reassign(core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler));
+			m_scene_change_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler));
 			m_config_change_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler));
 		}
 
@@ -104,13 +112,16 @@ namespace black_cat
 		{
 			bc_client_socket_state_machine::operator=(std::move(p_other));
 			m_game_system = p_other.m_game_system;
-			m_socket_is_connected = p_other.m_socket_is_connected;
-			m_socket_is_ready = p_other.m_socket_is_ready;
-			m_my_client_id = p_other.m_my_client_id;
-			m_server_address = p_other.m_server_address;
-			m_socket = std::move(p_other.m_socket);
 			m_hook = p_other.m_hook;
 			m_message_visitor = p_other.m_message_visitor;
+			m_server_address = p_other.m_server_address;
+			m_timeout_ms = p_other.m_timeout_ms;
+
+			m_socket = std::move(p_other.m_socket);
+			m_socket_is_connected = p_other.m_socket_is_connected;
+			m_socket_is_ready = p_other.m_socket_is_ready;
+			m_timeout_elapsed = p_other.m_timeout_elapsed;
+			m_my_client_id = p_other.m_my_client_id;
 			m_last_sync_time = p_other.m_last_sync_time;
 			m_rtt_sampler = p_other.m_rtt_sampler;
 			m_remote_rtt = p_other.m_remote_rtt;
@@ -127,9 +138,9 @@ namespace black_cat
 			m_memory_buffer = std::move(p_other.m_memory_buffer);
 			m_messages_buffer = std::move(p_other.m_messages_buffer);
 
-			m_scene_change_event = std::move(p_other.m_scene_change_event);
+			m_scene_change_handle = std::move(p_other.m_scene_change_handle);
 			m_config_change_handle = std::move(p_other.m_config_change_handle);
-			m_scene_change_event.reassign(core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler));
+			m_scene_change_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler));
 			m_config_change_handle.reassign(core::bc_event_manager::delegate_type(*this, &bc_network_client_manager::_event_handler));
 
 			return *this;
@@ -142,7 +153,7 @@ namespace black_cat
 
 		bc_network_state bc_network_client_manager::get_network_state() const noexcept
 		{
-			return m_socket_is_connected ? bc_network_state::connected : bc_network_state::error;
+			return m_socket_is_ready ? bc_network_state::connected : bc_network_state::error;
 		}
 
 		const platform::bc_network_address& bc_network_client_manager::get_server_address() const noexcept
@@ -266,14 +277,17 @@ namespace black_cat
 				return;
 			}
 
+			_test_connectivity(p_context.m_clock);
+
 			if(p_context.m_send_rtt_message)
 			{
 				send_message(bc_ping_network_message());
 			}
-			
-			const auto l_elapsed_since_last_sync = bc_current_packet_time() - m_last_sync_time;
-			const auto l_rtt_time = m_rtt_sampler.average_value() / 2;
-			if(l_elapsed_since_last_sync > l_rtt_time)
+
+			const auto l_elapsed_since_last_sync = static_cast<bc_network_rtt>(bc_current_packet_time() - m_last_sync_time);
+			const auto l_ping_time = m_rtt_sampler.average_value() / 2;
+
+			if(l_elapsed_since_last_sync > l_ping_time)
 			{
 				_send_to_server(p_context.m_clock);
 				bc_client_socket_state_machine::update(p_context.m_clock);
@@ -282,7 +296,7 @@ namespace black_cat
 			_receive_from_server();
 
 			core::bc_wstring_stream l_rtt_counter;
-			l_rtt_counter << L"In: " << core::bc_to_wstring(m_remote_rtt / 2, L"%.1f") << L" / Out: " << core::bc_to_wstring(l_rtt_time, L"%.1f");
+			l_rtt_counter << L"In: " << core::bc_to_wstring(m_remote_rtt / 2, L"%.1f") << L" / Out: " << core::bc_to_wstring(l_ping_time, L"%.1f");
 
 			core::bc_get_service<core::bc_counter_value_manager>()->add_counter("ping", l_rtt_counter.str());
 		}
@@ -307,20 +321,16 @@ namespace black_cat
 
 		void bc_network_client_manager::on_enter(bc_client_socket_connected_state& p_state)
 		{
-			if (!m_socket_is_connected)
+			if(!m_socket_is_ready)
 			{
-				m_socket_is_connected = true;
+				// Before send message put socket to ready state
+				m_socket_is_ready = true;
+				m_timeout_elapsed = 0;
+
 				send_message(bc_client_connect_network_message(core::bc_string(m_client_name)));
 			}
-
-			m_socket_is_ready = true;
 		}
-
-		void bc_network_client_manager::on_enter(bc_client_socket_sending_state& p_state)
-		{
-			m_socket_is_ready = false;
-		}
-
+		
 		void bc_network_client_manager::get_rtt_time(bc_network_rtt* p_rtt, bc_network_rtt* p_remote_rtt) noexcept
 		{
 			*p_rtt = m_rtt_sampler.average_value();
@@ -331,6 +341,7 @@ namespace black_cat
 		{
 			m_rtt_sampler.add_sample(p_rtt);
 			m_remote_rtt = p_remote_rtt;
+			m_timeout_elapsed = 0;
 
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
@@ -350,12 +361,15 @@ namespace black_cat
 			if(p_result.m_error_message.empty())
 			{
 				core::bc_log(core::bc_log_type::info) << "connected to server" << core::bc_lend;
+
+				m_socket_is_connected = true;
 				m_my_client_id = p_result.m_client_id;
 				m_hook->connection_to_server_approved(m_server_address, p_result);
 			}
 			else
 			{
 				core::bc_log(core::bc_log_type::error) << "connection to server failed with error '" << p_result.m_error_message << "'" << core::bc_lend;
+
 				bc_client_socket_state_machine::transfer_state<bc_client_socket_error_state>();
 				m_hook->connection_to_server_approved(m_server_address, p_result);
 			}
@@ -498,6 +512,17 @@ namespace black_cat
 				const auto l_sync_ite = std::find(std::begin(m_sync_actors), std::end(m_sync_actors), l_ite->second);
 				
 				return { l_ite->second, l_sync_ite != std::end(m_sync_actors) };
+			}
+		}
+
+		void bc_network_client_manager::_test_connectivity(const platform::bc_clock::update_param& p_clock)
+		{
+			m_timeout_elapsed += static_cast<bcUINT32>(p_clock.m_elapsed);
+
+			if(m_timeout_elapsed > m_timeout_ms)
+			{
+				bc_client_socket_state_machine::get_state<bc_client_socket_error_state>().set_last_exception(bc_network_timeout_exception());
+				bc_client_socket_state_machine::transfer_state<bc_client_socket_error_state>();
 			}
 		}
 

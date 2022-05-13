@@ -14,14 +14,14 @@ namespace black_cat
 	{
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_non_block_socket<platform::g_api_win32>::bc_platform_non_block_socket() noexcept
+		bc_platform_non_block_socket<g_api_win32>::bc_platform_non_block_socket() noexcept
 		{
 			m_pack.m_socket = INVALID_SOCKET;
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_non_block_socket<platform::g_api_win32>::bc_platform_non_block_socket(bc_socket_address p_address,
+		bc_platform_non_block_socket<g_api_win32>::bc_platform_non_block_socket(bc_socket_address p_address,
 			bc_socket_type p_type,
 			bc_socket_protocol p_protocol)
 		{
@@ -48,7 +48,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_non_block_socket<platform::g_api_win32>::bc_platform_non_block_socket(bc_platform_non_block_socket&& p_other) noexcept
+		bc_platform_non_block_socket<g_api_win32>::bc_platform_non_block_socket(bc_platform_non_block_socket&& p_other) noexcept
 		{
 			m_pack.m_socket = p_other.m_pack.m_socket;
 			p_other.m_pack.m_socket = INVALID_SOCKET;
@@ -56,7 +56,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_non_block_socket<platform::g_api_win32>::~bc_platform_non_block_socket()
+		bc_platform_non_block_socket<g_api_win32>::~bc_platform_non_block_socket()
 		{
 			if (!is_valid())
 			{
@@ -68,7 +68,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_non_block_socket<platform::g_api_win32>& bc_platform_non_block_socket<platform::g_api_win32>::operator=(bc_platform_non_block_socket&& p_other) noexcept
+		bc_platform_non_block_socket<g_api_win32>& bc_platform_non_block_socket<g_api_win32>::operator=(bc_platform_non_block_socket&& p_other) noexcept
 		{
 			m_pack.m_socket = p_other.m_pack.m_socket;
 			p_other.m_pack.m_socket = INVALID_SOCKET;
@@ -78,28 +78,28 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_socket_address bc_platform_non_block_socket<platform::g_api_win32>::get_address_family() const
+		bc_socket_address bc_platform_non_block_socket<g_api_win32>::get_address_family() const
 		{
 			return std::get<bc_socket_address>(get_traits());
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_socket_type bc_platform_non_block_socket<platform::g_api_win32>::get_type() const
+		bc_socket_type bc_platform_non_block_socket<g_api_win32>::get_type() const
 		{
 			return std::get<bc_socket_type>(get_traits());
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_socket_protocol bc_platform_non_block_socket<platform::g_api_win32>::get_protocol() const
+		bc_socket_protocol bc_platform_non_block_socket<g_api_win32>::get_protocol() const
 		{
 			return std::get<bc_socket_protocol>(get_traits());
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-			std::tuple<bc_socket_address, bc_socket_type, bc_socket_protocol> bc_platform_non_block_socket<platform::g_api_win32>::get_traits() const
+			std::tuple<bc_socket_address, bc_socket_type, bc_socket_protocol> bc_platform_non_block_socket<g_api_win32>::get_traits() const
 		{
 			WSAPROTOCOL_INFO l_socket_info;
 			const auto l_result = WSADuplicateSocket(m_pack.m_socket, GetCurrentProcessId(), &l_socket_info);
@@ -117,7 +117,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_non_block_socket<platform::g_api_win32>::set_timeout(bcUINT32 p_milliseconds)
+		void bc_platform_non_block_socket<g_api_win32>::set_timeout(bcUINT32 p_milliseconds)
 		{
 			auto l_timeout = static_cast<DWORD>(p_milliseconds);
 			auto l_result = setsockopt(m_pack.m_socket, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&l_timeout), sizeof(DWORD));
@@ -135,9 +135,9 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_non_block_socket<platform::g_api_win32>::is_accept_available() const
+		bool bc_platform_non_block_socket<g_api_win32>::is_accept_available() const
 		{
-			timeval l_no_timeout = { 0,0 };
+			constexpr timeval l_no_timeout = { 0,0 };
 			fd_set l_socket = { 1, {m_pack.m_socket} };
 
 			const auto l_result = select(0, &l_socket, nullptr, nullptr, &l_no_timeout);
@@ -151,9 +151,9 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_non_block_socket<platform::g_api_win32>::is_connect_succeeded() const
+		bool bc_platform_non_block_socket<g_api_win32>::is_connect_succeeded() const
 		{
-			timeval l_no_timeout = { 0,0 };
+			constexpr timeval l_no_timeout = { 0,0 };
 			fd_set l_socket = { 1, {m_pack.m_socket} };
 
 			const auto l_write_result = select(0, nullptr, &l_socket, nullptr, &l_no_timeout);
@@ -186,9 +186,9 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_non_block_socket<platform::g_api_win32>::is_receive_available() const
+		bool bc_platform_non_block_socket<g_api_win32>::is_receive_available() const
 		{
-			timeval l_no_timeout = { 0,0 };
+			constexpr timeval l_no_timeout = { 0,0 };
 			fd_set l_socket = { 1, {m_pack.m_socket} };
 
 			const auto l_result = select(0, &l_socket, nullptr, nullptr, &l_no_timeout);
@@ -202,9 +202,9 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_non_block_socket<platform::g_api_win32>::is_send_available() const
+		bool bc_platform_non_block_socket<g_api_win32>::is_send_available() const
 		{
-			timeval l_no_timeout = { 0,0 };
+			constexpr timeval l_no_timeout = { 0,0 };
 			fd_set l_socket = { 1, {m_pack.m_socket} };
 
 			const auto l_result = select(0, nullptr, &l_socket, nullptr, &l_no_timeout);
@@ -218,7 +218,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_non_block_socket<platform::g_api_win32>::bind(bcUINT16 p_port)
+		void bc_platform_non_block_socket<g_api_win32>::bind(bcUINT16 p_port)
 		{
 			/*WSAPROTOCOL_INFO l_socket_info;
 			WSADuplicateSocket(m_pack.m_socket, GetCurrentProcessId(), &l_socket_info);
@@ -263,7 +263,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_non_block_socket<platform::g_api_win32>::listen()
+		void bc_platform_non_block_socket<g_api_win32>::listen()
 		{
 			const auto l_listen_result = ::listen(m_pack.m_socket, SOMAXCONN);
 			if (l_listen_result == SOCKET_ERROR)
@@ -274,7 +274,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bc_platform_non_block_socket<platform::g_api_win32> bc_platform_non_block_socket<platform::g_api_win32>::accept()
+		bc_platform_non_block_socket<g_api_win32> bc_platform_non_block_socket<g_api_win32>::accept()
 		{
 			const auto l_client_socket = ::accept(m_pack.m_socket, nullptr, nullptr);
 			if (l_client_socket == INVALID_SOCKET)
@@ -285,12 +285,12 @@ namespace black_cat
 			bc_non_block_socket l_socket;
 			l_socket.get_platform_pack().m_socket = l_client_socket;
 
-			return std::move(l_socket);
+			return l_socket;
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_non_block_socket<platform::g_api_win32>::connect(const bc_network_address& p_address)
+		void bc_platform_non_block_socket<g_api_win32>::connect(const bc_network_address& p_address)
 		{
 			if (!p_address.is_valid())
 			{
@@ -313,7 +313,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-			bcUINT32 bc_platform_non_block_socket<platform::g_api_win32>::send(const void* p_buffer, bcUINT32 p_buffer_size)
+		bcUINT32 bc_platform_non_block_socket<g_api_win32>::send(const void* p_buffer, bcUINT32 p_buffer_size)
 		{
 			const auto l_send_result = ::send(m_pack.m_socket, static_cast<const bcCHAR*>(p_buffer), p_buffer_size, 0);
 			if (l_send_result == SOCKET_ERROR)
@@ -326,10 +326,10 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bcUINT32 bc_platform_non_block_socket<platform::g_api_win32>::send_to(const bc_network_address& p_address, const void* p_buffer, bcUINT32 p_buffer_size)
+		bcUINT32 bc_platform_non_block_socket<g_api_win32>::send_to(const bc_network_address& p_address, const void* p_buffer, bcUINT32 p_buffer_size)
 		{
 			const sockaddr_in& l_address = p_address.get_platform_pack().m_address;
-			const auto l_send_result = ::sendto
+			const auto l_send_result = sendto
 			(
 				m_pack.m_socket,
 				static_cast<const bcCHAR*>(p_buffer),
@@ -348,9 +348,9 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bcUINT32 bc_platform_non_block_socket<platform::g_api_win32>::receive(void* p_buffer, bcUINT32 p_buffer_size)
+		bcUINT32 bc_platform_non_block_socket<g_api_win32>::receive(void* p_buffer, bcUINT32 p_buffer_size)
 		{
-			const auto l_receive_result = ::recv(m_pack.m_socket, static_cast<bcCHAR*>(p_buffer), p_buffer_size, 0);
+			const auto l_receive_result = recv(m_pack.m_socket, static_cast<bcCHAR*>(p_buffer), p_buffer_size, 0);
 			if (l_receive_result == SOCKET_ERROR)
 			{
 				const auto l_error = WSAGetLastError();
@@ -367,12 +367,12 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bcUINT32 bc_platform_non_block_socket<platform::g_api_win32>::receive_from(bc_network_address& p_address, void* p_buffer, bcUINT32 p_buffer_size)
+		bcUINT32 bc_platform_non_block_socket<g_api_win32>::receive_from(bc_network_address& p_address, void* p_buffer, bcUINT32 p_buffer_size)
 		{
 			sockaddr_in& l_address = p_address.get_platform_pack().m_address;
 			bcINT l_address_size = sizeof(sockaddr_in);
 
-			const auto l_receive_result = ::recvfrom
+			const auto l_receive_result = recvfrom
 			(
 				m_pack.m_socket,
 				static_cast<bcCHAR*>(p_buffer),
@@ -397,14 +397,14 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		void bc_platform_non_block_socket<platform::g_api_win32>::close()
+		void bc_platform_non_block_socket<g_api_win32>::close()
 		{
 			closesocket(m_pack.m_socket);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL
-		bool bc_platform_non_block_socket<platform::g_api_win32>::is_valid() const noexcept
+		bool bc_platform_non_block_socket<g_api_win32>::is_valid() const noexcept
 		{
 			return m_pack.m_socket != INVALID_SOCKET;
 		}
