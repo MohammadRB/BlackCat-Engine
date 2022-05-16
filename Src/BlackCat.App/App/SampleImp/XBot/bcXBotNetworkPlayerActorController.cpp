@@ -159,23 +159,34 @@ namespace black_cat
 	
 	void bc_xbot_network_player_actor_controller::load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context)
 	{
+		core::bc_vector3f l_network_position;
+		core::bc_vector3f l_network_look_direction;
+		bcFLOAT l_network_look_velocity;
 		core::bc_vector<core::bc_any> l_keys;
 		m_network_weapon_rotation = 0;
 
-		json_parse::bc_load(p_context.m_parameters, "pos", m_network_position);
-		json_parse::bc_load(p_context.m_parameters, "lk_dir", m_network_look_direction);
-		json_parse::bc_load(p_context.m_parameters, "lk_sd", m_network_look_side);
+		json_parse::bc_load(p_context.m_parameters, "pos", l_network_position);
+		json_parse::bc_load(p_context.m_parameters, "lk_dir", l_network_look_direction);
+		json_parse::bc_load(p_context.m_parameters, "lk_vl", l_network_look_velocity);
 		json_parse::bc_load(p_context.m_parameters, "wpn_r", m_network_weapon_rotation);
 		json_parse::bc_load(p_context.m_parameters, "keys", l_keys);
 		
+		if (p_context.m_is_replication_load)
+		{
+			m_network_position = l_network_position;
+			m_network_look_direction = l_network_look_direction;
+		}
+
+		m_network_look_side = l_network_look_velocity >= 0 ? 1 : -1;
+		m_network_look_velocity = std::abs(l_network_look_velocity);
 		m_network_forward_pressed = l_keys[0].as_throw<bcINT32>();
 		m_network_backward_pressed = l_keys[1].as_throw<bcINT32>();
 		m_network_right_pressed = l_keys[2].as_throw<bcINT32>();
 		m_network_left_pressed = l_keys[3].as_throw<bcINT32>();
 		m_network_walk_pressed = l_keys[4].as_throw<bcINT32>();
 
-		get_network_component().add_extrapolating_value("pos", m_network_position);
-		get_network_component().add_extrapolating_value("lk_dir", m_network_look_direction);
+		get_network_component().add_extrapolating_value("pos", m_network_position, l_network_position);
+		get_network_component().add_extrapolating_value("lk_dir", m_network_look_direction, l_network_look_direction);
 
 		if(p_context.m_is_replication_load)
 		{
@@ -204,7 +215,7 @@ namespace black_cat
 	{
 		json_parse::bc_write(p_context.m_parameters, "pos", m_network_position);
 		json_parse::bc_write(p_context.m_parameters, "lk_dir", m_network_look_direction);
-		p_context.m_parameters.add_or_update("lk_sd", core::bc_any(m_network_look_side));
+		p_context.m_parameters.add_or_update("lk_vl", core::bc_any(m_network_look_side * m_network_look_velocity));
 		p_context.m_parameters.add_or_update
 		(
 			"keys",
@@ -269,13 +280,14 @@ namespace black_cat
 			return;
 		}
 
-		const auto l_extrapolated_pos = get_network_component().get_extrapolated_value("pos", p_context.m_clock).second;
-		const auto l_extrapolated_look_direction = get_network_component().get_extrapolated_value("lk_dir", p_context.m_clock).second;
+		const auto l_extrapolated_pos = get_network_component().get_extrapolated_value("pos", p_context.m_clock).second * 0.5f;
+		const auto l_extrapolated_look_direction = get_network_component().get_extrapolated_value("lk_dir", p_context.m_clock).second * 0.8f;
 
 		m_network_position += l_extrapolated_pos;
+		m_network_look_direction += l_extrapolated_look_direction;
 		set_weapon_rotation(m_network_weapon_rotation);
 
-		if(l_extrapolated_look_direction.magnitude() > 0.f)
+		if (m_network_look_velocity > 0.f)
 		{
 			m_look_velocity.push(p_context.m_clock.m_elapsed_second);
 		}

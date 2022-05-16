@@ -232,5 +232,20 @@ namespace black_cat
 
 			return l_shape;
 		}
+
+		void bc_set_actor_shape_query_flag(const physics::bc_rigid_actor& p_actor, physics::bc_shape_query_flag p_query)
+		{
+			const auto l_shape_count = p_actor.get_shape_count();
+
+			core::bc_vector_frame<physics::bc_shape> l_shapes;
+			l_shapes.reserve(l_shape_count);
+
+			p_actor.get_shapes(l_shapes.data(), l_shape_count);
+
+			for(auto l_ite = 0U; l_ite < l_shape_count; ++l_ite)
+			{
+				l_shapes.data()[l_ite].set_query_flags(p_query);
+			}
+		}
 	}
 }

@@ -30,6 +30,8 @@ namespace box
 
 		bx_client_script& operator=(const bx_client_script&) noexcept;
 
+		platform::bc_script_variable change_name(const platform::bc_script_variable& p_name);
+
 		platform::bc_script_variable connect(const platform::bc_script_variable& p_ip, const platform::bc_script_variable& p_port);
 
 		platform::bc_script_variable say(const platform::bc_script_variable& p_str_content);

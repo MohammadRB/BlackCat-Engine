@@ -18,16 +18,23 @@ namespace black_cat
 
 	void bc_rigid_dynamic_network_actor_controller::load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context)
 	{
-		json_parse::bc_load(p_context.m_parameters, "pos", m_network_position);
+		core::bc_vector3f l_network_position;
+		json_parse::bc_load(p_context.m_parameters, "pos", l_network_position);
 		json_parse::bc_load(p_context.m_parameters, "rot", m_network_rotation);
 
-		get_network_component().add_extrapolating_value("pos", m_network_position);
-		
-		auto l_transform = core::bc_matrix4f::identity();
-		l_transform.set_translation(m_network_position);
-		l_transform.set_rotation(m_network_rotation);
+		if(p_context.m_is_replication_load)
+		{
+			m_network_position = l_network_position;
 
-		p_context.m_actor.add_event(game::bc_world_transform_actor_event(l_transform, game::bc_transform_event_type::network));
+			auto l_transform = core::bc_matrix4f::identity();
+			l_transform.set_translation(m_network_position);
+			l_transform.set_rotation(m_network_rotation);
+			// If object is not moving the extrapolation value of its position will be zero and in this case no event will be risen
+			// in 'update_replicated_instance', so we need a transform event for the first time object is replicated
+			p_context.m_actor.add_event(game::bc_world_transform_actor_event(l_transform, game::bc_transform_event_type::network));
+		}
+
+		get_network_component().add_extrapolating_value("pos", m_network_position, l_network_position);
 	}
 
 	void bc_rigid_dynamic_network_actor_controller::write_origin_network_instance(const game::bc_actor_component_network_write_context& p_context)
@@ -44,27 +51,28 @@ namespace black_cat
 		json_parse::bc_write(p_context.m_parameters, "pos", m_network_position);
 		json_parse::bc_write(p_context.m_parameters, "rot", m_network_rotation);
 	}
-
-	void bc_rigid_dynamic_network_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
-	{
-	}
-
+	
 	void bc_rigid_dynamic_network_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
 	{
-		if (!get_scene() || p_context.m_is_double_update)
+		if (!get_scene()|| p_context.m_is_double_update)
 		{
 			return;
 		}
 
-		const auto l_extrapolated_pos = get_network_component().get_extrapolated_value("pos", p_context.m_clock).second;
-		m_network_position += l_extrapolated_pos;
+		const auto& l_network_component = get_network_component();
+		const auto l_extrapolated_pos = l_network_component.get_extrapolated_value("pos", p_context.m_clock).second;
 
-		auto l_transform = core::bc_matrix4f::identity();
-		l_transform.set_translation(m_network_position);
-		l_transform.set_rotation(m_network_rotation);
+		if(l_extrapolated_pos.magnitude() > 0.f)
+		{
+			m_network_position += l_extrapolated_pos;
 
-		p_context.m_actor.add_event(game::bc_world_transform_actor_event(l_transform, game::bc_transform_event_type::network));
-		p_context.m_actor.mark_for_double_update();
+			auto l_transform = core::bc_matrix4f::identity();
+			l_transform.set_translation(m_network_position);
+			l_transform.set_rotation(m_network_rotation);
+
+			p_context.m_actor.add_event(game::bc_world_transform_actor_event(l_transform, game::bc_transform_event_type::network));
+			//p_context.m_actor.mark_for_double_update();
+		}
 	}
 
 	void bc_rigid_dynamic_network_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)

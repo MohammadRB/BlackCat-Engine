@@ -83,6 +83,9 @@
     <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Memory\bcMemAlloc.h">
       <Filter>CorePlatformImp\Memory</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\bcThread.cpp">
+      <Filter>CorePlatformImp\Concurrency</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\NatvisVisualizers.natvis">

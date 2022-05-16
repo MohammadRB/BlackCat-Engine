@@ -71,5 +71,7 @@ namespace black_cat
 		physics::bc_transform BC_GAME_DLL bc_convert_to_height_map_transform(const bc_height_map& p_height_map, const physics::bc_transform& p_transform);
 
 		physics::bc_shape_ref BC_GAME_DLL bc_copy_shape(physics::bc_physics& p_physics, physics::bc_shape p_shape);
+
+		void BC_GAME_DLL bc_set_actor_shape_query_flag(const physics::bc_rigid_actor& p_actor, physics::bc_shape_query_flag p_query);
 	}
 }

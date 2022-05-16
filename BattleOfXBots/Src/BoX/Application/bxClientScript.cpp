@@ -1,6 +1,7 @@
 // [06/26/2021 MRB]
 
 #include "PlatformImp/Script/bcScriptString.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Network/bcNetworkSystem.h"
 #include "Game/System/bcGameSystem.h"
 #include "BoX.Game/Network/bxGameMessageNetworkMessage.h"
@@ -22,6 +23,21 @@ namespace box
 	bx_client_script::~bx_client_script() = default;
 
 	bx_client_script& bx_client_script::operator=(const bx_client_script&) noexcept = default;
+
+	platform::bc_script_variable bx_client_script::change_name(const platform::bc_script_variable& p_name)
+	{
+		if (!p_name.is_string())
+		{
+			return {};
+		}
+
+		auto& l_config = bc_get_global_config();
+		auto l_name = core::bc_to_string(p_name.as_string().data());
+		l_config.set_network_client_name(std::move(l_name));
+		l_config.flush_changes();
+
+		return {};
+	}
 
 	platform::bc_script_variable bx_client_script::connect(const platform::bc_script_variable& p_ip, const platform::bc_script_variable& p_port)
 	{

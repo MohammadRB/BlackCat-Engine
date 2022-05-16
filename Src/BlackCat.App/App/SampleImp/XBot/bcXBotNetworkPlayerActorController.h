@@ -70,6 +70,7 @@ namespace black_cat
 
 		core::bc_vector3f m_network_position;
 		core::bc_vector3f m_network_look_direction;
+		bcFLOAT m_network_look_velocity;
 		bcINT32 m_network_look_side;
 		bcFLOAT m_network_weapon_rotation;
 		bool m_network_forward_pressed;

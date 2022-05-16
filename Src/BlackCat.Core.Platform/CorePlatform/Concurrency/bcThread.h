@@ -57,9 +57,9 @@ namespace black_cat
 
 			id get_id() const noexcept;
 
-			const bcWCHAR* get_name() const noexcept;
+			const bcWCHAR* get_name() const;
 			
-			void set_name(const bcWCHAR* p_name) noexcept;
+			void set_name(const bcWCHAR* p_name);
 
 			bc_thread_priority get_priority() const noexcept;
 

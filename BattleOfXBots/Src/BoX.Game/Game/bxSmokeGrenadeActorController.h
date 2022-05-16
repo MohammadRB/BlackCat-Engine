@@ -18,9 +18,7 @@ namespace box
 		void update_origin_instance(const game::bc_actor_component_update_content& p_context) override;
 
 		void update_replicated_instance(const game::bc_actor_component_update_content& p_context) override;
-
-		void handle_event(const game::bc_actor_component_event_context& p_context) override;
-
+		
 		bcFLOAT m_lifetime{ 0 };
 		bcFLOAT m_smoke_time{ 0 };
 		core::bc_vector3f m_color;

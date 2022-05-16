@@ -44,7 +44,8 @@ namespace black_cat
 			m_network_id(p_other.m_network_id),
 			m_sync_enabled(p_other.m_sync_enabled),
 			m_out_ping(p_other.m_out_ping),
-			m_in_ping(p_other.m_in_ping)
+			m_in_ping(p_other.m_in_ping),
+			m_extrapolators(std::move(p_other.m_extrapolators))
 		{
 			p_other.set_as_invalid_network_state();
 		}
@@ -61,6 +62,7 @@ namespace black_cat
 			m_sync_enabled = p_other.m_sync_enabled;
 			m_out_ping = p_other.m_out_ping;
 			m_in_ping = p_other.m_in_ping;
+			m_extrapolators = std::move(p_other.m_extrapolators);
 
 			p_other.set_as_invalid_network_state();
 			return *this;
@@ -277,7 +279,7 @@ namespace black_cat
 			}
 		}
 
-		void bc_network_component::add_extrapolating_value(const bcCHAR* p_name, const core::bc_vector3f& p_value)
+		void bc_network_component::add_extrapolating_value(core::bc_string_view p_name, const core::bc_vector3f& p_extrapolated_value, const core::bc_vector3f& p_network_value)
 		{
 			const auto l_ite = std::find_if
 			(
@@ -285,25 +287,29 @@ namespace black_cat
 				std::end(m_extrapolators),
 				[=](const auto& p_entry)
 				{
-					return std::strcmp(std::get<0>(p_entry), p_name) == 0;
+					return p_entry.m_name == p_name;
 				}
 			);
 			
 			if(l_ite != std::end(m_extrapolators))
 			{
-				auto& l_extrapolator = std::get<1>(*l_ite);
-				auto& l_extrapolator_elapsed = std::get<2>(*l_ite);
-
-				l_extrapolator.add_sample(p_value);
-				l_extrapolator_elapsed = 0;
+				l_ite->m_extrapolator.add_sample(p_network_value);
+				l_ite->m_correction_vector = p_network_value - p_extrapolated_value;
+				l_ite->m_elapsed_since_last_update = 0;
 			}
 			else
 			{
-				m_extrapolators.push_back(std::make_tuple(p_name, bc_network_v3_extrapolation(p_value), 0));
+				m_extrapolators.push_back(_bc_network_extrapolation_value
+				{
+					p_name,
+					bc_network_v3_extrapolation(p_network_value),
+					core::bc_vector3f(0),
+					0
+				});
 			}
 		}
-
-		std::pair<bool, core::bc_vector3f> bc_network_component::get_extrapolated_value(const bcCHAR* p_name) const noexcept
+		
+		std::pair<bool, core::bc_vector3f> bc_network_component::get_extrapolated_value(core::bc_string_view p_name, const platform::bc_clock::update_param& p_clock) const noexcept
 		{
 			const auto l_ite = std::find_if
 			(
@@ -311,49 +317,27 @@ namespace black_cat
 				std::end(m_extrapolators),
 				[=](const auto& p_entry)
 				{
-					return std::strcmp(std::get<0>(p_entry), p_name) == 0;
-				}
-			);
-			if(l_ite != std::end(m_extrapolators))
-			{
-				const auto& l_extrapolator = std::get<1>(*l_ite);
-				return std::make_pair(true, l_extrapolator.change_rate());
-			}
-
-			return std::make_pair(false, core::bc_vector3f());
-		}
-
-		std::pair<bool, core::bc_vector3f> bc_network_component::get_extrapolated_value(const bcCHAR* p_name, const platform::bc_clock::update_param& p_clock) const noexcept
-		{
-			const auto l_ite = std::find_if
-			(
-				std::begin(m_extrapolators),
-				std::end(m_extrapolators),
-				[=](const auto& p_entry)
-				{
-					return std::strcmp(std::get<0>(p_entry), p_name) == 0;
+					return p_entry.m_name == p_name;
 				}
 			);
 			if(l_ite == std::end(m_extrapolators))
 			{
 				return std::make_pair(false, core::bc_vector3f());
 			}
+			
+			l_ite->m_elapsed_since_last_update += p_clock.m_average_elapsed;
 
-			auto& l_extrapolator = std::get<1>(*l_ite);
-			auto& l_extrapolator_elapsed = std::get<2>(*l_ite);
-
-			l_extrapolator_elapsed += p_clock.m_average_elapsed;
-			if (l_extrapolator_elapsed > m_in_ping)
+			if (m_in_ping >= p_clock.m_average_elapsed && l_ite->m_elapsed_since_last_update > m_in_ping)
 			{
-				// If we had no new sample, repeat last sample to prevent false extrapolation
-				l_extrapolator.add_sample();
+				// If we had no new sample, return 0 to prevent false extrapolation
+				return { true, {0,0,0} };
 			}
 
-			const auto l_extrapolation_ratio = std::min(p_clock.m_average_elapsed / static_cast<platform::bc_clock::small_time>(m_in_ping), 1.f);
-			auto l_extrapolated_value = l_extrapolator.change_rate();
-			l_extrapolated_value *= l_extrapolation_ratio;
+			const auto l_time_ratio = static_cast<platform::bc_clock::small_time>(m_in_ping) / p_clock.m_average_elapsed;
+			const auto l_correction_value = l_ite->m_correction_vector / l_time_ratio;
+			const auto l_extrapolated_value = l_ite->m_extrapolator.change_rate() / l_time_ratio;
 			
-			return std::make_pair(true, l_extrapolated_value);
+			return std::make_pair(true, l_extrapolated_value + l_correction_value);
 		}
 	}
 }

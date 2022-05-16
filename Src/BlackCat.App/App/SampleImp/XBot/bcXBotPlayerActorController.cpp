@@ -151,7 +151,7 @@ namespace black_cat
 		const auto l_velocity = get_velocity();
 		json_parse::bc_write(p_context.m_parameters, "pos", get_position());
 		json_parse::bc_write(p_context.m_parameters, "lk_dir", get_look_direction());
-		json_parse::bc_write(p_context.m_parameters, "lk_sd", core::bc_any(l_velocity.m_look_side));
+		json_parse::bc_write(p_context.m_parameters, "lk_vl", core::bc_any(l_velocity.m_look_side * l_velocity.m_look_velocity));
 		json_parse::bc_write
 		(
 			p_context.m_parameters, 
@@ -323,8 +323,7 @@ namespace black_cat
 		const auto* l_grenade_mediate_component = p_grenade.get_component<game::bc_mediate_component>();
 		const auto l_grenade_throw_power = std::max(0.3f, std::min(1.0f, m_grenade_throw_passed_time / m_grenade_throw_time)) * m_grenade_throw_force * get_bound_box_max_side_length();
 		const auto l_throw_direction = core::bc_vector3f::normalize(get_look_direction() + core::bc_vector3f(0, 0.2f, 0)) * l_grenade_throw_power;
-
-		const bcCHAR* l_threw_grenade_name = std::strcmp(l_grenade_mediate_component->get_entity_name(), m_grenade_name) == 0 ? m_threw_grenade_name : m_threw_smoke_grenade_name;
+		const auto* l_threw_grenade_name = std::strcmp(l_grenade_mediate_component->get_entity_name(), m_grenade_name) == 0 ? m_threw_grenade_name : m_threw_smoke_grenade_name;
 
 		if (m_network_system->get_network_type() != game::bc_network_type::not_started)
 		{
@@ -336,12 +335,13 @@ namespace black_cat
 			l_threw_grenade.mark_for_double_update();
 
 			auto* l_rigid_dynamic_component = l_threw_grenade.get_component<game::bc_rigid_dynamic_component>();
-			auto l_rigid_body = l_rigid_dynamic_component->get_dynamic_body();
+			auto l_rigid_dynamic = l_rigid_dynamic_component->get_dynamic_body();
 
 			{
 				game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
 
-				l_rigid_body.add_force(l_throw_direction);
+				l_rigid_dynamic.set_rigid_body_flags(physics::bc_rigid_body_flag::ccd, true);
+				l_rigid_dynamic.add_force(l_throw_direction);
 			}
 		}
 

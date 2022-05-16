@@ -23,13 +23,15 @@ namespace box
 
 	void bx_smoke_grenade_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
+		bc_rigid_dynamic_network_actor_controller::update_origin_instance(p_context);
+
 		if (get_network_type() == game::bc_network_type::not_started)
 		{
 			update_replicated_instance(p_context);
 			return;
 		}
 		
-		if (!get_scene())
+		if (!get_scene() || p_context.m_is_double_update)
 		{
 			return;
 		}
@@ -53,7 +55,9 @@ namespace box
 
 	void bx_smoke_grenade_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
 	{
-		if (!get_scene())
+		bc_rigid_dynamic_network_actor_controller::update_replicated_instance(p_context);
+
+		if (!get_scene() || p_context.m_is_double_update)
 		{
 			return;
 		}
@@ -108,9 +112,5 @@ namespace box
 				return;
 			}
 		}
-	}
-
-	void bx_smoke_grenade_actor_controller::handle_event(const game::bc_actor_component_event_context& p_context)
-	{
 	}
 }

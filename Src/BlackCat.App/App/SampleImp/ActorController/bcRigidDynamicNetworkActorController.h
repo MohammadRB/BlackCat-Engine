@@ -13,8 +13,7 @@ namespace black_cat
 		const core::bc_vector3f& get_network_position() const noexcept;
 		
 		const core::bc_matrix3f& get_network_rotation() const noexcept;
-		
-	private:
+
 		void load_origin_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
 
 		void load_replicated_network_instance(const game::bc_actor_component_network_load_context& p_context) override;
@@ -23,12 +22,11 @@ namespace black_cat
 
 		void write_replicated_network_instance(const game::bc_actor_component_network_write_context& p_context) override;
 
-		void update_origin_instance(const game::bc_actor_component_update_content& p_context) override;
-
 		void update_replicated_instance(const game::bc_actor_component_update_content& p_context) override;
 
 		void handle_event(const game::bc_actor_component_event_context& p_context) override;
 
+	private:
 		core::bc_vector3f m_network_position;
 		core::bc_matrix3f m_network_rotation;
 	};

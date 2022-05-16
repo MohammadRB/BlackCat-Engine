@@ -57,7 +57,8 @@ namespace box
 
 			auto l_client_prototype_builder = p_context.create_prototype_builder<bx_client_script>();
 			l_client_prototype_builder.function(L"connect", &bx_client_script::connect)
-			                          .function(L"say", &bx_client_script::say);
+			                          .function(L"say", &bx_client_script::say)
+			                          .function(L"changeName", &bx_client_script::change_name);
 
 			auto l_client_prototype = p_context.create_prototype(l_client_prototype_builder);
 			const auto l_client_object = p_context.create_object(l_client_prototype, bx_client_script(*p_instance.m_game_system, p_instance, p_instance));

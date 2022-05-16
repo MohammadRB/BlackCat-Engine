@@ -54,10 +54,13 @@ namespace black_cat
 			bcUINT16 p_port, 
 			bcUINT32 p_timeout)
 		{
+#ifdef BC_DEBUG
+			p_timeout *= 5;
+#endif
+
 			m_manager = core::bc_make_unique<bc_network_server_manager>
 			(
-				bc_network_server_manager
-				(*m_event_manager, *m_game_system, *this, p_hook, p_message_visitor, p_port, p_timeout)
+				bc_network_server_manager(*m_event_manager, *m_game_system, *this, p_hook, p_message_visitor, p_port, p_timeout)
 			);
 		}
 
@@ -66,6 +69,10 @@ namespace black_cat
 			const platform::bc_network_address& p_server_address, 
 			bcUINT32 p_timeout)
 		{
+#ifdef BC_DEBUG
+			p_timeout *= 5;
+#endif
+
 			m_manager = core::bc_make_unique<bc_network_client_manager>
 			(
 				bc_network_client_manager(*m_game_system, *this, p_hook, p_message_visitor, p_server_address, p_timeout)
@@ -87,6 +94,8 @@ namespace black_cat
 			m_manager->actor_removed(p_actor);
 		}
 
+		bcFLOAT g_ping_elapsed = 0;
+
 		void bc_network_system::update(const platform::bc_clock::update_param& p_clock)
 		{
 			if(!m_manager)
@@ -96,13 +105,21 @@ namespace black_cat
 
 			m_last_rtt_test += p_clock.m_elapsed;
 			const auto l_send_rtt = m_last_rtt_test >= 500;
-			
+
 			m_manager->update(bc_network_manager_update_context{ p_clock, l_send_rtt });
 
 			if (l_send_rtt)
 			{
 				m_last_rtt_test = 0;
 			}
+
+			/*g_ping_elapsed += p_clock.m_elapsed;
+
+			if(g_ping_elapsed >= 40)
+			{
+				g_ping_elapsed -= 40;
+				m_manager->update(bc_network_manager_update_context{ p_clock, l_send_rtt });
+			}*/
 		}
 
 		core::bc_task<void> bc_network_system::update_async(const platform::bc_clock::update_param& p_clock)

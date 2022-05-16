@@ -1,0 +1,12 @@
+Use W S D A keys to move around
+Use 1 0 keys to attach/detach weapon
+Use Left Mouse Button to fire
+Use G to throw grenade and H to throw smoke grenade
+Use TAB to show scores
+
+To start server, type "server.start(port);" followed by "server.load_scene("BattleGround");". (Note that server will start on port 6600 by default)
+To connect to server, type "client.connect('ip', port)" in game console
+To send message, type "client.say('');" in game console
+To change your name, before connect to server, type "client.changeName('');" in game console
+
+When in team select screen, use W S D A and Right Mouse Button to explore map

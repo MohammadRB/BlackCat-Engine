@@ -36,6 +36,7 @@
 #include "Game/System/Animation/Job/bcExecuteOneAnimationJob.h"
 #include "Game/System/Animation/Job/bcExecuteOnceAnimationJob.h"
 #include "Game/System/Animation/Job/bcExecuteOneAnimationJob.h"
+#include "Game/System/Physics/bcPhysicsShapeUtility.h"
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/bcGameSystem.h"
@@ -558,11 +559,13 @@ namespace black_cat
 		auto l_weapon_mass = 0.f;
 		if (auto* l_rigid_dynamic_component = p_weapon.get_component<game::bc_rigid_dynamic_component>())
 		{
-			l_rigid_dynamic_component->set_kinematic(true);
+			l_rigid_dynamic_component->set_enable(false);
 
 			{
-				game::bc_rigid_component_shared_lock l_lock(*l_rigid_dynamic_component);
+				game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
+
 				l_weapon_mass = l_rigid_dynamic_component->get_body().get_mass();
+				game::bc_set_actor_shape_query_flag(l_rigid_dynamic_component->get_body(), physics::bc_shape_query_flag::touching); // Set touching for bullet query
 			}
 
 			game::bc_actor_unmark_for_checkpoint(p_weapon);
@@ -590,9 +593,6 @@ namespace black_cat
 
 		if (auto* l_rigid_dynamic_component = m_weapon->m_actor.get_component<game::bc_rigid_dynamic_component>())
 		{
-			l_rigid_dynamic_component->set_kinematic(false);
-			l_rigid_dynamic_component->set_enable(false);
-
 			{
 				game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
 
@@ -612,7 +612,7 @@ namespace black_cat
 
 		if (auto* l_rigid_dynamic_component = m_weapon->m_actor.get_component<game::bc_rigid_dynamic_component>())
 		{
-			l_rigid_dynamic_component->set_kinematic(false);
+			l_rigid_dynamic_component->set_enable(true);
 
 			{
 				game::bc_rigid_component_lock l_lock(*l_rigid_dynamic_component);
@@ -621,6 +621,8 @@ namespace black_cat
 				const auto l_rigid_dynamic_pose = l_rigid_dynamic.get_global_pose();
 				l_rigid_dynamic.set_global_pose(physics::bc_transform(l_rigid_dynamic_pose.get_position() + get_look_direction(), l_rigid_dynamic_pose.get_matrix3()));
 				l_rigid_dynamic.set_linear_velocity(get_look_direction() * 2);
+
+				game::bc_set_actor_shape_query_flag(l_rigid_dynamic_component->get_body(), physics::bc_shape_query_flag::blocking);
 			}
 
 			game::bc_actor_mark_for_checkpoint(m_weapon->m_actor);

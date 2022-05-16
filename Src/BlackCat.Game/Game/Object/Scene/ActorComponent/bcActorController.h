@@ -101,12 +101,14 @@ namespace black_cat
 			{
 				m_scene = &l_added_to_scene_event->get_scene();
 				added_to_scene(p_context, l_added_to_scene_event->get_scene());
+				return;
 			}
 
 			if (const auto* l_remove_from_scene_event = core::bci_message::as<bc_removed_from_scene_actor_event>(p_context.m_event))
 			{
 				removed_from_scene(p_context, l_remove_from_scene_event->get_scene());
 				m_scene = nullptr;
+				return;
 			}
 
 			handle_event(p_context);

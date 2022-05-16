@@ -26,6 +26,7 @@ namespace box
 
 	void bx_grenade_actor_controller::update_origin_instance(const game::bc_actor_component_update_content& p_context)
 	{
+		bc_rigid_dynamic_network_actor_controller::update_origin_instance(p_context);
 		update_replicated_instance(p_context);
 
 		/*if(get_network_type() == game::bc_network_type::not_started)
@@ -48,7 +49,9 @@ namespace box
 
 	void bx_grenade_actor_controller::update_replicated_instance(const game::bc_actor_component_update_content& p_context)
 	{
-		if (!get_scene() || m_exploded)
+		bc_rigid_dynamic_network_actor_controller::update_replicated_instance(p_context);
+
+		if (!get_scene() || p_context.m_is_double_update || m_exploded)
 		{
 			return;
 		}
@@ -67,9 +70,8 @@ namespace box
 
 	void bx_grenade_actor_controller::removed_from_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene)
 	{
-		_explode(p_context.m_actor);
-
 		bc_rigid_dynamic_network_actor_controller::removed_from_scene(p_context, p_scene);
+		_explode(p_context.m_actor);
 	}
 
 	void bx_grenade_actor_controller::_explode(game::bc_actor& p_actor)

@@ -94,7 +94,7 @@ namespace black_cat
 			bool m_ready_for_sync;
 			bcUINT32 m_timeout_elapsed;
 			bc_network_packet_time m_last_sync_time;
-			core::bc_value_sampler<bc_network_rtt, 32> m_rtt_sampler;
+			core::bc_value_sampler<bc_network_rtt, 16> m_rtt_sampler;
 			bc_network_rtt m_remote_rtt;
 
 			bc_network_message_id m_last_executed_message_id;

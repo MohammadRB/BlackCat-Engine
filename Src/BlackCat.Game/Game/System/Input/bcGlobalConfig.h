@@ -51,6 +51,8 @@ namespace black_cat
 			bcFLOAT get_scene_bullet_reference_mass() const noexcept;
 
 			core::bc_string_view get_network_client_name() const noexcept;
+
+			void set_network_client_name(core::bc_string p_name) const noexcept;
 			
 			const core::bc_json_array<core::bc_string>& get_counter_values() const noexcept;
 			
@@ -99,7 +101,12 @@ namespace black_cat
 		{
 			return *(*m_json)->m_network_client_name;
 		}
-		
+
+		inline void bc_global_config::set_network_client_name(core::bc_string p_name) const noexcept
+		{
+			(*m_json)->m_network_client_name.set(std::move(p_name));
+		}
+
 		inline const core::bc_json_array<core::bc_string>& bc_global_config::get_counter_values() const noexcept
 		{
 			return (*m_json)->m_counter_values;

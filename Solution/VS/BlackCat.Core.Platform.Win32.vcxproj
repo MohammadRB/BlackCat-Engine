@@ -33,6 +33,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\bcUtility.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\bcMutex.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\Concurrency\bcThread.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core.Platform.Win32\CorePlatformImp\CorePlatformImpPCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Create</PrecompiledHeader>

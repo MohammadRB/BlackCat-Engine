@@ -17,8 +17,16 @@ namespace black_cat
 		class bc_network_system;
 
 		template<typename T>
-		using bc_network_extrapolation = core::bc_value_change_rate_sampler<T, 80, 15, 5>;
+		using bc_network_extrapolation = core::bc_value_change_rate_sampler<T, 70, 15, 10, 5>;
 		using bc_network_v3_extrapolation = bc_network_extrapolation<core::bc_vector3f>;
+
+		struct _bc_network_extrapolation_value
+		{
+			core::bc_string_view m_name;
+			bc_network_v3_extrapolation m_extrapolator;
+			core::bc_vector3f m_correction_vector;
+			platform::bc_clock::small_time m_elapsed_since_last_update;
+		};
 
 		class BC_GAME_DLL bc_network_component : public bci_actor_component
 		{
@@ -74,23 +82,15 @@ namespace black_cat
 
 			void handle_event(const bc_actor_component_event_context& p_context) override;
 			
-			void add_extrapolating_value(const bcCHAR* p_name, const core::bc_vector3f& p_value);
-
-			/**
-			 * \brief Get property rate of change based on ping time
-			 * \param p_name 
-			 * \return 
-			 */
-			std::pair<bool, core::bc_vector3f> get_extrapolated_value(const bcCHAR* p_name) const noexcept;
+			void add_extrapolating_value(core::bc_string_view p_name, const core::bc_vector3f& p_extrapolated_value, const core::bc_vector3f& p_network_value);
 			
 			/**
 			 * \brief Get property rate of change based on ping time scaled with elapsed clock.
-			 * \n Also add sample to extrapolator if no new sample was provided
 			 * \param p_name 
 			 * \param p_clock 
 			 * \return 
 			 */
-			std::pair<bool, core::bc_vector3f> get_extrapolated_value(const bcCHAR* p_name, const platform::bc_clock::update_param& p_clock) const noexcept;
+			std::pair<bool, core::bc_vector3f> get_extrapolated_value(core::bc_string_view p_name, const platform::bc_clock::update_param& p_clock) const noexcept;
 
 		private:
 			bc_network_system* m_network_system;
@@ -104,7 +104,7 @@ namespace black_cat
 			bc_network_rtt m_out_ping;
 			bc_network_rtt m_in_ping;
 
-			core::bc_vector<std::tuple<const bcCHAR*, bc_network_v3_extrapolation, platform::bc_clock::small_time>> m_extrapolators;
+			core::bc_vector<_bc_network_extrapolation_value> m_extrapolators;
 		};
 
 		inline const bcCHAR* bc_network_component::get_network_entity_name() const noexcept

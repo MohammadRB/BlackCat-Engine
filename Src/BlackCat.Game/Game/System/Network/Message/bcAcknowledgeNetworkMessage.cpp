@@ -53,7 +53,7 @@ namespace black_cat
 			auto [l_has_ack_id, l_ack_id] = p_context.m_params.find("ack_id")->second.cast_to_int();
 			auto* l_ack_data = p_context.m_params.find("ack_data")->second.as<core::bc_string>();
 
-			if (!l_ack_id)
+			if (!l_has_ack_id)
 			{
 				core::bc_log(core::bc_log_type::error, bcL("Failed to deserialize acknowledge network message id"));
 				return;

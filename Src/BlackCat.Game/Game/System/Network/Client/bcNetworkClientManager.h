@@ -122,7 +122,7 @@ namespace black_cat
 			bcUINT32 m_timeout_elapsed;
 			bc_network_client_id m_my_client_id;
 			bc_network_packet_time m_last_sync_time;
-			core::bc_value_sampler<bc_network_rtt, 32> m_rtt_sampler;
+			core::bc_value_sampler<bc_network_rtt, 16> m_rtt_sampler;
 			bc_network_rtt m_remote_rtt;
 			core::bc_string_view m_client_name;
 

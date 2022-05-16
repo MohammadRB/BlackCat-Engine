@@ -295,10 +295,10 @@ namespace black_cat
 
 			_receive_from_server();
 
-			core::bc_wstring_stream l_rtt_counter;
-			l_rtt_counter << L"In: " << core::bc_to_wstring(m_remote_rtt / 2, L"%.1f") << L" / Out: " << core::bc_to_wstring(l_ping_time, L"%.1f");
+			core::bc_wstring_stream l_ping_counter;
+			l_ping_counter << L"In: " << core::bc_to_wstring(m_remote_rtt / 2, L"%.1f") << L" / Out: " << core::bc_to_wstring(l_ping_time, L"%.1f");
 
-			core::bc_get_service<core::bc_counter_value_manager>()->add_counter("ping", l_rtt_counter.str());
+			core::bc_get_service<core::bc_counter_value_manager>()->add_counter("ping", l_ping_counter.str());
 		}
 
 		void bc_network_client_manager::on_enter(bc_client_socket_error_state& p_state)
