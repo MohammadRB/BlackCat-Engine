@@ -22,13 +22,13 @@ namespace box
 		void added_to_scene(const game::bc_actor_component_event_context& p_context, game::bc_scene& p_scene) override;
 
 		void update(const game::bc_actor_component_update_content& p_context) override;
-
+		
 		core::bc_query_result<game::bc_scene_query> _build_terrain_query(core::bc_query_manager& p_query_manager, const core::bc_vector3f& p_explosion_position) const;
 
 		core::bc_query_result<game::bc_scene_query> _build_dynamics_query(core::bc_query_manager& p_query_manager, const core::bc_vector3f& p_explosion_position) const;
 
 		bool _test_actor_visibility(const physics::bc_scene& p_px_scene, const game::bc_overlap_hit& p_hit, const core::bc_vector3f& p_explosion_position) const;
-
+	
 		const bcCHAR* m_emitter_name = nullptr;
 		const bcCHAR* m_decal_name = nullptr;
 		game::bc_network_client_id m_player_id{ game::bc_network_client::invalid_id };

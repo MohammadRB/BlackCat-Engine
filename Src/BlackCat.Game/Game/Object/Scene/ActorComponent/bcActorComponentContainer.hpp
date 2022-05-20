@@ -11,14 +11,19 @@ namespace black_cat
 	namespace game
 	{
 		template<class TComponent>
+		core::bc_vector_frame<bcUINT32> bc_actor_component_container<TComponent>::export_alive_indices() const
+		{
+			return m_bit_block.find_true_indices();
+		}
+
+		template<class TComponent>
 		void bc_actor_component_container<TComponent>::handle_events(const platform::bc_clock::update_param& p_clock,
 			core::bc_query_manager& p_query_manager,
 			bc_game_system& p_game_system,
-			bc_actor_component_manager_container& p_manager)
+			bc_actor_component_manager_container& p_manager,
+			const core::bc_vector_frame<bcUINT32>& p_alive_components)
 		{
-			const auto l_used_slots = m_bit_block.find_true_indices();
-
-			for (auto l_index : l_used_slots)
+			for (auto l_index : p_alive_components)
 			{
 				TComponent& l_component = m_components[l_index];
 				bc_actor l_actor = p_manager.component_get_actor<TComponent>(l_component);
@@ -39,11 +44,10 @@ namespace black_cat
 		void bc_actor_component_container<TComponent>::update(const platform::bc_clock::update_param& p_clock,
 			core::bc_query_manager& p_query_manager,
 			bc_game_system& p_game_system,
-			bc_actor_component_manager_container& p_manager)
+			bc_actor_component_manager_container& p_manager,
+			const core::bc_vector_frame<bcUINT32>& p_alive_components)
 		{
-			const auto l_used_slots = m_bit_block.find_true_indices();
-
-			for (auto l_index : l_used_slots)
+			for (auto l_index : p_alive_components)
 			{
 				TComponent& l_component = m_components[l_index];
 				bc_actor l_actor = p_manager.component_get_actor<TComponent>(l_component);

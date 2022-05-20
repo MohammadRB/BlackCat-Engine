@@ -94,7 +94,7 @@ namespace black_cat
 			m_manager->actor_removed(p_actor);
 		}
 
-		bcFLOAT g_ping_elapsed = 0;
+		//bcFLOAT g_ping_elapsed = 0;
 
 		void bc_network_system::update(const platform::bc_clock::update_param& p_clock)
 		{
@@ -105,13 +105,9 @@ namespace black_cat
 
 			m_last_rtt_test += p_clock.m_elapsed;
 			const auto l_send_rtt = m_last_rtt_test >= 500;
-
+			m_last_rtt_test = l_send_rtt ? 0 : m_last_rtt_test;
+			
 			m_manager->update(bc_network_manager_update_context{ p_clock, l_send_rtt });
-
-			if (l_send_rtt)
-			{
-				m_last_rtt_test = 0;
-			}
 
 			/*g_ping_elapsed += p_clock.m_elapsed;
 

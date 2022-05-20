@@ -1069,6 +1069,20 @@
             "parameters": {}
         },
         {
+            "entity_name": "env_falling_leaf_green",
+            "position": [
+                -284.0,
+                20.0,
+                60.02
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
             "entity_name": "veg_hill_tree_bright_green",
             "position": [
                 -331.54,
@@ -2361,6 +2375,62 @@
             "parameters": {}
         },
         {
+            "entity_name": "veg_grass_big_tall",
+            "position": [
+                -46.4,
+                0.0,
+                282.51
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                -84.41,
+                0.0,
+                347.97
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_big_leave_plant_med_a",
+            "position": [
+                -19.67,
+                0.0,
+                303.35
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                -31.45,
+                0.0,
+                301.35
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
             "entity_name": "veg_grass_short",
             "position": [
                 -13.09,
@@ -2442,9 +2512,7 @@
                 -0.48,
                 -0.0
             ],
-            "parameters": {
-                "decals": "{\"decals\":[]}"
-            }
+            "parameters": {}
         },
         {
             "entity_name": "veg_grass_big_tall",
@@ -2480,62 +2548,6 @@
                 -65.68,
                 0.0,
                 326.35
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_big_tall",
-            "position": [
-                -46.4,
-                0.0,
-                282.51
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                -84.41,
-                0.0,
-                347.97
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_big_leave_plant_med_a",
-            "position": [
-                -19.67,
-                0.0,
-                303.35
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                -31.45,
-                0.0,
-                301.35
             ],
             "rotation": [
                 -0.0,
@@ -3621,7 +3633,7 @@
                 -0.0
             ],
             "parameters": {
-                "decals": "{\"decals\":[{\"nm\":\"wall_break_2\",\"pos_ls\":[-0.0,8.09,-3.52],\"rot_ls\":[1.57,0.0,-1.57],\"rg\":2,\"ani\":4294967295}]}"
+                "decals": "{\"decals\":[{\"nm\":\"wall_break_2\",\"pos_ls\":[-0.0,8.09,-3.5],\"rot_ls\":[1.57,0.0,-1.57],\"rg\":2,\"ani\":4294967295}]}"
             }
         },
         {
@@ -4098,9 +4110,7 @@
                 -1.57,
                 3.14
             ],
-            "parameters": {
-                "decals": "{\"decals\":[]}"
-            }
+            "parameters": {}
         },
         {
             "entity_name": "mesh_floodlight_tower",
@@ -4652,7 +4662,7 @@
             "entity_name": "veg_grass_short",
             "position": [
                 -70.37,
-                2.91,
+                0.0,
                 -309.92
             ],
             "rotation": [
@@ -4808,6 +4818,90 @@
                 -139.0,
                 0.0,
                 -76.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                -245.22,
+                0.0,
+                -242.94
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                -245.52,
+                0.0,
+                -229.13
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                -246.16,
+                0.0,
+                -213.72
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                -239.38,
+                0.0,
+                -202.97
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                -243.49,
+                0.0,
+                -192.1
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                -229.61,
+                0.0,
+                -202.05
             ],
             "rotation": [
                 -0.0,
@@ -4999,90 +5093,6 @@
             "parameters": {}
         },
         {
-            "entity_name": "veg_grass_short",
-            "position": [
-                -245.22,
-                0.0,
-                -242.94
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                -245.52,
-                0.0,
-                -229.13
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                -246.16,
-                0.0,
-                -213.72
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                -239.38,
-                0.0,
-                -202.97
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                -243.49,
-                0.0,
-                -192.1
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                -229.61,
-                0.0,
-                -202.05
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
             "entity_name": "veg_Round_Leaf_Bush_big_bright_green",
             "position": [
                 -61.15,
@@ -5234,9 +5244,7 @@
                 0.0,
                 3.14
             ],
-            "parameters": {
-                "decals": "{\"decals\":[]}"
-            }
+            "parameters": {}
         },
         {
             "entity_name": "veg_grass_big_short",
@@ -5926,9 +5934,7 @@
                 1.57,
                 3.14
             ],
-            "parameters": {
-                "decals": "{\"decals\":[]}"
-            }
+            "parameters": {}
         },
         {
             "entity_name": "mesh_concrete_wall_simple_4m",
@@ -5942,9 +5948,7 @@
                 1.57,
                 3.14
             ],
-            "parameters": {
-                "decals": "{\"decals\":[]}"
-            }
+            "parameters": {}
         },
         {
             "entity_name": "mesh_sandbag_big_structure_a",
@@ -6355,6 +6359,20 @@
             "parameters": {}
         },
         {
+            "entity_name": "mesh_civil_box_a",
+            "position": [
+                45.0,
+                0.0,
+                -222.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
             "entity_name": "mesh_barrel_explosive_red",
             "position": [
                 52.63,
@@ -6388,20 +6406,6 @@
                 45.0,
                 4.5,
                 -218.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "mesh_civil_box_a",
-            "position": [
-                45.0,
-                0.0,
-                -222.0
             ],
             "rotation": [
                 -0.0,
@@ -7395,6 +7399,90 @@
             "parameters": {}
         },
         {
+            "entity_name": "veg_grass_big_short",
+            "position": [
+                39.33,
+                0.0,
+                -460.57
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                64.05,
+                -0.0,
+                -414.1
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                76.94,
+                0.0,
+                -408.95
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                83.76,
+                0.0,
+                -421.39
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                100.26,
+                0.0,
+                -426.57
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                97.08,
+                0.0,
+                -414.76
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
             "entity_name": "veg_grass_tall",
             "position": [
                 114.0,
@@ -7666,90 +7754,6 @@
                 41.86,
                 0.0,
                 -399.45
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_big_short",
-            "position": [
-                39.33,
-                0.0,
-                -460.57
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                64.05,
-                -0.0,
-                -414.1
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                76.94,
-                0.0,
-                -408.95
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                83.76,
-                0.0,
-                -421.39
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                100.26,
-                0.0,
-                -426.57
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                97.08,
-                0.0,
-                -414.76
             ],
             "rotation": [
                 -0.0,
@@ -8210,7 +8214,7 @@
             "entity_name": "veg_cliff_rock_island",
             "position": [
                 197.55,
-                2.0,
+                2.5,
                 -269.73
             ],
             "rotation": [
@@ -8260,9 +8264,7 @@
                 0.43,
                 -3.14
             ],
-            "parameters": {
-                "decals": "{\"decals\":[]}"
-            }
+            "parameters": {}
         },
         {
             "entity_name": "veg_Green_Fern_Bush_a",
@@ -8408,7 +8410,7 @@
             "entity_name": "veg_cliff_rock_island",
             "position": [
                 199.46,
-                2.0,
+                2.5,
                 -361.35
             ],
             "rotation": [
@@ -9429,6 +9431,20 @@
         {
             "entity_name": "veg_grass_tall",
             "position": [
+                433.39,
+                0.0,
+                -468.82
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
                 479.23,
                 0.0,
                 -482.82
@@ -9975,132 +9991,6 @@
         {
             "entity_name": "veg_grass_tall",
             "position": [
-                433.39,
-                0.0,
-                -468.82
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                479.42,
-                0.0,
-                -327.0
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                477.42,
-                0.0,
-                -287.25
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                474.73,
-                0.0,
-                -302.6
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                486.91,
-                0.0,
-                -310.76
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                471.48,
-                0.0,
-                -274.45
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                484.79,
-                -0.0,
-                -267.45
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                415.04,
-                0.0,
-                -273.79
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                453.95,
-                0.0,
-                -367.26
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
                 455.25,
                 0.0,
                 -330.57
@@ -10440,6 +10330,118 @@
                 471.85,
                 0.0,
                 -347.04
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                479.42,
+                0.0,
+                -327.0
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                477.42,
+                0.0,
+                -287.25
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                474.73,
+                0.0,
+                -302.6
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                486.91,
+                0.0,
+                -310.76
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                471.48,
+                0.0,
+                -274.45
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                484.79,
+                -0.0,
+                -267.45
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                415.04,
+                0.0,
+                -273.79
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                453.95,
+                0.0,
+                -367.26
             ],
             "rotation": [
                 -0.0,
@@ -12297,6 +12299,132 @@
             "parameters": {}
         },
         {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                421.19,
+                0.0,
+                -256.6
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                467.91,
+                0.0,
+                -262.14
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                404.97,
+                0.0,
+                -251.27
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                470.67,
+                0.0,
+                -249.38
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                253.1,
+                0.0,
+                -77.61
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                262.51,
+                -0.0,
+                -64.62
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                254.52,
+                0.0,
+                -52.61
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                255.5,
+                0.0,
+                -37.31
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                260.22,
+                0.0,
+                -25.61
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
             "entity_name": "veg_grass_short",
             "position": [
                 253.02,
@@ -12451,11 +12579,11 @@
             "parameters": {}
         },
         {
-            "entity_name": "veg_grass_tall",
+            "entity_name": "veg_grass_big_short",
             "position": [
-                421.19,
+                79.23,
                 0.0,
-                -256.6
+                323.72
             ],
             "rotation": [
                 -0.0,
@@ -12465,11 +12593,11 @@
             "parameters": {}
         },
         {
-            "entity_name": "veg_grass_short",
+            "entity_name": "veg_grass_big_short",
             "position": [
-                467.91,
-                0.0,
-                -262.14
+                104.48,
+                -0.0,
+                297.79
             ],
             "rotation": [
                 -0.0,
@@ -12479,95 +12607,11 @@
             "parameters": {}
         },
         {
-            "entity_name": "veg_grass_short",
+            "entity_name": "env_falling_leaf_green",
             "position": [
-                404.97,
-                0.0,
-                -251.27
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                470.67,
-                0.0,
-                -249.38
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                253.1,
-                0.0,
-                -77.61
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                262.51,
-                -0.0,
-                -64.62
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                254.52,
-                0.0,
-                -52.61
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                255.5,
-                0.0,
-                -37.31
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                260.22,
-                0.0,
-                -25.61
+                80.0,
+                12.0,
+                260.0
             ],
             "rotation": [
                 -0.0,
@@ -12610,48 +12654,6 @@
                 18.7,
                 0.0,
                 323.95
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_big_short",
-            "position": [
-                79.23,
-                0.0,
-                323.72
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_big_short",
-            "position": [
-                104.48,
-                -0.0,
-                297.79
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "env_falling_leaf_green",
-            "position": [
-                80.0,
-                12.0,
-                260.0
             ],
             "rotation": [
                 -0.0,
@@ -13010,9 +13012,7 @@
                 0.0,
                 -3.14
             ],
-            "parameters": {
-                "decals": "{\"decals\":[]}"
-            }
+            "parameters": {}
         },
         {
             "entity_name": "mesh_support_big",
@@ -13026,9 +13026,7 @@
                 0.0,
                 -0.0
             ],
-            "parameters": {
-                "decals": "{\"decals\":[]}"
-            }
+            "parameters": {}
         },
         {
             "entity_name": "mesh_floodlight_tower",
@@ -13042,9 +13040,7 @@
                 0.0,
                 -0.0
             ],
-            "parameters": {
-                "decals": "{\"decals\":[]}"
-            }
+            "parameters": {}
         },
         {
             "entity_name": "mesh_sandbag_big_structure_a",
@@ -13114,9 +13110,7 @@
                 0.0,
                 -0.0
             ],
-            "parameters": {
-                "decals": "{\"decals\":[]}"
-            }
+            "parameters": {}
         },
         {
             "entity_name": "mesh_support_big",
@@ -13511,6 +13505,20 @@
             "parameters": {}
         },
         {
+            "entity_name": "mesh_chair_plastic_local",
+            "position": [
+                185.0,
+                0.0,
+                66.0
+            ],
+            "rotation": [
+                -3.14,
+                -1.57,
+                -3.14
+            ],
+            "parameters": {}
+        },
+        {
             "entity_name": "mesh_civil_box_a",
             "position": [
                 135.21,
@@ -13539,20 +13547,6 @@
             "parameters": {}
         },
         {
-            "entity_name": "mesh_chair_plastic_local",
-            "position": [
-                185.0,
-                0.0,
-                70.0
-            ],
-            "rotation": [
-                -3.14,
-                -1.57,
-                -3.14
-            ],
-            "parameters": {}
-        },
-        {
             "entity_name": "mesh_barrel_black",
             "position": [
                 144.0,
@@ -13571,7 +13565,7 @@
             "position": [
                 185.0,
                 0.0,
-                66.0
+                70.0
             ],
             "rotation": [
                 -3.14,
@@ -14125,6 +14119,34 @@
                 -0.0,
                 0.0,
                 -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "mesh_floodlight_tower",
+            "position": [
+                273.29,
+                29.2,
+                219.88
+            ],
+            "rotation": [
+                -3.14,
+                0.0,
+                -3.14
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "env_tower_spot_light",
+            "position": [
+                272.92,
+                58.84,
+                221.0
+            ],
+            "rotation": [
+                -3.14,
+                0.0,
+                -3.14
             ],
             "parameters": {}
         },
@@ -14831,300 +14853,6 @@
             "parameters": {}
         },
         {
-            "entity_name": "veg_grass_short",
-            "position": [
-                478.97,
-                0.0,
-                19.28
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                492.42,
-                -0.0,
-                22.87
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                494.2,
-                0.0,
-                38.06
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                481.23,
-                -0.0,
-                38.38
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                467.97,
-                0.0,
-                26.77
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                467.04,
-                0.0,
-                46.18
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                468.16,
-                0.0,
-                61.9
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                481.19,
-                0.0,
-                53.34
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                492.29,
-                0.0,
-                57.06
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                490.42,
-                0.0,
-                70.87
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                474.01,
-                0.0,
-                78.08
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                393.41,
-                0.0,
-                46.7
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_tall",
-            "position": [
-                392.51,
-                0.0,
-                98.91
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                479.82,
-                0.0,
-                65.12
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                468.91,
-                0.0,
-                92.91
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                483.38,
-                0.0,
-                89.83
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                492.64,
-                0.0,
-                100.5
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                477.13,
-                0.0,
-                105.16
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                473.57,
-                0.0,
-                119.93
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                488.82,
-                0.0,
-                112.87
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_Round_Leaf_Bush_med_yellow",
-            "position": [
-                417.35,
-                0.0,
-                118.29
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
             "entity_name": "mesh_concrete_wall_simple_4m",
             "position": [
                 400.0,
@@ -15255,6 +14983,20 @@
         {
             "entity_name": "veg_grass_short",
             "position": [
+                478.97,
+                0.0,
+                19.28
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
                 424.1,
                 0.0,
                 39.84
@@ -15269,9 +15011,37 @@
         {
             "entity_name": "veg_grass_short",
             "position": [
+                492.42,
+                -0.0,
+                22.87
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
                 424.76,
                 0.0,
                 53.22
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                494.2,
+                0.0,
+                38.06
             ],
             "rotation": [
                 -0.0,
@@ -15311,9 +15081,37 @@
         {
             "entity_name": "veg_grass_short",
             "position": [
+                481.23,
+                -0.0,
+                38.38
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
                 413.04,
                 0.0,
                 76.55
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                467.97,
+                0.0,
+                26.77
             ],
             "rotation": [
                 -0.0,
@@ -15339,9 +15137,37 @@
         {
             "entity_name": "veg_grass_short",
             "position": [
+                467.04,
+                0.0,
+                46.18
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
                 419.79,
                 0.0,
                 93.3
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                468.16,
+                0.0,
+                61.9
             ],
             "rotation": [
                 -0.0,
@@ -15369,9 +15195,37 @@
         {
             "entity_name": "veg_grass_short",
             "position": [
+                481.19,
+                0.0,
+                53.34
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
                 408.07,
                 0.0,
                 109.29
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                492.29,
+                0.0,
+                57.06
             ],
             "rotation": [
                 -0.0,
@@ -15397,9 +15251,37 @@
         {
             "entity_name": "veg_grass_short",
             "position": [
+                490.42,
+                0.0,
+                70.87
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
                 429.45,
                 -0.0,
                 118.69
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                474.01,
+                0.0,
+                78.08
             ],
             "rotation": [
                 -0.0,
@@ -15423,11 +15305,151 @@
             "parameters": {}
         },
         {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                393.41,
+                0.0,
+                46.7
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
             "entity_name": "veg_grass_short",
             "position": [
                 467.91,
                 -0.0,
                 12.22
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_tall",
+            "position": [
+                392.51,
+                0.0,
+                98.91
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                479.82,
+                0.0,
+                65.12
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                468.91,
+                0.0,
+                92.91
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                483.38,
+                0.0,
+                89.83
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                492.64,
+                0.0,
+                100.5
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                477.13,
+                0.0,
+                105.16
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                473.57,
+                0.0,
+                119.93
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                488.82,
+                0.0,
+                112.87
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_Round_Leaf_Bush_med_yellow",
+            "position": [
+                417.35,
+                0.0,
+                118.29
             ],
             "rotation": [
                 -0.0,
@@ -17086,9 +17108,7 @@
                 0.75,
                 -0.0
             ],
-            "parameters": {
-                "decals": "{\"decals\":[]}"
-            }
+            "parameters": {}
         },
         {
             "entity_name": "veg_grass_short",
@@ -17247,6 +17267,20 @@
         {
             "entity_name": "veg_grass_short",
             "position": [
+                256.7,
+                0.0,
+                354.17
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
                 261.32,
                 0.0,
                 69.65
@@ -17273,179 +17307,25 @@
             "parameters": {}
         },
         {
-            "entity_name": "veg_Round_Leaf_Bush_big_bright_green",
-            "position": [
-                258.07,
-                5.73,
-                143.63
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_big_short",
-            "position": [
-                425.85,
-                0.0,
-                270.04
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_big_leave_plant_med_a",
-            "position": [
-                267.14,
-                10.59,
-                255.32
-            ],
-            "rotation": [
-                0.16,
-                0.0,
-                0.26
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                248.74,
-                0.31,
-                122.22
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_big_short",
-            "position": [
-                402.6,
-                0.0,
-                242.3
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                250.47,
-                2.95,
-                136.69
-            ],
-            "rotation": [
-                0.16,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                262.35,
-                0.0,
-                374.57
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                248.33,
-                4.26,
-                146.13
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_Ground_Fern_Bush_a",
-            "position": [
-                258.69,
-                9.39,
-                248.21
-            ],
-            "rotation": [
-                0.16,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                230.16,
-                0.0,
-                257.29
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                259.23,
-                0.0,
-                342.66
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
-            "entity_name": "veg_grass_short",
-            "position": [
-                256.7,
-                0.0,
-                354.17
-            ],
-            "rotation": [
-                -0.0,
-                0.0,
-                -0.0
-            ],
-            "parameters": {}
-        },
-        {
             "entity_name": "veg_grass_short",
             "position": [
                 252.69,
                 0.0,
                 364.26
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_Round_Leaf_Bush_big_bright_green",
+            "position": [
+                258.07,
+                5.73,
+                143.63
             ],
             "rotation": [
                 -0.0,
@@ -17471,6 +17351,20 @@
         {
             "entity_name": "veg_grass_big_short",
             "position": [
+                425.85,
+                0.0,
+                270.04
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_big_short",
+            "position": [
                 105.94,
                 -0.0,
                 258.29
@@ -17483,11 +17377,39 @@
             "parameters": {}
         },
         {
+            "entity_name": "veg_big_leave_plant_med_a",
+            "position": [
+                267.14,
+                10.59,
+                255.32
+            ],
+            "rotation": [
+                0.16,
+                0.0,
+                0.26
+            ],
+            "parameters": {}
+        },
+        {
             "entity_name": "veg_grass_big_short",
             "position": [
                 34.43,
                 0.0,
                 276.22
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                248.74,
+                0.31,
+                122.22
             ],
             "rotation": [
                 -0.0,
@@ -17513,6 +17435,20 @@
         {
             "entity_name": "veg_grass_big_short",
             "position": [
+                402.6,
+                0.0,
+                242.3
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_big_short",
+            "position": [
                 140.5,
                 0.0,
                 241.16
@@ -17527,9 +17463,37 @@
         {
             "entity_name": "veg_grass_short",
             "position": [
+                250.47,
+                2.95,
+                136.69
+            ],
+            "rotation": [
+                0.16,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
                 175.58,
                 0.0,
                 261.72
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                262.35,
+                0.0,
+                374.57
             ],
             "rotation": [
                 -0.0,
@@ -17555,12 +17519,40 @@
         {
             "entity_name": "veg_grass_short",
             "position": [
+                248.33,
+                4.26,
+                146.13
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
                 156.94,
                 0.0,
                 261.57
             ],
             "rotation": [
                 -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_Ground_Fern_Bush_a",
+            "position": [
+                258.69,
+                9.39,
+                248.21
+            ],
+            "rotation": [
+                0.16,
                 0.0,
                 -0.0
             ],
@@ -17581,11 +17573,39 @@
             "parameters": {}
         },
         {
+            "entity_name": "veg_grass_short",
+            "position": [
+                230.16,
+                0.0,
+                257.29
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
             "entity_name": "veg_Jungle_Tree_Thin_b",
             "position": [
                 243.22,
                 0.4,
                 253.38
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_grass_short",
+            "position": [
+                259.23,
+                0.0,
+                342.66
             ],
             "rotation": [
                 -0.0,
@@ -17721,14 +17741,14 @@
                 -0.0
             ],
             "parameters": {
-                "decals": "{\"decals\":[{\"nm\":\"crack_3\",\"pos_ls\":[-222.55,0.0,25.36],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-225.86,0.0,47.34],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_3\",\"pos_ls\":[-235.0,0.0,28.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-239.16,-0.0,42.54],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-209.97,0.0,28.7],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-245.88,0.0,-1.24],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-261.54,0.0,-17.62],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-238.8,0.0,-12.22],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-197.36,0.0,74.12],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-195.19,0.0,64.48],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-190.07,0.0,75.16],\"rot_ls\":[-3.14,1.57,-3.14],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[-130.24,-0.0,-77.93],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-129.66,0.0,-72.12],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-131.5,0.0,-82.66],\"rot_ls\":[-0.0,0.75,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[-136.08,0.0,-71.93],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[77.65,0.0,373.69],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[46.22,0.0,349.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[145.86,0.0,379.29],\"rot_ls\":[-0.0,0.75,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[385.85,0.0,452.14],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[397.67,0.0,466.95],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[384.14,0.0,461.2],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[395.95,0.0,448.07],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[452.82,0.0,412.69],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[468.07,0.0,403.13],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[167.13,0.0,270.17],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[163.86,0.0,281.6],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[159.72,0.0,273.92],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[163.88,0.0,265.54],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[69.44,0.0,255.91],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[74.44,0.0,252.47],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[81.12,0.0,261.17],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[81.73,0.0,252.91],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[73.47,0.0,260.6],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[-14.06,-0.0,258.76],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[-14.42,0.0,243.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[-21.29,0.0,248.27],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[-21.2,0.0,256.98],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[-30.62,0.0,261.91],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[-26.87,0.0,252.38],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[-26.7,-0.0,260.44],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[-15.47,-0.0,250.83],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[95.69,0.0,10.18],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_2\",\"pos_ls\":[87.01,0.0,3.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_3\",\"pos_ls\":[103.75,0.0,7.01],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[129.41,0.0,71.58],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[140.69,0.0,71.5],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[102.73,0.0,71.44],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[78.44,0.0,66.51],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[80.44,-0.0,77.87],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_3\",\"pos_ls\":[90.08,0.0,80.37],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_3\",\"pos_ls\":[60.36,0.0,68.33],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[97.37,0.0,-45.61],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_3\",\"pos_ls\":[104.76,0.0,-48.09],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_2\",\"pos_ls\":[407.32,0.0,-368.14],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_3\",\"pos_ls\":[421.54,0.0,-320.98],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[423.1,0.0,-328.19],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[427.91,-0.0,-268.17],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[453.13,0.0,-264.88],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[464.26,0.0,-169.08],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-132.02,0.0,301.51],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-98.12,0.0,290.66],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[148.47,0.0,36.25],\"rot_ls\":[-0.0,0.75,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[152.0,0.0,35.24],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[408.82,0.0,8.96],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[413.04,0.0,14.6],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[306.82,-0.0,77.29],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[299.7,0.0,77.68],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[310.95,0.0,73.23],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[305.22,0.0,82.33],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[446.6,0.0,406.01],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_4_green\",\"pos_ls\":[21.09,0.0,68.05],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_4_green\",\"pos_ls\":[178.33,0.0,64.97],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_2\",\"pos_ls\":[83.8,0.0,-46.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_2\",\"pos_ls\":[177.08,0.0,16.0],\"rot_ls\":[-0.0,-0.75,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_3\",\"pos_ls\":[42.81,0.0,4.32],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_2\",\"pos_ls\":[45.43,0.0,1.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[70.26,0.0,265.32],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[77.51,0.0,268.51],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_4_green\",\"pos_ls\":[152.47,0.0,-307.51],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[143.91,0.0,-307.25],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[306.57,0.0,-404.79],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[303.26,-0.0,-413.54],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[317.01,-0.0,-447.91],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[321.54,-0.0,-449.98],\"rot_ls\":[-3.14,0.0,-3.14],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_2\",\"pos_ls\":[-128.19,1.73,-451.17],\"rot_ls\":[0.18,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-129.75,1.58,-449.35],\"rot_ls\":[0.28,0.0,-0.09],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-179.16,1.0,-422.48],\"rot_ls\":[0.09,0.0,-0.09],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-186.58,1.12,-419.7],\"rot_ls\":[-3.0,1.57,3.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[-211.41,0.0,-269.16],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_2\",\"pos_ls\":[-179.38,0.0,-268.45],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-261.7,0.0,-269.64],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-223.22,0.0,-256.92],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-228.88,0.0,-258.85],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-223.96,0.0,-224.0],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-219.05,0.0,-217.66],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_4_green\",\"pos_ls\":[-252.02,0.0,-225.27],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_4_green\",\"pos_ls\":[-254.58,-0.0,-220.3],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_3\",\"pos_ls\":[-205.38,0.0,-260.0],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[-210.08,0.0,-259.51],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[430.82,0.0,-97.23],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[424.66,0.0,-86.51],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295}]}"
+                "decals": "{\"decals\":[{\"nm\":\"crack_3\",\"pos_ls\":[-222.55,0.0,25.36],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-225.86,0.0,47.34],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_3\",\"pos_ls\":[-235.0,0.0,28.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-239.16,-0.0,42.54],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-209.97,0.0,28.7],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-245.88,0.0,-1.24],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-261.54,0.0,-17.62],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-238.8,0.0,-12.22],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-197.36,0.0,74.12],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-195.19,0.0,64.48],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-190.07,0.0,75.16],\"rot_ls\":[-3.14,1.57,-3.14],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[-130.24,-0.0,-77.93],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-129.66,0.0,-72.12],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-131.5,0.0,-82.66],\"rot_ls\":[-0.0,0.75,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[-136.08,0.0,-71.93],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[77.65,0.0,373.69],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[46.22,0.0,349.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[145.86,0.0,379.29],\"rot_ls\":[-0.0,0.75,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[385.85,0.0,452.14],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[397.67,0.0,466.95],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[384.14,0.0,461.2],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[395.95,0.0,448.07],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[452.82,0.0,412.69],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[468.07,0.0,403.13],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[167.13,0.0,270.17],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[163.86,0.0,281.6],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[159.72,0.0,273.92],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[163.88,0.0,265.54],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[69.44,0.0,255.91],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[74.44,0.0,252.47],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[81.12,0.0,261.17],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[81.73,0.0,252.91],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[73.47,0.0,260.6],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[-14.06,-0.0,258.76],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[-14.42,0.0,243.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[-21.29,0.0,248.27],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[-21.2,0.0,256.98],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[-30.62,0.0,261.91],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[-26.87,0.0,252.38],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[-26.7,-0.0,260.44],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[-15.47,-0.0,250.83],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[95.69,0.0,10.18],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_2\",\"pos_ls\":[87.01,0.0,3.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_3\",\"pos_ls\":[103.75,0.0,7.01],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[129.41,0.0,71.58],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[140.69,0.0,71.5],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[102.73,0.0,71.44],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[78.44,0.0,66.51],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[80.44,-0.0,77.87],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_3\",\"pos_ls\":[90.08,0.0,80.37],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_3\",\"pos_ls\":[60.36,0.0,68.33],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[97.37,0.0,-45.61],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_3\",\"pos_ls\":[104.76,0.0,-48.09],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_2\",\"pos_ls\":[407.32,0.0,-368.14],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_3\",\"pos_ls\":[421.54,0.0,-320.98],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[423.1,0.0,-328.19],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[427.91,-0.0,-268.17],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[453.13,0.0,-264.88],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[464.26,0.0,-169.08],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-132.02,0.0,301.51],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-98.12,0.0,290.66],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[148.47,0.0,36.25],\"rot_ls\":[-0.0,0.75,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[152.0,0.0,35.24],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[408.82,0.0,8.96],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[413.04,0.0,14.6],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[306.82,-0.0,77.29],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[299.7,0.0,77.68],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[310.95,0.0,73.23],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[305.22,0.0,82.33],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[446.6,0.0,406.01],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_4_green\",\"pos_ls\":[21.09,0.0,68.05],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_4_green\",\"pos_ls\":[178.33,0.0,64.97],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_2\",\"pos_ls\":[83.8,0.0,-46.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_2\",\"pos_ls\":[177.08,0.0,16.0],\"rot_ls\":[-0.0,-0.75,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_3\",\"pos_ls\":[42.81,0.0,4.32],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_2\",\"pos_ls\":[45.43,0.0,1.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[70.26,0.0,265.32],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[77.51,0.0,268.51],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_4_green\",\"pos_ls\":[152.47,0.0,-307.51],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[143.91,0.0,-307.25],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[306.57,0.0,-404.79],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[303.26,-0.0,-413.54],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[317.01,-0.0,-447.91],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[321.54,-0.0,-449.98],\"rot_ls\":[-3.14,0.0,-3.14],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_2\",\"pos_ls\":[-128.19,1.73,-451.17],\"rot_ls\":[0.18,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-129.75,1.58,-449.35],\"rot_ls\":[0.28,0.0,-0.09],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-179.16,1.0,-422.48],\"rot_ls\":[0.09,0.0,-0.09],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-186.58,1.12,-419.7],\"rot_ls\":[-3.0,1.57,3.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[-211.41,0.0,-269.16],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_2\",\"pos_ls\":[-179.38,0.0,-268.45],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-261.7,0.0,-269.64],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-223.22,0.0,-256.92],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-228.88,0.0,-258.85],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-223.96,0.0,-224.0],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-219.05,0.0,-217.66],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_4_green\",\"pos_ls\":[-252.02,0.0,-225.27],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_4_green\",\"pos_ls\":[-254.58,-0.0,-220.3],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_3\",\"pos_ls\":[-205.38,0.0,-260.0],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[-210.08,0.0,-259.51],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[430.82,0.0,-97.23],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[424.66,0.0,-86.51],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[347.44,0.0,435.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_3\",\"pos_ls\":[320.2,0.0,432.22],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[316.85,-0.0,435.22],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[308.88,0.0,445.86],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[326.51,0.0,464.11],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[-275.64,0.0,61.84],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[-282.94,0.0,63.15],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_1\",\"pos_ls\":[-284.64,-0.0,53.72],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"leaf_on_ground_2\",\"pos_ls\":[-281.72,0.0,57.47],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[-223.91,0.0,56.54],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-205.3,-0.0,55.33],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-204.16,0.0,42.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_2\",\"pos_ls\":[-215.52,0.0,62.75],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_1\",\"pos_ls\":[-404.51,-0.0,-43.72],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"beach_dirt_4\",\"pos_ls\":[-402.07,0.0,-44.68],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_3\",\"pos_ls\":[-396.82,0.0,-81.3],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"crack_1\",\"pos_ls\":[-397.82,-0.0,-78.94],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295},{\"nm\":\"ground_dirt_3\",\"pos_ls\":[-351.98,0.0,-21.02],\"rot_ls\":[-0.0,0.0,-0.0],\"rg\":1,\"ani\":4294967295}]}"
             }
         },
         {
             "entity_name": "veg_brown_riverrock_big_a",
             "position": [
                 34.08,
-                2.25,
+                -1.0,
                 -323.48
             ],
             "rotation": [
@@ -17844,7 +17864,7 @@
             "entity_name": "veg_Jungle_rock_a",
             "position": [
                 43.0,
-                1.0,
+                2.0,
                 -332.0
             ],
             "rotation": [
@@ -18044,7 +18064,7 @@
                 -261.39
             ],
             "rotation": [
-                -0.0,
+                0.77,
                 0.0,
                 -0.0
             ],
@@ -18096,7 +18116,7 @@
             "entity_name": "veg_forest_rock_med_a",
             "position": [
                 -64.68,
-                0.0,
+                3.0,
                 -308.04
             ],
             "rotation": [
@@ -18180,7 +18200,7 @@
             "entity_name": "veg_forest_rock_med_a",
             "position": [
                 170.58,
-                1.2,
+                2.0,
                 -308.45
             ],
             "rotation": [
@@ -18194,7 +18214,7 @@
             "entity_name": "veg_brown_riverrock_big_a",
             "position": [
                 214.74,
-                0.28,
+                -2.0,
                 -263.82
             ],
             "rotation": [
@@ -18254,8 +18274,8 @@
                 -255.0
             ],
             "rotation": [
-                -0.0,
-                0.75,
+                0.34,
+                0.74,
                 -0.0
             ],
             "parameters": {}
@@ -18627,14 +18647,14 @@
         {
             "entity_name": "veg_cliff_rock_a_big",
             "position": [
-                263.39,
+                255.0,
                 2.0,
                 82.86
             ],
             "rotation": [
                 -0.0,
                 0.0,
-                -0.0
+                0.77
             ],
             "parameters": {}
         },
@@ -18712,7 +18732,7 @@
             "entity_name": "veg_forest_rock_med_a",
             "position": [
                 60.68,
-                1.5,
+                2.5,
                 -141.77
             ],
             "rotation": [
@@ -18768,11 +18788,11 @@
             "entity_name": "veg_forest_rock_med_a",
             "position": [
                 -153.77,
-                2.0,
+                3.0,
                 268.35
             ],
             "rotation": [
-                0.75,
+                0.74,
                 0.0,
                 -0.0
             ],
@@ -18782,7 +18802,7 @@
             "entity_name": "veg_brown_riverrock_big_a",
             "position": [
                 -145.0,
-                1.0,
+                -1.0,
                 260.0
             ],
             "rotation": [
@@ -18964,13 +18984,13 @@
             "entity_name": "veg_cliff_rock_island",
             "position": [
                 -386.73,
-                2.0,
+                2.5,
                 23.93
             ],
             "rotation": [
                 -0.0,
                 0.0,
-                0.07
+                0.05
             ],
             "parameters": {}
         },
@@ -19476,9 +19496,7 @@
                 0.0,
                 -0.0
             ],
-            "parameters": {
-                "decals": "{\"decals\":[]}"
-            }
+            "parameters": {}
         },
         {
             "entity_name": "veg_cliff_bush_yellow_mini",
@@ -19552,9 +19570,7 @@
                 0.0,
                 -3.14
             ],
-            "parameters": {
-                "decals": "{\"decals\":[]}"
-            }
+            "parameters": {}
         },
         {
             "entity_name": "mesh_solid_metal_fences_120_400_a",
@@ -19867,6 +19883,272 @@
             "parameters": {
                 "decals": "{\"decals\":[{\"nm\":\"wall_break_1\",\"pos_ls\":[-1.62,7.0,-6.0],\"rot_ls\":[1.57,0.0,1.57],\"rg\":2,\"ani\":4294967295}]}"
             }
+        },
+        {
+            "entity_name": "veg_forest_rock_med_a",
+            "position": [
+                -91.63,
+                2.86,
+                -267.79
+            ],
+            "rotation": [
+                -0.0,
+                0.77,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_forest_rock_med_a",
+            "position": [
+                -71.0,
+                4.0,
+                -314.75
+            ],
+            "rotation": [
+                0.77,
+                0.34,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_brown_riverrock_big_a",
+            "position": [
+                -65.76,
+                -2.0,
+                -319.2
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_forest_rock_med_a",
+            "position": [
+                40.0,
+                5.0,
+                -325.0
+            ],
+            "rotation": [
+                -0.0,
+                1.57,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_brown_riverrock_big_a",
+            "position": [
+                195.0,
+                -2.0,
+                -370.42
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_forest_rock_med_a",
+            "position": [
+                202.89,
+                3.0,
+                -370.92
+            ],
+            "rotation": [
+                0.77,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_forest_rock_med_a",
+            "position": [
+                168.8,
+                5.21,
+                -314.14
+            ],
+            "rotation": [
+                -0.77,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_forest_rock_med_a",
+            "position": [
+                161.72,
+                0.0,
+                -305.72
+            ],
+            "rotation": [
+                -3.14,
+                1.57,
+                -3.14
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_forest_rock_med_a",
+            "position": [
+                207.74,
+                2.0,
+                -272.92
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.77
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_cliff_bush_yellow_mini",
+            "position": [
+                262.39,
+                0.0,
+                92.04
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_forest_rock_med_a",
+            "position": [
+                264.97,
+                0.0,
+                80.26
+            ],
+            "rotation": [
+                -0.0,
+                0.61,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_cliff_rock_a_big",
+            "position": [
+                320.0,
+                0.0,
+                451.79
+            ],
+            "rotation": [
+                0.77,
+                0.0,
+                0.87
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_cliff_rock_a_big",
+            "position": [
+                332.79,
+                0.0,
+                442.7
+            ],
+            "rotation": [
+                0.77,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_cliff_bush_yellow_mini",
+            "position": [
+                335.11,
+                0.0,
+                454.11
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_forest_rock_med_a",
+            "position": [
+                -154.97,
+                3.0,
+                256.01
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.77
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_cliff_bush_yellow_mini",
+            "position": [
+                -208.11,
+                0.0,
+                38.29
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                -0.0
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_cliff_rock_a_big",
+            "position": [
+                -215.28,
+                0.0,
+                51.11
+            ],
+            "rotation": [
+                -3.14,
+                1.57,
+                -2.96
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_forest_rock_med_a",
+            "position": [
+                -404.07,
+                3.0,
+                22.17
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.77
+            ],
+            "parameters": {}
+        },
+        {
+            "entity_name": "veg_Jungle_rock_a",
+            "position": [
+                -397.04,
+                3.0,
+                33.9
+            ],
+            "rotation": [
+                -0.0,
+                0.0,
+                0.77
+            ],
+            "parameters": {}
         }
     ]
 }

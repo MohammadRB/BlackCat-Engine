@@ -12,6 +12,12 @@ namespace black_cat
 {
 	namespace game
 	{
+		struct _bc_component_to_update
+		{
+			bci_actor_component_container* m_container;
+			core::bc_vector_frame<bcUINT32> m_alive_indices;
+		};
+
 		bc_actor_component_manager_container::bc_actor_component_manager_container() noexcept
 			: m_query_manager(nullptr),
 			m_game_system(nullptr),
@@ -90,8 +96,13 @@ namespace black_cat
 
 		void bc_actor_component_manager_container::process_actor_events(const platform::bc_clock::update_param& p_clock)
 		{
-			core::bc_vector_frame<_bc_actor_component_entry*> l_components_with_event;
+			core::bc_vector_frame<_bc_component_to_update> l_components_with_event;
 			l_components_with_event.reserve(m_components.size());
+
+			// Make a copy of actor and component alive indices for two reasons
+			// First, only update actors which pre-exist because during update new actors can be created
+			// Second, update is done concurrently and while these indices are read another thread may modify them
+			auto l_actor_indices = m_actors_bit.find_true_indices();
 
 			for (auto& l_entry : m_components)
 			{
@@ -102,7 +113,7 @@ namespace black_cat
 
 				if (l_entry.second.m_require_event)
 				{
-					l_components_with_event.push_back(&l_entry.second);
+					l_components_with_event.push_back({ l_entry.second.m_container.get(), l_entry.second.m_container->export_alive_indices() });
 				}
 			}
 
@@ -120,16 +131,15 @@ namespace black_cat
 				(
 					std::begin(l_components_with_event),
 					std::end(l_components_with_event),
-					[&](const _bc_actor_component_entry* p_entry)
+					[&](const _bc_component_to_update& p_entry)
 					{
-						p_entry->m_container->handle_events(p_clock, *m_query_manager, *m_game_system, *this);
+						p_entry.m_container->handle_events(p_clock, *m_query_manager, *m_game_system, *this, p_entry.m_alive_indices);
 					}
 				);
 
 				{
 					platform::bc_shared_mutex_shared_guard l_actors_lock(m_actors_lock);
 
-					auto l_actor_indices = m_actors_bit.find_true_indices();
 					core::bc_concurrency::concurrent_for_each
 					(
 						std::begin(l_actor_indices),
@@ -140,12 +150,13 @@ namespace black_cat
 						}
 					);
 				}
-			} while (m_event_pools[m_write_event_pool].size());
+			}
+			while (m_event_pools[m_write_event_pool].size());
 		}
 
 		void bc_actor_component_manager_container::update_actors(const platform::bc_clock::update_param& p_clock)
 		{
-			core::bc_vector_frame<_bc_actor_component_entry*> l_components_with_update;
+			core::bc_vector_frame<_bc_component_to_update> l_components_with_update;
 			l_components_with_update.reserve(m_components.size());
 
 			for (auto& l_entry : m_components)
@@ -157,7 +168,7 @@ namespace black_cat
 
 				if (l_entry.second.m_require_update)
 				{
-					l_components_with_update.push_back(&l_entry.second);
+					l_components_with_update.push_back({ l_entry.second.m_container.get(),l_entry.second.m_container->export_alive_indices() });
 				}
 			}
 
@@ -165,9 +176,9 @@ namespace black_cat
 			(
 				std::begin(l_components_with_update),
 				std::end(l_components_with_update),
-				[&](const _bc_actor_component_entry* p_entry)
+				[&](const _bc_component_to_update& p_entry)
 				{
-					p_entry->m_container->update(p_clock, *m_query_manager, *m_game_system, *this);
+					p_entry.m_container->update(p_clock, *m_query_manager, *m_game_system, *this, p_entry.m_alive_indices);
 				}
 			);
 		}
@@ -248,7 +259,8 @@ namespace black_cat
 
 					const auto l_actor_index = bc_actor_id::decompose_id(l_actor.get_id()).m_index;
 					_clear_actor_events(l_actor_index, m_read_event_pool);
-				} while (l_write_event_pool_new_size > l_write_event_pool_size);
+				}
+				while (l_write_event_pool_new_size > l_write_event_pool_size);
 
 				for (bci_actor_component* l_component : l_components)
 				{

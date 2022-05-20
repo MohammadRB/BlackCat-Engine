@@ -87,8 +87,6 @@ namespace box
 			bc_matrix4f_from_position_and_direction(l_mediate_component->get_position(), core::bc_vector3f::up()),
 			l_instance_params
 		);
-		l_explosion_actor.mark_for_double_update();
-
 		m_exploded = true;
 	}
 }

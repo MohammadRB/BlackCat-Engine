@@ -25,6 +25,8 @@ namespace black_cat
 		public:
 			virtual ~bci_actor_component_container() = default;
 
+			virtual core::bc_vector_frame<bcUINT32> export_alive_indices() const = 0;
+
 			virtual bci_actor_component* get(bc_actor_component_id p_id) = 0;
 
 			virtual bc_actor_component_id create(bc_actor_id p_actor_id) = 0;
@@ -36,14 +38,16 @@ namespace black_cat
 			virtual void handle_events(const platform::bc_clock::update_param& p_clock,
 				core::bc_query_manager& p_query_manager,
 				bc_game_system& p_game_system,
-				bc_actor_component_manager_container& p_manager) = 0;
+				bc_actor_component_manager_container& p_manager,
+				const core::bc_vector_frame<bcUINT32>& p_alive_indices) = 0;
 
 			virtual void update(const platform::bc_clock::update_param& p_clock,
 				core::bc_query_manager& p_query_manager,
 				bc_game_system& p_game_system,
-				bc_actor_component_manager_container& p_manager) = 0;
+				bc_actor_component_manager_container& p_manager,
+				const core::bc_vector_frame<bcUINT32>& p_alive_indices) = 0;
 
-			virtual bcSIZE size() = 0;
+			virtual bcSIZE size() const noexcept = 0;
 
 		protected:
 			bci_actor_component_container() = default;
@@ -60,6 +64,8 @@ namespace black_cat
 			~bc_actor_component_container() override;
 
 			bc_actor_component_container& operator=(bc_actor_component_container&&) noexcept;
+
+			core::bc_vector_frame<bcUINT32> export_alive_indices() const override;
 
 			TComponent* get(bc_actor_component_id p_id) override;
 
@@ -79,14 +85,16 @@ namespace black_cat
 			void handle_events(const platform::bc_clock::update_param& p_clock,
 				core::bc_query_manager& p_query_manager,
 				bc_game_system& p_game_system,
-				bc_actor_component_manager_container& p_manager) override;
+				bc_actor_component_manager_container& p_manager,
+				const core::bc_vector_frame<bcUINT32>& p_alive_components) override;
 
 			void update(const platform::bc_clock::update_param& p_clock,
 				core::bc_query_manager& p_query_manager,
 				bc_game_system& p_game_system,
-				bc_actor_component_manager_container& p_manager) override;
+				bc_actor_component_manager_container& p_manager,
+				const core::bc_vector_frame<bcUINT32>& p_alive_components) override;
 
-			bcSIZE size() override;
+			bcSIZE size() const noexcept override;
 
 		private:
 			core::bc_bit_vector m_bit_block;
@@ -129,15 +137,15 @@ namespace black_cat
 
 			if(l_has_free_slot)
 			{
-				m_bit_block.make_true(l_free_slot);
 				new (&m_components[l_free_slot]) TComponent(p_actor_id, l_free_slot);
+				m_bit_block.make_true(l_free_slot);
 			}
 			else
 			{
-				l_free_slot = m_components.size();
-				m_bit_block.resize(m_components.size() + 1);
-				m_bit_block.make_true(l_free_slot);
 				m_components.push_back(TComponent(p_actor_id, l_free_slot));
+				l_free_slot = m_components.size() - 1;
+				m_bit_block.resize(m_components.size());
+				m_bit_block.make_true(l_free_slot);
 			}
 
 			return l_free_slot;
@@ -151,15 +159,15 @@ namespace black_cat
 
 			if (l_has_free_slot)
 			{
-				m_bit_block.make_true(l_free_slot);
 				new (&m_components[l_free_slot]) TComponent(p_actor_id, l_free_slot);
+				m_bit_block.make_true(l_free_slot);
 			}
 			else
 			{
-				l_free_slot = m_components.size();
-				m_bit_block.resize(m_components.size() + 1);
-				m_bit_block.make_true(l_free_slot);
 				m_components.push_back(TComponent(p_actor_id, l_free_slot));
+				l_free_slot = m_components.size() - 1;
+				m_bit_block.resize(m_components.size());
+				m_bit_block.make_true(l_free_slot);
 			}
 
 			return l_free_slot;
@@ -175,7 +183,7 @@ namespace black_cat
 		}
 
 		template<class TComponent>
-		bcSIZE bc_actor_component_container<TComponent>::size()
+		bcSIZE bc_actor_component_container<TComponent>::size() const noexcept
 		{
 			return m_components.size();
 		}

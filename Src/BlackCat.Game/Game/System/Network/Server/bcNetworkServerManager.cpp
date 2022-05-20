@@ -311,6 +311,8 @@ namespace black_cat
 		{
 			if(!m_socket_is_listening)
 			{
+				core::bc_log(core::bc_log_type::info) << "Started listening on port " << m_port << core::bc_lend;
+
 				m_socket_is_listening = true;
 				m_hook->started_listening(m_port);
 			}

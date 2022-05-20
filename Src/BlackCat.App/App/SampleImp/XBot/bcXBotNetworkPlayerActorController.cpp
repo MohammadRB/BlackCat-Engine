@@ -24,6 +24,7 @@ namespace black_cat
 		m_look_velocity(0, 1, 0.50f),
 		m_network_position(),
 		m_network_look_direction(),
+		m_network_look_velocity(0),
 		m_network_look_side(0),
 		m_network_weapon_rotation(0),
 		m_network_forward_pressed(false),
@@ -177,7 +178,7 @@ namespace black_cat
 			m_network_look_direction = l_network_look_direction;
 		}
 
-		m_network_look_side = l_network_look_velocity >= 0 ? 1 : -1;
+		m_network_look_side = l_network_look_velocity > 0 ? 1 : l_network_look_velocity < 0 ? -1 : m_network_look_side; // Preserve last value if velocity equals zero
 		m_network_look_velocity = std::abs(l_network_look_velocity);
 		m_network_forward_pressed = l_keys[0].as_throw<bcINT32>();
 		m_network_backward_pressed = l_keys[1].as_throw<bcINT32>();
