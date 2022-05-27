@@ -100,7 +100,7 @@ namespace black_cat
 					[this](const bc_actor& p_actor)
 					{
 						const auto l_position = p_actor.get_component<bc_mediate_component>()->get_position();
-						const auto l_distance = (*m_camera_position - l_position).magnitude();
+						const auto l_distance = core::bc_vector3f::length_sq(*m_camera_position - l_position);
 
 						return std::make_pair(p_actor, l_distance);
 					}

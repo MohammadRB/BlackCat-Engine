@@ -184,7 +184,12 @@ namespace black_cat
 			if(const auto* l_network_replicate_event = core::bci_message::as<bc_network_replicate_actor_event>(p_context.m_event))
 			{
 				const auto l_replication_side = l_network_replicate_event->get_replication_side();
-				if(l_replication_side == bc_actor_replication_side::replicated)
+
+				if(l_replication_side == bc_actor_replication_side::origin)
+				{
+					m_px_actor_ref->set_actor_flag(physics::bc_actor_flag::send_sleep_wake, true);
+				}
+				else
 				{
 					set_kinematic(true);
 				}

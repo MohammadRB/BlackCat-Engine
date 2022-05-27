@@ -16,8 +16,8 @@ namespace black_cat
 	{
 		BC_JSON_STRUCTURE(bc_network_packet_command)
 		{
-			BC_JSON_VALUE(bc_network_message_hash, hash);
-			BC_JSON_VALUE(core::bc_json_key_value, values);
+			BC_JSON_VALUE(bc_network_message_hash, hsh);
+			BC_JSON_VALUE(core::bc_json_key_value, vls);
 		};
 		
 		BC_JSON_STRUCTURE(bc_network_packet)
@@ -73,8 +73,8 @@ namespace black_cat
 			for (const auto& l_command : p_messages)
 			{
 				auto& l_json_command = l_json_packet->m_commands.new_entry();
-				*l_json_command->m_hash = l_command->get_message_hash();
-				l_command->serialize(bc_network_message_serialization_context{ p_visitor, *l_json_command->m_values });
+				*l_json_command->m_hsh = l_command->get_message_hash();
+				l_command->serialize(bc_network_message_serialization_context{ p_visitor, *l_json_command->m_vls });
 			}
 
 			const auto l_packet_str = l_json_packet.write_frame();
@@ -101,13 +101,13 @@ namespace black_cat
 
 				for (auto& l_json_command : l_json_packet->m_commands)
 				{
-					auto l_command = m_network_system->create_message_instance(*l_json_command->m_hash);
+					auto l_command = m_network_system->create_message_instance(*l_json_command->m_hsh);
 					if (!l_command)
 					{
 						continue;
 					}
 
-					l_command->deserialize(bc_network_message_deserialization_context{ p_visitor, *l_json_command->m_values });
+					l_command->deserialize(bc_network_message_deserialization_context{ p_visitor, *l_json_command->m_vls });
 					m_deserialize_buffer.push_back(std::move(l_command));
 				}
 			}

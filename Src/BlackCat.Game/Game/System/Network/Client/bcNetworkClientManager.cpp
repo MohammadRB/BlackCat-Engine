@@ -186,7 +186,7 @@ namespace black_cat
 				core::bc_log(core::bc_log_type::error, bcL("actor without network component or invalid network id cannot be removed from network sync process"));
 				return;
 			}
-
+			
 			const auto l_network_id = l_network_component->get_network_id();
 			
 			{
@@ -227,7 +227,7 @@ namespace black_cat
 				core::bc_log(core::bc_log_type::error, bcL("actor without network component or invalid network id cannot be removed from network sync process"));
 				return;
 			}
-
+			
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
 
@@ -442,7 +442,7 @@ namespace black_cat
 				core::bc_log(core::bc_log_type::error, bcL("actor without network component or invalid network id cannot be added to network sync process"));
 				return;
 			}
-
+			
 			const auto l_ping = m_rtt_sampler.average_value() / 2;
 			const auto l_remote_ping = m_remote_rtt / 2;
 			l_network_component->set_ping(l_ping, l_remote_ping);
@@ -461,7 +461,7 @@ namespace black_cat
 				core::bc_log(core::bc_log_type::error, bcL("actor without network component or invalid network id cannot be removed from network sync process"));
 				return;
 			}
-
+			
 			{
 				core::bc_mutex_test_guard l_lock(m_actors_lock);
 

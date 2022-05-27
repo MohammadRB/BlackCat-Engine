@@ -72,8 +72,6 @@ namespace black_cat
 			
 			void initialize(const bc_actor_component_initialize_context& p_context) override;
 			
-			void initialize_entity(const bc_actor_component_initialize_entity_context& p_context) override;
-
 			void load_network_instance(const bc_actor_component_network_load_context& p_context) override;
 			
 			void write_network_instance(const bc_actor_component_network_write_context& p_context) override;
@@ -93,6 +91,10 @@ namespace black_cat
 			std::pair<bool, core::bc_vector3f> get_extrapolated_value(core::bc_string_view p_name, const platform::bc_clock::update_param& p_clock) const noexcept;
 
 		private:
+			void _added_to_scene(const bc_actor_component_event_context& p_context);
+
+			void _removed_from_scene(const bc_actor_component_event_context& p_context);
+
 			bc_network_system* m_network_system;
 			const bcCHAR* m_network_entity_name;
 			bc_actor_network_data_dir m_data_dir;

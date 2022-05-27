@@ -251,7 +251,7 @@ namespace black_cat
 		void bc_scene::remove_actor(bc_actor p_actor) noexcept
 		{
 			BC_ASSERT(p_actor.is_valid_deep());
-
+			
 			{
 				platform::bc_spin_mutex_guard l_lock_guard(m_actors_to_remove_lock);
 
@@ -461,7 +461,7 @@ namespace black_cat
 			{
 				{
 					platform::bc_spin_mutex_guard l_lock(m_actors_to_remove_lock);
-
+					
 					m_actors_to_remove.push_back(std::make_tuple(_bc_scene_actor_state::removed_from_graph, p_actor));
 				}
 			}

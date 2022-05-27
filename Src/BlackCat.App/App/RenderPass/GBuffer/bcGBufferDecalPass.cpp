@@ -417,10 +417,7 @@ namespace black_cat
 				_create_decal_render_state(p_context.m_render_system, *l_decal_material);
 				l_render_state_ite = m_render_states.find(l_decal_material->get_id());
 			}
-
-			// TODO for unknown bug
-			BC_ASSERT((*l_render_state_ite).second->get_shader_views()[0].is_valid());
-
+			
 			p_context.m_render_thread.bind_render_state(*l_render_state_ite->second);
 
 			core::bc_vector_frame<bc_decal_instance_parameter> l_instance_buffer_data(s_max_instance_per_draw);

@@ -27,10 +27,10 @@ void bitonic_sort(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIn
 
 	for (uint l_bitonic_compare = g_sort_array_size >> 1; l_bitonic_compare > 0; l_bitonic_compare >>= 1)
 	{
-		bool l_condition1 = (sort_shared_data[p_group_index & ~l_bitonic_compare].m_distance >= sort_shared_data[p_group_index | l_bitonic_compare].m_distance);
-		bool l_condition2 = (bool) (g_sort_array_size_mask & p_dispatch_thread_id.x);
+		const bool l_condition1 = (sort_shared_data[p_group_index & ~l_bitonic_compare].m_distance >= sort_shared_data[p_group_index | l_bitonic_compare].m_distance);
+		const bool l_condition2 = (bool) (g_sort_array_size_mask & p_dispatch_thread_id.x);
 
-		alive_particle l_result_subset[] = { sort_shared_data[p_group_index ^ l_bitonic_compare], sort_shared_data[p_group_index] };
+		const alive_particle l_result_subset[] = { sort_shared_data[p_group_index ^ l_bitonic_compare], sort_shared_data[p_group_index] };
 		uint l_result_index = (l_condition1 == l_condition2) ? 0 : 1;
 		
 		GroupMemoryBarrierWithGroupSync();
