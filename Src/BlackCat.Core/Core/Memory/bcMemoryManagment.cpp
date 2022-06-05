@@ -218,7 +218,7 @@ namespace black_cat
 
 			void* l_result = nullptr;
 			bci_memory* l_allocator = nullptr;
-			bc_memblock l_block(p_size, BC_MEMORY_MIN_ALIGN);
+			bc_memblock l_block(p_size);
 
 			switch (p_alloc_type)
 			{
@@ -348,7 +348,7 @@ namespace black_cat
 			return l_new_pointer;
 		}
 		
-		void* bc_memory_manager::aligned_alloc(bcSIZE p_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		void* bc_memory_manager::aligned_alloc(bcSIZE p_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 			BC_ASSERT(m_initialized);
 
@@ -464,17 +464,17 @@ namespace black_cat
 #endif
 		}
 		
-		void* bc_memory_manager::aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		void* bc_memory_manager::aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
-			auto* l_block = bc_memblock::retrieve_mem_block(p_pointer);
+			const auto* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 
 			auto* l_new_pointer = aligned_alloc(p_new_size, p_alignment, p_alloc_type, p_file, p_line);
 			if (!l_new_pointer)
 			{
 				return l_new_pointer;
 			}
-			
-			auto* l_new_block = bc_memblock::retrieve_mem_block(l_new_pointer);
+
+			const auto* l_new_block = bc_memblock::retrieve_mem_block(l_new_pointer);
 			const bcSIZE l_min_size = std::min<bcSIZE>(l_block->size() - l_block->offset(), l_new_block->size() - l_new_block->offset());
 
 			std::memcpy(l_new_pointer, p_pointer, l_min_size);
@@ -542,8 +542,9 @@ namespace black_cat
 #endif
 
 			return l_total_size;
-#endif
+#else
 			return 0;
+#endif
 		}
 		
 		bcSIZE bc_memory_manager::get_used_size() const noexcept
@@ -563,8 +564,9 @@ namespace black_cat
 #endif
 
 			return l_used_size;
-#endif
+#else
 			return 0;
+#endif
 		}
 		
 		bcSIZE bc_memory_manager::get_overhead_size() const noexcept
@@ -584,8 +586,9 @@ namespace black_cat
 #endif
 
 			return l_wasted_size;
-#endif
+#else
 			return 0;
+#endif
 		}
 		
 		bcSIZE bc_memory_manager::get_max_used_size() const noexcept
@@ -605,8 +608,9 @@ namespace black_cat
 #endif
 
 			return l_max_used_size;
-#endif
+#else
 			return 0;
+#endif
 		}
 
 #ifdef BC_MEMORY_LEAK_DETECTION

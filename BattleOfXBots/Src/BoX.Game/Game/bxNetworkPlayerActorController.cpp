@@ -59,7 +59,7 @@ namespace box
 		{
 			m_elapsed_since_last_damage += p_context.m_clock.m_elapsed_second;
 
-			if (m_elapsed_since_last_damage > 1.f)
+			if (m_elapsed_since_last_damage > 2.f)
 			{
 				m_health += p_context.m_clock.m_elapsed_second * m_health_recover_per_second;
 			}

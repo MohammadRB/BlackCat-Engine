@@ -267,7 +267,7 @@ namespace black_cat
 		(
 			m_local_forward,
 			7.f,
-			m_bound_box_max_side_length * 1.3f,
+			m_bound_box_max_side_length * 1.4f,
 			m_bound_box_max_side_length * 0.6f,
 			l_mass,
 			*m_animation_pipeline

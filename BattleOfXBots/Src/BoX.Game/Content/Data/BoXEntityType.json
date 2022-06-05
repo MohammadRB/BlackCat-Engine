@@ -70,7 +70,7 @@
             "fire_light_flare_intensity": 0.4,
             "fire_light_flare_mask_material": "flare2",
             "rate_of_fire": 0.20,
-            "bullet_speed": 300.0,
+            "bullet_speed": 400.0,
             "bullet_mass": 0.2
           }
         },

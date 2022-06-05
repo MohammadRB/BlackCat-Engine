@@ -89,7 +89,7 @@ namespace black_cat
 	void bc_gbuffer_initialize_pass::execute(const game::bc_render_pass_render_context& p_context)
 	{
 		game::bc_direct_light l_direct_light({0,0,0}, {0,0,0}, 0, {0,0,0}, 0);
-		game::bc_direct_wind l_direct_wind({0,0,0}, 0);
+		game::bc_direct_wind l_direct_wind({ 0,0,1 }, 0);
 
 		const auto l_light_ite = std::max_element
 		(

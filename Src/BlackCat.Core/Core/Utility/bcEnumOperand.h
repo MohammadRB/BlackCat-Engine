@@ -3,7 +3,6 @@
 #pragma once
 
 #include "Core/CorePCH.h"
-#include "Core/Container/bcString.h"
 
 namespace black_cat
 {

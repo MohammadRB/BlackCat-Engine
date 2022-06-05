@@ -6,12 +6,11 @@
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Concurrency/bcThreadLocal.h"
-#include "Core/CorePCH.h"
-#include "Core/bcExport.h"
 #include "Core/Memory/bcMemoryCRT.h"
 #include "Core/Memory/bcMemoryFixedSize.h"
 #include "Core/Memory/bcMemoryStack1.h"
 #include "Core/Memory/bcMemoryHeap.h"
+#include "Core/bcExport.h"
 
 namespace black_cat
 {
@@ -29,7 +28,7 @@ namespace black_cat
 			program,				// Alloc in program stack
 			frame,					// Alloc in frame stack
 			unknown,				// Try to alloc in fixed size allocators, otherwise alloc in crt memory
-			unknown_movable,		// Try to alloc in fixed size allocators, then in super heap that is defragmentable , otherwise in crt memory
+			unknown_movable,		// Try to alloc in fixed size allocators, then in super heap that is defragmentable, otherwise in crt memory
 		};
 
 #ifdef BC_MEMORY_LEAK_DETECTION
@@ -82,11 +81,11 @@ namespace black_cat
 
 			void* realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
 
-			void* aligned_alloc(bcSIZE p_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
+			void* aligned_alloc(bcSIZE p_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
 
 			void aligned_free(void* p_pointer) noexcept;
 			
-			void* aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
+			void* aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
 
 #ifdef BC_MEMORY_DEFRAG
 			void register_pointer_in_movable_allocators(void** p_pointer) noexcept;

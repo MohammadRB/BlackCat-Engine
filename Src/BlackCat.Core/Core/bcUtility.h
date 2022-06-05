@@ -11,7 +11,7 @@
 namespace black_cat
 {
 	template< typename T >
-	using _dereference_t = std::remove_reference_t< decltype(*std::declval< T >()) >;
+	using _dereference_t = std::remove_reference_t<decltype(*std::declval<T>())>;
 
 	template< typename TObject >
 	auto bc_null_default(const TObject& p_object, _dereference_t<TObject> p_default) -> _dereference_t<TObject>
@@ -19,7 +19,7 @@ namespace black_cat
 		return p_object == nullptr ? p_default : *p_object;
 	}
 
-	inline bool bc_is_power_of_two(bcUINT p_number)
+	inline constexpr  bool bc_is_power_of_two(bcUINT p_number)
 	{
 		return p_number && !(p_number & (p_number - 1));
 	}
@@ -35,7 +35,7 @@ namespace black_cat
 				p_intensity;
 	}
 
-	template< typename TIte >
+	template<typename TIte>
 	void bc_randomize_direction(core::bc_random& p_random, const core::bc_vector3f& p_direction, bcSIZE p_deviation, TIte p_destination, TIte p_destination_end)
 	{
 		const auto l_max_random = p_random.max();

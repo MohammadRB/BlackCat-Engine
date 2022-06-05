@@ -82,7 +82,7 @@ namespace box
 #ifdef BC_DEBUG
 		m_game_time = 60;
 #else
-		m_game_time = 300;
+		m_game_time = 600;
 #endif
 
 		m_player_spawn_event_handle = l_event_manager.register_event_listener<bx_player_spawned_event>
