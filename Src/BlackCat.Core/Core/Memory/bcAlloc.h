@@ -105,7 +105,7 @@ namespace black_cat
 #endif
 		}
 		 
-		inline void* bc_mem_aligned_alloc(bcSIZE p_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		inline void* bc_mem_aligned_alloc(bcSIZE p_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 			void* l_result;
 
@@ -132,7 +132,7 @@ namespace black_cat
 #endif
 		}
 		 
-		inline void* bc_mem_aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		inline void* bc_mem_aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
 		{
 #ifdef BC_MEMORY_ENABLE
 			return bc_memory_manager::get().aligned_realloc(p_pointer, p_new_size, p_alignment, p_alloc_type, p_file, p_line);
@@ -167,7 +167,7 @@ namespace black_cat
 			return l_return_pointer;
 		}
 
-		inline void* bc_mem_aligned_alloc_throw(bcSIZE p_size, bcSIZE p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line)
+		inline void* bc_mem_aligned_alloc_throw(bcSIZE p_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line)
 		{
 			void* l_return_pointer;
 
@@ -258,7 +258,7 @@ namespace black_cat
 		}
 
 		template<typename T, typename ...TArgs>
-		T* bc_mem_aligned_new(TArgs&&... p_args, bcUINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line)
+		T* bc_mem_aligned_new(TArgs&&... p_args, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line)
 		{
 			T* l_return_pointer = static_cast<T*>(bc_mem_aligned_alloc_throw(sizeof(T), p_alignment, p_alloc_type, p_file, p_line));
 
@@ -268,7 +268,7 @@ namespace black_cat
 		}
 
 		template<typename T>
-		T* bc_mem_aligned_new_array(bcUINT32 p_array_length, bcUINT32 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line)
+		T* bc_mem_aligned_new_array(bcUINT32 p_array_length, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line)
 		{
 			// alloc 4 byte more for array length, it will be used in last 4 byte of allocated block
 			const bcUINT32 l_size = sizeof(T)* p_array_length + sizeof(bcUINT32);
@@ -351,12 +351,12 @@ inline void* operator new[](black_cat::bcSIZE p_size, black_cat::core::bc_alloc_
 	return black_cat::core::bc_mem_alloc_throw(p_size, p_alloc_type, p_file, p_line);
 }
 
-inline void* operator new(black_cat::bcSIZE p_size, black_cat::bcSIZE p_alignment, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept(false)
+inline void* operator new(black_cat::bcSIZE p_size, black_cat::bcUINT8 p_alignment, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept(false)
 {
 	return black_cat::core::bc_mem_aligned_alloc_throw(p_size, p_alignment, p_alloc_type, p_file, p_line);
 }
 
-inline void* operator new[](black_cat::bcSIZE p_size, black_cat::bcSIZE p_alignment, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept(false)
+inline void* operator new[](black_cat::bcSIZE p_size, black_cat::bcUINT8 p_alignment, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept(false)
 {
 	return black_cat::core::bc_mem_aligned_alloc_throw(p_size, p_alignment, p_alloc_type, p_file, p_line);
 }
@@ -371,12 +371,12 @@ inline void operator delete[](void* p_pointer, black_cat::core::bc_alloc_type p_
 	black_cat::core::bc_mem_free(p_pointer);
 }
 
-inline void operator delete(void* p_pointer, black_cat::bcSIZE p_alignment, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept
+inline void operator delete(void* p_pointer, black_cat::bcUINT8 p_alignment, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept
 {
 	black_cat::core::bc_mem_aligned_free(p_pointer);
 }
 
-inline void operator delete[](void* p_pointer, black_cat::bcSIZE p_alignment, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept
+inline void operator delete[](void* p_pointer, black_cat::bcUINT8 p_alignment, black_cat::core::bc_alloc_type p_alloc_type, const black_cat::bcCHAR* p_file, black_cat::bcUINT32 p_line) noexcept
 {
 	black_cat::core::bc_mem_aligned_free(p_pointer);
 }

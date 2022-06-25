@@ -49,14 +49,14 @@ namespace black_cat
 				{
 				}
 
-				node(const value_type& p_value) noexcept(std::is_nothrow_copy_constructible<bc_container_node<value_type>>::value)
+				node(const value_type& p_value) noexcept(std::is_nothrow_copy_constructible_v<bc_container_node<value_type>>)
 					: bc_container_node<value_type>(p_value),
 					m_next(nullptr),
 					m_prev(nullptr)
 				{
 				}
 
-				node(value_type&& p_value) noexcept(std::is_nothrow_move_constructible<bc_container_node<value_type>>::value)
+				node(value_type&& p_value) noexcept(std::is_nothrow_move_constructible_v<bc_container_node<value_type>>)
 					: bc_container_node<value_type>(std::move(p_value)),
 					m_next(nullptr),
 					m_prev(nullptr)
@@ -80,7 +80,7 @@ namespace black_cat
 				}
 
 				template<typename ...TArgs>
-				node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible<bc_container_node<value_type>, TArgs...>::value)
+				node(TArgs&&... p_args) noexcept(std::is_nothrow_constructible_v<bc_container_node<value_type>, TArgs...>)
 					: bc_container_node<value_type>(std::forward<TArgs>(p_args)...),
 					m_next(nullptr),
 					m_prev(nullptr)
@@ -205,7 +205,7 @@ namespace black_cat
 					p_next = p_prev->m_next;
 				}
 				
-				for (; l_count <p_count; ++l_count)
+				for (; l_count < p_count; ++l_count)
 				{
 					node_type* l_new_node = bc_allocator_traits<internal_allocator_type>::allocate(m_allocator, 1);
 					bc_allocator_traits<internal_allocator_type>::construct(m_allocator, l_new_node, std::forward<TArgs>(p_args)...);

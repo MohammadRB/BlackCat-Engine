@@ -116,7 +116,7 @@ namespace black_cat
 			bc_event_listener_handle _register_event_listener(const bcCHAR* p_event_name, delegate_type&& p_listener);
 
 			bcUINT32 _process_events_in_queue(const platform::bc_clock::update_param& p_clock,
-				platform::bc_clock::big_clock& p_last_elapsed,
+				platform::bc_clock::big_time& p_last_total_elapsed,
 				bc_concurrent_queue1<_bc_queued_event>& p_global_queue,
 				bc_list<_bc_queued_event, bc_object_pool_allocator<_bc_queued_event>>& p_local_queue);
 
@@ -128,8 +128,8 @@ namespace black_cat
 			bc_list<_bc_queued_event, bc_object_pool_allocator<_bc_queued_event>> m_render_local_queue;
 			bc_concurrent_queue1<_bc_queued_event> m_global_queue;
 			bc_concurrent_queue1<_bc_queued_event> m_render_global_queue;
-			platform::bc_clock::big_clock m_last_elapsed;
-			platform::bc_clock::big_clock m_render_last_elapsed;
+			platform::bc_clock::big_time m_last_total_elapsed;
+			platform::bc_clock::big_time m_render_last_total_elapsed;
 		};
 
 		template<class TEvent>

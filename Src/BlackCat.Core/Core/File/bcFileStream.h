@@ -93,7 +93,7 @@ namespace black_cat
 
 		inline bc_file_stream::bc_file_stream() = default;
 
-		inline bc_file_stream::bc_file_stream(bc_file_stream && p_other) noexcept (std::is_nothrow_move_constructible< platform::bc_file >::value) = default;
+		inline bc_file_stream::bc_file_stream(bc_file_stream&& p_other) noexcept (std::is_nothrow_move_constructible_v<platform::bc_file>) = default;
 
 		inline bc_file_stream::~bc_file_stream()
 		{
@@ -103,7 +103,7 @@ namespace black_cat
 			}
 		}
 
-		inline bc_file_stream& bc_file_stream::operator=(bc_file_stream && p_other) noexcept (std::is_nothrow_move_constructible< platform::bc_file >::value) = default;
+		inline bc_file_stream& bc_file_stream::operator=(bc_file_stream&& p_other) noexcept (std::is_nothrow_move_constructible_v<platform::bc_file>) = default;
 
 		inline const platform::bc_file& bc_file_stream::get_file() const noexcept
 		{

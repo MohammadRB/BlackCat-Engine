@@ -27,9 +27,9 @@ namespace black_cat
 		void bc_base_content_loader::content_offline_file_open_succeeded(bc_content_loading_context& p_context) const
 		{
 			p_context.m_file_buffer_size = p_context.m_file.length();
-			p_context.m_file_buffer.reset(static_cast<bcBYTE*>(BC_ALLOC(p_context.m_file_buffer_size, bc_alloc_type::frame)));
+			p_context.m_file_buffer.reset(static_cast<bcBYTE*>(BC_ALLOC(static_cast<bcSIZE>(p_context.m_file_buffer_size), bc_alloc_type::frame)));
 
-			p_context.m_file.read(p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
+			p_context.m_file.read(p_context.m_file_buffer.get(), static_cast<bcSIZE>(p_context.m_file_buffer_size));
 		}
 
 		void bc_base_content_loader::content_offline_processing(bc_content_loading_context& p_context) const
@@ -41,9 +41,9 @@ namespace black_cat
 		void bc_base_content_loader::content_file_open_succeeded(bc_content_loading_context& p_context) const
 		{
 			p_context.m_file_buffer_size = p_context.m_file.length();
-			p_context.m_file_buffer.reset(static_cast<bcBYTE*>(BC_ALLOC(p_context.m_file_buffer_size, bc_alloc_type::frame)));
+			p_context.m_file_buffer.reset(static_cast<bcBYTE*>(BC_ALLOC(static_cast<bcSIZE>(p_context.m_file_buffer_size), bc_alloc_type::frame)));
 
-			p_context.m_file.read(p_context.m_file_buffer.get(), p_context.m_file_buffer_size);
+			p_context.m_file.read(p_context.m_file_buffer.get(), static_cast<bcSIZE>(p_context.m_file_buffer_size));
 		}
 
 		void bc_base_content_loader::content_file_open_failed(bc_content_loading_context& p_context) const

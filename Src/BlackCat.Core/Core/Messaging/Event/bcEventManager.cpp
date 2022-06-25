@@ -10,8 +10,8 @@ namespace black_cat
 		bc_event_manager::bc_event_manager()
 			: m_local_queue(bc_object_pool_allocator<_bc_queued_event>(m_queue_pool)),
 			m_render_local_queue(bc_object_pool_allocator<_bc_queued_event>(m_queue_pool)),
-			m_last_elapsed(0),
-			m_render_last_elapsed(0)
+			m_last_total_elapsed(0),
+			m_render_last_total_elapsed(0)
 		{
 			m_queue_pool.initialize(250, sizeof(decltype(m_local_queue)::node_type), bc_alloc_type::unknown);
 		}
@@ -27,7 +27,7 @@ namespace black_cat
 			{
 				platform::bc_shared_mutex_guard l_guard(m_handlers_mutex);
 
-				auto l_ite = m_handlers.find(l_hash);
+				const auto l_ite = m_handlers.find(l_hash);
 				BC_ASSERT(l_ite != m_handlers.end());
 
 				l_ite->second.replace_delegate(p_listener_handle.m_event_index, std::move(p_listener));
@@ -79,12 +79,12 @@ namespace black_cat
 
 		bcUINT32 bc_event_manager::process_event_queue(const platform::bc_clock::update_param& p_clock)
 		{
-			return _process_events_in_queue(p_clock, m_last_elapsed, m_global_queue, m_local_queue);
+			return _process_events_in_queue(p_clock, m_last_total_elapsed, m_global_queue, m_local_queue);
 		}
 
 		bcUINT32 bc_event_manager::process_render_event_queue(const platform::bc_clock::update_param& p_clock)
 		{
-			return _process_events_in_queue(p_clock, m_render_last_elapsed, m_render_global_queue, m_render_local_queue);
+			return _process_events_in_queue(p_clock, m_render_last_total_elapsed, m_render_global_queue, m_render_local_queue);
 		}
 
 		bc_event_listener_handle bc_event_manager::_register_event_listener(const bcCHAR* p_event_name, delegate_type&& p_listener)
@@ -103,16 +103,22 @@ namespace black_cat
 		}
 
 		bcUINT32 bc_event_manager::_process_events_in_queue(const platform::bc_clock::update_param& p_clock,
-			platform::bc_clock::big_clock& p_last_elapsed,
+			platform::bc_clock::big_time& p_last_total_elapsed,
 			bc_concurrent_queue1<_bc_queued_event>& p_global_queue,
 			bc_list<_bc_queued_event, bc_object_pool_allocator<_bc_queued_event>>& p_local_queue)
 		{
 			bcUINT32 l_processed_event_count = 0;
-			_bc_queued_event l_event(nullptr, 0);
-
-			while (p_global_queue.pop(l_event))
+			
+			while (true)
 			{
-				l_event.m_process_time += p_last_elapsed;
+				_bc_queued_event l_event(nullptr, 0);
+				if(!p_global_queue.pop(l_event))
+				{
+					break;
+				}
+
+				// Compute absolute process time
+				l_event.m_process_time = p_last_total_elapsed + l_event.m_process_time;
 
 				const auto l_lower_bound = std::lower_bound
 				(
@@ -135,7 +141,7 @@ namespace black_cat
 				++l_processed_event_count;
 			}
 
-			p_last_elapsed = p_clock.m_total_elapsed;
+			p_last_total_elapsed = p_clock.m_total_elapsed;
 
 			return l_processed_event_count;
 		}

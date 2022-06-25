@@ -1193,7 +1193,7 @@ namespace black_cat
 		}
 
 		template<typename T, typename ...TArgs>
-		bc_unique_ptr<T> bc_make_unique(bc_alloc_type p_alloc_type, bcUINT16 p_alignment, TArgs&&... p_args)
+		bc_unique_ptr<T> bc_make_unique(bc_alloc_type p_alloc_type, bcUINT8 p_alignment, TArgs&&... p_args)
 		{
 			return bc_unique_ptr<T>(BC_ALIGNED_NEW(T(std::forward<TArgs>(p_args)...), p_alignment, p_alloc_type));
 		}
@@ -1216,7 +1216,7 @@ namespace black_cat
 				throw std::bad_alloc();
 			}
 
-			T* l_pointer = reinterpret_cast<T*>(l_alloc);
+			T* l_pointer = static_cast<T*>(l_alloc);
 			meta_type* l_meta_pointer = reinterpret_cast<meta_type*>(l_pointer + 1);
 
 			new(l_pointer)T(std::forward<TArgs>(p_args)...);

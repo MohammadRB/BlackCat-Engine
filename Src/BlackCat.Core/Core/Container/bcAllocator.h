@@ -495,16 +495,16 @@ namespace black_cat
 				return l_alloc_type;
 			}
 
-			bcUINT16 get_allocator_alignment() const
+			bcUINT8 get_allocator_alignment() const
 			{
-				return static_cast<bcUINT16>((m_flags.load(platform::bc_memory_order::relaxed) & s_alignment_mask)>> 8);
+				return static_cast<bcUINT8>((m_flags.load(platform::bc_memory_order::relaxed) & s_alignment_mask) >> 8);
 			}
 
 			bcUINT16 set_allocator_alignment(bcUINT16 p_alignment)
 			{
-				const bc_alloc_type l_alloc_type = get_allocator_alloc_type();
-				const bcUINT16 l_alignment = get_allocator_alignment();
-				const bcUINT32 l_value_to_store = static_cast<bcUINT32>((p_alignment <<8) | static_cast<bcUINT32>(l_alloc_type));
+				const auto l_alloc_type = get_allocator_alloc_type();
+				const auto l_alignment = get_allocator_alignment();
+				const auto l_value_to_store = static_cast<bcUINT32>((p_alignment << 8) | static_cast<bcUINT32>(l_alloc_type));
 
 				m_flags.store(l_value_to_store, platform::bc_memory_order::relaxed);
 
@@ -516,8 +516,8 @@ namespace black_cat
 			template<typename T, typename ...TArgs>
 			bc_unique_ptr<T> allocate(TArgs&&... p_args) const
 			{
-				bc_alloc_type l_alloc_type = get_allocator_alloc_type();
-				bcUINT16 l_alignment = get_allocator_alignment();
+				const auto l_alloc_type = get_allocator_alloc_type();
+				const auto l_alignment = get_allocator_alignment();
 
 				return bc_make_unique<T>(l_alloc_type, l_alignment, std::forward<TArgs>(p_args)...);
 			}
@@ -525,8 +525,8 @@ namespace black_cat
 			// Used to allocate raw memory
 			bc_unique_ptr<bcBYTE> allocate_raw(bcUINT p_num) const
 			{
-				bc_alloc_type l_alloc_type = get_allocator_alloc_type();
-				bcUINT16 l_alignment = get_allocator_alignment();
+				const auto l_alloc_type = get_allocator_alloc_type();
+				const auto l_alignment = get_allocator_alignment();
 				void* l_memory;
 
 				if(get_allocator_alignment()> BC_MEMORY_MIN_ALIGN)
@@ -538,7 +538,7 @@ namespace black_cat
 					l_memory = BC_ALLOC(p_num, l_alloc_type);
 				}
 
-				return bc_unique_ptr<bcBYTE>(reinterpret_cast<bcBYTE*>(l_memory));
+				return bc_unique_ptr<bcBYTE>(static_cast<bcBYTE*>(l_memory));
 			}
 
 			// Destruct object and deallocate it's memory

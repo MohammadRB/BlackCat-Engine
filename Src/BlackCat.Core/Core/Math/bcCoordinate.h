@@ -10,7 +10,7 @@ namespace black_cat
 {
 	namespace core
 	{
-		const bcFLOAT g_pi = 3.14159265358979323846;
+		constexpr bcFLOAT g_pi = 3.14159265358979323846f;
 
 		inline bcFLOAT bc_to_radian(bcFLOAT p_degree)
 		{

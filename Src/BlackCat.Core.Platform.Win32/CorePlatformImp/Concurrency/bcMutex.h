@@ -2,11 +2,11 @@
 
 #pragma once
 
-#include "CorePlatform/Utility/bcNoCopy.h"
+#include <mutex>
 #include "CorePlatform/Concurrency/bcMutex.h"
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/Concurrency/bcThread.h"
-#include <mutex>
+#include "CorePlatformImp/bcUtility.h"
 
 namespace black_cat
 {
@@ -74,7 +74,7 @@ namespace black_cat
 		template<>
 		inline bc_platform_spin_mutex<bc_platform::win32>::bc_platform_spin_mutex()
 		{
-			InitializeCriticalSectionAndSpinCount(&m_pack.m_critical_section, 2000U);
+			win_call(static_cast<bool>(InitializeCriticalSectionAndSpinCount(&m_pack.m_critical_section, 2000U)));
 #ifdef BC_DEBUG
 			m_pack.m_flag.clear(bc_memory_order::relaxed);
 #endif
@@ -83,7 +83,7 @@ namespace black_cat
 		template<>
 		inline bc_platform_spin_mutex<bc_platform::win32>::bc_platform_spin_mutex(bcUINT32 p_spin_count)
 		{
-			InitializeCriticalSectionAndSpinCount(&m_pack.m_critical_section, p_spin_count);
+			win_call(static_cast<bool>(InitializeCriticalSectionAndSpinCount(&m_pack.m_critical_section, p_spin_count)));
 #ifdef BC_DEBUG
 			m_pack.m_flag.clear(bc_memory_order::relaxed);
 #endif
