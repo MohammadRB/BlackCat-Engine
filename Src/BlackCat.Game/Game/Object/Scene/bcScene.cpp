@@ -306,7 +306,7 @@ namespace black_cat
 		{
 			auto l_task = core::bc_concurrency::start_task
 			(
-				core::bc_delegate< void() >
+				core::bc_delegate<void()>
 				(
 					[=, &p_clock]()
 					{
