@@ -165,7 +165,7 @@ namespace black_cat
 
 				try
 				{
-					_call(l_thread_id, std::is_same<std::remove_reference_t<value_type>, void>::type());
+					_call(l_thread_id, typename std::is_same<std::remove_reference_t<value_type>, void>::type());
 				}
 				catch (const std::exception& p_exp)
 				{

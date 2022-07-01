@@ -10,6 +10,9 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
+		bc_platform_contact_modify_pair<g_api_physx>& bc_platform_contact_modify_pair<g_api_physx>::operator=(const bc_platform_contact_modify_pair& p_other) noexcept;
+
+		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_contact_modify_set<g_api_physx>::bc_platform_contact_modify_set() noexcept
 			: m_pack()

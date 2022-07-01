@@ -427,34 +427,6 @@ namespace black_cat
 
 		template<>
 		BC_PHYSICSIMP_DLL
-		void bc_platform_scene<g_api_physx>::lock()
-		{
-			m_pack.m_data->m_px_scene->lockWrite();
-		}
-
-		template<>
-		BC_PHYSICSIMP_DLL
-		void bc_platform_scene<g_api_physx>::lock_shared()
-		{
-			m_pack.m_data->m_px_scene->lockRead();
-		}
-
-		template<>
-		BC_PHYSICSIMP_DLL
-		void bc_platform_scene<g_api_physx>::unlock()
-		{
-			m_pack.m_data->m_px_scene->unlockWrite();
-		}
-
-		template<>
-		BC_PHYSICSIMP_DLL
-		void bc_platform_scene<g_api_physx>::unlock_shared()
-		{
-			m_pack.m_data->m_px_scene->unlockRead();
-		}
-
-		template<>
-		BC_PHYSICSIMP_DLL
 		bool bc_platform_scene<g_api_physx>::is_valid() const noexcept
 		{
 			return m_pack.m_data != nullptr;

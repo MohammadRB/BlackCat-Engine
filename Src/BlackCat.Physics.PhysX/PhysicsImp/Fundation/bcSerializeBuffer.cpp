@@ -9,6 +9,9 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
+		bc_platform_serialize_buffer< g_api_physx >& bc_platform_serialize_buffer< g_api_physx >::operator=(bc_platform_serialize_buffer&& p_other) noexcept;
+
+		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_serialize_buffer< g_api_physx >::bc_platform_serialize_buffer() noexcept
 			: m_pack()

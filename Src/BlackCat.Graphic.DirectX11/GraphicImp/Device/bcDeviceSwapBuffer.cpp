@@ -12,6 +12,11 @@ namespace black_cat
 {
 	namespace graphic
 	{
+		// provide definitions at first to prevent CLang 'explicit specialization of '' after instantiation' error
+
+		template<>
+		void bc_platform_device_swap_buffer<g_api_dx11>::resize_back_buffer(bc_device& p_device, bcUINT p_width, bcUINT p_height, bc_format p_format);
+
 		void _check_best_dxgi_fullscreen_setting(ID3D11Device* p_device, IDXGISwapChain* p_swap_chain, DXGI_MODE_DESC* p_new_desc, DXGI_MODE_DESC* p_best_desc)
 		{
 			ComPtr<IDXGIDevice> l_dxgi_device;

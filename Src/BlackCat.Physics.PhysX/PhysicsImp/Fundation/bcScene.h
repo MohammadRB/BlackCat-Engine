@@ -38,6 +38,30 @@ namespace black_cat
 			core::bc_shared_ptr< _bc_px_scene_pack_data > m_data;
 		};
 
+		template<>
+		inline void bc_platform_scene<g_api_physx>::lock()
+		{
+			m_pack.m_data->m_px_scene->lockWrite();
+		}
+
+		template<>
+		inline void bc_platform_scene<g_api_physx>::lock_shared()
+		{
+			m_pack.m_data->m_px_scene->lockRead();
+		}
+
+		template<>
+		inline void bc_platform_scene<g_api_physx>::unlock()
+		{
+			m_pack.m_data->m_px_scene->unlockWrite();
+		}
+
+		template<>
+		inline void bc_platform_scene<g_api_physx>::unlock_shared()
+		{
+			m_pack.m_data->m_px_scene->unlockRead();
+		}
+
 		inline bc_scene_lock::bc_scene_lock(bc_scene* p_scene)
 			: m_scene(p_scene)
 		{

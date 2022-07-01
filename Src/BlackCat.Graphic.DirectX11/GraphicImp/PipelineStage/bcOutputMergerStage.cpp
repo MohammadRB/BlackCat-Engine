@@ -15,27 +15,27 @@ namespace black_cat
 	{
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_output_merger_stage< g_api_dx11 >::bc_platform_output_merger_stage(platform_pack p_pack)
+		bc_platform_output_merger_stage<g_api_dx11>::bc_platform_output_merger_stage(platform_pack p_pack) noexcept
 			: m_pack(p_pack)
 		{
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_output_merger_stage< g_api_dx11 >::bc_platform_output_merger_stage(bc_platform_output_merger_stage&& p_other) noexcept
+		bc_platform_output_merger_stage<g_api_dx11>::bc_platform_output_merger_stage(bc_platform_output_merger_stage&& p_other) noexcept
 			: m_pack(std::move(p_other.m_pack))
 		{
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_output_merger_stage< g_api_dx11 >::~bc_platform_output_merger_stage()
+		bc_platform_output_merger_stage<g_api_dx11>::~bc_platform_output_merger_stage()
 		{
 		}
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		bc_platform_output_merger_stage< g_api_dx11 >& bc_platform_output_merger_stage< g_api_dx11 >::operator=(bc_platform_output_merger_stage&& p_other) noexcept
+		bc_platform_output_merger_stage<g_api_dx11>& bc_platform_output_merger_stage< g_api_dx11 >::operator=(bc_platform_output_merger_stage&& p_other) noexcept
 		{
 			m_pack = std::move(p_other.m_pack);
 
@@ -44,7 +44,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_output_merger_stage< g_api_dx11 >::apply_required_state(bc_device_pipeline& p_pipeline, bc_pixel_stage& p_pixel_stage)
+		void bc_platform_output_merger_stage<g_api_dx11>::apply_required_state(bc_device_pipeline& p_pipeline, bc_pixel_stage& p_pixel_stage)
 		{
 			ID3D11DeviceContext* l_context = p_pipeline.get_platform_pack().m_pipeline_proxy->m_context;
 
@@ -118,7 +118,7 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
-		void bc_platform_output_merger_stage< g_api_dx11 >::set_to_default_state(bc_device_pipeline& p_pipeline)
+		void bc_platform_output_merger_stage<g_api_dx11>::set_to_default_state(bc_device_pipeline& p_pipeline)
 		{
 			m_required_state.set_to_initial_state();
 		}

@@ -42,7 +42,7 @@ namespace black_cat
 			using shared_type = bc_platform_shared_future<TPlatform, T>;
 			using promise_type = bc_platform_promise<TPlatform, T>;
 
-			friend  class promise_type;
+			friend promise_type;
 
 		public:
 			bc_platform_future() noexcept;
@@ -81,7 +81,7 @@ namespace black_cat
 			using this_type = bc_platform_shared_future<TPlatform, T>;
 			using future_type = bc_platform_future<TPlatform, T>;
 
-			friend class future_type;
+			friend future_type;
 
 		public:
 			bc_platform_shared_future() noexcept;

@@ -544,7 +544,7 @@ namespace black_cat
 			JsValueRef l_js_function;
 			JsPropertyIdRef l_js_name;
 
-			const bcUINT32 l_member_function_ptr_index = bc_script_external_object<T>::set_member_function_ptr<TArgCount>(p_member_func);
+			const bcUINT32 l_member_function_ptr_index = bc_script_external_object<T>::template set_member_function_ptr<TArgCount>(p_member_func);
 
 			l_call = JsCreateFunction(&_js_object_function<T, TArgCount>, reinterpret_cast<void*>(l_member_function_ptr_index), &l_js_function);
 			l_call = JsGetPropertyIdFromName(p_name, &l_js_name);

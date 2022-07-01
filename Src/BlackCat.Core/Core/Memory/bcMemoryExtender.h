@@ -112,6 +112,9 @@ namespace black_cat
 			using cleanup_type = typename bucket_type::cleanup_type;
 			using is_movable_type = typename memory_type::is_movable_type;
 
+		protected:
+			using base_initializable = bc_initializable<bc_delegate<TMemory* ()>, bc_delegate<void(TMemory*)>>;
+
 		public:
 			bc_memory_extender();
 
@@ -162,7 +165,7 @@ namespace black_cat
 		template<typename TMemory>
 		bc_memory_extender<TMemory>::~bc_memory_extender()
 		{
-			if (is_initialized())
+			if (base_initializable::is_initialized())
 			{
 				destroy();
 			}

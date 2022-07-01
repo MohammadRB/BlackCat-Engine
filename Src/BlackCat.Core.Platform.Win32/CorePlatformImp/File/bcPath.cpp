@@ -17,6 +17,17 @@ namespace black_cat
 	{
 		using path_string = bc_platform_path_pack<g_api_win32>::path_string;
 
+		// provide definitions at first to prevent CLang 'explicit specialization of '' after instantiation' error
+
+		template<>
+		void bc_platform_path<g_api_win32>::get_filename(bcECHAR* p_buffer, bcSIZE p_buffer_size) const;
+
+		template<>
+		void bc_platform_path<g_api_win32>::combine(const bc_platform_path& p_other);
+
+		template<>
+		bool bc_platform_path<g_api_win32>::exist() const;
+
 		void _copy_current_path_to_buffer(const path_string& p_path, bcECHAR* p_buffer, bcSIZE p_buffer_size)
 		{
 			if (p_buffer_size < p_path.size() + 1)
@@ -31,28 +42,28 @@ namespace black_cat
 #endif
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		bc_platform_path<g_api_win32>::bc_platform_path(const bcECHAR* p_path)
 			: m_pack(path_string(p_path))
 		{
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		bc_platform_path<g_api_win32>::bc_platform_path(const bc_platform_path& p_other)
 			: m_pack(p_other.m_pack.m_path)
 		{
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		bc_platform_path<g_api_win32>::bc_platform_path(bc_platform_path&& p_other) noexcept
 			: m_pack(std::move(p_other.m_pack.m_path))
 		{
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		bc_platform_path<g_api_win32>& bc_platform_path<g_api_win32>::operator=(const bc_platform_path& p_other)
 		{
@@ -60,7 +71,7 @@ namespace black_cat
 			return *this;
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		bc_platform_path<g_api_win32>& bc_platform_path<g_api_win32>::operator=(bc_platform_path&& p_other) noexcept
 		{
@@ -68,20 +79,20 @@ namespace black_cat
 			return *this;
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		bc_platform_path<g_api_win32>::~bc_platform_path()
 		{	
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		bcSIZE bc_platform_path<g_api_win32>::get_length() const
 		{
 			return m_pack.m_path.size();
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::get_directory(bcECHAR* p_buffer, bcSIZE p_buffer_size) const
 		{
@@ -90,7 +101,7 @@ namespace black_cat
 			win_call(PathCchRemoveFileSpec(p_buffer, p_buffer_size));
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::set_directory(const bcECHAR* p_directory)
 		{
@@ -103,7 +114,7 @@ namespace black_cat
 			combine(bc_platform_path(l_buffer));
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::get_filename(bcECHAR* p_buffer, bcSIZE p_buffer_size) const
 		{
@@ -112,7 +123,7 @@ namespace black_cat
 			PathStripPath(p_buffer);
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::get_filename_without_extension(bcECHAR* p_buffer, bcSIZE p_buffer_size) const
 		{
@@ -122,7 +133,7 @@ namespace black_cat
 			PathRemoveExtension(p_buffer);
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::set_filename(const bcECHAR* p_filename)
 		{
@@ -136,7 +147,7 @@ namespace black_cat
 			m_pack.m_path.append(p_filename);
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::get_file_extension(bcECHAR* p_buffer, bcSIZE p_buffer_size) const
 		{
@@ -153,7 +164,7 @@ namespace black_cat
 			}
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::set_file_extension(const bcECHAR* p_file_extension)
 		{
@@ -165,7 +176,7 @@ namespace black_cat
 			m_pack.m_path.assign(l_buffer);
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::combine(const bc_platform_path& p_other)
 		{
@@ -177,21 +188,21 @@ namespace black_cat
 			m_pack.m_path.assign(l_buffer);
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::get_string(bcECHAR* p_buffer, bcSIZE p_buffer_size) const
 		{
 			_copy_current_path_to_buffer(m_pack.m_path, p_buffer, p_buffer_size);
 		}
 		
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		bool bc_platform_path<g_api_win32>::is_relative() const
 		{
 			return PathIsRelative(m_pack.m_path.c_str());
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		bool bc_platform_path<g_api_win32>::is_file() const
 		{
@@ -209,14 +220,14 @@ namespace black_cat
 			return (l_attributes & FILE_ATTRIBUTE_DIRECTORY) == 0;
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		bool bc_platform_path<g_api_win32>::exist() const
 		{
 			return PathFileExists(m_pack.m_path.c_str());
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::create_directory() const noexcept(false)
 		{
@@ -229,7 +240,7 @@ namespace black_cat
 			}
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::delete_path() const noexcept(false)
 		{
@@ -249,7 +260,7 @@ namespace black_cat
 			}
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::get_program_path(bcECHAR* p_buffer, bcSIZE p_buffer_size)
 		{
@@ -259,7 +270,7 @@ namespace black_cat
 			}
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		void bc_platform_path<g_api_win32>::get_absolute_path(const bcECHAR* p_relative_path, bcECHAR* p_buffer, bcSIZE p_buffer_size)
 		{
@@ -277,7 +288,7 @@ namespace black_cat
 #endif
 		}
 
-		template< >
+		template<>
 		BC_COREPLATFORMIMP_DLL
 		bc_path_info bc_platform_path<g_api_win32>::get_path_info()
 		{

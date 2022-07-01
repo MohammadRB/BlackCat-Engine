@@ -9,9 +9,24 @@ namespace black_cat
 {
 	namespace platform
 	{
+		// provide definitions at first to prevent CLang 'explicit specialization of '' after instantiation' error
+
+		template<>
+		void bc_platform_hybrid_mutex<bc_platform::win32>::lock(bc_lock_operation p_lock_operation);
+
+		template<>
+		bool bc_platform_hybrid_mutex<bc_platform::win32>::try_lock(bc_lock_operation p_lock_operation) noexcept;
+
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		void bc_platform_hybrid_mutex< bc_platform::win32 >::lock(bc_lock_operation p_lock_operation)
+		void bc_platform_hybrid_mutex<bc_platform::win32>::lock()
+		{
+			lock(bc_lock_operation::medium);
+		}
+
+		template<>
+		BC_COREPLATFORMIMP_DLL
+		void bc_platform_hybrid_mutex<bc_platform::win32>::lock(bc_lock_operation p_lock_operation)
 		{
 			const bcINT32 l_new_iteration_count = std::array<INT32, 3>{1000, 500, 100}[static_cast<bcINT32>(p_lock_operation)];
 			bcINT32 l_expected = 0;
@@ -65,9 +80,28 @@ namespace black_cat
 
 		template<>
 		BC_COREPLATFORMIMP_DLL
-		bool bc_platform_hybrid_mutex< bc_platform::win32 >::try_lock(bc_lock_operation p_lock_operation) noexcept
+		void bc_platform_hybrid_mutex<bc_platform::win32>::unlock() noexcept
 		{
-			const bcINT32 l_new_iteration_count = static_cast< bcINT32 >(p_lock_operation);
+#ifdef BC_DEBUG
+			// only those thread that acquired the lock can unlock it
+			BC_ASSERT(m_pack.m_thread_id.load(bc_memory_order::relaxed) == bc_thread::current_thread_id());
+			m_pack.m_thread_id.store(0U, bc_memory_order::relaxed);
+#endif
+			m_pack.m_flag.store(0, bc_memory_order::release);
+		}
+
+		template<>
+		BC_COREPLATFORMIMP_DLL
+		bool bc_platform_hybrid_mutex<bc_platform::win32>::try_lock() noexcept
+		{
+			return try_lock(bc_lock_operation::medium);
+		}
+
+		template<>
+		BC_COREPLATFORMIMP_DLL
+		bool bc_platform_hybrid_mutex<bc_platform::win32>::try_lock(bc_lock_operation p_lock_operation) noexcept
+		{
+			const bcINT32 l_new_iteration_count = static_cast<bcINT32>(p_lock_operation);
 			bcINT32 l_expected = 0;
 #ifdef BC_DEBUG
 			// prevent double lock on same thread

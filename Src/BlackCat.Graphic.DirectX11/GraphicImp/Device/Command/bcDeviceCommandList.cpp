@@ -8,6 +8,11 @@ namespace black_cat
 {
 	namespace graphic
 	{
+		// provide definitions at first to prevent CLang 'explicit specialization of '' after instantiation' error
+
+		template<>
+		bool bc_platform_device_command_list<g_api_dx11>::is_valid() const noexcept;
+
 		template<>
 		BC_GRAPHICIMP_DLL
 		bc_platform_device_command_list<g_api_dx11>::bc_platform_device_command_list() noexcept

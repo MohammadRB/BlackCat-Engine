@@ -9,6 +9,9 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
+		bc_platform_height_field_sample_array<g_api_physx>& bc_platform_height_field_sample_array<g_api_physx>::operator=(bc_platform_height_field_sample_array&& p_other) noexcept;
+
+		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_height_field_sample_array<g_api_physx>::bc_platform_height_field_sample_array()
 		{

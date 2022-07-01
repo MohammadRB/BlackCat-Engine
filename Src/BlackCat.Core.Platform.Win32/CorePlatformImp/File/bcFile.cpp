@@ -11,6 +11,17 @@ namespace black_cat
 {
 	namespace platform
 	{
+		// provide definitions at first to prevent CLang 'explicit specialization of '' after instantiation' error
+
+		template<>
+		bc_file_status bc_platform_file<g_api_win32>::get_status() const noexcept;
+
+		template<>
+		bcUINT64 bc_platform_file<g_api_win32>::set_pointer(bc_file_seek p_seek_location, bcINT64 p_offset);
+
+		template<>
+		void bc_platform_file<g_api_win32>::close();
+
 		void _check_file_is_open(HANDLE p_file, DWORD p_error_code)
 		{
 			if (p_file == INVALID_HANDLE_VALUE && p_error_code != 0)

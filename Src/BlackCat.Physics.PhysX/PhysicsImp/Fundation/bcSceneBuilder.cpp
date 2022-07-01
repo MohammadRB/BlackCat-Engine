@@ -13,6 +13,14 @@ namespace black_cat
 {
 	namespace physics
 	{
+		// provide definitions at first to prevent CLang 'explicit specialization of '' after instantiation' error
+
+		template<>
+		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::operator=(bc_platform_scene_builder&& p_other) noexcept;
+
+		template<>
+		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::gravity(const core::bc_vector3f& p_gravity);
+
 		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_scene_builder<g_api_physx>::bc_platform_scene_builder() noexcept

@@ -35,6 +35,38 @@ namespace black_cat
 {
 	namespace graphic
 	{
+		// provide definitions at first to prevent CLang 'explicit specialization of '' after instantiation' error
+
+		template<>
+		bc_platform_input_assembler_stage<g_api_dx11>::bc_platform_input_assembler_stage(platform_pack p_pack) noexcept;
+
+		template<>
+		bc_platform_stream_output_stage<g_api_dx11>::bc_platform_stream_output_stage(platform_pack p_pack) noexcept;
+
+		template<>
+		bc_platform_rasterizer_stage<g_api_dx11>::bc_platform_rasterizer_stage(platform_pack p_pack) noexcept;
+
+		template<>
+		bc_platform_output_merger_stage<g_api_dx11>::bc_platform_output_merger_stage(platform_pack p_pack) noexcept;
+
+		template<>
+		bc_platform_vertex_stage<g_api_dx11>::bc_platform_vertex_stage() noexcept;
+
+		template<>
+		bc_platform_hull_stage<g_api_dx11>::bc_platform_hull_stage() noexcept;
+
+		template<>
+		bc_platform_domain_stage<g_api_dx11>::bc_platform_domain_stage() noexcept;
+
+		template<>
+		bc_platform_geometry_stage<g_api_dx11>::bc_platform_geometry_stage() noexcept;
+
+		template<>
+		bc_platform_pixel_stage<g_api_dx11>::bc_platform_pixel_stage() noexcept;
+
+		template<>
+		bc_platform_compute_stage<g_api_dx11>::bc_platform_compute_stage() noexcept;
+
 		class _bc_device_pipeline_proxy
 		{
 		public:

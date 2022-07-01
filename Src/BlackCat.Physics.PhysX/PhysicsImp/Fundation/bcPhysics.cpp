@@ -36,6 +36,22 @@ namespace black_cat
 	namespace physics
 	{
 		template<>
+		bc_platform_physics<g_api_physx>& bc_platform_physics<g_api_physx>::operator=(bc_platform_physics&& p_other) noexcept;
+
+		template<>
+		bc_shape_ref bc_platform_physics<g_api_physx>::create_shape(const bc_shape_geometry& p_geometry,
+			const bc_material& p_material,
+			bc_shape_flag p_shape_flags,
+			bool p_is_exclusive);
+
+		template<>
+		bc_shape_ref bc_platform_physics<g_api_physx>::create_shape(const bc_shape_geometry& p_geometry,
+			const bc_material* p_materials,
+			bcUINT16 p_material_count,
+			bc_shape_flag p_shape_flags,
+			bool p_is_exclusive);
+
+		template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_physics<g_api_physx>::bc_platform_physics()
 		{

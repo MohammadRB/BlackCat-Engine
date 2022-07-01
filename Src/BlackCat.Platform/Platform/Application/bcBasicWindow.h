@@ -72,7 +72,7 @@ namespace black_cat
 		public:
 			using parameter = bc_platform_basic_window_parameter_pack<TPlatform>;
 			using platform_pack = bc_platform_basic_window_pack<TPlatform>;
-			using bc_platform_window<TPlatform>::id;
+			using id = bc_platform_window<TPlatform>::id;
 			friend class bc_platform_application<TPlatform>;
 
 		public:

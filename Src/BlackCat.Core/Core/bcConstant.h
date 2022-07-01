@@ -9,25 +9,27 @@ namespace black_cat
 {
 	namespace constant
 	{
+#define BC_STR_CONCAT(p_str1, p_str2)			p_str1 p_str2
+
 #define BC_CONST(p_type, p_name, p_value)		constexpr p_type g_##p_name = p_value;
 
 #define BC_PARAMETER(p_name, p_value)			constexpr const bcCHAR* g_param_##p_name = p_value
 
 #define BC_RENDER_PASS_VARIABLE(name)			constexpr const bcCHAR* g_rpass_##name = #name
 
-#define BC_SERVICE_NAME(p_name)					"srv_" ## #p_name
+#define BC_SERVICE_NAME(p_name)					BC_STR_CONCAT("srv_", #p_name)
 
-#define BC_CONTENT_NAME(p_name)					"cnt_" ## #p_name
+#define BC_CONTENT_NAME(p_name)					BC_STR_CONCAT("cnt_", #p_name)
 
-#define BC_COMPONENT_NAME(p_name)				"cmp_" ## #p_name
+#define BC_COMPONENT_NAME(p_name)				BC_STR_CONCAT("cmp_", #p_name)
 				
-#define BC_EVENT_NAME(p_name)					"evt_" ## #p_name
+#define BC_EVENT_NAME(p_name)					BC_STR_CONCAT("evt_", #p_name)
 
-#define BC_QUERY_NAME(p_name)					"qur_" ## #p_name
+#define BC_QUERY_NAME(p_name)					BC_STR_CONCAT("qur_", #p_name)
 
-#define BC_NETWORK_MESSAGE_NAME(p_name)			"msg_" ## #p_name
+#define BC_NETWORK_MESSAGE_NAME(p_name)			BC_STR_CONCAT("msg_", #p_name)
 		
-#define BC_RENDER_PASS_NAME(p_name)				"rps_" ## #p_name
+#define BC_RENDER_PASS_NAME(p_name)				BC_STR_CONCAT("rps_", #p_name)
 		
 #define BC_SERVICE(p_name) \
 	public: \

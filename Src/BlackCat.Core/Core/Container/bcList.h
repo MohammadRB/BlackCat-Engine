@@ -40,6 +40,7 @@ namespace black_cat
 
 			~bc_list_base() = default;
 
+		protected:
 			struct node : public bc_container_node<value_type>
 			{
 			public:
@@ -95,7 +96,6 @@ namespace black_cat
 				node_pointer m_prev;
 			};
 
-		protected:
 			bool iterator_validate(const node_type* p_node) const noexcept
 			{
 				return p_node;
@@ -411,7 +411,6 @@ namespace black_cat
 			using const_reverse_iterator = bc_reverse_iterator<const_iterator>;
 
 		protected:
-			using node_type = typename base_type::node_type;
 			using node_pointer = typename base_type::node_pointer;
 			using internal_allocator_type = typename base_type::internal_allocator_type;
 

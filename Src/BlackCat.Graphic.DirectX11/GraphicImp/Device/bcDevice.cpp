@@ -369,7 +369,7 @@ namespace black_cat
 		{
 			BC_ASSERT
 			(
-				p_view_config->get_platform_pack().m_type == bc_resource_view_type::shader |
+				p_view_config->get_platform_pack().m_type == bc_resource_view_type::shader ||
 				p_view_config->get_platform_pack().m_type == bc_resource_view_type::unordered
 			);
 

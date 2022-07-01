@@ -33,7 +33,7 @@ namespace black_cat
 		template<typename T>
 		typename bc_script_external_object<T>::meta_data* bc_platform_script_runtime<TPlatform>::_create_external_object_meta_data()
 		{
-			m_external_object_meta_data.push_back(core::bc_any(bc_script_external_object<T>::meta_data()));
+			m_external_object_meta_data.push_back(core::bc_any(typename bc_script_external_object<T>::meta_data()));
 
 			auto* l_meta_data = m_external_object_meta_data.back().as<typename bc_script_external_object<T>::meta_data>();
 

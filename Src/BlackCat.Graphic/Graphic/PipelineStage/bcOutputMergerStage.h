@@ -113,7 +113,7 @@ namespace black_cat
 			using platform_pack = bc_platform_output_merger_stage_pack<TRenderApi>;
 
 		public:
-			bc_platform_output_merger_stage(platform_pack p_pack);
+			bc_platform_output_merger_stage(platform_pack p_pack) noexcept;
 
 			bc_platform_output_merger_stage(bc_platform_output_merger_stage&&) noexcept;
 
