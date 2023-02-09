@@ -10,6 +10,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/bcExport.h"
 
 namespace black_cat
@@ -17,36 +18,6 @@ namespace black_cat
 	namespace game
 	{
 		class bc_actor_component_manager;
-		class bc_actor_component_manager_container;
-
-		template<class TComponent>
-		struct bc_actor_component_traits
-		{
-			static constexpr bool component_is_abstract()
-			{
-				return TComponent::component_is_abstract();
-			}
-
-			static constexpr bool component_require_event()
-			{
-				return TComponent::component_require_event();
-			}
-
-			static constexpr bool component_require_update()
-			{
-				return TComponent::component_require_update();
-			}
-
-			static constexpr const bcCHAR* component_name()
-			{
-				return TComponent::component_name();
-			}
-
-			static constexpr bc_actor_component_hash component_hash()
-			{
-				return static_cast<bc_actor_component_hash>(TComponent::component_hash());
-			}
-		};
 
 		template<typename TComponent>
 		struct bc_component_register
@@ -69,36 +40,6 @@ namespace black_cat
 			using apply = T<TAbstract, TDerived, TDeriveds...>;
 
 			void operator()(bc_actor_component_manager& p_component_manager) const;
-		};
-
-		struct bc_actor_component_register
-		{
-			using container_create_delegate = core::bc_delegate<core::bc_unique_ptr<bci_actor_component_container>()>;
-			using deriveds_get_delegate = core::bc_delegate<void*(const bc_actor&, bc_actor_component_manager_container&)>;
-			
-			bc_actor_component_register(bc_actor_component_hash p_hash,
-				bool p_is_abstract,
-				bool p_require_event,
-				bool p_require_update,
-				container_create_delegate p_container_delegate,
-				core::bc_vector_movable<deriveds_get_delegate> p_deriveds_delegates);
-
-			bc_actor_component_register(const bc_actor_component_register& p_other) noexcept = default;
-
-			bc_actor_component_register(bc_actor_component_register&& p_other) noexcept = default;
-
-			~bc_actor_component_register() = default;
-
-			bc_actor_component_register& operator=(const bc_actor_component_register& p_other) noexcept = default;
-
-			bc_actor_component_register& operator=(bc_actor_component_register&& p_other) noexcept = default;
-
-			bc_actor_component_hash m_hash;
-			bool m_is_abstract;
-			bool m_require_event;
-			bool m_require_update;
-			container_create_delegate m_container_delegate;
-			core::bc_vector_movable<deriveds_get_delegate> m_deriveds_delegates;
 		};
 
 		class BC_GAME_DLL bc_actor_component_manager
@@ -144,21 +85,6 @@ namespace black_cat
 		void bc_abstract_component_register<TAbstract, TDerived, TDeriveds...>::operator()(bc_actor_component_manager& p_component_manager) const
 		{
 			p_component_manager._register_abstract_component_type<TAbstract, TDerived, TDeriveds...>();
-		}
-				
-		inline bc_actor_component_register::bc_actor_component_register(bc_actor_component_hash p_hash,
-			bool p_is_abstract,
-			bool p_require_event,
-			bool p_require_update,
-			container_create_delegate p_container_delegate,
-			core::bc_vector_movable<deriveds_get_delegate> p_deriveds_delegates)
-			: m_hash(p_hash),
-			m_is_abstract(p_is_abstract),
-			m_require_event(p_require_event),
-			m_require_update(p_require_update),
-			m_container_delegate(std::move(p_container_delegate)),
-			m_deriveds_delegates(std::move(p_deriveds_delegates))
-		{
 		}
 		
 		template<class TComponent>
@@ -283,11 +209,7 @@ namespace black_cat
 								(
 									static_cast<TComponent*>
 									(
-										p_container._actor_get_component<TDeriveds>
-										(
-											p_actor,
-											std::integral_constant<bool, bc_actor_component_traits<TDeriveds>::component_is_abstract()>()
-										)
+										p_container.actor_get_component<TDeriveds>(p_actor)
 									)
 								);
 							}

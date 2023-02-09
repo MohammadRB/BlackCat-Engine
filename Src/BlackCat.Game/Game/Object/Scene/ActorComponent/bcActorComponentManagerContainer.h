@@ -10,7 +10,6 @@
 #include "Core/Utility/bcObjectStackPool.h"
 #include "Game/Object/Scene/ActorComponent/bcActorId.h"
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.h"
 #include "Game/bcExport.h"
 
@@ -24,6 +23,66 @@ namespace black_cat
 	namespace game
 	{
 		class bc_game_system;
+		class bc_actor_component_manager;
+
+		template<class TComponent>
+		struct bc_actor_component_traits
+		{
+			static constexpr bool component_is_abstract()
+			{
+				return TComponent::component_is_abstract();
+			}
+
+			static constexpr bool component_require_event()
+			{
+				return TComponent::component_require_event();
+			}
+
+			static constexpr bool component_require_update()
+			{
+				return TComponent::component_require_update();
+			}
+
+			static constexpr const bcCHAR* component_name()
+			{
+				return TComponent::component_name();
+			}
+
+			static constexpr bc_actor_component_hash component_hash()
+			{
+				return static_cast<bc_actor_component_hash>(TComponent::component_hash());
+			}
+		};
+
+		struct bc_actor_component_register
+		{
+			using container_create_delegate = core::bc_delegate<core::bc_unique_ptr<bci_actor_component_container>()>;
+			using deriveds_get_delegate = core::bc_delegate<void* (const bc_actor&, bc_actor_component_manager_container&)>;
+
+			bc_actor_component_register(bc_actor_component_hash p_hash,
+				bool p_is_abstract,
+				bool p_require_event,
+				bool p_require_update,
+				container_create_delegate p_container_delegate,
+				core::bc_vector_movable<deriveds_get_delegate> p_deriveds_delegates);
+
+			bc_actor_component_register(const bc_actor_component_register& p_other) noexcept = default;
+
+			bc_actor_component_register(bc_actor_component_register&& p_other) noexcept = default;
+
+			~bc_actor_component_register() = default;
+
+			bc_actor_component_register& operator=(const bc_actor_component_register& p_other) noexcept = default;
+
+			bc_actor_component_register& operator=(bc_actor_component_register&& p_other) noexcept = default;
+
+			bc_actor_component_hash m_hash;
+			bool m_is_abstract;
+			bool m_require_event;
+			bool m_require_update;
+			container_create_delegate m_container_delegate;
+			core::bc_vector_movable<deriveds_get_delegate> m_deriveds_delegates;
+		};
 
 		struct _bc_actor_entry
 		{
@@ -64,7 +123,6 @@ namespace black_cat
 
 		class BC_GAME_DLL bc_actor_component_manager_container
 		{
-			friend class bc_actor_component_manager;
 			using actor_container_type = core::bc_vector<_bc_actor_entry>;
 			using double_update_actor_container_type = core::bc_concurrent_queue1<bc_actor>;
 			using component_container_type = core::bc_unordered_map_program<bc_actor_component_hash, _bc_actor_component_entry>;
@@ -164,6 +222,21 @@ namespace black_cat
 			bcUINT32 m_write_event_pool;
 			core::bc_concurrent_object_stack_pool m_event_pools[2];
 		};
+
+		inline bc_actor_component_register::bc_actor_component_register(bc_actor_component_hash p_hash,
+			bool p_is_abstract,
+			bool p_require_event,
+			bool p_require_update,
+			container_create_delegate p_container_delegate,
+			core::bc_vector_movable<deriveds_get_delegate> p_deriveds_delegates)
+			: m_hash(p_hash),
+			m_is_abstract(p_is_abstract),
+			m_require_event(p_require_event),
+			m_require_update(p_require_update),
+			m_container_delegate(std::move(p_container_delegate)),
+			m_deriveds_delegates(std::move(p_deriveds_delegates))
+		{
+		}
 
 		inline _bc_actor_entry::_bc_actor_entry(bc_actor_id p_id, bc_actor_id p_parent_id)
 			: m_actor_id(p_id),

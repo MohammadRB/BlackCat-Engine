@@ -5,6 +5,7 @@
 #include "Core/Concurrency/bcThreadManager.h"
 #include "Core/Concurrency/bcConcurrency.h"
 #include "Core/Utility/bcLogger.h"
+#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentContainer.hpp"
 
