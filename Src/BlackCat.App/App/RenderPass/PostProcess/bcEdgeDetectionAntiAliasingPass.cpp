@@ -124,16 +124,6 @@ namespace black_cat
 
 	void bc_edge_detection_anti_aliasing_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
-		if
-		(
-			p_context.m_old_parameters.m_width == p_context.m_new_parameters.m_width
-			&&
-			p_context.m_old_parameters.m_height == p_context.m_new_parameters.m_height
-		)
-		{
-			return;
-		}
-
 		const auto& l_depth_stencil_view = get_shared_resource_throw<graphic::bc_resource_view>(constant::g_rpass_depth_stencil_read_view);
 		const auto& l_normal_map_view = get_shared_resource_throw<graphic::bc_resource_view>(constant::g_rpass_render_target_read_view_2);
 		const auto& l_diffuse_map_view = get_shared_resource_throw<graphic::bc_resource_view>(m_input_texture_view);

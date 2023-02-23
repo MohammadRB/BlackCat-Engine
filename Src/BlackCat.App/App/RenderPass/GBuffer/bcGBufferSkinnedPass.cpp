@@ -81,15 +81,6 @@ namespace black_cat
 
 	void bc_gbuffer_skinned_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
-		if
-		(
-			p_context.m_old_parameters.m_width == p_context.m_new_parameters.m_width &&
-			p_context.m_old_parameters.m_height == p_context.m_new_parameters.m_height
-		)
-		{
-			return;
-		}
-
 		const auto* l_depth_stencil = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
 		const auto* l_diffuse_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1);
 		const auto* l_normal_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2);

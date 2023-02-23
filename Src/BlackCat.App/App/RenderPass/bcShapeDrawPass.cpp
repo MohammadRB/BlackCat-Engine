@@ -227,49 +227,35 @@ namespace black_cat
 
 	void bc_shape_draw_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
 	{
-		if
-		(
-			p_context.m_old_parameters.m_width != p_context.m_new_parameters.m_width ||
-			p_context.m_old_parameters.m_height != p_context.m_new_parameters.m_height
-		)
-		{
-			m_render_pass_state.reset();
-		}
+		m_render_pass_state.reset();
 	}
 
 	void bc_shape_draw_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
-		if
-		(
-			p_context.m_old_parameters.m_width != p_context.m_new_parameters.m_width ||
-			p_context.m_old_parameters.m_height != p_context.m_new_parameters.m_height
-		)
-		{
-			const auto l_back_buffer_texture = p_context.m_device_swap_buffer.get_back_buffer_texture();
+		const auto l_back_buffer_texture = p_context.m_device_swap_buffer.get_back_buffer_texture();
 
-			const auto l_depth_stencil_view = *get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
-			const auto l_render_target_view = *get_shared_resource<graphic::bc_render_target_view>(m_render_target_view_variable);
-			const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
+		const auto l_depth_stencil_view = *get_shared_resource<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
+		const auto l_render_target_view = *get_shared_resource<graphic::bc_render_target_view>(m_render_target_view_variable);
+		const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
 			
-			m_render_pass_state = p_context.m_render_system.create_render_pass_state
-			(
-				m_device_pipeline_state.get(),
-				l_viewport,
-				{
-					graphic::bc_render_target_view_parameter(l_render_target_view)
-				},
-				l_depth_stencil_view,
-				{
-				},
-				{
-				},
-				{
-				},
-				{
-					p_context.m_render_system.get_global_cbuffer()
-				}
-			);
-		}
+		m_render_pass_state = p_context.m_render_system.create_render_pass_state
+		(
+			m_device_pipeline_state.get(),
+			l_viewport,
+			{
+				graphic::bc_render_target_view_parameter(l_render_target_view)
+			},
+			l_depth_stencil_view,
+			{
+			},
+			{
+			},
+			{
+			},
+			{
+				p_context.m_render_system.get_global_cbuffer()
+			}
+		);
 	}
 
 	void bc_shape_draw_pass::config_changed(const game::bc_render_pass_config_change_context& p_context)

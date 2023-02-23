@@ -168,7 +168,7 @@ namespace black_cat
 
 		void bc_render_system::render_swap_frame(const swap_context& p_swap_context)
 		{
-			if(m_device_reset_event.has_value())
+			if (m_device_reset_event.has_value())
 			{
 				m_render_pass_manager->before_reset(bc_render_pass_reset_context
 				(
@@ -181,7 +181,14 @@ namespace black_cat
 
 				if (m_device_swap_buffer->is_valid())
 				{
-					m_device_swap_buffer->resize_back_buffer(m_device, m_device_reset_event->m_new_parameters.m_width, m_device_reset_event->m_new_parameters.m_height);
+					if
+					(
+						m_device_reset_event->m_old_parameters.m_width != m_device_reset_event->m_new_parameters.m_width ||
+						m_device_reset_event->m_old_parameters.m_height != m_device_reset_event->m_new_parameters.m_height
+					)
+					{
+						m_device_swap_buffer->resize_back_buffer(m_device, m_device_reset_event->m_new_parameters.m_width, m_device_reset_event->m_new_parameters.m_height);
+					}
 				}
 
 				m_render_pass_manager->after_reset(bc_render_pass_reset_context
@@ -196,7 +203,7 @@ namespace black_cat
 				m_device_reset_event.reset();
 			}
 
-			if(m_config_change_event.has_value())
+			if (m_config_change_event.has_value())
 			{
 				const auto& l_global_config = m_config_change_event->get_config();
 				m_render_pass_manager->config_changed(bc_render_pass_config_change_context
@@ -527,9 +534,7 @@ namespace black_cat
 		
 		void bc_render_system::_event_handler(core::bci_event& p_event)
 		{
-			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
-
-			if(const auto* l_window_resize_event = core::bci_message::as<platform::bc_app_event_window_resize>(p_event))
+			if (const auto* l_window_resize_event = core::bci_message::as<platform::bc_app_event_window_resize>(p_event))
 			{
 				if(!m_device_swap_buffer->is_valid() || !l_window_resize_event->end_resizing())
 				{
@@ -538,7 +543,7 @@ namespace black_cat
 				
 				if
 				(
-					// If nothing has change do not continue
+					// If nothing has changed do not continue
 					l_window_resize_event->width() == m_device_swap_buffer->get_back_buffer_width() &&
 					l_window_resize_event->height() == m_device_swap_buffer->get_back_buffer_height()
 				)
@@ -548,14 +553,14 @@ namespace black_cat
 
 				const auto l_device_back_buffer = m_device_swap_buffer->get_back_buffer_texture();
 
-				graphic::bc_device_parameters l_old_parameters
+				const graphic::bc_device_parameters l_old_parameters
 				(
 					l_device_back_buffer.get_width(),
 					l_device_back_buffer.get_height(),
 					l_device_back_buffer.get_format(),
 					l_device_back_buffer.get_sample_count()
 				);
-				graphic::bc_device_parameters l_new_parameters
+				const graphic::bc_device_parameters l_new_parameters
 				(
 					l_window_resize_event->width(),
 					l_window_resize_event->height(),
@@ -564,25 +569,25 @@ namespace black_cat
 				);
 
 				// Put device reset event in render event queue
+				auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 				l_event_manager->queue_event(graphic::bc_app_event_device_reset
 				(
 					m_device,
 					m_device_swap_buffer.get(),
 					l_old_parameters,
-					l_new_parameters,
-					true
+					l_new_parameters
 				), 0);
 
 				return;
 			}
 
-			if(const auto* l_device_reset_event = core::bci_message::as<graphic::bc_app_event_device_reset>(p_event))
+			if (const auto* l_device_reset_event = core::bci_message::as<graphic::bc_app_event_device_reset>(p_event))
 			{
 				m_device_reset_event.reset(*l_device_reset_event);
 				return;
 			}
 			
-			if(const auto* l_config_change_event = core::bci_message::as<bc_event_global_config_changed>(p_event))
+			if (const auto* l_config_change_event = core::bci_message::as<bc_event_global_config_changed>(p_event))
 			{
 				m_config_change_event.reset(*l_config_change_event);
 				return;

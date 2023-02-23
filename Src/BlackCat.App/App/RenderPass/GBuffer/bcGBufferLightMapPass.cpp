@@ -5,6 +5,8 @@
 #include "Core/Math/bcCoordinate.h"
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Utility/bcEnumOperand.h"
+#include "Core/Utility/bcParameterPack.h"
+#include "Core/bcUtility.h"
 #include "GraphicImp/Resource/View/bcResourceView.h"
 #include "GraphicImp/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
@@ -13,6 +15,7 @@
 #include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/System/Input/bcCameraFrustum.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 #include "App/RenderPass/ShadowMap/bcCascadedShadowMapBufferContainer.h"
 #include "App/RenderPass/GBuffer/bcGBufferLightMapPass.h"
 #include "App/bcConstant.h"
@@ -79,7 +82,8 @@ namespace black_cat
 		: m_csm_buffers_container_share_slot(p_csm_buffers_container),
 		m_output_texture_share_slot(p_output_texture),
 		m_output_texture_read_view_share_slot(p_output_texture_read_view),
-		m_output_texture_render_view_share_slot(p_output_texture_render_view)
+		m_output_texture_render_view_share_slot(p_output_texture_render_view),
+		m_hdr_enabled(false)
 	{
 	}
 
@@ -87,10 +91,9 @@ namespace black_cat
 	{
 		auto& l_device = p_render_system.get_device();
 		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
+		auto l_resource_configure = graphic::bc_graphic_resource_builder();
 
 		m_device_compute_state = p_render_system.create_device_compute_state("gbuffer_light_map");
-
-		auto l_resource_configure = graphic::bc_graphic_resource_builder();
 
 		auto l_direct_lights_buffer_config = l_resource_configure
 			.as_resource()
@@ -410,16 +413,6 @@ namespace black_cat
 
 	void bc_gbuffer_light_map_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
-		if
-		(
-			p_context.m_old_parameters.m_width == p_context.m_new_parameters.m_width
-			&& 
-			p_context.m_old_parameters.m_height == p_context.m_new_parameters.m_height
-		)
-		{
-			return;
-		}
-		
 		auto* l_depth_stencil = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
 		auto* l_diffuse_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1);
 		auto* l_normal_map = get_shared_resource<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2);
@@ -484,6 +477,7 @@ namespace black_cat
 		m_linear_sampler = p_context.m_device.create_sampler_state(l_linear_sampler_config);
 		m_pcf_sampler = p_context.m_device.create_sampler_state(l_pcf_sampler_config);
 
+		auto l_output_texture_format = m_hdr_enabled ? graphic::bc_format::R16G16B16A16_FLOAT : graphic::bc_format::R8G8B8A8_UNORM;
 		auto l_output_texture_config = l_resource_configure
 			.as_resource()
 			.as_texture2d
@@ -492,7 +486,7 @@ namespace black_cat
 				p_context.m_new_parameters.m_height,
 				false,
 				1,
-				graphic::bc_format::R8G8B8A8_UNORM,
+				l_output_texture_format,
 				graphic::bc_resource_usage::gpu_rw,
 				core::bc_enum::mask_or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::render_target, graphic::bc_resource_view_type::unordered }))
 			.as_normal_texture();
@@ -563,6 +557,28 @@ namespace black_cat
 		share_resource(m_output_texture_share_slot, m_output_texture.get());
 		share_resource(m_output_texture_read_view_share_slot, m_output_texture_read_view.get());
 		share_resource(m_output_texture_render_view_share_slot, m_output_texture_render_view.get());
+	}
+
+	void bc_gbuffer_light_map_pass::config_changed(const game::bc_render_pass_config_change_context& p_context)
+	{
+		core::bc_any l_hdr_enabled_value;
+
+		p_context.m_global_config.read_config_key("render_hdr_enabled", l_hdr_enabled_value);
+
+		const auto l_hrd_enabled = bc_null_default(l_hdr_enabled_value.as<bool>(), m_hdr_enabled);
+
+		if (l_hrd_enabled != m_hdr_enabled)
+		{
+			request_device_reset(graphic::bc_device_parameters
+			(
+				p_context.m_device_swap_buffer.get_back_buffer_width(),
+				p_context.m_device_swap_buffer.get_back_buffer_height(),
+				p_context.m_device_swap_buffer.get_back_buffer_format(),
+				p_context.m_device_swap_buffer.get_back_buffer_texture().get_sample_count()
+			));
+		}
+
+		m_hdr_enabled = l_hrd_enabled;
 	}
 
 	void bc_gbuffer_light_map_pass::destroy(game::bc_render_system& p_render_system)

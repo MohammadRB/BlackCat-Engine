@@ -6,6 +6,8 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcString.h"
 #include "Graphic/bcEvent.h"
+#include "GraphicImp/Device/bcDevice.h"
+#include "GraphicImp/Device/bcDeviceSwapBuffer.h"
 #include "GraphicImp/Resource/Texture/bcTextureConfig.h"
 #include "Game/System/Render/Pass/bcRenderPassResourceManager.h"
 #include "Game/System/Render/Pass/bcIntermediateTextureManager.h"
@@ -133,7 +135,7 @@ namespace black_cat
 		/**
 		 * \brief Represent a whole rendering pass that do all tasks that required to render a scene with a specified configuration 
 		 */
-		class bci_render_pass : public platform::bc_no_copy
+		class BC_GAME_DLL bci_render_pass : public platform::bc_no_copy
 		{
 			friend class bc_render_pass_manager;
 			
@@ -190,7 +192,7 @@ namespace black_cat
 
 			/**
 			 * \brief This function will be called when global config file changes and render pass parameters may need update
-			 * \param p_context 
+			 * \param p_context
 			 */
 			virtual void config_changed(const bc_render_pass_config_change_context& p_context);
 
@@ -212,18 +214,27 @@ namespace black_cat
 			template<typename T>
 			T& get_shared_resource_throw(bc_render_pass_variable_t p_variable) const;
 
+			void request_device_reset(const graphic::bc_device_parameters& p_new_parameters);
+
 			bc_intermediate_texture_guard get_intermediate_texture(const graphic::bc_texture_config& p_texture_config);
 
 		private:
-			void _set_private_fields(bc_render_pass_resource_manager& p_resource_manager, bc_intermediate_texture_manager& p_texture_manager);
-			
+			void _set_private_fields(graphic::bc_device& p_device,
+				graphic::bc_device_swap_buffer& p_device_swap_buffer, 
+				bc_render_pass_resource_manager& p_resource_manager, 
+				bc_intermediate_texture_manager& p_texture_manager);
+
+			graphic::bc_device* m_device;
+			graphic::bc_device_swap_buffer* m_device_swap_buffer;
 			bc_render_pass_resource_manager* m_resource_manager;
 			bc_intermediate_texture_manager* m_texture_manager;
 		};
 
 		inline bci_render_pass::bci_render_pass() noexcept
-			: m_resource_manager(nullptr),
-			m_texture_manager(nullptr)
+			: m_device(nullptr),
+			  m_device_swap_buffer(nullptr),
+			  m_resource_manager(nullptr),
+			  m_texture_manager(nullptr)
 		{
 		}
 
@@ -263,14 +274,19 @@ namespace black_cat
 
 			throw bc_key_not_found_exception("No shared resource were found in render passes with the given key");
 		}
-
+		
 		inline bc_intermediate_texture_guard bci_render_pass::get_intermediate_texture(const graphic::bc_texture_config& p_texture_config)
 		{
 			return bc_intermediate_texture_guard(*m_texture_manager, p_texture_config);
 		}
 
-		inline void bci_render_pass::_set_private_fields(bc_render_pass_resource_manager& p_resource_manager, bc_intermediate_texture_manager& p_texture_manager)
+		inline void bci_render_pass::_set_private_fields(graphic::bc_device& p_device,
+			graphic::bc_device_swap_buffer& p_device_swap_buffer, 
+			bc_render_pass_resource_manager& p_resource_manager, 
+			bc_intermediate_texture_manager& p_texture_manager)
 		{
+			m_device = &p_device;
+			m_device_swap_buffer = &p_device_swap_buffer;
 			m_resource_manager = &p_resource_manager;
 			m_texture_manager = &p_texture_manager;
 		}

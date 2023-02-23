@@ -4,7 +4,7 @@
       "name": "red",
       "diffuse_color": [ 0.8, 0.3, 0.2, 1.0 ],
       "specular_intensity": 0.8,
-      "specular_power": 0.3,
+      "specular_power": 6.0,
       "diffuse_map": null,
       "normal_map": null,
       "specular_map": null
@@ -13,7 +13,7 @@
       "name": "blue",
       "diffuse_color": [ 0.2, 0.3, 0.8, 1.0 ],
       "specular_intensity": 0.8,
-      "specular_power": 0.3,
+      "specular_power": 6.0,
       "diffuse_map": null,
       "normal_map": null,
       "specular_map": null
@@ -22,7 +22,7 @@
       "name": "green",
       "diffuse_color": [ 0.2, 0.8, 0.3, 1.0 ],
       "specular_intensity": 0.8,
-      "specular_power": 0.3,
+      "specular_power": 6.0,
       "diffuse_map": null,
       "normal_map": null,
       "specular_map": null

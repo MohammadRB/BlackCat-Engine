@@ -70,6 +70,7 @@ namespace black_cat
 			: m_content_stream_manager(&p_content_stream),
 			m_render_system(&p_render_system),
 			m_physics_system(&p_physics_system),
+			m_id_counter(0),
 			m_default_texture_config(),
 			m_default_normal_map()
 		{

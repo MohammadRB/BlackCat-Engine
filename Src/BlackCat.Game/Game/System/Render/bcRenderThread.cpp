@@ -566,6 +566,11 @@ namespace black_cat
 			m_pipeline->resolve_subresource(p_dest_resource, p_dest_subresource, p_src_resource, p_src_subresource, p_format);
 		}
 
+		void bc_render_thread::generate_mips(graphic::bc_resource_view& p_resource)
+		{
+			m_pipeline->generate_mips(p_resource);
+		}
+
 		void bc_render_thread::start(graphic::bc_device_command_list p_command_list) noexcept
 		{
 			BC_ASSERT(!m_command_list.is_valid());

@@ -242,11 +242,11 @@ namespace black_cat
 			l_entry.m_name = p_name;
 			l_entry.m_is_concurrent = p_is_concurrent;
 			l_entry.m_pass = std::move(p_pass);
-			l_entry.m_pass->_set_private_fields(m_resource_manager, m_texture_manager);
+			l_entry.m_pass->_set_private_fields(m_render_system->get_device(), m_render_system->get_device_swap_buffer(), m_resource_manager, m_texture_manager);
 			l_entry.m_pass->initialize_resources(*m_render_system);
 			l_entry.m_device_query = _bc_render_pass_entry::device_query({ m_render_system->get_device().create_timestamp_query() });
 
-			if(p_before == nullptr)
+			if (p_before == nullptr)
 			{
 				m_passes.push_back(std::move(l_entry));
 			}

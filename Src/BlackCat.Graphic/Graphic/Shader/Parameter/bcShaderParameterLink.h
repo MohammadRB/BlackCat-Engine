@@ -150,14 +150,15 @@ namespace black_cat
 
 		inline bc_sampler_state bc_shader_parameter_link::get_as_sampler() const noexcept
 		{
-			if(!is_valid())
+			if (!is_valid())
 			{
-				return bc_sampler_state();
+				return {};
 			}
 
 			BC_ASSERT(m_data->m_parameter_type == bc_shader_parameter_type::sampler);
 
-			return std::get<bc_sampler_state>(m_data->m_parameter_holder);
+			auto* l_sampler = std::get_if<bc_sampler_state>(&m_data->m_parameter_holder);
+			return l_sampler ? *l_sampler : bc_sampler_state();
 		}
 
 		inline void bc_shader_parameter_link::set_as_cbuffer(bc_buffer p_buffer) noexcept
@@ -169,12 +170,13 @@ namespace black_cat
 		{
 			if (!is_valid())
 			{
-				return bc_buffer();
+				return {};
 			}
 
 			BC_ASSERT(m_data->m_parameter_type == bc_shader_parameter_type::cbuffer);
 
-			return std::get<bc_buffer>(m_data->m_parameter_holder);
+			auto* l_cbuffer = std::get_if<bc_buffer>(&m_data->m_parameter_holder);
+			return l_cbuffer ? *l_cbuffer : bc_buffer();
 		}
 
 		inline void bc_shader_parameter_link::set_as_resource_view(bc_resource_view p_view) noexcept
@@ -186,12 +188,13 @@ namespace black_cat
 		{
 			if (!is_valid())
 			{
-				return bc_resource_view();
+				return {};
 			}
 
 			BC_ASSERT(m_data->m_parameter_type == bc_shader_parameter_type::shader_view || m_data->m_parameter_type == bc_shader_parameter_type::unordered_view);
 
-			return std::get<bc_resource_view>(m_data->m_parameter_holder);
+			auto* l_view = std::get_if<bc_resource_view>(&m_data->m_parameter_holder);
+			return l_view ? *l_view : bc_resource_view();
 		}
 
 		inline void bc_shader_parameter_link::set_as_render_target_view(bc_render_target_view p_view) noexcept
@@ -203,12 +206,13 @@ namespace black_cat
 		{
 			if (!is_valid())
 			{
-				return bc_render_target_view();
+				return {};
 			}
 
 			BC_ASSERT(m_data->m_parameter_type == bc_shader_parameter_type::render_target_view);
 
-			return std::get<bc_render_target_view>(m_data->m_parameter_holder);
+			auto* l_view = std::get_if<bc_render_target_view>(&m_data->m_parameter_holder);
+			return l_view ? *l_view : bc_render_target_view();
 		}
 
 		inline bool bc_shader_parameter_link::is_valid() const noexcept

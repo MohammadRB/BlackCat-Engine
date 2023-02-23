@@ -121,10 +121,24 @@ namespace black_cat
 		public:
 			explicit bc_texture_view_builder(bc_format p_format) noexcept;
 
+			/**
+			 * \brief 
+			 * \param p_most_detailed_mip Index of the most detailed mipmap level to use. This number is between 0 and MipLevels.
+			 * \param p_mip_levels The maximum number of mipmap levels for the view of the texture. Set to -1 to indicate all the mipmap levels.
+			 * \return 
+			 */
 			bc_texture_view_builder_modifier as_tex2d_shader_view(bcUINT p_most_detailed_mip, bcUINT p_mip_levels) noexcept;
 
 			bc_texture_view_builder_modifier as_tex2dms_shader_view() noexcept;
 
+			/**
+			 * \brief 
+			 * \param p_most_detailed_mip Index of the most detailed mipmap level to use. This number is between 0 and MipLevels.
+			 * \param p_mip_levels The maximum number of mipmap levels for the view of the texture. Set to -1 to indicate all the mipmap levels.
+			 * \param p_first_array_slice The index of the first texture to use in an array of textures.
+			 * \param p_array_size Number of textures in the array.
+			 * \return 
+			 */
 			bc_texture_view_builder_modifier as_tex2d_array_shader_view(bcUINT p_most_detailed_mip,
 				bcUINT p_mip_levels,
 				bcUINT p_first_array_slice,
@@ -136,6 +150,12 @@ namespace black_cat
 
 			bc_texture_view_builder_modifier as_tex2d_array_unordered_shader_view(bcUINT p_mip_slice, bcUINT p_first_array_slice, bcUINT p_array_size) noexcept;
 
+			/**
+			 * \brief 
+			 * \param p_most_detailed_mip Index of the most detailed mipmap level to use. This number is between 0 and MipLevels.
+			 * \param p_mip_levels The maximum number of mipmap levels for the view of the texture. Set to -1 to indicate all the mipmap levels.
+			 * \return 
+			 */
 			bc_resource_view_config as_texcube_shader_view(bcUINT p_most_detailed_mip, bcUINT p_mip_levels) noexcept;
 
 			bc_render_target_view_config as_tex2d_render_target_view(bcUINT p_mip_slice) noexcept;

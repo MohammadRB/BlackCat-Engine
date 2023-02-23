@@ -86,7 +86,7 @@ bc_ps_output gbuffer_ps(bc_vs_output p_input)
 
     l_output.m_diffuse = float4(l_diffuse_map.xyz, 1);
     l_output.m_normal = float4(l_final_normal, 1);
-	l_output.m_specular = float4(l_specular_map.x, g_specular_power, 0, 1);
+	l_output.m_specular = float4(l_specular_map.x, g_specular_power / g_specular_power_scale, 0, 1);
 
 	return l_output;
 }

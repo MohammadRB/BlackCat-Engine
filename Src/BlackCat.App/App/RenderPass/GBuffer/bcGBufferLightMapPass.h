@@ -37,6 +37,8 @@ namespace black_cat
 
 		void after_reset(const game::bc_render_pass_reset_context& p_context) override;
 
+		void config_changed(const game::bc_render_pass_config_change_context& p_context) override;
+
 		void destroy(game::bc_render_system& p_render_system) override;
 		
 	private:
@@ -51,6 +53,7 @@ namespace black_cat
 		game::bc_render_pass_variable_t m_output_texture_share_slot;
 		game::bc_render_pass_variable_t m_output_texture_read_view_share_slot;
 		game::bc_render_pass_variable_t m_output_texture_render_view_share_slot;
+		bool m_hdr_enabled;
 
 		graphic::bc_resource_view_ref m_depth_stencil_view;
 		graphic::bc_resource_view_ref m_diffuse_map_view;

@@ -43,7 +43,7 @@ bc_vs_output vs(bc_vs_input p_input)
 
 void ps(bc_vs_output p_input)
 {
-    float l_alpha_map = g_tex2d_diffuse.Sample(g_sam_sampler, p_input.m_texcoord).w;
+	const float l_alpha_map = g_tex2d_diffuse.Sample(g_sam_sampler, p_input.m_texcoord).w;
     
     clip(l_alpha_map - 0.4);
 }

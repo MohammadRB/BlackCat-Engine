@@ -15,8 +15,7 @@ namespace black_cat
 		class bc_render_pass_resource_manager
 		{
 		private:
-			using resource_variable_hash = std::hash<bc_render_pass_variable_t>;
-			using map_type = core::bc_unordered_map<resource_variable_hash::result_type, core::bc_any>;
+			using map_type = core::bc_unordered_map<bc_render_pass_variable_t, core::bc_any>;
 
 		public:
 			bc_render_pass_resource_manager() = default;
@@ -30,14 +29,12 @@ namespace black_cat
 			template<typename T>
 			void share_resource(bc_render_pass_variable_t p_variable, T&& p_value)
 			{
-				const auto l_hash = resource_variable_hash()(p_variable);
-				m_variables[l_hash] = core::bc_any(std::forward<T>(p_value));
+				m_variables[p_variable] = core::bc_any(std::forward<T>(p_value));
 			}
 
 			void unshare_resource(bc_render_pass_variable_t p_variable)
 			{
-				const auto l_hash = resource_variable_hash()(p_variable);
-				m_variables.erase(l_hash);
+				m_variables.erase(p_variable);
 			}
 
 			/**
@@ -49,8 +46,7 @@ namespace black_cat
 			template<typename T>
 			T* get_resource(bc_render_pass_variable_t p_variable) noexcept
 			{
-				const auto l_hash = resource_variable_hash()(p_variable);
-				auto l_item = m_variables.find(l_hash);
+				const auto l_item = m_variables.find(p_variable);
 
 				if (l_item == std::end(m_variables))
 				{

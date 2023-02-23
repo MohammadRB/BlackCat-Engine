@@ -70,7 +70,7 @@ namespace black_cat
 				const auto l_resource_view_config = graphic::bc_graphic_resource_builder()
 					.as_resource_view()
 					.as_texture_view(p_config.get_format())
-					.as_tex2d_shader_view(0, 1)
+					.as_tex2d_shader_view(0, -1)
 					.on_texture2d();
 				l_resource_view = m_device->create_resource_view(*l_texture, l_resource_view_config);
 			}
@@ -144,11 +144,17 @@ namespace black_cat
 			{
 				return;
 			}
-			
+
 			m_textures.clear();
 		}
 
 		void bc_intermediate_texture_manager::after_reset(const bc_render_pass_reset_context& p_context)
+		{
+		}
+
+		bc_intermediate_texture_guard::bc_intermediate_texture_guard() noexcept
+			: m_manager(nullptr),
+			m_texture()
 		{
 		}
 
@@ -158,8 +164,36 @@ namespace black_cat
 			m_texture = m_manager->get_texture(p_config);
 		}
 
+		bc_intermediate_texture_guard::bc_intermediate_texture_guard(bc_intermediate_texture_guard&& p_other) noexcept
+			: m_manager(p_other.m_manager),
+			m_texture(std::move(p_other.m_texture))
+		{
+			p_other.m_manager = nullptr;
+		}
+
 		bc_intermediate_texture_guard::~bc_intermediate_texture_guard()
 		{
+			release();
+		}
+
+		bc_intermediate_texture_guard& bc_intermediate_texture_guard::operator=(bc_intermediate_texture_guard&& p_other) noexcept
+		{
+			bc_intermediate_texture_guard::~bc_intermediate_texture_guard();
+
+			m_manager = p_other.m_manager;
+			m_texture = std::move(p_other.m_texture);
+			p_other.m_manager = nullptr;
+
+			return *this;
+		}
+
+		void bc_intermediate_texture_guard::release()
+		{
+			if (!m_manager)
+			{
+				return;
+			}
+
 			m_manager->free_texture(m_texture);
 		}
 	}

@@ -102,16 +102,6 @@ namespace black_cat
 
 	void bc_back_buffer_write_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
-		if
-		(
-			p_context.m_old_parameters.m_width == p_context.m_new_parameters.m_width
-			&&
-			p_context.m_old_parameters.m_height == p_context.m_new_parameters.m_height
-		)
-		{
-			return;
-		}
-
 		auto l_resource_configure = graphic::bc_graphic_resource_builder();
 
 		const auto l_back_buffer_texture = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_back_buffer_texture);

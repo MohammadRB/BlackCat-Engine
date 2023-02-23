@@ -16,7 +16,7 @@ StructuredBuffer<bc_icon_struct> g_icons	: register(BC_RENDER_PASS_STATE_T0);
 Texture2D g_texture							: register(BC_RENDER_PASS_STATE_T1);
 SamplerState g_linear_sampler				: register(BC_RENDER_PASS_STATE_S0);
 
-static const float2 g_bullet_vertices[] =
+static const float2 g_quad_vertices[] =
 {
 	float2(-1, 1), float2(1, 1), float2(-1, -1), float2(1, -1)
 };
@@ -66,7 +66,7 @@ void sprite_icon_gs(point bc_vs_output p_input[1], inout TriangleStream<bc_gs_ou
 	[unroll]
 	for (uint i = 0; i < 4; ++i)
 	{
-		float2 l_quad = g_bullet_vertices[i];
+		float2 l_quad = g_quad_vertices[i];
 		l_quad.x *= l_icon_ndc_width;
 		l_quad.y *= l_icon_ndc_height;
 

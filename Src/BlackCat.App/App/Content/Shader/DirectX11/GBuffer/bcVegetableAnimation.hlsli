@@ -19,7 +19,7 @@ float3 bc_vegetable_animation(float3 p_local_pos, float3 p_world_pos, float p_he
     const float l_height_influence = pow(saturate(p_local_pos.y / p_height), 2) * l_wind_power;
     const float l_vertex_moment_length = l_noise * l_height_influence;
     const float3 l_vertex_moment = normalize(p_wind_dir) * l_vertex_moment_length;
-    float3 l_new_dir = normalize(p_local_pos + l_vertex_moment);
+    const float3 l_new_dir = normalize(p_local_pos + l_vertex_moment);
     float3 l_new_pos = l_new_dir * length(p_local_pos.xyz);
 
     if (p_leaf)

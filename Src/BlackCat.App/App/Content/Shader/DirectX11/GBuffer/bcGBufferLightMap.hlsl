@@ -313,7 +313,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	const float3 l_diffuse = l_diffuse_map.xyz;
 	const float3 l_normal = bc_to_decoded_normal(l_normal_map.xyz);
 	const float l_specular_intensity = l_specular_map.x;
-	const float l_specular_power = l_specular_map.y * 20;
+	const float l_specular_power = l_specular_map.y * g_specular_power_scale;
     
 	const int l_world_pos_min_z = floor(l_world_position.z);
 	const int l_world_pos_max_z = ceil(l_world_position.z);

@@ -45,21 +45,19 @@ namespace black_cat
 		public:
 			bc_app_event_device_reset(bc_device& p_device,
 				bc_device_swap_buffer& p_device_swap_buffer,
-				bc_device_parameters& p_old_parameters,
-				bc_device_parameters& p_new_parameters,
-				bool p_before_reset)
+				const bc_device_parameters& p_old_parameters,
+				const bc_device_parameters& p_new_parameters)
 				: bc_app_render_event(message_name()),
 				m_device(&p_device),
 				m_device_swap_buffer(&p_device_swap_buffer),
 				m_old_parameters(p_old_parameters),
-				m_new_parameters(p_new_parameters),
-				m_before_reset(p_before_reset)
+				m_new_parameters(p_new_parameters)
 			{
 			}
 
 			bc_app_event_device_reset(const bc_app_event_device_reset&) = default;
 
-			~bc_app_event_device_reset() = default;
+			~bc_app_event_device_reset() override = default;
 
 			bc_app_event_device_reset& operator =(const bc_app_event_device_reset&) = default;
 
@@ -67,7 +65,6 @@ namespace black_cat
 			bc_device_swap_buffer* m_device_swap_buffer;
 			bc_device_parameters m_old_parameters;
 			bc_device_parameters m_new_parameters;
-			bool m_before_reset;
 		};
 	}
 }

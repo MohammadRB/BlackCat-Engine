@@ -156,6 +156,8 @@ namespace black_cat
 				bcUINT p_src_subresource,
 				graphic::bc_format p_format);
 
+			void generate_mips(graphic::bc_resource_view& p_resource);
+
 			/**
 			 * \brief Start thread to capture device pipeline commands and save them into the passed command list
 			 * \param p_command_list

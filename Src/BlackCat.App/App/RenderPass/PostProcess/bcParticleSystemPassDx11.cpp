@@ -393,11 +393,11 @@ namespace black_cat
 		// Render
 		const auto l_intermediate_texture = get_intermediate_texture(m_intermediate_texture_config);
 		const auto l_intermediate_texture_view = l_intermediate_texture.get_resource_view();
-		const auto l_intermediate_texture_render_target_view = l_intermediate_texture.get_render_target_view();
+		const auto l_intermediate_texture_render_view = l_intermediate_texture.get_render_target_view();
 		const auto l_intermediate_texture_clear_color = core::bc_vector4f(0);
 
-		m_intermediate_texture_link.set_as_render_target_view(l_intermediate_texture_render_target_view);
-		p_context.m_render_thread.clear_render_target_view(l_intermediate_texture_render_target_view, &l_intermediate_texture_clear_color.x);
+		m_intermediate_texture_link.set_as_render_target_view(l_intermediate_texture_render_view);
+		p_context.m_render_thread.clear_render_target_view(l_intermediate_texture_render_view, &l_intermediate_texture_clear_color.x);
 
 		p_context.m_render_thread.update_subresource(m_lights_cbuffer.get(), 0, &l_lights, 0, 0);
 		
@@ -491,10 +491,10 @@ namespace black_cat
 	{
 		m_depth_buffer_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
 		m_depth_buffer_shader_view = get_shared_resource_throw<graphic::bc_resource_view>(constant::g_rpass_depth_stencil_read_view);
-		const auto l_render_target = get_shared_resource_throw<graphic::bc_texture2d>(m_render_target_texture_param);
-		const auto l_render_render_view = get_shared_resource_throw<graphic::bc_render_target_view>(m_render_target_view_param);
-		const auto l_viewport = graphic::bc_viewport::default_config(l_render_target.get_width(), l_render_target.get_height());
-		const auto l_half_viewport = graphic::bc_viewport::default_config(l_render_target.get_width() / 2, l_render_target.get_height() / 2);
+		const auto l_render_target_texture = get_shared_resource_throw<graphic::bc_texture2d>(m_render_target_texture_param);
+		const auto l_render_target_view = get_shared_resource_throw<graphic::bc_render_target_view>(m_render_target_view_param);
+		const auto l_viewport = graphic::bc_viewport::default_config(l_render_target_texture.get_width(), l_render_target_texture.get_height());
+		const auto l_half_viewport = graphic::bc_viewport::default_config(l_render_target_texture.get_width() / 2, l_render_target_texture.get_height() / 2);
 
 		m_emission_compute = p_context.m_render_system.create_compute_state
 		(
@@ -612,11 +612,11 @@ namespace black_cat
 			.as_resource()
 			.as_texture2d
 			(
-				l_render_target.get_width() / 2,
-				l_render_target.get_height() / 2,
+				l_render_target_texture.get_width() / 2,
+				l_render_target_texture.get_height() / 2,
 				false,
 				1,
-				l_render_target.get_format(),
+				l_render_target_texture.get_format(),
 				graphic::bc_resource_usage::gpu_rw,
 				core::bc_enum::mask_or
 				({
@@ -681,7 +681,7 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0x1,
 			{
-				l_render_target.get_format()
+				l_render_target_texture.get_format()
 			},
 			graphic::bc_format::unknown,
 			game::bc_multi_sample_type::c1_q1
@@ -691,7 +691,7 @@ namespace black_cat
 			m_merge_pipeline_state.get(),
 			l_viewport,
 			{
-				graphic::bc_render_target_view_parameter(l_render_render_view)
+				graphic::bc_render_target_view_parameter(l_render_target_view)
 			},
 			graphic::bc_depth_stencil_view(),
 			{

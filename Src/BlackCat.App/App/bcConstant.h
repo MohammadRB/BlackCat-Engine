@@ -29,5 +29,8 @@ namespace black_cat
 		BC_RENDER_PASS_VARIABLE(deferred_rendering_gbuffer_texture);
 		BC_RENDER_PASS_VARIABLE(deferred_rendering_gbuffer_read_view);
 		BC_RENDER_PASS_VARIABLE(deferred_rendering_gbuffer_render_view);
+		BC_RENDER_PASS_VARIABLE(hdr_output_texture);
+		BC_RENDER_PASS_VARIABLE(hdr_output_texture_read_view);
+		BC_RENDER_PASS_VARIABLE(hdr_output_texture_render_view);
 	}
 }

@@ -1102,6 +1102,14 @@ namespace black_cat
 
 		template<>
 		BC_GRAPHICIMP_DLL
+		void bc_platform_device_pipeline<g_api_dx11>::generate_mips(bc_resource_view& p_resource)
+		{
+			BC_ASSERT(p_resource.get_platform_pack().m_shader_view != nullptr);
+			m_pack.m_pipeline_proxy->m_context->GenerateMips(p_resource.get_platform_pack().m_shader_view);
+		}
+
+		template<>
+		BC_GRAPHICIMP_DLL
 		void bc_platform_device_pipeline<g_api_dx11>::start_command_list()
 		{
 			if (m_pack.m_pipeline_proxy->m_context_type == D3D11_DEVICE_CONTEXT_IMMEDIATE)

@@ -28,7 +28,7 @@ cbuffer g_cb_parameter                          : register(BC_COMPUTE_STATE_CB0)
 
 float4 create_plane_from_point_and_normal(float3 p_point, float3 p_normal)
 {
-    return float4(p_normal, /*-*/(p_normal.x * p_point.x + p_normal.y * p_point.y + p_normal.z * p_point.z));
+    return float4(p_normal, p_normal.x * p_point.x + p_normal.y * p_point.y + p_normal.z * p_point.z);
 }
 
 float compute_distance_from_plane(float4 p_plane, float3 p_position)
@@ -38,7 +38,7 @@ float compute_distance_from_plane(float4 p_plane, float3 p_position)
 
 float get_height(uint2 p_texcoord)
 {
-    p_texcoord.y = g_height - p_texcoord.y; // In directX TexCoord (0,0) is top-left but we begin from bottom-left
+    p_texcoord.y = g_height - p_texcoord.y; // In directX Texcoord (0,0) is top-left but we begin from bottom-left
     return g_heightmap.Load(int3(p_texcoord, 0));
 }
 
@@ -51,7 +51,7 @@ uint2 get_chunk_id(uint2 p_dispatch_thread_id)
 
 uint get_chunk_index(uint2 p_dispatch_thread_id)
 {
-    uint2 l_width_chunk_count = g_width / g_chunk_size;
+	const uint2 l_width_chunk_count = g_width / g_chunk_size;
     uint2 l_chunk_id = get_chunk_id(p_dispatch_thread_id);
     
     return l_chunk_id.y * l_width_chunk_count + l_chunk_id.x;

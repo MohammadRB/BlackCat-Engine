@@ -278,6 +278,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferVegetablePass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcEdgeDetectionAntiAliasingPass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcGlowPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcHDRRenderingPass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcLightFlarePass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcParticleSystemPassDx11.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcBaseCascadedShadowMapPass.h" />
@@ -335,6 +336,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\GBuffer\bcGBufferVegetablePass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcEdgeDetectionAntiAliasingPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcGlowPass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcHDRRenderingPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcLightFlarePass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcParticleSystemPassDx11.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcBaseCascadedShadowMapPass.cpp" />
@@ -459,6 +461,12 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\PostProcess\bcGlow.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\PostProcess\bcHDRRendering.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\PostProcess\bcLightFlare.hlsl">
@@ -590,6 +598,9 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\PostProcess\bcToneMap.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develope|Win32'">true</ExcludedFromBuild>
     </None>
   </ItemGroup>
   <ItemGroup>

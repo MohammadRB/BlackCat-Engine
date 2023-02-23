@@ -39,7 +39,12 @@ namespace box
 
 		l_render_system.add_render_pass_before<bx_bullet_trail_pass, bc_glow_pass>
 		(
-			bx_bullet_trail_pass(constant::g_rpass_back_buffer_texture,constant::g_rpass_back_buffer_render_view, bcL("Texture\\Flare\\BulletTrail.dds"))
+			bx_bullet_trail_pass
+			(
+				constant::g_rpass_hdr_output_texture,
+				constant::g_rpass_hdr_output_texture_render_view,
+				bcL("Texture\\Flare\\BulletTrail.dds")
+			)
 		);
 	}
 

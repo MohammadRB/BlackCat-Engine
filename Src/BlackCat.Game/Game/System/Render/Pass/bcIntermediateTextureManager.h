@@ -76,21 +76,29 @@ namespace black_cat
 		class BC_GAME_DLL bc_intermediate_texture_guard
 		{
 		public:
+			bc_intermediate_texture_guard() noexcept;
+
 			bc_intermediate_texture_guard(bc_intermediate_texture_manager& p_manager, const graphic::bc_texture_config& p_config) noexcept;
 
-			bc_intermediate_texture_guard(bc_intermediate_texture_guard&&) = default;
+			bc_intermediate_texture_guard(bc_intermediate_texture_guard&&) noexcept;
 
 			~bc_intermediate_texture_guard();
 
-			bc_intermediate_texture_guard& operator=(bc_intermediate_texture_guard&&) = default;
+			bc_intermediate_texture_guard& operator=(bc_intermediate_texture_guard&&) noexcept;
 
+			[[nodiscard]]
 			graphic::bc_texture2d get_texture2d() const noexcept;
 
+			[[nodiscard]]
 			graphic::bc_resource_view get_resource_view() const noexcept;
 
+			[[nodiscard]]
 			graphic::bc_resource_view get_unordered_resource_view() const noexcept;
 
+			[[nodiscard]]
 			graphic::bc_render_target_view get_render_target_view() const noexcept;
+
+			void release();
 
 		private:
 			bc_intermediate_texture_manager* m_manager;

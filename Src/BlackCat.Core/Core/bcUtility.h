@@ -19,7 +19,7 @@ namespace black_cat
 		return p_object == nullptr ? p_default : *p_object;
 	}
 
-	inline constexpr  bool bc_is_power_of_two(bcUINT p_number)
+	inline constexpr bool bc_is_power_of_two(bcUINT p_number)
 	{
 		return p_number && !(p_number & (p_number - 1));
 	}

@@ -1097,5 +1097,8 @@
     <ClCompile Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentManagerContainer.cpp">
       <Filter>Game\Object\Scene\ActorComponent</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.Game\Game\System\Render\Pass\bcRenderPass.cpp">
+      <Filter>Game\System\Render\Pass</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

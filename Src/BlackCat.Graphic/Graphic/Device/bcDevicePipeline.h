@@ -157,6 +157,8 @@ namespace black_cat
 				bcUINT p_src_subresource,
 				bc_format p_format);
 
+			void generate_mips(bc_resource_view& p_resource);
+
 			/**
 			 * \brief Start capturing command lists and put pipeline to lock state
 			 */

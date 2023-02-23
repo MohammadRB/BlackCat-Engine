@@ -215,15 +215,6 @@ namespace black_cat
 
 	void bc_gbuffer_decal_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
-		if
-		(
-			p_context.m_old_parameters.m_width == p_context.m_new_parameters.m_width &&
-			p_context.m_old_parameters.m_height == p_context.m_new_parameters.m_height
-		)
-		{
-			return;
-		}
-
 		auto l_depth_stencil = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
 		const auto l_depth_stencil_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
 		const auto l_diffuse_map = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_1);

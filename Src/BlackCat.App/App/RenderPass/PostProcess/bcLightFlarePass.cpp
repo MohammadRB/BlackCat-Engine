@@ -183,20 +183,11 @@ namespace black_cat
 
 	void bc_light_flare_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
-		if
-		(
-			p_context.m_old_parameters.m_width == p_context.m_new_parameters.m_width &&
-			p_context.m_old_parameters.m_height == p_context.m_new_parameters.m_height
-		)
-		{
-			return;
-		}
-
 		const auto l_depth_stencil = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
 		const auto l_depth_stencil_view = get_shared_resource_throw<graphic::bc_depth_stencil_view>(constant::g_rpass_depth_stencil_render_view);
-		const auto l_render_target = get_shared_resource_throw<graphic::bc_texture2d>(m_render_target_texture);
+		const auto l_render_target_texture = get_shared_resource_throw<graphic::bc_texture2d>(m_render_target_texture);
 		const auto l_render_target_view = get_shared_resource_throw<graphic::bc_render_target_view>(m_render_target_view);
-		const auto l_viewport = graphic::bc_viewport::default_config(l_render_target.get_width(), l_render_target.get_height());
+		const auto l_viewport = graphic::bc_viewport::default_config(l_render_target_texture.get_width(), l_render_target_texture.get_height());
 		
 		m_query_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
 		(
@@ -211,7 +202,7 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_back,
 			0xffffffff,
 			{
-				l_render_target.get_format()
+				l_render_target_texture.get_format()
 			},
 			l_depth_stencil.get_format(),
 			game::bc_multi_sample_type::c1_q1
@@ -266,7 +257,7 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0xffffffff,
 			{
-				l_render_target.get_format()
+				l_render_target_texture.get_format()
 			},
 			l_depth_stencil.get_format(),
 			game::bc_multi_sample_type::c1_q1
