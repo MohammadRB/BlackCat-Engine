@@ -159,7 +159,7 @@ float4 light_flare_ps(bc_gs_output p_input) : SV_Target0
 	);
 	
 	const float4 l_mask = sample_mask_texture(p_input.m_texture_index, p_input.m_texcoord) - MASK_COLOR_OFF;
-	float3 l_color = l_mask.xyz * p_input.m_color * p_input.m_intensity;
+	float3 l_color = max(l_mask.rgb, 0.f) * p_input.m_color * p_input.m_intensity;
 	
 	return float4(l_color, 1);
 }

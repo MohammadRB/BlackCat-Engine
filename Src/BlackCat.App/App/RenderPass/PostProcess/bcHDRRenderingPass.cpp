@@ -9,6 +9,7 @@
 #include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/Render/bcDefaultRenderThread.h"
 #include "App/RenderPass/PostProcess/bcHDRRenderingPass.h"
+#include "App/bcConstant.h"
 
 namespace black_cat
 {
@@ -25,19 +26,23 @@ namespace black_cat
 		game::bc_render_pass_variable_t p_output_texture_read_view,
 		game::bc_render_pass_variable_t p_output_texture_render_view)
 		: m_hdr_texture_param(p_hdr_texture),
-		m_hdr_texture_read_view_param(p_hdr_texture_view),
-		m_hdr_texture_render_view_param(p_hdr_texture_render_view),
-		m_output_texture_param(p_output_texture),
-		m_output_texture_read_view_param(p_output_texture_read_view),
-		m_output_texture_render_view_param(p_output_texture_render_view),
-		m_hdr_enabled(true),
-		m_luminance_texture_config()
+		  m_hdr_texture_read_view_param(p_hdr_texture_view),
+		  m_hdr_texture_render_view_param(p_hdr_texture_render_view),
+		  m_output_texture_param(p_output_texture),
+		  m_output_texture_read_view_param(p_output_texture_read_view),
+		  m_output_texture_render_view_param(p_output_texture_render_view),
+		  m_hdr_enabled(true),
+		  m_luminance_texture_config(),
+		  m_adaptive_luminance_texture_config()
 	{
 		auto& l_global_config = bc_get_global_config();
-		l_global_config.add_if_not_exist_config_key("render_hdr_enabled", core::bc_any(true)).flush_changes();
+		l_global_config
+			.add_if_not_exist_config_key(constant::g_cng_render_hdr_enabled, core::bc_any(true))
+			.add_if_not_exist_config_key(constant::g_cng_render_hdr_reference_intensity, core::bc_any(10.f))
+			.flush_changes();
 
 		auto l_hdr_config_value = core::bc_any();
-		l_global_config.read_config_key("render_hdr_enabled", l_hdr_config_value);
+		l_global_config.read_config_key(constant::g_cng_render_hdr_enabled, l_hdr_config_value);
 
 		if (l_hdr_config_value.has_value())
 		{
@@ -426,7 +431,7 @@ namespace black_cat
 	{
 		core::bc_any l_hdr_enabled_value;
 
-		p_context.m_global_config.read_config_key("render_hdr_enabled", l_hdr_enabled_value);
+		p_context.m_global_config.read_config_key(constant::g_cng_render_hdr_enabled, l_hdr_enabled_value);
 
 		const auto l_hrd_enabled = bc_null_default(l_hdr_enabled_value.as<bool>(), m_hdr_enabled);
 

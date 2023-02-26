@@ -15,7 +15,9 @@ namespace black_cat
 
 #define BC_PARAMETER(p_name, p_value)			constexpr const bcCHAR* g_param_##p_name = p_value
 
-#define BC_RENDER_PASS_VARIABLE(name)			constexpr const bcCHAR* g_rpass_##name = #name
+#define BC_RENDER_PASS_VARIABLE(p_name)			constexpr const bcCHAR* g_rpass_##p_name = #p_name
+
+#define BC_CONFIG_VARIABLE(p_name)				constexpr const bcCHAR* g_cng_##p_name = #p_name
 
 #define BC_SERVICE_NAME(p_name)					BC_STR_CONCAT("srv_", #p_name)
 

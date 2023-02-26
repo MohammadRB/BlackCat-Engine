@@ -52,14 +52,21 @@ namespace box
 
 		void after_reset(const game::bc_render_pass_reset_context& p_context) override;
 
+		void config_changed(const game::bc_render_pass_config_change_context& p_context) override;
+
 		void destroy(game::bc_render_system& p_render_system) override;
 
 	private:
 		void _update_bullets_buffer(const game::bc_render_pass_render_context& p_context);
 
+		void _update_parameters_buffer(const game::bc_render_pass_render_context& p_context);
+
 		game::bc_render_pass_variable_t m_render_target_texture;
 		game::bc_render_pass_variable_t m_render_target_view;
 		core::bc_estring_view m_texture_path;
+		bool m_hdr_enabled;
+		bcFLOAT m_hdr_intensity;
+		bool m_parameters_changed;
 
 		graphic::bc_sampler_state_ref m_linear_sampler;
 		graphic::bc_texture2d_content_ptr m_texture;

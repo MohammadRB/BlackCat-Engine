@@ -56,7 +56,7 @@ struct merge_vs_output
 float3 direct_light_shading(float3 p_normal)
 {
 	const float l_dot = max(0.2f, dot(p_normal, -g_global_light_direction));
-	const float3 l_diffuse_light = g_global_light_color * g_global_light_intensity * min(0.8f, l_dot);
+	const float3 l_diffuse_light = g_global_light_color * (g_global_light_intensity * .35f) * min(0.7f, l_dot);
 
 	return l_diffuse_light;
 }
@@ -140,11 +140,11 @@ float4 render_ps(render_geometry_output p_input) : SV_Target0
 	const float l_soft_fade = saturate(l_depth_diff / (g_global_scale / 2.f));
 	
 	const float4 l_light_shading = p_input.m_light_shading * l_alpha;
-	const float3 l_color_diffuse = p_input.m_color.rgb * p_input.m_ambient_shading + p_input.m_direct_light_shading * p_input.m_ambient_shading;
-	float3 l_final_diffuse = lerp(l_color_diffuse, l_light_shading.rgb, l_light_shading.a);
+	const float3 l_color_diffuse = p_input.m_color.rgb * p_input.m_ambient_shading + p_input.m_direct_light_shading;\
+	const float3 l_final_diffuse = l_color_diffuse + l_light_shading.rgb;
 
 	// it is important to multiply alpha with color intensity to simulate additive particles
-	return float4(l_final_diffuse, p_input.m_fade * l_alpha * l_soft_fade * p_input.m_color.a);
+	return float4(l_final_diffuse, l_alpha * p_input.m_fade * l_soft_fade * p_input.m_color.a);
 }
 
 merge_vs_output merge_vs(uint p_vertex_id : SV_VertexID)

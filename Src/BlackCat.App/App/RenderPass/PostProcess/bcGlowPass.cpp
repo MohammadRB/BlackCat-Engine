@@ -44,8 +44,8 @@ namespace black_cat
 	{
 		auto& l_global_config = bc_get_global_config();
 		l_global_config
-				.add_if_not_exist_config_key("render_glow_threshold", core::bc_any(.88f))
-				.add_if_not_exist_config_key("render_glow_intensity", core::bc_any(5.f))
+				.add_if_not_exist_config_key("render_glow_threshold", core::bc_any(.9f))
+				.add_if_not_exist_config_key("render_glow_intensity", core::bc_any(8.f))
 				.flush_changes();
 	}
 

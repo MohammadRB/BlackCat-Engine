@@ -563,7 +563,7 @@ namespace black_cat
 	{
 		core::bc_any l_hdr_enabled_value;
 
-		p_context.m_global_config.read_config_key("render_hdr_enabled", l_hdr_enabled_value);
+		p_context.m_global_config.read_config_key(constant::g_cng_render_hdr_enabled, l_hdr_enabled_value);
 
 		const auto l_hrd_enabled = bc_null_default(l_hdr_enabled_value.as<bool>(), m_hdr_enabled);
 

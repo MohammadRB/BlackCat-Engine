@@ -3,7 +3,7 @@
     {
       "name": "cliff_is2",
       "diffuse_color": [ 0.50, 0.50, 0.50, 1.0 ],
-      "specular_intensity": 0.1,
+      "specular_intensity": 0.07,
       "specular_power": 2.0,
       "diffuse_map": "cliff_is2",
       "normal_map": "cliff_is2_nrm"
@@ -11,7 +11,7 @@
     {
       "name": "cliff_basalt",
       "diffuse_color": [ 0.41, 0.32, 0.16, 1.0 ],
-      "specular_intensity": 0.1,
+      "specular_intensity": 0.07,
       "specular_power": 2.0,
       "diffuse_map": "cliff_basalt",
       "normal_map": "cliff_basalt_nrm"
@@ -19,7 +19,7 @@
     {
       "name": "plain_grass",
       "diffuse_color": [ 0.38, 0.42, 0.12, 1.0 ],
-      "specular_intensity": 0.1,
+      "specular_intensity": 0.07,
       "specular_power": 2.0,
       "diffuse_map": "plain_grass",
       "normal_map": "plain_grass_nrm"
@@ -27,7 +27,7 @@
     {
       "name": "cobblestone_floor",
       "diffuse_color": [ 0.37, 0.37, 0.30, 1.0 ],
-      "specular_intensity": 0.1,
+      "specular_intensity": 0.15,
       "specular_power": 2.0,
       "diffuse_map": "cobblestone_floor",
       "normal_map": "cobblestone_floor_nrm"
@@ -35,7 +35,7 @@
     {
       "name": "ground_crack",
       "diffuse_color": [ 0.47, 0.42, 0.35, 1.0 ],
-      "specular_intensity": 0.1,
+      "specular_intensity": 0.07,
       "specular_power": 2.0,
       "diffuse_map": "ground_crack",
       "normal_map": "ground_crack_nrm"
@@ -43,7 +43,7 @@
     {
       "name": "spring_soil",
       "diffuse_color": [ 0.36, 0.30, 0.16, 1.0 ],
-      "specular_intensity": 0.1,
+      "specular_intensity": 0.07,
       "specular_power": 2.0,
       "diffuse_map": "spring_soil",
       "normal_map": "spring_soil_nrm"
@@ -51,7 +51,7 @@
     {
       "name": "forrest_ground",
       "diffuse_color": [ 0.32, 0.37, 0.18, 1.0 ],
-      "specular_intensity": 0.1,
+      "specular_intensity": 0.07,
       "specular_power": 2.0,
       "diffuse_map": "forrest_ground",
       "normal_map": "forrest_ground_nrm"
@@ -59,7 +59,7 @@
     {
       "name": "sandstone_cracks",
       "diffuse_color": [ 0.65, 0.49, 0.30, 1.0 ],
-      "specular_intensity": 0.1,
+      "specular_intensity": 0.07,
       "specular_power": 2.0,
       "diffuse_map": "sandstone_cracks",
       "normal_map": "sandstone_cracks_nrm"

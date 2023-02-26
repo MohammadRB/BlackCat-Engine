@@ -19,6 +19,7 @@ namespace box
 		BC_CBUFFER_ALIGN
 		bcFLOAT m_length;
 		bcFLOAT m_width;
+		bcFLOAT m_intensity;
 	};
 
 	bx_bullet_trail_pass::bx_bullet_trail_pass(game::bc_render_pass_variable_t p_render_target_texture,
@@ -26,7 +27,10 @@ namespace box
 		core::bc_estring_view p_texture_path)
 		: m_render_target_texture(p_render_target_texture),
 		m_render_target_view(p_render_target_view),
-		m_texture_path(p_texture_path)
+		m_texture_path(p_texture_path),
+		m_hdr_enabled(true),
+		m_hdr_intensity(1),
+		m_parameters_changed(true)
 	{
 	}
 
@@ -64,16 +68,10 @@ namespace box
 			.as_resource()
 			.as_buffer(1, sizeof(_bx_bullet_trail_cbuffer), graphic::bc_resource_usage::gpu_rw)
 			.as_constant_buffer();
-		const auto l_cbuffer_params = _bx_bullet_trail_cbuffer
-		{
-			bc_get_global_config().get_scene_global_scale() * .8f,
-			bc_get_global_config().get_scene_global_scale() * .1f
-		};
-		const auto l_cbuffer_data = graphic::bc_subresource_data(&l_cbuffer_params, 0, 0);
-		
+
 		m_linear_sampler = l_device.create_sampler_state(l_linear_sampler_config);
 		m_texture_view = l_device.create_resource_view(m_texture->get_resource(), l_texture_view_config);
-		m_cbuffer = l_device.create_buffer(l_cbuffer_config, &l_cbuffer_data);
+		m_cbuffer = l_device.create_buffer(l_cbuffer_config, nullptr);
 
 		after_reset
 		(
@@ -148,6 +146,12 @@ namespace box
 
 		p_context.m_render_thread.start();
 
+		if (m_parameters_changed)
+		{
+			_update_parameters_buffer(p_context);
+			m_parameters_changed = false;
+		}
+
 		_update_bullets_buffer(p_context);
 
 		p_context.m_render_thread.bind_render_pass_state(*m_render_pass_state);
@@ -212,9 +216,27 @@ namespace box
 			},
 			{
 				p_context.m_render_system.get_global_cbuffer(),
-				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::geometry, *m_cbuffer)
+				graphic::bc_constant_buffer_parameter(1, core::bc_enum::mask_or({graphic::bc_shader_type::geometry, graphic::bc_shader_type::pixel}), *m_cbuffer)
 			}
 		);
+	}
+
+	void bx_bullet_trail_pass::config_changed(const game::bc_render_pass_config_change_context& p_context)
+	{
+		auto l_hdr_enabled_value = core::bc_any();
+		auto l_hdr_intensity_value = core::bc_any();
+
+		p_context.m_global_config
+			.read_config_key(constant::g_cng_render_hdr_enabled, l_hdr_enabled_value)
+			.read_config_key(constant::g_cng_render_hdr_reference_intensity, l_hdr_intensity_value);
+
+		const auto l_hdr_enabled = bc_null_default(l_hdr_enabled_value.as<bool>(), m_hdr_enabled);
+		const auto l_hdr_intensity = l_hdr_intensity_value.cast_to_double().first ? static_cast<bcFLOAT>(l_hdr_intensity_value.cast_to_double().second) : 1.f;
+
+		m_parameters_changed = m_hdr_enabled != l_hdr_enabled || m_hdr_intensity != l_hdr_intensity;
+
+		m_hdr_enabled = l_hdr_enabled;
+		m_hdr_intensity = l_hdr_intensity;
 	}
 
 	void bx_bullet_trail_pass::destroy(game::bc_render_system& p_render_system)
@@ -258,5 +280,17 @@ namespace box
 		}
 
 		p_context.m_render_thread.update_subresource(*m_bullets_buffer, 0, m_bullets.data(), 0, 0);
+	}
+
+	void bx_bullet_trail_pass::_update_parameters_buffer(const game::bc_render_pass_render_context& p_context)
+	{
+		const auto& l_config = bc_get_global_config();
+		const auto l_cbuffer_params = _bx_bullet_trail_cbuffer
+		{
+			l_config.get_scene_global_scale() * .8f,
+			l_config.get_scene_global_scale() * .1f,
+			m_hdr_intensity
+		};
+		p_context.m_render_thread.update_subresource(*m_cbuffer, 0, &l_cbuffer_params, 0, 0);
 	}
 }

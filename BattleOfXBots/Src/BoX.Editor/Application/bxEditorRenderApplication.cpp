@@ -5,6 +5,7 @@
 #include "Game/System/Input/bcFileSystem.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "App/RenderPass/PostProcess/bcGlowPass.h"
+#include "App/RenderPass/PostProcess/bcHDRRenderingPass.h"
 #include "App/bcConstant.h"
 #include "BoX.Game/Application/bxApplicationHookFunctions.h"
 #include "BoX.Game/RenderPass/bxBulletTrailPass.h"
@@ -37,12 +38,12 @@ namespace box
 
 		auto& l_render_system = m_game_system->get_render_system();
 
-		l_render_system.add_render_pass_before<bx_bullet_trail_pass, bc_glow_pass>
+		l_render_system.add_render_pass_before<bx_bullet_trail_pass, bc_hdr_rendering_pass>
 		(
 			bx_bullet_trail_pass
 			(
-				constant::g_rpass_hdr_output_texture,
-				constant::g_rpass_hdr_output_texture_render_view,
+				constant::g_rpass_deferred_rendering_gbuffer_texture,
+				constant::g_rpass_deferred_rendering_gbuffer_render_view,
 				bcL("Texture\\Flare\\BulletTrail.dds")
 			)
 		);
