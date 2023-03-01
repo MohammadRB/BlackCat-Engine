@@ -1,6 +1,7 @@
 // [03/10/2019 MRB]
 
 #include "../bcRegister.hlsli"
+#include "../bcHelper.hlsli"
 
 SamplerState g_sam_sampler			: register(BC_RENDER_PASS_STATE_S0);
 
@@ -82,7 +83,7 @@ bc_ps_output gbuffer_ps(bc_vs_output p_input)
         l_normal = mul(l_in_range_normal, l_tbn);
     }
 
-    float3 l_final_normal = (l_normal + 1) / 2.0f;
+    float3 l_final_normal = bc_to_encoded_normal(l_normal);
 
     l_output.m_diffuse = float4(l_diffuse_map.xyz, 1);
     l_output.m_normal = float4(l_final_normal, 1);

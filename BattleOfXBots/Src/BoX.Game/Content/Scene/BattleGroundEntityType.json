@@ -9,8 +9,8 @@
           "parameters": {
             "type": "direct",
             "direction": [ 0.4, -0.3, -0.5 ],
-            "color": [ 0.79, 0.78, 0.68, 5.5 ],
-            "ambient_color": [ 0.66, 0.68, 0.70, 7.0 ]
+            "color": [ 0.79, 0.78, 0.68, 2.0 ],
+            "ambient_color": [ 0.66, 0.68, 0.70, 2.5 ]
           }
         }
       ]
@@ -24,11 +24,11 @@
             "type": "spot",
             "position": [ 0.0, 0.0, 0.0 ],
             "direction": [ 1.0, -0.5, 0.0 ],
-            "color": [ 0.79, 0.78, 0.68, 10.0 ],
+            "color": [ 0.79, 0.78, 0.68, 2.8 ],
             "length": 100.0,
             "angle": 130.0,
             "flare_surface": [ 0.5, 0.5, 0.5 ],
-            "flare_intensity": 2.5,
+            "flare_intensity": 1.5,
             "flare_size": 15.0,
             "flare_mask_material": "flare3"
           }

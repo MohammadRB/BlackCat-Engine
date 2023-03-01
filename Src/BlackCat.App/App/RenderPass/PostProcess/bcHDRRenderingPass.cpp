@@ -38,7 +38,7 @@ namespace black_cat
 		auto& l_global_config = bc_get_global_config();
 		l_global_config
 			.add_if_not_exist_config_key(constant::g_cng_render_hdr_enabled, core::bc_any(true))
-			.add_if_not_exist_config_key(constant::g_cng_render_hdr_reference_intensity, core::bc_any(10.f))
+			.add_if_not_exist_config_key(constant::g_cng_render_hdr_reference_intensity, core::bc_any(3.f))
 			.flush_changes();
 
 		auto l_hdr_config_value = core::bc_any();

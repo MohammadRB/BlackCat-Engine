@@ -428,7 +428,5 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
     l_shaded_diffuse.xyz = (l_diffuse.xyz * l_final_light_map.xyz);
     l_shaded_diffuse.xyz += l_final_light_map.w;
     
-    //float l_scaled_number_of_visible_lights = l_number_of_visible_lights * 1.0f / 20;
     write_output(l_global_texcoord, l_shaded_diffuse);
-	//write_output(l_global_texcoord, float4(l_light_map.w, l_light_map.w, l_light_map.w, l_light_map.w));
 }

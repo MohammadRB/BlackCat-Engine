@@ -1,6 +1,7 @@
 // [09/02/2016 MRB]
 
 #include "../bcRegister.hlsli"
+#include "../bcHelper.hlsli"
 
 #define NUM_TEXTURE 8
 
@@ -11,7 +12,7 @@ SamplerState g_texture_sampler					: register(BC_RENDER_PASS_STATE_S1);
 
 cbuffer g_cb_render_pass_parameter				: register(BC_RENDER_PASS_STATE_CB1)
 {
-	float4 g_frustum_planes[6]              : packoffset(c0.x);
+	float4 g_frustum_planes[6]					: packoffset(c0.x);
 };
 
 Texture2D<float> g_height_map					: register(BC_RENDER_STATE_T0);
@@ -489,7 +490,7 @@ bc_ps_gbuffer_output gbuffer_ps(bc_ds_output p_input)
 	l_tbn[1] = normalize(float3(0.0f, l_bottom_height - l_top_height, -2.0f * g_xz_multiplier));
 	l_tbn[2] = normalize(cross(l_tbn[0], l_tbn[1]));
 
-	const float3 l_final_normal = (mul(l_normal, l_tbn) + 1) / 2.0f;
+	const float3 l_final_normal = bc_to_encoded_normal(mul(l_normal, l_tbn));
 
 	l_output.m_diffuse = float4(l_diffuse.xyz, 1);
 	l_output.m_normal = float4(l_final_normal, 1);

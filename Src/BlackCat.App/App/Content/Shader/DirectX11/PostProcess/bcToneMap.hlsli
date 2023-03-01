@@ -1,7 +1,7 @@
 // [02/18/2023 MRB]
 // HDR Rendering based on MJP Sample
 
-static const float g_middle_grey = 0.15f;
+static const float g_middle_grey = 0.6f;
 static const float g_white_level = 16.0f;
 static const float g_luminance_saturation = 1.0f;
 static const float3 g_lum_convert = float3(0.299f, 0.587f, 0.114f);
@@ -16,23 +16,23 @@ static const float g_linear_white = 11.2f;
 
 float calculate_luminance(float3 p_color)
 {
-	return max(dot(p_color, g_lum_convert), 0.0001f);
+    return max(dot(p_color, g_lum_convert), 0.0001f);
 }
 
 float3 reinhard_tone_map_1(float3 p_color, float p_avg_luminance)
 {
-	const float l_pixel_luminance = calculate_luminance(p_color);
-	const float l_scaled_luminance = (l_pixel_luminance * g_middle_grey) / p_avg_luminance;
-	const float l_compressed_luminance = (l_scaled_luminance * (1 + (l_scaled_luminance / (g_white_level * g_white_level)))) / (1 + l_scaled_luminance);
+    const float l_pixel_luminance = calculate_luminance(p_color);
+    const float l_scaled_luminance = (l_pixel_luminance * g_middle_grey) / p_avg_luminance;
+    const float l_compressed_luminance = (l_scaled_luminance * (1 + (l_scaled_luminance / (g_white_level * g_white_level)))) / (1 + l_scaled_luminance);
 
-	return l_compressed_luminance * p_color;
+    return l_compressed_luminance * p_color;
 }
 
 float3 reinhard_tone_map(float3 p_color, float p_avg_luminance)
 {
-	const float l_pixel_luminance = calculate_luminance(p_color);
-	const float l_tone_mapped_luminance = l_pixel_luminance * (1.0f + l_pixel_luminance / (g_white_level * g_white_level)) / (1.0f + l_pixel_luminance);
-	return l_tone_mapped_luminance * pow(p_color / l_pixel_luminance, g_luminance_saturation);
+    const float l_pixel_luminance = calculate_luminance(p_color);
+    const float l_tone_mapped_luminance = l_pixel_luminance * (1.0f + l_pixel_luminance / (g_white_level * g_white_level)) / (1.0f + l_pixel_luminance);
+    return l_tone_mapped_luminance * pow(p_color / l_pixel_luminance, g_luminance_saturation);
 }
 
 // Function used by the Uncharted 2 tone mapping curve
@@ -50,8 +50,8 @@ float3 u2_func(float3 x)
 // Applies the Uncharted 2 filmic tone mapping curve
 float3 filmic_u2_tone_map(float3 color)
 {
-	const float3 l_numerator = u2_func(color);
-	const float3 l_denominator = u2_func(g_linear_white);
+    const float3 l_numerator = u2_func(color);
+    const float3 l_denominator = u2_func(g_linear_white);
 
     return l_numerator / l_denominator;
 }

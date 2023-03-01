@@ -45,5 +45,5 @@ void ps(bc_vs_output p_input)
 {
 	const float l_alpha_map = g_tex2d_diffuse.Sample(g_sam_sampler, p_input.m_texcoord).w;
     
-    clip(l_alpha_map - 0.4);
+    clip(l_alpha_map - 0.25f);
 }

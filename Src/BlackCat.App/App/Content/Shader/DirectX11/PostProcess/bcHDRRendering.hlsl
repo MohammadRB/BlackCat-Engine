@@ -78,9 +78,9 @@ bc_ps_output hdr_tone_map_ps(bc_vs_output p_input)
 
 	float l_exposure;
 	const float3 l_color = tone_map(l_hdr_color, l_average_luminance, 0, l_exposure);
-	
+
 	bc_ps_output l_output;
 	l_output.m_color = float4(l_color, 1.0f);
-	
+
 	return l_output;
 }
