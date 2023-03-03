@@ -399,7 +399,8 @@ namespace black_cat
 			},
 			graphic::bc_depth_stencil_view(),
 			{
-				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, *m_linear_sampler)
+				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, *m_point_sampler),
+				graphic::bc_sampler_parameter(1, graphic::bc_shader_type::pixel, *m_linear_sampler)
 			},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, m_upscale_texture_view_link)
@@ -563,7 +564,8 @@ namespace black_cat
 			},
 			graphic::bc_depth_stencil_view(),
 			{
-				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, *m_point_sampler)
+				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, *m_point_sampler),
+				graphic::bc_sampler_parameter(1, graphic::bc_shader_type::pixel, *m_linear_sampler)
 			},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, std::move(p_glow_texture))
@@ -618,7 +620,8 @@ namespace black_cat
 			},
 			graphic::bc_depth_stencil_view(),
 			{
-				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, *m_point_sampler)
+				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, *m_point_sampler),
+				graphic::bc_sampler_parameter(1, graphic::bc_shader_type::pixel, *m_linear_sampler)
 			},
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_intermediate_texture_link)
