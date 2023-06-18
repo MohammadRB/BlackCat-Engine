@@ -4,6 +4,7 @@
 
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
+#include "Core/Utility/bcNullable.h"
 #include "Game/System/Input/bcCamera.h"
 
 namespace black_cat
@@ -30,6 +31,8 @@ namespace black_cat
 			bcFLOAT get_near_clip() const noexcept;
 
 			bcFLOAT get_far_clip() const noexcept;
+
+			core::bc_nullable<bcFLOAT> get_fov() const noexcept;
 
 			core::bc_vector3f get_position() const noexcept;
 
@@ -58,6 +61,7 @@ namespace black_cat
 			bcUINT16 m_screen_height;
 			bcFLOAT m_near_clip;
 			bcFLOAT m_far_clip;
+			core::bc_nullable<bcFLOAT> m_fov;
 			core::bc_vector3f m_position;
 			core::bc_vector3f m_direction;
 			core::bc_vector3f m_forward;
@@ -81,6 +85,11 @@ namespace black_cat
 			m_view(p_camera.get_view()),
 			m_projection(p_camera.get_projection())
 		{
+			if (const auto* l_perspective_camera = dynamic_cast<const bc_perspective_camera*>(&p_camera); l_perspective_camera)
+			{
+				m_fov.reset(l_perspective_camera->get_field_of_view());
+			}
+
 			p_camera.get_extend_points(m_extends);
 		}
 		
@@ -102,6 +111,11 @@ namespace black_cat
 		inline bcFLOAT bc_camera_instance::get_far_clip() const noexcept
 		{
 			return m_far_clip;
+		}
+
+		inline core::bc_nullable<bcFLOAT> bc_camera_instance::get_fov() const noexcept
+		{
+			return m_fov;
 		}
 
 		inline core::bc_vector3f bc_camera_instance::get_position() const noexcept

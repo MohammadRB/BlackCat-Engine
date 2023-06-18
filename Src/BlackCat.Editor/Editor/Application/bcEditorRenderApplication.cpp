@@ -28,6 +28,7 @@
 #include "App/RenderPass/PostProcess/bcGlowPass.h"
 #include "App/RenderPass/PostProcess/bcEdgeDetectionAntiAliasingPass.h"
 #include "App/RenderPass/PostProcess/bcHDRRenderingPass.h"
+#include "App/RenderPass/PostProcess/bcAmbientOcclusionPass.h"
 #include "App/RenderPass/bcIconDrawPass.h"
 #include "App/RenderPass/bcShapeDrawPass.h"
 #include "App/RenderPass/bcCounterValueDrawPass.h"
@@ -121,6 +122,11 @@ namespace black_cat
 			(
 				constant::g_rpass_hdr_output_texture_read_view,
 				constant::g_rpass_back_buffer_texture, 
+				constant::g_rpass_back_buffer_render_view
+			));
+			l_render_system.add_render_pass(bc_ambient_occlusion_pass
+			(
+				constant::g_rpass_back_buffer_texture,
 				constant::g_rpass_back_buffer_render_view
 			));
 			l_render_system.add_render_pass(bc_icon_draw_pass
