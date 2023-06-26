@@ -21,6 +21,11 @@ namespace black_cat
 		class BC_GAME_DLL bci_camera
 		{
 		public:
+			/**
+			 * \brief 8 point that describe camera frustum. First four points lay on near clip and second four points on far clip
+			 * ordered by lower-left upper-left upper-right lower-right
+			 * \param p_points
+			 */
 			using extend = core::bc_array<core::bc_vector3f, 8>;
 
 		public:

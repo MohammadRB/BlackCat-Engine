@@ -31,16 +31,18 @@ namespace black_cat
 		void destroy(game::bc_render_system& p_render_system) override;
 
 	private:
-		void _update_parameters(game::bc_default_render_thread& p_render_thread);
+		void _update_parameters(game::bc_default_render_thread& p_render_thread, const game::bc_camera_instance& p_camera);
 
 		game::bc_render_pass_variable_t m_render_target_texture;
 		game::bc_render_pass_variable_t m_render_target_view;
 		bool m_update_parameters;
-		bcUINT32 m_num_samples;
+		bcUINT32 m_num_rays;
+		bcUINT32 m_steps_per_ray;
+		bcFLOAT m_strength;
 		bcFLOAT m_radius;
-		bcFLOAT m_intensity;
+		bcFLOAT m_attenuation;
 		bcFLOAT m_bias;
-		bcFLOAT m_cotangent_fov;
+		bcFLOAT m_tangent_fov;
 
 		graphic::bc_texture_config m_intermediate_texture_config;
 		graphic::bc_shader_parameter_link m_ao_texture_link;

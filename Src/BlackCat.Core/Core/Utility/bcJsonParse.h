@@ -155,27 +155,27 @@ namespace black_cat
 				
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_vector2f& p_value) noexcept
 		{
-			const auto l_value = p_key_value.find(p_key);
-			if(l_value == std::cend(p_key_value))
+			const auto l_ite = p_key_value.find(p_key);
+			if(l_ite == std::cend(p_key_value))
 			{
 				return false;
 			}
 
-			auto* l_array = l_value->second.as<core::bc_vector<core::bc_any>>();
+			auto* l_array = l_ite->second.as<core::bc_vector<core::bc_any>>();
 			if (!l_array || l_array->size() < 2)
 			{
 				return false;
 			}
 
-			auto* l_x = (*l_array)[0].as<bcFLOAT>();
-			auto* l_y = (*l_array)[1].as<bcFLOAT>();
-			if (!l_x || !l_y)
+			const auto [l_x_succeed, l_x] = (*l_array)[0].cast_to_double();
+			const auto [l_y_succeed, l_y] = (*l_array)[1].cast_to_double();
+			if (!l_x_succeed || !l_y_succeed)
 			{
 				return false;
 			}
 
-			p_value.x = *l_x;
-			p_value.y = *l_y;
+			p_value.x = static_cast<bcFLOAT>(l_x);
+			p_value.y = static_cast<bcFLOAT>(l_y);
 
 			return true;
 		}
@@ -191,27 +191,27 @@ namespace black_cat
 
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_vector2i& p_value) noexcept
 		{
-			const auto l_value = p_key_value.find(p_key);
-			if (l_value == std::cend(p_key_value))
+			const auto l_ite = p_key_value.find(p_key);
+			if (l_ite == std::cend(p_key_value))
 			{
 				return false;
 			}
 
-			auto* l_array = l_value->second.as<core::bc_vector<core::bc_any>>();
+			auto* l_array = l_ite->second.as<core::bc_vector<core::bc_any>>();
 			if (!l_array || l_array->size() < 2)
 			{
 				return false;
 			}
 
-			auto* l_x = (*l_array)[0].as<bcINT32>();
-			auto* l_y = (*l_array)[1].as<bcINT32>();
-			if (!l_x || !l_y)
+			const auto [l_x_succeed, l_x] = (*l_array)[0].cast_to_int();
+			const auto [l_y_succeed, l_y] = (*l_array)[1].cast_to_int();
+			if (!l_x_succeed || !l_y_succeed)
 			{
 				return false;
 			}
 
-			p_value.x = *l_x;
-			p_value.y = *l_y;
+			p_value.x = static_cast<bcINT32>(l_x);
+			p_value.y = static_cast<bcINT32>(l_y);
 
 			return true;
 		}
@@ -227,29 +227,29 @@ namespace black_cat
 
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_vector3f& p_value) noexcept
 		{
-			const auto l_value = p_key_value.find(p_key);
-			if (l_value == std::cend(p_key_value))
+			const auto l_ite = p_key_value.find(p_key);
+			if (l_ite == std::cend(p_key_value))
 			{
 				return false;
 			}
 
-			auto* l_array = l_value->second.as<core::bc_vector<core::bc_any>>();
+			auto* l_array = l_ite->second.as<core::bc_vector<core::bc_any>>();
 			if (!l_array || l_array->size() < 3)
 			{
 				return false;
 			}
 
-			auto* l_x = (*l_array)[0].as<bcFLOAT>();
-			auto* l_y = (*l_array)[1].as<bcFLOAT>();
-			auto* l_z = (*l_array)[2].as<bcFLOAT>();
-			if (!l_x || !l_y || !l_z)
+			const auto [l_x_succeed, l_x] = (*l_array)[0].cast_to_double();
+			const auto [l_y_succeed, l_y] = (*l_array)[1].cast_to_double();
+			const auto [l_z_succeed, l_z] = (*l_array)[2].cast_to_double();
+			if (!l_x_succeed || !l_y_succeed || !l_z_succeed)
 			{
 				return false;
 			}
 
-			p_value.x = *l_x;
-			p_value.y = *l_y;
-			p_value.z = *l_z;
+			p_value.x = static_cast<bcFLOAT>(l_x);
+			p_value.y = static_cast<bcFLOAT>(l_y);
+			p_value.z = static_cast<bcFLOAT>(l_z);
 
 			return true;
 		}
@@ -266,29 +266,29 @@ namespace black_cat
 
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_vector3i& p_value) noexcept
 		{
-			const auto l_value = p_key_value.find(p_key);
-			if (l_value == std::cend(p_key_value))
+			const auto l_ite = p_key_value.find(p_key);
+			if (l_ite == std::cend(p_key_value))
 			{
 				return false;
 			}
 
-			auto* l_array = l_value->second.as<core::bc_vector<core::bc_any>>();
+			auto* l_array = l_ite->second.as<core::bc_vector<core::bc_any>>();
 			if (!l_array || l_array->size() < 3)
 			{
 				return false;
 			}
 
-			auto* l_x = (*l_array)[0].as<bcINT32>();
-			auto* l_y = (*l_array)[1].as<bcINT32>();
-			auto* l_z = (*l_array)[2].as<bcINT32>();
-			if (!l_x || !l_y || !l_z)
+			const auto [l_x_succeed, l_x] = (*l_array)[0].cast_to_int();
+			const auto [l_y_succeed, l_y] = (*l_array)[1].cast_to_int();
+			const auto [l_z_succeed, l_z] = (*l_array)[2].cast_to_int();
+			if (!l_x_succeed || !l_y_succeed || !l_z_succeed)
 			{
 				return false;
 			}
 
-			p_value.x = *l_x;
-			p_value.y = *l_y;
-			p_value.z = *l_z;
+			p_value.x = static_cast<bcINT32>(l_x);
+			p_value.y = static_cast<bcINT32>(l_y);
+			p_value.z = static_cast<bcINT32>(l_z);
 
 			return true;
 		}
@@ -305,31 +305,31 @@ namespace black_cat
 
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_vector4f& p_value) noexcept
 		{
-			const auto l_value = p_key_value.find(p_key);
-			if (l_value == std::cend(p_key_value))
+			const auto l_ite = p_key_value.find(p_key);
+			if (l_ite == std::cend(p_key_value))
 			{
 				return false;
 			}
 
-			auto* l_array = l_value->second.as<core::bc_vector<core::bc_any>>();
+			auto* l_array = l_ite->second.as<core::bc_vector<core::bc_any>>();
 			if (!l_array || l_array->size() < 4)
 			{
 				return false;
 			}
 
-			auto* l_x = (*l_array)[0].as<bcFLOAT>();
-			auto* l_y = (*l_array)[1].as<bcFLOAT>();
-			auto* l_z = (*l_array)[2].as<bcFLOAT>();
-			auto* l_w = (*l_array)[3].as<bcFLOAT>();
-			if (!l_x || !l_y || !l_z || !l_w)
+			const auto [l_x_succeed, l_x] = (*l_array)[0].cast_to_double();
+			const auto [l_y_succeed, l_y] = (*l_array)[1].cast_to_double();
+			const auto [l_z_succeed, l_z] = (*l_array)[2].cast_to_double();
+			const auto [l_w_succeed, l_w] = (*l_array)[3].cast_to_double();
+			if (!l_x_succeed || !l_y_succeed || !l_z_succeed || !l_w_succeed)
 			{
 				return false;
 			}
 
-			p_value.x = *l_x;
-			p_value.y = *l_y;
-			p_value.z = *l_z;
-			p_value.w = *l_w;
+			p_value.x = static_cast<bcFLOAT>(l_x);
+			p_value.y = static_cast<bcFLOAT>(l_y);
+			p_value.z = static_cast<bcFLOAT>(l_z);
+			p_value.w = static_cast<bcFLOAT>(l_w);
 
 			return true;
 		}
@@ -347,31 +347,31 @@ namespace black_cat
 
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_vector4i& p_value) noexcept
 		{
-			const auto l_value = p_key_value.find(p_key);
-			if (l_value == std::cend(p_key_value))
+			const auto l_ite = p_key_value.find(p_key);
+			if (l_ite == std::cend(p_key_value))
 			{
 				return false;
 			}
 
-			auto* l_array = l_value->second.as<core::bc_vector<core::bc_any>>();
+			auto* l_array = l_ite->second.as<core::bc_vector<core::bc_any>>();
 			if (!l_array || l_array->size() < 4)
 			{
 				return false;
 			}
 
-			auto* l_x = (*l_array)[0].as<bcINT32>();
-			auto* l_y = (*l_array)[1].as<bcINT32>();
-			auto* l_z = (*l_array)[2].as<bcINT32>();
-			auto* l_w = (*l_array)[3].as<bcINT32>();
-			if (!l_x || !l_y || !l_z || !l_w)
+			const auto [l_x_succeed, l_x] = (*l_array)[0].cast_to_int();
+			const auto [l_y_succeed, l_y] = (*l_array)[1].cast_to_int();
+			const auto [l_z_succeed, l_z] = (*l_array)[2].cast_to_int();
+			const auto [l_w_succeed, l_w] = (*l_array)[3].cast_to_int();
+			if (!l_x_succeed || !l_y_succeed || !l_z_succeed || !l_w_succeed)
 			{
 				return false;
 			}
 
-			p_value.x = *l_x;
-			p_value.y = *l_y;
-			p_value.z = *l_z;
-			p_value.w = *l_w;
+			p_value.x = static_cast<bcINT32>(l_x);
+			p_value.y = static_cast<bcINT32>(l_y);
+			p_value.z = static_cast<bcINT32>(l_z);
+			p_value.w = static_cast<bcINT32>(l_w);
 
 			return true;
 		}
@@ -389,31 +389,31 @@ namespace black_cat
 
 		inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_matrix3f& p_value) noexcept
 		{
-			const auto l_value = p_key_value.find(p_key);
-			if (l_value == std::cend(p_key_value))
+			const auto l_ite = p_key_value.find(p_key);
+			if (l_ite == std::cend(p_key_value))
 			{
 				return false;
 			}
 
-			auto* l_array = l_value->second.as<core::bc_vector<core::bc_any>>();
+			auto* l_array = l_ite->second.as<core::bc_vector<core::bc_any>>();
 			if (!l_array || l_array->size() < 6)
 			{
 				return false;
 			}
 
-			auto* l_xx = (*l_array)[0].as<bcFLOAT>();
-			auto* l_xy = (*l_array)[1].as<bcFLOAT>();
-			auto* l_xz = (*l_array)[2].as<bcFLOAT>();
-			auto* l_yx = (*l_array)[3].as<bcFLOAT>();
-			auto* l_yy = (*l_array)[4].as<bcFLOAT>();
-			auto* l_yz = (*l_array)[5].as<bcFLOAT>();
-			if (!l_xx || !l_xy || !l_xz || !l_yx || !l_yy || !l_yz)
+			auto [l_xx_succeed, l_xx] = (*l_array)[0].cast_to_double();
+			auto [l_xy_succeed, l_xy] = (*l_array)[1].cast_to_double();
+			auto [l_xz_succeed, l_xz] = (*l_array)[2].cast_to_double();
+			auto [l_yx_succeed, l_yx] = (*l_array)[3].cast_to_double();
+			auto [l_yy_succeed, l_yy] = (*l_array)[4].cast_to_double();
+			auto [l_yz_succeed, l_yz] = (*l_array)[5].cast_to_double();
+			if (!l_xx_succeed || !l_xy_succeed || !l_xz_succeed || !l_yx_succeed || !l_yy_succeed || !l_yz_succeed)
 			{
 				return false;
 			}
 
-			const core::bc_vector3f l_rotation_x(*l_xx, *l_xy, *l_xz);
-			const core::bc_vector3f l_rotation_y(*l_yx, *l_yy, *l_yz);
+			const core::bc_vector3f l_rotation_x(static_cast<bcFLOAT>(l_xx), static_cast<bcFLOAT>(l_xy), static_cast<bcFLOAT>(l_xz));
+			const core::bc_vector3f l_rotation_y(static_cast<bcFLOAT>(l_yx), static_cast<bcFLOAT>(l_yy), static_cast<bcFLOAT>(l_yz));
 
 			p_value.set_row(0, l_rotation_x);
 			p_value.set_row(1, l_rotation_y);

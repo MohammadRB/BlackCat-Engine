@@ -14,12 +14,16 @@ namespace black_cat
 	struct _bc_params_struct
 	{
 		BC_CBUFFER_ALIGN
-		bcUINT32 m_num_samples;
+		bcUINT32 m_num_rays;
+		bcUINT32 m_steps_per_ray;
+		bcFLOAT m_strength_per_ray;
 		bcFLOAT m_radius;
-		bcFLOAT m_intensity;
-		bcFLOAT m_bias;
 		BC_CBUFFER_ALIGN
-		bcFLOAT m_cot_fov;
+		bcFLOAT m_attenuation;
+		bcFLOAT m_bias;
+		bcFLOAT m_tan_fov;
+		BC_CBUFFER_ALIGN
+		core::bc_vector4f m_view_frustum_vectors[4];
 		BC_CBUFFER_ALIGN
 		bcFLOAT m_sin_cos[32][4];
 	};
@@ -28,11 +32,13 @@ namespace black_cat
 		: m_render_target_texture(p_render_target_texture),
 		  m_render_target_view(p_render_target_view),
 		  m_update_parameters(true),
-		  m_num_samples(8),
-		  m_radius(0.5f),
-		  m_intensity(1),
+		  m_num_rays(4),
+		  m_steps_per_ray(4),
+		  m_strength(1),
+		  m_radius(1.0f),
+		  m_attenuation(2.0f),
 		  m_bias(0.1f),
-		  m_cotangent_fov(0),
+		  m_tangent_fov(0),
 		  m_intermediate_texture_config()
 	{
 	}
@@ -109,11 +115,11 @@ namespace black_cat
 	{
 		p_context.m_render_thread.start();
 
-		const auto l_cot_fov = 1.f / std::tanf(*p_context.m_render_camera.get_fov() / 2);
-		if (m_update_parameters || l_cot_fov != m_cotangent_fov)
+		const auto l_tan_fov = std::tanf(*p_context.m_render_camera.get_fov() / 2);
+		if (m_update_parameters || l_tan_fov - m_tangent_fov > 0.001f)
 		{
-			m_cotangent_fov = l_cot_fov;
-			_update_parameters(p_context.m_render_thread);
+			m_tangent_fov = l_tan_fov;
+			_update_parameters(p_context.m_render_thread, p_context.m_render_camera);
 		}
 
 		p_context.m_render_thread.bind_render_pass_state(*m_ao_render_pass_state);
@@ -190,7 +196,7 @@ namespace black_cat
 			},
 			{
 				p_context.m_render_system.get_global_cbuffer(),
-				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::pixel, *m_params_buffer)
+				graphic::bc_constant_buffer_parameter(1, core::bc_enum::mask_or({graphic::bc_shader_type::vertex, graphic::bc_shader_type::pixel}), *m_params_buffer)
 			}
 		);
 		m_ao_render_state = p_context.m_render_system.create_render_state
@@ -221,13 +227,24 @@ namespace black_cat
 		m_ao_render_state.reset();
 	}
 
-	void bc_ambient_occlusion_pass::_update_parameters(game::bc_default_render_thread& p_render_thread)
+	void bc_ambient_occlusion_pass::_update_parameters(game::bc_default_render_thread& p_render_thread, const game::bc_camera_instance& p_camera)
 	{
-		_bc_params_struct l_parameters{ m_num_samples, m_radius, m_intensity, m_bias, m_cotangent_fov, {} };
+		_bc_params_struct l_parameters{ m_num_rays, m_steps_per_ray, m_strength / m_num_rays, m_radius, m_attenuation, m_bias, m_tangent_fov, {}, {} };
 
-		for (auto i = 0U; i < m_num_samples; ++i)
+		const auto l_camera_extends = p_camera.get_extends();
+		const auto l_top_left_vector = core::bc_vector3f::normalize(l_camera_extends[5] - l_camera_extends[1]);
+		const auto l_top_right_vector = core::bc_vector3f::normalize(l_camera_extends[6] - l_camera_extends[2]);
+		const auto l_bottom_right_vector = core::bc_vector3f::normalize(l_camera_extends[7] - l_camera_extends[3]);
+		const auto l_bottom_left_vector = core::bc_vector3f::normalize(l_camera_extends[4] - l_camera_extends[0]);
+
+		l_parameters.m_view_frustum_vectors[0] = core::bc_vector4f(l_top_left_vector, 1);
+		l_parameters.m_view_frustum_vectors[1] = core::bc_vector4f(l_top_right_vector, 1);
+		l_parameters.m_view_frustum_vectors[2] = core::bc_vector4f(l_bottom_right_vector, 1);
+		l_parameters.m_view_frustum_vectors[3] = core::bc_vector4f(l_bottom_left_vector, 1);
+
+		for (auto i = 0U; i < m_num_rays; ++i)
 		{
-			const auto l_radians = (static_cast<bcFLOAT>(i) / m_num_samples) * core::g_pi * 2;
+			const auto l_radians = (static_cast<bcFLOAT>(i) / m_num_rays) * core::g_pi * 2;
 			l_parameters.m_sin_cos[i][0] = std::sinf(l_radians);
 			l_parameters.m_sin_cos[i][1] = std::cosf(l_radians);
 		}
