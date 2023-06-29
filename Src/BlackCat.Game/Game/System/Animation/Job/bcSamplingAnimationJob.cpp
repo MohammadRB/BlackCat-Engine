@@ -13,7 +13,7 @@ namespace black_cat
 			m_play_mode(bc_animation_play_mode::loop),
 			m_local_time(0),
 			m_speed(1),
-			m_sampling_cache(core::bc_make_unique<ozz::animation::SamplingCache>(core::bc_alloc_type::unknown, 16)),
+			m_sampling_cache(core::bc_make_unique<ozz::animation::SamplingJob::Context>()),
 			m_locals(m_skeleton->get_native_handle().num_soa_joints())
 		{
 			m_sampling_cache->Resize(m_skeleton->get_num_joints());
@@ -62,7 +62,7 @@ namespace black_cat
 
 			ozz::animation::SamplingJob l_sampling_job;
 			l_sampling_job.animation = &m_animation->get_native_handle();
-			l_sampling_job.cache = m_sampling_cache.get();
+			l_sampling_job.context = m_sampling_cache.get();
 			l_sampling_job.ratio = l_local_time;
 			l_sampling_job.output = { (&*m_locals.begin()), m_locals.size() };
 

@@ -455,7 +455,7 @@ namespace black_cat
 		for (auto l_draw_call = 0U; l_draw_call < l_draw_call_count; ++l_draw_call)
 		{
 			const auto l_instance_count_drawn = l_draw_call * s_per_draw_flare_count;
-			const auto l_instance_count_to_draw = std::min(m_ready_to_draw_instances.size(), (l_draw_call + 1) * s_per_draw_flare_count);
+			const auto l_instance_count_to_draw = std::min<bcUINT32>(m_ready_to_draw_instances.size(), (l_draw_call + 1) * s_per_draw_flare_count);
 			std::transform
 			(
 				std::begin(m_ready_to_draw_instances) + l_instance_count_drawn,

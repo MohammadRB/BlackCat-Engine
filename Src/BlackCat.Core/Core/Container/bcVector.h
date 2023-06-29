@@ -191,7 +191,7 @@ namespace black_cat
 					return;
 				}
 
-				size_type l_new_capacity = std::pow(2, std::ceil(std::log2(std::max(m_capacity + p_count_to_add, 2U))));
+				size_type l_new_capacity = std::pow(2, std::ceil(std::log2(std::max(m_capacity + p_count_to_add, 2_uz))));
 
 				_change_capacity(l_new_capacity);
 			}

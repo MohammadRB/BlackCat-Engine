@@ -7,7 +7,7 @@ struct bc_vs_input
 	float3 m_position	: POSITION0;
 	float2 m_texcoord	: TEXCOORD0;
 	float3 m_normal		: NORMAL0;
-	float3 m_tangent		: TANGENT0;
+	float3 m_tangent	: TANGENT0;
 };
 
 struct bc_vs_output

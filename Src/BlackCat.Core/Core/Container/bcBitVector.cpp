@@ -202,7 +202,7 @@ namespace black_cat
 
 		void bc_bit_vector::resize(bcUINT32 p_capacity, bc_alloc_type p_alloc_type)
 		{
-			const auto l_new_block_count = static_cast<bcSIZE>(p_capacity / (sizeof(block_t) * 8)) + 1;
+			const bcUINT32 l_new_block_count = p_capacity / (sizeof(block_t) * 8) + 1;
 			if(l_new_block_count == m_block_count)
 			{
 				m_capacity = p_capacity;

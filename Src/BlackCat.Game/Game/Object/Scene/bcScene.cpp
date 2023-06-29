@@ -285,7 +285,7 @@ namespace black_cat
 				return;
 			}
 
-			const auto l_num_thread = std::min(core::bc_concurrency::hardware_worker_count(), l_px_actors.size() / 25U + 1);
+			const auto l_num_thread = std::min<bcUINT>(core::bc_concurrency::hardware_worker_count(), l_px_actors.size() / 25U + 1);
 			core::bc_concurrency::concurrent_for_each
 			(
 				l_num_thread,
@@ -344,7 +344,7 @@ namespace black_cat
 			{
 				platform::bc_hybrid_mutex_guard l_lock(m_changed_actors_lock, platform::bc_lock_operation::heavy);
 				
-				const auto l_num_thread = std::min(core::bc_concurrency::hardware_worker_count(), m_changed_actors.size() / 10U + 1);
+				const auto l_num_thread = std::min<bcUINT>(core::bc_concurrency::hardware_worker_count(), m_changed_actors.size() / 10U + 1);
 				core::bc_concurrency::concurrent_for_each
 				(
 					l_num_thread,

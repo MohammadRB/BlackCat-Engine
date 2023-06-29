@@ -55,7 +55,7 @@ namespace black_cat
 			bcFLOAT m_local_time;
 			bcFLOAT m_speed;
 			
-			core::bc_unique_ptr<ozz::animation::SamplingCache> m_sampling_cache;
+			core::bc_unique_ptr<ozz::animation::SamplingJob::Context> m_sampling_cache;
 			bc_animation_local_transform m_locals;
 		};
 

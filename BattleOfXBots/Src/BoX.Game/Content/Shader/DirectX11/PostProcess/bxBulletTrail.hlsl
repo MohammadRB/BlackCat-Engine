@@ -10,9 +10,9 @@ struct bullet
 
 cbuffer g_cb_params							: register(BC_RENDER_PASS_STATE_CB1)
 {
-	float g_length : packoffset(c0.x);
-	float g_width : packoffset(c0.y);
-	float g_intensity : packoffset(c0.z);
+	float g_length							: packoffset(c0.x);
+	float g_width							: packoffset(c0.y);
+	float g_intensity						: packoffset(c0.z);
 }
 
 StructuredBuffer<bullet> g_bullets			: register(BC_RENDER_PASS_STATE_T0);
@@ -30,18 +30,18 @@ static const float2 g_bullet_texcoords[] =
 
 struct bc_vs_output
 {
-	uint m_instance_index			: TEXCOORD0;
+	uint m_instance_index		: TEXCOORD0;
 };
 
 struct bc_gs_output
 {
-	float4 m_pos					: SV_Position;
-	float2 m_texcoord				: TEXCOORD0;
+	float4 m_pos				: SV_Position;
+	float2 m_texcoord			: TEXCOORD0;
 };
 
 struct bc_ps_output
 {
-	float4 m_color					: SV_Target;
+	float4 m_color				: SV_Target;
 };
 
 bc_vs_output bullet_trail_vs(uint p_instance_index : SV_InstanceID)

@@ -40,11 +40,11 @@ int WINAPI WinMain(HINSTANCE p_instance, HINSTANCE p_prev_instance, CHAR* p_cmd_
 		32,
 		16,
 		128,
-		static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
-		static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
-		static_cast<bcUINT32>(core::bc_mem_size::mb) * 128,
-		std::max(4U, l_hardware_info.m_processor_count),
-		std::max(4U, l_hardware_info.m_processor_count)
+		static_cast<bcSIZE>(core::bc_mem_size::mb) * 32,
+		static_cast<bcSIZE>(core::bc_mem_size::mb) * 32,
+		static_cast<bcSIZE>(core::bc_mem_size::mb) * 128,
+		std::max(4_uz, l_hardware_info.m_processor_count),
+		std::max(4_uz, l_hardware_info.m_processor_count)
 	);
 	game::bc_engine_application_parameter l_engine_app_parameters
 	(

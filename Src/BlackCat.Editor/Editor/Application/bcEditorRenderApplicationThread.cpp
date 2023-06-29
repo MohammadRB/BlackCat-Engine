@@ -73,11 +73,11 @@ namespace black_cat
 				32,
 				16,
 				128,
-				static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
-				static_cast<bcUINT32>(core::bc_mem_size::mb) * 32,
-				static_cast<bcUINT32>(core::bc_mem_size::mb) * 128,
-				std::max(4U, l_hardware_info.m_processor_count),
-				std::max(4U, l_hardware_info.m_processor_count)
+				static_cast<bcSIZE>(core::bc_mem_size::mb) * 32,
+				static_cast<bcSIZE>(core::bc_mem_size::mb) * 32,
+				static_cast<bcSIZE>(core::bc_mem_size::mb) * 128,
+				std::max(4_uz, l_hardware_info.m_processor_count),
+				std::max(4_uz, l_hardware_info.m_processor_count)
 			);
 			game::bc_engine_application_parameter l_engine_app_parameters
 			(
@@ -89,8 +89,8 @@ namespace black_cat
 			l_app->initialize(l_engine_app_parameters);
 			l_app->set_fps(60);
 
-			m_initialized.store(1);
-			m_result_code.store(l_app->run());
+			m_initialized.storeRelaxed(1);
+			m_result_code.storeRelaxed(l_app->run());
 
 			l_app->destroy();
 		}

@@ -58,7 +58,7 @@ namespace black_cat
 		class BC_GAME_DLL bc_render_thread_manager
 		{
 		public:
-			bc_render_thread_manager(bc_render_system& p_render_system, bcUINT32 p_thread_count);
+			bc_render_thread_manager(bc_render_system& p_render_system, bcUINT p_thread_count);
 
 			bc_render_thread_manager(bc_render_thread_manager&&) noexcept;
 
@@ -66,9 +66,9 @@ namespace black_cat
 
 			bc_render_thread_manager& operator=(bc_render_thread_manager&&) noexcept;
 			
-			bcUINT32 get_thread_count() const noexcept;
+			bcUINT get_thread_count() const noexcept;
 
-			bcUINT32 get_available_thread_count() const noexcept;
+			bcUINT get_available_thread_count() const noexcept;
 
 			bc_default_render_thread& get_default_render_thread() noexcept;
 			
@@ -96,7 +96,7 @@ namespace black_cat
 		private:
 			bc_default_render_thread m_default_render_thread;
 			core::bc_vector<_bc_render_thread_entry> m_threads;
-			mutable platform::bc_atomic<bcUINT32> m_available_threads_count;
+			mutable platform::bc_atomic<bcUINT> m_available_threads_count;
 			mutable platform::bc_mutex m_threads_mutex;
 			mutable platform::bc_condition_variable m_threads_cv;
 		};

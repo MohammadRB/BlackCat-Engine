@@ -46,15 +46,15 @@ namespace black_cat
 		// The number of elements to sort is limited to an even power of 2
 		// At minimum - m_sort_shader_group_size * m_sort_transpose_shader_group_size
 		// At maximum - m_sort_shader_group_size * m_sort_shader_group_size
-		static constexpr bcSIZE s_emitters_count = 128;
-		static constexpr bcSIZE s_particles_count = 32768;
-		static constexpr bcSIZE s_emission_shader_group_size = 1;
-		static constexpr bcSIZE s_simulation_shader_group_size = 1024;
-		static constexpr bcSIZE s_sort_shader_group_size = 1024;
-		static constexpr bcSIZE s_sort_transpose_shader_group_size = 32;
-		static constexpr bcSIZE s_sort_transpose_matrix_width = s_sort_shader_group_size;
-		static constexpr bcSIZE s_sort_transpose_matrix_height = s_particles_count / s_sort_shader_group_size;
-		static constexpr bcSIZE s_lights_count = 10;
+		static constexpr bcUINT s_emitters_count = 128;
+		static constexpr bcUINT s_particles_count = 32768;
+		static constexpr bcUINT s_emission_shader_group_size = 1;
+		static constexpr bcUINT s_simulation_shader_group_size = 1024;
+		static constexpr bcUINT s_sort_shader_group_size = 1024;
+		static constexpr bcUINT s_sort_transpose_shader_group_size = 32;
+		static constexpr bcUINT s_sort_transpose_matrix_width = s_sort_shader_group_size;
+		static constexpr bcUINT s_sort_transpose_matrix_height = s_particles_count / s_sort_shader_group_size;
+		static constexpr bcUINT s_lights_count = 10;
 		
 		bcINT32 m_dead_particles_initial_count = s_particles_count;
 		const game::bc_render_pass_variable_t m_render_target_texture_param;

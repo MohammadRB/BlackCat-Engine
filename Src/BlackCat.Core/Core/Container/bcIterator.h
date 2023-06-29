@@ -654,7 +654,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type operator ++(difference_type)
+			this_type operator ++(bcINT)
 			{
 				this_type l_old = *this;
 
@@ -693,7 +693,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type operator --(difference_type)
+			this_type operator --(bcINT)
 			{
 				this_type l_old = *this;
 
@@ -823,7 +823,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type operator ++(difference_type)
+			this_type operator ++(bcINT)
 			{
 				this_type l_old = *this;
 
@@ -854,7 +854,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type operator --(difference_type)
+			this_type operator --(bcINT)
 			{
 				this_type l_old = *this;
 
@@ -995,7 +995,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type operator ++(difference_type)
+			this_type operator ++(bcINT)
 			{
 				this_type l_old = *this;
 
@@ -1024,7 +1024,7 @@ namespace black_cat
 				return *this;
 			}
 
-			this_type operator --(difference_type)
+			this_type operator --(bcINT)
 			{
 				this_type l_old = *this;
 

@@ -1119,49 +1119,49 @@ namespace black_cat
 		}
 
 		template <class T>
-		T* operator+(const bc_handle_ptr<T>& p_first, bcINT p_offset)
+		T* operator+(const bc_handle_ptr<T>& p_first, bcINTPTR p_offset)
 		{
 			return p_first.get() + p_offset;
 		}
 
 		template <class T>
-		T* operator+(bcINT p_offset, const bc_handle_ptr<T>& p_first)
+		T* operator+(const bc_handle_ptr<T>& p_first, bcUINTPTR p_offset)
 		{
 			return p_first.get() + p_offset;
 		}
 
 		template <class T>
-		T* operator+(const bc_handle_ptr<T>& p_first, bcUINT p_offset)
+		T* operator+(bcINTPTR p_offset, const bc_handle_ptr<T>& p_first)
 		{
 			return p_first.get() + p_offset;
 		}
 
 		template <class T>
-		T* operator+(bcUINT p_offset, const bc_handle_ptr<T>& p_first)
+		T* operator+(bcUINTPTR p_offset, const bc_handle_ptr<T>& p_first)
 		{
 			return p_first.get() + p_offset;
 		}
 
 		template <class T>
-		T* operator-(const bc_handle_ptr<T>& p_first, bcINT p_offset)
+		T* operator-(const bc_handle_ptr<T>& p_first, bcINTPTR p_offset)
 		{
 			return p_first.get() - p_offset;
 		}
 
 		template <class T>
-		T* operator-(bcINT p_offset, const bc_handle_ptr<T>& p_first)
+		T* operator-(const bc_handle_ptr<T>& p_first, bcUINTPTR p_offset)
 		{
 			return p_first.get() - p_offset;
 		}
 
 		template <class T>
-		T* operator-(const bc_handle_ptr<T>& p_first, bcUINT p_offset)
+		T* operator-(bcINTPTR p_offset, const bc_handle_ptr<T>& p_first)
 		{
 			return p_first.get() - p_offset;
 		}
 
 		template <class T>
-		T* operator-(bcUINT p_offset, const bc_handle_ptr<T>& p_first)
+		T* operator-(bcUINTPTR p_offset, const bc_handle_ptr<T>& p_first)
 		{
 			return p_first.get() - p_offset;
 		}
