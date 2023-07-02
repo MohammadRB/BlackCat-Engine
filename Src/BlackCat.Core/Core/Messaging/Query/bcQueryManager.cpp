@@ -39,7 +39,7 @@ namespace black_cat
 			}
 		}
 		
-		bcUINT32 bc_query_manager::process_query_queue(const platform::bc_clock::update_param& p_clock)
+		bcUINT bc_query_manager::process_query_queue(const platform::bc_clock::update_param& p_clock)
 		{
 			{
 				platform::bc_shared_lock l_providers_guard(m_providers_lock);
@@ -116,10 +116,10 @@ namespace black_cat
 					? ++static_cast<query_list_t::iterator>(l_last_exist_query)
 					: std::begin(m_executed_queries);
 
-				const auto l_num_shared_queries = static_cast<bcSIZE>(std::distance(l_first_inserted_shared_query, std::end(m_executed_shared_queries)));
-				const auto l_num_queries = static_cast<bcSIZE>(std::distance(l_first_inserted_query, std::end(m_executed_queries)));
-				const auto l_num_shared_threads = std::min(bc_concurrency::hardware_worker_count(), l_num_shared_queries);
-				const auto l_num_thread = std::min(bc_concurrency::hardware_worker_count(), std::max(l_num_queries / 2U, 1U));
+				const auto l_num_shared_queries = std::distance(l_first_inserted_shared_query, std::end(m_executed_shared_queries));
+				const auto l_num_queries = std::distance(l_first_inserted_query, std::end(m_executed_queries));
+				const auto l_num_shared_threads = std::min(bc_concurrency::hardware_worker_count(), static_cast<bcUINT>(l_num_shared_queries));
+				const auto l_num_thread = std::min(bc_concurrency::hardware_worker_count(), std::max(static_cast<bcUINT>(l_num_queries) / 2U, 1U));
 
 				bc_concurrency::concurrent_for_each
 				(
@@ -155,11 +155,11 @@ namespace black_cat
 			}
 		}
 
-		bc_task<bcUINT32> bc_query_manager::process_query_queue_async(const platform::bc_clock::update_param& p_clock)
+		bc_task<bcUINT> bc_query_manager::process_query_queue_async(const platform::bc_clock::update_param& p_clock)
 		{
 			auto l_task = bc_concurrency::start_task
 			(
-				bc_delegate<bcUINT32()>
+				bc_delegate<bcUINT()>
 				(
 					[=, &p_clock]()
 					{

@@ -424,8 +424,8 @@ namespace black_cat
 
 		for(auto l_ite = 0U; l_ite < l_cascade_sizes.size(); l_ite += 2)
 		{
-			const auto l_cascade_distance = static_cast<bcUINT32>(l_cascade_sizes[l_ite].cast_to_int_throw());
-			const auto l_cascade_update_interval = static_cast<bcUINT32>(l_cascade_sizes[l_ite + 1].cast_to_int_throw());
+			const auto l_cascade_distance = static_cast<bcUINT>(l_cascade_sizes[l_ite].cast_to_int_throw());
+			const auto l_cascade_update_interval = static_cast<bcUINT>(l_cascade_sizes[l_ite + 1].cast_to_int_throw());
 			l_cascade_sizes_int.push_back(bc_cascade_shadow_map_trait{ l_cascade_distance, l_cascade_update_interval });
 		}
 
@@ -540,7 +540,7 @@ namespace black_cat
 		const auto l_upper_right_ray = l_camera_frustum_corners[6] - l_camera_frustum_corners[2];
 		const auto l_lower_right_ray = l_camera_frustum_corners[7] - l_camera_frustum_corners[3];
 
-		for (bcUINT32 l_cascade_index = 0; l_cascade_index < l_cascade_break_points.size() - 1; ++l_cascade_index)
+		for (bcUINT l_cascade_index = 0; l_cascade_index < l_cascade_break_points.size() - 1; ++l_cascade_index)
 		{
 			const auto l_mid_z = (l_cascade_break_points[l_cascade_index] + l_cascade_break_points[l_cascade_index + 1]) / 2;
 			const auto l_min_z = l_cascade_break_points[l_cascade_index];
@@ -647,7 +647,7 @@ namespace black_cat
 		const auto l_upper_right_ray = l_camera_extends[6] - l_camera_extends[2];
 		const auto l_lower_right_ray = l_camera_extends[7] - l_camera_extends[3];
 
-		for (bcUINT32 l_cascade_index = 0; l_cascade_index < l_cascade_break_points.size() - 1; ++l_cascade_index)
+		for (bcUINT l_cascade_index = 0; l_cascade_index < l_cascade_break_points.size() - 1; ++l_cascade_index)
 		{
 			const auto l_mid_z = (l_cascade_break_points[l_cascade_index] + l_cascade_break_points[l_cascade_index + 1]) / 2;
 			const auto l_min_z = l_cascade_break_points[l_cascade_index];

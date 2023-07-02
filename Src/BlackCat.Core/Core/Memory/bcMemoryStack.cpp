@@ -81,7 +81,7 @@ namespace black_cat
 			{
 				// Always keep size of n free-blocks unallocated so threads in pop method can do their job by adding new free-blocks
 				const bcSIZE l_free_blocks_size = (m_free_block_count.load(platform::bc_memory_order::seqcst) + m_max_num_thread) * sizeof(_bc_memory_stack_block);
-				const bcSIZE l_bytes_free = std::max((m_heap + m_capacity - l_local_top) - static_cast<bcINT32>(l_free_blocks_size), 0);
+				const bcSIZE l_bytes_free = std::max((m_heap + m_capacity - l_local_top) - l_free_blocks_size, 0_uz);
 
 				// No more free memory
 				if (l_size > l_bytes_free)

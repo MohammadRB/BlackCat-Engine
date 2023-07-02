@@ -26,7 +26,7 @@ namespace black_cat
 		public:
 			constexpr bc_const_span() noexcept;
 
-			constexpr bc_const_span(const value_type* p_data, bcUINT32 p_size) noexcept;
+			constexpr bc_const_span(const value_type* p_data, size_type p_size) noexcept;
 
 			constexpr bc_const_span(const bc_const_span& p_other) noexcept;
 
@@ -64,7 +64,7 @@ namespace black_cat
 
 		protected:
 			value_type* m_data;
-			bcUINT32 m_size;
+			size_type m_size;
 		};
 		
 		template<typename T>
@@ -96,7 +96,7 @@ namespace black_cat
 		public:
 			constexpr bc_span() noexcept;
 			
-			constexpr bc_span(value_type* p_data, bcUINT32 p_size) noexcept;
+			constexpr bc_span(value_type* p_data, size_type p_size) noexcept;
 
 			constexpr bc_span(const bc_span& p_other) noexcept;
 			
@@ -147,7 +147,7 @@ namespace black_cat
 		}
 
 		template<typename T>
-		constexpr bc_const_span<T>::bc_const_span(const value_type* p_data, bcUINT32 p_size) noexcept
+		constexpr bc_const_span<T>::bc_const_span(const value_type* p_data, size_type p_size) noexcept
 			: m_data(const_cast<value_type*>(p_data)),
 			m_size(p_size)
 		{
@@ -254,7 +254,7 @@ namespace black_cat
 		}
 
 		template<typename T>
-		constexpr bc_span<T>::bc_span(value_type* p_data, bcUINT32 p_size) noexcept
+		constexpr bc_span<T>::bc_span(value_type* p_data, size_type p_size) noexcept
 			: bc_const_span<T>(p_data, p_size)
 		{
 		}

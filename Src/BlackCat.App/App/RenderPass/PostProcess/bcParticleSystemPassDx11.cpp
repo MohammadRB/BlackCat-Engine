@@ -362,7 +362,7 @@ namespace black_cat
 			std::partial_sort
 			(
 				std::begin(m_lights_query_result),
-				std::begin(m_lights_query_result) + std::min(s_lights_count, m_lights_query_result.size()),
+				std::begin(m_lights_query_result) + std::min<bcUINT>(s_lights_count, m_lights_query_result.size()),
 				std::end(m_lights_query_result),
 				[&](const game::bc_light_instance& p_1, const game::bc_light_instance& p_2)
 				{
@@ -374,7 +374,7 @@ namespace black_cat
 		}
 		
 		_bc_lights_cbuffer_struct<s_lights_count> l_lights;
-		l_lights.m_light_count = std::min(s_lights_count, m_lights_query_result.size());
+		l_lights.m_light_count = std::min<bcUINT>(s_lights_count, m_lights_query_result.size());
 		for (auto l_light_ite = 0U; l_light_ite < l_lights.m_light_count; ++l_light_ite)
 		{
 			auto& l_light = *m_lights_query_result[l_light_ite].as_point_light();

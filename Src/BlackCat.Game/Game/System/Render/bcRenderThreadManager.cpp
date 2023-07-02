@@ -61,7 +61,7 @@ namespace black_cat
 			return m_thread;
 		}
 
-		bc_render_thread_manager::bc_render_thread_manager(bc_render_system& p_render_system, bcUINT32 p_thread_count)
+		bc_render_thread_manager::bc_render_thread_manager(bc_render_system& p_render_system, bcUINT p_thread_count)
 			: m_available_threads_count(p_thread_count)
 		{
 			auto& l_device = p_render_system.get_device();
@@ -69,7 +69,7 @@ namespace black_cat
 			m_default_render_thread.reset(l_device.get_default_pipeline());
 			m_threads.reserve(p_thread_count);
 
-			for(bcUINT32 i = 0; i < p_thread_count; ++i)
+			for(bcUINT i = 0; i < p_thread_count; ++i)
 			{
 				auto l_render_pipeline = l_device.create_pipeline();
 				auto l_command_executor = l_device.create_command_executor();
@@ -97,12 +97,12 @@ namespace black_cat
 			return *this;
 		}
 
-		bcUINT32 bc_render_thread_manager::get_thread_count() const noexcept
+		bcUINT bc_render_thread_manager::get_thread_count() const noexcept
 		{
 			return m_threads.size();
 		}
 
-		bcUINT32 bc_render_thread_manager::get_available_thread_count() const noexcept
+		bcUINT bc_render_thread_manager::get_available_thread_count() const noexcept
 		{
 			return m_available_threads_count.load(platform::bc_memory_order::relaxed);
 		}

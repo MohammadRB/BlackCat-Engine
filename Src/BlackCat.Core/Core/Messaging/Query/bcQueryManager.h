@@ -88,9 +88,9 @@ namespace black_cat
 			template<class TQuery>
 			void queue_shared_query(TQuery p_query);
 
-			bcUINT32 process_query_queue(const platform::bc_clock::update_param& p_clock);
+			bcUINT process_query_queue(const platform::bc_clock::update_param& p_clock);
 
-			bc_task<bcUINT32> process_query_queue_async(const platform::bc_clock::update_param& p_clock);
+			bc_task<bcUINT> process_query_queue_async(const platform::bc_clock::update_param& p_clock);
 
 			void clear_queries();
 			

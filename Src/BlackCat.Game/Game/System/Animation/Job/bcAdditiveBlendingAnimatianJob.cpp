@@ -74,7 +74,7 @@ namespace black_cat
 			ozz::animation::BlendingJob l_job;
 			l_job.layers = ozz::make_span(l_layers);
 			l_job.additive_layers = ozz::make_span(l_additive_layers);
-			l_job.bind_pose = m_skeleton->get_native_handle().joint_bind_poses();
+			l_job.rest_pose = m_skeleton->get_native_handle().joint_rest_poses();
 			l_job.output = ozz::make_span(m_locals);
 
 			return l_job.Run();

@@ -1499,7 +1499,7 @@ namespace black_cat
 							++l_adapter_rank;
 						}
 
-						return std::numeric_limits<bcSIZE>::max();
+						return std::numeric_limits<decltype(l_adapter_rank)>::max();
 					};
 
 					const auto l_adapter1_rank = l_get_adapter_rank(*p_adapter1.Get(), core::bc_make_cspan(l_preferred_adapters));

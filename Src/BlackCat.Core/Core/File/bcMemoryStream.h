@@ -234,7 +234,7 @@ namespace black_cat
 
 		inline bcSIZE bc_memory_stream::read(bcBYTE* p_buffer, bcSIZE p_bytes_to_read) const
 		{			
-			const auto l_bytes_can_read = static_cast<bcSIZE>(std::max(static_cast<bcINT64>(0), m_buffer_size - static_cast<bcINT64>(m_position)));
+			const auto l_bytes_can_read = static_cast<bcSIZE>(std::max(static_cast<bcINT64>(0), static_cast<bcINT64>(m_buffer_size) - static_cast<bcINT64>(m_position)));
 			const auto l_bytes_to_read = std::min(l_bytes_can_read, p_bytes_to_read);
 			std::memcpy(p_buffer, m_buffer + m_position, l_bytes_to_read);
 
@@ -243,7 +243,7 @@ namespace black_cat
 
 		inline bcSIZE bc_memory_stream::write(const bcBYTE* p_buffer, bcSIZE p_bytes_to_write)
 		{
-			const auto l_bytes_can_write = static_cast<bcSIZE>(std::max(static_cast<bcINT64>(0), m_buffer_size - static_cast<bcINT64>(m_position)));
+			const auto l_bytes_can_write = static_cast<bcSIZE>(std::max(static_cast<bcINT64>(0), static_cast<bcINT64>(m_buffer_size) - static_cast<bcINT64>(m_position)));
 			if(l_bytes_can_write < p_bytes_to_write)
 			{
 				_increase_capacity(p_bytes_to_write);

@@ -7,12 +7,12 @@ namespace black_cat
 {
 	namespace core
 	{
-		constexpr bcSIZE bc_thread_manager::s_thread_sleep_threshold = 20;
-		constexpr bcSIZE bc_thread_manager::s_push_thread_threshold = 5;
-		constexpr bcSIZE bc_thread_manager::s_pop_thread_threshold = 10000;
-		constexpr bcSIZE bc_thread_manager::s_thread_in_spin_count = 0;
+		constexpr bcUINT bc_thread_manager::s_thread_sleep_threshold = 20;
+		constexpr bcUINT bc_thread_manager::s_push_thread_threshold = 5;
+		constexpr bcUINT bc_thread_manager::s_pop_thread_threshold = 10000;
+		constexpr bcUINT bc_thread_manager::s_thread_in_spin_count = 0;
 		
-		bc_thread_manager::bc_thread_manager(bcSIZE p_hardware_thread_count, bcSIZE p_reserved_thread_count) noexcept
+		bc_thread_manager::bc_thread_manager(bcUINT p_hardware_thread_count, bcUINT p_reserved_thread_count) noexcept
 			: m_hardware_thread_count(0),
 			m_reserved_thread_count(0)
 		{
@@ -24,22 +24,22 @@ namespace black_cat
 			_stop_workers();
 		}
 
-		bcUINT32 bc_thread_manager::hardware_thread_count() const
+		bcUINT bc_thread_manager::hardware_thread_count() const
 		{
 			return m_hardware_thread_count;
 		}
 
-		bcUINT32 bc_thread_manager::max_thread_count() const
+		bcUINT bc_thread_manager::max_thread_count() const
 		{
 			return m_hardware_thread_count + m_reserved_thread_count;
 		}
 
-		bcUINT32 bc_thread_manager::spawned_thread_count() const
+		bcUINT bc_thread_manager::spawned_thread_count() const
 		{
 			return m_spawned_thread_count.load(platform::bc_memory_order::relaxed);
 		}
 
-		bcUINT32 bc_thread_manager::task_count() const
+		bcUINT bc_thread_manager::task_count() const
 		{
 			return m_task_count.load(platform::bc_memory_order::seqcst);
 		}
@@ -261,7 +261,7 @@ namespace black_cat
 			return m_queue->pop(p_task);
 		}
 
-		void bc_thread_manager::_worker_spin(bcUINT32 p_my_index)
+		void bc_thread_manager::_worker_spin(bcUINT p_my_index)
 		{
 			{
 				platform::bc_shared_lock l_guard(m_threads_mutex);

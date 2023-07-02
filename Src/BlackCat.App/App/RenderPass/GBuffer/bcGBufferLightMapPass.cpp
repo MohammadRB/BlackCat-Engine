@@ -60,9 +60,9 @@ namespace black_cat
 	struct _bc_cascade_shadow_map_struct
 	{
 		core::bc_array<core::bc_matrix4f, 4> m_view_projections;
-		bcSIZE m_shadow_map_size;
-		bcSIZE m_shadow_map_count;
-		core::bc_array<bcSIZE, 4> m_cascade_sizes;
+		bcUINT32 m_shadow_map_size;
+		bcUINT32 m_shadow_map_count;
+		core::bc_array<bcUINT32, 4> m_cascade_sizes;
 	};
 
 	struct _bc_parameters_cbuffer
@@ -378,9 +378,9 @@ namespace black_cat
 
 		_bc_parameters_cbuffer l_parameters_cbuffer_data
 		{
-			l_direct_lights.size(),
-			l_point_lights.size(),
-			l_spot_lights.size(),
+			static_cast<bcUINT32>(l_direct_lights.size()),
+			static_cast<bcUINT32>(l_point_lights.size()),
+			static_cast<bcUINT32>(l_spot_lights.size()),
 			(p_context.m_render_camera.get_view() * p_context.m_render_camera.get_projection()).inverse()
 		};
 

@@ -22,7 +22,7 @@ namespace black_cat
 		bc_actor_component_manager_container::bc_actor_component_manager_container() noexcept
 			: m_query_manager(nullptr),
 			m_game_system(nullptr),
-			m_my_index(-1U),
+			m_my_index(static_cast<bcUINT32>(-1)),
 			m_events_pool_capacity(0),
 			m_read_event_pool(0U),
 			m_write_event_pool(0U)

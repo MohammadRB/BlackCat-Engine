@@ -20,9 +20,9 @@ namespace black_cat
 
 			static void check_for_interruption();
 
-			static bcUINT32 hardware_worker_count();
+			static bcUINT hardware_worker_count();
 
-			static bcUINT32 spawned_worker_count();
+			static bcUINT spawned_worker_count();
 
 			template<typename T>
 			static bc_task<T> start_task(bc_delegate<T()> p_delegate, bc_task_creation_option p_option = bc_task_creation_option::policy_none);
@@ -52,20 +52,20 @@ namespace black_cat
 			static void concurrent_for_each(TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func);
 			
 			template<typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc>
-			static void concurrent_for_each(bcUINT32 p_thread_count, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func);
+			static void concurrent_for_each(bcUINT p_thread_count, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func);
 
 			template<typename TIte, typename TBodyFunc>
 			static void concurrent_for_each(TIte p_begin, TIte p_end, TBodyFunc p_body_func);
 
 			template<typename TIte, typename TBodyFunc>
-			static void concurrent_for_each(bcUINT32 p_thread_count, TIte p_begin, TIte p_end, TBodyFunc p_body_func);
+			static void concurrent_for_each(bcUINT p_thread_count, TIte p_begin, TIte p_end, TBodyFunc p_body_func);
 			
 			template<typename T>
 			static T* double_check_lock(platform::bc_atomic<T*>& p_pointer, platform::bc_mutex& p_mutex, const bc_delegate<T*()>& p_initializer);
 
 		private:
 			template<typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc>
-			static void _concurrent_for_each(bcUINT32 p_thread_count, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func);
+			static void _concurrent_for_each(bcUINT p_thread_count, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func);
 			
 			static bc_thread_manager* _get_thread_manager();
 		};
@@ -80,12 +80,12 @@ namespace black_cat
 			_get_thread_manager()->check_for_interruption();
 		}
 
-		inline bcUINT32 bc_concurrency::hardware_worker_count()
+		inline bcUINT bc_concurrency::hardware_worker_count()
 		{
 			return _get_thread_manager()->hardware_thread_count();
 		}
 
-		inline bcUINT32 bc_concurrency::spawned_worker_count()
+		inline bcUINT bc_concurrency::spawned_worker_count()
 		{
 			return _get_thread_manager()->spawned_thread_count();
 		}
@@ -147,7 +147,7 @@ namespace black_cat
 		}
 
 		template<typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc>
-		void bc_concurrency::concurrent_for_each(bcUINT32 p_thread_count, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func)
+		void bc_concurrency::concurrent_for_each(bcUINT p_thread_count, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func)
 		{
 			if(p_thread_count > 1)
 			{
@@ -190,7 +190,7 @@ namespace black_cat
 		}
 
 		template<typename TIte, typename TBodyFunc>
-		void bc_concurrency::concurrent_for_each(bcUINT32 p_thread_count, TIte p_begin, TIte p_end, TBodyFunc p_body_func)
+		void bc_concurrency::concurrent_for_each(bcUINT p_thread_count, TIte p_begin, TIte p_end, TBodyFunc p_body_func)
 		{
 			if(p_thread_count > 1)
 			{
@@ -241,7 +241,7 @@ namespace black_cat
 		}
 
 		template<typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc>
-		void bc_concurrency::_concurrent_for_each(bcUINT32 p_thread_count, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func)
+		void bc_concurrency::_concurrent_for_each(bcUINT p_thread_count, TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func)
 		{
 			struct for_each_state
 			{
@@ -271,14 +271,14 @@ namespace black_cat
 				}
 			};
 			
-			const bcUINT32 l_thread_count = std::max(p_thread_count, 1U);
-			const bcUINT32 l_job_count = std::distance(p_begin, p_end);
-			const bcUINT32 l_chunk_size = static_cast<bcUINT32>(std::ceil(static_cast<bcFLOAT>(l_job_count) / static_cast<bcFLOAT>(l_thread_count)));
+			const bcUINT l_thread_count = std::max(p_thread_count, 1U);
+			const bcUINT l_job_count = std::distance(p_begin, p_end);
+			const bcUINT l_chunk_size = static_cast<bcUINT>(std::ceil(static_cast<bcFLOAT>(l_job_count) / static_cast<bcFLOAT>(l_thread_count)));
 
 			bc_vector_frame<for_each_state> l_states;
 			l_states.reserve(l_thread_count);
 
-			for (bcUINT32 l_thread = 0; l_thread < l_thread_count; ++l_thread)
+			for (bcUINT l_thread = 0; l_thread < l_thread_count; ++l_thread)
 			{
 				auto l_begin_index = l_thread * l_chunk_size;
 				auto l_end_index = (l_thread + 1) * l_chunk_size;

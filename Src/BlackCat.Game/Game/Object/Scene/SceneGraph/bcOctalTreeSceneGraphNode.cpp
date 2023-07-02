@@ -65,7 +65,7 @@ namespace black_cat
 
 			const auto l_max_size = (std::max)((std::max)(l_half_extends.x, l_half_extends.y), l_half_extends.z) * 2;
 			const auto l_children_depth = static_cast<bcSIZE>(log2(l_max_size) - log2(m_min_size));
-			auto l_max_children_count = 1U;
+			auto l_max_children_count = 1_uz;
 			[&](bcSIZE p_depth, bcSIZE& p_result)
 			{
 				while (p_depth--)

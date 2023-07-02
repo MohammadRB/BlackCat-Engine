@@ -15,20 +15,20 @@ namespace black_cat
 #ifdef BC_MEMORY_LEAK_DETECTION
 		struct bc_mem_block_leak_information
 		{
-			static constexpr bcUINT32 s_filename_length = 20;
+			static constexpr bcUINT s_filename_length = 20;
 
 			void* m_pointer;
 			bc_alloc_type m_type;
-			bcSIZE m_number;
 			bcSIZE m_requested_size;
-			bcSIZE m_line_number;
+			bcUINT m_number;
+			bcUINT m_line_number;
 			bcCHAR m_file_name[s_filename_length];
 
 			bc_mem_block_leak_information()
 				: m_pointer(nullptr),
 				m_type(bc_alloc_type::unknown),
-				m_number(0),
 				m_requested_size(0),
+				m_number(0),
 				m_line_number(0),
 				m_file_name()
 			{
@@ -36,21 +36,21 @@ namespace black_cat
 
 			bc_mem_block_leak_information(void* p_pointer,
 				bc_alloc_type p_type,
-				bcSIZE p_number,
 				bcSIZE p_requested_size,
-				bcSIZE p_line_number,
+				bcUINT p_number,
+				bcUINT p_line_number,
 				const bcCHAR* p_file_name)
 				: m_pointer(p_pointer),
 				m_type(p_type),
-				m_number(p_number),
 				m_requested_size(p_requested_size),
+				m_number(p_number),
 				m_line_number(p_line_number),
 				m_file_name()
 			{
 				std::strcpy
 				(
 					m_file_name,
-					&p_file_name[std::max(std::strlen(p_file_name) - (s_filename_length - 1), 0U)]
+					&p_file_name[std::max(std::strlen(p_file_name) - (s_filename_length - 1), 0_uz)]
 				);
 			}
 		};
@@ -108,7 +108,7 @@ namespace black_cat
 			{
 				m_fsa_allocators = new bc_memory_extender<bc_memory_fixed_size>[m_fsa_allocators_count];
 
-				for (bcUINT32 l_ite = 0; l_ite < m_fsa_allocators_count; l_ite++)
+				for (bcUINT l_ite = 0; l_ite < m_fsa_allocators_count; l_ite++)
 				{
 					auto l_initialize_delegate = bc_delegate<bc_memory_fixed_size*()>
 					(
@@ -212,7 +212,7 @@ namespace black_cat
 			bc_memory_manager::m_instance.destroy();
 		}
 		
-		void* bc_memory_manager::alloc(bcSIZE p_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		void* bc_memory_manager::alloc(bcSIZE p_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT p_line) noexcept
 		{
 			BC_ASSERT(m_initialized);
 
@@ -287,8 +287,8 @@ namespace black_cat
 						(
 							l_result,
 							p_alloc_type,
-							l_alloc_number,
 							p_size,
+							l_alloc_number,
 							p_line,
 							p_file
 						)
@@ -328,7 +328,7 @@ namespace black_cat
 #endif
 		}
 		
-		void* bc_memory_manager::realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		void* bc_memory_manager::realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT p_line) noexcept
 		{
 			const auto* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 
@@ -348,7 +348,7 @@ namespace black_cat
 			return l_new_pointer;
 		}
 		
-		void* bc_memory_manager::aligned_alloc(bcSIZE p_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		void* bc_memory_manager::aligned_alloc(bcSIZE p_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT p_line) noexcept
 		{
 			BC_ASSERT(m_initialized);
 
@@ -424,8 +424,8 @@ namespace black_cat
 						(
 							l_result,
 							p_alloc_type,
-							l_alloc_number,
 							p_size,
+							l_alloc_number,
 							p_line,
 							p_file
 						)
@@ -464,7 +464,7 @@ namespace black_cat
 #endif
 		}
 		
-		void* bc_memory_manager::aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept
+		void* bc_memory_manager::aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT p_line) noexcept
 		{
 			const auto* l_block = bc_memblock::retrieve_mem_block(p_pointer);
 
@@ -530,7 +530,7 @@ namespace black_cat
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_total_size = 0;
 
-			for(bcUINT32 i = 0; i < m_fsa_allocators_count; i++)
+			for(bcUINT i = 0; i < m_fsa_allocators_count; i++)
 			{
 				l_total_size += m_fsa_allocators[i].tracer().total_size();
 			}
@@ -552,7 +552,7 @@ namespace black_cat
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_used_size = 0;
 
-			for(bcUINT32 i = 0; i < m_fsa_allocators_count; i++)
+			for(bcUINT i = 0; i < m_fsa_allocators_count; i++)
 			{
 				l_used_size += m_fsa_allocators[i].tracer().used_size();
 			}
@@ -574,7 +574,7 @@ namespace black_cat
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_wasted_size = 0;
 
-			for(bcUINT32 i = 0; i <m_fsa_allocators_count; i++)
+			for(bcUINT i = 0; i <m_fsa_allocators_count; i++)
 			{
 				l_wasted_size += m_fsa_allocators[i].tracer().overhead_size();
 			}
@@ -596,7 +596,7 @@ namespace black_cat
 #ifdef BC_MEMORY_TRACING
 			bcSIZE l_max_used_size = 0;
 
-			for(bcUINT32 i = 0; i < m_fsa_allocators_count; i++)
+			for(bcUINT i = 0; i < m_fsa_allocators_count; i++)
 			{
 				l_max_used_size += m_fsa_allocators[i].tracer().max_used_size();
 			}
@@ -614,7 +614,7 @@ namespace black_cat
 		}
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-		bcUINT32 bc_memory_manager::report_memory_leaks() const noexcept
+		bcUINT bc_memory_manager::report_memory_leaks() const noexcept
 		{
 			{
 				platform::bc_mutex_guard l_lock(m_leak_allocator_mutex);
@@ -639,18 +639,18 @@ namespace black_cat
 		}
 #endif
 
-		bcUINT32 bc_memory_manager::_fsa_max_size(bcUINT32 p_index) const noexcept
+		bcUINT bc_memory_manager::_fsa_max_size(bcUINT p_index) const noexcept
 		{
 			return m_fsa_allocators_start_size + p_index * m_fsa_step_size;
 		}
 
-		bcUINT32 bc_memory_manager::_get_fsa_index(bcUINT32 p_size) const noexcept
+		bcUINT bc_memory_manager::_get_fsa_index(bcUINT p_size) const noexcept
 		{
-			return static_cast<bcUINT32>
+			return static_cast<bcUINT>
 			(
 				std::ceilf
 				(
-					std::max(0, static_cast<bcINT32>(p_size) - static_cast<bcINT32>(m_fsa_allocators_start_size)) / static_cast<bcFLOAT>(m_fsa_step_size)
+					std::max(0, static_cast<bcINT>(p_size) - static_cast<bcINT>(m_fsa_allocators_start_size)) / static_cast<bcFLOAT>(m_fsa_step_size)
 				)
 			);
 		}

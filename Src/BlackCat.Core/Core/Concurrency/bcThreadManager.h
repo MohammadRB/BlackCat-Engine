@@ -43,7 +43,7 @@ namespace black_cat
 			class _thread_data;
 
 		public:
-			bc_thread_manager(bcUINT32 p_hardware_thread_count, bcUINT32 p_reserved_thread_count) noexcept;
+			bc_thread_manager(bcUINT p_hardware_thread_count, bcUINT p_reserved_thread_count) noexcept;
 
 			bc_thread_manager(const bc_thread_manager&) = delete;
 
@@ -55,13 +55,13 @@ namespace black_cat
 
 			bc_thread_manager& operator=(bc_thread_manager&& p_other) noexcept = delete;
 
-			bcUINT32 hardware_thread_count() const;
+			bcUINT hardware_thread_count() const;
 
-			bcUINT32 max_thread_count() const;
+			bcUINT max_thread_count() const;
 
-			bcUINT32 spawned_thread_count() const;
+			bcUINT spawned_thread_count() const;
 
-			bcUINT32 task_count() const;
+			bcUINT task_count() const;
 
 			void interrupt_thread(platform::bc_thread::id p_thread_id);
 
@@ -85,20 +85,20 @@ namespace black_cat
 
 			bool _pop_task_from_global_queue(task_wrapper_type& p_task);
 
-			void _worker_spin(bcUINT32 p_my_index);
+			void _worker_spin(bcUINT p_my_index);
 
-			static const bcSIZE s_push_thread_threshold;
-			static const bcSIZE s_pop_thread_threshold;
-			static const bcSIZE s_thread_sleep_threshold;
-			static const bcSIZE s_thread_in_spin_count;
+			static const bcUINT s_push_thread_threshold;
+			static const bcUINT s_pop_thread_threshold;
+			static const bcUINT s_thread_sleep_threshold;
+			static const bcUINT s_thread_in_spin_count;
 
-			bcUINT32 m_hardware_thread_count;
-			bcUINT32 m_reserved_thread_count;
+			bcUINT m_hardware_thread_count;
+			bcUINT m_reserved_thread_count;
 			platform::bc_atomic<bool> m_done;
-			platform::bc_atomic<bcUINT32> m_spawned_thread_count;
-			platform::bc_atomic<bcUINT32> m_thread_in_spin_count;
-			platform::bc_atomic<bcUINT32> m_task_count;
-			platform::bc_atomic<bcUINT32> m_low_contention_task_count;
+			platform::bc_atomic<bcUINT> m_spawned_thread_count;
+			platform::bc_atomic<bcUINT> m_thread_in_spin_count;
+			platform::bc_atomic<bcUINT> m_task_count;
+			platform::bc_atomic<bcUINT> m_low_contention_task_count;
 
 			platform::bc_mutex m_cvariable_mutex;
 			platform::bc_condition_variable m_cvariable;

@@ -27,9 +27,9 @@ namespace black_cat
 	using bcUINT32 = uint32_t;
 	using bcINT = int;
 	using bcUINT = unsigned int;
-	using bcFLOAT = float;
 	using bcINT64 = int64_t;
 	using bcUINT64 = uint64_t;
+	using bcFLOAT = float;
 	using bcDOUBLE = double;
 	using bcSIZE = size_t;
 	using bcPTRDIFF = ptrdiff_t;
@@ -42,4 +42,9 @@ namespace black_cat
 #else
 	using bcLPCESTR = bcLPCWSTR;
 #endif
+
+	inline bcSIZE operator "" _uz(unsigned long long int p_value)
+	{
+		return p_value;
+	}
 }
