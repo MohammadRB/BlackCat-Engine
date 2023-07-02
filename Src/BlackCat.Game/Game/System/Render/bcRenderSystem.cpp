@@ -476,7 +476,7 @@ namespace black_cat
 			m_compute_states.initialize(10, core::bc_alloc_type::program);
 			
 			m_content_stream = &p_parameter.m_content_stream;
-			m_thread_manager = core::bc_make_unique<bc_render_thread_manager>(core::bc_alloc_type::program , bc_render_thread_manager(*this, std::max(1U, l_hw_info.m_processor_count / 2)));
+			m_thread_manager = core::bc_make_unique<bc_render_thread_manager>(core::bc_alloc_type::program, bc_render_thread_manager(*this, std::max(1_uz, l_hw_info.m_processor_count / 2)));
 			m_material_manager = core::bc_make_unique<bc_material_manager>(core::bc_alloc_type::program, bc_material_manager(*m_content_stream, *this, p_parameter.m_physics_system));
 			m_decal_manager = core::bc_make_unique<bc_decal_manager>(core::bc_alloc_type::program, bc_decal_manager(*m_material_manager));
 			m_particle_manager = core::bc_make_unique<bc_particle_manager>(core::bc_alloc_type::program);

@@ -209,3 +209,6 @@ Release/
 *.Debug/
 *.Develope/
 *.Release/
+_Debug/
+_Develope/
+_Release/

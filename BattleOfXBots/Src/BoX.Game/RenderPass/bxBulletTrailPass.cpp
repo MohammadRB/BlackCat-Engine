@@ -258,7 +258,7 @@ namespace box
 		if(!m_bullets_buffer->is_valid() || m_bullets.size() > l_buffer_capacity)
 		{
 			auto& l_device = p_context.m_render_system.get_device();
-			const auto l_new_buffer_capacity = std::max(50U, m_bullets.size());
+			const auto l_new_buffer_capacity = std::max<bcUINT>(50U, m_bullets.size());
 			const auto l_bullets_buffer_config = graphic::bc_graphic_resource_builder()
 				.as_resource()
 				.as_buffer(l_new_buffer_capacity, sizeof(_bx_bullet), graphic::bc_resource_usage::gpu_rw, graphic::bc_resource_view_type::shader)

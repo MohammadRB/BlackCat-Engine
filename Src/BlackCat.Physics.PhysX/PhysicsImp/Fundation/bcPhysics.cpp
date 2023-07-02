@@ -657,7 +657,7 @@ namespace black_cat
 			l_buffer_pack.m_collection = physx::PxSerialization::createCollectionFromBinary(l_aligned_buffer, *l_buffer_pack.m_registry);
 			l_buffer_pack.m_collection_deserialize_buffer = l_aligned_buffer;
 
-			return bc_serialize_buffer(l_buffer_pack);;
+			return bc_serialize_buffer(l_buffer_pack);
 		}
 
 		template<>

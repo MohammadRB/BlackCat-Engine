@@ -75,17 +75,17 @@ namespace black_cat
 				return bc_memory_manager::m_instance;
 			}
 
-			void* alloc(bcSIZE p_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
+			void* alloc(bcSIZE p_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT p_line) noexcept;
 
 			void free(void* p_pointer) noexcept;
 
-			void* realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
+			void* realloc(void* p_pointer, bcSIZE p_new_size, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT p_line) noexcept;
 
-			void* aligned_alloc(bcSIZE p_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
+			void* aligned_alloc(bcSIZE p_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT p_line) noexcept;
 
 			void aligned_free(void* p_pointer) noexcept;
 			
-			void* aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT32 p_line) noexcept;
+			void* aligned_realloc(void* p_pointer, bcSIZE p_new_size, bcUINT8 p_alignment, bc_alloc_type p_alloc_type, const bcCHAR* p_file, bcUINT p_line) noexcept;
 
 #ifdef BC_MEMORY_DEFRAG
 			void register_pointer_in_movable_allocators(void** p_pointer) noexcept;
@@ -104,13 +104,13 @@ namespace black_cat
 			bcSIZE get_max_used_size() const noexcept;
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			bcUINT32 report_memory_leaks() const noexcept;
+			bcUINT report_memory_leaks() const noexcept;
 #endif
 
 		private:
-			bcUINT32 _fsa_max_size(bcUINT32 p_index) const noexcept;
+			bcUINT _fsa_max_size(bcUINT p_index) const noexcept;
 
-			bcUINT32 _get_fsa_index(bcUINT32 p_size) const noexcept;
+			bcUINT _get_fsa_index(bcUINT p_size) const noexcept;
 
 			// We don't use static pointer because it is possible after we free pointer on exit, some call to free be called
 			static bc_memory_manager m_instance;
@@ -118,7 +118,7 @@ namespace black_cat
 			bcSIZE m_fsa_allocators_start_size;
 			bcSIZE m_fsa_allocators_count;
 			bcSIZE m_fsa_step_size;
-			bcUINT32 m_worker_frame_allocators_count;
+			bcUINT m_worker_frame_allocators_count;
 			bool m_initialized;
 
 			bc_memory_extender<bc_memory_fixed_size>* m_fsa_allocators;
@@ -128,11 +128,11 @@ namespace black_cat
 			bc_memory_heap* m_heap_allocator;
 			bc_memory_crt* m_crt_allocator;
 
-			platform::bc_atomic<bcUINT32> m_last_used_frame_allocator;
+			platform::bc_atomic<bcUINT> m_last_used_frame_allocator;
 			platform::bc_thread_local<bc_memory_stack1> m_my_frame_allocator;
 
 #ifdef BC_MEMORY_LEAK_DETECTION
-			platform::bc_atomic<bcUINT32> m_allocation_count;
+			platform::bc_atomic<bcUINT> m_allocation_count;
 			mutable platform::bc_mutex m_leak_allocator_mutex;
 			std::unordered_map<void*, bc_mem_block_leak_information>* m_leak_allocator;
 #endif

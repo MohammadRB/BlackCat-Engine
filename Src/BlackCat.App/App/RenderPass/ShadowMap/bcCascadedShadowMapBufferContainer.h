@@ -40,9 +40,9 @@ namespace black_cat
 
 	struct bc_cascaded_shadow_map_buffer_container::entry
 	{
-		bcSIZE m_shadow_map_size;
-		bcSIZE m_shadow_map_count;
-		core::bc_vector_frame<bcSIZE> m_cascade_sizes;
+		bcUINT m_shadow_map_size;
+		bcUINT m_shadow_map_count;
+		core::bc_vector_frame<bcUINT> m_cascade_sizes;
 		core::bc_vector_frame<core::bc_matrix4f> m_view_projections;
 		graphic::bc_resource_view m_resource_view;
 	};
