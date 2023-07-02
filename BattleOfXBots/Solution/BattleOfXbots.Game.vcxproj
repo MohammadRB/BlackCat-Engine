@@ -193,6 +193,9 @@
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Sound.Fmod.lib;BlackCat.Game.lib;BlackCat.App.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy ..\Src\BoX.Game\Content\*.* $(SolutionDir)\$(Configuration)\Content\ /E /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Develope|x64'">
     <ClCompile>
@@ -214,6 +217,9 @@
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Sound.Fmod.lib;BlackCat.Game.lib;BlackCat.App.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy ..\Src\BoX.Game\Content\*.* $(SolutionDir)\$(Configuration)\Content\ /E /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -265,6 +271,9 @@
       <AdditionalLibraryDirectories>..\..\Solution\VS\$(Configuration);..\..\3rdParty;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>BlackCat.Core.Platform.Win32.lib;BlackCat.Core.lib;BlackCat.Platform.Win32.lib;BlackCat.Graphic.DirectX11.lib;BlackCat.Physics.PhysX.lib;BlackCat.Sound.Fmod.lib;BlackCat.Game.lib;BlackCat.App.lib;3rdParty\ChakraCore\Lib\$(Platform)_$(Configuration)\ChakraCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy ..\Src\BoX.Game\Content\*.* $(SolutionDir)\$(Configuration)\Content\ /E /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Solution\VS\BlackCat.App.vcxproj">

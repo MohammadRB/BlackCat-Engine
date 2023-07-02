@@ -23,8 +23,8 @@ namespace black_cat
 {
 	struct bc_cascade_shadow_map_trait
 	{
-		bcUINT32 m_distance;
-		bcUINT32 m_update_interval;
+		bcUINT m_distance;
+		bcUINT m_update_interval;
 	};
 
 	class _bc_cascaded_shadow_map_light_state
@@ -41,13 +41,13 @@ namespace black_cat
 	{
 	public:
 		const bcFLOAT m_cascade_cameras_distance = 100;
-		bcUINT32 m_instance_count;
-		bcUINT32 m_back_buffer_width;
-		bcUINT32 m_back_buffer_height;
+		bcUINT m_instance_count;
+		bcUINT m_back_buffer_width;
+		bcUINT m_back_buffer_height;
 		
 		game::bc_render_pass_variable_t m_output_depth_buffers_share_slot;
 		bcFLOAT m_shadow_map_multiplier;
-		bcUINT32 m_shadow_map_size;
+		bcUINT m_shadow_map_size;
 		core::bc_vector<bc_cascade_shadow_map_trait> m_cascade_sizes;
 		core::bc_vector<std::tuple<bcUBYTE, bcUBYTE>> m_cascade_update_intervals;
 
@@ -60,7 +60,7 @@ namespace black_cat
 		core::bc_vector_movable<game::bci_camera::extend> m_captured_cascades;
 		core::bc_vector_movable<physics::bc_bound_box> m_captured_boxes;
 		
-		void wait_for_sync_flag(bcUINT32 p_sync_id) noexcept
+		void wait_for_sync_flag(bcUINT p_sync_id) noexcept
 		{
 			m_sync_flag.fetch_add(1);
 
@@ -75,7 +75,7 @@ namespace black_cat
 		}
 
 	private:
-		platform::bc_atomic<bcUINT32> m_sync_flag{ 0 };
+		platform::bc_atomic<bcUINT> m_sync_flag{ 0 };
 	};
 
 	class bc_cascaded_shadow_map_pass_init_frame_context : public game::bc_concurrent_render_pass_render_context
