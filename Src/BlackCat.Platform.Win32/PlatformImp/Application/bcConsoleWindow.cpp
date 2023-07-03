@@ -1,4 +1,4 @@
-// [10/24/2016 MRB]
+// [24/10/2016 MRB]
 
 #include "PlatformImp/PlatformImpPCH.h"
 #include "Core/Messaging/Event/bcEventManager.h"

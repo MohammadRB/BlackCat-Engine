@@ -1,4 +1,4 @@
-// [03/23/2016 MRB]
+// [23/03/2016 MRB]
 
 #include "Core/CorePCH.h"
 #include "Core/Utility/bcLogger.h"

@@ -1,4 +1,4 @@
-// [03/26/2016 MRB]
+// [26/03/2016 MRB]
 
 #include "CorePlatformImp/CorePlatformImpPCH.h"
 #include "CorePlatformImp/bcExport.h"

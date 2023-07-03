@@ -1,4 +1,4 @@
-// [03/17/2017 MRB]
+// [17/03/2017 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
 #include "GraphicImp/bcExport.h"

@@ -1,4 +1,4 @@
-// [04/22/2022 MRB]
+// [22/04/2022 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
 #include "GraphicImp/Device/Query/bcDeviceClockQuery.h"

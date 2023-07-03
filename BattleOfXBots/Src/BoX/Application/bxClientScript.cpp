@@ -1,4 +1,4 @@
-// [06/26/2021 MRB]
+// [26/06/2021 MRB]
 
 #include "PlatformImp/Script/bcScriptString.h"
 #include "Game/System/Input/bcGlobalConfig.h"
