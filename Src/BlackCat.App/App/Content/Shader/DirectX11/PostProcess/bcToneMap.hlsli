@@ -1,4 +1,4 @@
-// [02/18/2023 MRB]
+// [18/02/2023 MRB]
 // HDR Rendering based on MJP Sample
 
 static const float g_middle_grey = 0.6f;

@@ -1,13 +1,10 @@
-// [03/31/2016 MRB]
+// [31/03/2016 MRB]
 
 #pragma once
 
 #include "CorePlatform/File/bcFileInfo.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
-	{
 		
-	}
 }

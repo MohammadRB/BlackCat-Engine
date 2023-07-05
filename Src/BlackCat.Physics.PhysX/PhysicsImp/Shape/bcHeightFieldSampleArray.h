@@ -1,4 +1,4 @@
-// [02/14/2021 MRB]
+// [14/02/2021 MRB]
 
 #pragma once
 
@@ -8,16 +8,13 @@
 #include "Physics/Shape/bcHeightFieldSampleArray.h"
 #include "PhysicsImp/PhysicsImpPCH.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	template<>
+	struct bc_platform_height_field_sample_array_pack< g_api_physx > : bc_platform_physics_reference_pack<g_api_physx>
 	{
-		template<>
-		struct bc_platform_height_field_sample_array_pack< g_api_physx > : bc_platform_physics_reference_pack<g_api_physx>
-		{
-			bcUINT32 m_num_rows;
-			bcUINT32 m_num_columns;
-			core::bc_unique_ptr<physx::PxHeightFieldSample> m_buffer;
-		};
-	}
+		bcUINT32 m_num_rows;
+		bcUINT32 m_num_columns;
+		core::bc_unique_ptr<physx::PxHeightFieldSample> m_buffer;
+	};
 }

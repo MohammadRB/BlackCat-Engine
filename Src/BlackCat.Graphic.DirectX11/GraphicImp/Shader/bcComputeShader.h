@@ -1,4 +1,4 @@
-// [01/27/2016 MRB]
+// [27/01/2016 MRB]
 
 #pragma once
 
@@ -10,14 +10,11 @@
 #include "Graphic/Shader/bcComputeShader.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<>
+	struct bc_platform_compute_shader_pack<g_api_dx11> : bci_platform_shader_pack<g_api_dx11>
 	{
-		template<>
-		struct bc_platform_compute_shader_pack<g_api_dx11> : bci_platform_shader_pack<g_api_dx11>
-		{
-			ID3D11ComputeShader* m_shader;
-		};
-	}
+		ID3D11ComputeShader* m_shader;
+	};
 }

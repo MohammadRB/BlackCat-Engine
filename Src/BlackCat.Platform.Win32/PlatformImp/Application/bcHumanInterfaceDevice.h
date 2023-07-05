@@ -1,4 +1,4 @@
-// [04/15/2016 MRB]
+// [15/04/2016 MRB]
 
 #pragma once
 
@@ -8,10 +8,7 @@
 
 #include "Platform/Application/bcHumanInterfaceDevice.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
-	{
 		
-	}
 }

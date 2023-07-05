@@ -1,4 +1,4 @@
-// [03/09/2022 MRB]
+// [09/03/2022 MRB]
 
 #pragma once
 
@@ -8,15 +8,12 @@
 #include "SoundImp/bcExport.h"
 #include "3rdParty/FMOD/Include/fmod.hpp"
 
-namespace black_cat
+namespace black_cat::sound
 {
-	namespace sound
+	template<>
+	struct bc_platform_device_pack<bc_sound_api::fmod>
 	{
-		template<>
-		struct bc_platform_device_pack<bc_sound_api::fmod>
-		{
-			FMOD::System* m_system{ nullptr };
-			FMOD_MODE m_default_rolloff;
-		};
-	}
+		FMOD::System* m_system{ nullptr };
+		FMOD_MODE m_default_rolloff;
+	};
 }

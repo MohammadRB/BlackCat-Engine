@@ -1,4 +1,4 @@
-// [02/12/2016 MRB]
+// [12/02/2016 MRB]
 
 #pragma once
 
@@ -11,10 +11,7 @@
 
 #include "Graphic/Resource/bcResourceBuilder.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
-	{
 		
-	}
 }

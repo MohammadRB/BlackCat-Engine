@@ -1,4 +1,4 @@
-// [12/18/2021 MRB]
+// [18/12/2021 MRB]
 
 #pragma once
 
@@ -6,9 +6,6 @@
 
 #include "Graphic/Shader/Parameter/bcRenderTargetViewParameter.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
-	{
-	}
 }

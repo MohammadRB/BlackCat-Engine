@@ -1,4 +1,4 @@
-// [04/28/2021 MRB]
+// [28/04/2021 MRB]
 
 #pragma once
 
@@ -8,14 +8,11 @@
 #include "Graphic/Device/Query/bcDeviceOcclusionQuery.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<>
+	struct bc_platform_device_occlusion_query_pack<g_api_dx11> : public bc_platform_device_reference_pack<g_api_dx11>
 	{
-		template<>
-		struct bc_platform_device_occlusion_query_pack<g_api_dx11> : public bc_platform_device_reference_pack<g_api_dx11>
-		{
-			ID3D11Query* m_query;
-		};
-	}
+		ID3D11Query* m_query;
+	};
 }

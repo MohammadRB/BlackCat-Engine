@@ -1,4 +1,4 @@
-// [06/13/2021 MRB]
+// [13/06/2021 MRB]
 
 #include <memory>
 #include "CorePlatformImp/Utility/bcHardwareInfo.h"

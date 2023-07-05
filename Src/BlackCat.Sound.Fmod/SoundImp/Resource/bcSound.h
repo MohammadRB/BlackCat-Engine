@@ -1,4 +1,4 @@
-// [03/10/2022 MRB]
+// [10/03/2022 MRB]
 
 #pragma once
 
@@ -7,13 +7,10 @@
 
 #include "Sound/Resource/bcSound.h"
 
-namespace black_cat
+namespace black_cat::sound
 {
-	namespace sound
+	template<>
+	struct bc_platform_sound_pack<bc_sound_api::fmod> : bc_platform_sound_reference_pack<bc_sound_api::fmod>
 	{
-		template<>
-		struct bc_platform_sound_pack<bc_sound_api::fmod> : bc_platform_sound_reference_pack<bc_sound_api::fmod>
-		{
-		};
-	}
+	};
 }

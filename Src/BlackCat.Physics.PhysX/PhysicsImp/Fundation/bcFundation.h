@@ -1,4 +1,4 @@
-// [12/17/2016 MRB]
+// [17/12/2016 MRB]
 
 #pragma once
 
@@ -6,10 +6,7 @@
 
 #include "Physics/Fundation/bcFundation.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
-	{
 		
-	}
 }

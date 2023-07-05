@@ -1,4 +1,4 @@
- // [10/21/2016 MRB]
+ // [21/10/2016 MRB]
 
 #pragma once
 
@@ -20,117 +20,114 @@
 #include "PlatformImp/Script/bcScriptPrototypeBuilder.h"
 #include "Game/bcExport.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	class bc_script_binding;
+
+	enum class bc_script_context : bcUBYTE
 	{
-		class bc_script_binding;
+		app = 0,
+		_count = 1
+	};
 
-		enum class bc_script_context : bcUBYTE
+	class BC_GAME_DLL bc_script_system : public core::bc_initializable<bool>
+	{
+	public:
+		bc_script_system();
+
+		bc_script_system(bc_script_system&&) noexcept;
+
+		~bc_script_system();
+
+		bc_script_system& operator=(bc_script_system&&) noexcept;
+
+		platform::bc_script_context& get_app_context() noexcept
 		{
-			app = 0,
-			_count = 1
-		};
-
-		class BC_GAME_DLL bc_script_system : public core::bc_initializable<bool>
-		{
-		public:
-			bc_script_system();
-
-			bc_script_system(bc_script_system&&) noexcept;
-
-			~bc_script_system();
-
-			bc_script_system& operator=(bc_script_system&&) noexcept;
-
-			platform::bc_script_context& get_app_context() noexcept
-			{
-				return *m_app_context;
-			}
+			return *m_app_context;
+		}
 			
-			const platform::bc_script_context& get_app_context() const noexcept
-			{
-				return m_app_context.get();
-			}
+		const platform::bc_script_context& get_app_context() const noexcept
+		{
+			return m_app_context.get();
+		}
 
-			bc_script_binding get_script_binder() const noexcept;
+		bc_script_binding get_script_binder() const noexcept;
 
-			void set_script_binder(bc_script_binding&& p_bindings);
+		void set_script_binder(bc_script_binding&& p_bindings);
 
-			/**
+		/**
 			 * \brief Throw bc_script_compile_exception if compilation fail
 			 * \param p_context 
 			 * \param p_script_file 
 			 * \return 
 			 */
-			platform::bc_script_bytecode load_script(bc_script_context p_context, const bcECHAR* p_script_file);
+		platform::bc_script_bytecode load_script(bc_script_context p_context, const bcECHAR* p_script_file);
 
-			/**
+		/**
 			 * \brief Return bc_script_error if execution fail
 			 * \param p_context 
 			 * \param p_script 
 			 * \return 
 			 */
-			[[maybe_unused]]
-			platform::bc_script_variable run_script(bc_script_context p_context, const bcWCHAR* p_script);
+		[[maybe_unused]]
+		platform::bc_script_variable run_script(bc_script_context p_context, const bcWCHAR* p_script);
 
-			/**
+		/**
 			* \brief Return bc_script_error if execution fail
 			* \param p_context
 			* \param p_script
 			* \return
 			*/
-			[[maybe_unused]]
-			platform::bc_script_variable run_script(bc_script_context p_context, platform::bc_script_bytecode& p_script);
+		[[maybe_unused]]
+		platform::bc_script_variable run_script(bc_script_context p_context, platform::bc_script_bytecode& p_script);
 
-			/**
+		/**
 			 * \brief Throw bc_script_compile_exception or bc_script_execution_exception if fail
 			 * \param p_context 
 			 * \param p_script 
 			 * \return 
 			 */
-			[[maybe_unused]]
-			platform::bc_script_variable run_script_throw(bc_script_context p_context, const bcWCHAR* p_script);
+		[[maybe_unused]]
+		platform::bc_script_variable run_script_throw(bc_script_context p_context, const bcWCHAR* p_script);
 
-			/**
+		/**
 			 * \brief Throw bc_script_execution_exception if fail
 			 * \param p_context 
 			 * \param p_script 
 			 * \return 
 			 */
-			[[maybe_unused]]
-			platform::bc_script_variable run_script_throw(bc_script_context p_context, platform::bc_script_bytecode& p_script);
+		[[maybe_unused]]
+		platform::bc_script_variable run_script_throw(bc_script_context p_context, platform::bc_script_bytecode& p_script);
 
-			core::bc_wstring stringify(platform::bc_script_variable& p_value);
+		core::bc_wstring stringify(platform::bc_script_variable& p_value);
 
-			void interrupt_script_execution();
+		void interrupt_script_execution();
 
-			void collect_garbage();
+		void collect_garbage();
 
-			bcSIZE memory_usage() const;
+		bcSIZE memory_usage() const;
 
-			void update(platform::bc_clock::update_param p_clock_update_param);
+		void update(platform::bc_clock::update_param p_clock_update_param);
 
-		protected:
-			void _initialize(bool) override;
+	protected:
+		void _initialize(bool) override;
 
-			void _destroy() override;
+		void _destroy() override;
 			
-		private:
-			platform::bc_script_context& _get_context(bc_script_context p_context)
+	private:
+		platform::bc_script_context& _get_context(bc_script_context p_context)
+		{
+			switch (p_context)
 			{
-				switch (p_context)
-				{
-				case bc_script_context::app:
-					return m_app_context.get();
-				default: 
-					throw bc_invalid_argument_exception("Invalid script context");
-				}
+			case bc_script_context::app:
+				return m_app_context.get();
+			default: 
+				throw bc_invalid_argument_exception("Invalid script context");
 			}
+		}
 
-			core::bc_unique_ptr<platform::bc_script_runtime> m_script_runtime;
-			platform::bc_script_context_ref m_app_context;
-			platform::bc_script_function_wrapper_ref<platform::bc_script_string(platform::bc_script_variable)> m_stringify_function;
-		};
-	}
+		core::bc_unique_ptr<platform::bc_script_runtime> m_script_runtime;
+		platform::bc_script_context_ref m_app_context;
+		platform::bc_script_function_wrapper_ref<platform::bc_script_string(platform::bc_script_variable)> m_stringify_function;
+	};
 }

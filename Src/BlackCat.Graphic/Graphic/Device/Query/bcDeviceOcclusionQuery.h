@@ -1,4 +1,4 @@
-// [04/28/2021 MRB]
+// [28/04/2021 MRB]
 
 #pragma once
 
@@ -6,51 +6,48 @@
 #include "Graphic/bcDeviceReference.h"
 #include "Graphic/bcRenderApi.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<bc_render_api TApi>
+	struct bc_platform_device_occlusion_query_pack
 	{
-		template<bc_render_api TApi>
-		struct bc_platform_device_occlusion_query_pack
-		{
-		};
+	};
 		
-		template<bc_render_api TApi>
-		class bc_platform_device_occlusion_query : public bc_platform_device_reference<TApi>
+	template<bc_render_api TApi>
+	class bc_platform_device_occlusion_query : public bc_platform_device_reference<TApi>
+	{
+	public:
+		using platform_pack = bc_platform_device_occlusion_query_pack<TApi>;
+
+	public:
+		bc_platform_device_occlusion_query();
+			
+		explicit bc_platform_device_occlusion_query(platform_pack& p_pack);
+
+		bc_platform_device_occlusion_query(const bc_platform_device_occlusion_query&) noexcept;
+
+		~bc_platform_device_occlusion_query() override;
+
+		bc_platform_device_occlusion_query& operator=(const bc_platform_device_occlusion_query&) noexcept;
+
+		bool is_valid() const noexcept override;
+			
+		void set_debug_name(const bcCHAR* p_name) noexcept override;
+			
+		platform_pack& get_platform_pack() noexcept override
 		{
-		public:
-			using platform_pack = bc_platform_device_occlusion_query_pack<TApi>;
+			return m_pack;
+		}
 
-		public:
-			bc_platform_device_occlusion_query();
-			
-			explicit bc_platform_device_occlusion_query(platform_pack& p_pack);
+		const platform_pack& get_platform_pack() const noexcept override
+		{
+			return m_pack;
+		}
 
-			bc_platform_device_occlusion_query(const bc_platform_device_occlusion_query&) noexcept;
+	private:
+		platform_pack m_pack;
+	};
 
-			~bc_platform_device_occlusion_query() override;
-
-			bc_platform_device_occlusion_query& operator=(const bc_platform_device_occlusion_query&) noexcept;
-
-			bool is_valid() const noexcept override;
-			
-			void set_debug_name(const bcCHAR* p_name) noexcept override;
-			
-			platform_pack& get_platform_pack() noexcept override
-			{
-				return m_pack;
-			}
-
-			const platform_pack& get_platform_pack() const noexcept override
-			{
-				return m_pack;
-			}
-
-		private:
-			platform_pack m_pack;
-		};
-
-		using bc_device_occlusion_query = bc_platform_device_occlusion_query<g_current_render_api>;
-		using bc_device_occlusion_query_ref = bc_device_ref<bc_device_occlusion_query>;
-	}
+	using bc_device_occlusion_query = bc_platform_device_occlusion_query<g_current_render_api>;
+	using bc_device_occlusion_query_ref = bc_device_ref<bc_device_occlusion_query>;
 }

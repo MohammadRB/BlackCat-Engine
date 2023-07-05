@@ -1,14 +1,11 @@
-// [1/11/2015 MRB]
+// [11/1/2015 MRB]
 
 #pragma once
 
 #include "Core/CorePCH.h"
 
-namespace black_cat
+namespace black_cat::core
 {
-	namespace core
-	{
-		template<class T, bcSIZE TCount>
-		using bc_array = std::array<T, TCount>;
-	}
+	template<class T, bcSIZE TCount>
+	using bc_array = std::array<T, TCount>;
 }

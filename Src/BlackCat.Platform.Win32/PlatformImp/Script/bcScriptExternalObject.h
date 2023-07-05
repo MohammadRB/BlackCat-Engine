@@ -1,4 +1,4 @@
-// [06/17/2021 MRB]
+// [17/06/2021 MRB]
 
 #pragma once
 
@@ -9,9 +9,6 @@
 
 #include "Platform/Script/bcScriptExternalObject.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
-	{
-	}
 }

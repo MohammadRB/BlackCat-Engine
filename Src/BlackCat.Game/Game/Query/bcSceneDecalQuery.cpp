@@ -1,4 +1,4 @@
-// [04/12/2021 MRB]
+// [12/04/2021 MRB]
 
 #include "Game/GamePCH.h"
 
@@ -8,35 +8,32 @@
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Query/bcSceneDecalQuery.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	void bc_scene_decal_query::execute(const bc_scene_query_context& p_context) noexcept
 	{
-		void bc_scene_decal_query::execute(const bc_scene_query_context& p_context) noexcept
+		if (!p_context.m_scene)
 		{
-			if (!p_context.m_scene)
-			{
-				return;
-			}
+			return;
+		}
 
-			auto l_iterator = p_context.m_scene->get_decal_manager().get_iterator_buffer();
+		auto l_iterator = p_context.m_scene->get_decal_manager().get_iterator_buffer();
 			
+		{
+			platform::bc_lock_guard l_lock(l_iterator);
+
+			for (auto& l_decal_instance : l_iterator)
 			{
-				platform::bc_lock_guard l_lock(l_iterator);
+				const auto* l_decal = l_decal_instance.get_decal();
+				const auto l_camera_distance = (l_decal_instance.get_world_transform().get_translation() - m_camera_position).magnitude();
 
-				for (auto& l_decal_instance : l_iterator)
+				if (l_camera_distance <= l_decal->get_view_distance())
 				{
-					const auto* l_decal = l_decal_instance.get_decal();
-					const auto l_camera_distance = (l_decal_instance.get_world_transform().get_translation() - m_camera_position).magnitude();
-
-					if (l_camera_distance <= l_decal->get_view_distance())
-					{
-						m_buffer.add_decal_instance
-						(
-							l_decal_instance.get_decal_ptr(),
-							bc_render_instance(l_decal_instance.get_world_transform(), l_decal_instance.get_render_group())
-						);
-					}
+					m_buffer.add_decal_instance
+					(
+						l_decal_instance.get_decal_ptr(),
+						bc_render_instance(l_decal_instance.get_world_transform(), l_decal_instance.get_render_group())
+					);
 				}
 			}
 		}

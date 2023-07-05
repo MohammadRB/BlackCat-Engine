@@ -1,12 +1,9 @@
-// [03/10/2017 MRB]
+// [10/03/2017 MRB]
 
 #pragma once
 
 #include "Graphic/bcDeviceResourceContent.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
-	{
-	}
 }

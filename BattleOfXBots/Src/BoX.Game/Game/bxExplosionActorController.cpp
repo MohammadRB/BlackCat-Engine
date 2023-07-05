@@ -1,4 +1,4 @@
-// [12/19/2020 MRB]
+// [19/12/2020 MRB]
 
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Utility/bcEnumOperand.h"

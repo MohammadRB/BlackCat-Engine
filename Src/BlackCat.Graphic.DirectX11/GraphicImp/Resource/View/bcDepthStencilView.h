@@ -1,4 +1,4 @@
-// [02/14/2016 MRB]
+// [14/02/2016 MRB]
 
 #pragma once
 
@@ -10,14 +10,11 @@
 #include "Graphic/Resource/View/bcDepthStencilView.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<>
+	struct bc_platform_depth_stencil_view_pack<g_api_dx11> : bci_platform_resource_view_pack<g_api_dx11>
 	{
-		template<>
-		struct bc_platform_depth_stencil_view_pack<g_api_dx11> : bci_platform_resource_view_pack<g_api_dx11>
-		{
-			ID3D11DepthStencilView* m_depth_stencil_view;
-		};
-	}
+		ID3D11DepthStencilView* m_depth_stencil_view;
+	};
 }

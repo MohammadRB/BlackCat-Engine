@@ -9,13 +9,10 @@
 
 #include "Physics/Shape/bcTriangleMesh.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	template<>
+	struct bc_platform_triangle_mesh_pack<g_api_physx> : bc_platform_physics_reference_pack<g_api_physx>
 	{
-		template<>
-		struct bc_platform_triangle_mesh_pack<g_api_physx> : bc_platform_physics_reference_pack<g_api_physx>
-		{
-		};
-	}
+	};
 }

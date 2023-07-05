@@ -1,12 +1,9 @@
-// [05/27/2021 MRB]
+// [27/05/2021 MRB]
 
 #pragma once
 
 #include "Platform/Network/bcNetworkDefinitions.h"
 
-namespace black_cat
-{
-	namespace game
-	{	
-	}
+namespace black_cat::game
+{	
 }

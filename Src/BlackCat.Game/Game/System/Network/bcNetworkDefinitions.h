@@ -1,4 +1,4 @@
-// [09/24/2021 MRB]
+// [24/09/2021 MRB]
 
 #pragma once
 
@@ -6,40 +6,37 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcString.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	enum class bc_network_type : bcUBYTE
 	{
-		enum class bc_network_type : bcUBYTE
-		{
-			not_started, server, client
-		};
+		not_started, server, client
+	};
 
-		enum class bc_network_state : bcUBYTE
-		{
-			error, connected
-		};
+	enum class bc_network_state : bcUBYTE
+	{
+		error, connected
+	};
 
-		enum class bc_actor_network_data_dir : bcUBYTE
-		{
-			replicate,							// Replicate actor from server
-			replicate_sync,						// Replicate actor from server
-			replicate_sync_from_client,			// Replicate actor from client
-			replicate_sync_from_client_server	// Convert to 'replicate_sync' or 'replicate_sync_from_client'
-		};
+	enum class bc_actor_network_data_dir : bcUBYTE
+	{
+		replicate,							// Replicate actor from server
+		replicate_sync,						// Replicate actor from server
+		replicate_sync_from_client,			// Replicate actor from client
+		replicate_sync_from_client_server	// Convert to 'replicate_sync' or 'replicate_sync_from_client'
+	};
 
-		enum class bc_actor_replication_side : bcUBYTE
-		{
-			origin,
-			replicated
-		};
+	enum class bc_actor_replication_side : bcUBYTE
+	{
+		origin,
+		replicated
+	};
 
-		using bc_actor_network_id = bcINT32;
-		using bc_network_message_id = bcUINT32;
-		using bc_network_message_hash = core::bc_string_cmp_hash;
-		using bc_network_packet_time = platform::bc_clock::big_clock;
-		using bc_network_rtt = platform::bc_clock::small_time;
+	using bc_actor_network_id = bcINT32;
+	using bc_network_message_id = bcUINT32;
+	using bc_network_message_hash = core::bc_string_cmp_hash;
+	using bc_network_packet_time = platform::bc_clock::big_clock;
+	using bc_network_rtt = platform::bc_clock::small_time;
 
-		constexpr bc_actor_network_id g_invalid_actor_network_id = static_cast<bc_actor_network_id>(-1);
-	}
+	constexpr bc_actor_network_id g_invalid_actor_network_id = static_cast<bc_actor_network_id>(-1);
 }

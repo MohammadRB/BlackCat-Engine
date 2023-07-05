@@ -1,4 +1,4 @@
-// [06/30/2019 MRB]
+// [30/06/2019 MRB]
 
 #pragma once
 
@@ -9,9 +9,6 @@
 
 #include "Graphic/Shader/Parameter/bcShaderParameterLink.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
-	{
-	}
 }

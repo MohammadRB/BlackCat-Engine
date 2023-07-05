@@ -1,16 +1,13 @@
-// [06/26/2021 MRB]
+// [26/06/2021 MRB]
 
 #pragma once
 
 #include "PlatformImp/Script/bcScriptVariable.h"
 #include "Game/System/Network/Client/bcNetworkClientManagerHook.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
-	{
-		class bc_game_system;
-	}
+	class bc_game_system;
 }
 
 namespace box

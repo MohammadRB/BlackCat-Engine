@@ -1,16 +1,13 @@
-// [12/22/2021 MRB]
+// [22/12/2021 MRB]
 
 #pragma once
 
 #include "App/SampleImp/XBot/bcXBotPlayerActorController.h"
 #include "BoX.Game/bxExport.h"
 
-namespace black_cat
+namespace black_cat::core
 {
-	namespace core
-	{
-		class bc_event_manager;
-	}
+	class bc_event_manager;
 }
 
 namespace box

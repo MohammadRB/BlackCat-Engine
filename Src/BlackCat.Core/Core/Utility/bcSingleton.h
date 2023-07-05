@@ -3,61 +3,58 @@
 #include "Core/CorePCH.h"
 #include "Core/Utility/bcInitializable.h"
 
-namespace black_cat
+namespace black_cat::core
 {
-	namespace core
+	template<typename T>
+	class bc_singleton;
+
+	// Any singleton class is no copyable and movable
+	template<typename C, typename ...A>
+	class bc_singleton<C(A...)> : public bc_initializable<A...>
 	{
-		template<typename T>
-		class bc_singleton;
+	private:
+		using this_type = bc_singleton<C(A...)>;
+		using base_type = bc_initializable<A...>;
 
-		// Any singleton class is no copyable and movable
-		template<typename C, typename ...A>
-		class bc_singleton<C(A...)> : public bc_initializable<A...>
+	public:
+		bc_singleton() = default;
+
+		bc_singleton(const this_type&) = delete;
+
+		bc_singleton(this_type&&) = delete;
+
+		virtual ~bc_singleton() = default;
+
+		this_type& operator=(const this_type&) = delete;
+
+		this_type& operator=(this_type&&) = delete;
+
+		static void start_up(A... pArgs)
 		{
-		private:
-			using this_type = bc_singleton<C(A...)>;
-			using base_type = bc_initializable<A...>;
+			BC_ASSERT(m_instance == nullptr);
 
-		public:
-			bc_singleton() = default;
+			m_instance = new C();
+			m_instance->initialize(pArgs...);
+		}
 
-			bc_singleton(const this_type&) = delete;
+		static void close()
+		{
+			BC_ASSERT(m_instance != nullptr);
 
-			bc_singleton(this_type&&) = delete;
+			m_instance->destroy();
+			delete m_instance;
+			m_instance = nullptr;
+		}
 
-			virtual ~bc_singleton() = default;
+		static C* get() noexcept
+		{
+			return m_instance;
+		}
 
-			this_type& operator=(const this_type&) = delete;
+	protected:
+		static C* m_instance;
+	};
 
-			this_type& operator=(this_type&&) = delete;
-
-			static void start_up(A... pArgs)
-			{
-				BC_ASSERT(m_instance == nullptr);
-
-				m_instance = new C();
-				m_instance->initialize(pArgs...);
-			}
-
-			static void close()
-			{
-				BC_ASSERT(m_instance != nullptr);
-
-				m_instance->destroy();
-				delete m_instance;
-				m_instance = nullptr;
-			}
-
-			static C* get() noexcept
-			{
-				return m_instance;
-			}
-
-		protected:
-			static C* m_instance;
-		};
-
-		template <typename C, typename ...A>
-		C* bc_singleton<C(A...)>::m_instance = nullptr;
-	}
+	template <typename C, typename ...A>
+	C* bc_singleton<C(A...)>::m_instance = nullptr;
 }

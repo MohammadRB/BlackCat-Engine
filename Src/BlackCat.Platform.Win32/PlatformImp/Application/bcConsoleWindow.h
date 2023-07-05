@@ -1,4 +1,4 @@
- // [10/24/2016 MRB]
+ // [24/10/2016 MRB]
 
 #pragma once
 
@@ -6,15 +6,12 @@
 
 #include "Platform/Application/bcConsoleWindow.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
+	template<>
+	struct bc_platform_console_window_pack<g_api_win32> : bc_platform_window_pack<g_api_win32>
 	{
-		template<>
-		struct bc_platform_console_window_pack<g_api_win32> : bc_platform_window_pack<g_api_win32>
-		{
-			HWND m_handle;
-			HANDLE m_std_out;
-		};
-	}
+		HWND m_handle;
+		HANDLE m_std_out;
+	};
 }

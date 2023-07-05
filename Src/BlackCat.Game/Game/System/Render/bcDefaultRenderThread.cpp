@@ -1,4 +1,4 @@
-// [12/04/2020 MRB]
+// [04/12/2020 MRB]
 
 #include "Game/GamePCH.h"
 
@@ -6,29 +6,26 @@
 #include "GraphicImp/Device/Command/bcDeviceCommandExecutor.h"
 #include "Game/System/Render/bcDefaultRenderThread.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	void bc_default_render_thread::start() noexcept
 	{
-		void bc_default_render_thread::start() noexcept
-		{
-			get_pipeline().start_command_list();
-		}
+		get_pipeline().start_command_list();
+	}
 
-		void bc_default_render_thread::finish() noexcept
-		{
-			graphic::bc_device_command_list l_command_list;
-			get_pipeline().finish_command_list(l_command_list);
-		}
+	void bc_default_render_thread::finish() noexcept
+	{
+		graphic::bc_device_command_list l_command_list;
+		get_pipeline().finish_command_list(l_command_list);
+	}
 
-		void bc_default_render_thread::reset()
-		{
-			bc_render_thread::reset();
-		}
+	void bc_default_render_thread::reset()
+	{
+		bc_render_thread::reset();
+	}
 
-		void bc_default_render_thread::reset(graphic::bc_device_pipeline_ref p_pipeline)
-		{
-			bc_render_thread::reset(std::move(p_pipeline), graphic::bc_device_command_executor_ref());
-		}
+	void bc_default_render_thread::reset(graphic::bc_device_pipeline_ref p_pipeline)
+	{
+		bc_render_thread::reset(std::move(p_pipeline), graphic::bc_device_command_executor_ref());
 	}
 }

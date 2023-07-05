@@ -1,4 +1,4 @@
-// [12/15/2016 MRB]
+// [15/12/2016 MRB]
 
 #pragma once
 
@@ -6,13 +6,10 @@
 
 #include "Physics/Body/bcRigidStatic.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	template<>
+	struct bc_platform_rigid_static_pack<g_api_physx> : bc_platform_rigid_body_pack<g_api_physx>
 	{
-		template<>
-		struct bc_platform_rigid_static_pack<g_api_physx> : bc_platform_rigid_body_pack<g_api_physx>
-		{
-		};
-	}
+	};
 }

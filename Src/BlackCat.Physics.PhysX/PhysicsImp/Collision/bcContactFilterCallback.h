@@ -1,13 +1,10 @@
-// [12/16/2016 MRB]
+// [16/12/2016 MRB]
 
 #pragma once
 
 #include "Physics/Collision/bcContactFilterCallback.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
-	{
 		
-	}
 }

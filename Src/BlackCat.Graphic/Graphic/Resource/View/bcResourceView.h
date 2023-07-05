@@ -1,4 +1,4 @@
-// [02/11/2016 MRB]
+// [11/02/2016 MRB]
 
 #pragma once
 
@@ -9,72 +9,69 @@
 #include "Graphic/Resource/View/bcIResourceView.h"
 #include "Graphic/Resource/View/bcResourceViewConfig.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<bc_render_api TRenderApi>
+	struct bc_platform_shader_view_pack
 	{
-		template<bc_render_api TRenderApi>
-		struct bc_platform_shader_view_pack
-		{
-		};
+	};
 
-		template<bc_render_api TRenderApi>
-		class bc_platform_resource_view : public bci_platform_resource_view<TRenderApi>
-		{
-		public:
-			using platform_pack = bc_platform_shader_view_pack<TRenderApi>;
+	template<bc_render_api TRenderApi>
+	class bc_platform_resource_view : public bci_platform_resource_view<TRenderApi>
+	{
+	public:
+		using platform_pack = bc_platform_shader_view_pack<TRenderApi>;
 
-		public:
-			bc_platform_resource_view() noexcept;
+	public:
+		bc_platform_resource_view() noexcept;
 
-			bc_platform_resource_view(platform_pack& p_pack, bc_resource_view_type p_type) noexcept;
+		bc_platform_resource_view(platform_pack& p_pack, bc_resource_view_type p_type) noexcept;
 
-			bc_platform_resource_view(const bc_platform_resource_view&) noexcept;
+		bc_platform_resource_view(const bc_platform_resource_view&) noexcept;
 
-			~bc_platform_resource_view() override;
+		~bc_platform_resource_view() override;
 
-			bc_platform_resource_view& operator=(const bc_platform_resource_view&) noexcept;
+		bc_platform_resource_view& operator=(const bc_platform_resource_view&) noexcept;
 
-			bc_resource_view_type get_view_type() const noexcept override;
+		bc_resource_view_type get_view_type() const noexcept override;
 
-			bool is_valid() const noexcept override;
+		bool is_valid() const noexcept override;
 
-			void set_debug_name(const bcCHAR* p_name) noexcept override;
+		void set_debug_name(const bcCHAR* p_name) noexcept override;
 			
-			bool operator==(const bc_platform_resource_view& p_other) const noexcept;
+		bool operator==(const bc_platform_resource_view& p_other) const noexcept;
 
-			bool operator!=(const bc_platform_resource_view& p_other) const noexcept;
+		bool operator!=(const bc_platform_resource_view& p_other) const noexcept;
 
-			bool operator==(std::nullptr_t) const noexcept;
+		bool operator==(std::nullptr_t) const noexcept;
 
-			bool operator!=(std::nullptr_t) const noexcept;
+		bool operator!=(std::nullptr_t) const noexcept;
 
-			platform_pack& get_platform_pack() noexcept override
-			{
-				return m_pack;
-			}
+		platform_pack& get_platform_pack() noexcept override
+		{
+			return m_pack;
+		}
 
-			const platform_pack& get_platform_pack() const noexcept override
-			{
-				return m_pack;
-			}
+		const platform_pack& get_platform_pack() const noexcept override
+		{
+			return m_pack;
+		}
 
-			platform_pack& get_resource_view_platform_pack() noexcept override
-			{
-				return get_platform_pack();
-			}
+		platform_pack& get_resource_view_platform_pack() noexcept override
+		{
+			return get_platform_pack();
+		}
 
-			const platform_pack& get_resource_view_platform_pack() const noexcept override
-			{
-				return get_platform_pack();
-			}
+		const platform_pack& get_resource_view_platform_pack() const noexcept override
+		{
+			return get_platform_pack();
+		}
 		
-		private:
-			platform_pack m_pack;
-			bc_resource_view_type m_type;
-		};
+	private:
+		platform_pack m_pack;
+		bc_resource_view_type m_type;
+	};
 
-		using bc_resource_view = bc_platform_resource_view<g_current_render_api>;
-		using bc_resource_view_ref = bc_device_ref<bc_resource_view>;
-	}
+	using bc_resource_view = bc_platform_resource_view<g_current_render_api>;
+	using bc_resource_view_ref = bc_device_ref<bc_resource_view>;
 }

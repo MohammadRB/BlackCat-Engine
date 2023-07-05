@@ -1,4 +1,4 @@
-// [12/17/2021 MRB]
+// [17/12/2021 MRB]
 
 #include "Game/GamePCH.h"
 
@@ -7,97 +7,95 @@
 #include "Game/System/Render/Pass/bcRenderPass.h"
 #include "Game/System/Render/Pass/bcIntermediateTextureManager.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	bool _are_configs_equal(const graphic::bc_texture_config& p_config1, const graphic::bc_texture_config& p_config2) noexcept
 	{
-		bool _are_configs_equal(const graphic::bc_texture_config& p_config1, const graphic::bc_texture_config& p_config2) noexcept
-		{
-			return p_config1.get_width() == p_config2.get_width() &&
+		return p_config1.get_width() == p_config2.get_width() &&
 				p_config1.get_height() == p_config2.get_height() &&
 				p_config1.get_format() == p_config2.get_format() &&
 				p_config1.get_sample_count().m_count == p_config2.get_sample_count().m_count &&
 				p_config1.get_usage() == p_config2.get_usage() &&
 				p_config1.get_view_types() == p_config2.get_view_types();
-		}
+	}
 
-		bc_intermediate_texture_manager::bc_intermediate_texture_manager(graphic::bc_device& p_device) noexcept
-			: m_device(&p_device)
-		{
-		}
+	bc_intermediate_texture_manager::bc_intermediate_texture_manager(graphic::bc_device& p_device) noexcept
+		: m_device(&p_device)
+	{
+	}
 
-		bc_intermediate_texture_manager::bc_intermediate_texture_manager(bc_intermediate_texture_manager&& p_other) noexcept
-			: m_device(p_other.m_device),
-			m_textures(std::move(p_other.m_textures))
-		{
-		}
+	bc_intermediate_texture_manager::bc_intermediate_texture_manager(bc_intermediate_texture_manager&& p_other) noexcept
+		: m_device(p_other.m_device),
+		  m_textures(std::move(p_other.m_textures))
+	{
+	}
 
-		bc_intermediate_texture_manager& bc_intermediate_texture_manager::operator=(bc_intermediate_texture_manager&& p_other) noexcept
-		{
-			m_device = p_other.m_device;
-			m_textures = std::move(p_other.m_textures);
-			return *this;
-		}
+	bc_intermediate_texture_manager& bc_intermediate_texture_manager::operator=(bc_intermediate_texture_manager&& p_other) noexcept
+	{
+		m_device = p_other.m_device;
+		m_textures = std::move(p_other.m_textures);
+		return *this;
+	}
 
-		bc_intermediate_texture bc_intermediate_texture_manager::get_texture(const graphic::bc_texture_config& p_config)
+	bc_intermediate_texture bc_intermediate_texture_manager::get_texture(const graphic::bc_texture_config& p_config)
+	{
 		{
+			platform::bc_shared_mutex_shared_guard l_lock(m_mutex);
+
+			for(auto& l_entry : m_textures)
 			{
-				platform::bc_shared_mutex_shared_guard l_lock(m_mutex);
-
-				for(auto& l_entry : m_textures)
+				if(!l_entry.m_is_in_use && _are_configs_equal(l_entry.m_config, p_config))
 				{
-					if(!l_entry.m_is_in_use && _are_configs_equal(l_entry.m_config, p_config))
+					l_entry.m_is_in_use = true;
+					return
 					{
-						l_entry.m_is_in_use = true;
-						return
-						{
-							*l_entry.m_texture,
-							*l_entry.m_resource_view,
-							*l_entry.m_unordered_resource_view,
-							*l_entry.m_render_target_view
-						};
-					}
+						*l_entry.m_texture,
+						*l_entry.m_resource_view,
+						*l_entry.m_unordered_resource_view,
+						*l_entry.m_render_target_view
+					};
 				}
 			}
+		}
 
-			auto l_texture = m_device->create_texture2d(p_config, nullptr);
-			graphic::bc_resource_view_ref l_resource_view;
-			graphic::bc_resource_view_ref l_unordered_view;
-			graphic::bc_render_target_view_ref l_render_target_view;
+		auto l_texture = m_device->create_texture2d(p_config, nullptr);
+		graphic::bc_resource_view_ref l_resource_view;
+		graphic::bc_resource_view_ref l_unordered_view;
+		graphic::bc_render_target_view_ref l_render_target_view;
 
-			if(core::bc_enum::has(p_config.get_view_types(), graphic::bc_resource_view_type::shader))
-			{
-				const auto l_resource_view_config = graphic::bc_graphic_resource_builder()
-					.as_resource_view()
-					.as_texture_view(p_config.get_format())
-					.as_tex2d_shader_view(0, -1)
-					.on_texture2d();
-				l_resource_view = m_device->create_resource_view(*l_texture, l_resource_view_config);
-			}
+		if(core::bc_enum::has(p_config.get_view_types(), graphic::bc_resource_view_type::shader))
+		{
+			const auto l_resource_view_config = graphic::bc_graphic_resource_builder()
+			                                    .as_resource_view()
+			                                    .as_texture_view(p_config.get_format())
+			                                    .as_tex2d_shader_view(0, -1)
+			                                    .on_texture2d();
+			l_resource_view = m_device->create_resource_view(*l_texture, l_resource_view_config);
+		}
 
-			if (core::bc_enum::has(p_config.get_view_types(), graphic::bc_resource_view_type::unordered))
-			{
-				const auto l_unordered_view_config = graphic::bc_graphic_resource_builder()
-					.as_resource_view()
-					.as_texture_view(p_config.get_format())
-					.as_tex2d_unordered_shader_view(0)
-					.on_texture2d();
-				l_unordered_view = m_device->create_resource_view(*l_texture, l_unordered_view_config);
-			}
+		if (core::bc_enum::has(p_config.get_view_types(), graphic::bc_resource_view_type::unordered))
+		{
+			const auto l_unordered_view_config = graphic::bc_graphic_resource_builder()
+			                                     .as_resource_view()
+			                                     .as_texture_view(p_config.get_format())
+			                                     .as_tex2d_unordered_shader_view(0)
+			                                     .on_texture2d();
+			l_unordered_view = m_device->create_resource_view(*l_texture, l_unordered_view_config);
+		}
 
-			if (core::bc_enum::has(p_config.get_view_types(), graphic::bc_resource_view_type::render_target))
-			{
-				const auto l_render_target_view_config = graphic::bc_graphic_resource_builder()
-					.as_resource_view()
-					.as_texture_view(p_config.get_format())
-					.as_tex2d_render_target_view(0);
-				l_render_target_view = m_device->create_render_target_view(*l_texture, l_render_target_view_config);
-			}
+		if (core::bc_enum::has(p_config.get_view_types(), graphic::bc_resource_view_type::render_target))
+		{
+			const auto l_render_target_view_config = graphic::bc_graphic_resource_builder()
+			                                         .as_resource_view()
+			                                         .as_texture_view(p_config.get_format())
+			                                         .as_tex2d_render_target_view(0);
+			l_render_target_view = m_device->create_render_target_view(*l_texture, l_render_target_view_config);
+		}
 
-			{
-				platform::bc_shared_mutex_guard l_lock(m_mutex);
+		{
+			platform::bc_shared_mutex_guard l_lock(m_mutex);
 
-				m_textures.push_back(_bc_intermediate_texture_entry
+			m_textures.push_back(_bc_intermediate_texture_entry
 				{
 					std::move(l_texture),
 					std::move(l_resource_view),
@@ -107,94 +105,93 @@ namespace black_cat
 					true
 				});
 
-				auto& l_entry = m_textures.back();
-				return
-				{
-					*l_entry.m_texture,
-					*l_entry.m_resource_view,
-					*l_entry.m_unordered_resource_view,
-					*l_entry.m_render_target_view
-				};
-			}
-		}
-
-		void bc_intermediate_texture_manager::free_texture(const bc_intermediate_texture& p_texture)
-		{
+			auto& l_entry = m_textures.back();
+			return
 			{
-				platform::bc_shared_mutex_shared_guard l_lock(m_mutex);
-
-				const auto l_ite = std::find_if(std::begin(m_textures), std::end(m_textures), [&](const _bc_intermediate_texture_entry& p_entry)
-				{
-					return *p_entry.m_texture == p_texture.m_texture;
-				});
-
-				BC_ASSERT(l_ite != std::end(m_textures));
-
-				l_ite->m_is_in_use = false;
-			}
+				*l_entry.m_texture,
+				*l_entry.m_resource_view,
+				*l_entry.m_unordered_resource_view,
+				*l_entry.m_render_target_view
+			};
 		}
+	}
 
-		void bc_intermediate_texture_manager::before_reset(const bc_render_pass_reset_context& p_context)
+	void bc_intermediate_texture_manager::free_texture(const bc_intermediate_texture& p_texture)
+	{
 		{
-			if
-			(
-				p_context.m_old_parameters.m_width == p_context.m_new_parameters.m_width &&
-				p_context.m_old_parameters.m_height == p_context.m_new_parameters.m_height
-			)
+			platform::bc_shared_mutex_shared_guard l_lock(m_mutex);
+
+			const auto l_ite = std::find_if(std::begin(m_textures), std::end(m_textures), [&](const _bc_intermediate_texture_entry& p_entry)
 			{
-				return;
-			}
+				return *p_entry.m_texture == p_texture.m_texture;
+			});
 
-			m_textures.clear();
+			BC_ASSERT(l_ite != std::end(m_textures));
+
+			l_ite->m_is_in_use = false;
 		}
+	}
 
-		void bc_intermediate_texture_manager::after_reset(const bc_render_pass_reset_context& p_context)
+	void bc_intermediate_texture_manager::before_reset(const bc_render_pass_reset_context& p_context)
+	{
+		if
+		(
+			p_context.m_old_parameters.m_width == p_context.m_new_parameters.m_width &&
+			p_context.m_old_parameters.m_height == p_context.m_new_parameters.m_height
+		)
 		{
+			return;
 		}
 
-		bc_intermediate_texture_guard::bc_intermediate_texture_guard() noexcept
-			: m_manager(nullptr),
-			m_texture()
+		m_textures.clear();
+	}
+
+	void bc_intermediate_texture_manager::after_reset(const bc_render_pass_reset_context& p_context)
+	{
+	}
+
+	bc_intermediate_texture_guard::bc_intermediate_texture_guard() noexcept
+		: m_manager(nullptr),
+		  m_texture()
+	{
+	}
+
+	bc_intermediate_texture_guard::bc_intermediate_texture_guard(bc_intermediate_texture_manager& p_manager, const graphic::bc_texture_config& p_config) noexcept
+		: m_manager(&p_manager)
+	{
+		m_texture = m_manager->get_texture(p_config);
+	}
+
+	bc_intermediate_texture_guard::bc_intermediate_texture_guard(bc_intermediate_texture_guard&& p_other) noexcept
+		: m_manager(p_other.m_manager),
+		  m_texture(std::move(p_other.m_texture))
+	{
+		p_other.m_manager = nullptr;
+	}
+
+	bc_intermediate_texture_guard::~bc_intermediate_texture_guard()
+	{
+		release();
+	}
+
+	bc_intermediate_texture_guard& bc_intermediate_texture_guard::operator=(bc_intermediate_texture_guard&& p_other) noexcept
+	{
+		bc_intermediate_texture_guard::~bc_intermediate_texture_guard();
+
+		m_manager = p_other.m_manager;
+		m_texture = std::move(p_other.m_texture);
+		p_other.m_manager = nullptr;
+
+		return *this;
+	}
+
+	void bc_intermediate_texture_guard::release()
+	{
+		if (!m_manager)
 		{
+			return;
 		}
 
-		bc_intermediate_texture_guard::bc_intermediate_texture_guard(bc_intermediate_texture_manager& p_manager, const graphic::bc_texture_config& p_config) noexcept
-			: m_manager(&p_manager)
-		{
-			m_texture = m_manager->get_texture(p_config);
-		}
-
-		bc_intermediate_texture_guard::bc_intermediate_texture_guard(bc_intermediate_texture_guard&& p_other) noexcept
-			: m_manager(p_other.m_manager),
-			m_texture(std::move(p_other.m_texture))
-		{
-			p_other.m_manager = nullptr;
-		}
-
-		bc_intermediate_texture_guard::~bc_intermediate_texture_guard()
-		{
-			release();
-		}
-
-		bc_intermediate_texture_guard& bc_intermediate_texture_guard::operator=(bc_intermediate_texture_guard&& p_other) noexcept
-		{
-			bc_intermediate_texture_guard::~bc_intermediate_texture_guard();
-
-			m_manager = p_other.m_manager;
-			m_texture = std::move(p_other.m_texture);
-			p_other.m_manager = nullptr;
-
-			return *this;
-		}
-
-		void bc_intermediate_texture_guard::release()
-		{
-			if (!m_manager)
-			{
-				return;
-			}
-
-			m_manager->free_texture(m_texture);
-		}
+		m_manager->free_texture(m_texture);
 	}
 }

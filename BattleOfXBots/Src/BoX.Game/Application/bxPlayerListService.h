@@ -1,4 +1,4 @@
-// [04/27/2022 MRB]
+// [27/04/2022 MRB]
 
 #pragma once
 
@@ -14,12 +14,9 @@
 #include "BoX.Game/Application/bxDefinitions.h"
 #include "BoX.Game/bxExport.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
-	{
-		class bc_scene;
-	}
+	class bc_scene;
 }
 
 namespace box

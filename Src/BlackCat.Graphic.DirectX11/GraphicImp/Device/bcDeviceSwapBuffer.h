@@ -1,4 +1,4 @@
-// [06/18/2021 MRB]
+// [18/06/2021 MRB]
 
 #pragma once
 
@@ -8,15 +8,12 @@
 #include "Graphic/Device/bcDeviceSwapBuffer.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<>
+	struct bc_platform_device_swap_buffer_pack<g_api_dx11> : public bc_platform_device_reference_pack<g_api_dx11>
 	{
-		template<>
-		struct bc_platform_device_swap_buffer_pack<g_api_dx11> : public bc_platform_device_reference_pack<g_api_dx11>
-		{
-			bool m_vsync;
-			IDXGISwapChain* m_swap_chain;
-		};
-	}	
+		bool m_vsync;
+		IDXGISwapChain* m_swap_chain;
+	};
 }

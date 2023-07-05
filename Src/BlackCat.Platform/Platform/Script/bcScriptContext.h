@@ -1,4 +1,4 @@
-// [10/02/2016 MRB]
+// [02/10/2016 MRB]
 
 #pragma once
 
@@ -9,181 +9,178 @@
 #include "Platform/Script/bcScriptRuntime.h"
 #include "Platform/Script/bcScriptContextScope.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
+	using bc_script_bool = bool;
+	using bc_script_int = bcINT32;
+	using bc_script_double = bcDOUBLE;
+
+	template<bc_platform TPlatform>
+	class bc_platform_script_variable;
+	using bc_script_variable = bc_platform_script_variable<g_current_platform>;
+
+	template<bc_platform TPlatform>
+	class bc_platform_script_string;
+	using bc_script_string = bc_platform_script_string<g_current_platform>;
+
+	template<bc_platform TPlatform>
+	class bc_platform_script_object;
+	using bc_script_object = bc_platform_script_object<g_current_platform>;
+
+	template<bc_platform TPlatform>
+	class bc_platform_script_array;
+	using bc_script_array = bc_platform_script_array<g_current_platform>;
+
+	template<bc_platform TPlatform>
+	class bc_platform_script_function;
+	using bc_script_function = bc_platform_script_function<g_current_platform>;
+
+	template<bc_platform TPlatform>
+	class bc_platform_script_error;
+	using bc_script_error = bc_platform_script_error<g_current_platform>;
+
+	template<bc_platform TPlatform, typename T>
+	class bc_platform_script_prototype_builder;
+	template<typename T>
+	using bc_script_prototype_builder = bc_platform_script_prototype_builder<g_current_platform, T>;
+
+	template<bc_platform TPlatform, typename T>
+	class bc_platform_script_prototype;
+	template<typename T>
+	using bc_script_prototype = bc_platform_script_prototype<g_current_platform, T>;
+
+	template<bc_platform TPlatform>
+	class bc_platform_script_global_prototype_builder;
+	using bc_script_global_prototype_builder = bc_platform_script_global_prototype_builder<g_current_platform>;
+
+	template<bc_platform TPlatform>
+	class bc_script_context_scope;
+
+	template<bc_platform TPlatform>
+	struct bc_platform_script_context_pack
 	{
-		using bc_script_bool = bool;
-		using bc_script_int = bcINT32;
-		using bc_script_double = bcDOUBLE;
+	};
 
-		template<bc_platform TPlatform>
-		class bc_platform_script_variable;
-		using bc_script_variable = bc_platform_script_variable<g_current_platform>;
-
-		template<bc_platform TPlatform>
-		class bc_platform_script_string;
-		using bc_script_string = bc_platform_script_string<g_current_platform>;
-
-		template<bc_platform TPlatform>
-		class bc_platform_script_object;
-		using bc_script_object = bc_platform_script_object<g_current_platform>;
-
-		template<bc_platform TPlatform>
-		class bc_platform_script_array;
-		using bc_script_array = bc_platform_script_array<g_current_platform>;
-
-		template<bc_platform TPlatform>
-		class bc_platform_script_function;
-		using bc_script_function = bc_platform_script_function<g_current_platform>;
-
-		template<bc_platform TPlatform>
-		class bc_platform_script_error;
-		using bc_script_error = bc_platform_script_error<g_current_platform>;
-
-		template<bc_platform TPlatform, typename T>
-		class bc_platform_script_prototype_builder;
-		template<typename T>
-		using bc_script_prototype_builder = bc_platform_script_prototype_builder<g_current_platform, T>;
-
-		template<bc_platform TPlatform, typename T>
-		class bc_platform_script_prototype;
-		template<typename T>
-		using bc_script_prototype = bc_platform_script_prototype<g_current_platform, T>;
-
-		template<bc_platform TPlatform>
-		class bc_platform_script_global_prototype_builder;
-		using bc_script_global_prototype_builder = bc_platform_script_global_prototype_builder<g_current_platform>;
-
-		template<bc_platform TPlatform>
-		class bc_script_context_scope;
-
-		template<bc_platform TPlatform>
-		struct bc_platform_script_context_pack
-		{
-		};
-
-		/**
+	/**
 		 * \brief Creating a context is a two pass operation. after creating context itself you must create 
 		 * context global object prototype and set it on context.
 		 * Incompatible with movable memory
 		 * \tparam TPlatform 
 		 */
-		template<bc_platform TPlatform>
-		class bc_platform_script_context : public bc_platform_script_reference<TPlatform>
-		{
-		public:
-			using platform_pack = bc_platform_script_context_pack<TPlatform>;
-			using scope = bc_script_context_scope<TPlatform>;
-			friend bc_script_runtime;
-			friend scope;
+	template<bc_platform TPlatform>
+	class bc_platform_script_context : public bc_platform_script_reference<TPlatform>
+	{
+	public:
+		using platform_pack = bc_platform_script_context_pack<TPlatform>;
+		using scope = bc_script_context_scope<TPlatform>;
+		friend bc_script_runtime;
+		friend scope;
 
-		public:
-			bc_platform_script_context();
+	public:
+		bc_platform_script_context();
 
-			bc_platform_script_context(const bc_platform_script_context&) noexcept;
+		bc_platform_script_context(const bc_platform_script_context&) noexcept;
 
-			~bc_platform_script_context();
+		~bc_platform_script_context();
 
-			bc_platform_script_context& operator=(const bc_platform_script_context&) noexcept;
+		bc_platform_script_context& operator=(const bc_platform_script_context&) noexcept;
 
-			/**
+		/**
 			 * \brief Create global prototype builder to define global property and function definitions.
 			 * \return 
 			 */
-			bc_script_global_prototype_builder create_global_prototype_builder();
+		bc_script_global_prototype_builder create_global_prototype_builder();
 			
-			/**
+		/**
 			 * \brief Set global object prototype that contains global property and function definitions.
 			 * This function must be called only one time to set global object.
 			 * \param p_global_prototype Global object prototype
 			 */
-			void register_global_prototype(bc_script_global_prototype_builder&& p_global_prototype);
+		void register_global_prototype(bc_script_global_prototype_builder&& p_global_prototype);
 
-			bc_script_variable create_undefined();
+		bc_script_variable create_undefined();
 
-			bc_script_variable create_null();
+		bc_script_variable create_null();
 
-			bc_script_variable create_variable(bc_script_bool p_bool);
+		bc_script_variable create_variable(bc_script_bool p_bool);
 
-			bc_script_variable create_variable(bc_script_int p_integer);
+		bc_script_variable create_variable(bc_script_int p_integer);
 
-			bc_script_variable create_variable(bc_script_double p_double);
+		bc_script_variable create_variable(bc_script_double p_double);
 
-			bc_script_variable create_variable(bc_script_string& p_string);
+		bc_script_variable create_variable(bc_script_string& p_string);
 
-			bc_script_variable create_variable(bc_script_object& p_object);
+		bc_script_variable create_variable(bc_script_object& p_object);
 
-			bc_script_variable create_variable(bc_script_array& p_array);
+		bc_script_variable create_variable(bc_script_array& p_array);
 
-			bc_script_variable create_variable(bc_script_function& p_function);
+		bc_script_variable create_variable(bc_script_function& p_function);
 
-			bc_script_variable create_variable(bc_script_error& p_error);
+		bc_script_variable create_variable(bc_script_error& p_error);
 
-			bc_script_string create_string(core::bc_wstring& p_string);
+		bc_script_string create_string(core::bc_wstring& p_string);
 
-			template<typename T>
-			bc_script_object create_object(bc_script_prototype<T>& p_prototype, T&& p_native_object);
+		template<typename T>
+		bc_script_object create_object(bc_script_prototype<T>& p_prototype, T&& p_native_object);
 
-			bc_script_array create_array(bcSIZE p_length);
+		bc_script_array create_array(bcSIZE p_length);
 			
-			/*template<typename TR, typename ...TA>
+		/*template<typename TR, typename ...TA>
 			bc_script_function<TR(TA...)> create_function(typename bc_script_function<TR, TA...>::callback_t p_delegate);*/
 
-			bc_script_error create_error(const core::bc_wstring& p_message);
+		bc_script_error create_error(const core::bc_wstring& p_message);
 
-			template<typename T>
-			bc_script_prototype_builder<T> create_prototype_builder();
+		template<typename T>
+		bc_script_prototype_builder<T> create_prototype_builder();
 
-			template<typename T>
-			bc_script_prototype<T> create_prototype(bc_script_prototype_builder<T>& p_prototype_builder);
+		template<typename T>
+		bc_script_prototype<T> create_prototype(bc_script_prototype_builder<T>& p_prototype_builder);
 
-			template<typename T>
-			void register_prototype(bcWCHAR* p_object_name, bc_script_prototype<T>& p_object_prototype);
+		template<typename T>
+		void register_prototype(bcWCHAR* p_object_name, bc_script_prototype<T>& p_object_prototype);
 
-			/**
+		/**
 			 * \brief This function check if context is in exception state.
 			 * When call to runtime throw exception (either by an exception thrown when executing script 
 			 * or by invalid calls to api) the runtime will put in exception state and any call to runtime
 			 * will throw exception.
 			 * \return boolean that indicate context has any exception
 			 */
-			bool has_exception() const noexcept;
+		bool has_exception() const noexcept;
 
-			/**
+		/**
 			 * \brief If context is in exception state return exception associated with context and clear it. 
 			 * Calling this function on a context that is not in exception state will throw exception.
 			 * \return Exception object
 			 */
-			bc_script_error get_clear_exception();
+		bc_script_error get_clear_exception();
 
-			/**
+		/**
 			 * \brief Set runtime in exception state
 			 * \param p_error 
 			 */
-			void set_exception(bc_script_error& p_error);
+		void set_exception(bc_script_error& p_error);
 
-			/**
+		/**
 			 * \brief Get context global object
 			 * \return 
 			 */
-			bc_script_object get_global() const;
+		bc_script_object get_global() const;
 
-			bool is_valid() const noexcept override;
+		bool is_valid() const noexcept override;
 
-			platform_pack& get_platform_pack()
-			{
-				return m_pack;
-			}
+		platform_pack& get_platform_pack()
+		{
+			return m_pack;
+		}
 
-		private:
-			explicit bc_platform_script_context(bc_script_runtime& p_runtime) noexcept;
+	private:
+		explicit bc_platform_script_context(bc_script_runtime& p_runtime) noexcept;
 
-			bc_script_runtime* m_runtime;
-			platform_pack m_pack;
-		};
+		bc_script_runtime* m_runtime;
+		platform_pack m_pack;
+	};
 
-		using bc_script_context = bc_platform_script_context<g_current_platform>;
-		using bc_script_context_ref = bc_script_ref<bc_script_context>;
-	}
+	using bc_script_context = bc_platform_script_context<g_current_platform>;
+	using bc_script_context_ref = bc_script_ref<bc_script_context>;
 }

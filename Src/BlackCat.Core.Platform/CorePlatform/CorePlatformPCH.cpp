@@ -1,11 +1,8 @@
-// [10/08/2014 MRB]
+// [08/10/2014 MRB]
 
 #include "CorePlatform/CorePlatformPCH.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
-	{
 
-	}
 }

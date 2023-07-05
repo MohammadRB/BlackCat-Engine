@@ -1,17 +1,14 @@
-// [04/15/2016 MRB]
+// [15/04/2016 MRB]
 
 #pragma once
 
 #include "Platform/Application/bcPointingDevice.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
+	template<>
+	struct bc_platform_pointing_device_pack<platform::g_api_win32>
 	{
-		template<>
-		struct bc_platform_pointing_device_pack<platform::g_api_win32>
-		{
-			bc_pointing_device_state m_state;
-		};
-	}
+		bc_pointing_device_state m_state;
+	};
 }

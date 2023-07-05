@@ -1,4 +1,4 @@
-// [02/08/2019 MRB]
+// [08/02/2019 MRB]
 
 
 #include "Editor/EditorPCH.h"
@@ -10,113 +10,110 @@
 #include "Editor/UICommand/bcSceneUICommand.h"
 #include "Editor/UI/bcFormMainMenu.h"
 
-namespace black_cat
+namespace black_cat::editor
 {
-	namespace editor
+	bc_scene_ui_command::bc_scene_ui_command(command_type p_type, core::bc_estring p_scene_path)
+		: m_type(p_type),
+		  m_scene_path(std::move(p_scene_path)),
+		  m_scene(nullptr)
 	{
-		bc_scene_ui_command::bc_scene_ui_command(command_type p_type, core::bc_estring p_scene_path)
-			: m_type(p_type),
-			m_scene_path(std::move(p_scene_path)),
-			m_scene(nullptr)
+	}
+
+	bc_scene_ui_command::bc_scene_ui_command(command_type p_type, game::bc_scene* p_scene)
+		: m_type(p_type),
+		  m_scene_path(),
+		  m_scene(p_scene)
+	{
+	}
+
+	bc_scene_ui_command::bc_scene_ui_command(command_type p_type, core::bc_estring p_scene_path, game::bc_scene* p_scene)
+		: m_type(p_type),
+		  m_scene_path(std::move(p_scene_path)),
+		  m_scene(p_scene)
+	{
+	}
+
+	core::bc_string bc_scene_ui_command::title() const
+	{
+		return "SceneCommand";
+	}
+
+	bci_ui_command::state_ptr bc_scene_ui_command::create_state(state_context& p_context) const
+	{
+		return nullptr;
+	}
+
+	bool bc_scene_ui_command::update(update_context& p_context)
+	{
+		auto& l_content_manager = p_context.m_game_system.get_file_system().get_content_manager();
+
+		switch (m_type)
 		{
+		case bc_scene_ui_command_type::get_scene:
+		{
+			p_context.m_result.set_value(p_context.m_game_system.get_scene());
+			break;
 		}
-
-		bc_scene_ui_command::bc_scene_ui_command(command_type p_type, game::bc_scene* p_scene)
-			: m_type(p_type),
-			m_scene_path(),
-			m_scene(p_scene)
+		case bc_scene_ui_command_type::new_scene:
 		{
+			break;
 		}
-
-		bc_scene_ui_command::bc_scene_ui_command(command_type p_type, core::bc_estring p_scene_path, game::bc_scene* p_scene)
-			: m_type(p_type),
-			m_scene_path(std::move(p_scene_path)),
-			m_scene(p_scene)
+		case bc_scene_ui_command_type::load_scene:
 		{
-		}
-
-		core::bc_string bc_scene_ui_command::title() const
-		{
-			return "SceneCommand";
-		}
-
-		bci_ui_command::state_ptr bc_scene_ui_command::create_state(state_context& p_context) const
-		{
-			return nullptr;
-		}
-
-		bool bc_scene_ui_command::update(update_context& p_context)
-		{
-			auto& l_content_manager = p_context.m_game_system.get_file_system().get_content_manager();
-
-			switch (m_type)
+			if(p_context.m_game_system.get_scene() != nullptr)
 			{
-				case bc_scene_ui_command_type::get_scene:
-				{
-					p_context.m_result.set_value(p_context.m_game_system.get_scene());
-					break;
-				}
-				case bc_scene_ui_command_type::new_scene:
-				{
-					break;
-				}
-				case bc_scene_ui_command_type::load_scene:
-				{
-					if(p_context.m_game_system.get_scene() != nullptr)
-					{
-						p_context.m_game_system.set_scene(nullptr);
-						return true;
-					}
-
-					try
-					{
-						auto l_scene = l_content_manager.load<game::bc_scene>(m_scene_path.c_str(), {}, core::bc_content_loader_parameter());
-						p_context.m_game_system.set_scene(std::move(l_scene));
-					}
-					catch(const std::exception& l_exception)
-					{
-						core::bc_log(core::bc_log_type::error) << l_exception.what() << core::bc_lend;
-					}
-
-					break;
-				}
-				case bc_scene_ui_command_type::save_scene:
-				{
-					l_content_manager.save(*m_scene);
-					break;
-				}
-				case bc_scene_ui_command_type::save_as_scene:
-				{
-					break;
-				}
+				p_context.m_game_system.set_scene(nullptr);
+				return true;
 			}
 
-			return false;
+			try
+			{
+				auto l_scene = l_content_manager.load<game::bc_scene>(m_scene_path.c_str(), {}, core::bc_content_loader_parameter());
+				p_context.m_game_system.set_scene(std::move(l_scene));
+			}
+			catch(const std::exception& l_exception)
+			{
+				core::bc_log(core::bc_log_type::error) << l_exception.what() << core::bc_lend;
+			}
+
+			break;
+		}
+		case bc_scene_ui_command_type::save_scene:
+		{
+			l_content_manager.save(*m_scene);
+			break;
+		}
+		case bc_scene_ui_command_type::save_as_scene:
+		{
+			break;
+		}
 		}
 
-		bc_scene_ui_command bc_scene_ui_command::for_get_scene()
-		{
-			return bc_scene_ui_command(command_type::get_scene, core::bc_estring());
-		}
+		return false;
+	}
 
-		bc_scene_ui_command bc_scene_ui_command::for_new_scene()
-		{
-			return bc_scene_ui_command(command_type::new_scene, core::bc_estring());
-		}
+	bc_scene_ui_command bc_scene_ui_command::for_get_scene()
+	{
+		return bc_scene_ui_command(command_type::get_scene, core::bc_estring());
+	}
 
-		bc_scene_ui_command bc_scene_ui_command::for_load_scene(core::bc_estring p_path)
-		{
-			return bc_scene_ui_command(command_type::load_scene, std::move(p_path));
-		}
+	bc_scene_ui_command bc_scene_ui_command::for_new_scene()
+	{
+		return bc_scene_ui_command(command_type::new_scene, core::bc_estring());
+	}
 
-		bc_scene_ui_command bc_scene_ui_command::for_save_scene(game::bc_scene* p_scene)
-		{
-			return bc_scene_ui_command(command_type::save_scene, p_scene);
-		}
+	bc_scene_ui_command bc_scene_ui_command::for_load_scene(core::bc_estring p_path)
+	{
+		return bc_scene_ui_command(command_type::load_scene, std::move(p_path));
+	}
 
-		bc_scene_ui_command bc_scene_ui_command::for_save_as_scene(game::bc_scene* p_scene, core::bc_estring p_path)
-		{
-			return bc_scene_ui_command(command_type::save_as_scene, std::move(p_path));
-		}
+	bc_scene_ui_command bc_scene_ui_command::for_save_scene(game::bc_scene* p_scene)
+	{
+		return bc_scene_ui_command(command_type::save_scene, p_scene);
+	}
+
+	bc_scene_ui_command bc_scene_ui_command::for_save_as_scene(game::bc_scene* p_scene, core::bc_estring p_path)
+	{
+		return bc_scene_ui_command(command_type::save_as_scene, std::move(p_path));
 	}
 }

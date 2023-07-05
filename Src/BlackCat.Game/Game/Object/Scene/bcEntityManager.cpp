@@ -1,4 +1,4 @@
-// [05/22/2016 MRB]
+// [22/05/2016 MRB]
 
 #include "Game/GamePCH.h"
 
@@ -19,181 +19,179 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/bcException.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	BC_JSON_STRUCTURE(_bc_json_entity_components)
 	{
-		BC_JSON_STRUCTURE(_bc_json_entity_components)
-		{
-			BC_JSON_VALUE(core::bc_string_frame, name);
-			BC_JSON_VALUE(core::bc_json_key_value, parameters);
-		};
+		BC_JSON_VALUE(core::bc_string_frame, name);
+		BC_JSON_VALUE(core::bc_json_key_value, parameters);
+	};
 
-		BC_JSON_STRUCTURE(_bc_json_entity)
-		{
-			BC_JSON_VALUE_OP(core::bc_string_frame, inherit);
-			BC_JSON_VALUE(core::bc_string_frame, name);
-			BC_JSON_VALUE_OP(core::bc_string_frame, controller);
-			BC_JSON_VALUE_OP(core::bc_json_key_value, parameters);
-			BC_JSON_ARRAY(_bc_json_entity_components, components);
-		};
+	BC_JSON_STRUCTURE(_bc_json_entity)
+	{
+		BC_JSON_VALUE_OP(core::bc_string_frame, inherit);
+		BC_JSON_VALUE(core::bc_string_frame, name);
+		BC_JSON_VALUE_OP(core::bc_string_frame, controller);
+		BC_JSON_VALUE_OP(core::bc_json_key_value, parameters);
+		BC_JSON_ARRAY(_bc_json_entity_components, components);
+	};
 
-		BC_JSON_STRUCTURE(_bc_entity_json)
-		{
-			BC_JSON_ARRAY(_bc_json_entity, entities);
-		};
+	BC_JSON_STRUCTURE(_bc_entity_json)
+	{
+		BC_JSON_ARRAY(_bc_json_entity, entities);
+	};
 
-		template<typename THash>
-		static void _read_entity_data(const _bc_json_entity& p_json, _bc_entity_data& p_entity, const _bc_entity_data* p_inherit)
-		{
-			auto l_hasher = THash();
+	template<typename THash>
+	static void _read_entity_data(const _bc_json_entity& p_json, _bc_entity_data& p_entity, const _bc_entity_data* p_inherit)
+	{
+		auto l_hasher = THash();
 			
-			p_entity.m_entity_name = *p_json.m_name;
-			if(p_json.m_controller.has_value())
-			{
-				p_entity.m_controller_name = *p_json.m_controller;
-			}
-			else if(p_inherit)
-			{
-				p_entity.m_controller_name = p_inherit->m_controller_name;
-			}
+		p_entity.m_entity_name = *p_json.m_name;
+		if(p_json.m_controller.has_value())
+		{
+			p_entity.m_controller_name = *p_json.m_controller;
+		}
+		else if(p_inherit)
+		{
+			p_entity.m_controller_name = p_inherit->m_controller_name;
+		}
 
-			if(p_inherit)
-			{
-				p_entity.m_parameters = p_inherit->m_parameters;
-			}
+		if(p_inherit)
+		{
+			p_entity.m_parameters = p_inherit->m_parameters;
+		}
 			
-			std::for_each
+		std::for_each
+		(
+			std::begin(*p_json.m_parameters),
+			std::end(*p_json.m_parameters),
+			[&](core::bc_json_key_value::value_type& p_parameter)
+			{
+				p_entity.m_parameters.add_or_update(p_parameter.first.c_str(), std::move(p_parameter.second));
+			}
+		);
+
+		// Because we have used program heap we must reserve needed memory
+		const auto l_components_count = (p_inherit ? p_inherit->m_components.size() : 0) + p_json.m_components.size();
+		p_entity.m_components.reserve(l_components_count);
+
+		if(p_inherit)
+		{
+			std::copy
 			(
-				std::begin(*p_json.m_parameters),
-				std::end(*p_json.m_parameters),
-				[&](core::bc_json_key_value::value_type& p_parameter)
+				std::begin(p_inherit->m_components), 
+				std::end(p_inherit->m_components),
+				std::back_inserter(p_entity.m_components)
+			);
+		}
+			
+		for (auto& l_json_component : p_json.m_components)
+		{
+			const auto l_component_name_hash = l_hasher(l_json_component->m_name->c_str());
+			auto l_component_ite = std::find_if
+			(
+				std::begin(p_entity.m_components),
+				std::end(p_entity.m_components),
+				[=](const _bc_entity_component_data& p_data)
 				{
-					p_entity.m_parameters.add_or_update(p_parameter.first.c_str(), std::move(p_parameter.second));
+					return p_data.m_component_hash == l_component_name_hash;
 				}
 			);
-
-			// Because we have used program heap we must reserve needed memory
-			const auto l_components_count = (p_inherit ? p_inherit->m_components.size() : 0) + p_json.m_components.size();
-			p_entity.m_components.reserve(l_components_count);
-
-			if(p_inherit)
+			if(l_component_ite == std::end(p_entity.m_components))
 			{
-				std::copy
-				(
-					std::begin(p_inherit->m_components), 
-					std::end(p_inherit->m_components),
-					std::back_inserter(p_entity.m_components)
-				);
-			}
-			
-			for (auto& l_json_component : p_json.m_components)
-			{
-				const auto l_component_name_hash = l_hasher(l_json_component->m_name->c_str());
-				auto l_component_ite = std::find_if
-				(
-					std::begin(p_entity.m_components),
-					std::end(p_entity.m_components),
-					[=](const _bc_entity_component_data& p_data)
-					{
-						return p_data.m_component_hash == l_component_name_hash;
-					}
-				);
-				if(l_component_ite == std::end(p_entity.m_components))
-				{
-					_bc_entity_component_data l_component_data;
-					l_component_data.m_component_hash = l_component_name_hash;
+				_bc_entity_component_data l_component_data;
+				l_component_data.m_component_hash = l_component_name_hash;
 					
-					p_entity.m_components.push_back(l_component_data);
-					l_component_ite = std::rbegin(p_entity.m_components).base();
-				}
-
-				auto& l_component_parameters = l_component_ite->m_component_parameters;
-				auto& l_json_component_parameters = *l_json_component->m_parameters;
-				
-				std::for_each
-				(
-					std::begin(l_json_component_parameters),
-					std::end(l_json_component_parameters),
-					[&](core::bc_json_key_value::value_type& p_parameter)
-					{
-						l_component_parameters.add_or_update(std::move(p_parameter.first), std::move(p_parameter.second));
-					}
-				);
-			}
-		}
-		
-		bc_entity_manager::bc_entity_manager(core::bc_content_stream_manager& p_content_stream_manager, core::bc_query_manager& p_query_manager, bc_game_system& p_game_system)
-			: m_content_stream_manager(p_content_stream_manager),
-			m_query_manager(p_query_manager),
-			m_game_system(p_game_system),
-			m_actor_component_container_index(0),
-			m_actor_component_containers{ nullptr }
-		{
-		}
-
-		bc_entity_manager::~bc_entity_manager() = default;
-
-		void bc_entity_manager::read_entity_file(const bcECHAR* p_json_file_path)
-		{
-			core::bc_file_stream l_json_file;
-			core::bc_string_frame l_json_file_buffer;
-
-			if (!l_json_file.open_read(p_json_file_path))
-			{
-				const auto l_msg = core::bc_string_stream_frame() << "Error in reading entity file: " << p_json_file_path;
-				throw bc_io_exception(l_msg.str().c_str());
+				p_entity.m_components.push_back(l_component_data);
+				l_component_ite = std::rbegin(p_entity.m_components).base();
 			}
 
-			core::bc_read_all_lines(l_json_file, l_json_file_buffer);
-
-			core::bc_json_document<_bc_entity_json> l_json;
-			l_json.load(l_json_file_buffer.c_str());
-
-			for (auto& l_entity : l_json->m_entities)
-			{
-				auto l_entity_name_hash = string_hash()(l_entity->m_name->c_str());
+			auto& l_component_parameters = l_component_ite->m_component_parameters;
+			auto& l_json_component_parameters = *l_json_component->m_parameters;
 				
-				_bc_entity_data l_entity_data;
-				_bc_entity_data* p_inherit = nullptr;
-
-				if(l_entity->m_inherit.has_value())
+			std::for_each
+			(
+				std::begin(l_json_component_parameters),
+				std::end(l_json_component_parameters),
+				[&](core::bc_json_key_value::value_type& p_parameter)
 				{
-					auto l_inherit_entity_name_hash = string_hash()(l_entity->m_inherit->c_str());
-					const auto l_inherit_ite = m_entities.find(l_inherit_entity_name_hash);
-					if(l_inherit_ite != std::end(m_entities))
-					{
-						p_inherit = &l_inherit_ite->second;
-					}
+					l_component_parameters.add_or_update(std::move(p_parameter.first), std::move(p_parameter.second));
 				}
+			);
+		}
+	}
+		
+	bc_entity_manager::bc_entity_manager(core::bc_content_stream_manager& p_content_stream_manager, core::bc_query_manager& p_query_manager, bc_game_system& p_game_system)
+		: m_content_stream_manager(p_content_stream_manager),
+		  m_query_manager(p_query_manager),
+		  m_game_system(p_game_system),
+		  m_actor_component_container_index(0),
+		  m_actor_component_containers{ nullptr }
+	{
+	}
 
-				_read_entity_data<string_hash>(*l_entity, l_entity_data, p_inherit);
+	bc_entity_manager::~bc_entity_manager() = default;
+
+	void bc_entity_manager::read_entity_file(const bcECHAR* p_json_file_path)
+	{
+		core::bc_file_stream l_json_file;
+		core::bc_string_frame l_json_file_buffer;
+
+		if (!l_json_file.open_read(p_json_file_path))
+		{
+			const auto l_msg = core::bc_string_stream_frame() << "Error in reading entity file: " << p_json_file_path;
+			throw bc_io_exception(l_msg.str().c_str());
+		}
+
+		core::bc_read_all_lines(l_json_file, l_json_file_buffer);
+
+		core::bc_json_document<_bc_entity_json> l_json;
+		l_json.load(l_json_file_buffer.c_str());
+
+		for (auto& l_entity : l_json->m_entities)
+		{
+			auto l_entity_name_hash = string_hash()(l_entity->m_name->c_str());
 				
-				entity_map_type::value_type l_entity_value(l_entity_name_hash, std::move(l_entity_data));
-				m_entities.insert(std::move(l_entity_value));
-			}
-		}
+			_bc_entity_data l_entity_data;
+			_bc_entity_data* p_inherit = nullptr;
 
-		core::bc_vector_frame<core::bc_string_view> bc_entity_manager::get_entity_names() const
-		{
-			core::bc_vector_frame<core::bc_string_view> l_result;
-			l_result.reserve(m_entities.size());
-
-			for (const auto& l_entity : m_entities)
+			if(l_entity->m_inherit.has_value())
 			{
-				l_result.push_back(l_entity.second.m_entity_name);
+				auto l_inherit_entity_name_hash = string_hash()(l_entity->m_inherit->c_str());
+				const auto l_inherit_ite = m_entities.find(l_inherit_entity_name_hash);
+				if(l_inherit_ite != std::end(m_entities))
+				{
+					p_inherit = &l_inherit_ite->second;
+				}
 			}
 
-			std::sort(std::begin(l_result), std::end(l_result));
-			
-			return l_result;
+			_read_entity_data<string_hash>(*l_entity, l_entity_data, p_inherit);
+				
+			entity_map_type::value_type l_entity_value(l_entity_name_hash, std::move(l_entity_data));
+			m_entities.insert(std::move(l_entity_value));
+		}
+	}
+
+	core::bc_vector_frame<core::bc_string_view> bc_entity_manager::get_entity_names() const
+	{
+		core::bc_vector_frame<core::bc_string_view> l_result;
+		l_result.reserve(m_entities.size());
+
+		for (const auto& l_entity : m_entities)
+		{
+			l_result.push_back(l_entity.second.m_entity_name);
 		}
 
-		core::bc_unique_ptr<bc_actor_component_manager_container> bc_entity_manager::create_actor_component_container() noexcept
-		{
-			// TODO find a way to validate destruction of previous managers
-			m_actor_component_container_index = bc_actor_id::generate_new_manager_id(m_actor_component_container_index);
-			auto l_container = core::bc_make_unique<bc_actor_component_manager_container>(bc_actor_component_manager_container
+		std::sort(std::begin(l_result), std::end(l_result));
+			
+		return l_result;
+	}
+
+	core::bc_unique_ptr<bc_actor_component_manager_container> bc_entity_manager::create_actor_component_container() noexcept
+	{
+		// TODO find a way to validate destruction of previous managers
+		m_actor_component_container_index = bc_actor_id::generate_new_manager_id(m_actor_component_container_index);
+		auto l_container = core::bc_make_unique<bc_actor_component_manager_container>(bc_actor_component_manager_container
 			(
 				m_query_manager,
 				m_game_system,
@@ -201,53 +199,130 @@ namespace black_cat
 				m_actor_component_container_index
 			));
 
-			m_actor_component_containers[m_actor_component_container_index] = l_container.get();
-			return l_container;
-		}
+		m_actor_component_containers[m_actor_component_container_index] = l_container.get();
+		return l_container;
+	}
 		
-		bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform)
-		{
-			return _create_entity(p_scene, p_entity_name, p_world_transform, nullptr);
-		}
+	bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform)
+	{
+		return _create_entity(p_scene, p_entity_name, p_world_transform, nullptr);
+	}
 
-		bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_json_key_value& p_instance_parameters)
-		{
-			return _create_entity(p_scene, p_entity_name, p_world_transform , &p_instance_parameters);
-		}
+	bc_actor bc_entity_manager::create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_json_key_value& p_instance_parameters)
+	{
+		return _create_entity(p_scene, p_entity_name, p_world_transform , &p_instance_parameters);
+	}
 		
-		bc_actor bc_entity_manager::_create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_json_key_value* p_instance_parameters)
-		{
-			auto& l_actor_component_manager = p_scene.get_actor_component_manager();
-			const auto l_hash = string_hash()(p_entity_name);
-			const auto l_entity_entry = m_entities.find(l_hash);
-			const auto& l_instance_parameters = p_instance_parameters ? *p_instance_parameters : m_empty_parameters;
-			bc_actor l_actor;
+	bc_actor bc_entity_manager::_create_entity(bc_scene& p_scene, const bcCHAR* p_entity_name, const core::bc_matrix4f& p_world_transform, const core::bc_json_key_value* p_instance_parameters)
+	{
+		auto& l_actor_component_manager = p_scene.get_actor_component_manager();
+		const auto l_hash = string_hash()(p_entity_name);
+		const auto l_entity_entry = m_entities.find(l_hash);
+		const auto& l_instance_parameters = p_instance_parameters ? *p_instance_parameters : m_empty_parameters;
+		bc_actor l_actor;
 
-			try
+		try
+		{
+			if (l_entity_entry == std::end(m_entities))
 			{
-				if (l_entity_entry == std::end(m_entities))
+				throw bc_invalid_argument_exception("Invalid entity name");
+			}
+
+			l_actor = l_actor_component_manager.create_actor();
+			l_actor_component_manager.create_component<bc_mediate_component>(l_actor);
+
+			for (auto& l_entity_component_data : l_entity_entry->second.m_components)
+			{
+				auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
+				if (l_entity_component_entry == std::end(m_components))
 				{
-					throw bc_invalid_argument_exception("Invalid entity name");
+					throw bc_key_not_found_exception("There is no registered component with specified name");
 				}
 
-				l_actor = l_actor_component_manager.create_actor();
-				l_actor_component_manager.create_component<bc_mediate_component>(l_actor);
+				l_entity_component_entry->second.m_create_delegate(l_actor);
+			}
 
-				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
-				{
-					auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
-					if (l_entity_component_entry == std::end(m_components))
-					{
-						throw bc_key_not_found_exception("There is no registered component with specified name");
-					}
-
-					l_entity_component_entry->second.m_create_delegate(l_actor);
-				}
-
-				auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
-				l_mediate_component->_set_entity_name(l_entity_entry->second.m_entity_name.c_str());
-				l_mediate_component->initialize
+			auto* l_mediate_component = l_actor.get_component<bc_mediate_component>();
+			l_mediate_component->_set_entity_name(l_entity_entry->second.m_entity_name.c_str());
+			l_mediate_component->initialize
+			(
+				bc_actor_component_initialize_context
 				(
+					l_entity_entry->second.m_parameters,
+					l_instance_parameters,
+					m_content_stream_manager,
+					m_game_system,
+					p_scene,
+					l_actor,
+					p_world_transform
+				)
+			);
+
+			for (auto& l_entity_component_data : l_entity_entry->second.m_components)
+			{
+				const auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
+				l_entity_component_entry->second.m_initialize_delegate
+				(
+					bc_actor_component_initialize_context
+					(
+						l_entity_component_data.m_component_parameters,
+						l_instance_parameters,
+						m_content_stream_manager,
+						m_game_system,
+						p_scene,
+						l_actor,
+						p_world_transform
+					)
+				);
+			}
+
+			l_mediate_component->initialize_entity
+			(
+				bc_actor_component_initialize_entity_context
+				(
+					l_entity_entry->second.m_parameters,
+					l_instance_parameters,
+					m_content_stream_manager,
+					m_game_system,
+					p_scene,
+					l_actor,
+					p_world_transform
+				)
+			);
+
+			for (auto& l_entity_component_data : l_entity_entry->second.m_components)
+			{
+				const auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
+				l_entity_component_entry->second.m_initialize_entity_delegate
+				(
+					bc_actor_component_initialize_entity_context
+					(
+						l_entity_component_data.m_component_parameters,
+						l_instance_parameters,
+						m_content_stream_manager,
+						m_game_system,
+						p_scene,
+						l_actor,
+						p_world_transform
+					)
+				);
+			}
+
+			if (!l_entity_entry->second.m_controller_name.empty())
+			{
+				const auto l_controller_hash = string_hash()(l_entity_entry->second.m_controller_name.c_str());
+				const auto l_controller_ite = m_controllers.find(l_controller_hash);
+				if (l_controller_ite == std::end(m_controllers))
+				{
+					throw bc_invalid_argument_exception("Invalid actor controller name");
+				}
+
+				auto l_controller = l_controller_ite->second();
+				auto* l_controller_component = l_actor.get_create_component<bc_controller_component>();
+
+				l_controller_component->set_controller
+				(
+					std::move(l_controller),
 					bc_actor_component_initialize_context
 					(
 						l_entity_entry->second.m_parameters,
@@ -259,97 +334,19 @@ namespace black_cat
 						p_world_transform
 					)
 				);
-
-				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
-				{
-					const auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
-					l_entity_component_entry->second.m_initialize_delegate
-					(
-						bc_actor_component_initialize_context
-						(
-							l_entity_component_data.m_component_parameters,
-							l_instance_parameters,
-							m_content_stream_manager,
-							m_game_system,
-							p_scene,
-							l_actor,
-							p_world_transform
-						)
-					);
-				}
-
-				l_mediate_component->initialize_entity
-				(
-					bc_actor_component_initialize_entity_context
-					(
-						l_entity_entry->second.m_parameters,
-						l_instance_parameters,
-						m_content_stream_manager,
-						m_game_system,
-						p_scene,
-						l_actor,
-						p_world_transform
-					)
-				);
-
-				for (auto& l_entity_component_data : l_entity_entry->second.m_components)
-				{
-					const auto l_entity_component_entry = m_components.find(l_entity_component_data.m_component_hash);
-					l_entity_component_entry->second.m_initialize_entity_delegate
-					(
-						bc_actor_component_initialize_entity_context
-						(
-							l_entity_component_data.m_component_parameters,
-							l_instance_parameters,
-							m_content_stream_manager,
-							m_game_system,
-							p_scene,
-							l_actor,
-							p_world_transform
-						)
-					);
-				}
-
-				if (!l_entity_entry->second.m_controller_name.empty())
-				{
-					const auto l_controller_hash = string_hash()(l_entity_entry->second.m_controller_name.c_str());
-					const auto l_controller_ite = m_controllers.find(l_controller_hash);
-					if (l_controller_ite == std::end(m_controllers))
-					{
-						throw bc_invalid_argument_exception("Invalid actor controller name");
-					}
-
-					auto l_controller = l_controller_ite->second();
-					auto* l_controller_component = l_actor.get_create_component<bc_controller_component>();
-
-					l_controller_component->set_controller
-					(
-						std::move(l_controller),
-						bc_actor_component_initialize_context
-						(
-							l_entity_entry->second.m_parameters,
-							l_instance_parameters,
-							m_content_stream_manager,
-							m_game_system,
-							p_scene,
-							l_actor,
-							p_world_transform
-						)
-					);
-				}
 			}
-			catch (const std::exception& l_exception)
-			{
-				if (l_actor.is_valid())
-				{
-					l_actor_component_manager.remove_actor(l_actor);
-					l_actor = bc_actor();
-				}
-
-				core::bc_log(core::bc_log_type::error) << "Error in entity creation: '" << p_entity_name << "', " << l_exception.what() << core::bc_lend;
-			}
-
-			return l_actor;
 		}
+		catch (const std::exception& l_exception)
+		{
+			if (l_actor.is_valid())
+			{
+				l_actor_component_manager.remove_actor(l_actor);
+				l_actor = bc_actor();
+			}
+
+			core::bc_log(core::bc_log_type::error) << "Error in entity creation: '" << p_entity_name << "', " << l_exception.what() << core::bc_lend;
+		}
+
+		return l_actor;
 	}
 }

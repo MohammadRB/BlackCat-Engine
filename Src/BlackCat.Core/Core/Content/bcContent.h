@@ -1,4 +1,4 @@
-// [03/28/2016 MRB]
+// [28/03/2016 MRB]
 
 #pragma once
 
@@ -7,73 +7,70 @@
 #include "Core/bcConstant.h"
 #include "Core/Utility/bcRefCountPtr.h"
 
-namespace black_cat
+namespace black_cat::core
 {
-	namespace core
+	class bci_content;
+	class bc_content_manager;
+
+	class BC_CORE_DLL _bc_content_ptr_deleter
 	{
-		class bci_content;
-		class bc_content_manager;
+	public:
+		_bc_content_ptr_deleter();
 
-		class BC_CORE_DLL _bc_content_ptr_deleter
+		_bc_content_ptr_deleter(bc_content_manager* p_content_manager);
+
+		void operator ()(const bci_content* p_content) const;
+
+	private:
+		bc_content_manager* m_content_manager;
+	};
+
+	template<typename TContent>
+	using bc_content_ptr = bc_ref_count_ptr<TContent, _bc_content_ptr_deleter>;
+
+	template< class TContent >
+	class bc_content_traits
+	{
+	public:
+		static constexpr const bcCHAR* content_name()
 		{
-		public:
-			_bc_content_ptr_deleter();
+			return TContent::content_name();
+		}
 
-			_bc_content_ptr_deleter(bc_content_manager* p_content_manager);
-
-			void operator ()(const bci_content* p_content) const;
-
-		private:
-			bc_content_manager* m_content_manager;
-		};
-
-		template<typename TContent>
-		using bc_content_ptr = bc_ref_count_ptr<TContent, _bc_content_ptr_deleter>;
-
-		template< class TContent >
-		class bc_content_traits
+		static constexpr bc_string_cmp_hash content_hash()
 		{
-		public:
-			static constexpr const bcCHAR* content_name()
-			{
-				return TContent::content_name();
-			}
+			return TContent::content_hash();
+		}
+	};
 
-			static constexpr bc_string_cmp_hash content_hash()
-			{
-				return TContent::content_hash();
-			}
-		};
+	class bci_content : public bc_ref_count, public platform::bc_no_copy
+	{
+	public:
+		friend class bc_content_manager;
 
-		class bci_content : public bc_ref_count, public platform::bc_no_copy
+	public:
+		virtual ~bci_content() = default;
+
+	protected:
+		bci_content() = default;
+
+		bci_content(bci_content&&) = default;
+
+		bci_content& operator=(bci_content&&) = default;
+
+	private:
+		bc_estring_view _get_key() const
 		{
-		public:
-			friend class bc_content_manager;
+			return m_key;
+		}
 
-		public:
-			virtual ~bci_content() = default;
+		void _set_key(bc_estring_view p_key)
+		{
+			m_key = p_key;
+		}
 
-		protected:
-			bci_content() = default;
+		bc_estring_view m_key{};
+	};
 
-			bci_content(bci_content&&) = default;
-
-			bci_content& operator=(bci_content&&) = default;
-
-		private:
-			bc_estring_view _get_key() const
-			{
-				return m_key;
-			}
-
-			void _set_key(bc_estring_view p_key)
-			{
-				m_key = p_key;
-			}
-
-			bc_estring_view m_key{};
-		};
-
-		using bc_icontent_ptr = bc_content_ptr<bci_content>;
-	}
+	using bc_icontent_ptr = bc_content_ptr<bci_content>;
 }

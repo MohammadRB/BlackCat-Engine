@@ -1,14 +1,12 @@
-// [05/31/2016 MRB]
+// [31/05/2016 MRB]
 
 #pragma once
 
 #include "CorePlatform/bcType.h"
 #include "Core/Container/bcString.h"
 
-namespace black_cat
+namespace black_cat::constant
 {
-	namespace constant
-	{
 #define BC_STR_CONCAT(p_str1, p_str2)			p_str1 p_str2
 
 #define BC_CONST(p_type, p_name, p_value)		constexpr p_type g_##p_name = p_value;
@@ -134,5 +132,4 @@ namespace black_cat
 		return BC_COMPILE_TIME_STRING_HASH(BC_RENDER_PASS_NAME(p_name)); \
 	}
 	
-	}
 }

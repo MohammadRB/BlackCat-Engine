@@ -1,4 +1,4 @@
-// [12/20/2016 MRB]
+// [20/12/2016 MRB]
 
 #pragma once
 
@@ -7,41 +7,38 @@
 #include "Physics/Shape/bcShapeBox.h"
 #include "PhysicsImp/PhysicsImpPCH.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	template<>
+	struct bc_platform_shape_box_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
 	{
-		template<>
-		struct bc_platform_shape_box_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
+		bc_platform_shape_box_pack()
+			: bc_platform_shape_geometry_pack(m_px_box)
 		{
-			bc_platform_shape_box_pack()
-				: bc_platform_shape_geometry_pack(m_px_box)
-			{
-			}
+		}
 
-			explicit bc_platform_shape_box_pack(const physx::PxBoxGeometry& p_px_box)
-				: bc_platform_shape_geometry_pack(m_px_box),
-				m_px_box(p_px_box)
-			{
-			}
+		explicit bc_platform_shape_box_pack(const physx::PxBoxGeometry& p_px_box)
+			: bc_platform_shape_geometry_pack(m_px_box),
+			  m_px_box(p_px_box)
+		{
+		}
 
-			bc_platform_shape_box_pack(const bc_platform_shape_box_pack& p_other)
-				: bc_platform_shape_geometry_pack(m_px_box),
-				m_px_box(p_other.m_px_box)
-			{
-			}
+		bc_platform_shape_box_pack(const bc_platform_shape_box_pack& p_other)
+			: bc_platform_shape_geometry_pack(m_px_box),
+			  m_px_box(p_other.m_px_box)
+		{
+		}
 
-			~bc_platform_shape_box_pack() = default;
+		~bc_platform_shape_box_pack() = default;
 
-			bc_platform_shape_box_pack& operator=(const bc_platform_shape_box_pack& p_other)
-			{
-				bc_platform_shape_geometry_pack::operator=(m_px_box);
-				m_px_box = p_other.m_px_box;
+		bc_platform_shape_box_pack& operator=(const bc_platform_shape_box_pack& p_other)
+		{
+			bc_platform_shape_geometry_pack::operator=(m_px_box);
+			m_px_box = p_other.m_px_box;
 				
-				return *this;
-			}
+			return *this;
+		}
 			
-			physx::PxBoxGeometry m_px_box;
-		};
-	}
+		physx::PxBoxGeometry m_px_box;
+	};
 }

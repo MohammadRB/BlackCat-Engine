@@ -1,4 +1,4 @@
-// [09/15/2016 MRB]
+// [15/09/2016 MRB]
 
 #pragma once
 
@@ -7,10 +7,7 @@
 
 #include "Graphic/Shader/Parameter/bcSamplerParameter.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
-	{
 
-	}
 }

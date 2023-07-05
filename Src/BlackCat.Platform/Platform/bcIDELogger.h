@@ -1,22 +1,19 @@
-// [03/23/2016 MRB]
+// [23/03/2016 MRB]
 
 #pragma once
 
 #include "Core/Utility/bcLogger.h"
 #include "Platform/bcExport.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
+	class BC_PLATFORMSHARED_DLL bc_ide_logger : public core::bci_log_listener
 	{
-		class BC_PLATFORMSHARED_DLL bc_ide_logger : public core::bci_log_listener
-		{
-		public:
-			bc_ide_logger();
+	public:
+		bc_ide_logger();
 
-			~bc_ide_logger();
+		~bc_ide_logger();
 
-			void on_log(core::bc_log_type p_type, const bcECHAR* p_log) override;
-		};
-	}
+		void on_log(core::bc_log_type p_type, const bcECHAR* p_log) override;
+	};
 }

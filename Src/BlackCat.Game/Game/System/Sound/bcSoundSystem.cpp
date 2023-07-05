@@ -1,4 +1,4 @@
-// [03/11/2022 MRB]
+// [11/03/2022 MRB]
 
 #include "Game/GamePCH.h"
 
@@ -7,59 +7,56 @@
 #include "Game/System/Sound/bcSoundSystem.h"
 #include "Game/System/Sound/bcSoundManager.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	bc_sound_manager bc_sound_system::create_sound_manager() noexcept
 	{
-		bc_sound_manager bc_sound_system::create_sound_manager() noexcept
-		{
-			return bc_sound_manager(m_device);
-		}
+		return bc_sound_manager(m_device);
+	}
 
-		void bc_sound_system::update(const update_context& p_context)
-		{
-			const auto l_listener_position = p_context.m_camera.get_position();
-			const auto l_velocity = (l_listener_position - m_last_listener_position) * p_context.m_clock.m_elapsed_second; // amount of move per second
+	void bc_sound_system::update(const update_context& p_context)
+	{
+		const auto l_listener_position = p_context.m_camera.get_position();
+		const auto l_velocity = (l_listener_position - m_last_listener_position) * p_context.m_clock.m_elapsed_second; // amount of move per second
 
-			m_device.update
+		m_device.update
+		(
+			sound::bc_device::update_context
+			{
+				p_context.m_clock,
+				p_context.m_camera.get_position(),
+				p_context.m_camera.get_forward(),
+				p_context.m_camera.get_up(),
+				l_velocity
+			}
+		);
+
+		m_last_listener_position = p_context.m_camera.get_position();
+	}
+
+	core::bc_task<void> bc_sound_system::update_async(const update_context& p_context)
+	{
+		auto l_task = core::bc_concurrency::start_task
+		(
+			core::bc_delegate<void()>
 			(
-				sound::bc_device::update_context
+				[=, &p_context]()
 				{
-					p_context.m_clock,
-					p_context.m_camera.get_position(),
-					p_context.m_camera.get_forward(),
-					p_context.m_camera.get_up(),
-					l_velocity
+					update(p_context);
 				}
-			);
+			)
+		);
 
-			m_last_listener_position = p_context.m_camera.get_position();
-		}
+		return l_task;
+	}
 
-		core::bc_task<void> bc_sound_system::update_async(const update_context& p_context)
-		{
-			auto l_task = core::bc_concurrency::start_task
-			(
-				core::bc_delegate<void()>
-				(
-					[=, &p_context]()
-					{
-						update(p_context);
-					}
-				)
-			);
+	void bc_sound_system::_initialize(bc_sound_system_parameter p_params)
+	{
+		m_device.initialize(sound::bc_device_init_params{ p_params.m_max_channels, graphic::bc_render_api_info::use_left_handed() });
+	}
 
-			return l_task;
-		}
-
-		void bc_sound_system::_initialize(bc_sound_system_parameter p_params)
-		{
-			m_device.initialize(sound::bc_device_init_params{ p_params.m_max_channels, graphic::bc_render_api_info::use_left_handed() });
-		}
-
-		void bc_sound_system::_destroy()
-		{
-			m_device.destroy();
-		}
+	void bc_sound_system::_destroy()
+	{
+		m_device.destroy();
 	}
 }

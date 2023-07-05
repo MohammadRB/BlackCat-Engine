@@ -1,4 +1,4 @@
-// [10/11/2016 MRB]
+// [11/10/2016 MRB]
 
 #pragma once
 
@@ -9,14 +9,11 @@
 #include "Platform/Script/bcScriptContext.h"
 #include "PlatformImp/PlatformImpPCH.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
+	template<>
+	struct bc_platform_script_context_pack< platform::g_api_win32 >
 	{
-		template<>
-		struct bc_platform_script_context_pack< platform::g_api_win32 >
-		{
-			JsContextRef m_js_context;
-		};
-	}
+		JsContextRef m_js_context;
+	};
 }

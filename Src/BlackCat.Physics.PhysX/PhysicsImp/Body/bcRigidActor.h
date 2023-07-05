@@ -1,4 +1,4 @@
-// [12/14/2016 MRB]
+// [14/12/2016 MRB]
 
 #pragma once
 
@@ -8,13 +8,10 @@
 
 #include "Physics/Body/bcRigidActor.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	template<>
+	struct bc_platform_rigid_actor_pack<g_api_physx> : bc_platform_actor_pack<g_api_physx>
 	{
-		template<>
-		struct bc_platform_rigid_actor_pack<g_api_physx> : bc_platform_actor_pack<g_api_physx>
-		{
-		};
-	}
+	};
 }

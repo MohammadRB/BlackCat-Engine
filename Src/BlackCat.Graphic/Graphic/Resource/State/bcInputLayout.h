@@ -1,4 +1,4 @@
-// [01/12/2016 MRB]
+// [12/01/2016 MRB]
 
 #pragma once
 
@@ -7,27 +7,25 @@
 #include "Graphic/bcRenderApi.h"
 #include "Graphic/bcGraphicDefinition.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	struct bc_input_element_desc
 	{
-		struct bc_input_element_desc
-		{
-			const bcCHAR* m_semantic_name;
-			bcUINT m_semantic_index;
-			bc_format m_format;
-			bcUINT m_input_slot;
-			bcUINT m_aligned_byte_offset;
-			bc_input_classification m_input_slot_class;
-			bcUINT m_instance_data_step_rate;
-		};
+		const bcCHAR* m_semantic_name;
+		bcUINT m_semantic_index;
+		bc_format m_format;
+		bcUINT m_input_slot;
+		bcUINT m_aligned_byte_offset;
+		bc_input_classification m_input_slot_class;
+		bcUINT m_instance_data_step_rate;
+	};
 
-		struct bc_input_layout_config
-		{
-			core::bc_vector_movable<bc_input_element_desc> m_input_elements;
-		};
+	struct bc_input_layout_config
+	{
+		core::bc_vector_movable<bc_input_element_desc> m_input_elements;
+	};
 
-		/*template<bc_platform_render_api TRenderApi>
+	/*template<bc_platform_render_api TRenderApi>
 		struct bc_platform_input_layout_pack
 		{
 		};
@@ -52,5 +50,4 @@ namespace black_cat
 
 		class bc_input_layout : public bc_platform_input_layout<g_current_render_api>
 		{};*/
-	}
 }

@@ -1,12 +1,9 @@
-// [12/20/2016 MRB]
+// [20/12/2016 MRB]
 
 #include "PhysicsImp/PhysicsImpPCH.h"
 #include "PhysicsImp/bcExport.h"
 #include "PhysicsImp/Shape/bcShapeGeometry.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
-	{
-	}
 }

@@ -1,4 +1,4 @@
-// [02/24/2022 MRB]
+// [24/02/2022 MRB]
 
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Object/Scene/Component/bcCheckPointComponent.h"

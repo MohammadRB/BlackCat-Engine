@@ -1,4 +1,4 @@
-// [12/16/2016 MRB]
+// [16/12/2016 MRB]
 
 #pragma once
 
@@ -8,26 +8,23 @@
 #include "Physics/Collision/bcShapeQuery.h"
 #include "PhysicsImp/PhysicsImpPCH.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	template<>
+	struct bc_platform_ray_hit_pack<g_api_physx>
 	{
-		template<>
-		struct bc_platform_ray_hit_pack<g_api_physx>
-		{
-			physx::PxRaycastHit m_px_hit;
-		};
+		physx::PxRaycastHit m_px_hit;
+	};
 
-		template<>
-		struct bc_platform_overlap_hit_pack<g_api_physx>
-		{
-			physx::PxOverlapHit m_px_hit;
-		};
+	template<>
+	struct bc_platform_overlap_hit_pack<g_api_physx>
+	{
+		physx::PxOverlapHit m_px_hit;
+	};
 
-		template<>
-		struct bc_platform_sweep_hit_pack<g_api_physx>
-		{
-			physx::PxSweepHit m_px_hit;
-		};
-	}
+	template<>
+	struct bc_platform_sweep_hit_pack<g_api_physx>
+	{
+		physx::PxSweepHit m_px_hit;
+	};
 }

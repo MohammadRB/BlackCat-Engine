@@ -1,4 +1,4 @@
-// [05/25/2021 MRB]
+// [25/05/2021 MRB]
 
 #pragma once
 
@@ -8,14 +8,11 @@
 #include "Platform/Network/bcSocket.h"
 #include <WinSock2.h>
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
+	template<>
+	struct bc_platform_socket_pack<platform::g_api_win32>
 	{
-		template<>
-		struct bc_platform_socket_pack<platform::g_api_win32>
-		{
-			SOCKET m_socket;
-		};
-	}	
+		SOCKET m_socket;
+	};
 }

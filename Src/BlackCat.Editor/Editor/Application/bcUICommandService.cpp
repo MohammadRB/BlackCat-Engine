@@ -1,4 +1,4 @@
-// [02/19/2017 MRB]
+// [19/02/2017 MRB]
 
 #include "Editor/EditorPCH.h"
 
@@ -10,184 +10,181 @@
 #include "Game/bcEvent.h"
 #include "Editor/Application/bcUICommandService.h"
 
-namespace black_cat
+namespace black_cat::editor
 {
-	namespace editor
+	_bc_ui_command_entry::_bc_ui_command_entry(core::bc_unique_ptr<bci_ui_command> p_command)
+		: m_command(std::move(p_command)),
+		  m_task_link(core::bc_delegate<core::bc_any()>(*this, &_bc_ui_command_entry::_execute_task))
 	{
-		_bc_ui_command_entry::_bc_ui_command_entry(core::bc_unique_ptr<bci_ui_command> p_command)
-			: m_command(std::move(p_command)),
-			m_task_link(core::bc_delegate<core::bc_any()>(*this, &_bc_ui_command_entry::_execute_task))
+	}
+
+	bci_ui_command& _bc_ui_command_entry::get_command()
+	{
+		return *m_command;
+	}
+
+	core::bc_task<core::bc_any> _bc_ui_command_entry::get_task()
+	{
+		return m_task_link.get_task();
+	}
+
+	bool _bc_ui_command_entry::command_update(bci_ui_command::update_context& p_context)
+	{
+		const auto l_should_persist = m_command->update(p_context);
+		if(!l_should_persist)
 		{
+			m_task_result = std::move(p_context.m_result);
+			m_task_link();
+			return false;
 		}
 
-		bci_ui_command& _bc_ui_command_entry::get_command()
-		{
-			return *m_command;
-		}
+		return true;
+	}
 
-		core::bc_task<core::bc_any> _bc_ui_command_entry::get_task()
-		{
-			return m_task_link.get_task();
-		}
+	void _bc_ui_command_entry::command_update_ui(bci_ui_command::update_ui_context& p_context)
+	{
+		m_command->update_ui(p_context);
+	}
 
-		bool _bc_ui_command_entry::command_update(bci_ui_command::update_context& p_context)
-		{
-			const auto l_should_persist = m_command->update(p_context);
-			if(!l_should_persist)
-			{
-				m_task_result = std::move(p_context.m_result);
-				m_task_link();
-				return false;
-			}
+	void _bc_ui_command_entry::command_undo(bci_ui_command::undo_context& p_context)
+	{
+		static_cast<bci_ui_command_reversible&>(*m_command).undo(p_context);
+	}
 
-			return true;
-		}
+	core::bc_any _bc_ui_command_entry::_execute_task()
+	{
+		return m_task_result;
+	}
 
-		void _bc_ui_command_entry::command_update_ui(bci_ui_command::update_ui_context& p_context)
-		{
-			m_command->update_ui(p_context);
-		}
+	bc_ui_command_service::bc_ui_command_service(core::bc_content_stream_manager& p_content_stream, core::bc_event_manager& p_event_manager, game::bc_game_system& p_game_system)
+		: m_content_stream(p_content_stream),
+		  m_game_system(p_game_system),
+		  m_editor_mode(false),
+		  m_last_update_clock(0),
+		  m_last_command_clock(0),
+		  m_commands_to_undo(0)
+	{
+		m_editor_mode_event_handle = p_event_manager.register_event_listener<game::bc_event_editor_mode>
+		(
+			core::bc_event_manager::delegate_type(*this, &bc_ui_command_service::_event_handler)
+		);
+	}
 
-		void _bc_ui_command_entry::command_undo(bci_ui_command::undo_context& p_context)
-		{
-			static_cast<bci_ui_command_reversible&>(*m_command).undo(p_context);
-		}
-
-		core::bc_any _bc_ui_command_entry::_execute_task()
-		{
-			return m_task_result;
-		}
-
-		bc_ui_command_service::bc_ui_command_service(core::bc_content_stream_manager& p_content_stream, core::bc_event_manager& p_event_manager, game::bc_game_system& p_game_system)
-			: m_content_stream(p_content_stream),
-			m_game_system(p_game_system),
-			m_editor_mode(false),
-			m_last_update_clock(0),
-			m_last_command_clock(0),
-			m_commands_to_undo(0)
-		{
-			m_editor_mode_event_handle = p_event_manager.register_event_listener<game::bc_event_editor_mode>
-			(
-				core::bc_event_manager::delegate_type(*this, &bc_ui_command_service::_event_handler)
-			);
-		}
-
-		bc_ui_command_service::~bc_ui_command_service() = default;
+	bc_ui_command_service::~bc_ui_command_service() = default;
 		
-		void bc_ui_command_service::load_content()
-		{
-			m_content_stream.read_stream_file(m_game_system.get_file_system().get_content_data_path(bcL("EditorContentStream.json")).c_str());
-			m_content_stream.load_content_stream(core::bc_alloc_type::program, "editor_shaders");
-		}
+	void bc_ui_command_service::load_content()
+	{
+		m_content_stream.read_stream_file(m_game_system.get_file_system().get_content_data_path(bcL("EditorContentStream.json")).c_str());
+		m_content_stream.load_content_stream(core::bc_alloc_type::program, "editor_shaders");
+	}
 
-		void bc_ui_command_service::unload_content()
-		{
-			m_content_stream.unload_content_stream("editor_shaders");
-		}
+	void bc_ui_command_service::unload_content()
+	{
+		m_content_stream.unload_content_stream("editor_shaders");
+	}
 
-		bcUINT32 bc_ui_command_service::reversible_command_count() const
+	bcUINT32 bc_ui_command_service::reversible_command_count() const
+	{
 		{
-			{
-				platform::bc_lock_guard<platform::bc_mutex> l_guard(m_commands_lock);
-				return m_reversible_commands.size();
-			}
+			platform::bc_lock_guard<platform::bc_mutex> l_guard(m_commands_lock);
+			return m_reversible_commands.size();
 		}
+	}
 
-		void bc_ui_command_service::undo()
+	void bc_ui_command_service::undo()
+	{
 		{
-			{
-				platform::bc_lock_guard<platform::bc_mutex> l_guard(m_commands_lock);
-				m_commands_to_undo++;
-			}
+			platform::bc_lock_guard<platform::bc_mutex> l_guard(m_commands_lock);
+			m_commands_to_undo++;
 		}
+	}
 		
-		void bc_ui_command_service::update(const platform::bc_clock::update_param& p_elapsed)
+	void bc_ui_command_service::update(const platform::bc_clock::update_param& p_elapsed)
+	{
 		{
+			platform::bc_mutex_guard l_guard(m_commands_lock);
+			m_last_update_clock = static_cast<platform::bc_clock::big_clock>(p_elapsed.m_total_elapsed);
+
+			decltype(m_commands_to_execute) l_persistent_commands;
+
+			while (!m_commands_to_execute.empty())
 			{
-				platform::bc_mutex_guard l_guard(m_commands_lock);
-				m_last_update_clock = static_cast<platform::bc_clock::big_clock>(p_elapsed.m_total_elapsed);
+				auto& l_command_entry = m_commands_to_execute.front();
+				bci_ui_command::update_context l_context
+				(
+					p_elapsed, 
+					m_game_system, 
+					_get_command_state(l_command_entry->get_command())
+				);
 
-				decltype(m_commands_to_execute) l_persistent_commands;
-
-				while (!m_commands_to_execute.empty())
+				const auto l_should_persist = l_command_entry->command_update(l_context);
+				if (!l_should_persist)
 				{
-					auto& l_command_entry = m_commands_to_execute.front();
-					bci_ui_command::update_context l_context
-					(
-						p_elapsed, 
-						m_game_system, 
-						_get_command_state(l_command_entry->get_command())
-					);
-
-					const auto l_should_persist = l_command_entry->command_update(l_context);
-					if (!l_should_persist)
-					{
-						m_executed_commands.push(std::move(l_command_entry));
-					}
-					else
-					{
-						l_persistent_commands.push(std::move(l_command_entry));
-					}
-
-					m_commands_to_execute.pop();
+					m_executed_commands.push(std::move(l_command_entry));
+				}
+				else
+				{
+					l_persistent_commands.push(std::move(l_command_entry));
 				}
 
-				std::swap(l_persistent_commands, m_commands_to_execute);
+				m_commands_to_execute.pop();
+			}
 
-				if(m_commands_to_undo)
-				{
-					_bc_ui_command_entry& l_command_entry = *m_reversible_commands.front();
-					bci_ui_command::undo_context l_context
-					(
-						p_elapsed,
-						m_game_system,
-						_get_command_state(l_command_entry.get_command())
-					);
-					l_command_entry.command_undo(l_context);
+			std::swap(l_persistent_commands, m_commands_to_execute);
 
-					m_reversible_commands.pop();
-					m_commands_to_undo--;
-				}
+			if(m_commands_to_undo)
+			{
+				_bc_ui_command_entry& l_command_entry = *m_reversible_commands.front();
+				bci_ui_command::undo_context l_context
+				(
+					p_elapsed,
+					m_game_system,
+					_get_command_state(l_command_entry.get_command())
+				);
+				l_command_entry.command_undo(l_context);
+
+				m_reversible_commands.pop();
+				m_commands_to_undo--;
 			}
 		}
+	}
 
-		void bc_ui_command_service::update_ui(bci_ui_command::update_ui_context& p_context)
+	void bc_ui_command_service::update_ui(bci_ui_command::update_ui_context& p_context)
+	{
 		{
-			{
-				platform::bc_mutex_guard l_guard(m_commands_lock);
+			platform::bc_mutex_guard l_guard(m_commands_lock);
 
-				while(!m_executed_commands.empty())
-				{
-					_bc_ui_command_entry& l_command_entry = *m_executed_commands.front();
-					l_command_entry.command_update_ui(p_context);
-					m_executed_commands.pop();
-				}
+			while(!m_executed_commands.empty())
+			{
+				_bc_ui_command_entry& l_command_entry = *m_executed_commands.front();
+				l_command_entry.command_update_ui(p_context);
+				m_executed_commands.pop();
 			}
 		}
+	}
 
-		bci_ui_command::state* bc_ui_command_service::_get_command_state(const bci_ui_command& p_command)
+	bci_ui_command::state* bc_ui_command_service::_get_command_state(const bci_ui_command& p_command)
+	{
+		auto l_command_hash = command_hash_t()(p_command.title());
+		auto l_command_state = m_command_states.find(l_command_hash);
+
+		if (l_command_state == std::cend(m_command_states))
 		{
-			auto l_command_hash = command_hash_t()(p_command.title());
-			auto l_command_state = m_command_states.find(l_command_hash);
+			bci_ui_command::state_context l_context(m_content_stream, m_game_system);
+			bci_ui_command::state_ptr l_state = p_command.create_state(l_context);
 
-			if (l_command_state == std::cend(m_command_states))
-			{
-				bci_ui_command::state_context l_context(m_content_stream, m_game_system);
-				bci_ui_command::state_ptr l_state = p_command.create_state(l_context);
-
-				l_command_state = m_command_states.insert(command_state_container::value_type(l_command_hash, std::move(l_state))).first;
-			}
-
-			return l_command_state->second.get();
+			l_command_state = m_command_states.insert(command_state_container::value_type(l_command_hash, std::move(l_state))).first;
 		}
 
-		void bc_ui_command_service::_event_handler(core::bci_event& p_event)
+		return l_command_state->second.get();
+	}
+
+	void bc_ui_command_service::_event_handler(core::bci_event& p_event)
+	{
+		auto* l_editor_mode_event = core::bci_message::as<game::bc_event_editor_mode>(p_event);
+		if (l_editor_mode_event)
 		{
-			auto* l_editor_mode_event = core::bci_message::as<game::bc_event_editor_mode>(p_event);
-			if (l_editor_mode_event)
-			{
-				m_editor_mode = l_editor_mode_event->get_editor_mode();
-			}
+			m_editor_mode = l_editor_mode_event->get_editor_mode();
 		}
 	}
 }

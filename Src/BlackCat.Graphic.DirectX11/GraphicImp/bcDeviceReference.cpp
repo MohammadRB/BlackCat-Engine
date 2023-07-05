@@ -1,12 +1,9 @@
-// [12/22/2016 MRB]
+// [22/12/2016 MRB]
 
 #include "GraphicImp/GraphicImpPCH.h"
 #include "GraphicImp/bcExport.h"
 #include "GraphicImp/bcDeviceReference.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
-	{
-	}
 }
