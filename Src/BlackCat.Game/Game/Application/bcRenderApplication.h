@@ -29,6 +29,8 @@ namespace black_cat
 
 			const bcECHAR* get_app_name() const noexcept;
 			
+			bci_render_application_output_window* get_output_window() noexcept;
+
 			const bci_render_application_output_window* get_output_window() const noexcept;
 
 			bcFLOAT get_ft() const noexcept;
@@ -175,6 +177,7 @@ namespace black_cat
 			core::bc_event_listener_handle m_event_handle_key;
 			core::bc_event_listener_handle m_event_handle_pointing;
 			core::bc_event_listener_handle m_event_handle_config_changed;
+			core::bc_event_listener_handle m_event_handle_editor_started;
 		};
 	}
 

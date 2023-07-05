@@ -6,6 +6,8 @@
 #include <QtWidgets/QWidget>
 #include <QtGui/QtEvents>
 
+class QMainWindow;
+
 namespace black_cat
 {
 	namespace editor
@@ -20,7 +22,7 @@ namespace black_cat
 			friend class bc_editor_app;
 
 		public:
-			explicit bc_widget_d3d_output(QWidget* p_parent = nullptr);
+			bc_widget_d3d_output(QMainWindow* p_main_window, QWidget* p_parent = nullptr);
 
 			~bc_widget_d3d_output() override;
 
@@ -30,6 +32,10 @@ namespace black_cat
 
 			void set_editor_mode(bool p_value) noexcept;
 
+			void request_resize(bcUINT p_width, bcUINT p_height) noexcept;
+
+			void update_ui();
+
 		signals:
 			void mousePressed(QMouseEvent* p_event);
 
@@ -37,7 +43,7 @@ namespace black_cat
 
 			void mouseMoved(QMouseEvent* p_event);
 
-		protected:
+		private:
 			void mousePressEvent(QMouseEvent* p_event) override;
 
 			void mouseReleaseEvent(QMouseEvent* p_event) override;
@@ -50,17 +56,23 @@ namespace black_cat
 
 			void resizeEvent(QResizeEvent* p_resize) override;
 
+			void window_initialized();
+
 			void focus_event(QFocusEvent* p_event);
 
 			void window_state_change_event(QWindowStateChangeEvent* p_event, Qt::WindowStates p_window_state);
 
 			void close_event(QCloseEvent* p_event);
 
-		private:
+			QMainWindow* m_main_window;
 			HWND m_win_id;
 			bool m_editor_mode;
-			int m_last_mouse_x;
-			int m_last_mouse_y;
+			bcINT m_last_mouse_x;
+			bcINT m_last_mouse_y;
+
+			bool m_request_resize;
+			bcUINT m_resize_x;
+			bcUINT m_resize_y;
 		};
 	}
 }

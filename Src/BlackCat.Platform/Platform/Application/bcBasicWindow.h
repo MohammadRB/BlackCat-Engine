@@ -49,7 +49,7 @@ namespace black_cat
 		struct bc_platform_basic_window_parameter_pack
 		{
 		public:
-			bc_platform_basic_window_parameter_pack(const bcECHAR* p_caption, bcUINT32 p_width, bcUINT32 p_height)
+			bc_platform_basic_window_parameter_pack(const bcECHAR* p_caption, bcUINT p_width, bcUINT p_height)
 				: m_caption(p_caption),
 				m_width(p_width),
 				m_height(p_height)
@@ -57,8 +57,8 @@ namespace black_cat
 			}
 
 			const bcECHAR* m_caption;
-			bcUINT32 m_width;
-			bcUINT32 m_height;
+			bcUINT m_width;
+			bcUINT m_height;
 		};
 
 		template<bc_platform TPlatform>
@@ -86,25 +86,25 @@ namespace black_cat
 
 			id get_id() const noexcept override;
 
-			bcUINT32 get_width() const noexcept;
+			bcUINT get_width() const noexcept;
 
-			void set_width(bcUINT32 p_width) noexcept;
+			void set_width(bcUINT p_width) noexcept;
 
-			bcUINT32 get_height() const noexcept;
+			bcUINT get_height() const noexcept;
 
-			void set_height(bcUINT32 p_height) noexcept;
+			void set_height(bcUINT p_height) noexcept;
 
-			bcUINT32 get_left() const noexcept;
+			bcUINT get_left() const noexcept;
 
-			void set_left(bcUINT32 p_left) noexcept;
+			void set_left(bcUINT p_left) noexcept;
 
-			bcUINT32 get_top() const noexcept;
+			bcUINT get_top() const noexcept;
 
-			void set_top(bcUINT32 p_top) noexcept;
+			void set_top(bcUINT p_top) noexcept;
 
-			void set_size(bcUINT32 p_width, bcUINT32 p_height) noexcept;
+			void set_size(bcUINT p_width, bcUINT p_height) noexcept;
 
-			void set_position(bcUINT32 p_left, bcUINT32 p_top) noexcept;
+			void set_position(bcUINT p_left, bcUINT p_top) noexcept;
 
 			core::bc_estring get_caption() const override;
 

@@ -61,17 +61,8 @@ namespace black_cat
 
 		void bc_editor_render_app::application_initialize(const bc_application_initialize_context& p_context)
 		{
-			auto& l_event_manager = *core::bc_get_service<core::bc_event_manager>();
 			auto& l_render_system = m_game_system->get_render_system();
 			auto& l_input_system = m_game_system->get_input_system();
-			auto& l_global_config = bc_get_global_config();
-			
-			bool l_camera_read = false;
-			core::bc_vector3f l_camera_pos;
-			core::bc_vector3f l_camera_look_at;
-			l_global_config.read_config_key("camera_position", l_camera_pos, l_camera_read);
-			l_global_config.read_config_key("camera_lookat", l_camera_look_at, l_camera_read);
-
 			auto l_camera = core::bc_make_unique<game::bc_free_camera>
 			(
 				l_render_system.get_device_swap_buffer().get_back_buffer_width(),
@@ -80,9 +71,8 @@ namespace black_cat
 				0.3,
 				3000
 			);
-			l_camera->set_look_at(l_camera_pos, l_camera_look_at);
 			l_input_system.add_editor_camera(std::move(l_camera));
-			
+
 			l_render_system.add_render_pass(bc_gbuffer_initialize_pass());
 			l_render_system.add_render_pass(bc_gbuffer_pass());
 			l_render_system.add_render_pass(bc_gbuffer_vegetable_pass());
@@ -143,9 +133,6 @@ namespace black_cat
 			));
 			l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
 			l_render_system.add_render_pass(bc_counter_value_draw_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
-
-			game::bc_event_editor_mode l_editor_mode_event(true);
-			l_event_manager.process_event(l_editor_mode_event);
 		}
 
 		void bc_editor_render_app::application_load_content(const bc_application_load_context& p_context)
@@ -177,22 +164,17 @@ namespace black_cat
 				return;
 			}
 
+			if (const auto* l_editor_event = core::bci_message::as<game::bc_event_editor_started>(p_event))
+			{
+				auto& l_input_system = m_game_system->get_input_system();
+				load_config(*static_cast<game::bc_free_camera*>(l_input_system.get_camera()));
+
+				return;
+			}
+
 			if (const auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event))
 			{
-				auto& l_global_config = bc_get_global_config();
-				auto* l_camera = m_game_system->get_input_system().get_camera();
-				if (!l_camera)
-				{
-					return;
-				}
-
-				const auto l_camera_position = l_camera->get_position();
-				const auto l_camera_target = l_camera->get_look_at();
-
-				l_global_config.add_or_update_config_key("camera_position", l_camera_position)
-					.add_or_update_config_key("camera_lookat", l_camera_target)
-					.flush_changes();
-
+				save_config();
 				return;
 			}
 		}
@@ -208,6 +190,53 @@ namespace black_cat
 
 		void bc_editor_render_app::application_close_engine_components()
 		{
+		}
+
+		void bc_editor_render_app::load_config(game::bc_free_camera& p_camera)
+		{
+			auto& l_global_config = bc_get_global_config();
+
+			bool l_window_read = false;
+			bool l_camera_read = false;
+			core::bc_vector2i l_window_size;
+			core::bc_vector3f l_camera_pos;
+			core::bc_vector3f l_camera_look_at;
+			l_global_config
+				.read_config_key("window_size", l_window_size, l_window_read)
+				.read_config_key("camera_position", l_camera_pos, l_camera_read)
+				.read_config_key("camera_lookat", l_camera_look_at, l_camera_read);
+
+			if (l_window_read)
+			{
+				get_output_window()->set_size(l_window_size.x, l_window_size.y);
+			}
+
+			if (l_camera_read)
+			{
+				p_camera.set_look_at(l_camera_pos, l_camera_look_at);
+			}
+		}
+
+		void bc_editor_render_app::save_config()
+		{
+			auto& l_global_config = bc_get_global_config();
+			auto* l_camera = m_game_system->get_input_system().get_camera();
+			auto* l_output_window = get_output_window();
+
+			if (!l_camera)
+			{
+				return;
+			}
+
+			const auto l_window_size = core::bc_vector2i(l_output_window->get_width(), l_output_window->get_height());
+			const auto l_camera_position = l_camera->get_position();
+			const auto l_camera_target = l_camera->get_look_at();
+
+			l_global_config
+				.add_or_update_config_key("window_size", l_window_size)
+				.add_or_update_config_key("camera_position", l_camera_position)
+				.add_or_update_config_key("camera_lookat", l_camera_target)
+				.flush_changes();
 		}
 	}
 }

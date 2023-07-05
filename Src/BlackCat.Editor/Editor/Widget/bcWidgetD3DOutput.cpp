@@ -4,6 +4,7 @@
 
 #include "Core/Messaging/Event/bcEventManager.h"
 #include "Platform/bcEvent.h"
+#include "Game/bcEvent.h"
 #include "Editor/Widget/bcWidgetD3DOutput.h"
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QtWidgets>
@@ -12,11 +13,15 @@ namespace black_cat
 {
 	namespace editor
 	{
-		bc_widget_d3d_output::bc_widget_d3d_output(QWidget* p_parent)
+		bc_widget_d3d_output::bc_widget_d3d_output(QMainWindow* p_main_window, QWidget* p_parent)
 			: QWidget(p_parent),
+			m_main_window(p_main_window),
 			m_editor_mode(true),
 			m_last_mouse_x(0),
-			m_last_mouse_y(0)
+			m_last_mouse_y(0),
+			m_request_resize(false),
+			m_resize_x(0),
+			m_resize_y(0)
 		{
 			setAttribute(Qt::WA_PaintOnScreen, true);
 			setAttribute(Qt::WA_NativeWindow, true);
@@ -47,6 +52,25 @@ namespace black_cat
 		void bc_widget_d3d_output::set_editor_mode(bool p_value) noexcept
 		{
 			m_editor_mode = p_value;
+		}
+
+		void bc_widget_d3d_output::request_resize(bcUINT p_width, bcUINT p_height) noexcept
+		{
+			m_request_resize = true;
+			m_resize_x = p_width;
+			m_resize_y = p_height;
+		}
+
+		void bc_widget_d3d_output::update_ui()
+		{
+			if (m_request_resize)
+			{
+				const auto l_width_diff = m_main_window->width() - width();
+				const auto l_height_diff = m_main_window->height() - height();
+
+				m_main_window->resize(m_resize_x + l_width_diff, m_resize_y + l_height_diff);
+				m_request_resize = false;
+			}
 		}
 
 		void bc_widget_d3d_output::mousePressEvent(QMouseEvent* p_event)
@@ -101,7 +125,7 @@ namespace black_cat
 
 		void bc_widget_d3d_output::mouseMoveEvent(QMouseEvent* p_event)
 		{
-			// Engine pointing device will raise pointing events regardless of existence of editor render widget which is responsible
+			// Engine pointing device will raise "pointing events" regardless of existence of editor render widget which is responsible
 			// for raising mouse and keyboard events, so in game mode we should not send events to prevent double pointing events.
 			if(!m_editor_mode)
 			{
@@ -160,6 +184,12 @@ namespace black_cat
 			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
 		}
 
+		void bc_widget_d3d_output::window_initialized()
+		{
+			game::bc_event_editor_started l_event;
+			core::bc_get_service<core::bc_event_manager>()->queue_event(l_event, 0);
+		}
+
 		void bc_widget_d3d_output::focus_event(QFocusEvent* p_event)
 		{
 			platform::bc_app_event_window_focus l_event
@@ -172,14 +202,13 @@ namespace black_cat
 
 		void bc_widget_d3d_output::window_state_change_event(QWindowStateChangeEvent* p_event, Qt::WindowStates p_window_state)
 		{
-			auto* l_window_state_event = static_cast<QWindowStateChangeEvent*>(p_event);
 			platform::bc_app_event_window_state::state l_state = platform::bc_app_event_window_state::state::restored;
 
-			if (!(l_window_state_event->oldState() & Qt::WindowMaximized) && (p_window_state & Qt::WindowMaximized))
+			if (!(p_event->oldState() & Qt::WindowMaximized) && (p_window_state & Qt::WindowMaximized))
 			{
 				l_state = platform::bc_app_event_window_state::state::maximized;
 			}
-			else if (!(l_window_state_event->oldState() & Qt::WindowMinimized) && (p_window_state & Qt::WindowMinimized))
+			else if (!(p_event->oldState() & Qt::WindowMinimized) && (p_window_state & Qt::WindowMinimized))
 			{
 				l_state = platform::bc_app_event_window_state::state::minimized;
 			}

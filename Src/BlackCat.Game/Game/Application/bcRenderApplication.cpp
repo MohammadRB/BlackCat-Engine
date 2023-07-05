@@ -75,6 +75,11 @@ namespace black_cat
 			return m_app_name;
 		}
 
+		bci_render_application_output_window* bc_render_application::get_output_window() noexcept
+		{
+			return m_output_window;
+		}
+
 		const bci_render_application_output_window* bc_render_application::get_output_window() const noexcept
 		{
 			return m_output_window;
@@ -377,6 +382,10 @@ namespace black_cat
 				(
 					core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
 				);
+				m_event_handle_editor_started = l_event_manager->register_event_listener<bc_event_editor_started>
+				(
+					core::bc_event_manager::delegate_type(*this, &bc_render_application::_app_event)
+				);
 
 				app_initialize(p_parameters);
 				app_load_content();
@@ -410,6 +419,7 @@ namespace black_cat
 			m_event_handle_key.reset();
 			m_event_handle_pointing.reset();
 			m_event_handle_config_changed.reset();
+			m_event_handle_editor_started.reset();
 
 			m_clock.reset(nullptr);
 			m_output_window->close();
@@ -424,7 +434,15 @@ namespace black_cat
 
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
-			if(const auto* l_window_state_event = core::bci_message::as<platform::bc_app_event_window_state>(p_event))
+			if (const auto* l_editor_event = core::bci_message::as<game::bc_event_editor_started>(p_event))
+			{
+				game::bc_event_editor_mode l_editor_mode_event(true);
+				l_event_manager->process_event(l_editor_mode_event);
+				
+				return;
+			}
+
+			if (const auto* l_window_state_event = core::bci_message::as<platform::bc_app_event_window_state>(p_event))
 			{
 				if (l_window_state_event->get_window_id() != m_output_window->get_id())
 				{
@@ -480,16 +498,6 @@ namespace black_cat
 				return;
 			}
 
-			if (const auto* l_close_event = core::bci_message::as<platform::bc_app_event_window_close>(p_event))
-			{
-				if (m_output_window && m_output_window->get_id() == l_close_event->get_window_id())
-				{
-					platform::bc_app_event_exit l_exit_event(0);
-					l_event_manager->process_event(l_exit_event);
-				}
-				return;
-			}
-
 			if (const auto* l_pause_event = core::bci_message::as<platform::bc_app_event_pause_state>(p_event))
 			{
 				if (l_pause_event->get_state() != platform::bc_app_event_pause_state::state::paused)
@@ -503,6 +511,16 @@ namespace black_cat
 					{
 						m_clock->resume();
 					}
+				}
+				return;
+			}
+
+			if (const auto* l_close_event = core::bci_message::as<platform::bc_app_event_window_close>(p_event))
+			{
+				if (m_output_window && m_output_window->get_id() == l_close_event->get_window_id())
+				{
+					platform::bc_app_event_exit l_exit_event(0);
+					l_event_manager->process_event(l_exit_event);
 				}
 				return;
 			}

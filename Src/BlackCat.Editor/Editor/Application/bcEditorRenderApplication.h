@@ -5,6 +5,11 @@
 #include "Core/Messaging/Event/bcEvent.h"
 #include "App/Application/bcRenderApplication.h"
 
+namespace black_cat::game
+{
+	class bc_free_camera;
+}
+
 namespace black_cat
 {
 	namespace editor
@@ -38,6 +43,11 @@ namespace black_cat
 			void application_destroy() override;
 
 			void application_close_engine_components() override;
+
+		private:
+			void load_config(game::bc_free_camera& p_camera);
+
+			void save_config();
 		};
 	}
 }

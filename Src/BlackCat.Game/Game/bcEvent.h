@@ -71,6 +71,23 @@ namespace black_cat
 			state m_state;
 		};
 
+		class bc_event_editor_started : public  core::bc_app_event
+		{
+			BC_EVENT(edt_str)
+
+		public:
+			bc_event_editor_started() noexcept
+				: bc_app_event(message_name())
+			{
+			}
+
+			bc_event_editor_started(const bc_event_editor_started&) noexcept = default;
+
+			~bc_event_editor_started() override = default;
+
+			bc_event_editor_started& operator=(const bc_event_editor_started&) noexcept = default;
+		};
+
 		class bc_event_editor_mode : public core::bc_app_event
 		{
 			BC_EVENT(edt_mde)

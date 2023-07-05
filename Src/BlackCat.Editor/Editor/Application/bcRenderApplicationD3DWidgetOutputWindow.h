@@ -24,17 +24,19 @@ namespace black_cat
 
 			platform::bc_window::id get_id() const noexcept override;
 
-			bcUINT32 get_width() const noexcept override;
-
-			bcUINT32 get_height() const noexcept override;
-
-			bcUINT32 get_left() const noexcept override;
+			bcUINT get_width() const noexcept override;
 			
-			bcUINT32 get_top() const noexcept override;
+			bcUINT get_height() const noexcept override;
+
+			bcUINT get_left() const noexcept override;
+			
+			bcUINT get_top() const noexcept override;
 
 			platform::bc_window_state get_state() const noexcept override;
 
 			graphic::bc_device_output get_device_output() const override;
+
+			void set_size(bcUINT p_width, bcUINT p_height) override;
 
 			void update() override;
 
@@ -64,23 +66,23 @@ namespace black_cat
 		{
 			return static_cast<platform::bc_window::id>(m_d3d_widget->winId());
 		}
-
-		inline bcUINT32 bc_render_application_d3dwidget_output_window::get_width() const noexcept
+		
+		inline bcUINT bc_render_application_d3dwidget_output_window::get_width() const noexcept
 		{
 			return m_d3d_widget->width();
 		}
-
-		inline bcUINT32 bc_render_application_d3dwidget_output_window::get_height() const noexcept
+		
+		inline bcUINT bc_render_application_d3dwidget_output_window::get_height() const noexcept
 		{
 			return  m_d3d_widget->height();
 		}
 
-		inline bcUINT32 bc_render_application_d3dwidget_output_window::get_left() const noexcept
+		inline bcUINT bc_render_application_d3dwidget_output_window::get_left() const noexcept
 		{
 			return m_d3d_widget->pos().x();
 		}
 
-		inline bcUINT32 bc_render_application_d3dwidget_output_window::get_top() const noexcept
+		inline bcUINT bc_render_application_d3dwidget_output_window::get_top() const noexcept
 		{
 			return m_d3d_widget->pos().y();
 		}
@@ -95,15 +97,19 @@ namespace black_cat
 			return m_d3d_widget->get_device_output();
 		}
 
+		inline void bc_render_application_d3dwidget_output_window::set_size(bcUINT p_width, bcUINT p_height)
+		{
+			m_d3d_widget->request_resize(p_width, p_height);
+		}
+
 		inline void bc_render_application_d3dwidget_output_window::update()
 		{
-			// Because this thread will be called by engine thread we cannot update anything related to UI
+			// Because this function will be called by engine thread we cannot update anything related to UI
 		}
 
 		inline void bc_render_application_d3dwidget_output_window::close() noexcept
 		{
-			// Because this thread will be called by engine thread we cannot update anything related to UI
-			//m_d3d_widget->close();
+			// Because this function will be called by engine thread we cannot update anything related to UI
 		}
 	}
 }

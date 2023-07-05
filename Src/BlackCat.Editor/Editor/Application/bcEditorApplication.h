@@ -44,9 +44,9 @@ namespace black_cat
 
 			void focusOutEvent(QFocusEvent* p_event) override;
 
-			void closeEvent(QCloseEvent* p_event) override;
-
 			void changeEvent(QEvent* p_event) override;
+
+			void closeEvent(QCloseEvent* p_event) override;
 
 		private slots:
 			void scriptExecuted(const QString& p_string);

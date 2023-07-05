@@ -16,7 +16,7 @@ namespace black_cat
 {
 	namespace platform
 	{
-		void _get_window_size(HWND p_hwnd, bcUINT32& p_width, bcUINT32& p_height)
+		void _get_window_size(HWND p_hwnd, bcUINT& p_width, bcUINT& p_height)
 		{
 			RECT l_rect;
 			if (GetClientRect(p_hwnd, &l_rect))
@@ -118,7 +118,7 @@ namespace black_cat
 			return 0;
 		}
 
-		bool _update_window_pos_size(HWND p_hwnd, bcUINT32 p_left, bcUINT32 p_top, bcUINT32 p_width, bcUINT32 p_height)
+		bool _update_window_pos_size(HWND p_hwnd, bcUINT p_left, bcUINT p_top, bcUINT p_width, bcUINT p_height)
 		{
 			return MoveWindow(p_hwnd, p_left, p_top, p_width, p_height, true);
 		}
@@ -206,7 +206,7 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		bcUINT32 bc_platform_basic_window<bc_platform::win32>::get_width() const noexcept
+		bcUINT bc_platform_basic_window<bc_platform::win32>::get_width() const noexcept
 		{
 			RECT l_rect;
 			GetClientRect(m_pack.m_handle, &l_rect);
@@ -216,14 +216,14 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::set_width(bcUINT32 p_width) noexcept
+		void bc_platform_basic_window<bc_platform::win32>::set_width(bcUINT p_width) noexcept
 		{
 			_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), p_width, get_height());
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		bcUINT32 bc_platform_basic_window<bc_platform::win32>::get_height() const noexcept
+		bcUINT bc_platform_basic_window<bc_platform::win32>::get_height() const noexcept
 		{
 			RECT l_rect;
 			GetClientRect(m_pack.m_handle, &l_rect);
@@ -233,14 +233,14 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::set_height(bcUINT32 p_height) noexcept
+		void bc_platform_basic_window<bc_platform::win32>::set_height(bcUINT p_height) noexcept
 		{
 			_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), get_width(), p_height);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		bcUINT32 bc_platform_basic_window<bc_platform::win32>::get_left() const noexcept
+		bcUINT bc_platform_basic_window<bc_platform::win32>::get_left() const noexcept
 		{
 			POINT point;
 			point.x = 0;
@@ -253,14 +253,14 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::set_left(bcUINT32 p_left) noexcept
+		void bc_platform_basic_window<bc_platform::win32>::set_left(bcUINT p_left) noexcept
 		{
 			_update_window_pos_size(m_pack.m_handle, p_left, get_top(), get_width(), get_height());
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		bcUINT32 bc_platform_basic_window<bc_platform::win32>::get_top() const noexcept
+		bcUINT bc_platform_basic_window<bc_platform::win32>::get_top() const noexcept
 		{
 			POINT point;
 			point.x = 0;
@@ -273,21 +273,21 @@ namespace black_cat
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::set_top(bcUINT32 p_top) noexcept
+		void bc_platform_basic_window<bc_platform::win32>::set_top(bcUINT p_top) noexcept
 		{
 			_update_window_pos_size(m_pack.m_handle, get_left(), p_top, get_width(), get_height());
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::set_size(bcUINT32 p_width, bcUINT32 p_height) noexcept
+		void bc_platform_basic_window<bc_platform::win32>::set_size(bcUINT p_width, bcUINT p_height) noexcept
 		{
 			_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), p_width, p_height);
 		}
 
 		template<>
 		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::set_position(bcUINT32 p_left, bcUINT32 p_top) noexcept
+		void bc_platform_basic_window<bc_platform::win32>::set_position(bcUINT p_left, bcUINT p_top) noexcept
 		{
 			_update_window_pos_size(m_pack.m_handle, p_left, p_top, get_width(), get_height());
 		}

@@ -32,7 +32,7 @@ namespace black_cat
 		bool bc_editor_mode_ui_command::update(update_context& p_context)
 		{
 			auto* l_scene = p_context.m_game_system.get_scene();
-			if(!l_scene)
+			if (!l_scene)
 			{
 				return false;
 			}
@@ -41,7 +41,7 @@ namespace black_cat
 			auto& l_content_manager = *core::bc_get_service<core::bc_content_manager>();
 			const auto l_checkpoint_path = game::bc_scene_checkpoint::get_checkpoint_path(*l_scene, bcL("editor_checkpoint"));
 
-			if(!m_editor_mode)
+			if (!m_editor_mode)
 			{
 				game::bc_scene_checkpoint l_check_point(*l_scene);
 				l_content_manager.save_as(l_check_point, l_checkpoint_path.get_string_frame().c_str(), {});

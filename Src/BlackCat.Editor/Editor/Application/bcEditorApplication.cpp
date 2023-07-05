@@ -21,7 +21,7 @@ namespace black_cat
 			m_ui.setupUi(this);
 			m_ui.mainToolBar->setContextMenuPolicy(Qt::PreventContextMenu);
 			
-			m_d3d_widget = new bc_widget_d3d_output(m_ui.centralWidget->findChild<QFrame*>("leftRenderFrame"));
+			m_d3d_widget = new bc_widget_d3d_output(this, m_ui.centralWidget->findChild<QFrame*>("leftRenderFrame"));
 			m_d3d_output_window = std::make_unique<bc_render_application_d3dwidget_output_window>(m_d3d_widget);
 
 			m_render_app_thread.start(p_instance, p_cmd_line, std::move(p_render_app_factory), m_d3d_output_window.get());
@@ -63,10 +63,12 @@ namespace black_cat
 				*m_form_decal_insert
 			);
 			m_timer = std::make_unique<QTimer>();
-			m_timer->start(1000.f / 60.f);
+			m_timer->start(static_cast<bcINT>(1000.f / 60.f));
 
 			QObject::connect(m_editor_game_console.get(), SIGNAL(scriptExecuted(const QString&)), this, SLOT(scriptExecuted(const QString&)));
 			QObject::connect(m_timer.get(), SIGNAL(timeout()), this, SLOT(timerTimeout()));
+
+			m_d3d_widget->window_initialized();
 		}
 
 		bc_editor_app::~bc_editor_app()
@@ -76,24 +78,20 @@ namespace black_cat
 
 		void bc_editor_app::focusInEvent(QFocusEvent* p_event)
 		{
+			QMainWindow::focusInEvent(p_event);
 			m_d3d_widget->focus_event(p_event);
 		}
 
 		void bc_editor_app::focusOutEvent(QFocusEvent* p_event)
 		{
+			QMainWindow::focusOutEvent(p_event);
 			m_d3d_widget->focus_event(p_event);
-		}
-
-		void bc_editor_app::closeEvent(QCloseEvent* p_event)
-		{
-			if(m_render_app_thread.is_still_running())
-			{
-				m_d3d_widget->close_event(p_event);
-			}
 		}
 
 		void bc_editor_app::changeEvent(QEvent* p_event)
 		{
+			QMainWindow::changeEvent(p_event);
+
 			if (p_event->type() == QEvent::WindowStateChange)
 			{
 				QWindowStateChangeEvent* l_window_state_event = static_cast<QWindowStateChangeEvent*>(p_event);
@@ -113,10 +111,16 @@ namespace black_cat
 					focusOutEvent(&l_focus_event);
 				}
 			}
-
-			QWidget::changeEvent(p_event);
 		}
 
+		void bc_editor_app::closeEvent(QCloseEvent* p_event)
+		{
+			if (m_render_app_thread.is_still_running())
+			{
+				m_d3d_widget->close_event(p_event);
+			}
+		}
+		
 		void bc_editor_app::_load_style() const
 		{
 			QFile l_style_file(":/qdarkstyle/style.qss");
@@ -231,7 +235,7 @@ namespace black_cat
 
 		void bc_editor_app::timerTimeout()
 		{
-			if(!m_render_app_thread.is_still_running())
+			if (!m_render_app_thread.is_still_running())
 			{
 				const auto l_exit_code = m_render_app_thread.get_result_code();
 				QMessageBox::information(this, "Engine exited", QString("Engine exited with code %1").arg(QString::number(l_exit_code)));
@@ -240,6 +244,7 @@ namespace black_cat
 				return;
 			}
 
+			m_d3d_widget->update_ui();
 			m_editor_game_console->update_ui();
 			
 			bci_ui_command::update_ui_context l_context(*m_form_object, *m_form_object_insert, *m_form_decal, *m_form_decal_insert, *m_form_main_menu);

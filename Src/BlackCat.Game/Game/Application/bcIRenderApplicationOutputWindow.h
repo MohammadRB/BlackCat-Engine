@@ -17,18 +17,20 @@ namespace black_cat
 			virtual ~bci_render_application_output_window() = default;
 
 			virtual platform::bc_window::id get_id() const noexcept = 0;
+			
+			virtual bcUINT get_width() const noexcept = 0;
+			
+			virtual bcUINT get_height() const noexcept = 0;
 
-			virtual bcUINT32 get_width() const noexcept = 0;
+			virtual bcUINT get_left() const noexcept = 0;
 
-			virtual bcUINT32 get_height() const noexcept = 0;
-
-			virtual bcUINT32 get_left() const noexcept = 0;
-
-			virtual bcUINT32 get_top() const noexcept = 0;
+			virtual bcUINT get_top() const noexcept = 0;
 
 			virtual platform::bc_window_state get_state() const noexcept = 0;
 
 			virtual graphic::bc_device_output get_device_output() const = 0;
+
+			virtual void set_size(bcUINT p_width, bcUINT p_height) = 0;
 
 			virtual void update() = 0;
 
@@ -65,23 +67,23 @@ namespace black_cat
 			{
 				return m_window.get_id();
 			}
-
-			bcUINT32 get_width() const noexcept override
+			
+			bcUINT get_width() const noexcept override
 			{
 				return m_window.get_width();
 			}
-
-			bcUINT32 get_height() const noexcept override
+			
+			bcUINT get_height() const noexcept override
 			{
 				return m_window.get_height();
 			}
 
-			bcUINT32 get_left() const noexcept override
+			bcUINT get_left() const noexcept override
 			{
 				return m_window.get_left();
 			}
 
-			bcUINT32 get_top() const noexcept override
+			bcUINT get_top() const noexcept override
 			{
 				return m_window.get_top();
 			}
@@ -96,6 +98,11 @@ namespace black_cat
 				return graphic::bc_device_output::from_window(const_cast<platform::bc_basic_window&>(m_window));
 			}
 
+			void set_size(bcUINT p_width, bcUINT p_height) override
+			{
+				m_window.set_size(p_width, p_height);
+			}
+
 			void update() override
 			{
 				return m_window.update();
@@ -105,7 +112,7 @@ namespace black_cat
 			{
 				return m_window.close();
 			}
-
+		
 		private:
 			platform::bc_basic_window m_window;
 		};
