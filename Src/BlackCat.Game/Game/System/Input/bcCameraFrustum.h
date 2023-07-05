@@ -9,30 +9,27 @@
 #include "Game/System/Input/bcCamera.h"
 #include "Game/System/Input/bcCameraInstance.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	class BC_GAME_DLL bc_camera_frustum
 	{
-		class BC_GAME_DLL bc_camera_frustum
-		{
-		public:
-			explicit bc_camera_frustum(const bci_camera& p_camera) noexcept;
+	public:
+		explicit bc_camera_frustum(const bci_camera& p_camera) noexcept;
 
-			explicit bc_camera_frustum(const bc_camera_instance& p_camera) noexcept;
+		explicit bc_camera_frustum(const bc_camera_instance& p_camera) noexcept;
 
-			bc_camera_frustum(const bc_camera_frustum&) noexcept;
+		bc_camera_frustum(const bc_camera_frustum&) noexcept;
 
-			~bc_camera_frustum();
+		~bc_camera_frustum();
 
-			bc_camera_frustum& operator=(const bc_camera_frustum&) noexcept;
+		bc_camera_frustum& operator=(const bc_camera_frustum&) noexcept;
 
-			bool intersects(const physics::bc_bound_box& p_box) const noexcept;
+		bool intersects(const physics::bc_bound_box& p_box) const noexcept;
 
-		private:
-			void _construct(const bci_camera::extend& p_extends);
+	private:
+		void _construct(const bci_camera::extend& p_extends);
 			
-			// Ordered by: near, far, left, top, right, bottom
-			core::bc_array<physics::bc_shape_plane, 6> m_planes;
-		};
-	}
+		// Ordered by: near, far, left, top, right, bottom
+		core::bc_array<physics::bc_shape_plane, 6> m_planes;
+	};
 }

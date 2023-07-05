@@ -12,364 +12,361 @@
 #include "PlatformImp/Application/bcBasicWindow.h"
 #include "PlatformImp/bcExport.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
+	void _get_window_size(HWND p_hwnd, bcUINT& p_width, bcUINT& p_height)
 	{
-		void _get_window_size(HWND p_hwnd, bcUINT& p_width, bcUINT& p_height)
+		RECT l_rect;
+		if (GetClientRect(p_hwnd, &l_rect))
 		{
-			RECT l_rect;
-			if (GetClientRect(p_hwnd, &l_rect))
-			{
-				p_width = l_rect.right - l_rect.left;
-				p_height = l_rect.bottom - l_rect.top;
-			}
+			p_width = l_rect.right - l_rect.left;
+			p_height = l_rect.bottom - l_rect.top;
 		}
+	}
 		
-		LRESULT CALLBACK _window_proc(HWND p_hwnd, UINT p_msg, WPARAM p_wparam, LPARAM p_lparam)
+	LRESULT CALLBACK _window_proc(HWND p_hwnd, UINT p_msg, WPARAM p_wparam, LPARAM p_lparam)
+	{
+		if(!core::bc_service_manager::get())
 		{
-			if(!core::bc_service_manager::get())
+			return DefWindowProc(p_hwnd, p_msg, p_wparam, p_lparam);
+		}
+
+		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
+
+		// Handle some specific messages. Note that if we handle a message, we should return 0.
+		switch (p_msg)
+		{
+		// WM_ACTIVATE is sent when the window is activated or deactivated.
+		case WM_ACTIVATE:
+		{
+			if (LOWORD(p_wparam) == WA_INACTIVE)
 			{
-				return DefWindowProc(p_hwnd, p_msg, p_wparam, p_lparam);
+				bc_app_event_window_focus l_focus_event(reinterpret_cast<bc_window::id>(p_hwnd), false);
+				l_event_manager->process_event(l_focus_event);
+			}
+			else
+			{
+				bc_app_event_window_focus l_focus_event(reinterpret_cast<bc_window::id>(p_hwnd), true);
+				l_event_manager->process_event(l_focus_event);
 			}
 
-			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
+			break;
+		}
+		case WM_SIZE:
+		{
+			bcUINT32 l_width, l_height;
+			auto l_state = bc_app_event_window_state::state::restored;
 
-			// Handle some specific messages. Note that if we handle a message, we should return 0.
-			switch (p_msg)
+			_get_window_size(p_hwnd, l_width, l_height);
+
+			if (p_wparam == SIZE_MINIMIZED)
 			{
-				// WM_ACTIVATE is sent when the window is activated or deactivated.
-				case WM_ACTIVATE:
-				{
-					if (LOWORD(p_wparam) == WA_INACTIVE)
-					{
-						bc_app_event_window_focus l_focus_event(reinterpret_cast<bc_window::id>(p_hwnd), false);
-						l_event_manager->process_event(l_focus_event);
-					}
-					else
-					{
-						bc_app_event_window_focus l_focus_event(reinterpret_cast<bc_window::id>(p_hwnd), true);
-						l_event_manager->process_event(l_focus_event);
-					}
-
-					break;
-				}
-				case WM_SIZE:
-				{
-					bcUINT32 l_width, l_height;
-					auto l_state = bc_app_event_window_state::state::restored;
-
-					_get_window_size(p_hwnd, l_width, l_height);
-
-					if (p_wparam == SIZE_MINIMIZED)
-					{
-						l_state = bc_app_event_window_state::state::minimized;
-					}
-					else if (p_wparam == SIZE_MAXIMIZED)
-					{
-						l_state = bc_app_event_window_state::state::maximized;
-					}
-					else if (p_wparam == SIZE_RESTORED)
-					{
-						l_state = bc_app_event_window_state::state::restored;
-					}
-
-					bc_app_event_window_state l_state_event(reinterpret_cast<bc_window::id>(p_hwnd), l_state);
-					l_event_manager->process_event(l_state_event);
-
-					break;
-				}
-				// WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
-				case WM_ENTERSIZEMOVE:
-				{
-					bcUINT32 l_width, l_height;
-					_get_window_size(p_hwnd, l_width, l_height);
-				
-					bc_app_event_window_resize l_start_event(reinterpret_cast<bc_window::id>(p_hwnd), l_width, l_height, true);
-					l_event_manager->process_event(l_start_event);
-
-					break;
-				}
-				// WM_EXITSIZEMOVE is sent when the user releases the resize bars.
-				case WM_EXITSIZEMOVE:
-				{
-					bcUINT32 l_width, l_height;
-					_get_window_size(p_hwnd, l_width, l_height);
-				
-					bc_app_event_window_resize l_end_event(reinterpret_cast<bc_window::id>(p_hwnd), l_width, l_height, false);
-					l_event_manager->process_event(l_end_event);
-
-					break;
-				}
-				// WM_DESTROY is sent when the window is being destroyed.
-				case WM_DESTROY:
-				{
-					bc_app_event_window_close l_close_event(reinterpret_cast<bc_window::id>(p_hwnd));
-					l_event_manager->process_event(l_close_event);
-
-					break;
-				}
-				default:
-				// Forward any other messages we did not handle above to the default window procedure. Note that our window 
-				// procedure must return the return value of DefWindow Proc.
-				return DefWindowProc(p_hwnd, p_msg, p_wparam, p_lparam);
+				l_state = bc_app_event_window_state::state::minimized;
+			}
+			else if (p_wparam == SIZE_MAXIMIZED)
+			{
+				l_state = bc_app_event_window_state::state::maximized;
+			}
+			else if (p_wparam == SIZE_RESTORED)
+			{
+				l_state = bc_app_event_window_state::state::restored;
 			}
 
-			return 0;
+			bc_app_event_window_state l_state_event(reinterpret_cast<bc_window::id>(p_hwnd), l_state);
+			l_event_manager->process_event(l_state_event);
+
+			break;
+		}
+		// WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
+		case WM_ENTERSIZEMOVE:
+		{
+			bcUINT32 l_width, l_height;
+			_get_window_size(p_hwnd, l_width, l_height);
+				
+			bc_app_event_window_resize l_start_event(reinterpret_cast<bc_window::id>(p_hwnd), l_width, l_height, true);
+			l_event_manager->process_event(l_start_event);
+
+			break;
+		}
+		// WM_EXITSIZEMOVE is sent when the user releases the resize bars.
+		case WM_EXITSIZEMOVE:
+		{
+			bcUINT32 l_width, l_height;
+			_get_window_size(p_hwnd, l_width, l_height);
+				
+			bc_app_event_window_resize l_end_event(reinterpret_cast<bc_window::id>(p_hwnd), l_width, l_height, false);
+			l_event_manager->process_event(l_end_event);
+
+			break;
+		}
+		// WM_DESTROY is sent when the window is being destroyed.
+		case WM_DESTROY:
+		{
+			bc_app_event_window_close l_close_event(reinterpret_cast<bc_window::id>(p_hwnd));
+			l_event_manager->process_event(l_close_event);
+
+			break;
+		}
+		default:
+			// Forward any other messages we did not handle above to the default window procedure. Note that our window 
+			// procedure must return the return value of DefWindow Proc.
+			return DefWindowProc(p_hwnd, p_msg, p_wparam, p_lparam);
 		}
 
-		bool _update_window_pos_size(HWND p_hwnd, bcUINT p_left, bcUINT p_top, bcUINT p_width, bcUINT p_height)
-		{
-			return MoveWindow(p_hwnd, p_left, p_top, p_width, p_height, true);
-		}
+		return 0;
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		bc_platform_basic_window<bc_platform::win32>::bc_platform_basic_window(const bc_basic_window_parameter& p_parameters)
-		{
-			m_pack.m_instance = p_parameters.m_instance;
-			m_pack.m_handle = nullptr;
+	bool _update_window_pos_size(HWND p_hwnd, bcUINT p_left, bcUINT p_top, bcUINT p_width, bcUINT p_height)
+	{
+		return MoveWindow(p_hwnd, p_left, p_top, p_width, p_height, true);
+	}
 
-			// The first task to creating a window is to describe some of its characteristics by filling out a WNDCLASS structure.
-			WNDCLASS l_window_class;
+	template<>
+	BC_PLATFORMIMP_DLL 
+	bc_platform_basic_window<bc_platform::win32>::bc_platform_basic_window(const bc_basic_window_parameter& p_parameters)
+	{
+		m_pack.m_instance = p_parameters.m_instance;
+		m_pack.m_handle = nullptr;
 
-			l_window_class.style = CS_HREDRAW | CS_VREDRAW;
-			l_window_class.lpfnWndProc = _window_proc;
-			l_window_class.cbClsExtra = 0;
-			l_window_class.cbWndExtra = 0;
-			l_window_class.hInstance = m_pack.m_instance;
-			l_window_class.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
-			l_window_class.hCursor = LoadCursor(nullptr, IDC_ARROW);
-			l_window_class.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-			l_window_class.lpszMenuName = nullptr;
-			l_window_class.lpszClassName = L"BlackCatRenderWindow";
+		// The first task to creating a window is to describe some of its characteristics by filling out a WNDCLASS structure.
+		WNDCLASS l_window_class;
 
-			// Next, we register this WNDCLASS instance with Windows so that we can create a window based on it.
-			win_call(RegisterClass(&l_window_class) != 0);
+		l_window_class.style = CS_HREDRAW | CS_VREDRAW;
+		l_window_class.lpfnWndProc = _window_proc;
+		l_window_class.cbClsExtra = 0;
+		l_window_class.cbWndExtra = 0;
+		l_window_class.hInstance = m_pack.m_instance;
+		l_window_class.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
+		l_window_class.hCursor = LoadCursor(nullptr, IDC_ARROW);
+		l_window_class.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+		l_window_class.lpszMenuName = nullptr;
+		l_window_class.lpszClassName = L"BlackCatRenderWindow";
 
-			// With our WNDCLASS instance registered, we can create a window with the CreateWindow function. This function
-			// returns a handle to the window it creates(an HWND). If the creation failed, the handle will have the value
-			// of zero.
-			m_pack.m_handle = CreateWindow
-			(
-				l_window_class.lpszClassName,
-				p_parameters.m_caption,
-				WS_OVERLAPPEDWINDOW,
-				CW_USEDEFAULT,
-				CW_USEDEFAULT,
-				p_parameters.m_width,
-				p_parameters.m_height,
-				nullptr,
-				nullptr,
-				m_pack.m_instance,
-				nullptr
-			);
-			win_call(m_pack.m_handle != nullptr);
+		// Next, we register this WNDCLASS instance with Windows so that we can create a window based on it.
+		win_call(RegisterClass(&l_window_class) != 0);
 
-			ShowWindow(m_pack.m_handle, SW_SHOW);
-			UpdateWindow(m_pack.m_handle);
-		}
+		// With our WNDCLASS instance registered, we can create a window with the CreateWindow function. This function
+		// returns a handle to the window it creates(an HWND). If the creation failed, the handle will have the value
+		// of zero.
+		m_pack.m_handle = CreateWindow
+		(
+			l_window_class.lpszClassName,
+			p_parameters.m_caption,
+			WS_OVERLAPPEDWINDOW,
+			CW_USEDEFAULT,
+			CW_USEDEFAULT,
+			p_parameters.m_width,
+			p_parameters.m_height,
+			nullptr,
+			nullptr,
+			m_pack.m_instance,
+			nullptr
+		);
+		win_call(m_pack.m_handle != nullptr);
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		bc_platform_basic_window<bc_platform::win32>::bc_platform_basic_window(bc_platform_basic_window&& p_other) noexcept
-			: bc_platform_window(std::move(p_other)),
-			m_pack(p_other.m_pack)
-		{
-		}
+		ShowWindow(m_pack.m_handle, SW_SHOW);
+		UpdateWindow(m_pack.m_handle);
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		bc_platform_basic_window<bc_platform::win32>::~bc_platform_basic_window()
-		{
-		}
+	template<>
+	BC_PLATFORMIMP_DLL 
+	bc_platform_basic_window<bc_platform::win32>::bc_platform_basic_window(bc_platform_basic_window&& p_other) noexcept
+		: bc_platform_window(std::move(p_other)),
+		  m_pack(p_other.m_pack)
+	{
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		bc_platform_basic_window<bc_platform::win32>& bc_platform_basic_window<bc_platform::win32>::operator=(bc_platform_basic_window&& p_other) noexcept
-		{
-			bc_platform_window::operator=(std::move(p_other));
-			m_pack = p_other.m_pack;
+	template<>
+	BC_PLATFORMIMP_DLL 
+	bc_platform_basic_window<bc_platform::win32>::~bc_platform_basic_window()
+	{
+	}
 
-			p_other.m_pack.m_instance = nullptr;
-			p_other.m_pack.m_handle = nullptr;
+	template<>
+	BC_PLATFORMIMP_DLL 
+	bc_platform_basic_window<bc_platform::win32>& bc_platform_basic_window<bc_platform::win32>::operator=(bc_platform_basic_window&& p_other) noexcept
+	{
+		bc_platform_window::operator=(std::move(p_other));
+		m_pack = p_other.m_pack;
 
-			return *this;
-		}
+		p_other.m_pack.m_instance = nullptr;
+		p_other.m_pack.m_handle = nullptr;
 
-		template<>
-		BC_PLATFORMIMP_DLL
-		bc_platform_basic_window<bc_platform::win32>::id bc_platform_basic_window<bc_platform::win32>::get_id() const noexcept
-		{
-			return reinterpret_cast<id>(m_pack.m_handle);
-		}
+		return *this;
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		bcUINT bc_platform_basic_window<bc_platform::win32>::get_width() const noexcept
-		{
-			RECT l_rect;
-			GetClientRect(m_pack.m_handle, &l_rect);
+	template<>
+	BC_PLATFORMIMP_DLL
+	bc_platform_basic_window<bc_platform::win32>::id bc_platform_basic_window<bc_platform::win32>::get_id() const noexcept
+	{
+		return reinterpret_cast<id>(m_pack.m_handle);
+	}
 
-			return l_rect.right - l_rect.left;
-		}
+	template<>
+	BC_PLATFORMIMP_DLL 
+	bcUINT bc_platform_basic_window<bc_platform::win32>::get_width() const noexcept
+	{
+		RECT l_rect;
+		GetClientRect(m_pack.m_handle, &l_rect);
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::set_width(bcUINT p_width) noexcept
-		{
-			_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), p_width, get_height());
-		}
+		return l_rect.right - l_rect.left;
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		bcUINT bc_platform_basic_window<bc_platform::win32>::get_height() const noexcept
-		{
-			RECT l_rect;
-			GetClientRect(m_pack.m_handle, &l_rect);
+	template<>
+	BC_PLATFORMIMP_DLL 
+	void bc_platform_basic_window<bc_platform::win32>::set_width(bcUINT p_width) noexcept
+	{
+		_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), p_width, get_height());
+	}
 
-			return l_rect.bottom - l_rect.top;
-		}
+	template<>
+	BC_PLATFORMIMP_DLL 
+	bcUINT bc_platform_basic_window<bc_platform::win32>::get_height() const noexcept
+	{
+		RECT l_rect;
+		GetClientRect(m_pack.m_handle, &l_rect);
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::set_height(bcUINT p_height) noexcept
-		{
-			_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), get_width(), p_height);
-		}
+		return l_rect.bottom - l_rect.top;
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		bcUINT bc_platform_basic_window<bc_platform::win32>::get_left() const noexcept
-		{
-			POINT point;
-			point.x = 0;
-			point.y = 0;
+	template<>
+	BC_PLATFORMIMP_DLL 
+	void bc_platform_basic_window<bc_platform::win32>::set_height(bcUINT p_height) noexcept
+	{
+		_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), get_width(), p_height);
+	}
 
-			ClientToScreen(m_pack.m_handle, &point);
+	template<>
+	BC_PLATFORMIMP_DLL 
+	bcUINT bc_platform_basic_window<bc_platform::win32>::get_left() const noexcept
+	{
+		POINT point;
+		point.x = 0;
+		point.y = 0;
 
-			return point.x;
-		}
+		ClientToScreen(m_pack.m_handle, &point);
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::set_left(bcUINT p_left) noexcept
-		{
-			_update_window_pos_size(m_pack.m_handle, p_left, get_top(), get_width(), get_height());
-		}
+		return point.x;
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		bcUINT bc_platform_basic_window<bc_platform::win32>::get_top() const noexcept
-		{
-			POINT point;
-			point.x = 0;
-			point.y = 0;
+	template<>
+	BC_PLATFORMIMP_DLL 
+	void bc_platform_basic_window<bc_platform::win32>::set_left(bcUINT p_left) noexcept
+	{
+		_update_window_pos_size(m_pack.m_handle, p_left, get_top(), get_width(), get_height());
+	}
 
-			ClientToScreen(m_pack.m_handle, &point);
+	template<>
+	BC_PLATFORMIMP_DLL 
+	bcUINT bc_platform_basic_window<bc_platform::win32>::get_top() const noexcept
+	{
+		POINT point;
+		point.x = 0;
+		point.y = 0;
 
-			return point.y;
-		}
+		ClientToScreen(m_pack.m_handle, &point);
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::set_top(bcUINT p_top) noexcept
-		{
-			_update_window_pos_size(m_pack.m_handle, get_left(), p_top, get_width(), get_height());
-		}
+		return point.y;
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::set_size(bcUINT p_width, bcUINT p_height) noexcept
-		{
-			_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), p_width, p_height);
-		}
+	template<>
+	BC_PLATFORMIMP_DLL 
+	void bc_platform_basic_window<bc_platform::win32>::set_top(bcUINT p_top) noexcept
+	{
+		_update_window_pos_size(m_pack.m_handle, get_left(), p_top, get_width(), get_height());
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::set_position(bcUINT p_left, bcUINT p_top) noexcept
-		{
-			_update_window_pos_size(m_pack.m_handle, p_left, p_top, get_width(), get_height());
-		}
+	template<>
+	BC_PLATFORMIMP_DLL 
+	void bc_platform_basic_window<bc_platform::win32>::set_size(bcUINT p_width, bcUINT p_height) noexcept
+	{
+		_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), p_width, p_height);
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		core::bc_estring bc_platform_basic_window<bc_platform::win32>::get_caption() const
-		{
-			const auto l_title_length = GetWindowTextLength(m_pack.m_handle);
-			core::bc_estring l_str(l_title_length, bcL('#'));
+	template<>
+	BC_PLATFORMIMP_DLL 
+	void bc_platform_basic_window<bc_platform::win32>::set_position(bcUINT p_left, bcUINT p_top) noexcept
+	{
+		_update_window_pos_size(m_pack.m_handle, p_left, p_top, get_width(), get_height());
+	}
+
+	template<>
+	BC_PLATFORMIMP_DLL 
+	core::bc_estring bc_platform_basic_window<bc_platform::win32>::get_caption() const
+	{
+		const auto l_title_length = GetWindowTextLength(m_pack.m_handle);
+		core::bc_estring l_str(l_title_length, bcL('#'));
 			
-			GetWindowText(m_pack.m_handle, &l_str[0], l_str.size());
+		GetWindowText(m_pack.m_handle, &l_str[0], l_str.size());
 
-			return l_str;
-		}
+		return l_str;
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::set_caption(const bcECHAR* p_caption)
+	template<>
+	BC_PLATFORMIMP_DLL 
+	void bc_platform_basic_window<bc_platform::win32>::set_caption(const bcECHAR* p_caption)
+	{
+		SetWindowText(m_pack.m_handle, p_caption);
+	}
+
+	template<>
+	BC_PLATFORMIMP_DLL 
+	bc_window_state bc_platform_basic_window<bc_platform::win32>::get_state() const noexcept
+	{
+		WINDOWPLACEMENT l_state_data{};
+		l_state_data.length = sizeof(WINDOWPLACEMENT);
+
+		GetWindowPlacement(m_pack.m_handle, &l_state_data);
+
+		if (l_state_data.showCmd == SW_SHOWMINIMIZED)
 		{
-			SetWindowText(m_pack.m_handle, p_caption);
+			return bc_window_state::minimized;
 		}
-
-		template<>
-		BC_PLATFORMIMP_DLL 
-		bc_window_state bc_platform_basic_window<bc_platform::win32>::get_state() const noexcept
+		if(l_state_data.showCmd == SW_SHOWMAXIMIZED)
 		{
-			WINDOWPLACEMENT l_state_data{};
-			l_state_data.length = sizeof(WINDOWPLACEMENT);
-
-			GetWindowPlacement(m_pack.m_handle, &l_state_data);
-
-			if (l_state_data.showCmd == SW_SHOWMINIMIZED)
-			{
-				return bc_window_state::minimized;
-			}
-			if(l_state_data.showCmd == SW_SHOWMAXIMIZED)
-			{
-				return bc_window_state::maximized;
-			}
-
-			return bc_window_state::normal;
+			return bc_window_state::maximized;
 		}
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::show(bool p_visible)
+		return bc_window_state::normal;
+	}
+
+	template<>
+	BC_PLATFORMIMP_DLL 
+	void bc_platform_basic_window<bc_platform::win32>::show(bool p_visible)
+	{
+		bcINT32 l_show = p_visible ? SW_SHOW : SW_HIDE;
+
+		ShowWindow(m_pack.m_handle, l_show);
+	}
+
+	template<>
+	BC_PLATFORMIMP_DLL 
+	void bc_platform_basic_window<bc_platform::win32>::close() noexcept
+	{
+		DestroyWindow(m_pack.m_handle);
+	}
+
+	template<>
+	BC_PLATFORMIMP_DLL
+	void bc_platform_basic_window<bc_platform::win32>::update()
+	{
+		MSG l_msg;
+
+		// Get window messages and dispatch them to window's procedure
+		while (PeekMessage(&l_msg, m_pack.m_handle, 0, 0, PM_REMOVE))
 		{
-			bcINT32 l_show = p_visible ? SW_SHOW : SW_HIDE;
-
-			ShowWindow(m_pack.m_handle, l_show);
+			TranslateMessage(&l_msg);
+			DispatchMessage(&l_msg);
 		}
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL 
-		void bc_platform_basic_window<bc_platform::win32>::close() noexcept
-		{
-			DestroyWindow(m_pack.m_handle);
-		}
-
-		template<>
-		BC_PLATFORMIMP_DLL
-		void bc_platform_basic_window<bc_platform::win32>::update()
-		{
-			MSG l_msg;
-
-			// Get window messages and dispatch them to window's procedure
-			while (PeekMessage(&l_msg, m_pack.m_handle, 0, 0, PM_REMOVE))
-			{
-				TranslateMessage(&l_msg);
-				DispatchMessage(&l_msg);
-			}
-		}
-
-		template<>
-		BC_PLATFORMIMP_DLL 
-		bc_messagebox_value bc_platform_basic_window<bc_platform::win32>::show_messagebox(core::bc_estring_view p_caption, 
-			core::bc_estring_view p_text,
-			bc_messagebox_type p_type, 
-			bc_messagebox_button p_button)
-		{
-			return bc_application::show_messagebox(get_id(), p_caption, p_text, p_type, p_button);
-		}
+	template<>
+	BC_PLATFORMIMP_DLL 
+	bc_messagebox_value bc_platform_basic_window<bc_platform::win32>::show_messagebox(core::bc_estring_view p_caption, 
+		core::bc_estring_view p_text,
+		bc_messagebox_type p_type, 
+		bc_messagebox_button p_button)
+	{
+		return bc_application::show_messagebox(get_id(), p_caption, p_text, p_type, p_button);
 	}
 }

@@ -9,136 +9,133 @@
 #include "PhysicsImp/Collision/bcContactFilterCallback.h"
 #include "PhysicsImp/Fundation/bcSceneBuilder.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	// provide definitions at first to prevent CLang 'explicit specialization of '' after instantiation' error
+
+	template<>
+	bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::operator=(bc_platform_scene_builder&& p_other) noexcept;
+
+	template<>
+	bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::gravity(const core::bc_vector3f& p_gravity);
+
+	template<>
+	BC_PHYSICSIMP_DLL
+	bc_platform_scene_builder<g_api_physx>::bc_platform_scene_builder() noexcept
 	{
-		// provide definitions at first to prevent CLang 'explicit specialization of '' after instantiation' error
+		m_pack.m_filter_shader_data = core::bc_make_unique<bc_px_filter_shader_data>();
 
-		template<>
-		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::operator=(bc_platform_scene_builder&& p_other) noexcept;
+		m_pack.m_px_desc.filterShaderData = m_pack.m_filter_shader_data.get();
+		m_pack.m_px_desc.filterShaderDataSize = sizeof(bc_px_filter_shader_data);
+		m_pack.m_px_desc.filterShader = &bc_px_filter_shader;
 
-		template<>
-		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::gravity(const core::bc_vector3f& p_gravity);
+		m_pack.m_px_desc.flags |= physx::PxSceneFlag::eENABLE_ACTIVETRANSFORMS;
 
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder<g_api_physx>::bc_platform_scene_builder() noexcept
-		{
-			m_pack.m_filter_shader_data = core::bc_make_unique<bc_px_filter_shader_data>();
+		gravity(core::bc_vector3f(0, -9.8f, 0));
+	}
 
-			m_pack.m_px_desc.filterShaderData = m_pack.m_filter_shader_data.get();
-			m_pack.m_px_desc.filterShaderDataSize = sizeof(bc_px_filter_shader_data);
-			m_pack.m_px_desc.filterShader = &bc_px_filter_shader;
+	template<>
+	BC_PHYSICSIMP_DLL
+	bc_platform_scene_builder<g_api_physx>::bc_platform_scene_builder(platform_pack&& p_pack) noexcept
+		: m_pack(std::move(p_pack))
+	{
+	}
 
-			m_pack.m_px_desc.flags |= physx::PxSceneFlag::eENABLE_ACTIVETRANSFORMS;
+	template<>
+	BC_PHYSICSIMP_DLL
+	bc_platform_scene_builder<g_api_physx>::bc_platform_scene_builder(bc_platform_scene_builder&& p_other) noexcept
+	{
+		operator=(std::move(p_other));
+	}
 
-			gravity(core::bc_vector3f(0, -9.8f, 0));
-		}
+	template<>
+	BC_PHYSICSIMP_DLL
+	bc_platform_scene_builder<g_api_physx>::~bc_platform_scene_builder()
+	{
+	}
 
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder<g_api_physx>::bc_platform_scene_builder(platform_pack&& p_pack) noexcept
-			: m_pack(std::move(p_pack))
-		{
-		}
+	template<>
+	BC_PHYSICSIMP_DLL
+	bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::operator=(bc_platform_scene_builder&& p_other) noexcept
+	{
+		m_pack.m_px_desc = p_other.m_pack.m_px_desc;
+		m_pack.m_simulation_callback = std::move(p_other.m_pack.m_simulation_callback);
+		m_pack.m_contact_filter_callback = std::move(p_other.m_pack.m_contact_filter_callback);
+		m_pack.m_contact_modify_callback = std::move(p_other.m_pack.m_contact_modify_callback);
+		m_pack.m_filter_shader_data = std::move(p_other.m_pack.m_filter_shader_data);
 
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder<g_api_physx>::bc_platform_scene_builder(bc_platform_scene_builder&& p_other) noexcept
-		{
-			operator=(std::move(p_other));
-		}
+		return *this;
+	}
 
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder<g_api_physx>::~bc_platform_scene_builder()
-		{
-		}
+	template<>
+	BC_PHYSICSIMP_DLL
+	bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::use_hint(const bc_scene_hint& p_hint) noexcept
+	{
+		m_pack.m_px_desc.limits.maxNbStaticShapes = p_hint.m_num_static_bodies;
+		m_pack.m_px_desc.limits.maxNbDynamicShapes = p_hint.m_num_dynamic_bodies;
+		m_pack.m_px_desc.limits.maxNbConstraints = p_hint.m_num_constraints;
 
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::operator=(bc_platform_scene_builder&& p_other) noexcept
-		{
-			m_pack.m_px_desc = p_other.m_pack.m_px_desc;
-			m_pack.m_simulation_callback = std::move(p_other.m_pack.m_simulation_callback);
-			m_pack.m_contact_filter_callback = std::move(p_other.m_pack.m_contact_filter_callback);
-			m_pack.m_contact_modify_callback = std::move(p_other.m_pack.m_contact_modify_callback);
-			m_pack.m_filter_shader_data = std::move(p_other.m_pack.m_filter_shader_data);
+		return *this;
+	}
 
-			return *this;
-		}
+	template<>
+	BC_PHYSICSIMP_DLL
+	bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::gravity(const core::bc_vector3f& p_gravity)
+	{
+		m_pack.m_px_desc.gravity = bc_to_right_hand(p_gravity);
 
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::use_hint(const bc_scene_hint& p_hint) noexcept
-		{
-			m_pack.m_px_desc.limits.maxNbStaticShapes = p_hint.m_num_static_bodies;
-			m_pack.m_px_desc.limits.maxNbDynamicShapes = p_hint.m_num_dynamic_bodies;
-			m_pack.m_px_desc.limits.maxNbConstraints = p_hint.m_num_constraints;
+		return *this;
+	}
 
-			return *this;
-		}
+	template<>
+	BC_PHYSICSIMP_DLL
+	bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::use_simulation_callback(core::bc_unique_ptr< bci_physics_simulation_callback > p_callback)
+	{
+		m_pack.m_simulation_callback = core::bc_make_unique<bc_px_simulation_callback>(std::move(p_callback));
+		m_pack.m_px_desc.simulationEventCallback = m_pack.m_simulation_callback.get();
 
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::gravity(const core::bc_vector3f& p_gravity)
-		{
-			m_pack.m_px_desc.gravity = bc_to_right_hand(p_gravity);
+		return *this;
+	}
 
-			return *this;
-		}
+	template<>
+	BC_PHYSICSIMP_DLL
+	bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::use_contact_modify_callback(core::bc_unique_ptr< bci_contact_modify_callback > p_callback)
+	{
+		m_pack.m_contact_modify_callback = core::bc_make_unique<bc_px_contact_modify_callback>(std::move(p_callback));
+		m_pack.m_px_desc.contactModifyCallback = m_pack.m_contact_modify_callback.get();
+		m_pack.m_px_desc.ccdContactModifyCallback = m_pack.m_contact_modify_callback.get();
 
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::use_simulation_callback(core::bc_unique_ptr< bci_physics_simulation_callback > p_callback)
-		{
-			m_pack.m_simulation_callback = core::bc_make_unique<bc_px_simulation_callback>(std::move(p_callback));
-			m_pack.m_px_desc.simulationEventCallback = m_pack.m_simulation_callback.get();
+		return *this;
+	}
 
-			return *this;
-		}
+	template<>
+	BC_PHYSICSIMP_DLL
+	bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::use_contact_filter_callback(core::bc_unique_ptr< bci_contact_filter_callback > p_callback)
+	{
+		m_pack.m_contact_filter_callback = core::bc_make_unique<bc_px_contact_filter_callback>(std::move(p_callback));
+		m_pack.m_px_desc.filterCallback = m_pack.m_contact_filter_callback.get();
+		m_pack.m_filter_shader_data->m_use_filter_callback = true;
 
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::use_contact_modify_callback(core::bc_unique_ptr< bci_contact_modify_callback > p_callback)
-		{
-			m_pack.m_contact_modify_callback = core::bc_make_unique<bc_px_contact_modify_callback>(std::move(p_callback));
-			m_pack.m_px_desc.contactModifyCallback = m_pack.m_contact_modify_callback.get();
-			m_pack.m_px_desc.ccdContactModifyCallback = m_pack.m_contact_modify_callback.get();
+		return *this;
+	}
 
-			return *this;
-		}
+	template<>
+	BC_PHYSICSIMP_DLL
+	bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::enable_ccd(bcUINT32 p_max_ccd_pass)
+	{
+		m_pack.m_px_desc.flags |= physx::PxSceneFlag::eENABLE_CCD;
+		m_pack.m_px_desc.ccdMaxPasses = p_max_ccd_pass;
+		m_pack.m_filter_shader_data->m_use_ccd = true;
 
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::use_contact_filter_callback(core::bc_unique_ptr< bci_contact_filter_callback > p_callback)
-		{
-			m_pack.m_contact_filter_callback = core::bc_make_unique<bc_px_contact_filter_callback>(std::move(p_callback));
-			m_pack.m_px_desc.filterCallback = m_pack.m_contact_filter_callback.get();
-			m_pack.m_filter_shader_data->m_use_filter_callback = true;
+		return *this;
+	}
 
-			return *this;
-		}
+	template<>
+	BC_PHYSICSIMP_DLL
+	bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::enable_locking()
+	{
+		m_pack.m_px_desc.flags |= physx::PxSceneFlag::eREQUIRE_RW_LOCK;
 
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::enable_ccd(bcUINT32 p_max_ccd_pass)
-		{
-			m_pack.m_px_desc.flags |= physx::PxSceneFlag::eENABLE_CCD;
-			m_pack.m_px_desc.ccdMaxPasses = p_max_ccd_pass;
-			m_pack.m_filter_shader_data->m_use_ccd = true;
-
-			return *this;
-		}
-
-		template<>
-		BC_PHYSICSIMP_DLL
-		bc_platform_scene_builder<g_api_physx>& bc_platform_scene_builder<g_api_physx>::enable_locking()
-		{
-			m_pack.m_px_desc.flags |= physx::PxSceneFlag::eREQUIRE_RW_LOCK;
-
-			return *this;
-		}
+		return *this;
 	}
 }

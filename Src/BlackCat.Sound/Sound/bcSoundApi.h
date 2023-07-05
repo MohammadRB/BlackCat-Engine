@@ -2,16 +2,13 @@
 
 #pragma once
 
-namespace black_cat
+namespace black_cat::sound
 {
-	namespace sound
+	enum class bc_sound_api
 	{
-		enum class bc_sound_api
-		{
-			unknown = 0,
-			fmod = 1
-		};
+		unknown = 0,
+		fmod = 1
+	};
 
-		constexpr bc_sound_api g_current_sound_api = bc_sound_api::fmod;
-	}
+	constexpr bc_sound_api g_current_sound_api = bc_sound_api::fmod;
 }

@@ -5,14 +5,11 @@
 #include "Graphic/Resource/Texture/bcTextureConfig.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template< >
+	struct bc_platform_texture_config_pack< g_api_dx11 >
 	{
-		template< >
-		struct bc_platform_texture_config_pack< g_api_dx11 >
-		{
-			D3D11_TEXTURE2D_DESC m_desc;
-		};
-	}
+		D3D11_TEXTURE2D_DESC m_desc;
+	};
 }

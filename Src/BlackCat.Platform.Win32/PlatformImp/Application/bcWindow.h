@@ -5,13 +5,10 @@
 #include "Platform/Application/bcWindow.h"
 #include "PlatformImp/PlatformImpPCH.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
+	template<>
+	struct bc_platform_window_pack<g_api_win32>
 	{
-		template<>
-		struct bc_platform_window_pack<g_api_win32>
-		{
-		};
-	}
+	};
 }

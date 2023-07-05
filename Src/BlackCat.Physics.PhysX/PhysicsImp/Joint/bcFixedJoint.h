@@ -6,13 +6,10 @@
 
 #include "Physics/Joint/bcFixedJoint.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	template<>
+	struct bc_platform_fixed_joint_pack<g_api_physx> : bc_platform_joint_pack<g_api_physx>
 	{
-		template<>
-		struct bc_platform_fixed_joint_pack<g_api_physx> : bc_platform_joint_pack<g_api_physx>
-		{
-		};
-	}
+	};
 }

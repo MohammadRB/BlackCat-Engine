@@ -8,41 +8,38 @@
 #include "Physics/Shape/bcShapeConvexMesh.h"
 #include "PhysicsImp/PhysicsImpPCH.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	template<>
+	struct bc_platform_shape_convex_mesh_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
 	{
-		template<>
-		struct bc_platform_shape_convex_mesh_pack<g_api_physx> : bc_platform_shape_geometry_pack<g_api_physx>
+		bc_platform_shape_convex_mesh_pack()
+			: bc_platform_shape_geometry_pack(m_px_convex)
 		{
-			bc_platform_shape_convex_mesh_pack()
-				: bc_platform_shape_geometry_pack(m_px_convex)
-			{
-			}
+		}
 
-			explicit bc_platform_shape_convex_mesh_pack(const physx::PxConvexMeshGeometry& p_px_convex)
-				: bc_platform_shape_geometry_pack(m_px_convex),
-				m_px_convex(p_px_convex)
-			{
-			}
+		explicit bc_platform_shape_convex_mesh_pack(const physx::PxConvexMeshGeometry& p_px_convex)
+			: bc_platform_shape_geometry_pack(m_px_convex),
+			  m_px_convex(p_px_convex)
+		{
+		}
 
-			bc_platform_shape_convex_mesh_pack(const bc_platform_shape_convex_mesh_pack& p_other)
-				: bc_platform_shape_geometry_pack(m_px_convex),
-				m_px_convex(p_other.m_px_convex)
-			{
-			}
+		bc_platform_shape_convex_mesh_pack(const bc_platform_shape_convex_mesh_pack& p_other)
+			: bc_platform_shape_geometry_pack(m_px_convex),
+			  m_px_convex(p_other.m_px_convex)
+		{
+		}
 
-			~bc_platform_shape_convex_mesh_pack() = default;
+		~bc_platform_shape_convex_mesh_pack() = default;
 
-			bc_platform_shape_convex_mesh_pack& operator=(const bc_platform_shape_convex_mesh_pack& p_other)
-			{
-				bc_platform_shape_geometry_pack::operator=(m_px_convex);
-				m_px_convex = p_other.m_px_convex;
+		bc_platform_shape_convex_mesh_pack& operator=(const bc_platform_shape_convex_mesh_pack& p_other)
+		{
+			bc_platform_shape_geometry_pack::operator=(m_px_convex);
+			m_px_convex = p_other.m_px_convex;
 
-				return *this;
-			}
+			return *this;
+		}
 
-			physx::PxConvexMeshGeometry m_px_convex;
-		};
-	}
+		physx::PxConvexMeshGeometry m_px_convex;
+	};
 }

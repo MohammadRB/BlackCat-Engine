@@ -7,21 +7,18 @@
 #include "GraphicImp/bcExport.h"
 #include "GraphicImp/Shader/bcShader.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<>
+	BC_GRAPHICIMP_DLL
+	bool bc_platform_compiled_shader<g_api_dx11>::is_valid() const noexcept
 	{
-		template<>
-		BC_GRAPHICIMP_DLL
-		bool bc_platform_compiled_shader<g_api_dx11>::is_valid() const noexcept
-		{
-			return get_platform_pack().m_blob != nullptr;
-		}
+		return get_platform_pack().m_blob != nullptr;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		void bc_platform_compiled_shader<g_api_dx11>::set_debug_name(const bcCHAR* p_name) noexcept
-		{
-		}
+	template<>
+	BC_GRAPHICIMP_DLL
+	void bc_platform_compiled_shader<g_api_dx11>::set_debug_name(const bcCHAR* p_name) noexcept
+	{
 	}
 }

@@ -7,9 +7,6 @@
 #include "Graphic/PipelineStage/bcComputeStage.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
-	{
-	}
 }

@@ -2,10 +2,7 @@
 
 #include "PlatformImp/PlatformImpPCH.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
-	{
 		
-	}
 }

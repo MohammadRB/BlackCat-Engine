@@ -19,167 +19,164 @@
 #include "Game/bcJsonParse.h"
 #include "Game/bcConstant.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	bc_vegetable_mesh_component::bc_vegetable_mesh_component(bc_actor_id p_actor_index, bc_actor_component_id p_id)
+		: bci_actor_component(p_actor_index, p_id),
+		  bc_mesh_component()
 	{
-		bc_vegetable_mesh_component::bc_vegetable_mesh_component(bc_actor_id p_actor_index, bc_actor_component_id p_id)
-			: bci_actor_component(p_actor_index, p_id),
-			bc_mesh_component()
-		{
-		}
+	}
 
-		bc_vegetable_mesh_component::bc_vegetable_mesh_component(bc_vegetable_mesh_component&& p_other) noexcept
-			: bci_actor_component(std::move(p_other)),
-			bc_mesh_component(std::move(p_other))
-		{
-		}
+	bc_vegetable_mesh_component::bc_vegetable_mesh_component(bc_vegetable_mesh_component&& p_other) noexcept
+		: bci_actor_component(std::move(p_other)),
+		  bc_mesh_component(std::move(p_other))
+	{
+	}
 
-		bc_vegetable_mesh_component::~bc_vegetable_mesh_component() = default;
+	bc_vegetable_mesh_component::~bc_vegetable_mesh_component() = default;
 
-		bc_vegetable_mesh_component& bc_vegetable_mesh_component::operator=(bc_vegetable_mesh_component&& p_other) noexcept
-		{
-			bci_actor_component::operator=(std::move(p_other));
-			bc_mesh_component::operator=(std::move(p_other));
-			return *this;
-		}
+	bc_vegetable_mesh_component& bc_vegetable_mesh_component::operator=(bc_vegetable_mesh_component&& p_other) noexcept
+	{
+		bci_actor_component::operator=(std::move(p_other));
+		bc_mesh_component::operator=(std::move(p_other));
+		return *this;
+	}
 
-		bc_actor bc_vegetable_mesh_component::get_actor() const noexcept
-		{
-			return get_manager().component_get_actor(*this);
-		}
+	bc_actor bc_vegetable_mesh_component::get_actor() const noexcept
+	{
+		return get_manager().component_get_actor(*this);
+	}
 
-		void bc_vegetable_mesh_component::initialize(const bc_actor_component_initialize_context& p_context)
-		{
-			bc_mesh_component::initialize(p_context);
-			set_render_states(bc_mesh_render_state());
+	void bc_vegetable_mesh_component::initialize(const bc_actor_component_initialize_context& p_context)
+	{
+		bc_mesh_component::initialize(p_context);
+		set_render_states(bc_mesh_render_state());
 
-			const core::bc_json_key_value* l_materials = nullptr;
-			json_parse::bc_load(p_context.m_parameters, constant::g_param_mesh_materials, l_materials);
+		const core::bc_json_key_value* l_materials = nullptr;
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_mesh_materials, l_materials);
 			
-			if (l_materials)
-			{
-				m_leaf_render_state = get_mesh().create_render_states
-				(
-					p_context.m_game_system.get_render_system(),
-					*l_materials,
-					"leaf_"
-				);
-				m_trunk_render_state = get_mesh().create_render_states
-				(
-					p_context.m_game_system.get_render_system(),
-					*l_materials,
-					"trunk_"
-				);
-			}
-			else
-			{
-				m_leaf_render_state = get_mesh().create_render_states
-				(
-					p_context.m_game_system.get_render_system(),
-					"leaf_"
-				);
-				m_trunk_render_state = get_mesh().create_render_states
-				(
-					p_context.m_game_system.get_render_system(),
-					"trunk_"
-				);
-			}
+		if (l_materials)
+		{
+			m_leaf_render_state = get_mesh().create_render_states
+			(
+				p_context.m_game_system.get_render_system(),
+				*l_materials,
+				"leaf_"
+			);
+			m_trunk_render_state = get_mesh().create_render_states
+			(
+				p_context.m_game_system.get_render_system(),
+				*l_materials,
+				"trunk_"
+			);
+		}
+		else
+		{
+			m_leaf_render_state = get_mesh().create_render_states
+			(
+				p_context.m_game_system.get_render_system(),
+				"leaf_"
+			);
+			m_trunk_render_state = get_mesh().create_render_states
+			(
+				p_context.m_game_system.get_render_system(),
+				"trunk_"
+			);
+		}
+	}
+
+	void bc_vegetable_mesh_component::handle_event(const bc_actor_component_event_context& p_context)
+	{
+		if (const auto* l_world_transform_event = core::bci_message::as< bc_world_transform_actor_event >(p_context.m_event))
+		{
+			bc_mesh_component::set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());
+			return;
 		}
 
-		void bc_vegetable_mesh_component::handle_event(const bc_actor_component_event_context& p_context)
-		{
-			if (const auto* l_world_transform_event = core::bci_message::as< bc_world_transform_actor_event >(p_context.m_event))
-			{
-				bc_mesh_component::set_world_transform(p_context.m_actor, l_world_transform_event->get_transform());
-				return;
-			}
-
-			/*const auto* l_bound_box_event = core::bci_message::as< bc_bound_box_changed_actor_event >(p_context.m_event);
+		/*const auto* l_bound_box_event = core::bci_message::as< bc_bound_box_changed_actor_event >(p_context.m_event);
 			if (l_bound_box_event)
 			{
 				bc_mesh_component::update_view_distance(l_bound_box_event->get_bound_box());
 				return;
 			}*/
 
-			if (const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event))
-			{
-				bc_mesh_component::process_bullet_hit
-				(
-					p_context.m_game_system.get_physics_system(),
-					p_context.m_game_system.get_scene()->get_particle_manager(),
-					*l_bullet_hit_event,
-					false
-				);
-				return;
-			}
+		if (const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event))
+		{
+			bc_mesh_component::process_bullet_hit
+			(
+				p_context.m_game_system.get_physics_system(),
+				p_context.m_game_system.get_scene()->get_particle_manager(),
+				*l_bullet_hit_event,
+				false
+			);
+			return;
 		}
+	}
 		
-		void bc_vegetable_mesh_component::render(const bc_actor_component_render_context& p_context) const
-		{
-			BC_ASSERT(false);
-		}
+	void bc_vegetable_mesh_component::render(const bc_actor_component_render_context& p_context) const
+	{
+		BC_ASSERT(false);
+	}
 
-		void bc_vegetable_mesh_component::render(const bc_actor_component_render_context& p_context, bool p_render_leaf) const
+	void bc_vegetable_mesh_component::render(const bc_actor_component_render_context& p_context, bool p_render_leaf) const
+	{
+		const auto l_mesh_lod = get_mesh().get_mesh_level_of_detail();
+		const auto l_lod = l_mesh_lod.get_lod_culling
+		(
+			p_context.m_camera.m_main_camera->get_position(),
+			p_context.m_camera.m_render_camera->get_position(),
+			get_world_position(),
+			get_view_distance()
+		);
+		if(!l_lod.second)
 		{
-			const auto l_mesh_lod = get_mesh().get_mesh_level_of_detail();
-			const auto l_lod = l_mesh_lod.get_lod_culling
-			(
-				p_context.m_camera.m_main_camera->get_position(),
-				p_context.m_camera.m_render_camera->get_position(),
-				get_world_position(),
-				get_view_distance()
-			);
-			if(!l_lod.second)
-			{
-				return;
-			}
+			return;
+		}
 			
-			const auto& l_mesh_transformation = get_world_transforms();
-			if(p_render_leaf)
-			{
-				bc_mesh_utility::render_mesh(p_context.m_buffer, m_leaf_render_state, l_mesh_transformation, l_lod.first, bc_actor_render_group::vegetable);
-			}
-			else
-			{
-				bc_mesh_utility::render_mesh(p_context.m_buffer, m_trunk_render_state, l_mesh_transformation, l_lod.first, bc_actor_render_group::static_mesh);
-			}
-		}
-
-		void bc_vegetable_mesh_component::add_decal(const bcCHAR* p_decal_name,
-			const core::bc_vector3f& p_world_position,
-			const core::bc_vector3f& p_world_direction,
-			bc_mesh_node::node_index_t p_attached_node_index)
+		const auto& l_mesh_transformation = get_world_transforms();
+		if(p_render_leaf)
 		{
-			core::bc_vector3f l_local_position;
-			core::bc_vector3f l_local_direction;
-			core::bc_matrix3f l_local_rotation;
-			core::bc_matrix4f l_world_transform;
-			const auto l_attached_node_transform = p_attached_node_index == bc_mesh_node::s_invalid_index
-				                                       ? get_world_transforms()[get_mesh().get_root_node()->get_index()]
-				                                       : get_world_transforms()[p_attached_node_index];
-
-			bc_mesh_utility::calculate_mesh_decal
-			(
-				p_world_position,
-				p_world_direction,
-				l_attached_node_transform,
-				l_local_position,
-				l_local_direction,
-				l_local_rotation,
-				l_world_transform
-			);
-
-			auto* l_decal_component = get_actor().get_create_component<bc_decal_component>();
-			l_decal_component->add_decal
-			(
-				p_decal_name,
-				l_local_position,
-				l_local_rotation,
-				bc_actor_render_group::static_mesh,
-				l_world_transform,
-				p_attached_node_index
-			);
+			bc_mesh_utility::render_mesh(p_context.m_buffer, m_leaf_render_state, l_mesh_transformation, l_lod.first, bc_actor_render_group::vegetable);
 		}
+		else
+		{
+			bc_mesh_utility::render_mesh(p_context.m_buffer, m_trunk_render_state, l_mesh_transformation, l_lod.first, bc_actor_render_group::static_mesh);
+		}
+	}
+
+	void bc_vegetable_mesh_component::add_decal(const bcCHAR* p_decal_name,
+	                                            const core::bc_vector3f& p_world_position,
+	                                            const core::bc_vector3f& p_world_direction,
+	                                            bc_mesh_node::node_index_t p_attached_node_index)
+	{
+		core::bc_vector3f l_local_position;
+		core::bc_vector3f l_local_direction;
+		core::bc_matrix3f l_local_rotation;
+		core::bc_matrix4f l_world_transform;
+		const auto l_attached_node_transform = p_attached_node_index == bc_mesh_node::s_invalid_index
+			                                       ? get_world_transforms()[get_mesh().get_root_node()->get_index()]
+			                                       : get_world_transforms()[p_attached_node_index];
+
+		bc_mesh_utility::calculate_mesh_decal
+		(
+			p_world_position,
+			p_world_direction,
+			l_attached_node_transform,
+			l_local_position,
+			l_local_direction,
+			l_local_rotation,
+			l_world_transform
+		);
+
+		auto* l_decal_component = get_actor().get_create_component<bc_decal_component>();
+		l_decal_component->add_decal
+		(
+			p_decal_name,
+			l_local_position,
+			l_local_rotation,
+			bc_actor_render_group::static_mesh,
+			l_world_transform,
+			p_attached_node_index
+		);
 	}
 }

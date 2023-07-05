@@ -9,9 +9,6 @@
 
 #include "Platform/Script/bcScriptExternalObject.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
-	{
-	}
 }

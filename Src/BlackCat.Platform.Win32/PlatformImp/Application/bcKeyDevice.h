@@ -4,14 +4,11 @@
 
 #include "Platform/Application/bcKeyDevice.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
+	template<>
+	struct bc_platform_key_device_pack<platform::g_api_win32>
 	{
-		template<>
-		struct bc_platform_key_device_pack<platform::g_api_win32>
-		{
-			bc_key_state m_state[256];
-		};
-	}
+		bc_key_state m_state[256];
+	};
 }

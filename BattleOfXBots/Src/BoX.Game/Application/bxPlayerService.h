@@ -12,12 +12,9 @@
 #include "BoX.Game/Application/bxGameState.h"
 #include "BoX.Game/bxExport.h"
 
-namespace black_cat
+namespace black_cat::core
 {
-	namespace core
-	{
-		class bc_event_manager;
-	}
+	class bc_event_manager;
 }
 
 namespace box

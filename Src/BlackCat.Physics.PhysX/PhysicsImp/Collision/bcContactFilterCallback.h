@@ -4,10 +4,7 @@
 
 #include "Physics/Collision/bcContactFilterCallback.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
-	{
 		
-	}
 }

@@ -7,13 +7,10 @@
 #include "Graphic/PipelineStage/bcStreamOutputStage.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template< >
+	struct bc_platform_stream_output_stage_pack<g_api_dx11>
 	{
-		template< >
-		struct bc_platform_stream_output_stage_pack<g_api_dx11>
-		{
-		};
-	}
+	};
 }

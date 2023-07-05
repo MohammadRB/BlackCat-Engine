@@ -7,82 +7,79 @@
 #include "Core/Memory/bcMemoryStack1.h"
 #include "Core/Utility/bcInitializable.h"
 
-namespace black_cat
+namespace black_cat::core
 {
-	namespace core
+	class BC_CORE_DLL bc_concurrent_object_stack_pool : public bc_initializable<bcSIZE>
 	{
-		class BC_CORE_DLL bc_concurrent_object_stack_pool : public bc_initializable<bcSIZE>
-		{
-		public:
-			bc_concurrent_object_stack_pool() noexcept;
+	public:
+		bc_concurrent_object_stack_pool() noexcept;
 
-			bc_concurrent_object_stack_pool(bc_concurrent_object_stack_pool&& p_other) noexcept;
+		bc_concurrent_object_stack_pool(bc_concurrent_object_stack_pool&& p_other) noexcept;
 
-			~bc_concurrent_object_stack_pool();
+		~bc_concurrent_object_stack_pool();
 
-			bc_concurrent_object_stack_pool& operator=(bc_concurrent_object_stack_pool&& p_other) noexcept;
+		bc_concurrent_object_stack_pool& operator=(bc_concurrent_object_stack_pool&& p_other) noexcept;
 
-			bcSIZE capacity() const noexcept;
+		bcSIZE capacity() const noexcept;
 
-			bcSIZE size() const noexcept;
-
-			template<typename T, typename ...TArgs>
-			T* alloc(TArgs&&... p_parameters);
-
-			template<typename T>
-			void free(T* p_object) noexcept;
-
-		private:
-			void _initialize(bcSIZE p_capacity) override final;
-
-			void _destroy() override final;
-
-			void* _alloc(bcSIZE p_size);
-
-			void _free(void* p_pointer, bcSIZE p_size);
-
-			bc_memory_stack1 m_stack_allocator;
-			platform::bc_atomic<bcSIZE> m_size;
-		};
-
-		inline bcSIZE bc_concurrent_object_stack_pool::capacity() const noexcept
-		{
-			return m_stack_allocator.capacity();
-		}
-
-		inline bcSIZE bc_concurrent_object_stack_pool::size() const noexcept
-		{
-			return m_size.load(platform::bc_memory_order::relaxed);
-		}
+		bcSIZE size() const noexcept;
 
 		template<typename T, typename ...TArgs>
-		T* bc_concurrent_object_stack_pool::alloc(TArgs&&... p_parameters)
-		{
-			// TODO default alignment is not preserved
-			constexpr bcSIZE l_needed_memory = sizeof(bcSIZE) + sizeof(T);
-			void* l_allocated_memory = _alloc(l_needed_memory);
-			void* l_object_ptr = static_cast<bcBYTE*>(l_allocated_memory) + sizeof(bcSIZE);
-			auto* l_memory_size_ptr = static_cast<bcSIZE*>(l_allocated_memory);
+		T* alloc(TArgs&&... p_parameters);
 
-			new (l_object_ptr) T(std::forward<T>(p_parameters)...);
-			*l_memory_size_ptr = l_needed_memory;
-
-			m_size.fetch_add(1, platform::bc_memory_order::relaxed);
-			
-			return static_cast<T*>(l_object_ptr);
-		}
-		
 		template<typename T>
-		void bc_concurrent_object_stack_pool::free(T* p_object) noexcept
-		{
-			p_object->~T();
+		void free(T* p_object) noexcept;
 
-			void* l_allocated_memory = reinterpret_cast<bcBYTE*>(p_object) - sizeof(bcSIZE);
-			const bcSIZE l_memory_size = *static_cast<bcSIZE*>(l_allocated_memory);
+	private:
+		void _initialize(bcSIZE p_capacity) override final;
 
-			_free(l_allocated_memory, l_memory_size);
+		void _destroy() override final;
 
-			m_size.fetch_sub(1, platform::bc_memory_order::relaxed);
-		}
+		void* _alloc(bcSIZE p_size);
+
+		void _free(void* p_pointer, bcSIZE p_size);
+
+		bc_memory_stack1 m_stack_allocator;
+		platform::bc_atomic<bcSIZE> m_size;
+	};
+
+	inline bcSIZE bc_concurrent_object_stack_pool::capacity() const noexcept
+	{
+		return m_stack_allocator.capacity();
+	}
+
+	inline bcSIZE bc_concurrent_object_stack_pool::size() const noexcept
+	{
+		return m_size.load(platform::bc_memory_order::relaxed);
+	}
+
+	template<typename T, typename ...TArgs>
+	T* bc_concurrent_object_stack_pool::alloc(TArgs&&... p_parameters)
+	{
+		// TODO default alignment is not preserved
+		constexpr bcSIZE l_needed_memory = sizeof(bcSIZE) + sizeof(T);
+		void* l_allocated_memory = _alloc(l_needed_memory);
+		void* l_object_ptr = static_cast<bcBYTE*>(l_allocated_memory) + sizeof(bcSIZE);
+		auto* l_memory_size_ptr = static_cast<bcSIZE*>(l_allocated_memory);
+
+		new (l_object_ptr) T(std::forward<T>(p_parameters)...);
+		*l_memory_size_ptr = l_needed_memory;
+
+		m_size.fetch_add(1, platform::bc_memory_order::relaxed);
+			
+		return static_cast<T*>(l_object_ptr);
+	}
+		
+	template<typename T>
+	void bc_concurrent_object_stack_pool::free(T* p_object) noexcept
+	{
+		p_object->~T();
+
+		void* l_allocated_memory = reinterpret_cast<bcBYTE*>(p_object) - sizeof(bcSIZE);
+		const bcSIZE l_memory_size = *static_cast<bcSIZE*>(l_allocated_memory);
+
+		_free(l_allocated_memory, l_memory_size);
+
+		m_size.fetch_sub(1, platform::bc_memory_order::relaxed);
 	}
 }

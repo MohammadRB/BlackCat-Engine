@@ -7,169 +7,166 @@
 #include "Core/CorePCH.h"
 #include "Core/Memory/bcAlloc.h"
 
-namespace black_cat
+namespace black_cat::core
 {
-	namespace core
-	{
-		/**
+	/**
 		 * \brief Same as platform::bc_thread_local but provide auto initialization. if type is an integral it will initialize to zero
 		 * \tparam T 
 		 * \tparam TAllocType 
 		 */
-		template<typename T, bc_alloc_type TAllocType = bc_alloc_type::unknown>
-		class bc_thread_local
+	template<typename T, bc_alloc_type TAllocType = bc_alloc_type::unknown>
+	class bc_thread_local
+	{
+	public:
+		using value_type = T;
+
+	private:
+		struct entry
 		{
-		public:
-			using value_type = T;
+			value_type m_value;
+			entry* m_next;
+		};
 
-		private:
-			struct entry
-			{
-				value_type m_value;
-				entry* m_next;
-			};
+	public:
+		bc_thread_local()
+			: m_first_entry(nullptr),
+			  m_local()
+		{
+			static_assert(TAllocType != bc_alloc_type::unknown_movable, "movable pointers are not allowed");
+			static_assert(std::is_default_constructible_v<value_type>, "T must be default constructable");
+		}
 
-		public:
-			bc_thread_local()
-				: m_first_entry(nullptr),
-				m_local()
+		bc_thread_local(bc_thread_local&& p_other) noexcept
+			: m_first_entry(p_other.m_first_entry.load(platform::bc_memory_order::relaxed)),
+			  m_local(std::move(p_other.m_local))
+		{
+		}
+
+		~bc_thread_local()
+		{
+			entry* l_first_entry = m_first_entry.load(platform::bc_memory_order::relaxed);
+			while (l_first_entry)
 			{
-				static_assert(TAllocType != bc_alloc_type::unknown_movable, "movable pointers are not allowed");
-				static_assert(std::is_default_constructible_v<value_type>, "T must be default constructable");
+				entry* l_next_entry = l_first_entry->m_next;
+				_default_clean_up(l_first_entry);
+				l_first_entry = l_next_entry;
+			}
+		}
+
+		bc_thread_local& operator =(bc_thread_local&& p_other) noexcept
+		{
+			m_first_entry.store(p_other.m_first_entry.load(platform::bc_memory_order::relaxed));
+			m_local = std::move(p_other.m_local);
+
+			return *this;
+		}
+
+		value_type& get() noexcept
+		{
+			entry* l_entry = m_local.get();
+
+			if (!l_entry)
+			{
+				l_entry = _create<T>();
+				m_local.set(l_entry);
 			}
 
-			bc_thread_local(bc_thread_local&& p_other) noexcept
-				: m_first_entry(p_other.m_first_entry.load(platform::bc_memory_order::relaxed)),
-				m_local(std::move(p_other.m_local))
-			{
-			}
+			return l_entry->m_value;
+		}
 
-			~bc_thread_local()
-			{
-				entry* l_first_entry = m_first_entry.load(platform::bc_memory_order::relaxed);
-				while (l_first_entry)
-				{
-					entry* l_next_entry = l_first_entry->m_next;
-					_default_clean_up(l_first_entry);
-					l_first_entry = l_next_entry;
-				}
-			}
+		const value_type& get() const noexcept
+		{
+			return const_cast<bc_thread_local*>(this)->get();
+		}
 
-			bc_thread_local& operator =(bc_thread_local&& p_other) noexcept
-			{
-				m_first_entry.store(p_other.m_first_entry.load(platform::bc_memory_order::relaxed));
-				m_local = std::move(p_other.m_local);
-
-				return *this;
-			}
-
-			value_type& get() noexcept
-			{
-				entry* l_entry = m_local.get();
-
-				if (!l_entry)
-				{
-					l_entry = _create<T>();
-					m_local.set(l_entry);
-				}
-
-				return l_entry->m_value;
-			}
-
-			const value_type& get() const noexcept
-			{
-				return const_cast<bc_thread_local*>(this)->get();
-			}
-
-			bool set(value_type&& p_value) noexcept
-			{
-				entry& l_entry = get();
-				l_entry.m_value = std::move(p_value);
+		bool set(value_type&& p_value) noexcept
+		{
+			entry& l_entry = get();
+			l_entry.m_value = std::move(p_value);
 				
-				return true;
-			}
+			return true;
+		}
 
-			value_type* operator ->() noexcept
-			{
-				return &get();
-			}
+		value_type* operator ->() noexcept
+		{
+			return &get();
+		}
 
-			const value_type* operator ->() const noexcept
-			{
-				return &get();
-			}
+		const value_type* operator ->() const noexcept
+		{
+			return &get();
+		}
 
-			value_type& operator *() noexcept
-			{
-				return get();
-			}
+		value_type& operator *() noexcept
+		{
+			return get();
+		}
 
-			const value_type& operator *() const noexcept
-			{
-				return get();
-			}
+		const value_type& operator *() const noexcept
+		{
+			return get();
+		}
 
-			value_type release() noexcept
-			{
-				// TODO no release is done. use actual release and delete entry
-				entry* l_entry = m_local.release();
-				//entry* l_entry = m_local.get();
-				value_type l_temp = std::move(l_entry->m_value);
+		value_type release() noexcept
+		{
+			// TODO no release is done. use actual release and delete entry
+			entry* l_entry = m_local.release();
+			//entry* l_entry = m_local.get();
+			value_type l_temp = std::move(l_entry->m_value);
 
-				return l_temp;
-			}
+			return l_temp;
+		}
 
-		private:
-			static void _default_clean_up(entry* p_pointer)
-			{
-				BC_DELETE(p_pointer);
-			}
+	private:
+		static void _default_clean_up(entry* p_pointer)
+		{
+			BC_DELETE(p_pointer);
+		}
 
-			template<typename T>
-			typename std::enable_if<std::is_integral<T>::value, entry*>::type _create()
-			{
-				entry* l_entry = BC_NEW(entry, TAllocType);
-				l_entry->m_value = value_type(0);
-				l_entry->m_next = nullptr;
+		template<typename T>
+		typename std::enable_if<std::is_integral<T>::value, entry*>::type _create()
+		{
+			entry* l_entry = BC_NEW(entry, TAllocType);
+			l_entry->m_value = value_type(0);
+			l_entry->m_next = nullptr;
 
-				_swap_first_entry(l_entry);
+			_swap_first_entry(l_entry);
 				
-				return l_entry;
-			}
+			return l_entry;
+		}
 
-			template<typename T>
-			typename std::enable_if<!std::is_integral<T>::value, entry*>::type _create()
-			{
-				entry* l_entry = BC_NEW(entry, TAllocType);
-				l_entry->m_next = nullptr;
+		template<typename T>
+		typename std::enable_if<!std::is_integral<T>::value, entry*>::type _create()
+		{
+			entry* l_entry = BC_NEW(entry, TAllocType);
+			l_entry->m_next = nullptr;
 
-				_swap_first_entry(l_entry);
+			_swap_first_entry(l_entry);
 				
-				return l_entry;
-			}
+			return l_entry;
+		}
 
-			void _swap_first_entry(entry* p_entry)
+		void _swap_first_entry(entry* p_entry)
+		{
+			entry* l_first_entry = m_first_entry.load(platform::bc_memory_order::relaxed);
+			while(true)
 			{
-				entry* l_first_entry = m_first_entry.load(platform::bc_memory_order::relaxed);
-				while(true)
-				{
-					p_entry->m_next = l_first_entry;
+				p_entry->m_next = l_first_entry;
 
-					if(m_first_entry.compare_exchange_weak
+				if(m_first_entry.compare_exchange_weak
 					(
 						&l_first_entry,
 						p_entry,
 						platform::bc_memory_order::relaxed,
 						platform::bc_memory_order::relaxed
 					))
-					{
-						break;
-					}
+				{
+					break;
 				}
 			}
+		}
 
-			platform::bc_atomic<entry*> m_first_entry; // All created instances by different threads
-			platform::bc_thread_local<entry> m_local;
-		};
-	}
+		platform::bc_atomic<entry*> m_first_entry; // All created instances by different threads
+		platform::bc_thread_local<entry> m_local;
+	};
 }

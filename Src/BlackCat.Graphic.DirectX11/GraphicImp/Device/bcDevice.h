@@ -10,16 +10,13 @@
 #include "Graphic/Device/bcDevice.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<>
+	struct bc_platform_device_pack<bc_render_api::directx11>
 	{
-		template<>
-		struct bc_platform_device_pack<bc_render_api::directx11>
-		{
-			Microsoft::WRL::ComPtr<ID3D11Device> m_device;
-			Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_immediate_context;
-			platform::bc_mutex m_immediate_context_mutex;
-		};
-	}
+		Microsoft::WRL::ComPtr<ID3D11Device> m_device;
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_immediate_context;
+		platform::bc_mutex m_immediate_context_mutex;
+	};
 }

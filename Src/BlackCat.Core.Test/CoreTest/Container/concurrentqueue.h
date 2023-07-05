@@ -79,13 +79,14 @@
 #include <thread>		// partly for __WINPTHREADS_VERSION if on MinGW-w64 w/ POSIX threading
 
 // Platform-specific definitions of a numeric thread ID type and an invalid value
-namespace moodycamel { namespace details {
+namespace moodycamel::details
+{
 	template<typename thread_id_t> struct thread_id_converter {
 		typedef thread_id_t thread_id_numeric_size_t;
 		typedef thread_id_t thread_id_hash_t;
 		static thread_id_hash_t prehash(thread_id_t const& x) { return x; }
 	};
-} }
+}
 #if defined(MCDBGQ_USE_RELACY)
 namespace moodycamel { namespace details {
 	typedef std::uint32_t thread_id_t;
@@ -97,13 +98,14 @@ namespace moodycamel { namespace details {
 // No sense pulling in windows.h in a header, we'll manually declare the function
 // we use and rely on backwards-compatibility for this not to break
 extern "C" __declspec(dllimport) unsigned long __stdcall GetCurrentThreadId(void);
-namespace moodycamel { namespace details {
+namespace moodycamel::details
+{
 	static_assert(sizeof(unsigned long) == sizeof(std::uint32_t), "Expected size of unsigned long to be 32 bits on Windows");
 	typedef std::uint32_t thread_id_t;
 	static const thread_id_t invalid_thread_id  = 0;			// See http://blogs.msdn.com/b/oldnewthing/archive/2004/23/02/78395.aspx
 	static const thread_id_t invalid_thread_id2 = 0xFFFFFFFFU;	// Not technically guaranteed to be invalid, but is never used in practice. Note that all Win32 thread IDs are presently multiples of 4.
 	static inline thread_id_t thread_id() { return static_cast<thread_id_t>(::GetCurrentThreadId()); }
-} }
+}
 #elif defined(__arm__) || defined(_M_ARM) || defined(__aarch64__) || (defined(__APPLE__) && TARGET_OS_IPHONE) || defined(MOODYCAMEL_NO_THREAD_LOCAL)
 namespace moodycamel { namespace details {
 	static_assert(sizeof(std::thread::id) == 4 || sizeof(std::thread::id) == 8, "std::thread::id is expected to be either 4 or 8 bytes");
@@ -233,9 +235,10 @@ namespace moodycamel { namespace details {
 #endif
 #endif
 
-namespace moodycamel { namespace details {
+namespace moodycamel::details
+{
 #ifndef MOODYCAMEL_ALIGNAS
-// VS2013 doesn't support alignas or alignof, and align() requires a constant literal
+	// VS2013 doesn't support alignas or alignof, and align() requires a constant literal
 #if defined(_MSC_VER) && _MSC_VER <= 1800
 #define MOODYCAMEL_ALIGNAS(alignment) __declspec(align(alignment))
 #define MOODYCAMEL_ALIGNOF(obj) __alignof(obj)
@@ -257,7 +260,7 @@ namespace moodycamel { namespace details {
 #define MOODYCAMEL_ALIGNED_TYPE_LIKE(T, obj) alignas(alignof(obj)) typename details::identity<T>::type
 #endif
 #endif
-} }
+}
 
 
 // TSAN can false report races in lock-free code.  To enable TSAN to be used from projects that use this one,
@@ -272,7 +275,8 @@ namespace moodycamel { namespace details {
 #endif // TSAN
 
 // Compiler-specific likely/unlikely hints
-namespace moodycamel { namespace details {
+namespace moodycamel::details
+{
 #if defined(__GNUC__)
 	static inline bool (likely)(bool x) { return __builtin_expect((x), true); }
 	static inline bool (unlikely)(bool x) { return __builtin_expect((x), false); }
@@ -280,7 +284,7 @@ namespace moodycamel { namespace details {
 	static inline bool (likely)(bool x) { return x; }
 	static inline bool (unlikely)(bool x) { return x; }
 #endif
-} }
+}
 
 #ifdef MOODYCAMEL_QUEUE_INTERNAL_DEBUG
 #include "internal/concurrentqueue_internal_debug.h"

@@ -13,100 +13,97 @@
 #include "Game/System/Render/Light/bcSpotLight.h"
 #include "Game/bcExport.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	class bc_light;
+	class bc_light_manager;
+
+	class BC_GAME_DLL _bc_light_ptr_deleter
 	{
-		class bc_light;
-		class bc_light_manager;
+	public:
+		_bc_light_ptr_deleter();
 
-		class BC_GAME_DLL _bc_light_ptr_deleter
+		_bc_light_ptr_deleter(bc_light_manager* p_manager);
+
+		void operator()(bc_light* p_light);
+
+	private:
+		bc_light_manager* m_manager;
+	};
+
+	enum class bc_light_type
+	{
+		direct = core::bc_enum::value(0),
+		point = core::bc_enum::value(1),
+		spot = core::bc_enum::value(2)
+	};
+
+	class BC_GAME_DLL bc_light : public core::bc_ref_count, platform::bc_no_copy
+	{
+	public:
+		using id_t = bcUINT32;
+		friend class bc_light_manager;
+
+	public:
+		bc_light(bc_light&& p_other) noexcept = default;
+
+		~bc_light() = default;
+
+		bc_light& operator=(bc_light&& p_other) noexcept = default;
+
+		const core::bc_matrix4f& get_transformation() const noexcept
 		{
-		public:
-			_bc_light_ptr_deleter();
+			return m_transformation;
+		}
 
-			_bc_light_ptr_deleter(bc_light_manager* p_manager);
-
-			void operator()(bc_light* p_light);
-
-		private:
-			bc_light_manager* m_manager;
-		};
-
-		enum class bc_light_type
+		void set_transformation(const core::bc_matrix4f& p_transformation) noexcept
 		{
-			direct = core::bc_enum::value(0),
-			point = core::bc_enum::value(1),
-			spot = core::bc_enum::value(2)
-		};
+			m_transformation = p_transformation;
+			_calculate_bound_box();
+		}
 
-		class BC_GAME_DLL bc_light : public core::bc_ref_count, platform::bc_no_copy
+		id_t get_id() const noexcept
 		{
-		public:
-			using id_t = bcUINT32;
-			friend class bc_light_manager;
+			return m_id;
+		}
 
-		public:
-			bc_light(bc_light&& p_other) noexcept = default;
+		bc_light_type get_type() const noexcept
+		{
+			return m_type;
+		}
 
-			~bc_light() = default;
-
-			bc_light& operator=(bc_light&& p_other) noexcept = default;
-
-			const core::bc_matrix4f& get_transformation() const noexcept
-			{
-				return m_transformation;
-			}
-
-			void set_transformation(const core::bc_matrix4f& p_transformation) noexcept
-			{
-				m_transformation = p_transformation;
-				_calculate_bound_box();
-			}
-
-			id_t get_id() const noexcept
-			{
-				return m_id;
-			}
-
-			bc_light_type get_type() const noexcept
-			{
-				return m_type;
-			}
-
-			physics::bc_bound_box get_bound_box() const noexcept
-			{
-				return m_bound_box;
-			}
+		physics::bc_bound_box get_bound_box() const noexcept
+		{
+			return m_bound_box;
+		}
 			
-			bc_direct_light* as_direct_light() noexcept;
+		bc_direct_light* as_direct_light() noexcept;
 
-			const bc_direct_light* as_direct_light() const noexcept;
+		const bc_direct_light* as_direct_light() const noexcept;
 
-			bc_point_light* as_point_light() noexcept;
+		bc_point_light* as_point_light() noexcept;
 
-			const bc_point_light* as_point_light() const noexcept;
+		const bc_point_light* as_point_light() const noexcept;
 
-			bc_spot_light* as_spot_light() noexcept;
+		bc_spot_light* as_spot_light() noexcept;
 
-			const bc_spot_light* as_spot_light() const noexcept;
+		const bc_spot_light* as_spot_light() const noexcept;
 
-		private:
-			explicit bc_light(id_t p_id, const bc_direct_light& p_light);
+	private:
+		explicit bc_light(id_t p_id, const bc_direct_light& p_light);
 
-			explicit bc_light(id_t p_id, const bc_point_light& p_light);
+		explicit bc_light(id_t p_id, const bc_point_light& p_light);
 
-			explicit bc_light(id_t p_id, const bc_spot_light& p_light);
+		explicit bc_light(id_t p_id, const bc_spot_light& p_light);
 
-			void _calculate_bound_box();
+		void _calculate_bound_box();
 
-			id_t m_id;
-			bc_light_type m_type;
-			std::variant<bc_direct_light, bc_point_light, bc_spot_light> m_light;
-			core::bc_matrix4f m_transformation;
-			physics::bc_bound_box m_bound_box;
-		};
+		id_t m_id;
+		bc_light_type m_type;
+		std::variant<bc_direct_light, bc_point_light, bc_spot_light> m_light;
+		core::bc_matrix4f m_transformation;
+		physics::bc_bound_box m_bound_box;
+	};
 
-		using bc_light_ptr = core::bc_ref_count_ptr<bc_light, _bc_light_ptr_deleter>;
-	}
+	using bc_light_ptr = core::bc_ref_count_ptr<bc_light, _bc_light_ptr_deleter>;
 }

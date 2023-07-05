@@ -10,14 +10,11 @@
 #include "Graphic/Resource/Texture/bcTexture2d.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<>
+	struct bc_platform_texture2d_pack<g_api_dx11> : bci_platform_resource_pack<g_api_dx11>
 	{
-		template<>
-		struct bc_platform_texture2d_pack<g_api_dx11> : bci_platform_resource_pack<g_api_dx11>
-		{
-			ID3D11Texture2D* m_texture;
-		};
-	}
+		ID3D11Texture2D* m_texture;
+	};
 }

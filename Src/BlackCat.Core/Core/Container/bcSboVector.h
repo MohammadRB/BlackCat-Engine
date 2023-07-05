@@ -5,17 +5,14 @@
 #include "Core/Container/bcArray.h"
 #include "Core/Container/bcVector.h"
 
-namespace black_cat
+namespace black_cat::core
 {
-	namespace core
+	template<typename T, class TAllocator>
+	class bc_sbo_vector : public bc_vector<T, TAllocator>
 	{
-		template<typename T, class TAllocator>
-		class bc_sbo_vector : public bc_vector<T, TAllocator>
-		{
-		public:
+	public:
 
-		private:
+	private:
 			
-		};
-	}
+	};
 }

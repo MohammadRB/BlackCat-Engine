@@ -9,14 +9,11 @@
 #include "Graphic/Resource/Buffer/bcBuffer.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<>
+	struct bc_platform_buffer_pack<g_api_dx11> : bci_platform_resource_pack<g_api_dx11>
 	{
-		template<>
-		struct bc_platform_buffer_pack<g_api_dx11> : bci_platform_resource_pack<g_api_dx11>
-		{
-			ID3D11Buffer* m_buffer;
-		};
-	}
+		ID3D11Buffer* m_buffer;
+	};
 }

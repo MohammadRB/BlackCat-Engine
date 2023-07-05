@@ -5,9 +5,6 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcRenderComponent.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
-	{
-	}
 }

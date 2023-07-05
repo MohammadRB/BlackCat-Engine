@@ -5,12 +5,9 @@
 #include "PlatformImp/Script/bcScriptVariable.h"
 #include "Game/System/Network/Server/bcNetworkServerManagerHook.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
-	{
-		class bc_game_system;
-	}
+	class bc_game_system;
 }
 
 namespace box

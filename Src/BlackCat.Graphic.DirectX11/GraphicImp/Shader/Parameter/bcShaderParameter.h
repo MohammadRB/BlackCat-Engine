@@ -7,10 +7,7 @@
 
 #include "Graphic/Shader/Parameter/bcShaderParameter.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
-	{
 
-	}
 }

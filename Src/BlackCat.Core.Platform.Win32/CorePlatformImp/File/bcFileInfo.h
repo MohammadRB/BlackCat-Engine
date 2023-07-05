@@ -4,10 +4,7 @@
 
 #include "CorePlatform/File/bcFileInfo.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
-	{
 		
-	}
 }

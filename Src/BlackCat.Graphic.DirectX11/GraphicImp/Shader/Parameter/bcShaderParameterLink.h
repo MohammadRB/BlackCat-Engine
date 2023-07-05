@@ -9,9 +9,6 @@
 
 #include "Graphic/Shader/Parameter/bcShaderParameterLink.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
-	{
-	}
 }

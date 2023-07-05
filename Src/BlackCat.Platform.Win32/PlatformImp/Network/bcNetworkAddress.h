@@ -7,14 +7,11 @@
 #include <WinSock2.h>
 #include "Platform/Network/bcNetworkAddress.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
+	template<>
+	struct bc_platform_network_address_pack<platform::g_api_win32>
 	{
-		template<>
-		struct bc_platform_network_address_pack<platform::g_api_win32>
-		{
-			sockaddr_in m_address;
-		};
-	}	
+		sockaddr_in m_address;
+	};
 }

@@ -12,30 +12,28 @@
 #include "CorePlatformImp/Concurrency/bcAtomic.h"
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 
-namespace black_cat
+namespace black_cat::core
 {
-	namespace core
-	{
 #ifdef BC_MEMORY_ENABLE
 
-		struct _bc_heap_memblock
-		{
-		public:
-			using pointer_refs = std::array<void**, 4>;
+	struct _bc_heap_memblock
+	{
+	public:
+		using pointer_refs = std::array<void**, 4>;
 
-			_bc_heap_memblock(bcSIZE p_size, bcSIZE p_prev_size, bool p_free);
+		_bc_heap_memblock(bcSIZE p_size, bcSIZE p_prev_size, bool p_free);
 
-			bcSIZE size() const noexcept;
+		bcSIZE size() const noexcept;
 
-			void size(bcSIZE val) noexcept;
+		void size(bcSIZE val) noexcept;
 
-			bcSIZE next_size() const noexcept;
+		bcSIZE next_size() const noexcept;
 
-			void next_size(bcSIZE p_val) noexcept;
+		void next_size(bcSIZE p_val) noexcept;
 
-			bool free() const noexcept;
+		bool free() const noexcept;
 
-			void free(bool p_val) noexcept;
+		void free(bool p_val) noexcept;
 			
 #ifdef BC_MEMORY_DEFRAG
 			pointer_refs::iterator pointers_begin() noexcept;
@@ -43,11 +41,11 @@ namespace black_cat
 			pointer_refs::iterator pointers_end() noexcept;
 #endif
 
-			void lock() noexcept;
+		void lock() noexcept;
 
-			void unlock() noexcept;
+		void unlock() noexcept;
 
-			bool try_lock() noexcept;
+		bool try_lock() noexcept;
 
 #ifdef BC_MEMORY_DEFRAG
 			// If any pointer exist in this block or this block is not free return MemBlock of one of it's pointers 
@@ -58,46 +56,46 @@ namespace black_cat
 
 			void unregister_pointer(void** p_pointer) noexcept;
 #endif
-		private:
-			bcSIZE m_size;
-			bcSIZE m_prev_size;
-			bool m_free;
-			platform::bc_spin_mutex m_mutex;
+	private:
+		bcSIZE m_size;
+		bcSIZE m_prev_size;
+		bool m_free;
+		platform::bc_spin_mutex m_mutex;
 #ifdef BC_MEMORY_DEFRAG
 			pointer_refs m_pointers;
 #endif
-		};
+	};
 
-		class BC_CORE_DLL bc_memory_heap : public bci_memory_movable, public bc_initializable<bcSIZE, const bcCHAR*>
-		{
-		public:
-			using this_type = bc_memory_heap;
+	class BC_CORE_DLL bc_memory_heap : public bci_memory_movable, public bc_initializable<bcSIZE, const bcCHAR*>
+	{
+	public:
+		using this_type = bc_memory_heap;
 #ifdef BC_MEMORY_DEFRAG
 			using is_movabe_type = std::true_type;
 #else
-			using is_movabe_type = std::false_type;
+		using is_movabe_type = std::false_type;
 #endif
 
-		public:
-			bc_memory_heap() noexcept;
+	public:
+		bc_memory_heap() noexcept;
 
-			bc_memory_heap(this_type&& p_other) noexcept;
+		bc_memory_heap(this_type&& p_other) noexcept;
 
-			~bc_memory_heap() noexcept override;
+		~bc_memory_heap() noexcept override;
 
-			this_type& operator =(this_type&& p_other) noexcept;
+		this_type& operator =(this_type&& p_other) noexcept;
 
-			bcSIZE capacity() const noexcept;
+		bcSIZE capacity() const noexcept;
 
-			bcSIZE fragmentation_count() const noexcept;
+		bcSIZE fragmentation_count() const noexcept;
 
-			void* alloc(bc_memblock* p_memblock) noexcept override;
+		void* alloc(bc_memblock* p_memblock) noexcept override;
 
-			void free(void* p_pointer, bc_memblock* p_memblock) noexcept override;
+		void free(void* p_pointer, bc_memblock* p_memblock) noexcept override;
 
-			bool contain_pointer(void* p_memory) const noexcept override;
+		bool contain_pointer(void* p_memory) const noexcept override;
 
-			void clear() noexcept override;
+		void clear() noexcept override;
 
 #ifdef BC_MEMORY_DEFRAG
 			void register_pointer(void** p_pointer, bc_memblock* p_memblock) noexcept override;
@@ -107,64 +105,64 @@ namespace black_cat
 			void defrag(bcINT32 p_num_defrag, defrag_callback p_defrag_callback) noexcept override;
 #endif
 
-		private:
-			void _initialize(bcSIZE p_capacity, const bcCHAR* p_tag) override;
+	private:
+		void _initialize(bcSIZE p_capacity, const bcCHAR* p_tag) override;
 
-			void _destroy() noexcept override;
+		void _destroy() noexcept override;
 
-			bcBYTE* m_heap;
-			bcSIZE m_capacity;
-			bcSIZE m_remaining_free_space_limit;
-			bcSIZE m_block_size;
-			_bc_heap_memblock* m_last_block;
-			platform::bc_atomic< bcINT32 > m_num_fragmentation;
-		};
+		bcBYTE* m_heap;
+		bcSIZE m_capacity;
+		bcSIZE m_remaining_free_space_limit;
+		bcSIZE m_block_size;
+		_bc_heap_memblock* m_last_block;
+		platform::bc_atomic< bcINT32 > m_num_fragmentation;
+	};
 
-		inline _bc_heap_memblock::_bc_heap_memblock(bcSIZE p_size, bcSIZE p_prev_size, bool p_free)
-			: m_size(p_size),
-			m_prev_size(p_prev_size),
-			m_free(p_free)
+	inline _bc_heap_memblock::_bc_heap_memblock(bcSIZE p_size, bcSIZE p_prev_size, bool p_free)
+		: m_size(p_size),
+		  m_prev_size(p_prev_size),
+		  m_free(p_free)
 #ifdef BC_MEMORY_DEFRAG
 			, m_pointers{ {nullptr, nullptr, nullptr, nullptr} }
 #endif
-		{
-		}
+	{
+	}
 
-		inline bcSIZE _bc_heap_memblock::size() const noexcept
-		{
-			return m_size;
-		}
+	inline bcSIZE _bc_heap_memblock::size() const noexcept
+	{
+		return m_size;
+	}
 
-		inline void _bc_heap_memblock::size(bcSIZE val) noexcept
-		{
-			m_size = val;
-		}
+	inline void _bc_heap_memblock::size(bcSIZE val) noexcept
+	{
+		m_size = val;
+	}
 
-		inline bcSIZE _bc_heap_memblock::next_size() const noexcept
-		{
-			return m_prev_size;
-		}
+	inline bcSIZE _bc_heap_memblock::next_size() const noexcept
+	{
+		return m_prev_size;
+	}
 
-		inline void _bc_heap_memblock::next_size(bcSIZE p_val) noexcept
-		{
-			m_prev_size = p_val;
-		}
+	inline void _bc_heap_memblock::next_size(bcSIZE p_val) noexcept
+	{
+		m_prev_size = p_val;
+	}
 
-		inline bool _bc_heap_memblock::free() const noexcept
-		{
-			return m_free;
-		}
+	inline bool _bc_heap_memblock::free() const noexcept
+	{
+		return m_free;
+	}
 
-		inline void _bc_heap_memblock::free(bool p_val) noexcept
-		{
-			m_free = p_val;
+	inline void _bc_heap_memblock::free(bool p_val) noexcept
+	{
+		m_free = p_val;
 #ifdef BC_MEMORY_DEFRAG
 			if (p_val)
 			{
 				m_pointers = { nullptr, nullptr, nullptr, nullptr };
 			}
 #endif
-		}
+	}
 
 #ifdef BC_MEMORY_DEFRAG
 		inline _bc_heap_memblock::pointer_refs::iterator _bc_heap_memblock::pointers_begin() noexcept
@@ -178,20 +176,20 @@ namespace black_cat
 		}
 #endif
 
-		inline void _bc_heap_memblock::lock() noexcept
-		{
-			m_mutex.lock();
-		}
+	inline void _bc_heap_memblock::lock() noexcept
+	{
+		m_mutex.lock();
+	}
 
-		inline void _bc_heap_memblock::unlock() noexcept
-		{
-			m_mutex.unlock();
-		}
+	inline void _bc_heap_memblock::unlock() noexcept
+	{
+		m_mutex.unlock();
+	}
 
-		inline bool _bc_heap_memblock::try_lock() noexcept
-		{
-			return m_mutex.try_lock();
-		}
+	inline bool _bc_heap_memblock::try_lock() noexcept
+	{
+		return m_mutex.try_lock();
+	}
 
 #ifdef BC_MEMORY_DEFRAG
 		// If any pointer exist in this block or this block is not free return MemBlock of one of it's pointers 
@@ -260,15 +258,14 @@ namespace black_cat
 		}
 
 #endif
-		inline bcSIZE bc_memory_heap::capacity() const noexcept
-		{
-			return m_capacity;
-		}
-
-		inline bcSIZE bc_memory_heap::fragmentation_count() const noexcept
-		{
-			return m_num_fragmentation.load(platform::bc_memory_order::relaxed);
-		}
-#endif
+	inline bcSIZE bc_memory_heap::capacity() const noexcept
+	{
+		return m_capacity;
 	}
+
+	inline bcSIZE bc_memory_heap::fragmentation_count() const noexcept
+	{
+		return m_num_fragmentation.load(platform::bc_memory_order::relaxed);
+	}
+#endif
 }

@@ -8,14 +8,11 @@
 #include "Graphic/Font/bcSpriteFont.h"
 #include "3rdParty/DirectXTK/Include/SpriteFont.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<>
+	struct bc_platform_sprite_font_pack<g_api_dx11>
 	{
-		template<>
-		struct bc_platform_sprite_font_pack<g_api_dx11>
-		{
-			core::bc_unique_ptr<DirectX::SpriteFont> m_sprite_font;
-		};
-	}
+		core::bc_unique_ptr<DirectX::SpriteFont> m_sprite_font;
+	};
 }

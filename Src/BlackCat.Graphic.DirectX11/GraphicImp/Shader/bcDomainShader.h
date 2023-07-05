@@ -10,14 +10,11 @@
 #include "Graphic/Shader/bcDomainShader.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<>
+	struct bc_platform_domain_shader_pack<g_api_dx11> : bci_platform_shader_pack<g_api_dx11>
 	{
-		template<>
-		struct bc_platform_domain_shader_pack<g_api_dx11> : bci_platform_shader_pack<g_api_dx11>
-		{
-			ID3D11DomainShader* m_shader;
-		};
-	}
+		ID3D11DomainShader* m_shader;
+	};
 }

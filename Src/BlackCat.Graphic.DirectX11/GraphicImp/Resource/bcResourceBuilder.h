@@ -11,10 +11,7 @@
 
 #include "Graphic/Resource/bcResourceBuilder.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
-	{
 		
-	}
 }

@@ -6,13 +6,10 @@
 
 #include "Physics/Joint/bcPrismaticJoint.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	template<>
+	struct bc_platform_prismatic_joint_pack<g_api_physx> : bc_platform_joint_pack<g_api_physx>
 	{
-		template<>
-		struct bc_platform_prismatic_joint_pack<g_api_physx> : bc_platform_joint_pack<g_api_physx>
-		{
-		};
-	}
+	};
 }

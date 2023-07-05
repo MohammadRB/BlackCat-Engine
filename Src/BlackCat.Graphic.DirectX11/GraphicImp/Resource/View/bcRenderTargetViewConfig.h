@@ -5,14 +5,11 @@
 #include "Graphic/Resource/View/bcRenderTargetViewConfig.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template< >
+	struct bc_platform_render_target_view_config_pack< g_api_dx11 >
 	{
-		template< >
-		struct bc_platform_render_target_view_config_pack< g_api_dx11 >
-		{
-				D3D11_RENDER_TARGET_VIEW_DESC m_render_target_view_desc;
-		};
-	}
+		D3D11_RENDER_TARGET_VIEW_DESC m_render_target_view_desc;
+	};
 }

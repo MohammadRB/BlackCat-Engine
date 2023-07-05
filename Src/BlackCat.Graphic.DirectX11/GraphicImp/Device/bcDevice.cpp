@@ -49,1025 +49,1023 @@
 
 using namespace Microsoft::WRL;
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	D3D_SHADER_MACRO* _create_shader_macro_array(const bc_shader_macro* p_macros, bcUINT32 p_macro_count, core::bc_vector<D3D_SHADER_MACRO>& p_buffer)
 	{
-		D3D_SHADER_MACRO* _create_shader_macro_array(const bc_shader_macro* p_macros, bcUINT32 p_macro_count, core::bc_vector<D3D_SHADER_MACRO>& p_buffer)
-		{
-			p_buffer.resize(p_macro_count + 1);
+		p_buffer.resize(p_macro_count + 1);
 
-			std::transform(p_macros, p_macros + p_macro_count, std::begin(p_buffer), [](const bc_shader_macro& p_macro)
-			{
-				return D3D_SHADER_MACRO{ p_macro.m_name, p_macro.m_value };
-			});
+		std::transform(p_macros, p_macros + p_macro_count, std::begin(p_buffer), [](const bc_shader_macro& p_macro)
+		{
+			return D3D_SHADER_MACRO{ p_macro.m_name, p_macro.m_value };
+		});
 			
-			p_buffer[p_macro_count] = D3D_SHADER_MACRO{ nullptr, nullptr };
+		p_buffer[p_macro_count] = D3D_SHADER_MACRO{ nullptr, nullptr };
 
-			return p_buffer.data();
-		}
+		return p_buffer.data();
+	}
 		
-		ID3D11Buffer* _initialize_buffer(bc_device* p_device, const bc_buffer_config* p_config, const bc_subresource_data* p_data)
+	ID3D11Buffer* _initialize_buffer(bc_device* p_device, const bc_buffer_config* p_config, const bc_subresource_data* p_data)
+	{
+		ID3D11Buffer* l_buffer;
+		const D3D11_BUFFER_DESC& l_buffer_desc = p_config->get_platform_pack().m_desc;
+		D3D11_SUBRESOURCE_DATA l_data;
+
+		if (p_data)
 		{
-			ID3D11Buffer* l_buffer;
-			const D3D11_BUFFER_DESC& l_buffer_desc = p_config->get_platform_pack().m_desc;
-			D3D11_SUBRESOURCE_DATA l_data;
-
-			if (p_data)
-			{
-				l_data.pSysMem = p_data->m_data;
-				l_data.SysMemPitch = p_data->m_row_pitch;
-				l_data.SysMemSlicePitch = p_data->m_depth_pitch;
-			}
-
-			dx_call(p_device->get_platform_pack().m_device->CreateBuffer(&l_buffer_desc, p_data ? &l_data : nullptr, &l_buffer));
-
-			return l_buffer;
+			l_data.pSysMem = p_data->m_data;
+			l_data.SysMemPitch = p_data->m_row_pitch;
+			l_data.SysMemSlicePitch = p_data->m_depth_pitch;
 		}
 
-		ID3D11Texture2D* _initialize_texture(bc_device* p_device, const bc_texture_config* p_config, const bc_subresource_data* p_data)
-		{
-			ID3D11Texture2D* l_texture;
-			const D3D11_TEXTURE2D_DESC& l_texture_desc = p_config->get_platform_pack().m_desc;
-			D3D11_SUBRESOURCE_DATA l_data;
+		dx_call(p_device->get_platform_pack().m_device->CreateBuffer(&l_buffer_desc, p_data ? &l_data : nullptr, &l_buffer));
 
-			BC_ASSERT
-			(
-				l_texture_desc.SampleDesc.Count > 1 ?
-				!(l_texture_desc.MiscFlags & D3D11_RESOURCE_MISC_GENERATE_MIPS) :
-				true,
-				"Multisampled texture can not have generated mip levels"
-			);
-			/*bcAssert(l_texture_desc.SampleDesc.Count == 1 ?
+		return l_buffer;
+	}
+
+	ID3D11Texture2D* _initialize_texture(bc_device* p_device, const bc_texture_config* p_config, const bc_subresource_data* p_data)
+	{
+		ID3D11Texture2D* l_texture;
+		const D3D11_TEXTURE2D_DESC& l_texture_desc = p_config->get_platform_pack().m_desc;
+		D3D11_SUBRESOURCE_DATA l_data;
+
+		BC_ASSERT
+		(
+			l_texture_desc.SampleDesc.Count > 1 ?
+			!(l_texture_desc.MiscFlags & D3D11_RESOURCE_MISC_GENERATE_MIPS) :
+			true,
+			"Multisampled texture can not have generated mip levels"
+		);
+		/*bcAssert(l_texture_desc.SampleDesc.Count == 1 ?
 				(l_texture_desc.BindFlags & D3D11_BIND_SHADER_RESOURCE) || (l_texture_desc.BindFlags & D3D11_BIND_UNORDERED_ACCESS) :
 				true);*/
 
-			if (p_data)
-			{
-				l_data.pSysMem = p_data->m_data;
-				l_data.SysMemPitch = p_data->m_row_pitch;
-				l_data.SysMemSlicePitch = p_data->m_depth_pitch;
-			}
-
-			dx_call(p_device->get_platform_pack().m_device->CreateTexture2D(&l_texture_desc, p_data ? &l_data : nullptr, &l_texture));
-
-			return l_texture;
+		if (p_data)
+		{
+			l_data.pSysMem = p_data->m_data;
+			l_data.SysMemPitch = p_data->m_row_pitch;
+			l_data.SysMemSlicePitch = p_data->m_depth_pitch;
 		}
 
-		ID3D11Texture2D* _initialize_texture(bc_device* p_device, const bc_texture_config* p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
-		{
-			ID3D11Resource* l_texture;
-			const D3D11_TEXTURE2D_DESC& l_texture_desc = p_config->get_platform_pack().m_desc;
+		dx_call(p_device->get_platform_pack().m_device->CreateTexture2D(&l_texture_desc, p_data ? &l_data : nullptr, &l_texture));
 
-			const D3D11_USAGE l_usage = l_texture_desc.Usage;
-			const bcUINT l_bind_flags = l_texture_desc.BindFlags;
-			const bcUINT l_access_flags = l_texture_desc.CPUAccessFlags;
-			const bcUINT l_misc_flags = l_texture_desc.MiscFlags;
+		return l_texture;
+	}
+
+	ID3D11Texture2D* _initialize_texture(bc_device* p_device, const bc_texture_config* p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
+	{
+		ID3D11Resource* l_texture;
+		const D3D11_TEXTURE2D_DESC& l_texture_desc = p_config->get_platform_pack().m_desc;
+
+		const D3D11_USAGE l_usage = l_texture_desc.Usage;
+		const bcUINT l_bind_flags = l_texture_desc.BindFlags;
+		const bcUINT l_access_flags = l_texture_desc.CPUAccessFlags;
+		const bcUINT l_misc_flags = l_texture_desc.MiscFlags;
+
+		if (p_format == bc_image_format::dds)
+		{
+			dx_call(DirectX::CreateDDSTextureFromMemoryEx
+				(
+					p_device->get_platform_pack().m_device.Get(),
+					reinterpret_cast<const bcUBYTE*>(p_data),
+					p_data_size,
+					0,
+					l_usage,
+					l_bind_flags,
+					l_access_flags,
+					l_misc_flags,
+					false,
+					&l_texture,
+					nullptr
+				));
+		}
+		else // There are built-in WIC codecs in Windows for .BMP, .PNG, .GIF, .TIFF, .JPEG, and JPEG-XR / HD Photo images
+		{
+			CoInitialize(nullptr);
+			dx_call(DirectX::CreateWICTextureFromMemoryEx
+				(
+					p_device->get_platform_pack().m_device.Get(),
+					reinterpret_cast<const bcUBYTE*>(p_data),
+					p_data_size,
+					0,
+					l_usage,
+					l_bind_flags,
+					l_access_flags,
+					l_misc_flags,
+					false,
+					&l_texture,
+					nullptr
+				));
+		}
+
+		return static_cast<ID3D11Texture2D*>(l_texture);
+	}
+
+	void _save_texture(bc_device* p_device, const bc_texture2d* p_texture, bc_image_format p_format, const bcECHAR* p_file_name)
+	{
+		{
+			platform::bc_mutex_guard l_guard(p_device->get_platform_pack().m_immediate_context_mutex);
 
 			if (p_format == bc_image_format::dds)
 			{
-				dx_call(DirectX::CreateDDSTextureFromMemoryEx
-				(
-					p_device->get_platform_pack().m_device.Get(),
-					reinterpret_cast<const bcUBYTE*>(p_data),
-					p_data_size,
-					0,
-					l_usage,
-					l_bind_flags,
-					l_access_flags,
-					l_misc_flags,
-					false,
-					&l_texture,
-					nullptr
-				));
-			}
-			else // There are built-in WIC codecs in Windows for .BMP, .PNG, .GIF, .TIFF, .JPEG, and JPEG-XR / HD Photo images
-			{
-				CoInitialize(nullptr);
-				dx_call(DirectX::CreateWICTextureFromMemoryEx
-				(
-					p_device->get_platform_pack().m_device.Get(),
-					reinterpret_cast<const bcUBYTE*>(p_data),
-					p_data_size,
-					0,
-					l_usage,
-					l_bind_flags,
-					l_access_flags,
-					l_misc_flags,
-					false,
-					&l_texture,
-					nullptr
-				));
-			}
-
-			return static_cast<ID3D11Texture2D*>(l_texture);
-		}
-
-		void _save_texture(bc_device* p_device, const bc_texture2d* p_texture, bc_image_format p_format, const bcECHAR* p_file_name)
-		{
-			{
-				platform::bc_mutex_guard l_guard(p_device->get_platform_pack().m_immediate_context_mutex);
-
-				if (p_format == bc_image_format::dds)
-				{
-					dx_call(DirectX::SaveDDSTextureToFile
+				dx_call(DirectX::SaveDDSTextureToFile
 					(
 						p_device->get_platform_pack().m_immediate_context.Get(),
 						p_texture->get_platform_pack().m_texture,
 						p_file_name
 					));
-				}
-				else
+			}
+			else
+			{
+				GUID l_format;
+
+				switch (p_format)
 				{
-					GUID l_format;
+				case bc_image_format::bmp:
+					l_format = GUID_ContainerFormatBmp;
+					break;
+				case bc_image_format::png:
+					l_format = GUID_ContainerFormatPng;
+					break;
+				case bc_image_format::gif:
+					l_format = GUID_ContainerFormatGif;
+					break;
+				case bc_image_format::tiff:
+					l_format = GUID_ContainerFormatTiff;
+					break;
+				case bc_image_format::jpg:
+					l_format = GUID_ContainerFormatJpeg;
+					break;
+				default:
+					BC_ASSERT(false);
+					break;
+				}
 
-					switch (p_format)
-					{
-					case bc_image_format::bmp:
-						l_format = GUID_ContainerFormatBmp;
-						break;
-					case bc_image_format::png:
-						l_format = GUID_ContainerFormatPng;
-						break;
-					case bc_image_format::gif:
-						l_format = GUID_ContainerFormatGif;
-						break;
-					case bc_image_format::tiff:
-						l_format = GUID_ContainerFormatTiff;
-						break;
-					case bc_image_format::jpg:
-						l_format = GUID_ContainerFormatJpeg;
-						break;
-					default:
-						BC_ASSERT(false);
-						break;
-					}
-
-					dx_call(DirectX::SaveWICTextureToFile
+				dx_call(DirectX::SaveWICTextureToFile
 					(
 						p_device->get_platform_pack().m_immediate_context.Get(),
 						p_texture->get_platform_pack().m_texture,
 						l_format,
 						p_file_name
 					));
-				}
 			}
 		}
+	}
 
-		ID3D10Blob* _compile_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_profile, const D3D_SHADER_MACRO* p_macros, const bcCHAR* p_source_file)
+	ID3D10Blob* _compile_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function_name, const bcCHAR* p_profile, const D3D_SHADER_MACRO* p_macros, const bcCHAR* p_source_file)
+	{
+		// Loop until we succeed, or an exception is thrown
+		while (true)
 		{
-			// Loop until we succeed, or an exception is thrown
-			while (true)
-			{
-				bcUINT l_flags = 0;
+			bcUINT l_flags = 0;
 #if defined( BC_DEBUG )
-				l_flags |= D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION/*|D3D10_SHADER_WARNINGS_ARE_ERRORS*/;
+			l_flags |= D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION/*|D3D10_SHADER_WARNINGS_ARE_ERRORS*/;
 #endif
 
-				ID3D10Blob* l_compiled_shader;
-				ComPtr<ID3D10Blob> l_error_messages;
-				const HRESULT l_hr = D3DCompile
-				(
-					p_data,
-					p_data_size,
-					p_source_file,
-					p_macros,
-					D3D_COMPILE_STANDARD_FILE_INCLUDE,
-					p_function_name,
-					p_profile,
-					l_flags,
-					0,
-					&l_compiled_shader,
-					l_error_messages.GetAddressOf()
-				);
-
-				if (FAILED(l_hr))
-				{
-					DWORD l_error_code;
-					platform::win32_from_hresult(l_hr, &l_error_code);
-					core::bc_string l_full_message = "Error in compiling shader file \"";
-
-					if (l_error_messages)
-					{
-						bcCHAR l_message[3072];
-						l_message[0] = NULL;
-						const bcCHAR* l_blob_data = static_cast<char*>(l_error_messages->GetBufferPointer());
-
-						std::strcpy(l_message, l_blob_data);
-
-						l_full_message += l_message;
-
-						BC_ASSERT(false);
-						throw bc_graphic_exception(static_cast<bcINT>(l_error_code), l_full_message);
-					}
-					else
-					{
-						BC_ASSERT(false);
-						throw bc_graphic_exception(static_cast<bcINT>(l_error_code), l_full_message);
-					}
-				}
-
-				return l_compiled_shader;
-			}
-		}
-
-		std::pair<ID3D10Blob*, ID3D11VertexShader*> _initialize_vertex_shader(bc_device* p_device, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
-		{
 			ID3D10Blob* l_compiled_shader;
-			ID3D11VertexShader* l_shader;
-
-			dx_call(p_device->get_platform_pack().m_device->CreateVertexShader
+			ComPtr<ID3D10Blob> l_error_messages;
+			const HRESULT l_hr = D3DCompile
 			(
 				p_data,
 				p_data_size,
-				nullptr,
-				&l_shader
-			));
-
-			dx_call(D3DCreateBlob(p_data_size, &l_compiled_shader));
-			std::memcpy(l_compiled_shader->GetBufferPointer(), p_data, p_data_size);
-
-			return std::make_pair(l_compiled_shader, l_shader);
-		}
-
-		ID3D11HullShader* _initialize_hull_shader(bc_device* p_device, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
-		{
-			ID3D11HullShader* l_shader;
-
-			dx_call(p_device->get_platform_pack().m_device->CreateHullShader
-			(
-				p_data,
-				p_data_size,
-				nullptr,
-				&l_shader
-			));
-
-			return l_shader;
-		}
-
-		ID3D11DomainShader* _initialize_domain_shader(bc_device* p_device, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
-		{
-			ID3D11DomainShader* l_shader;
-
-			dx_call(p_device->get_platform_pack().m_device->CreateDomainShader
-			(
-				p_data,
-				p_data_size,
-				nullptr,
-				&l_shader
-			));
-
-			return l_shader;
-		}
-
-		ID3D11GeometryShader* _initialize_geometry_shader(bc_device* p_device, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
-		{
-			ID3D11GeometryShader* l_shader;
-
-			dx_call(p_device->get_platform_pack().m_device->CreateGeometryShader
-			(
-				p_data,
-				p_data_size,
-				nullptr,
-				&l_shader
-			));
-
-			return l_shader;
-		}
-
-		ID3D11PixelShader* _initialize_pixel_shader(bc_device* p_device, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
-		{
-			ID3D11PixelShader* l_shader;
-
-			dx_call(p_device->get_platform_pack().m_device->CreatePixelShader
-			(
-				p_data,
-				p_data_size,
-				nullptr,
-				&l_shader
-			));
-
-			return l_shader;
-		}
-
-		ID3D11ComputeShader* _initialize_compute_shader(bc_device* p_device, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
-		{
-			ID3D11ComputeShader* l_shader;
-
-			dx_call(p_device->get_platform_pack().m_device->CreateComputeShader
-			(
-				p_data,
-				p_data_size,
-				nullptr,
-				&l_shader
-			));
-
-			return l_shader;
-		}
-
-		ID3D11View* _initialize_shader_view(bc_device* p_device, const bci_resource* p_resource, const bc_resource_view_config* p_view_config)
-		{
-			BC_ASSERT
-			(
-				p_view_config->get_platform_pack().m_type == bc_resource_view_type::shader ||
-				p_view_config->get_platform_pack().m_type == bc_resource_view_type::unordered
+				p_source_file,
+				p_macros,
+				D3D_COMPILE_STANDARD_FILE_INCLUDE,
+				p_function_name,
+				p_profile,
+				l_flags,
+				0,
+				&l_compiled_shader,
+				l_error_messages.GetAddressOf()
 			);
 
-			ID3D11Resource* l_resource = p_resource->get_resource_platform_pack().m_resource;
-			ID3D11ShaderResourceView* l_shader_view;
-			ID3D11UnorderedAccessView* l_unordered_view;
-
-			if (p_view_config->get_platform_pack().m_type == bc_resource_view_type::shader)
+			if (FAILED(l_hr))
 			{
-				const D3D11_SHADER_RESOURCE_VIEW_DESC& l_resource_view_desc = p_view_config->get_platform_pack().m_shader_view_desc;
+				DWORD l_error_code;
+				platform::win32_from_hresult(l_hr, &l_error_code);
+				core::bc_string l_full_message = "Error in compiling shader file \"";
 
-				dx_call(p_device->get_platform_pack().m_device->CreateShaderResourceView
+				if (l_error_messages)
+				{
+					bcCHAR l_message[3072];
+					l_message[0] = NULL;
+					const bcCHAR* l_blob_data = static_cast<char*>(l_error_messages->GetBufferPointer());
+
+					std::strcpy(l_message, l_blob_data);
+
+					l_full_message += l_message;
+
+					BC_ASSERT(false);
+					throw bc_graphic_exception(static_cast<bcINT>(l_error_code), l_full_message);
+				}
+				else
+				{
+					BC_ASSERT(false);
+					throw bc_graphic_exception(static_cast<bcINT>(l_error_code), l_full_message);
+				}
+			}
+
+			return l_compiled_shader;
+		}
+	}
+
+	std::pair<ID3D10Blob*, ID3D11VertexShader*> _initialize_vertex_shader(bc_device* p_device, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	{
+		ID3D10Blob* l_compiled_shader;
+		ID3D11VertexShader* l_shader;
+
+		dx_call(p_device->get_platform_pack().m_device->CreateVertexShader
+			(
+				p_data,
+				p_data_size,
+				nullptr,
+				&l_shader
+			));
+
+		dx_call(D3DCreateBlob(p_data_size, &l_compiled_shader));
+		std::memcpy(l_compiled_shader->GetBufferPointer(), p_data, p_data_size);
+
+		return std::make_pair(l_compiled_shader, l_shader);
+	}
+
+	ID3D11HullShader* _initialize_hull_shader(bc_device* p_device, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	{
+		ID3D11HullShader* l_shader;
+
+		dx_call(p_device->get_platform_pack().m_device->CreateHullShader
+			(
+				p_data,
+				p_data_size,
+				nullptr,
+				&l_shader
+			));
+
+		return l_shader;
+	}
+
+	ID3D11DomainShader* _initialize_domain_shader(bc_device* p_device, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	{
+		ID3D11DomainShader* l_shader;
+
+		dx_call(p_device->get_platform_pack().m_device->CreateDomainShader
+			(
+				p_data,
+				p_data_size,
+				nullptr,
+				&l_shader
+			));
+
+		return l_shader;
+	}
+
+	ID3D11GeometryShader* _initialize_geometry_shader(bc_device* p_device, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	{
+		ID3D11GeometryShader* l_shader;
+
+		dx_call(p_device->get_platform_pack().m_device->CreateGeometryShader
+			(
+				p_data,
+				p_data_size,
+				nullptr,
+				&l_shader
+			));
+
+		return l_shader;
+	}
+
+	ID3D11PixelShader* _initialize_pixel_shader(bc_device* p_device, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	{
+		ID3D11PixelShader* l_shader;
+
+		dx_call(p_device->get_platform_pack().m_device->CreatePixelShader
+			(
+				p_data,
+				p_data_size,
+				nullptr,
+				&l_shader
+			));
+
+		return l_shader;
+	}
+
+	ID3D11ComputeShader* _initialize_compute_shader(bc_device* p_device, const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	{
+		ID3D11ComputeShader* l_shader;
+
+		dx_call(p_device->get_platform_pack().m_device->CreateComputeShader
+			(
+				p_data,
+				p_data_size,
+				nullptr,
+				&l_shader
+			));
+
+		return l_shader;
+	}
+
+	ID3D11View* _initialize_shader_view(bc_device* p_device, const bci_resource* p_resource, const bc_resource_view_config* p_view_config)
+	{
+		BC_ASSERT
+		(
+			p_view_config->get_platform_pack().m_type == bc_resource_view_type::shader ||
+			p_view_config->get_platform_pack().m_type == bc_resource_view_type::unordered
+		);
+
+		ID3D11Resource* l_resource = p_resource->get_resource_platform_pack().m_resource;
+		ID3D11ShaderResourceView* l_shader_view;
+		ID3D11UnorderedAccessView* l_unordered_view;
+
+		if (p_view_config->get_platform_pack().m_type == bc_resource_view_type::shader)
+		{
+			const D3D11_SHADER_RESOURCE_VIEW_DESC& l_resource_view_desc = p_view_config->get_platform_pack().m_shader_view_desc;
+
+			dx_call(p_device->get_platform_pack().m_device->CreateShaderResourceView
 				(
 					l_resource,
 					&l_resource_view_desc,
 					&l_shader_view
 				));
 
-				return l_shader_view;
-			}
-			else
-			{
-				const D3D11_UNORDERED_ACCESS_VIEW_DESC& l_unordered_view_desc = p_view_config->get_platform_pack().m_unordered_shader_view_desc;
+			return l_shader_view;
+		}
+		else
+		{
+			const D3D11_UNORDERED_ACCESS_VIEW_DESC& l_unordered_view_desc = p_view_config->get_platform_pack().m_unordered_shader_view_desc;
 
-				dx_call(p_device->get_platform_pack().m_device->CreateUnorderedAccessView
+			dx_call(p_device->get_platform_pack().m_device->CreateUnorderedAccessView
 				(
 					l_resource,
 					&l_unordered_view_desc,
 					&l_unordered_view
 				));
 
-				return l_unordered_view;
-			}
+			return l_unordered_view;
 		}
+	}
 
-		ID3D11DepthStencilView* _initialize_depth_stencil_view(bc_device* p_device, const bci_resource* p_resource, const bc_depth_stencil_view_config* p_view_config)
-		{
-			ID3D11Resource* l_resource = p_resource->get_resource_platform_pack().m_resource;
-			ID3D11DepthStencilView* l_depth_stencil_view;
+	ID3D11DepthStencilView* _initialize_depth_stencil_view(bc_device* p_device, const bci_resource* p_resource, const bc_depth_stencil_view_config* p_view_config)
+	{
+		ID3D11Resource* l_resource = p_resource->get_resource_platform_pack().m_resource;
+		ID3D11DepthStencilView* l_depth_stencil_view;
 
-			const D3D11_DEPTH_STENCIL_VIEW_DESC& l_depth_stencil_view_desc = p_view_config->get_platform_pack().m_depth_stencil_view_desc;
+		const D3D11_DEPTH_STENCIL_VIEW_DESC& l_depth_stencil_view_desc = p_view_config->get_platform_pack().m_depth_stencil_view_desc;
 
-			dx_call(p_device->get_platform_pack().m_device->CreateDepthStencilView
+		dx_call(p_device->get_platform_pack().m_device->CreateDepthStencilView
 			(
 				l_resource,
 				&l_depth_stencil_view_desc,
 				&l_depth_stencil_view
 			));
 
-			return l_depth_stencil_view;
-		}
+		return l_depth_stencil_view;
+	}
 
-		ID3D11RenderTargetView* _initialize_render_target_view(bc_device* p_device, const bci_resource* p_resource, const bc_render_target_view_config* p_view_config)
-		{
-			ID3D11Resource* l_resource = p_resource->get_resource_platform_pack().m_resource;
-			ID3D11RenderTargetView* l_render_target_view;
+	ID3D11RenderTargetView* _initialize_render_target_view(bc_device* p_device, const bci_resource* p_resource, const bc_render_target_view_config* p_view_config)
+	{
+		ID3D11Resource* l_resource = p_resource->get_resource_platform_pack().m_resource;
+		ID3D11RenderTargetView* l_render_target_view;
 
-			const D3D11_RENDER_TARGET_VIEW_DESC& l_render_target_view_desc = p_view_config->get_platform_pack().m_render_target_view_desc;
+		const D3D11_RENDER_TARGET_VIEW_DESC& l_render_target_view_desc = p_view_config->get_platform_pack().m_render_target_view_desc;
 
-			dx_call(p_device->get_platform_pack().m_device->CreateRenderTargetView
+		dx_call(p_device->get_platform_pack().m_device->CreateRenderTargetView
 			(
 				l_resource,
 				&l_render_target_view_desc,
 				&l_render_target_view
 			));
 
-			return l_render_target_view;
-		}
+		return l_render_target_view;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_platform_device<g_api_dx11>::bc_platform_device()
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_platform_device<g_api_dx11>::bc_platform_device()
+	{
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_platform_device<g_api_dx11>::bc_platform_device(bc_platform_device&& p_other) noexcept
+	{
+		operator=(std::move(p_other));
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_platform_device<g_api_dx11>::~bc_platform_device()
+	{
+		if (is_initialized())
 		{
+			destroy();
 		}
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_platform_device<g_api_dx11>::bc_platform_device(bc_platform_device&& p_other) noexcept
-		{
-			operator=(std::move(p_other));
-		}
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_platform_device<g_api_dx11>& bc_platform_device<g_api_dx11>::operator=(bc_platform_device&& p_other) noexcept
+	{
+		m_pack.m_device = std::move(p_other.m_pack.m_device);
+		m_pack.m_immediate_context = std::move(p_other.m_pack.m_immediate_context);
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_platform_device<g_api_dx11>::~bc_platform_device()
-		{
-			if (is_initialized())
-			{
-				destroy();
-			}
-		}
+		return *this;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_platform_device<g_api_dx11>& bc_platform_device<g_api_dx11>::operator=(bc_platform_device&& p_other) noexcept
-		{
-			m_pack.m_device = std::move(p_other.m_pack.m_device);
-			m_pack.m_immediate_context = std::move(p_other.m_pack.m_immediate_context);
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_device_info bc_platform_device<g_api_dx11>::get_device_info(const bc_device_swap_buffer& p_swap_buffer) const
+	{
+		ComPtr<IDXGIDevice> l_dxgi_device;
+		ComPtr<IDXGIAdapter> l_adapter;
+		DXGI_ADAPTER_DESC l_adapter_desc;
 
-			return *this;
-		}
+		dx_call(p_swap_buffer.get_platform_pack().m_swap_chain->GetDevice(__uuidof(IDXGIDevice), reinterpret_cast<void**>(l_dxgi_device.GetAddressOf())));
+		l_dxgi_device->GetAdapter(l_adapter.GetAddressOf());
+		l_adapter->GetDesc(&l_adapter_desc);
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_device_info bc_platform_device<g_api_dx11>::get_device_info(const bc_device_swap_buffer& p_swap_buffer) const
-		{
-			ComPtr<IDXGIDevice> l_dxgi_device;
-			ComPtr<IDXGIAdapter> l_adapter;
-			DXGI_ADAPTER_DESC l_adapter_desc;
+		bc_device_info l_info;
+		l_info.m_name = l_adapter_desc.Description;
 
-			dx_call(p_swap_buffer.get_platform_pack().m_swap_chain->GetDevice(__uuidof(IDXGIDevice), reinterpret_cast<void**>(l_dxgi_device.GetAddressOf())));
-			l_dxgi_device->GetAdapter(l_adapter.GetAddressOf());
-			l_adapter->GetDesc(&l_adapter_desc);
+		return l_info;
+	}
 
-			bc_device_info l_info;
-			l_info.m_name = l_adapter_desc.Description;
+	template<>
+	BC_GRAPHICIMP_DLL
+	bcUINT bc_platform_device<g_api_dx11>::check_multi_sampling(bc_format p_texture_format, bcUINT p_sample_count) const
+	{
+		bcUINT l_sample_quality;
 
-			return l_info;
-		}
+		m_pack.m_device->CheckMultisampleQualityLevels(bc_graphic_cast(p_texture_format), p_sample_count, &l_sample_quality);
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bcUINT bc_platform_device<g_api_dx11>::check_multi_sampling(bc_format p_texture_format, bcUINT p_sample_count) const
-		{
-			bcUINT l_sample_quality;
+		return l_sample_quality;
+	}
 
-			m_pack.m_device->CheckMultisampleQualityLevels(bc_graphic_cast(p_texture_format), p_sample_count, &l_sample_quality);
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_buffer_ref bc_platform_device<g_api_dx11>::create_buffer(const bc_buffer_config& p_config, const bc_subresource_data* p_data)
+	{
+		auto* l_dx_buffer = _initialize_buffer(this, &p_config, p_data);
 
-			return l_sample_quality;
-		}
+		bc_buffer::platform_pack l_pack;
+		l_pack.m_resource = l_dx_buffer;
+		l_pack.m_buffer = l_dx_buffer;
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_buffer_ref bc_platform_device<g_api_dx11>::create_buffer(const bc_buffer_config& p_config, const bc_subresource_data* p_data)
-		{
-			auto* l_dx_buffer = _initialize_buffer(this, &p_config, p_data);
+		const bc_buffer l_buffer(l_pack);
+		bc_buffer_ref l_buffer_ptr(l_buffer);
 
-			bc_buffer::platform_pack l_pack;
-			l_pack.m_resource = l_dx_buffer;
-			l_pack.m_buffer = l_dx_buffer;
+		l_dx_buffer->Release();
 
-			const bc_buffer l_buffer(l_pack);
-			bc_buffer_ref l_buffer_ptr(l_buffer);
+		return l_buffer_ptr;
+	}
 
-			l_dx_buffer->Release();
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_texture2d_ref bc_platform_device<g_api_dx11>::create_texture2d(const bc_texture_config& p_config, const bc_subresource_data* p_data)
+	{
+		auto* l_dx_texture = _initialize_texture(static_cast<bc_device*>(this), &p_config, p_data);
 
-			return l_buffer_ptr;
-		}
+		bc_texture2d::platform_pack l_pack;
+		l_pack.m_resource = l_dx_texture;
+		l_pack.m_texture = l_dx_texture;
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_texture2d_ref bc_platform_device<g_api_dx11>::create_texture2d(const bc_texture_config& p_config, const bc_subresource_data* p_data)
-		{
-			auto* l_dx_texture = _initialize_texture(static_cast<bc_device*>(this), &p_config, p_data);
+		const bc_texture2d l_texture2(l_pack);
+		bc_texture2d_ref l_texture_ptr(l_texture2);
 
-			bc_texture2d::platform_pack l_pack;
-			l_pack.m_resource = l_dx_texture;
-			l_pack.m_texture = l_dx_texture;
+		l_dx_texture->Release();
 
-			const bc_texture2d l_texture2(l_pack);
-			bc_texture2d_ref l_texture_ptr(l_texture2);
+		return l_texture_ptr;
+	}
 
-			l_dx_texture->Release();
-
-			return l_texture_ptr;
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_texture2d_ref bc_platform_device<g_api_dx11>::create_texture2d(const bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
-		{
-			auto* l_dx_texture = _initialize_texture(static_cast<bc_device*>(this), &p_config, p_data, p_data_size, p_format);
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_texture2d_ref bc_platform_device<g_api_dx11>::create_texture2d(const bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
+	{
+		auto* l_dx_texture = _initialize_texture(static_cast<bc_device*>(this), &p_config, p_data, p_data_size, p_format);
 			
-			bc_texture2d::platform_pack l_pack;
-			l_pack.m_resource = l_dx_texture;
-			l_pack.m_texture = l_dx_texture;
+		bc_texture2d::platform_pack l_pack;
+		l_pack.m_resource = l_dx_texture;
+		l_pack.m_texture = l_dx_texture;
 
-			const bc_texture2d l_texture(l_pack);
-			bc_texture2d_ref l_texture_ptr(l_texture);
+		const bc_texture2d l_texture(l_pack);
+		bc_texture2d_ref l_texture_ptr(l_texture);
 
-			l_dx_texture->Release();
+		l_dx_texture->Release();
 
-			return l_texture_ptr;
-		}
+		return l_texture_ptr;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		void bc_platform_device<g_api_dx11>::save_texture2d(bc_texture2d p_texture, bc_image_format p_format, const bcECHAR* p_path)
-		{
-			_save_texture(static_cast<bc_device*>(this), &p_texture, p_format, p_path);
-		}
+	template<>
+	BC_GRAPHICIMP_DLL
+	void bc_platform_device<g_api_dx11>::save_texture2d(bc_texture2d p_texture, bc_image_format p_format, const bcECHAR* p_path)
+	{
+		_save_texture(static_cast<bc_device*>(this), &p_texture, p_format, p_path);
+	}
 		 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_sampler_state_ref bc_platform_device<g_api_dx11>::create_sampler_state(const bc_sampler_state_config& p_config)
-		{
-			ID3D11SamplerState* l_dx_sampler;
-			D3D11_SAMPLER_DESC l_dx_sampler_desc;
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_sampler_state_ref bc_platform_device<g_api_dx11>::create_sampler_state(const bc_sampler_state_config& p_config)
+	{
+		ID3D11SamplerState* l_dx_sampler;
+		D3D11_SAMPLER_DESC l_dx_sampler_desc;
 
-			l_dx_sampler_desc.Filter = bc_graphic_cast(p_config.m_filter);
-			l_dx_sampler_desc.AddressU = bc_graphic_cast(p_config.m_address_u);
-			l_dx_sampler_desc.AddressV = bc_graphic_cast(p_config.m_address_v);
-			l_dx_sampler_desc.AddressW = bc_graphic_cast(p_config.m_address_w);
-			l_dx_sampler_desc.MipLODBias = p_config.m_mip_lod_bias;
-			l_dx_sampler_desc.MaxAnisotropy = p_config.m_max_anisotropy;
-			l_dx_sampler_desc.ComparisonFunc = bc_graphic_cast(p_config.m_comparison_func);
-			l_dx_sampler_desc.BorderColor[0] = p_config.m_border_color[0];
-			l_dx_sampler_desc.BorderColor[1] = p_config.m_border_color[1];
-			l_dx_sampler_desc.BorderColor[2] = p_config.m_border_color[2];
-			l_dx_sampler_desc.BorderColor[3] = p_config.m_border_color[3];
-			l_dx_sampler_desc.MaxLOD = p_config.m_max_lod;
-			l_dx_sampler_desc.MinLOD = p_config.m_min_lod;
+		l_dx_sampler_desc.Filter = bc_graphic_cast(p_config.m_filter);
+		l_dx_sampler_desc.AddressU = bc_graphic_cast(p_config.m_address_u);
+		l_dx_sampler_desc.AddressV = bc_graphic_cast(p_config.m_address_v);
+		l_dx_sampler_desc.AddressW = bc_graphic_cast(p_config.m_address_w);
+		l_dx_sampler_desc.MipLODBias = p_config.m_mip_lod_bias;
+		l_dx_sampler_desc.MaxAnisotropy = p_config.m_max_anisotropy;
+		l_dx_sampler_desc.ComparisonFunc = bc_graphic_cast(p_config.m_comparison_func);
+		l_dx_sampler_desc.BorderColor[0] = p_config.m_border_color[0];
+		l_dx_sampler_desc.BorderColor[1] = p_config.m_border_color[1];
+		l_dx_sampler_desc.BorderColor[2] = p_config.m_border_color[2];
+		l_dx_sampler_desc.BorderColor[3] = p_config.m_border_color[3];
+		l_dx_sampler_desc.MaxLOD = p_config.m_max_lod;
+		l_dx_sampler_desc.MinLOD = p_config.m_min_lod;
 
-			dx_call(m_pack.m_device->CreateSamplerState(&l_dx_sampler_desc, &l_dx_sampler));
+		dx_call(m_pack.m_device->CreateSamplerState(&l_dx_sampler_desc, &l_dx_sampler));
 			
-			bc_sampler_state::platform_pack l_pack;
-			l_pack.m_sampler_state = l_dx_sampler;
+		bc_sampler_state::platform_pack l_pack;
+		l_pack.m_sampler_state = l_dx_sampler;
 
-			const bc_sampler_state l_sampler(l_pack);
-			bc_sampler_state_ref l_sampler_ptr(l_sampler);
+		const bc_sampler_state l_sampler(l_pack);
+		bc_sampler_state_ref l_sampler_ptr(l_sampler);
 
-			l_dx_sampler->Release();
+		l_dx_sampler->Release();
 
-			return l_sampler_ptr;
-		}
+		return l_sampler_ptr;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_vertex_shader(const bcBYTE* p_data,
-			bcSIZE p_data_size, 
-			const bcCHAR* p_function_name,
-			const bcCHAR* p_source_file,
-			const bc_shader_macro* p_macros,
-			bcUINT32 p_macro_count)
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_vertex_shader(const bcBYTE* p_data,
+		bcSIZE p_data_size, 
+		const bcCHAR* p_function_name,
+		const bcCHAR* p_source_file,
+		const bc_shader_macro* p_macros,
+		bcUINT32 p_macro_count)
+	{
+		const D3D_SHADER_MACRO* l_macros = nullptr;
+
+		if (p_macro_count > 0)
 		{
-			const D3D_SHADER_MACRO* l_macros = nullptr;
-
-			if (p_macro_count > 0)
-			{
-				core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
-				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
-			}
+			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
+			l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
+		}
 			
-			auto* l_dx_blob = _compile_shader
-			(
-				p_data,
-				p_data_size,
-				p_function_name,
-				"vs_5_0",
-				l_macros,
-				p_source_file
-			);
+		auto* l_dx_blob = _compile_shader
+		(
+			p_data,
+			p_data_size,
+			p_function_name,
+			"vs_5_0",
+			l_macros,
+			p_source_file
+		);
 
-			bc_compiled_shader::platform_pack l_pack;
-			l_pack.m_blob = l_dx_blob;
+		bc_compiled_shader::platform_pack l_pack;
+		l_pack.m_blob = l_dx_blob;
 
-			const bc_compiled_shader l_shader(l_pack);
-			bc_compiled_shader_ptr l_shader_ptr(l_shader);
+		const bc_compiled_shader l_shader(l_pack);
+		bc_compiled_shader_ptr l_shader_ptr(l_shader);
 
-			l_dx_blob->Release();
+		l_dx_blob->Release();
 
-			return l_shader_ptr;
-		}
+		return l_shader_ptr;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_vertex_shader_ref bc_platform_device<g_api_dx11>::create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_vertex_shader_ref bc_platform_device<g_api_dx11>::create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	{
+		const auto l_dx_shader = _initialize_vertex_shader(this, p_data, p_data_size, p_function);
+
+		bc_vertex_shader::platform_pack l_pack;
+		l_pack.m_compiled_shader = l_dx_shader.first;
+		l_pack.m_shader = l_dx_shader.second;
+
+		const bc_vertex_shader l_shader(l_pack);
+		bc_vertex_shader_ref l_shader_ptr(l_shader);
+
+		l_dx_shader.first->Release();
+		l_dx_shader.second->Release();
+
+		return l_shader_ptr;
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_hull_shader(const bcBYTE* p_data, 
+	                                                                           bcSIZE p_data_size, 
+	                                                                           const bcCHAR* p_function_name, 
+	                                                                           const bcCHAR* p_source_file, 
+	                                                                           const bc_shader_macro* p_macros, 
+	                                                                           bcUINT32 p_macro_count)
+	{
+		const D3D_SHADER_MACRO* l_macros = nullptr;
+
+		if (p_macro_count> 0)
 		{
-			const auto l_dx_shader = _initialize_vertex_shader(this, p_data, p_data_size, p_function);
-
-			bc_vertex_shader::platform_pack l_pack;
-			l_pack.m_compiled_shader = l_dx_shader.first;
-			l_pack.m_shader = l_dx_shader.second;
-
-			const bc_vertex_shader l_shader(l_pack);
-			bc_vertex_shader_ref l_shader_ptr(l_shader);
-
-			l_dx_shader.first->Release();
-			l_dx_shader.second->Release();
-
-			return l_shader_ptr;
+			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
+			l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_hull_shader(const bcBYTE* p_data, 
-			bcSIZE p_data_size, 
-			const bcCHAR* p_function_name, 
-			const bcCHAR* p_source_file, 
-			const bc_shader_macro* p_macros, 
-			bcUINT32 p_macro_count)
-		{
-			const D3D_SHADER_MACRO* l_macros = nullptr;
-
-			if (p_macro_count> 0)
-			{
-				core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
-				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
-			}
 			
-			auto* l_dx_shader = _compile_shader
-			(
-				p_data,
-				p_data_size,
-				p_function_name,
-				"hs_5_0",
-				l_macros,
-				p_source_file
-			);
+		auto* l_dx_shader = _compile_shader
+		(
+			p_data,
+			p_data_size,
+			p_function_name,
+			"hs_5_0",
+			l_macros,
+			p_source_file
+		);
 
-			bc_compiled_shader::platform_pack l_pack;
-			l_pack.m_blob = l_dx_shader;
+		bc_compiled_shader::platform_pack l_pack;
+		l_pack.m_blob = l_dx_shader;
 
-			const bc_compiled_shader l_shader(l_pack);
-			bc_compiled_shader_ptr l_shader_ptr(l_shader);
+		const bc_compiled_shader l_shader(l_pack);
+		bc_compiled_shader_ptr l_shader_ptr(l_shader);
 
-			l_dx_shader->Release();
+		l_dx_shader->Release();
 
-			return l_shader_ptr;
-		}
+		return l_shader_ptr;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_hull_shader_ref bc_platform_device<g_api_dx11>::create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_hull_shader_ref bc_platform_device<g_api_dx11>::create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	{
+		auto* l_dx_shader = _initialize_hull_shader(static_cast<bc_device*>(this), p_data, p_data_size, p_function);
+
+		bc_hull_shader::platform_pack l_pack;
+		l_pack.m_shader = l_dx_shader;
+
+		const bc_hull_shader l_shader(l_pack);
+		bc_hull_shader_ref l_shader_ptr(l_shader);
+
+		l_dx_shader->Release();
+
+		return l_shader_ptr;
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_domain_shader(const bcBYTE* p_data, 
+		bcSIZE p_data_size, 
+		const bcCHAR* p_function_name, 
+		const bcCHAR* p_source_file, 
+		const bc_shader_macro* p_macros, 
+		bcUINT32 p_macro_count)
+	{
+		const D3D_SHADER_MACRO* l_macros = nullptr;
+
+		if (p_macro_count> 0)
 		{
-			auto* l_dx_shader = _initialize_hull_shader(static_cast<bc_device*>(this), p_data, p_data_size, p_function);
-
-			bc_hull_shader::platform_pack l_pack;
-			l_pack.m_shader = l_dx_shader;
-
-			const bc_hull_shader l_shader(l_pack);
-			bc_hull_shader_ref l_shader_ptr(l_shader);
-
-			l_dx_shader->Release();
-
-			return l_shader_ptr;
+			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
+			l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_domain_shader(const bcBYTE* p_data, 
-			bcSIZE p_data_size, 
-			const bcCHAR* p_function_name, 
-			const bcCHAR* p_source_file, 
-			const bc_shader_macro* p_macros, 
-			bcUINT32 p_macro_count)
-		{
-			const D3D_SHADER_MACRO* l_macros = nullptr;
-
-			if (p_macro_count> 0)
-			{
-				core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
-				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
-			}
 			
-			auto* l_dx_shader = _compile_shader
-			(
-				p_data,
-				p_data_size,
-				p_function_name,
-				"ds_5_0",
-				l_macros,
-				p_source_file
-			);
+		auto* l_dx_shader = _compile_shader
+		(
+			p_data,
+			p_data_size,
+			p_function_name,
+			"ds_5_0",
+			l_macros,
+			p_source_file
+		);
 
-			bc_compiled_shader::platform_pack l_pack;
-			l_pack.m_blob = l_dx_shader;
+		bc_compiled_shader::platform_pack l_pack;
+		l_pack.m_blob = l_dx_shader;
 
-			const bc_compiled_shader l_shader(l_pack);
-			bc_compiled_shader_ptr l_shader_ptr(l_shader);
+		const bc_compiled_shader l_shader(l_pack);
+		bc_compiled_shader_ptr l_shader_ptr(l_shader);
 
-			l_dx_shader->Release();
+		l_dx_shader->Release();
 
-			return l_shader_ptr;
-		}
+		return l_shader_ptr;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_domain_shader_ref bc_platform_device<g_api_dx11>::create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_domain_shader_ref bc_platform_device<g_api_dx11>::create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	{
+		auto* l_dx_shader = _initialize_domain_shader(this, p_data, p_data_size, p_function);
+
+		bc_domain_shader::platform_pack l_pack;
+		l_pack.m_shader = l_dx_shader;
+
+		const bc_domain_shader l_shader(l_pack);
+		bc_domain_shader_ref l_shader_ptr(l_shader);
+
+		l_dx_shader->Release();
+
+		return l_shader_ptr;
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_geometry_shader(const bcBYTE* p_data, 
+		bcSIZE p_data_size, 
+		const bcCHAR* p_function_name, 
+		const bcCHAR* p_source_file, 
+		const bc_shader_macro* p_macros, 
+		bcUINT32 p_macro_count)
+	{
+		const D3D_SHADER_MACRO* l_macros = nullptr;
+
+		if (p_macro_count> 0)
 		{
-			auto* l_dx_shader = _initialize_domain_shader(this, p_data, p_data_size, p_function);
-
-			bc_domain_shader::platform_pack l_pack;
-			l_pack.m_shader = l_dx_shader;
-
-			const bc_domain_shader l_shader(l_pack);
-			bc_domain_shader_ref l_shader_ptr(l_shader);
-
-			l_dx_shader->Release();
-
-			return l_shader_ptr;
+			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
+			l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_geometry_shader(const bcBYTE* p_data, 
-			bcSIZE p_data_size, 
-			const bcCHAR* p_function_name, 
-			const bcCHAR* p_source_file, 
-			const bc_shader_macro* p_macros, 
-			bcUINT32 p_macro_count)
-		{
-			const D3D_SHADER_MACRO* l_macros = nullptr;
-
-			if (p_macro_count> 0)
-			{
-				core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
-				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
-			}
 			
-			auto* l_dx_shader = _compile_shader
-			(
-				p_data,
-				p_data_size,
-				p_function_name,
-				"gs_5_0",
-				l_macros,
-				p_source_file
-			);
+		auto* l_dx_shader = _compile_shader
+		(
+			p_data,
+			p_data_size,
+			p_function_name,
+			"gs_5_0",
+			l_macros,
+			p_source_file
+		);
 
-			bc_compiled_shader::platform_pack l_pack;
-			l_pack.m_blob = l_dx_shader;
+		bc_compiled_shader::platform_pack l_pack;
+		l_pack.m_blob = l_dx_shader;
 
-			const bc_compiled_shader l_shader(l_pack);
-			bc_compiled_shader_ptr l_shader_ptr(l_shader);
+		const bc_compiled_shader l_shader(l_pack);
+		bc_compiled_shader_ptr l_shader_ptr(l_shader);
 
-			l_dx_shader->Release();
+		l_dx_shader->Release();
 
-			return l_shader_ptr;
-		}
+		return l_shader_ptr;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_geometry_shader_ref bc_platform_device<g_api_dx11>::create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_geometry_shader_ref bc_platform_device<g_api_dx11>::create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	{
+		auto* l_dx_shader = _initialize_geometry_shader(this, p_data, p_data_size, p_function);
+
+		bc_geometry_shader::platform_pack l_pack;
+		l_pack.m_shader = l_dx_shader;
+
+		const bc_geometry_shader l_shader(l_pack);
+		bc_geometry_shader_ref l_shader_ptr(l_shader);
+
+		l_dx_shader->Release();
+
+		return l_shader_ptr;
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_pixel_shader(const bcBYTE* p_data, 
+		bcSIZE p_data_size, 
+		const bcCHAR* p_function_name, 
+		const bcCHAR* p_source_file, 
+		const bc_shader_macro* p_macros, 
+		bcUINT32 p_macro_count)
+	{
+		const D3D_SHADER_MACRO* l_macros = nullptr;
+
+		if (p_macro_count> 0)
 		{
-			auto* l_dx_shader = _initialize_geometry_shader(this, p_data, p_data_size, p_function);
-
-			bc_geometry_shader::platform_pack l_pack;
-			l_pack.m_shader = l_dx_shader;
-
-			const bc_geometry_shader l_shader(l_pack);
-			bc_geometry_shader_ref l_shader_ptr(l_shader);
-
-			l_dx_shader->Release();
-
-			return l_shader_ptr;
+			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
+			l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_pixel_shader(const bcBYTE* p_data, 
-			bcSIZE p_data_size, 
-			const bcCHAR* p_function_name, 
-			const bcCHAR* p_source_file, 
-			const bc_shader_macro* p_macros, 
-			bcUINT32 p_macro_count)
-		{
-			const D3D_SHADER_MACRO* l_macros = nullptr;
-
-			if (p_macro_count> 0)
-			{
-				core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
-				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
-			}
 			
-			auto* l_dx_shader = _compile_shader
-			(
-				p_data,
-				p_data_size,
-				p_function_name,
-				"ps_5_0",
-				l_macros,
-				p_source_file
-			);
+		auto* l_dx_shader = _compile_shader
+		(
+			p_data,
+			p_data_size,
+			p_function_name,
+			"ps_5_0",
+			l_macros,
+			p_source_file
+		);
 
-			bc_compiled_shader::platform_pack l_pack;
-			l_pack.m_blob = l_dx_shader;
+		bc_compiled_shader::platform_pack l_pack;
+		l_pack.m_blob = l_dx_shader;
 
-			const bc_compiled_shader l_shader(l_pack);
-			bc_compiled_shader_ptr l_shader_ptr(l_shader);
+		const bc_compiled_shader l_shader(l_pack);
+		bc_compiled_shader_ptr l_shader_ptr(l_shader);
 
-			l_dx_shader->Release();
+		l_dx_shader->Release();
 
-			return l_shader_ptr;
-		}
+		return l_shader_ptr;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_pixel_shader_ref bc_platform_device<g_api_dx11>::create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_pixel_shader_ref bc_platform_device<g_api_dx11>::create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	{
+		auto* l_dx_shader = _initialize_pixel_shader(this, p_data, p_data_size, p_function);
+
+		bc_pixel_shader::platform_pack l_pack;
+		l_pack.m_shader = l_dx_shader;
+
+		const bc_pixel_shader l_shader(l_pack);
+		bc_pixel_shader_ref l_shader_ptr(l_shader);
+
+		l_dx_shader->Release();
+
+		return l_shader_ptr;
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_compute_shader(const bcBYTE* p_data, 
+		bcSIZE p_data_size, 
+		const bcCHAR* p_function_name, 
+		const bcCHAR* p_source_file, 
+		const bc_shader_macro* p_macros, 
+		bcUINT32 p_macro_count)
+	{
+		const D3D_SHADER_MACRO* l_macros = nullptr;
+
+		if (p_macro_count> 0)
 		{
-			auto* l_dx_shader = _initialize_pixel_shader(this, p_data, p_data_size, p_function);
-
-			bc_pixel_shader::platform_pack l_pack;
-			l_pack.m_shader = l_dx_shader;
-
-			const bc_pixel_shader l_shader(l_pack);
-			bc_pixel_shader_ref l_shader_ptr(l_shader);
-
-			l_dx_shader->Release();
-
-			return l_shader_ptr;
+			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
+			l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_compute_shader(const bcBYTE* p_data, 
-			bcSIZE p_data_size, 
-			const bcCHAR* p_function_name, 
-			const bcCHAR* p_source_file, 
-			const bc_shader_macro* p_macros, 
-			bcUINT32 p_macro_count)
-		{
-			const D3D_SHADER_MACRO* l_macros = nullptr;
-
-			if (p_macro_count> 0)
-			{
-				core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
-				l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
-			}
 			
-			auto* l_dx_shader = _compile_shader
-			(
-				p_data,
-				p_data_size,
-				p_function_name,
-				"cs_5_0",
-				l_macros,
-				p_source_file
-			);
+		auto* l_dx_shader = _compile_shader
+		(
+			p_data,
+			p_data_size,
+			p_function_name,
+			"cs_5_0",
+			l_macros,
+			p_source_file
+		);
 
-			bc_compiled_shader::platform_pack l_pack;
-			l_pack.m_blob = l_dx_shader;
+		bc_compiled_shader::platform_pack l_pack;
+		l_pack.m_blob = l_dx_shader;
 
-			const bc_compiled_shader l_shader(l_pack);
-			bc_compiled_shader_ptr l_shader_ptr(l_shader);
+		const bc_compiled_shader l_shader(l_pack);
+		bc_compiled_shader_ptr l_shader_ptr(l_shader);
 
-			l_dx_shader->Release();
+		l_dx_shader->Release();
 
-			return l_shader_ptr;
+		return l_shader_ptr;
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_compute_shader_ref bc_platform_device<g_api_dx11>::create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+	{
+		auto* l_dx_shader = _initialize_compute_shader(this, p_data, p_data_size, p_function);
+
+		bc_compute_shader::platform_pack l_pack;
+		l_pack.m_shader = l_dx_shader;
+
+		const bc_compute_shader l_shader(l_pack);
+		bc_compute_shader_ref l_shader_ptr(l_shader);
+
+		l_dx_shader->Release();
+
+		return l_shader_ptr;
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_resource_view_ref bc_platform_device<g_api_dx11>::create_resource_view(const bci_resource& p_resource, const bc_resource_view_config& p_view_config)
+	{
+		auto* l_dx_view = _initialize_shader_view(static_cast<bc_device*>(this), &p_resource, &p_view_config);
+
+		bc_resource_view::platform_pack l_pack;
+		bc_resource_view l_view;
+
+		if(p_view_config.get_platform_pack().m_type == bc_resource_view_type::shader)
+		{
+			l_pack.m_shader_view = static_cast<ID3D11ShaderResourceView*>(l_dx_view);
+			l_pack.m_unordered_shader_view = nullptr;
+
+			l_view = bc_resource_view(l_pack, bc_resource_view_type::shader);
+		}
+		else
+		{
+			l_pack.m_shader_view = nullptr;
+			l_pack.m_unordered_shader_view = static_cast<ID3D11UnorderedAccessView*>(l_dx_view);
+
+			l_view = bc_resource_view(l_pack, bc_resource_view_type::unordered);
 		}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_compute_shader_ref bc_platform_device<g_api_dx11>::create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function)
+		bc_resource_view_ref l_view_ptr(l_view);
+
+		l_dx_view->Release();
+
+		return l_view_ptr;
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_depth_stencil_view_ref bc_platform_device<g_api_dx11>::create_depth_stencil_view(const bci_resource& p_resource, const bc_depth_stencil_view_config& p_view_config)
+	{
+		auto* l_dx_view = _initialize_depth_stencil_view(this, &p_resource, &p_view_config);
+
+		bc_depth_stencil_view::platform_pack l_pack;
+		l_pack.m_depth_stencil_view = l_dx_view;
+
+		const bc_depth_stencil_view l_depth_view(l_pack);
+		bc_depth_stencil_view_ref l_depth_view_ptr(l_depth_view);
+
+		l_dx_view->Release();
+
+		return l_depth_view_ptr;
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_render_target_view_ref bc_platform_device<g_api_dx11>::create_render_target_view(const bci_resource& p_resource, const bc_render_target_view_config& p_view_config)
+	{
+		auto* l_dx_view = _initialize_render_target_view(this, &p_resource, &p_view_config);
+
+		bc_render_target_view::platform_pack l_pack;
+		l_pack.m_render_target_view = l_dx_view;
+
+		const bc_render_target_view l_render_view(l_pack);
+		bc_render_target_view_ref l_render_view_ptr(l_render_view);
+
+		l_dx_view->Release();
+
+		return l_render_view_ptr;
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_device_pipeline_state_ref bc_platform_device<g_api_dx11>::create_pipeline_state(const bc_device_pipeline_state_config& p_config)
+	{
+		ID3D11BlendState* l_dx_blend_state = nullptr;
+		ID3D11DepthStencilState* l_dx_depth_stencil = nullptr;
+		ID3D11RasterizerState* l_dx_rasterizer_state = nullptr;
+		ID3D11InputLayout* l_dx_input_layout = nullptr;
+		D3D11_BLEND_DESC l_dx_blend_desc;
+		D3D11_DEPTH_STENCIL_DESC l_dx_depth_stencil_desc;
+		D3D11_RASTERIZER_DESC l_dx_rasterizer_desc;
+		core::bc_vector_frame<D3D11_INPUT_ELEMENT_DESC> l_dx_input_elements;
+
+		l_dx_input_elements.reserve(p_config.m_input_layout_config.m_input_elements.size());
+
+		l_dx_blend_desc.AlphaToCoverageEnable = p_config.m_blend_state_config.m_alpha_to_coverage_enable;
+		l_dx_blend_desc.IndependentBlendEnable = p_config.m_blend_state_config.m_independent_blend_enable;
+		for (bcUINT i = 0; i <bc_render_api_info::number_of_om_render_target_slots(); ++i)
 		{
-			auto* l_dx_shader = _initialize_compute_shader(this, p_data, p_data_size, p_function);
-
-			bc_compute_shader::platform_pack l_pack;
-			l_pack.m_shader = l_dx_shader;
-
-			const bc_compute_shader l_shader(l_pack);
-			bc_compute_shader_ref l_shader_ptr(l_shader);
-
-			l_dx_shader->Release();
-
-			return l_shader_ptr;
+			l_dx_blend_desc.RenderTarget[i].BlendEnable = p_config.m_blend_state_config.m_render_target[i].m_blend_enable;
+			l_dx_blend_desc.RenderTarget[i].SrcBlend = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_src_blend);
+			l_dx_blend_desc.RenderTarget[i].DestBlend = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_dest_blend);
+			l_dx_blend_desc.RenderTarget[i].BlendOp = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_blend_op);
+			l_dx_blend_desc.RenderTarget[i].SrcBlendAlpha = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_src_blend_alpha);
+			l_dx_blend_desc.RenderTarget[i].DestBlendAlpha = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_dest_blend_alpha);
+			l_dx_blend_desc.RenderTarget[i].BlendOpAlpha = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_blend_op_alpha);
+			l_dx_blend_desc.RenderTarget[i].RenderTargetWriteMask = p_config.m_blend_state_config.m_render_target[0].m_render_target_write_mask;
 		}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_resource_view_ref bc_platform_device<g_api_dx11>::create_resource_view(const bci_resource& p_resource, const bc_resource_view_config& p_view_config)
+		l_dx_depth_stencil_desc.DepthEnable = p_config.m_depth_stencil_state_config.m_depth_enable;
+		l_dx_depth_stencil_desc.DepthWriteMask = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_depth_write_mask);
+		l_dx_depth_stencil_desc.DepthFunc = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_depth_func);
+		l_dx_depth_stencil_desc.StencilEnable = p_config.m_depth_stencil_state_config.m_stencil_enable;
+		l_dx_depth_stencil_desc.StencilReadMask = p_config.m_depth_stencil_state_config.m_stencil_read_mask;
+		l_dx_depth_stencil_desc.StencilWriteMask = p_config.m_depth_stencil_state_config.m_stencil_write_mask;
+		l_dx_depth_stencil_desc.FrontFace.StencilFailOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_front_face.m_stencil_fail_op);
+		l_dx_depth_stencil_desc.FrontFace.StencilDepthFailOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_front_face.m_stencil_depth_fail_op);
+		l_dx_depth_stencil_desc.FrontFace.StencilPassOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_front_face.m_stencil_pass_op);
+		l_dx_depth_stencil_desc.FrontFace.StencilFunc = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_front_face.m_stencil_func);
+		l_dx_depth_stencil_desc.BackFace.StencilFailOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_back_face.m_stencil_fail_op);
+		l_dx_depth_stencil_desc.BackFace.StencilDepthFailOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_back_face.m_stencil_depth_fail_op);
+		l_dx_depth_stencil_desc.BackFace.StencilPassOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_back_face.m_stencil_pass_op);
+		l_dx_depth_stencil_desc.BackFace.StencilFunc = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_back_face.m_stencil_func);
+
+		l_dx_rasterizer_desc.FillMode = bc_graphic_cast(p_config.m_rasterizer_state_config.m_fill_mode);
+		l_dx_rasterizer_desc.CullMode = bc_graphic_cast(p_config.m_rasterizer_state_config.m_cull_mode);
+		l_dx_rasterizer_desc.FrontCounterClockwise = p_config.m_rasterizer_state_config.m_front_counter_clockwise;
+		l_dx_rasterizer_desc.DepthBias = p_config.m_rasterizer_state_config.m_depth_bias;
+		l_dx_rasterizer_desc.DepthBiasClamp = p_config.m_rasterizer_state_config.m_depth_bias_clamp;
+		l_dx_rasterizer_desc.SlopeScaledDepthBias = p_config.m_rasterizer_state_config.m_slope_scaled_depth_bias;
+		l_dx_rasterizer_desc.DepthClipEnable = p_config.m_rasterizer_state_config.m_depth_clip_enable;
+		l_dx_rasterizer_desc.ScissorEnable = p_config.m_rasterizer_state_config.m_scissor_enable;
+		l_dx_rasterizer_desc.MultisampleEnable = p_config.m_rasterizer_state_config.m_multisample_enable;
+		l_dx_rasterizer_desc.AntialiasedLineEnable = p_config.m_rasterizer_state_config.m_antialiased_line_enable;
+
+		for (const auto& l_input_element : p_config.m_input_layout_config.m_input_elements)
 		{
-			auto* l_dx_view = _initialize_shader_view(static_cast<bc_device*>(this), &p_resource, &p_view_config);
+			D3D11_INPUT_ELEMENT_DESC l_element_desc;
+			l_element_desc.SemanticName = l_input_element.m_semantic_name;
+			l_element_desc.SemanticIndex = l_input_element.m_semantic_index;
+			l_element_desc.Format = bc_graphic_cast(l_input_element.m_format);
+			l_element_desc.InputSlot = l_input_element.m_input_slot;
+			l_element_desc.AlignedByteOffset = l_input_element.m_aligned_byte_offset;
+			l_element_desc.InputSlotClass = bc_graphic_cast(l_input_element.m_input_slot_class);
+			l_element_desc.InstanceDataStepRate = l_input_element.m_instance_data_step_rate;
 
-			bc_resource_view::platform_pack l_pack;
-			bc_resource_view l_view;
-
-			if(p_view_config.get_platform_pack().m_type == bc_resource_view_type::shader)
-			{
-				l_pack.m_shader_view = static_cast<ID3D11ShaderResourceView*>(l_dx_view);
-				l_pack.m_unordered_shader_view = nullptr;
-
-				l_view = bc_resource_view(l_pack, bc_resource_view_type::shader);
-			}
-			else
-			{
-				l_pack.m_shader_view = nullptr;
-				l_pack.m_unordered_shader_view = static_cast<ID3D11UnorderedAccessView*>(l_dx_view);
-
-				l_view = bc_resource_view(l_pack, bc_resource_view_type::unordered);
-			}
-
-			bc_resource_view_ref l_view_ptr(l_view);
-
-			l_dx_view->Release();
-
-			return l_view_ptr;
+			l_dx_input_elements.push_back(l_element_desc);
 		}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_depth_stencil_view_ref bc_platform_device<g_api_dx11>::create_depth_stencil_view(const bci_resource& p_resource, const bc_depth_stencil_view_config& p_view_config)
+		dx_call(m_pack.m_device->CreateBlendState(&l_dx_blend_desc, &l_dx_blend_state));
+		dx_call(m_pack.m_device->CreateDepthStencilState(&l_dx_depth_stencil_desc, &l_dx_depth_stencil));
+		dx_call(m_pack.m_device->CreateRasterizerState(&l_dx_rasterizer_desc, &l_dx_rasterizer_state));
+		if (p_config.m_vertex_shader != nullptr && !l_dx_input_elements.empty())
 		{
-			auto* l_dx_view = _initialize_depth_stencil_view(this, &p_resource, &p_view_config);
-
-			bc_depth_stencil_view::platform_pack l_pack;
-			l_pack.m_depth_stencil_view = l_dx_view;
-
-			const bc_depth_stencil_view l_depth_view(l_pack);
-			bc_depth_stencil_view_ref l_depth_view_ptr(l_depth_view);
-
-			l_dx_view->Release();
-
-			return l_depth_view_ptr;
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_render_target_view_ref bc_platform_device<g_api_dx11>::create_render_target_view(const bci_resource& p_resource, const bc_render_target_view_config& p_view_config)
-		{
-			auto* l_dx_view = _initialize_render_target_view(this, &p_resource, &p_view_config);
-
-			bc_render_target_view::platform_pack l_pack;
-			l_pack.m_render_target_view = l_dx_view;
-
-			const bc_render_target_view l_render_view(l_pack);
-			bc_render_target_view_ref l_render_view_ptr(l_render_view);
-
-			l_dx_view->Release();
-
-			return l_render_view_ptr;
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_device_pipeline_state_ref bc_platform_device<g_api_dx11>::create_pipeline_state(const bc_device_pipeline_state_config& p_config)
-		{
-			ID3D11BlendState* l_dx_blend_state = nullptr;
-			ID3D11DepthStencilState* l_dx_depth_stencil = nullptr;
-			ID3D11RasterizerState* l_dx_rasterizer_state = nullptr;
-			ID3D11InputLayout* l_dx_input_layout = nullptr;
-			D3D11_BLEND_DESC l_dx_blend_desc;
-			D3D11_DEPTH_STENCIL_DESC l_dx_depth_stencil_desc;
-			D3D11_RASTERIZER_DESC l_dx_rasterizer_desc;
-			core::bc_vector_frame<D3D11_INPUT_ELEMENT_DESC> l_dx_input_elements;
-
-			l_dx_input_elements.reserve(p_config.m_input_layout_config.m_input_elements.size());
-
-			l_dx_blend_desc.AlphaToCoverageEnable = p_config.m_blend_state_config.m_alpha_to_coverage_enable;
-			l_dx_blend_desc.IndependentBlendEnable = p_config.m_blend_state_config.m_independent_blend_enable;
-			for (bcUINT i = 0; i <bc_render_api_info::number_of_om_render_target_slots(); ++i)
-			{
-				l_dx_blend_desc.RenderTarget[i].BlendEnable = p_config.m_blend_state_config.m_render_target[i].m_blend_enable;
-				l_dx_blend_desc.RenderTarget[i].SrcBlend = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_src_blend);
-				l_dx_blend_desc.RenderTarget[i].DestBlend = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_dest_blend);
-				l_dx_blend_desc.RenderTarget[i].BlendOp = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_blend_op);
-				l_dx_blend_desc.RenderTarget[i].SrcBlendAlpha = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_src_blend_alpha);
-				l_dx_blend_desc.RenderTarget[i].DestBlendAlpha = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_dest_blend_alpha);
-				l_dx_blend_desc.RenderTarget[i].BlendOpAlpha = bc_graphic_cast(p_config.m_blend_state_config.m_render_target[i].m_blend_op_alpha);
-				l_dx_blend_desc.RenderTarget[i].RenderTargetWriteMask = p_config.m_blend_state_config.m_render_target[0].m_render_target_write_mask;
-			}
-
-			l_dx_depth_stencil_desc.DepthEnable = p_config.m_depth_stencil_state_config.m_depth_enable;
-			l_dx_depth_stencil_desc.DepthWriteMask = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_depth_write_mask);
-			l_dx_depth_stencil_desc.DepthFunc = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_depth_func);
-			l_dx_depth_stencil_desc.StencilEnable = p_config.m_depth_stencil_state_config.m_stencil_enable;
-			l_dx_depth_stencil_desc.StencilReadMask = p_config.m_depth_stencil_state_config.m_stencil_read_mask;
-			l_dx_depth_stencil_desc.StencilWriteMask = p_config.m_depth_stencil_state_config.m_stencil_write_mask;
-			l_dx_depth_stencil_desc.FrontFace.StencilFailOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_front_face.m_stencil_fail_op);
-			l_dx_depth_stencil_desc.FrontFace.StencilDepthFailOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_front_face.m_stencil_depth_fail_op);
-			l_dx_depth_stencil_desc.FrontFace.StencilPassOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_front_face.m_stencil_pass_op);
-			l_dx_depth_stencil_desc.FrontFace.StencilFunc = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_front_face.m_stencil_func);
-			l_dx_depth_stencil_desc.BackFace.StencilFailOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_back_face.m_stencil_fail_op);
-			l_dx_depth_stencil_desc.BackFace.StencilDepthFailOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_back_face.m_stencil_depth_fail_op);
-			l_dx_depth_stencil_desc.BackFace.StencilPassOp = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_back_face.m_stencil_pass_op);
-			l_dx_depth_stencil_desc.BackFace.StencilFunc = bc_graphic_cast(p_config.m_depth_stencil_state_config.m_back_face.m_stencil_func);
-
-			l_dx_rasterizer_desc.FillMode = bc_graphic_cast(p_config.m_rasterizer_state_config.m_fill_mode);
-			l_dx_rasterizer_desc.CullMode = bc_graphic_cast(p_config.m_rasterizer_state_config.m_cull_mode);
-			l_dx_rasterizer_desc.FrontCounterClockwise = p_config.m_rasterizer_state_config.m_front_counter_clockwise;
-			l_dx_rasterizer_desc.DepthBias = p_config.m_rasterizer_state_config.m_depth_bias;
-			l_dx_rasterizer_desc.DepthBiasClamp = p_config.m_rasterizer_state_config.m_depth_bias_clamp;
-			l_dx_rasterizer_desc.SlopeScaledDepthBias = p_config.m_rasterizer_state_config.m_slope_scaled_depth_bias;
-			l_dx_rasterizer_desc.DepthClipEnable = p_config.m_rasterizer_state_config.m_depth_clip_enable;
-			l_dx_rasterizer_desc.ScissorEnable = p_config.m_rasterizer_state_config.m_scissor_enable;
-			l_dx_rasterizer_desc.MultisampleEnable = p_config.m_rasterizer_state_config.m_multisample_enable;
-			l_dx_rasterizer_desc.AntialiasedLineEnable = p_config.m_rasterizer_state_config.m_antialiased_line_enable;
-
-			for (const auto& l_input_element : p_config.m_input_layout_config.m_input_elements)
-			{
-				D3D11_INPUT_ELEMENT_DESC l_element_desc;
-				l_element_desc.SemanticName = l_input_element.m_semantic_name;
-				l_element_desc.SemanticIndex = l_input_element.m_semantic_index;
-				l_element_desc.Format = bc_graphic_cast(l_input_element.m_format);
-				l_element_desc.InputSlot = l_input_element.m_input_slot;
-				l_element_desc.AlignedByteOffset = l_input_element.m_aligned_byte_offset;
-				l_element_desc.InputSlotClass = bc_graphic_cast(l_input_element.m_input_slot_class);
-				l_element_desc.InstanceDataStepRate = l_input_element.m_instance_data_step_rate;
-
-				l_dx_input_elements.push_back(l_element_desc);
-			}
-
-			dx_call(m_pack.m_device->CreateBlendState(&l_dx_blend_desc, &l_dx_blend_state));
-			dx_call(m_pack.m_device->CreateDepthStencilState(&l_dx_depth_stencil_desc, &l_dx_depth_stencil));
-			dx_call(m_pack.m_device->CreateRasterizerState(&l_dx_rasterizer_desc, &l_dx_rasterizer_state));
-			if (p_config.m_vertex_shader != nullptr && !l_dx_input_elements.empty())
-			{
-				dx_call(m_pack.m_device->CreateInputLayout
+			dx_call(m_pack.m_device->CreateInputLayout
 				(
 					l_dx_input_elements.data(),
 					l_dx_input_elements.size(),
@@ -1075,255 +1073,255 @@ namespace black_cat
 					p_config.m_vertex_shader.get_platform_pack().m_compiled_shader->GetBufferSize(),
 					&l_dx_input_layout
 				));
-			}
-
-			//auto l_pipeline_state_poxy = allocate<bc_device_pipeline_state_proxy>();
-			auto* l_pipeline_state_poxy = BC_NEW(bc_device_pipeline_state_proxy, core::bc_alloc_type::unknown);
-
-			l_pipeline_state_poxy->m_config = std::move(p_config);
-			l_pipeline_state_poxy->m_blend_state = l_dx_blend_state;
-			l_pipeline_state_poxy->m_depth_stencil_state = l_dx_depth_stencil;
-			l_pipeline_state_poxy->m_rasterizer_state = l_dx_rasterizer_state;
-			l_pipeline_state_poxy->m_input_layout = l_dx_input_layout;
-
-			bc_device_pipeline_state::platform_pack l_pack;
-			l_pack.m_pipeline_state_proxy = l_pipeline_state_poxy;
-
-			const bc_device_pipeline_state l_pipeline_state(l_pack);
-			bc_device_pipeline_state_ref l_pipeline_state_ptr(l_pipeline_state);
-
-			l_pipeline_state_poxy->m_blend_state->Release();
-			l_pipeline_state_poxy->m_depth_stencil_state->Release();
-			l_pipeline_state_poxy->m_rasterizer_state->Release();
-			if(l_pipeline_state_poxy->m_input_layout)
-			{
-				l_pipeline_state_poxy->m_input_layout->Release();
-			}
-
-			return l_pipeline_state_ptr;
 		}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_device_compute_state_ref bc_platform_device<g_api_dx11>::create_compute_state(const bc_device_compute_state_config& p_config)
+		//auto l_pipeline_state_poxy = allocate<bc_device_pipeline_state_proxy>();
+		auto* l_pipeline_state_poxy = BC_NEW(bc_device_pipeline_state_proxy, core::bc_alloc_type::unknown);
+
+		l_pipeline_state_poxy->m_config = std::move(p_config);
+		l_pipeline_state_poxy->m_blend_state = l_dx_blend_state;
+		l_pipeline_state_poxy->m_depth_stencil_state = l_dx_depth_stencil;
+		l_pipeline_state_poxy->m_rasterizer_state = l_dx_rasterizer_state;
+		l_pipeline_state_poxy->m_input_layout = l_dx_input_layout;
+
+		bc_device_pipeline_state::platform_pack l_pack;
+		l_pack.m_pipeline_state_proxy = l_pipeline_state_poxy;
+
+		const bc_device_pipeline_state l_pipeline_state(l_pack);
+		bc_device_pipeline_state_ref l_pipeline_state_ptr(l_pipeline_state);
+
+		l_pipeline_state_poxy->m_blend_state->Release();
+		l_pipeline_state_poxy->m_depth_stencil_state->Release();
+		l_pipeline_state_poxy->m_rasterizer_state->Release();
+		if(l_pipeline_state_poxy->m_input_layout)
 		{
-			/*auto l_compute_state_proxy = allocate<bc_device_compute_state_proxy>();*/
-			auto* l_compute_state_proxy = BC_NEW(bc_device_compute_state_proxy, core::bc_alloc_type::unknown);
+			l_pipeline_state_poxy->m_input_layout->Release();
+		}
+
+		return l_pipeline_state_ptr;
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_device_compute_state_ref bc_platform_device<g_api_dx11>::create_compute_state(const bc_device_compute_state_config& p_config)
+	{
+		/*auto l_compute_state_proxy = allocate<bc_device_compute_state_proxy>();*/
+		auto* l_compute_state_proxy = BC_NEW(bc_device_compute_state_proxy, core::bc_alloc_type::unknown);
 			
-			l_compute_state_proxy->m_config = std::move(p_config);
+		l_compute_state_proxy->m_config = std::move(p_config);
 
-			bc_device_compute_state::platform_pack l_pack;
-			l_pack.m_compute_state_proxy = l_compute_state_proxy;
+		bc_device_compute_state::platform_pack l_pack;
+		l_pack.m_compute_state_proxy = l_compute_state_proxy;
 
-			const bc_device_compute_state l_compute_state(l_pack);
-			bc_device_compute_state_ref l_compute_state_ptr(l_compute_state);
+		const bc_device_compute_state l_compute_state(l_pack);
+		bc_device_compute_state_ref l_compute_state_ptr(l_compute_state);
 
-			return l_compute_state_ptr;
-		}
+		return l_compute_state_ptr;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_device_pipeline_ref bc_platform_device<g_api_dx11>::get_default_pipeline()
-		{
-			auto* l_pipeline_proxy = BC_NEW(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_device_pipeline_ref bc_platform_device<g_api_dx11>::get_default_pipeline()
+	{
+		auto* l_pipeline_proxy = BC_NEW(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
 
-			ID3D11Query* l_query;
+		ID3D11Query* l_query;
 
-			D3D11_QUERY_DESC l_query_desc;
-			l_query_desc.Query = D3D11_QUERY_PIPELINE_STATISTICS;
-			l_query_desc.MiscFlags = 0;
-			dx_call(m_pack.m_device->CreateQuery(&l_query_desc, &l_query));
+		D3D11_QUERY_DESC l_query_desc;
+		l_query_desc.Query = D3D11_QUERY_PIPELINE_STATISTICS;
+		l_query_desc.MiscFlags = 0;
+		dx_call(m_pack.m_device->CreateQuery(&l_query_desc, &l_query));
 
-			bc_device_pipeline::platform_pack l_pack;
-			l_pack.m_pipeline_proxy = l_pipeline_proxy;
-			l_pack.m_pipeline_proxy->m_device = this;
-			l_pack.m_pipeline_proxy->m_query = l_query;
-			l_pack.m_pipeline_proxy->m_context = m_pack.m_immediate_context.Get();
-			l_pack.m_pipeline_proxy->m_context_type = m_pack.m_immediate_context->GetType();
+		bc_device_pipeline::platform_pack l_pack;
+		l_pack.m_pipeline_proxy = l_pipeline_proxy;
+		l_pack.m_pipeline_proxy->m_device = this;
+		l_pack.m_pipeline_proxy->m_query = l_query;
+		l_pack.m_pipeline_proxy->m_context = m_pack.m_immediate_context.Get();
+		l_pack.m_pipeline_proxy->m_context_type = m_pack.m_immediate_context->GetType();
 
-			const bc_device_pipeline l_pipeline(l_pack);
-			bc_device_pipeline_ref l_pipeline_ptr(l_pipeline);
+		const bc_device_pipeline l_pipeline(l_pack);
+		bc_device_pipeline_ref l_pipeline_ptr(l_pipeline);
 
-			l_query->Release();
+		l_query->Release();
 
-			return l_pipeline_ptr;
-		}
+		return l_pipeline_ptr;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_device_pipeline_ref bc_platform_device<g_api_dx11>::create_pipeline()
-		{
-			auto* l_pipeline_proxy = BC_NEW(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_device_pipeline_ref bc_platform_device<g_api_dx11>::create_pipeline()
+	{
+		auto* l_pipeline_proxy = BC_NEW(bc_device_pipeline_proxy, core::bc_alloc_type::unknown);
 
-			ID3D11Query* l_query;
-			ID3D11DeviceContext* l_context;
+		ID3D11Query* l_query;
+		ID3D11DeviceContext* l_context;
 
-			D3D11_QUERY_DESC l_query_desc;
-			l_query_desc.Query = D3D11_QUERY_PIPELINE_STATISTICS;
-			l_query_desc.MiscFlags = 0;
-			dx_call(m_pack.m_device->CreateQuery(&l_query_desc, &l_query));
-			dx_call(m_pack.m_device->CreateDeferredContext(0, &l_context));
+		D3D11_QUERY_DESC l_query_desc;
+		l_query_desc.Query = D3D11_QUERY_PIPELINE_STATISTICS;
+		l_query_desc.MiscFlags = 0;
+		dx_call(m_pack.m_device->CreateQuery(&l_query_desc, &l_query));
+		dx_call(m_pack.m_device->CreateDeferredContext(0, &l_context));
 
-			bc_device_pipeline::platform_pack l_pack;
-			l_pack.m_pipeline_proxy = l_pipeline_proxy;
-			l_pack.m_pipeline_proxy->m_device = this;
-			l_pack.m_pipeline_proxy->m_query = l_query;
-			l_pack.m_pipeline_proxy->m_context = l_context;
-			l_pack.m_pipeline_proxy->m_context_type = l_context->GetType();
+		bc_device_pipeline::platform_pack l_pack;
+		l_pack.m_pipeline_proxy = l_pipeline_proxy;
+		l_pack.m_pipeline_proxy->m_device = this;
+		l_pack.m_pipeline_proxy->m_query = l_query;
+		l_pack.m_pipeline_proxy->m_context = l_context;
+		l_pack.m_pipeline_proxy->m_context_type = l_context->GetType();
 
-			const bc_device_pipeline l_pipeline(l_pack);
-			bc_device_pipeline_ref l_pipeline_ptr(l_pipeline);
+		const bc_device_pipeline l_pipeline(l_pack);
+		bc_device_pipeline_ref l_pipeline_ptr(l_pipeline);
 
-			l_query->Release();
-			l_context->Release();
+		l_query->Release();
+		l_context->Release();
 
-			return l_pipeline_ptr;
-		}
+		return l_pipeline_ptr;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_device_command_list_ref bc_platform_device<g_api_dx11>::create_command_list()
-		{
-			const auto l_command_list_proxy = BC_NEW(bc_device_command_list_proxy, core::bc_alloc_type::unknown);
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_device_command_list_ref bc_platform_device<g_api_dx11>::create_command_list()
+	{
+		const auto l_command_list_proxy = BC_NEW(bc_device_command_list_proxy, core::bc_alloc_type::unknown);
 
-			bc_device_command_list::platform_pack l_pack;
-			l_pack.m_command_list_proxy = l_command_list_proxy;
-			l_pack.m_command_list_proxy->m_command_list = nullptr;
+		bc_device_command_list::platform_pack l_pack;
+		l_pack.m_command_list_proxy = l_command_list_proxy;
+		l_pack.m_command_list_proxy->m_command_list = nullptr;
 
-			const bc_device_command_list l_command_list(l_pack);
-			bc_device_command_list_ref l_command_list_ptr(l_command_list);
+		const bc_device_command_list l_command_list(l_pack);
+		bc_device_command_list_ref l_command_list_ptr(l_command_list);
 
-			return l_command_list_ptr;
-		}
+		return l_command_list_ptr;
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_device_command_executor_ref bc_platform_device<g_api_dx11>::create_command_executor()
-		{
-			bc_device_command_executor::platform_pack l_pack;
-			l_pack.m_device = this;
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_device_command_executor_ref bc_platform_device<g_api_dx11>::create_command_executor()
+	{
+		bc_device_command_executor::platform_pack l_pack;
+		l_pack.m_device = this;
 
-			const bc_device_command_executor l_pointer(l_pack);
-			return bc_device_command_executor_ref(l_pointer);
-		}
+		const bc_device_command_executor l_pointer(l_pack);
+		return bc_device_command_executor_ref(l_pointer);
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_sprite_batch bc_platform_device<g_api_dx11>::create_sprite_batch()
-		{
-			bc_sprite_batch::platform_pack l_pack;
-			l_pack.m_sprite_batch = core::bc_make_unique<DirectX::SpriteBatch>(DirectX::SpriteBatch(m_pack.m_immediate_context.Get()));
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_sprite_batch bc_platform_device<g_api_dx11>::create_sprite_batch()
+	{
+		bc_sprite_batch::platform_pack l_pack;
+		l_pack.m_sprite_batch = core::bc_make_unique<DirectX::SpriteBatch>(DirectX::SpriteBatch(m_pack.m_immediate_context.Get()));
 
-			return bc_sprite_batch(std::move(l_pack));
-		}
+		return bc_sprite_batch(std::move(l_pack));
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_sprite_font bc_platform_device<g_api_dx11>::create_sprite_font(core::bc_estring_view p_font_file)
-		{
-			bc_sprite_font::platform_pack l_pack;
-			l_pack.m_sprite_font = core::bc_make_unique<DirectX::SpriteFont>(DirectX::SpriteFont(m_pack.m_device.Get(), p_font_file.data()));
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_sprite_font bc_platform_device<g_api_dx11>::create_sprite_font(core::bc_estring_view p_font_file)
+	{
+		bc_sprite_font::platform_pack l_pack;
+		l_pack.m_sprite_font = core::bc_make_unique<DirectX::SpriteFont>(DirectX::SpriteFont(m_pack.m_device.Get(), p_font_file.data()));
 
-			return bc_sprite_font(std::move(l_pack));
-		}
+		return bc_sprite_font(std::move(l_pack));
+	}
 		
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_device_clock_query_ref bc_platform_device<g_api_dx11>::create_clock_query()
-		{
-			bc_device_clock_query::platform_pack l_pack;
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_device_clock_query_ref bc_platform_device<g_api_dx11>::create_clock_query()
+	{
+		bc_device_clock_query::platform_pack l_pack;
 
-			D3D11_QUERY_DESC l_desc;
-			l_desc.Query = D3D11_QUERY_TIMESTAMP_DISJOINT;
-			l_desc.MiscFlags = 0;
+		D3D11_QUERY_DESC l_desc;
+		l_desc.Query = D3D11_QUERY_TIMESTAMP_DISJOINT;
+		l_desc.MiscFlags = 0;
 
-			dx_call(m_pack.m_device->CreateQuery(&l_desc, &l_pack.m_query));
+		dx_call(m_pack.m_device->CreateQuery(&l_desc, &l_pack.m_query));
 
-			return bc_device_clock_query_ref(bc_device_clock_query(l_pack));
-		}
+		return bc_device_clock_query_ref(bc_device_clock_query(l_pack));
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_device_timestamp_query_ref bc_platform_device<g_api_dx11>::create_timestamp_query()
-		{
-			bc_device_timestamp_query::platform_pack l_pack;
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_device_timestamp_query_ref bc_platform_device<g_api_dx11>::create_timestamp_query()
+	{
+		bc_device_timestamp_query::platform_pack l_pack;
 
-			D3D11_QUERY_DESC l_desc;
-			l_desc.Query = D3D11_QUERY_TIMESTAMP;
-			l_desc.MiscFlags = 0;
+		D3D11_QUERY_DESC l_desc;
+		l_desc.Query = D3D11_QUERY_TIMESTAMP;
+		l_desc.MiscFlags = 0;
 
-			dx_call(m_pack.m_device->CreateQuery(&l_desc, &l_pack.m_query));
+		dx_call(m_pack.m_device->CreateQuery(&l_desc, &l_pack.m_query));
 
-			return bc_device_timestamp_query_ref(bc_device_timestamp_query(l_pack));
-		}
+		return bc_device_timestamp_query_ref(bc_device_timestamp_query(l_pack));
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_device_occlusion_query_ref bc_platform_device<g_api_dx11>::create_occlusion_query()
-		{
-			bc_device_occlusion_query::platform_pack l_pack;
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_device_occlusion_query_ref bc_platform_device<g_api_dx11>::create_occlusion_query()
+	{
+		bc_device_occlusion_query::platform_pack l_pack;
 
-			D3D11_QUERY_DESC l_desc;
-			l_desc.Query = D3D11_QUERY_OCCLUSION;
-			l_desc.MiscFlags = 0;
+		D3D11_QUERY_DESC l_desc;
+		l_desc.Query = D3D11_QUERY_OCCLUSION;
+		l_desc.MiscFlags = 0;
 
-			dx_call(m_pack.m_device->CreateQuery(&l_desc, &l_pack.m_query));
+		dx_call(m_pack.m_device->CreateQuery(&l_desc, &l_pack.m_query));
 
-			return bc_device_occlusion_query_ref(bc_device_occlusion_query(l_pack));
-		}
+		return bc_device_occlusion_query_ref(bc_device_occlusion_query(l_pack));
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_device_swap_buffer_ref bc_platform_device<g_api_dx11>::create_swap_buffer(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, bc_platform_device_output<g_api_dx11> p_output)
-		{
-			ComPtr<IDXGIFactory> l_factory;
-			CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(l_factory.GetAddressOf()));
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_device_swap_buffer_ref bc_platform_device<g_api_dx11>::create_swap_buffer(bcUINT p_width, bcUINT p_height, bc_format p_back_buffer_format, bc_platform_device_output<g_api_dx11> p_output)
+	{
+		ComPtr<IDXGIFactory> l_factory;
+		CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(l_factory.GetAddressOf()));
 			
-			DXGI_SWAP_CHAIN_DESC l_swap_chain_desc = {};
-			l_swap_chain_desc.BufferCount = 2;
-			l_swap_chain_desc.BufferDesc.Format = bc_graphic_cast(p_back_buffer_format);
-			l_swap_chain_desc.BufferDesc.Width = p_width;
-			l_swap_chain_desc.BufferDesc.Height = p_height;
-			l_swap_chain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-			l_swap_chain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-			l_swap_chain_desc.BufferDesc.RefreshRate.Numerator = 60;
-			l_swap_chain_desc.BufferDesc.RefreshRate.Denominator = 1;
-			l_swap_chain_desc.SampleDesc.Count = 1;
-			l_swap_chain_desc.SampleDesc.Quality = 0;
-			l_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
-			l_swap_chain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-			l_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-			l_swap_chain_desc.OutputWindow = p_output.get_platform_pack().m_output_handle;
-			l_swap_chain_desc.Windowed = true;
+		DXGI_SWAP_CHAIN_DESC l_swap_chain_desc = {};
+		l_swap_chain_desc.BufferCount = 2;
+		l_swap_chain_desc.BufferDesc.Format = bc_graphic_cast(p_back_buffer_format);
+		l_swap_chain_desc.BufferDesc.Width = p_width;
+		l_swap_chain_desc.BufferDesc.Height = p_height;
+		l_swap_chain_desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+		l_swap_chain_desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		l_swap_chain_desc.BufferDesc.RefreshRate.Numerator = 60;
+		l_swap_chain_desc.BufferDesc.RefreshRate.Denominator = 1;
+		l_swap_chain_desc.SampleDesc.Count = 1;
+		l_swap_chain_desc.SampleDesc.Quality = 0;
+		l_swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_SHADER_INPUT;
+		l_swap_chain_desc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+		l_swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+		l_swap_chain_desc.OutputWindow = p_output.get_platform_pack().m_output_handle;
+		l_swap_chain_desc.Windowed = true;
 
-			IDXGISwapChain* l_swap_chain;
-			const auto l_result = l_factory->CreateSwapChain(m_pack.m_device.Get(), &l_swap_chain_desc, &l_swap_chain);
+		IDXGISwapChain* l_swap_chain;
+		const auto l_result = l_factory->CreateSwapChain(m_pack.m_device.Get(), &l_swap_chain_desc, &l_swap_chain);
 
-			if (FAILED(l_result))
-			{
-				DWORD l_error_code;
-				platform::win32_from_hresult(l_result, &l_error_code);
-				throw bc_graphic_exception(static_cast<bcINT>(l_error_code), "Failed to create DirectX11 SwapChain");
-			}
-
-			bc_device_swap_buffer::platform_pack l_pack;
-			l_pack.m_vsync = false;
-			l_pack.m_swap_chain = l_swap_chain;
-			
-			return bc_device_swap_buffer_ref(bc_device_swap_buffer(l_pack));
+		if (FAILED(l_result))
+		{
+			DWORD l_error_code;
+			platform::win32_from_hresult(l_result, &l_error_code);
+			throw bc_graphic_exception(static_cast<bcINT>(l_error_code), "Failed to create DirectX11 SwapChain");
 		}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		bc_mapped_resource bc_platform_device<g_api_dx11>::map_resource(bci_resource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type)
+		bc_device_swap_buffer::platform_pack l_pack;
+		l_pack.m_vsync = false;
+		l_pack.m_swap_chain = l_swap_chain;
+			
+		return bc_device_swap_buffer_ref(bc_device_swap_buffer(l_pack));
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	bc_mapped_resource bc_platform_device<g_api_dx11>::map_resource(bci_resource& p_resource, bcUINT p_subresource, bc_resource_map p_map_type)
+	{
+		bc_mapped_resource l_result;
+		D3D11_MAPPED_SUBRESOURCE l_mapped_resource;
+
 		{
-			bc_mapped_resource l_result;
-			D3D11_MAPPED_SUBRESOURCE l_mapped_resource;
+			platform::bc_lock_guard l_guard(m_pack.m_immediate_context_mutex);
 
-			{
-				platform::bc_lock_guard l_guard(m_pack.m_immediate_context_mutex);
-
-				dx_call(m_pack.m_immediate_context->Map
+			dx_call(m_pack.m_immediate_context->Map
 				(
 					p_resource.get_resource_platform_pack().m_resource,
 					p_subresource,
@@ -1331,244 +1329,243 @@ namespace black_cat
 					0,
 					&l_mapped_resource
 				));
-			}
-
-			l_result.m_data = l_mapped_resource.pData;
-			l_result.m_row_pitch = l_mapped_resource.RowPitch;
-			l_result.m_depth_pitch = l_mapped_resource.DepthPitch;
-
-			return l_result;
 		}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		void bc_platform_device<g_api_dx11>::unmap_resource(bci_resource& p_resource, bcUINT p_subresource)
-		{
-			{
-				platform::bc_lock_guard l_guard(m_pack.m_immediate_context_mutex);
+		l_result.m_data = l_mapped_resource.pData;
+		l_result.m_row_pitch = l_mapped_resource.RowPitch;
+		l_result.m_depth_pitch = l_mapped_resource.DepthPitch;
 
-				m_pack.m_immediate_context->Unmap(p_resource.get_resource_platform_pack().m_resource, p_subresource);
-			}
+		return l_result;
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	void bc_platform_device<g_api_dx11>::unmap_resource(bci_resource& p_resource, bcUINT p_subresource)
+	{
+		{
+			platform::bc_lock_guard l_guard(m_pack.m_immediate_context_mutex);
+
+			m_pack.m_immediate_context->Unmap(p_resource.get_resource_platform_pack().m_resource, p_subresource);
 		}
+	}
 
-		template<>
-		BC_GRAPHICIMP_DLL
-		void bc_platform_device<g_api_dx11>::resize_texture2d(bc_texture2d& p_texture,
-			bcUINT p_width,
-			bcUINT p_height,
-			bci_resource_view** p_views,
-			bcUINT p_num_views)
+	template<>
+	BC_GRAPHICIMP_DLL
+	void bc_platform_device<g_api_dx11>::resize_texture2d(bc_texture2d& p_texture,
+	                                                      bcUINT p_width,
+	                                                      bcUINT p_height,
+	                                                      bci_resource_view** p_views,
+	                                                      bcUINT p_num_views)
+	{
+		bc_texture_config l_texture_config;
+		p_texture.get_platform_pack().m_texture->GetDesc(&l_texture_config.get_platform_pack().m_desc);
+
+		l_texture_config.get_platform_pack().m_desc.Width = p_width;
+		l_texture_config.get_platform_pack().m_desc.Height = p_height;
+
+		auto* l_dx_texture = _initialize_texture
+		(
+			this,
+			&l_texture_config,
+			nullptr
+		);
+
+		p_texture.get_platform_pack().m_texture = l_dx_texture;
+
+		for (bcUINT l_view_i = 0; l_view_i <p_num_views; ++l_view_i)
 		{
-			bc_texture_config l_texture_config;
-			p_texture.get_platform_pack().m_texture->GetDesc(&l_texture_config.get_platform_pack().m_desc);
+			bci_resource_view* l_view = p_views[l_view_i];
 
-			l_texture_config.get_platform_pack().m_desc.Width = p_width;
-			l_texture_config.get_platform_pack().m_desc.Height = p_height;
-
-			auto* l_dx_texture = _initialize_texture
-			(
-				this,
-				&l_texture_config,
-				nullptr
-			);
-
-			p_texture.get_platform_pack().m_texture = l_dx_texture;
-
-			for (bcUINT l_view_i = 0; l_view_i <p_num_views; ++l_view_i)
+			if (l_view->get_view_type() == bc_resource_view_type::shader)
 			{
-				bci_resource_view* l_view = p_views[l_view_i];
+				bc_resource_view* l_shader_view = static_cast<bc_resource_view*>(l_view);
 
-				if (l_view->get_view_type() == bc_resource_view_type::shader)
-				{
-					bc_resource_view* l_shader_view = static_cast<bc_resource_view*>(l_view);
+				bc_resource_view_config l_view_config;
+				l_shader_view->get_platform_pack().m_shader_view->GetDesc(&l_view_config.get_platform_pack().m_shader_view_desc);
 
-					bc_resource_view_config l_view_config;
-					l_shader_view->get_platform_pack().m_shader_view->GetDesc(&l_view_config.get_platform_pack().m_shader_view_desc);
-
-					auto* l_dx_view = _initialize_shader_view
-					(
-						this,
-						&p_texture,
-						&l_view_config
-					);
-
-					l_shader_view->get_platform_pack().m_shader_view = static_cast<ID3D11ShaderResourceView*>(l_dx_view);
-				}
-				else if (l_view->get_view_type() == bc_resource_view_type::unordered)
-				{
-					bc_resource_view* l_shader_view = static_cast<bc_resource_view*>(l_view);
-
-					bc_resource_view_config l_view_config;
-					l_shader_view->get_platform_pack().m_unordered_shader_view->GetDesc(&l_view_config.get_platform_pack().m_unordered_shader_view_desc);
-
-					auto* l_dx_view = _initialize_shader_view
-					(
-						this,
-						&p_texture,
-						&l_view_config
-					);
-
-					l_shader_view->get_platform_pack().m_unordered_shader_view = static_cast<ID3D11UnorderedAccessView*>(l_dx_view);
-				}
-				else if (l_view->get_view_type() == bc_resource_view_type::render_target)
-				{
-					bc_render_target_view* l_target_view = static_cast<bc_render_target_view*>(l_view);
-
-					bc_render_target_view_config l_render_view_config;
-					l_target_view->get_platform_pack().m_render_target_view->GetDesc(&l_render_view_config.get_platform_pack().m_render_target_view_desc);
-
-					auto* l_dx_view = _initialize_render_target_view
-					(
-						static_cast<bc_device*>(this),
-						&p_texture,
-						&l_render_view_config
-					);
-
-					l_target_view->get_platform_pack().m_render_target_view = l_dx_view;
-				}
-				else if (l_view->get_view_type() == bc_resource_view_type::depth_stencil)
-				{
-					bc_depth_stencil_view* l_depth_view = static_cast<bc_depth_stencil_view*>(l_view);
-
-					bc_depth_stencil_view_config l_depth_view_config;
-					l_depth_view->get_platform_pack().m_depth_stencil_view->GetDesc(&l_depth_view_config.get_platform_pack().m_depth_stencil_view_desc);
-
-					auto* l_dx_view = _initialize_depth_stencil_view
-					(
-						this,
-						&p_texture,
-						&l_depth_view_config
-					);
-
-					l_depth_view->get_platform_pack().m_depth_stencil_view = l_dx_view;
-				}
-			}
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		void bc_platform_device<g_api_dx11>::_initialize()
-		{
-			HRESULT l_result = S_OK;
-
-			ComPtr<IDXGIFactory> l_factory;
-			CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(l_factory.GetAddressOf()));
-
-			bcUINT l_adapter_num = 0;
-			ComPtr<IDXGIAdapter> l_current_adapter;
-			core::bc_vector_frame<ComPtr<IDXGIAdapter>> l_adapters;
-
-			while (l_factory->EnumAdapters(l_adapter_num++, l_current_adapter.ReleaseAndGetAddressOf()) != DXGI_ERROR_NOT_FOUND)
-			{
-				l_adapters.push_back(l_current_adapter);
-			}
-
-			constexpr core::bc_array<core::bc_wstring_view, 3> l_preferred_adapters = { L"nvidia", L"amd", L"intel" };
-			std::sort
-			(
-				std::begin(l_adapters),
-				std::end(l_adapters),
-				[&](const ComPtr<IDXGIAdapter>& p_adapter1, const ComPtr<IDXGIAdapter>& p_adapter2)
-				{
-					const auto l_get_adapter_rank = [](IDXGIAdapter& p_adapter, core::bc_const_span<core::bc_wstring_view> p_preferred_adapters)
-					{
-						DXGI_ADAPTER_DESC l_adapter_desc;
-						p_adapter.GetDesc(&l_adapter_desc);
-
-						core::bc_wstring_view l_adapter_title = l_adapter_desc.Description;
-
-						auto l_adapter_rank = 0U;
-						for (auto l_preferred_adapter : p_preferred_adapters)
-						{
-							auto l_adapter_ite = std::search
-							(
-								std::begin(l_adapter_title),
-								std::end(l_adapter_title),
-								std::begin(l_preferred_adapter),
-								std::end(l_preferred_adapter),
-								[](bcWCHAR p_1, bcWCHAR p_2)
-								{
-									return std::towlower(p_1) == std::towlower(p_2);
-								}
-							);
-							if (l_adapter_ite != std::end(l_adapter_title))
-							{
-								return l_adapter_rank;
-							}
-
-							++l_adapter_rank;
-						}
-
-						return std::numeric_limits<decltype(l_adapter_rank)>::max();
-					};
-
-					const auto l_adapter1_rank = l_get_adapter_rank(*p_adapter1.Get(), core::bc_make_cspan(l_preferred_adapters));
-					const auto l_adapter2_rank = l_get_adapter_rank(*p_adapter2.Get(), core::bc_make_cspan(l_preferred_adapters));
-
-					return l_adapter1_rank < l_adapter2_rank;
-				}
-			);
-			
-			bcUINT l_device_flags = 0;
-			// Because we create device with specific adapter we must use D3D_DRIVER_TYPE_UNKNOWN
-			constexpr D3D_DRIVER_TYPE l_device_driver_type = D3D_DRIVER_TYPE_UNKNOWN;
-			constexpr D3D_FEATURE_LEVEL l_device_feature_levels[] = { D3D_FEATURE_LEVEL_11_0 };
-			D3D_FEATURE_LEVEL l_device_created_feature;
-
-#ifdef  BC_DEBUG
-			l_device_flags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
-
-			for (auto& l_adapter : l_adapters)
-			{
-				l_result = D3D11CreateDevice
+				auto* l_dx_view = _initialize_shader_view
 				(
-					l_adapter.Get(),
-					l_device_driver_type,
-					nullptr,
-					l_device_flags,
-					l_device_feature_levels,
-					1,
-					D3D11_SDK_VERSION,
-					m_pack.m_device.GetAddressOf(),
-					&l_device_created_feature,
-					m_pack.m_immediate_context.GetAddressOf()
+					this,
+					&p_texture,
+					&l_view_config
 				);
 
-				if (SUCCEEDED(l_result))
+				l_shader_view->get_platform_pack().m_shader_view = static_cast<ID3D11ShaderResourceView*>(l_dx_view);
+			}
+			else if (l_view->get_view_type() == bc_resource_view_type::unordered)
+			{
+				bc_resource_view* l_shader_view = static_cast<bc_resource_view*>(l_view);
+
+				bc_resource_view_config l_view_config;
+				l_shader_view->get_platform_pack().m_unordered_shader_view->GetDesc(&l_view_config.get_platform_pack().m_unordered_shader_view_desc);
+
+				auto* l_dx_view = _initialize_shader_view
+				(
+					this,
+					&p_texture,
+					&l_view_config
+				);
+
+				l_shader_view->get_platform_pack().m_unordered_shader_view = static_cast<ID3D11UnorderedAccessView*>(l_dx_view);
+			}
+			else if (l_view->get_view_type() == bc_resource_view_type::render_target)
+			{
+				bc_render_target_view* l_target_view = static_cast<bc_render_target_view*>(l_view);
+
+				bc_render_target_view_config l_render_view_config;
+				l_target_view->get_platform_pack().m_render_target_view->GetDesc(&l_render_view_config.get_platform_pack().m_render_target_view_desc);
+
+				auto* l_dx_view = _initialize_render_target_view
+				(
+					static_cast<bc_device*>(this),
+					&p_texture,
+					&l_render_view_config
+				);
+
+				l_target_view->get_platform_pack().m_render_target_view = l_dx_view;
+			}
+			else if (l_view->get_view_type() == bc_resource_view_type::depth_stencil)
+			{
+				bc_depth_stencil_view* l_depth_view = static_cast<bc_depth_stencil_view*>(l_view);
+
+				bc_depth_stencil_view_config l_depth_view_config;
+				l_depth_view->get_platform_pack().m_depth_stencil_view->GetDesc(&l_depth_view_config.get_platform_pack().m_depth_stencil_view_desc);
+
+				auto* l_dx_view = _initialize_depth_stencil_view
+				(
+					this,
+					&p_texture,
+					&l_depth_view_config
+				);
+
+				l_depth_view->get_platform_pack().m_depth_stencil_view = l_dx_view;
+			}
+		}
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	void bc_platform_device<g_api_dx11>::_initialize()
+	{
+		HRESULT l_result = S_OK;
+
+		ComPtr<IDXGIFactory> l_factory;
+		CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(l_factory.GetAddressOf()));
+
+		bcUINT l_adapter_num = 0;
+		ComPtr<IDXGIAdapter> l_current_adapter;
+		core::bc_vector_frame<ComPtr<IDXGIAdapter>> l_adapters;
+
+		while (l_factory->EnumAdapters(l_adapter_num++, l_current_adapter.ReleaseAndGetAddressOf()) != DXGI_ERROR_NOT_FOUND)
+		{
+			l_adapters.push_back(l_current_adapter);
+		}
+
+		constexpr core::bc_array<core::bc_wstring_view, 3> l_preferred_adapters = { L"nvidia", L"amd", L"intel" };
+		std::sort
+		(
+			std::begin(l_adapters),
+			std::end(l_adapters),
+			[&](const ComPtr<IDXGIAdapter>& p_adapter1, const ComPtr<IDXGIAdapter>& p_adapter2)
+			{
+				const auto l_get_adapter_rank = [](IDXGIAdapter& p_adapter, core::bc_const_span<core::bc_wstring_view> p_preferred_adapters)
 				{
 					DXGI_ADAPTER_DESC l_adapter_desc;
-					l_adapter->GetDesc(&l_adapter_desc);
+					p_adapter.GetDesc(&l_adapter_desc);
 
-					core::bc_log(core::bc_log_type::info) << l_adapters.size() << " adapters were found. selected " << l_adapter_desc.Description << core::bc_lend;
-					break;
-				}
+					core::bc_wstring_view l_adapter_title = l_adapter_desc.Description;
+
+					auto l_adapter_rank = 0U;
+					for (auto l_preferred_adapter : p_preferred_adapters)
+					{
+						auto l_adapter_ite = std::search
+						(
+							std::begin(l_adapter_title),
+							std::end(l_adapter_title),
+							std::begin(l_preferred_adapter),
+							std::end(l_preferred_adapter),
+							[](bcWCHAR p_1, bcWCHAR p_2)
+							{
+								return std::towlower(p_1) == std::towlower(p_2);
+							}
+						);
+						if (l_adapter_ite != std::end(l_adapter_title))
+						{
+							return l_adapter_rank;
+						}
+
+						++l_adapter_rank;
+					}
+
+					return std::numeric_limits<decltype(l_adapter_rank)>::max();
+				};
+
+				const auto l_adapter1_rank = l_get_adapter_rank(*p_adapter1.Get(), core::bc_make_cspan(l_preferred_adapters));
+				const auto l_adapter2_rank = l_get_adapter_rank(*p_adapter2.Get(), core::bc_make_cspan(l_preferred_adapters));
+
+				return l_adapter1_rank < l_adapter2_rank;
 			}
+		);
+			
+		bcUINT l_device_flags = 0;
+		// Because we create device with specific adapter we must use D3D_DRIVER_TYPE_UNKNOWN
+		constexpr D3D_DRIVER_TYPE l_device_driver_type = D3D_DRIVER_TYPE_UNKNOWN;
+		constexpr D3D_FEATURE_LEVEL l_device_feature_levels[] = { D3D_FEATURE_LEVEL_11_0 };
+		D3D_FEATURE_LEVEL l_device_created_feature;
 
-			if (FAILED(l_result))
-			{
-				DWORD l_error_code;
-				platform::win32_from_hresult(l_result, &l_error_code);
-				throw bc_graphic_exception(static_cast<bcINT>(l_error_code), "Can not found an adapter compatible with DirectX11");
-			}
-
-			set_allocator_alloc_type(core::bc_alloc_type::unknown_movable);
-		}
-
-		template<>
-		BC_GRAPHICIMP_DLL
-		void bc_platform_device<g_api_dx11>::_destroy()
-		{
-			m_pack.m_immediate_context.ReleaseAndGetAddressOf();
-
-#ifdef BC_DEBUG
-			ComPtr<ID3D11Debug> l_debug_layer;
-			m_pack.m_device.Get()->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(l_debug_layer.GetAddressOf()));
-			l_debug_layer->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-			l_debug_layer.ReleaseAndGetAddressOf();
+#ifdef  BC_DEBUG
+		l_device_flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-			m_pack.m_device.ReleaseAndGetAddressOf();
+		for (auto& l_adapter : l_adapters)
+		{
+			l_result = D3D11CreateDevice
+			(
+				l_adapter.Get(),
+				l_device_driver_type,
+				nullptr,
+				l_device_flags,
+				l_device_feature_levels,
+				1,
+				D3D11_SDK_VERSION,
+				m_pack.m_device.GetAddressOf(),
+				&l_device_created_feature,
+				m_pack.m_immediate_context.GetAddressOf()
+			);
+
+			if (SUCCEEDED(l_result))
+			{
+				DXGI_ADAPTER_DESC l_adapter_desc;
+				l_adapter->GetDesc(&l_adapter_desc);
+
+				core::bc_log(core::bc_log_type::info) << l_adapters.size() << " adapters were found. selected " << l_adapter_desc.Description << core::bc_lend;
+				break;
+			}
 		}
+
+		if (FAILED(l_result))
+		{
+			DWORD l_error_code;
+			platform::win32_from_hresult(l_result, &l_error_code);
+			throw bc_graphic_exception(static_cast<bcINT>(l_error_code), "Can not found an adapter compatible with DirectX11");
+		}
+
+		set_allocator_alloc_type(core::bc_alloc_type::unknown_movable);
+	}
+
+	template<>
+	BC_GRAPHICIMP_DLL
+	void bc_platform_device<g_api_dx11>::_destroy()
+	{
+		m_pack.m_immediate_context.ReleaseAndGetAddressOf();
+
+#ifdef BC_DEBUG
+		ComPtr<ID3D11Debug> l_debug_layer;
+		m_pack.m_device.Get()->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(l_debug_layer.GetAddressOf()));
+		l_debug_layer->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+		l_debug_layer.ReleaseAndGetAddressOf();
+#endif
+
+		m_pack.m_device.ReleaseAndGetAddressOf();
 	}
 }

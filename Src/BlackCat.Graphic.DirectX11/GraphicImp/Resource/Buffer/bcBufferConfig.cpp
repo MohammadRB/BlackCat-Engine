@@ -4,26 +4,23 @@
 #include "GraphicImp/bcExport.h"
 #include "GraphicImp/Resource/Buffer/bcBufferConfig.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<>
+	bcUINT bc_platform_buffer_config<g_api_dx11>::get_byte_width() const noexcept
 	{
-		template<>
-		bcUINT bc_platform_buffer_config<g_api_dx11>::get_byte_width() const noexcept
-		{
-			return m_pack.m_desc.ByteWidth;
-		}
+		return m_pack.m_desc.ByteWidth;
+	}
 
-		template<>
-		bc_resource_usage bc_platform_buffer_config<g_api_dx11>::get_usage() const noexcept
-		{
-			return bc_graphic_cast(m_pack.m_desc.Usage);
-		}
+	template<>
+	bc_resource_usage bc_platform_buffer_config<g_api_dx11>::get_usage() const noexcept
+	{
+		return bc_graphic_cast(m_pack.m_desc.Usage);
+	}
 
-		template<>
-		bcUINT bc_platform_buffer_config<g_api_dx11>::get_structure_byte_stride() const noexcept
-		{
-			return m_pack.m_desc.StructureByteStride;
-		}
+	template<>
+	bcUINT bc_platform_buffer_config<g_api_dx11>::get_structure_byte_stride() const noexcept
+	{
+		return m_pack.m_desc.StructureByteStride;
 	}
 }

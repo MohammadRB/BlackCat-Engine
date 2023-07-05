@@ -8,10 +8,7 @@
 
 #include "Platform/Application/bcHumanInterfaceDevice.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
-	{
 		
-	}
 }

@@ -6,44 +6,41 @@
 #include "Game/Object/Scene/ActorComponent/bcActorEvent.h"
 #include "Game/bcExport.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	class BC_GAME_DLL bc_bound_box_changed_actor_event : public bc_actor_event
 	{
-		class BC_GAME_DLL bc_bound_box_changed_actor_event : public bc_actor_event
-		{
-			BC_EVENT(a_bb_c)
+		BC_EVENT(a_bb_c)
 			
-		public:
-			explicit bc_bound_box_changed_actor_event(const physics::bc_bound_box& p_bound_box);
+	public:
+		explicit bc_bound_box_changed_actor_event(const physics::bc_bound_box& p_bound_box);
 
-			bc_bound_box_changed_actor_event(const bc_bound_box_changed_actor_event&);
+		bc_bound_box_changed_actor_event(const bc_bound_box_changed_actor_event&);
 
-			~bc_bound_box_changed_actor_event() override;
+		~bc_bound_box_changed_actor_event() override;
 
-			bc_bound_box_changed_actor_event& operator=(const bc_bound_box_changed_actor_event&);
+		bc_bound_box_changed_actor_event& operator=(const bc_bound_box_changed_actor_event&);
 
-			const physics::bc_bound_box& get_bound_box() const noexcept;
+		const physics::bc_bound_box& get_bound_box() const noexcept;
 
-		private:
-			physics::bc_bound_box m_bound_box;
-		};
+	private:
+		physics::bc_bound_box m_bound_box;
+	};
 
-		inline bc_bound_box_changed_actor_event::bc_bound_box_changed_actor_event(const physics::bc_bound_box& p_bound_box)
-			: bc_actor_event(message_name()),
-			m_bound_box(p_bound_box)
-		{
-		}
+	inline bc_bound_box_changed_actor_event::bc_bound_box_changed_actor_event(const physics::bc_bound_box& p_bound_box)
+		: bc_actor_event(message_name()),
+		  m_bound_box(p_bound_box)
+	{
+	}
 
-		inline bc_bound_box_changed_actor_event::bc_bound_box_changed_actor_event(const bc_bound_box_changed_actor_event&) = default;
+	inline bc_bound_box_changed_actor_event::bc_bound_box_changed_actor_event(const bc_bound_box_changed_actor_event&) = default;
 
-		inline bc_bound_box_changed_actor_event::~bc_bound_box_changed_actor_event() = default;
+	inline bc_bound_box_changed_actor_event::~bc_bound_box_changed_actor_event() = default;
 
-		inline bc_bound_box_changed_actor_event& bc_bound_box_changed_actor_event::operator=(const bc_bound_box_changed_actor_event&) = default;
+	inline bc_bound_box_changed_actor_event& bc_bound_box_changed_actor_event::operator=(const bc_bound_box_changed_actor_event&) = default;
 
-		inline const physics::bc_bound_box& bc_bound_box_changed_actor_event::get_bound_box() const noexcept
-		{
-			return m_bound_box;
-		}
+	inline const physics::bc_bound_box& bc_bound_box_changed_actor_event::get_bound_box() const noexcept
+	{
+		return m_bound_box;
 	}
 }

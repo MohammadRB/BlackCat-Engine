@@ -4,16 +4,13 @@
 
 #include "Core/Messaging/Query/bcQueryContext.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
-	{
-		class bc_scene;
+	class bc_scene;
 		
-		class bc_scene_query_context : public core::bc_query_context
-		{
-		public:
-			const bc_scene* m_scene;
-		};
-	}
+	class bc_scene_query_context : public core::bc_query_context
+	{
+	public:
+		const bc_scene* m_scene;
+	};
 }

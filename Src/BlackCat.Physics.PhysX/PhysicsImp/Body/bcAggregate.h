@@ -8,14 +8,11 @@
 #include "Physics/Body/bcAggregate.h"
 #include "PhysicsImp/PhysicsImpPCH.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	template< >
+	struct bc_platform_aggregate_pack<g_api_physx> : bc_platform_physics_reference_pack<g_api_physx>
 	{
-		template< >
-		struct bc_platform_aggregate_pack<g_api_physx> : bc_platform_physics_reference_pack<g_api_physx>
-		{
-			constexpr static bcUINT32 s_max_actor_count = 128;
-		};
-	}
+		constexpr static bcUINT32 s_max_actor_count = 128;
+	};
 }

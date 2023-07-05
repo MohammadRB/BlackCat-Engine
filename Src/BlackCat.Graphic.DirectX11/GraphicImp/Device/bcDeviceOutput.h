@@ -5,19 +5,16 @@
 #include "Graphic/Device/bcDeviceOutput.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<>
+	struct bc_platform_device_output_pack<g_api_dx11>
 	{
-		template<>
-		struct bc_platform_device_output_pack<g_api_dx11>
+		explicit bc_platform_device_output_pack(HWND p_output_handle)
+			: m_output_handle(p_output_handle)
 		{
-			explicit bc_platform_device_output_pack(HWND p_output_handle)
-				: m_output_handle(p_output_handle)
-			{
-			}
+		}
 
-			HWND m_output_handle;
-		};
-	}
+		HWND m_output_handle;
+	};
 }

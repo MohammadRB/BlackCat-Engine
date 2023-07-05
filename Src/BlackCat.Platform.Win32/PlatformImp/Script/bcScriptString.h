@@ -9,14 +9,11 @@
 #include "Platform/Script/bcScriptString.h"
 #include "PlatformImp/PlatformImpPCH.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
+	template<>
+	struct bc_platform_script_string_pack< platform::g_api_win32 >
 	{
-		template<>
-		struct bc_platform_script_string_pack< platform::g_api_win32 >
-		{
-			JsValueRef m_js_string;
-		};
-	}
+		JsValueRef m_js_string;
+	};
 }

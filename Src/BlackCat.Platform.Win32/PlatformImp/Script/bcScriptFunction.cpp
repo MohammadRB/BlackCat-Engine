@@ -4,11 +4,9 @@
 #include "PlatformImp/bcExport.h"
 #include "PlatformImp/Script/bcScriptFunction.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
-	{
-		/*inline JsValueRef CALLBACK _js_call(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
+	/*inline JsValueRef CALLBACK _js_call(JsValueRef p_callee, bool p_is_construct_call, JsValueRef* p_arguments, bcUINT16 p_argument_count, void* p_callback_state)
 		{
 			BC_ASSERT(p_argument_count <= 10);
 
@@ -69,86 +67,85 @@ namespace black_cat
 			return l_callback_result.get_platform_pack().m_js_value;
 		}*/
 
-		template<>
-		BC_PLATFORMIMP_DLL
-		bc_platform_script_function<platform::g_api_win32>::bc_platform_script_function()
-			: bc_platform_script_reference()
-		{
-			m_pack.m_js_function = JS_INVALID_REFERENCE;
-		}
+	template<>
+	BC_PLATFORMIMP_DLL
+	bc_platform_script_function<platform::g_api_win32>::bc_platform_script_function()
+		: bc_platform_script_reference()
+	{
+		m_pack.m_js_function = JS_INVALID_REFERENCE;
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL
-		bc_platform_script_function<platform::g_api_win32>::bc_platform_script_function(bc_script_context& p_context/*, callback_t p_callback*/)
-			: bc_platform_script_reference(),
-			m_pack()
-		{
-			/*static_assert(sizeof(callback_t) == sizeof(void*), "Function pointer size isn't equal to size of void*");
+	template<>
+	BC_PLATFORMIMP_DLL
+	bc_platform_script_function<platform::g_api_win32>::bc_platform_script_function(bc_script_context& p_context/*, callback_t p_callback*/)
+		: bc_platform_script_reference(),
+		  m_pack()
+	{
+		/*static_assert(sizeof(callback_t) == sizeof(void*), "Function pointer size isn't equal to size of void*");
 
 			bc_chakra_call l_call(p_context);
 
 			l_call = JsCreateFunction(&_js_call, p_callback, &m_pack.m_js_function);*/
-		}
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL
-		bc_platform_script_function<platform::g_api_win32>::bc_platform_script_function(const bc_platform_script_function& p_other) noexcept
-			: bc_platform_script_reference(p_other),
-			m_pack(p_other.m_pack)
-		{
-		}
+	template<>
+	BC_PLATFORMIMP_DLL
+	bc_platform_script_function<platform::g_api_win32>::bc_platform_script_function(const bc_platform_script_function& p_other) noexcept
+		: bc_platform_script_reference(p_other),
+		  m_pack(p_other.m_pack)
+	{
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL
-		bc_platform_script_function<platform::g_api_win32>::~bc_platform_script_function() = default;
+	template<>
+	BC_PLATFORMIMP_DLL
+	bc_platform_script_function<platform::g_api_win32>::~bc_platform_script_function() = default;
 
-		template<>
-		BC_PLATFORMIMP_DLL
-		bc_platform_script_function<platform::g_api_win32>& bc_platform_script_function<platform::g_api_win32>::operator=(const bc_platform_script_function& p_other) noexcept
-		{
-			bc_platform_script_reference::operator=(p_other);
-			m_pack.m_js_function = p_other.m_pack.m_js_function;
+	template<>
+	BC_PLATFORMIMP_DLL
+	bc_platform_script_function<platform::g_api_win32>& bc_platform_script_function<platform::g_api_win32>::operator=(const bc_platform_script_function& p_other) noexcept
+	{
+		bc_platform_script_reference::operator=(p_other);
+		m_pack.m_js_function = p_other.m_pack.m_js_function;
 
-			return *this;
-		}
+		return *this;
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL
-		bc_script_variable bc_platform_script_function<platform::g_api_win32>::operator()(bc_script_variable& p_this, bc_script_variable* p_args, bcSIZE p_arg_count) const
-		{
-			BC_ASSERT(p_arg_count <= 10);
+	template<>
+	BC_PLATFORMIMP_DLL
+	bc_script_variable bc_platform_script_function<platform::g_api_win32>::operator()(bc_script_variable& p_this, bc_script_variable* p_args, bcSIZE p_arg_count) const
+	{
+		BC_ASSERT(p_arg_count <= 10);
 
-			std::array<JsValueRef, 10> l_pack{};
+		std::array<JsValueRef, 10> l_pack{};
 
-			l_pack[0] = p_this.get_platform_pack().m_js_value;
-			std::transform
-			(
-				p_args,
-				std::next(p_args, p_arg_count),
-				std::next(std::begin(l_pack)),
-				[](bc_script_variable& p_js_value)
-				{
-					return p_js_value.get_platform_pack().m_js_value;
-				}
-			);
+		l_pack[0] = p_this.get_platform_pack().m_js_value;
+		std::transform
+		(
+			p_args,
+			std::next(p_args, p_arg_count),
+			std::next(std::begin(l_pack)),
+			[](bc_script_variable& p_js_value)
+			{
+				return p_js_value.get_platform_pack().m_js_value;
+			}
+		);
 
-			bc_script_variable l_call_result;
-			bc_chakra_call l_call = JsCallFunction
-			(
-				m_pack.m_js_function,
-				l_pack.data(),
-				p_arg_count + 1,
-				&l_call_result.get_platform_pack().m_js_value
-			);
+		bc_script_variable l_call_result;
+		bc_chakra_call l_call = JsCallFunction
+		(
+			m_pack.m_js_function,
+			l_pack.data(),
+			p_arg_count + 1,
+			&l_call_result.get_platform_pack().m_js_value
+		);
 
-			return l_call_result;
-		}
+		return l_call_result;
+	}
 
-		template<>
-		BC_PLATFORMIMP_DLL
-		bool bc_platform_script_function<platform::g_api_win32>::is_valid() const noexcept
-		{
-			return m_pack.m_js_function != JS_INVALID_REFERENCE;
-		}
+	template<>
+	BC_PLATFORMIMP_DLL
+	bool bc_platform_script_function<platform::g_api_win32>::is_valid() const noexcept
+	{
+		return m_pack.m_js_function != JS_INVALID_REFERENCE;
 	}
 }

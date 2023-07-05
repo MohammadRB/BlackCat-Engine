@@ -7,43 +7,40 @@
 #include "Platform/Script/bcScriptReference.h"
 #include "Platform/Script/bcScriptRuntime.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
+	template<bc_platform TPlatform >
+	struct bc_platform_script_bytecode_pack
 	{
-		template<bc_platform TPlatform >
-		struct bc_platform_script_bytecode_pack
+	};
+
+	template<bc_platform TPlatform >
+	class bc_platform_script_bytecode : public bc_platform_script_reference< TPlatform >
+	{
+	public:
+		using platform_pack = bc_platform_script_bytecode_pack< TPlatform >;
+		friend bc_script_runtime;
+
+	public:
+		bc_platform_script_bytecode(const bc_platform_script_bytecode&) noexcept;
+
+		~bc_platform_script_bytecode();
+
+		bc_platform_script_bytecode& operator=(const bc_platform_script_bytecode&) noexcept;
+
+		bool is_valid() const noexcept override;
+
+		platform_pack& get_platform_pack()
 		{
-		};
+			return m_pack;
+		}
 
-		template<bc_platform TPlatform >
-		class bc_platform_script_bytecode : public bc_platform_script_reference< TPlatform >
-		{
-		public:
-			using platform_pack = bc_platform_script_bytecode_pack< TPlatform >;
-			friend bc_script_runtime;
+	private:
+		bc_platform_script_bytecode();
 
-		public:
-			bc_platform_script_bytecode(const bc_platform_script_bytecode&) noexcept;
+		platform_pack m_pack;
+	};
 
-			~bc_platform_script_bytecode();
-
-			bc_platform_script_bytecode& operator=(const bc_platform_script_bytecode&) noexcept;
-
-			bool is_valid() const noexcept override;
-
-			platform_pack& get_platform_pack()
-			{
-				return m_pack;
-			}
-
-		private:
-			bc_platform_script_bytecode();
-
-			platform_pack m_pack;
-		};
-
-		using bc_script_bytecode = bc_platform_script_bytecode<g_current_platform>;
-		using bc_script_bytecode_ref = bc_script_ref< bc_script_bytecode >;
-	}
+	using bc_script_bytecode = bc_platform_script_bytecode<g_current_platform>;
+	using bc_script_bytecode_ref = bc_script_ref< bc_script_bytecode >;
 }

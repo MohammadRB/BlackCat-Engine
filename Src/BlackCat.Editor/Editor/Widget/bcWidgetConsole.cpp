@@ -4,260 +4,257 @@
 #include "Editor/Widget/bcWidgetConsole.h"
 #include <QtWidgets/QListWidget>
 
-namespace black_cat
+namespace black_cat::editor
 {
-	namespace editor
+	bc_widget_console::bc_widget_console(QtAwesome* p_awesome, QWidget* p_parent)
+		: QWidget(p_parent),
+		  m_max_row_count(1000),
+		  m_awesome(p_awesome),
+		  m_info_color(QColor(26, 189, 242)),
+		  m_debug_color(QColor(251, 160, 28)),
+		  m_warning_color(QColor(250, 201, 38)),
+		  m_error_color(QColor(250, 106, 106)),
+		  m_script_color(QColor(174, 174, 174))
 	{
-		bc_widget_console::bc_widget_console(QtAwesome* p_awesome, QWidget* p_parent)
-			: QWidget(p_parent),
-			m_max_row_count(1000),
-			m_awesome(p_awesome),
-			m_info_color(QColor(26, 189, 242)),
-			m_debug_color(QColor(251, 160, 28)),
-			m_warning_color(QColor(250, 201, 38)),
-			m_error_color(QColor(250, 106, 106)),
-			m_script_color(QColor(174, 174, 174))
+		_setup_ui();
+
+		QObject::connect(m_console_input, SIGNAL(returnPressed()), this, SLOT(_returnPressed()));
+		QObject::connect(m_toolbar_info, SIGNAL(toggled(bool)), this, SLOT(_infoToggled(bool)));
+		QObject::connect(m_toolbar_debug, SIGNAL(toggled(bool)), this, SLOT(_debugToggled(bool)));
+		QObject::connect(m_toolbar_warning, SIGNAL(toggled(bool)), this, SLOT(_warningToggled(bool)));
+		QObject::connect(m_toolbar_error, SIGNAL(toggled(bool)), this, SLOT(_errorToggled(bool)));
+		QObject::connect(m_toolbar_script, SIGNAL(toggled(bool)), this, SLOT(_scriptToggled(bool)));
+		QObject::connect(m_toolbar_clear, SIGNAL(clicked()), this, SLOT(_clearClicked()));
+	}
+
+	bc_widget_console::~bc_widget_console() = default;
+
+	void bc_widget_console::write_logs(std::pair<game::bc_console_output_type, QString>* p_logs, bcUINT32 p_log_count)
+	{
+		fa::icon l_icon;
+		QColor l_icon_color;
+		QVariantMap l_icon_options({ std::make_pair("color", l_icon_color) });
+		auto l_icon_color_option_ite = l_icon_options.find("color");
+
+		for(auto l_ite = 0U; l_ite < p_log_count; ++l_ite)
 		{
-			_setup_ui();
-
-			QObject::connect(m_console_input, SIGNAL(returnPressed()), this, SLOT(_returnPressed()));
-			QObject::connect(m_toolbar_info, SIGNAL(toggled(bool)), this, SLOT(_infoToggled(bool)));
-			QObject::connect(m_toolbar_debug, SIGNAL(toggled(bool)), this, SLOT(_debugToggled(bool)));
-			QObject::connect(m_toolbar_warning, SIGNAL(toggled(bool)), this, SLOT(_warningToggled(bool)));
-			QObject::connect(m_toolbar_error, SIGNAL(toggled(bool)), this, SLOT(_errorToggled(bool)));
-			QObject::connect(m_toolbar_script, SIGNAL(toggled(bool)), this, SLOT(_scriptToggled(bool)));
-			QObject::connect(m_toolbar_clear, SIGNAL(clicked()), this, SLOT(_clearClicked()));
-		}
-
-		bc_widget_console::~bc_widget_console() = default;
-
-		void bc_widget_console::write_logs(std::pair<game::bc_console_output_type, QString>* p_logs, bcUINT32 p_log_count)
-		{
-			fa::icon l_icon;
-			QColor l_icon_color;
-			QVariantMap l_icon_options({ std::make_pair("color", l_icon_color) });
-			auto l_icon_color_option_ite = l_icon_options.find("color");
-
-			for(auto l_ite = 0U; l_ite < p_log_count; ++l_ite)
+			switch (p_logs[l_ite].first)
 			{
-				switch (p_logs[l_ite].first)
-				{
-				case game::bc_console_output_type::info:
-					l_icon = fa::infocircle;
-					l_icon_color = m_info_color;
-					break;
-				case game::bc_console_output_type::debug:
-					l_icon = fa::bug;
-					l_icon_color = m_debug_color;
-					break;
-				case game::bc_console_output_type::warning:
-					l_icon = fa::warning;
-					l_icon_color = m_warning_color;
-					break;
-				case game::bc_console_output_type::error:
-					l_icon = fa::close;
-					l_icon_color = m_error_color;
-					break;
-				case game::bc_console_output_type::script:
-					l_icon = fa::code;
-					l_icon_color = m_script_color;
-					break;
-				default:
-					l_icon = fa::infocircle;
-					l_icon_color = m_info_color;
-					break;
-				}
+			case game::bc_console_output_type::info:
+				l_icon = fa::infocircle;
+				l_icon_color = m_info_color;
+				break;
+			case game::bc_console_output_type::debug:
+				l_icon = fa::bug;
+				l_icon_color = m_debug_color;
+				break;
+			case game::bc_console_output_type::warning:
+				l_icon = fa::warning;
+				l_icon_color = m_warning_color;
+				break;
+			case game::bc_console_output_type::error:
+				l_icon = fa::close;
+				l_icon_color = m_error_color;
+				break;
+			case game::bc_console_output_type::script:
+				l_icon = fa::code;
+				l_icon_color = m_script_color;
+				break;
+			default:
+				l_icon = fa::infocircle;
+				l_icon_color = m_info_color;
+				break;
+			}
 
-				l_icon_color_option_ite->setValue(l_icon_color);
+			l_icon_color_option_ite->setValue(l_icon_color);
 				
-				auto* l_item = new QListWidgetItem(p_logs[l_ite].second);
-				l_item->setIcon(m_awesome->icon(l_icon, l_icon_options));
+			auto* l_item = new QListWidgetItem(p_logs[l_ite].second);
+			l_item->setIcon(m_awesome->icon(l_icon, l_icon_options));
 
-				m_console_list->addItem(l_item);
+			m_console_list->addItem(l_item);
 
-				const auto l_item_count = m_console_list->count();
-				if (l_item_count > m_max_row_count)
-				{
-					delete m_console_list->takeItem(0);
-				}
-			}
-
-			if(p_log_count)
+			const auto l_item_count = m_console_list->count();
+			if (l_item_count > m_max_row_count)
 			{
-				m_console_list->scrollToBottom();
+				delete m_console_list->takeItem(0);
 			}
 		}
 
-		void bc_widget_console::clear_logs()
+		if(p_log_count)
 		{
-			m_console_list->clear();
+			m_console_list->scrollToBottom();
 		}
+	}
 
-		void bc_widget_console::_returnPressed()
+	void bc_widget_console::clear_logs()
+	{
+		m_console_list->clear();
+	}
+
+	void bc_widget_console::_returnPressed()
+	{
+		emit executeScript(m_console_input->text(), true);
+		m_console_input->clear();
+	}
+
+	void bc_widget_console::_infoToggled(bool p_toggle)
+	{
+		if (p_toggle)
 		{
-			emit executeScript(m_console_input->text(), true);
-			m_console_input->clear();
+			emit executeScript("console.enableOutput(console.outputInfo)", false);
 		}
-
-		void bc_widget_console::_infoToggled(bool p_toggle)
+		else
 		{
-			if (p_toggle)
-			{
-				emit executeScript("console.enableOutput(console.outputInfo)", false);
-			}
-			else
-			{
-				emit executeScript("console.disableOutput(console.outputInfo)", false);
-			}
+			emit executeScript("console.disableOutput(console.outputInfo)", false);
 		}
+	}
 
-		void bc_widget_console::_debugToggled(bool p_toggle)
+	void bc_widget_console::_debugToggled(bool p_toggle)
+	{
+		if (p_toggle)
 		{
-			if (p_toggle)
-			{
-				emit executeScript("console.enableOutput(console.outputDebug)", false);
-			}
-			else
-			{
-				emit executeScript("console.disableOutput(console.outputDebug)", false);
-			}
+			emit executeScript("console.enableOutput(console.outputDebug)", false);
 		}
-
-		void bc_widget_console::_warningToggled(bool p_toggle)
+		else
 		{
-			if (p_toggle)
-			{
-				emit executeScript("console.enableOutput(console.outputWarning)", false);
-			}
-			else
-			{
-				emit executeScript("console.disableOutput(console.outputWarning)", false);
-			}
+			emit executeScript("console.disableOutput(console.outputDebug)", false);
 		}
+	}
 
-		void bc_widget_console::_errorToggled(bool p_toggle)
+	void bc_widget_console::_warningToggled(bool p_toggle)
+	{
+		if (p_toggle)
 		{
-			if (p_toggle)
-			{
-				emit executeScript("console.enableOutput(console.outputError)", false);
-			}
-			else
-			{
-				emit executeScript("console.disableOutput(console.outputError)", false);
-			}
+			emit executeScript("console.enableOutput(console.outputWarning)", false);
 		}
-
-		void bc_widget_console::_scriptToggled(bool p_toggle)
+		else
 		{
-			if (p_toggle)
-			{
-				emit executeScript("console.enableOutput(console.outputScript)", false);
-			}
-			else
-			{
-				emit executeScript("console.disableOutput(console.outputScript)", false);
-			}
+			emit executeScript("console.disableOutput(console.outputWarning)", false);
 		}
+	}
 
-		void bc_widget_console::_clearClicked()
+	void bc_widget_console::_errorToggled(bool p_toggle)
+	{
+		if (p_toggle)
 		{
-			emit executeScript("console.clear()", false);
+			emit executeScript("console.enableOutput(console.outputError)", false);
 		}
-
-		void bc_widget_console::_setup_ui()
+		else
 		{
-			m_main_layout = new QVBoxLayout(nullptr);
-			m_main_layout->setMargin(0);
-			m_main_layout->setSpacing(0);
-
-			m_toolbar_layout = new QHBoxLayout(nullptr);
-			m_toolbar_layout->setMargin(1);
-			m_toolbar_layout->setSpacing(15);
-			m_toolbar_layout->addStretch(1);
-
-			m_toolbar = new QFrame(nullptr);
-
-			const QString l_toolbar_button_style = "padding-top: 1px; padding-bottom: 1px;";
-			QVariantMap l_info_icon_options;
-			l_info_icon_options.insert("color", m_info_color);
-			l_info_icon_options.insert("color-selected", m_info_color);
-			l_info_icon_options.insert("color-active", m_info_color);
-			l_info_icon_options.insert("scale-factor", 0.7);
-			QVariantMap l_debug_icon_options;
-			l_debug_icon_options.insert("color", m_debug_color);
-			l_debug_icon_options.insert("color-selected", m_debug_color);
-			l_debug_icon_options.insert("color-active", m_debug_color);
-			l_debug_icon_options.insert("scale-factor", 0.7);
-			QVariantMap l_warning_icon_options;
-			l_warning_icon_options.insert("color", m_warning_color);
-			l_warning_icon_options.insert("color-selected", m_warning_color);
-			l_warning_icon_options.insert("color-active", m_warning_color);
-			l_warning_icon_options.insert("scale-factor", 0.7);
-			QVariantMap l_error_icon_options;
-			l_error_icon_options.insert("color", m_error_color);
-			l_error_icon_options.insert("color-selected", m_error_color);
-			l_error_icon_options.insert("color-active", m_error_color);
-			l_error_icon_options.insert("scale-factor", 0.7);
-			QVariantMap l_script_icon_options;
-			l_script_icon_options.insert("color", m_script_color);
-			l_script_icon_options.insert("color-selected", m_script_color);
-			l_script_icon_options.insert("color-active", m_script_color);
-			l_script_icon_options.insert("scale-factor", 0.7);
-
-			m_toolbar_info = new QPushButton(nullptr);
-			m_toolbar_info->setText("Info");
-			m_toolbar_info->setCheckable(true);
-			m_toolbar_info->setChecked(true);
-			m_toolbar_info->setStyleSheet(l_toolbar_button_style);
-			m_toolbar_info->setIcon(m_awesome->icon(fa::circle, l_info_icon_options));
-			m_toolbar_debug = new QPushButton(nullptr);
-			m_toolbar_debug->setText("Debug");
-			m_toolbar_debug->setCheckable(true);
-			m_toolbar_debug->setChecked(true);
-			m_toolbar_debug->setStyleSheet(l_toolbar_button_style);
-			m_toolbar_debug->setIcon(m_awesome->icon(fa::circle, l_debug_icon_options));
-			m_toolbar_warning = new QPushButton(nullptr);
-			m_toolbar_warning->setText("Warning");
-			m_toolbar_warning->setCheckable(true);
-			m_toolbar_warning->setChecked(true);
-			m_toolbar_warning->setStyleSheet(l_toolbar_button_style);
-			m_toolbar_warning->setIcon(m_awesome->icon(fa::circle, l_warning_icon_options));
-			m_toolbar_error = new QPushButton(nullptr);
-			m_toolbar_error->setText("Error");
-			m_toolbar_error->setCheckable(true);
-			m_toolbar_error->setChecked(true);
-			m_toolbar_error->setStyleSheet(l_toolbar_button_style);
-			m_toolbar_error->setIcon(m_awesome->icon(fa::circle, l_error_icon_options));
-			m_toolbar_script = new QPushButton(nullptr);
-			m_toolbar_script->setText("Script");
-			m_toolbar_script->setCheckable(true);
-			m_toolbar_script->setChecked(true);
-			m_toolbar_script->setStyleSheet(l_toolbar_button_style);
-			m_toolbar_script->setIcon(m_awesome->icon(fa::circle, l_script_icon_options));
-			m_toolbar_clear = new QPushButton(nullptr);
-			m_toolbar_clear->setText("Clear");
-			m_toolbar_clear->setStyleSheet(l_toolbar_button_style);
-			m_toolbar_clear->setIcon(m_awesome->icon(fa::close));
-
-			m_console_list = new QListWidget(nullptr);
-			m_console_list->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-			m_console_list->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-			m_console_list->setUniformItemSizes(true);
-			m_console_input = new QLineEdit(nullptr);
-			m_console_input->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
-
-			parentWidget()->setLayout(m_main_layout);
-			m_toolbar->setLayout(m_toolbar_layout);
-
-			m_main_layout->addWidget(m_toolbar);
-			m_main_layout->addWidget(m_console_list);
-			m_main_layout->addWidget(m_console_input);
-			m_toolbar_layout->insertWidget(0, m_toolbar_info);
-			m_toolbar_layout->insertWidget(1, m_toolbar_debug);
-			m_toolbar_layout->insertWidget(2, m_toolbar_warning);
-			m_toolbar_layout->insertWidget(3, m_toolbar_error);
-			m_toolbar_layout->insertWidget(4, m_toolbar_script);
-			m_toolbar_layout->insertWidget(5, m_toolbar_clear);
+			emit executeScript("console.disableOutput(console.outputError)", false);
 		}
+	}
+
+	void bc_widget_console::_scriptToggled(bool p_toggle)
+	{
+		if (p_toggle)
+		{
+			emit executeScript("console.enableOutput(console.outputScript)", false);
+		}
+		else
+		{
+			emit executeScript("console.disableOutput(console.outputScript)", false);
+		}
+	}
+
+	void bc_widget_console::_clearClicked()
+	{
+		emit executeScript("console.clear()", false);
+	}
+
+	void bc_widget_console::_setup_ui()
+	{
+		m_main_layout = new QVBoxLayout(nullptr);
+		m_main_layout->setMargin(0);
+		m_main_layout->setSpacing(0);
+
+		m_toolbar_layout = new QHBoxLayout(nullptr);
+		m_toolbar_layout->setMargin(1);
+		m_toolbar_layout->setSpacing(15);
+		m_toolbar_layout->addStretch(1);
+
+		m_toolbar = new QFrame(nullptr);
+
+		const QString l_toolbar_button_style = "padding-top: 1px; padding-bottom: 1px;";
+		QVariantMap l_info_icon_options;
+		l_info_icon_options.insert("color", m_info_color);
+		l_info_icon_options.insert("color-selected", m_info_color);
+		l_info_icon_options.insert("color-active", m_info_color);
+		l_info_icon_options.insert("scale-factor", 0.7);
+		QVariantMap l_debug_icon_options;
+		l_debug_icon_options.insert("color", m_debug_color);
+		l_debug_icon_options.insert("color-selected", m_debug_color);
+		l_debug_icon_options.insert("color-active", m_debug_color);
+		l_debug_icon_options.insert("scale-factor", 0.7);
+		QVariantMap l_warning_icon_options;
+		l_warning_icon_options.insert("color", m_warning_color);
+		l_warning_icon_options.insert("color-selected", m_warning_color);
+		l_warning_icon_options.insert("color-active", m_warning_color);
+		l_warning_icon_options.insert("scale-factor", 0.7);
+		QVariantMap l_error_icon_options;
+		l_error_icon_options.insert("color", m_error_color);
+		l_error_icon_options.insert("color-selected", m_error_color);
+		l_error_icon_options.insert("color-active", m_error_color);
+		l_error_icon_options.insert("scale-factor", 0.7);
+		QVariantMap l_script_icon_options;
+		l_script_icon_options.insert("color", m_script_color);
+		l_script_icon_options.insert("color-selected", m_script_color);
+		l_script_icon_options.insert("color-active", m_script_color);
+		l_script_icon_options.insert("scale-factor", 0.7);
+
+		m_toolbar_info = new QPushButton(nullptr);
+		m_toolbar_info->setText("Info");
+		m_toolbar_info->setCheckable(true);
+		m_toolbar_info->setChecked(true);
+		m_toolbar_info->setStyleSheet(l_toolbar_button_style);
+		m_toolbar_info->setIcon(m_awesome->icon(fa::circle, l_info_icon_options));
+		m_toolbar_debug = new QPushButton(nullptr);
+		m_toolbar_debug->setText("Debug");
+		m_toolbar_debug->setCheckable(true);
+		m_toolbar_debug->setChecked(true);
+		m_toolbar_debug->setStyleSheet(l_toolbar_button_style);
+		m_toolbar_debug->setIcon(m_awesome->icon(fa::circle, l_debug_icon_options));
+		m_toolbar_warning = new QPushButton(nullptr);
+		m_toolbar_warning->setText("Warning");
+		m_toolbar_warning->setCheckable(true);
+		m_toolbar_warning->setChecked(true);
+		m_toolbar_warning->setStyleSheet(l_toolbar_button_style);
+		m_toolbar_warning->setIcon(m_awesome->icon(fa::circle, l_warning_icon_options));
+		m_toolbar_error = new QPushButton(nullptr);
+		m_toolbar_error->setText("Error");
+		m_toolbar_error->setCheckable(true);
+		m_toolbar_error->setChecked(true);
+		m_toolbar_error->setStyleSheet(l_toolbar_button_style);
+		m_toolbar_error->setIcon(m_awesome->icon(fa::circle, l_error_icon_options));
+		m_toolbar_script = new QPushButton(nullptr);
+		m_toolbar_script->setText("Script");
+		m_toolbar_script->setCheckable(true);
+		m_toolbar_script->setChecked(true);
+		m_toolbar_script->setStyleSheet(l_toolbar_button_style);
+		m_toolbar_script->setIcon(m_awesome->icon(fa::circle, l_script_icon_options));
+		m_toolbar_clear = new QPushButton(nullptr);
+		m_toolbar_clear->setText("Clear");
+		m_toolbar_clear->setStyleSheet(l_toolbar_button_style);
+		m_toolbar_clear->setIcon(m_awesome->icon(fa::close));
+
+		m_console_list = new QListWidget(nullptr);
+		m_console_list->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+		m_console_list->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+		m_console_list->setUniformItemSizes(true);
+		m_console_input = new QLineEdit(nullptr);
+		m_console_input->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed));
+
+		parentWidget()->setLayout(m_main_layout);
+		m_toolbar->setLayout(m_toolbar_layout);
+
+		m_main_layout->addWidget(m_toolbar);
+		m_main_layout->addWidget(m_console_list);
+		m_main_layout->addWidget(m_console_input);
+		m_toolbar_layout->insertWidget(0, m_toolbar_info);
+		m_toolbar_layout->insertWidget(1, m_toolbar_debug);
+		m_toolbar_layout->insertWidget(2, m_toolbar_warning);
+		m_toolbar_layout->insertWidget(3, m_toolbar_error);
+		m_toolbar_layout->insertWidget(4, m_toolbar_script);
+		m_toolbar_layout->insertWidget(5, m_toolbar_clear);
 	}
 }

@@ -4,9 +4,6 @@
 #include "PhysicsImp/bcExport.h"
 #include "PhysicsImp/bcPhysicsReference.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
-	{
-	}
 }

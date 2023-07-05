@@ -13,98 +13,95 @@
 #include "Game/Query/bcQueryContext.h"
 #include "Game/Query/bcSceneGraphQuery.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	class bc_height_map_scene_query : public core::bc_query<bc_scene_query_context>
 	{
-		class bc_height_map_scene_query : public core::bc_query<bc_scene_query_context>
-		{
-			BC_QUERY(hms)
+		BC_QUERY(hms)
 			
-		public:
-			bc_height_map_scene_query();
+	public:
+		bc_height_map_scene_query();
 
-			bc_height_map_scene_query(const bc_actor_render_camera& p_camera, bc_render_state_buffer p_render_state_buffer);
+		bc_height_map_scene_query(const bc_actor_render_camera& p_camera, bc_render_state_buffer p_render_state_buffer);
 
-			bc_height_map_scene_query(bc_height_map_scene_query&&) noexcept;
+		bc_height_map_scene_query(bc_height_map_scene_query&&) noexcept;
 
-			~bc_height_map_scene_query() override;
+		~bc_height_map_scene_query() override;
 
-			bc_height_map_scene_query& operator=(bc_height_map_scene_query&&) noexcept;
+		bc_height_map_scene_query& operator=(bc_height_map_scene_query&&) noexcept;
 
-			bc_render_state_buffer get_render_state_buffer() noexcept;
+		bc_render_state_buffer get_render_state_buffer() noexcept;
 
-			core::bc_vector<bc_height_map_ptr> get_height_maps() noexcept;
+		core::bc_vector<bc_height_map_ptr> get_height_maps() noexcept;
 
-		protected:
-			void execute(const bc_scene_query_context& p_context) noexcept override;
+	protected:
+		void execute(const bc_scene_query_context& p_context) noexcept override;
 			
-		private:
-			bc_actor_render_camera m_camera;
-			bc_render_state_buffer m_render_state_buffer;
-			core::bc_vector<bc_height_map_ptr> m_height_maps;
-		};
+	private:
+		bc_actor_render_camera m_camera;
+		bc_render_state_buffer m_render_state_buffer;
+		core::bc_vector<bc_height_map_ptr> m_height_maps;
+	};
 
-		inline bc_height_map_scene_query::bc_height_map_scene_query()
-			: bc_query(message_name()),
-			m_camera()
+	inline bc_height_map_scene_query::bc_height_map_scene_query()
+		: bc_query(message_name()),
+		  m_camera()
+	{
+	}
+
+	inline bc_height_map_scene_query::bc_height_map_scene_query(const bc_actor_render_camera& p_camera, bc_render_state_buffer p_render_state_buffer)
+		: bc_query(message_name()),
+		  m_camera(p_camera),
+		  m_render_state_buffer(std::move(p_render_state_buffer))
+	{
+	}
+
+	inline bc_height_map_scene_query::bc_height_map_scene_query(bc_height_map_scene_query&& p_other) noexcept
+		: bc_query(p_other),
+		  m_camera(p_other.m_camera),
+		  m_render_state_buffer(std::move(p_other.m_render_state_buffer)),
+		  m_height_maps(std::move(p_other.m_height_maps))
+	{
+	}
+
+	inline bc_height_map_scene_query::~bc_height_map_scene_query() = default;
+
+	inline bc_height_map_scene_query& bc_height_map_scene_query::operator=(bc_height_map_scene_query&& p_other) noexcept
+	{
+		bc_query::operator=(p_other);
+		m_camera = p_other.m_camera;
+		m_render_state_buffer = std::move(p_other.m_render_state_buffer);
+		m_height_maps = std::move(p_other.m_height_maps);
+
+		return *this;
+	}
+
+	inline bc_render_state_buffer bc_height_map_scene_query::get_render_state_buffer() noexcept
+	{
+		return std::move(m_render_state_buffer);
+	}
+
+	inline core::bc_vector<bc_height_map_ptr> bc_height_map_scene_query::get_height_maps() noexcept
+	{
+		return std::move(m_height_maps);
+	}
+
+	inline void bc_height_map_scene_query::execute(const bc_scene_query_context& p_context) noexcept
+	{
+		if(!p_context.m_scene)
 		{
+			return;
 		}
 
-		inline bc_height_map_scene_query::bc_height_map_scene_query(const bc_actor_render_camera& p_camera, bc_render_state_buffer p_render_state_buffer)
-			: bc_query(message_name()),
-			m_camera(p_camera),
-			m_render_state_buffer(std::move(p_render_state_buffer))
-		{
-		}
-
-		inline bc_height_map_scene_query::bc_height_map_scene_query(bc_height_map_scene_query&& p_other) noexcept
-			: bc_query(p_other),
-			m_camera(p_other.m_camera),
-			m_render_state_buffer(std::move(p_other.m_render_state_buffer)),
-			m_height_maps(std::move(p_other.m_height_maps))
-		{
-		}
-
-		inline bc_height_map_scene_query::~bc_height_map_scene_query() = default;
-
-		inline bc_height_map_scene_query& bc_height_map_scene_query::operator=(bc_height_map_scene_query&& p_other) noexcept
-		{
-			bc_query::operator=(p_other);
-			m_camera = p_other.m_camera;
-			m_render_state_buffer = std::move(p_other.m_render_state_buffer);
-			m_height_maps = std::move(p_other.m_height_maps);
-
-			return *this;
-		}
-
-		inline bc_render_state_buffer bc_height_map_scene_query::get_render_state_buffer() noexcept
-		{
-			return std::move(m_render_state_buffer);
-		}
-
-		inline core::bc_vector<bc_height_map_ptr> bc_height_map_scene_query::get_height_maps() noexcept
-		{
-			return std::move(m_height_maps);
-		}
-
-		inline void bc_height_map_scene_query::execute(const bc_scene_query_context& p_context) noexcept
-		{
-			if(!p_context.m_scene)
-			{
-				return;
-			}
-
-			auto l_scene_buffer = p_context.m_scene->get_scene_graph().get_actors<bc_height_map_component>();
-			m_height_maps.reserve(l_scene_buffer.size());
+		auto l_scene_buffer = p_context.m_scene->get_scene_graph().get_actors<bc_height_map_component>();
+		m_height_maps.reserve(l_scene_buffer.size());
 			
-			for (auto& l_actor : l_scene_buffer)
-			{
-				auto l_height_map = l_actor.get_component<bc_height_map_component>()->get_height_map_ptr();
-				m_height_maps.push_back(l_height_map);
-			}
-
-			l_scene_buffer.render_actors<bc_height_map_component>(m_camera, m_render_state_buffer);
+		for (auto& l_actor : l_scene_buffer)
+		{
+			auto l_height_map = l_actor.get_component<bc_height_map_component>()->get_height_map_ptr();
+			m_height_maps.push_back(l_height_map);
 		}
+
+		l_scene_buffer.render_actors<bc_height_map_component>(m_camera, m_render_state_buffer);
 	}
 }

@@ -15,136 +15,134 @@
 #include "Game/System/Network/Message/bcNetworkMessage.h"
 #include "Game/bcExport.h"
 
-namespace black_cat
+namespace black_cat::core
 {
-	namespace core
+	class bc_event_manager;
+}
+
+namespace black_cat::game
+{
+	class bc_game_system;
+	class bc_actor;
+		
+	struct bc_network_system_parameter
 	{
-		class bc_event_manager;
-	}
-	
-	namespace game
+		core::bc_event_manager& m_event_manager;
+		bc_game_system& m_game_system;
+	};
+		
+	class BC_GAME_DLL bc_network_system : public core::bc_initializable<bc_network_system_parameter>
 	{
-		class bc_game_system;
-		class bc_actor;
-		
-		struct bc_network_system_parameter
-		{
-			core::bc_event_manager& m_event_manager;
-			bc_game_system& m_game_system;
-		};
-		
-		class BC_GAME_DLL bc_network_system : public core::bc_initializable<bc_network_system_parameter>
-		{
-		private:
-			using command_create_delegate = core::bc_delegate<bc_network_message_ptr()>;
-			using message_factory_container = core::bc_unordered_map_program<bc_network_message_hash, command_create_delegate>;
+	private:
+		using command_create_delegate = core::bc_delegate<bc_network_message_ptr()>;
+		using message_factory_container = core::bc_unordered_map_program<bc_network_message_hash, command_create_delegate>;
 			
-		public:
-			bc_network_system();
+	public:
+		bc_network_system();
 
-			bc_network_system(bc_network_system&&) noexcept;
+		bc_network_system(bc_network_system&&) noexcept;
 
-			~bc_network_system();
+		~bc_network_system();
 
-			bc_network_system& operator=(bc_network_system&&) noexcept;
+		bc_network_system& operator=(bc_network_system&&) noexcept;
 
-			bc_network_type get_network_type() const noexcept;
+		bc_network_type get_network_type() const noexcept;
 
-			bc_network_state get_network_state() const noexcept;
+		bc_network_state get_network_state() const noexcept;
 
-			void start_server(bci_network_server_manager_hook& p_hook, 
-				bci_network_message_visitor& p_message_visitor,
-				bcUINT16 p_port, 
-				bcUINT32 p_timeout = 10'000);
+		void start_server(bci_network_server_manager_hook& p_hook, 
+		                  bci_network_message_visitor& p_message_visitor,
+		                  bcUINT16 p_port, 
+		                  bcUINT32 p_timeout = 10'000);
 
-			void start_client(bci_network_client_manager_hook& p_hook, 
-				bci_network_message_visitor& p_message_visitor, 
-				const platform::bc_network_address& p_server_address, 
-				bcUINT32 p_timeout = 10'000);
+		void start_client(bci_network_client_manager_hook& p_hook, 
+		                  bci_network_message_visitor& p_message_visitor, 
+		                  const platform::bc_network_address& p_server_address, 
+		                  bcUINT32 p_timeout = 10'000);
 			
-			void add_actor_to_sync(bc_actor& p_actor);
+		void add_actor_to_sync(bc_actor& p_actor);
 			
-			void remove_actor_from_sync(bc_actor& p_actor);
+		void remove_actor_from_sync(bc_actor& p_actor);
 			
-			void actor_removed(bc_actor& p_actor);
+		void actor_removed(bc_actor& p_actor);
 			
-			template<class TMessage>
-			void send_message(TMessage p_message);
-
-			template<class TMessage>
-			void send_message(const platform::bc_network_address& p_address, TMessage p_message);
-			
-			void update(const platform::bc_clock::update_param& p_clock);
-			
-			core::bc_task<void> update_async(const platform::bc_clock::update_param& p_clock);
-
-			bc_network_message_ptr create_message_instance(bc_network_message_hash p_hash);
-			
-			template<class ...TMessage>
-			void register_messages();
-			
-		private:
-			void _initialize(bc_network_system_parameter p_param) override;
-			
-			void _destroy() override;
-
-			void _send_message(const platform::bc_network_address& p_address, bc_network_message_ptr p_message);
-
-			template<class TCommand>
-			void _register_message();
-
-			core::bc_event_manager* m_event_manager;
-			bc_game_system* m_game_system;
-			message_factory_container m_message_factories;
-			core::bc_unique_ptr<bci_network_manager> m_manager;
-
-			platform::bc_clock::small_time m_last_rtt_test;
-		};
-
-		inline bc_network_type bc_network_system::get_network_type() const noexcept
-		{
-			return m_manager ? m_manager->get_network_type() : bc_network_type::not_started;
-		}
-
-		inline bc_network_state bc_network_system::get_network_state() const noexcept
-		{
-			return m_manager ? m_manager->get_network_state() : bc_network_state::error;
-		}
-		
 		template<class TMessage>
-		void bc_network_system::send_message(TMessage p_message)
-		{
-			m_manager->send_message(bc_make_network_message(std::move(p_message)));
-		}
+		void send_message(TMessage p_message);
 
 		template<class TMessage>
-		void bc_network_system::send_message(const platform::bc_network_address& p_address, TMessage p_message)
-		{
-			_send_message(p_address, bc_make_network_message(std::move(p_message)));
-		}
+		void send_message(const platform::bc_network_address& p_address, TMessage p_message);
+			
+		void update(const platform::bc_clock::update_param& p_clock);
+			
+		core::bc_task<void> update_async(const platform::bc_clock::update_param& p_clock);
 
+		bc_network_message_ptr create_message_instance(bc_network_message_hash p_hash);
+			
 		template<class ...TMessage>
-		void bc_network_system::register_messages()
-		{
-			auto l_expansion_list =
-			{
-				(
-					[this]()
-					{
-						_register_message<TMessage>();
-						return true;
-					}()
-				)...
-			};
-		}
-
-		template<class TMessage>
-		void bc_network_system::_register_message()
-		{
-			static_assert(std::is_base_of_v<bci_network_message, TMessage>);
-			static_assert(std::is_default_constructible_v<TMessage>);
+		void register_messages();
 			
-			m_message_factories.insert(std::make_pair
+	private:
+		void _initialize(bc_network_system_parameter p_param) override;
+			
+		void _destroy() override;
+
+		void _send_message(const platform::bc_network_address& p_address, bc_network_message_ptr p_message);
+
+		template<class TCommand>
+		void _register_message();
+
+		core::bc_event_manager* m_event_manager;
+		bc_game_system* m_game_system;
+		message_factory_container m_message_factories;
+		core::bc_unique_ptr<bci_network_manager> m_manager;
+
+		platform::bc_clock::small_time m_last_rtt_test;
+	};
+
+	inline bc_network_type bc_network_system::get_network_type() const noexcept
+	{
+		return m_manager ? m_manager->get_network_type() : bc_network_type::not_started;
+	}
+
+	inline bc_network_state bc_network_system::get_network_state() const noexcept
+	{
+		return m_manager ? m_manager->get_network_state() : bc_network_state::error;
+	}
+		
+	template<class TMessage>
+	void bc_network_system::send_message(TMessage p_message)
+	{
+		m_manager->send_message(bc_make_network_message(std::move(p_message)));
+	}
+
+	template<class TMessage>
+	void bc_network_system::send_message(const platform::bc_network_address& p_address, TMessage p_message)
+	{
+		_send_message(p_address, bc_make_network_message(std::move(p_message)));
+	}
+
+	template<class ...TMessage>
+	void bc_network_system::register_messages()
+	{
+		auto l_expansion_list =
+		{
+			(
+				[this]()
+				{
+					_register_message<TMessage>();
+					return true;
+				}()
+			)...
+		};
+	}
+
+	template<class TMessage>
+	void bc_network_system::_register_message()
+	{
+		static_assert(std::is_base_of_v<bci_network_message, TMessage>);
+		static_assert(std::is_default_constructible_v<TMessage>);
+			
+		m_message_factories.insert(std::make_pair
 			(
 				bc_network_message_traits<TMessage>::message_hash(),
 				command_create_delegate([]()
@@ -152,6 +150,5 @@ namespace black_cat
 					return bc_make_network_message(TMessage());
 				})
 			));
-		}
 	}
 }

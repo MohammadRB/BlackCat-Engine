@@ -6,34 +6,31 @@
 #include "Graphic/bcRenderApi.h"
 #include "Graphic/PipelineStage/bcProgrammableStage.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<bc_render_api TRenderApi>
+	class bc_platform_hull_stage : public bc_programmable_stage
 	{
-		template<bc_render_api TRenderApi>
-		class bc_platform_hull_stage : public bc_programmable_stage
-		{
-		public:
-			bc_platform_hull_stage() noexcept;
+	public:
+		bc_platform_hull_stage() noexcept;
 
-			bc_platform_hull_stage(bc_platform_hull_stage&&) noexcept;
+		bc_platform_hull_stage(bc_platform_hull_stage&&) noexcept;
 
-			~bc_platform_hull_stage() override;
+		~bc_platform_hull_stage() override;
 
-			bc_platform_hull_stage& operator=(bc_platform_hull_stage&&) noexcept;
+		bc_platform_hull_stage& operator=(bc_platform_hull_stage&&) noexcept;
 
-		protected:
-			void apply_shader_program(bc_device_pipeline& p_pipeline) override;
+	protected:
+		void apply_shader_program(bc_device_pipeline& p_pipeline) override;
 
-			void apply_constant_buffers(bc_device_pipeline& p_pipeline) override;
+		void apply_constant_buffers(bc_device_pipeline& p_pipeline) override;
 
-			void apply_sampler_states(bc_device_pipeline& p_pipeline) override;
+		void apply_sampler_states(bc_device_pipeline& p_pipeline) override;
 
-			void apply_shader_resource_views(bc_device_pipeline& p_pipeline) override;
+		void apply_shader_resource_views(bc_device_pipeline& p_pipeline) override;
 
-			/*void apply_unordered_access_views(bc_device_pipeline& p_pipeline) override;*/
-		};
+		/*void apply_unordered_access_views(bc_device_pipeline& p_pipeline) override;*/
+	};
 
-		using bc_hull_stage = bc_platform_hull_stage<g_current_render_api>;
-	}
+	using bc_hull_stage = bc_platform_hull_stage<g_current_render_api>;
 }

@@ -6,10 +6,7 @@
 
 #include "Physics/Fundation/bcFundation.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
-	{
 		
-	}
 }

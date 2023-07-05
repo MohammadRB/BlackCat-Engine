@@ -8,13 +8,10 @@
 
 #include "Physics/Joint/bcJoint.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	template<>
+	struct bc_platform_joint_pack<g_api_physx> : bc_platform_physics_reference_pack<g_api_physx>
 	{
-		template<>
-		struct bc_platform_joint_pack<g_api_physx> : bc_platform_physics_reference_pack<g_api_physx>
-		{
-		};
-	}
+	};
 }

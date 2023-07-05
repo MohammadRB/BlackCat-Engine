@@ -7,19 +7,16 @@
 
 #pragma once
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	using bc_network_client_id = bcINT32;
+
+	struct bc_network_client
 	{
-		using bc_network_client_id = bcINT32;
+		constexpr static bc_network_client_id invalid_id = static_cast<bc_network_client_id>(-1);
 
-		struct bc_network_client
-		{
-			constexpr static bc_network_client_id invalid_id = static_cast<bc_network_client_id>(-1);
-
-			platform::bc_network_address m_address;
-			bc_network_client_id m_id;
-			core::bc_string_view m_name;
-		};
-	}	
+		platform::bc_network_address m_address;
+		bc_network_client_id m_id;
+		core::bc_string_view m_name;
+	};
 }

@@ -10,44 +10,41 @@ namespace black_cat::game
 	class bc_free_camera;
 }
 
-namespace black_cat
+namespace black_cat::editor
 {
-	namespace editor
+	class bc_editor_render_app : public bc_render_application
 	{
-		class bc_editor_render_app : public bc_render_application
-		{
-		public:
-			bc_editor_render_app();
+	public:
+		bc_editor_render_app();
 
-			bc_editor_render_app(bc_editor_render_app&&) = delete;
+		bc_editor_render_app(bc_editor_render_app&&) = delete;
 
-			~bc_editor_render_app() override;
+		~bc_editor_render_app() override;
 
-			bc_editor_render_app& operator=(bc_editor_render_app&&) = delete;
+		bc_editor_render_app& operator=(bc_editor_render_app&&) = delete;
 		
-		protected:
-			void application_start_engine_components(const bc_application_start_context& p_context) override;
+	protected:
+		void application_start_engine_components(const bc_application_start_context& p_context) override;
 
-			void application_initialize(const bc_application_initialize_context& p_context) override;
+		void application_initialize(const bc_application_initialize_context& p_context) override;
 
-			void application_load_content(const bc_application_load_context& p_context) override;
+		void application_load_content(const bc_application_load_context& p_context) override;
 
-			void application_update(const bc_application_update_context& p_context) override;
+		void application_update(const bc_application_update_context& p_context) override;
 
-			void application_render(const bc_application_render_context& p_context) override;
+		void application_render(const bc_application_render_context& p_context) override;
 
-			void application_event(core::bci_event& p_event) override;
+		void application_event(core::bci_event& p_event) override;
 
-			void application_unload_content(const bc_application_load_context& p_context) override;
+		void application_unload_content(const bc_application_load_context& p_context) override;
 
-			void application_destroy() override;
+		void application_destroy() override;
 
-			void application_close_engine_components() override;
+		void application_close_engine_components() override;
 
-		private:
-			void load_config(game::bc_free_camera& p_camera);
+	private:
+		void load_config(game::bc_free_camera& p_camera);
 
-			void save_config();
-		};
-	}
+		void save_config();
+	};
 }

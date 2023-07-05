@@ -19,184 +19,181 @@
 #include "Game/Object/Mesh/bcMeshCollider.h"
 #include "Game/Object/Mesh/bcMeshLevelOfDetail.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
+	class bc_mesh_builder;
+
+	struct bc_mesh_part_data
 	{
-		class bc_mesh_builder;
+		core::bc_string m_name;
+		bc_mesh_material_ptr m_material;
+		core::bc_vector_movable<bc_vertex_pos_tex_nor_tan> m_vertices;
+		core::bc_vector_movable<bc_vertex_pos_tex_nor_tan_bon> m_skinned_vertices;
+		core::bc_vector_movable<bcUINT16> m_16bit_indices;
+		core::bc_vector_movable<bcUINT32> m_32bit_indices;
+		physics::bc_bound_box m_bound_box;
 
-		struct bc_mesh_part_data
-		{
-			core::bc_string m_name;
-			bc_mesh_material_ptr m_material;
-			core::bc_vector_movable<bc_vertex_pos_tex_nor_tan> m_vertices;
-			core::bc_vector_movable<bc_vertex_pos_tex_nor_tan_bon> m_skinned_vertices;
-			core::bc_vector_movable<bcUINT16> m_16bit_indices;
-			core::bc_vector_movable<bcUINT32> m_32bit_indices;
-			physics::bc_bound_box m_bound_box;
+		graphic::bc_buffer_ref m_vertex_buffer;
+		graphic::bc_buffer_ref m_index_buffer;
+	};
 
-			graphic::bc_buffer_ref m_vertex_buffer;
-			graphic::bc_buffer_ref m_index_buffer;
-		};
+	class BC_GAME_DLL bc_mesh : public core::bci_content
+	{
+		BC_CONTENT(mesh)
 
-		class BC_GAME_DLL bc_mesh : public core::bci_content
-		{
-			BC_CONTENT(mesh)
+	private:
+		using node_index_t = bc_mesh_node::node_index_t;
+		using hash_t = std::hash<core::bc_string_view>;
 
-		private:
-			using node_index_t = bc_mesh_node::node_index_t;
-			using hash_t = std::hash<core::bc_string_view>;
+	public:
+		bc_mesh(bc_mesh_builder p_builder, bc_mesh_collider_ptr p_colliders);
 
-		public:
-			bc_mesh(bc_mesh_builder p_builder, bc_mesh_collider_ptr p_colliders);
+		bc_mesh(bc_mesh&& p_other) noexcept;
 
-			bc_mesh(bc_mesh&& p_other) noexcept;
+		~bc_mesh() override = default;
 
-			~bc_mesh() override = default;
+		bc_mesh& operator=(bc_mesh&& p_other) noexcept;
 
-			bc_mesh& operator=(bc_mesh&& p_other) noexcept;
+		core::bc_estring_view get_name() const noexcept;
 
-			core::bc_estring_view get_name() const noexcept;
-
-			bcFLOAT get_auto_scale() const noexcept;
+		bcFLOAT get_auto_scale() const noexcept;
 			
-			bcFLOAT get_scale() const noexcept;
+		bcFLOAT get_scale() const noexcept;
 
-			bool get_skinned() const noexcept;
+		bool get_skinned() const noexcept;
 
-			bcSIZE get_node_count() const noexcept;
+		bcSIZE get_node_count() const noexcept;
 
-			bcSIZE get_mesh_count() const noexcept;
+		bcSIZE get_mesh_count() const noexcept;
 			
-			const bc_mesh_collider& get_collider() const noexcept;
+		const bc_mesh_collider& get_collider() const noexcept;
 
-			const bc_mesh_node* get_root() const noexcept;
+		const bc_mesh_node* get_root() const noexcept;
 
-			const bc_mesh_node* find_node(bc_mesh_node::node_index_t p_index) const noexcept;
+		const bc_mesh_node* find_node(bc_mesh_node::node_index_t p_index) const noexcept;
 			
-			const bc_mesh_node* find_node(core::bc_string_view p_name) const noexcept;
+		const bc_mesh_node* find_node(core::bc_string_view p_name) const noexcept;
 
-			const bc_mesh_node* get_node_parent(const bc_mesh_node& p_node) const noexcept;
+		const bc_mesh_node* get_node_parent(const bc_mesh_node& p_node) const noexcept;
 
-			const core::bc_vector<bc_mesh_node*>& get_node_children(const bc_mesh_node& p_node) const noexcept;
+		const core::bc_vector<bc_mesh_node*>& get_node_children(const bc_mesh_node& p_node) const noexcept;
 
-			const core::bc_matrix4f& get_node_transform(const bc_mesh_node& p_node) const noexcept;
+		const core::bc_matrix4f& get_node_transform(const bc_mesh_node& p_node) const noexcept;
 			
-			const core::bc_matrix4f& get_node_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
+		const core::bc_matrix4f& get_node_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
 			
-			const core::bc_matrix4f& get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
+		const core::bc_matrix4f& get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept;
 			
-			core::bc_string_view get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+		core::bc_string_view get_node_mesh_name(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			const bc_mesh_material& get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+		const bc_mesh_material& get_node_mesh_material(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 			
-			bc_mesh_material_ptr get_node_mesh_material_ptr(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+		bc_mesh_material_ptr get_node_mesh_material_ptr(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			const bc_render_state& get_node_mesh_render_state(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+		const bc_render_state& get_node_mesh_render_state(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			bc_render_state_ptr get_node_mesh_render_state_ptr(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+		bc_render_state_ptr get_node_mesh_render_state_ptr(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			const physics::bc_bound_box& get_node_mesh_bound_box(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+		const physics::bc_bound_box& get_node_mesh_bound_box(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			core::bc_const_span<bc_mesh_part_collider_entry> get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
+		core::bc_const_span<bc_mesh_part_collider_entry> get_node_mesh_colliders(const bc_mesh_node& p_node, bcUINT32 p_mesh_index) const;
 
-			bc_mesh_level_of_detail get_level_of_details() const noexcept;
+		bc_mesh_level_of_detail get_level_of_details() const noexcept;
 			
-		private:
-			void _apply_auto_scale(bcFLOAT p_auto_scale);
+	private:
+		void _apply_auto_scale(bcFLOAT p_auto_scale);
 
-			void _calculate_inverse_bind_pose();
+		void _calculate_inverse_bind_pose();
 			
-			void _calculate_collider_absolute_transforms();
+		void _calculate_collider_absolute_transforms();
 
-			core::bc_estring m_name;
-			bcFLOAT m_auto_scale;
-			bcFLOAT m_scale;
-			bool m_skinned;
-			bc_mesh_node* m_root;
-			core::bc_vector<bc_mesh_node> m_nodes;
-			core::bc_unordered_map<hash_t::result_type, bc_mesh_node*> m_nodes_map;
-			core::bc_vector_movable<core::bc_matrix4f> m_transformations;
-			core::bc_vector_movable<core::bc_matrix4f> m_bind_poses;
-			core::bc_vector_movable<core::bc_matrix4f> m_inverse_bind_poses;
-			core::bc_vector<bc_mesh_part_data> m_meshes;
-			core::bc_vector<bc_render_state_ptr> m_render_states;
-			bc_mesh_collider_ptr m_collider;
+		core::bc_estring m_name;
+		bcFLOAT m_auto_scale;
+		bcFLOAT m_scale;
+		bool m_skinned;
+		bc_mesh_node* m_root;
+		core::bc_vector<bc_mesh_node> m_nodes;
+		core::bc_unordered_map<hash_t::result_type, bc_mesh_node*> m_nodes_map;
+		core::bc_vector_movable<core::bc_matrix4f> m_transformations;
+		core::bc_vector_movable<core::bc_matrix4f> m_bind_poses;
+		core::bc_vector_movable<core::bc_matrix4f> m_inverse_bind_poses;
+		core::bc_vector<bc_mesh_part_data> m_meshes;
+		core::bc_vector<bc_render_state_ptr> m_render_states;
+		bc_mesh_collider_ptr m_collider;
 
-			core::bc_vector<core::bc_content_ptr<bc_mesh>> m_level_of_details;
-			core::bc_vector_movable<const bc_mesh*> m_level_of_details_map;
-		};
+		core::bc_vector<core::bc_content_ptr<bc_mesh>> m_level_of_details;
+		core::bc_vector_movable<const bc_mesh*> m_level_of_details_map;
+	};
 
-		using bc_mesh_ptr = core::bc_content_ptr<bc_mesh>;
+	using bc_mesh_ptr = core::bc_content_ptr<bc_mesh>;
 
-		inline core::bc_estring_view bc_mesh::get_name() const noexcept
-		{
-			return core::bc_estring_view(m_name);
-		}
+	inline core::bc_estring_view bc_mesh::get_name() const noexcept
+	{
+		return core::bc_estring_view(m_name);
+	}
 
-		inline bcFLOAT bc_mesh::get_auto_scale() const noexcept
-		{
-			return m_auto_scale;
-		}
+	inline bcFLOAT bc_mesh::get_auto_scale() const noexcept
+	{
+		return m_auto_scale;
+	}
 		
-		inline bcFLOAT bc_mesh::get_scale() const noexcept
-		{
-			return m_scale;
-		}
+	inline bcFLOAT bc_mesh::get_scale() const noexcept
+	{
+		return m_scale;
+	}
 
-		inline bool bc_mesh::get_skinned() const noexcept
-		{
-			return m_skinned;
-		}
+	inline bool bc_mesh::get_skinned() const noexcept
+	{
+		return m_skinned;
+	}
 
-		inline bcSIZE bc_mesh::get_node_count() const noexcept
-		{
-			return m_nodes.size();
-		}
+	inline bcSIZE bc_mesh::get_node_count() const noexcept
+	{
+		return m_nodes.size();
+	}
 
-		inline bcSIZE bc_mesh::get_mesh_count() const noexcept
-		{
-			return m_meshes.size();
-		}
+	inline bcSIZE bc_mesh::get_mesh_count() const noexcept
+	{
+		return m_meshes.size();
+	}
 		
-		inline const bc_mesh_collider& bc_mesh::get_collider() const noexcept
-		{
-			return *m_collider;
-		}
+	inline const bc_mesh_collider& bc_mesh::get_collider() const noexcept
+	{
+		return *m_collider;
+	}
 
-		inline const bc_mesh_node* bc_mesh::get_root() const noexcept
-		{
-			return m_root;
-		}
+	inline const bc_mesh_node* bc_mesh::get_root() const noexcept
+	{
+		return m_root;
+	}
 		
-		inline const bc_mesh_node* bc_mesh::get_node_parent(const bc_mesh_node& p_node) const noexcept
-		{
-			return p_node.m_parent;
-		}
+	inline const bc_mesh_node* bc_mesh::get_node_parent(const bc_mesh_node& p_node) const noexcept
+	{
+		return p_node.m_parent;
+	}
 
-		inline const core::bc_vector<bc_mesh_node*>& bc_mesh::get_node_children(const bc_mesh_node& p_node) const noexcept
-		{
-			return p_node.m_children;
-		}
+	inline const core::bc_vector<bc_mesh_node*>& bc_mesh::get_node_children(const bc_mesh_node& p_node) const noexcept
+	{
+		return p_node.m_children;
+	}
 
-		inline const core::bc_matrix4f& bc_mesh::get_node_transform(const bc_mesh_node& p_node) const noexcept
-		{
-			return m_transformations[p_node.m_index];
-		}
+	inline const core::bc_matrix4f& bc_mesh::get_node_transform(const bc_mesh_node& p_node) const noexcept
+	{
+		return m_transformations[p_node.m_index];
+	}
 
-		inline const core::bc_matrix4f& bc_mesh::get_node_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
-		{
-			return m_bind_poses[p_node.m_index];
-		}
+	inline const core::bc_matrix4f& bc_mesh::get_node_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
+	{
+		return m_bind_poses[p_node.m_index];
+	}
 		
-		inline const core::bc_matrix4f& bc_mesh::get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
-		{
-			return m_inverse_bind_poses[p_node.m_index];
-		}
+	inline const core::bc_matrix4f& bc_mesh::get_node_inverse_bind_pose_transform(const bc_mesh_node& p_node) const noexcept
+	{
+		return m_inverse_bind_poses[p_node.m_index];
+	}
 
-		inline bc_mesh_level_of_detail bc_mesh::get_level_of_details() const noexcept
-		{
-			return bc_mesh_level_of_detail(m_level_of_details_map.data(), m_level_of_details_map.size());
-		}
+	inline bc_mesh_level_of_detail bc_mesh::get_level_of_details() const noexcept
+	{
+		return bc_mesh_level_of_detail(m_level_of_details_map.data(), m_level_of_details_map.size());
 	}
 }

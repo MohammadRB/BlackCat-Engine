@@ -9,13 +9,10 @@
 #include "Graphic/PipelineStage/bcProgrammableStage.h"
 #include "GraphicImp/GraphicImpPCH.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template< >
+	struct bc_platform_programmable_stage_pack<g_api_dx11>
 	{
-		template< >
-		struct bc_platform_programmable_stage_pack<g_api_dx11>
-		{
-		};
-	}
+	};
 }

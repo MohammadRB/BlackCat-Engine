@@ -8,140 +8,138 @@
 #include "Core/Memory/bcMemoryHeap.h"
 #include "CoreTest/bcTestFixture.h"
 
-namespace black_cat
+namespace black_cat::core_test
 {
-	namespace core_test
+	TEST(MemoryHeap, AllocationTest)
 	{
-		TEST(MemoryHeap, AllocationTest)
+		constexpr bcSIZE l_alloc_count = 100;
+		std::vector<std::pair<void*, core::bc_memblock>> l_memblocks;
+
+		core::bc_memory_heap l_memory_heap;
+		l_memory_heap.initialize(10'000'000, "");
+
+		for (auto l_ite = 0U; l_ite < l_alloc_count; ++l_ite)
 		{
-			constexpr bcSIZE l_alloc_count = 100;
-			std::vector<std::pair<void*, core::bc_memblock>> l_memblocks;
+			core::bc_memblock l_block;
+			l_block.size(4);
 
-			core::bc_memory_heap l_memory_heap;
-			l_memory_heap.initialize(10'000'000, "");
+			void* l_result = l_memory_heap.alloc(&l_block);
+			auto* l_pointer = static_cast<bcINT32*>(l_result);
 
-			for (auto l_ite = 0U; l_ite < l_alloc_count; ++l_ite)
-			{
-				core::bc_memblock l_block;
-				l_block.size(4);
+			*l_pointer = l_ite;
 
-				void* l_result = l_memory_heap.alloc(&l_block);
-				auto* l_pointer = static_cast<bcINT32*>(l_result);
-
-				*l_pointer = l_ite;
-
-				l_memblocks.push_back(std::make_pair(l_result, l_block));
-			}
-
-			for (bcINT32 i = l_alloc_count - 1; i >= 0; --i)
-			{
-				auto& l_block = l_memblocks[i];
-				const auto* l_pointer = static_cast<bcINT32*>(l_block.first);
-
-				EXPECT_TRUE(*l_pointer == i);
-
-				l_memory_heap.free(l_block.first, &l_block.second);
-			}
-
-			EXPECT_TRUE(l_memory_heap.fragmentation_count() == 0);
-			EXPECT_TRUE(l_memory_heap.tracer().alloc_count() == 0);
-			EXPECT_TRUE(l_memory_heap.tracer().used_size() == 0);
-
-			l_memory_heap.destroy();
+			l_memblocks.push_back(std::make_pair(l_result, l_block));
 		}
 
-		TEST(MemoryHeap, RandomPopTest)
+		for (bcINT32 i = l_alloc_count - 1; i >= 0; --i)
 		{
-			core::bc_memory_heap l_memory_heap;
-			l_memory_heap.initialize(1000, "");
+			auto& l_block = l_memblocks[i];
+			const auto* l_pointer = static_cast<bcINT32*>(l_block.first);
 
-			std::vector<std::pair<void*, core::bc_memblock>> l_memblocks;
+			EXPECT_TRUE(*l_pointer == i);
 
-			for (auto l_ite = 0; l_ite < 5; ++l_ite)
-			{
-				core::bc_memblock l_block;
-				l_block.size(10);
-
-				void* l_result = l_memory_heap.alloc(&l_block);
-				auto* l_pointer = static_cast<bcINT32*>(l_result);
-
-				*l_pointer = l_ite;
-
-				l_memblocks.push_back(std::make_pair(l_result, l_block));
-			}
-
-			const auto l_pop_array = { 3, 4, 1, 0, 2 };
-
-			for (const auto l_pop_index : l_pop_array)
-			{
-				auto& l_block = l_memblocks[l_pop_index];
-				const auto* l_pointer = static_cast<bcINT32*>(l_block.first);
-
-				EXPECT_TRUE(*l_pointer == l_pop_index);
-
-				l_memory_heap.free(l_block.first, &l_block.second);
-			}
-
-			EXPECT_TRUE(l_memory_heap.fragmentation_count() == 0);
-			EXPECT_TRUE(l_memory_heap.tracer().alloc_count() == 0);
-			EXPECT_TRUE(l_memory_heap.tracer().used_size() == 0);
-
-			l_memory_heap.destroy();
+			l_memory_heap.free(l_block.first, &l_block.second);
 		}
 
-		TEST(MemoryHeap, MultithreadTest)
+		EXPECT_TRUE(l_memory_heap.fragmentation_count() == 0);
+		EXPECT_TRUE(l_memory_heap.tracer().alloc_count() == 0);
+		EXPECT_TRUE(l_memory_heap.tracer().used_size() == 0);
+
+		l_memory_heap.destroy();
+	}
+
+	TEST(MemoryHeap, RandomPopTest)
+	{
+		core::bc_memory_heap l_memory_heap;
+		l_memory_heap.initialize(1000, "");
+
+		std::vector<std::pair<void*, core::bc_memblock>> l_memblocks;
+
+		for (auto l_ite = 0; l_ite < 5; ++l_ite)
 		{
-			constexpr bcSIZE l_thread_count = 4;
-			constexpr bcSIZE l_alloc_count = 10000;
+			core::bc_memblock l_block;
+			l_block.size(10);
 
-			core::bc_memory_heap l_memory_heap;
-			l_memory_heap.initialize(100'000'000, "");
+			void* l_result = l_memory_heap.alloc(&l_block);
+			auto* l_pointer = static_cast<bcINT32*>(l_result);
 
-			bc_multi_producer_multi_consumer_test
-			(
-				l_thread_count,
-				0,
-				[&]()
+			*l_pointer = l_ite;
+
+			l_memblocks.push_back(std::make_pair(l_result, l_block));
+		}
+
+		const auto l_pop_array = { 3, 4, 1, 0, 2 };
+
+		for (const auto l_pop_index : l_pop_array)
+		{
+			auto& l_block = l_memblocks[l_pop_index];
+			const auto* l_pointer = static_cast<bcINT32*>(l_block.first);
+
+			EXPECT_TRUE(*l_pointer == l_pop_index);
+
+			l_memory_heap.free(l_block.first, &l_block.second);
+		}
+
+		EXPECT_TRUE(l_memory_heap.fragmentation_count() == 0);
+		EXPECT_TRUE(l_memory_heap.tracer().alloc_count() == 0);
+		EXPECT_TRUE(l_memory_heap.tracer().used_size() == 0);
+
+		l_memory_heap.destroy();
+	}
+
+	TEST(MemoryHeap, MultithreadTest)
+	{
+		constexpr bcSIZE l_thread_count = 4;
+		constexpr bcSIZE l_alloc_count = 10000;
+
+		core::bc_memory_heap l_memory_heap;
+		l_memory_heap.initialize(100'000'000, "");
+
+		bc_multi_producer_multi_consumer_test
+		(
+			l_thread_count,
+			0,
+			[&]()
+			{
+				std::vector<std::pair<void*, core::bc_memblock>> l_memblocks;
+
+				for (auto i = 0; i < l_alloc_count; ++i)
 				{
-					std::vector<std::pair<void*, core::bc_memblock>> l_memblocks;
+					core::bc_memblock l_block;
+					l_block.size(4);
 
-					for (auto i = 0; i < l_alloc_count; ++i)
-					{
-						core::bc_memblock l_block;
-						l_block.size(4);
+					//void* l_result = new bcINT32;
+					void* l_result = l_memory_heap.alloc(&l_block);
+					auto* l_pointer = static_cast<bcINT32*>(l_result);
 
-						//void* l_result = new bcINT32;
-						void* l_result = l_memory_heap.alloc(&l_block);
-						auto* l_pointer = static_cast<bcINT32*>(l_result);
+					*l_pointer = i;
 
-						*l_pointer = i;
+					l_memblocks.push_back(std::make_pair(l_result, l_block));
+				}
 
-						l_memblocks.push_back(std::make_pair(l_result, l_block));
-					}
+				for (bcINT32 i = l_alloc_count - 1; i >= 0; --i)
+				{
+					auto& l_block = l_memblocks[i];
+					const auto* l_pointer = static_cast<bcINT32*>(l_block.first);
 
-					for (bcINT32 i = l_alloc_count - 1; i >= 0; --i)
-					{
-						auto& l_block = l_memblocks[i];
-						const auto* l_pointer = static_cast<bcINT32*>(l_block.first);
+					EXPECT_TRUE(*l_pointer == i);
 
-						EXPECT_TRUE(*l_pointer == i);
+					l_memory_heap.free(l_block.first, &l_block.second);
+					//delete l_pointer;
+				}
+			},
+			[](){}
+		);
 
-						l_memory_heap.free(l_block.first, &l_block.second);
-						//delete l_pointer;
-					}
-				},
-				[](){}
-			);
+		EXPECT_TRUE(l_memory_heap.fragmentation_count() == 0);
+		EXPECT_TRUE(l_memory_heap.tracer().alloc_count() == 0);
+		EXPECT_TRUE(l_memory_heap.tracer().used_size() == 0);
 
-			EXPECT_TRUE(l_memory_heap.fragmentation_count() == 0);
-			EXPECT_TRUE(l_memory_heap.tracer().alloc_count() == 0);
-			EXPECT_TRUE(l_memory_heap.tracer().used_size() == 0);
+		l_memory_heap.destroy();
+	}
 
-			l_memory_heap.destroy();
-		}
-
-		TEST(MemoryHeap, DefragmentTest)
-		{
+	TEST(MemoryHeap, DefragmentTest)
+	{
 #ifdef BC_MEMORY_DEFRAG
 			constexpr bcSIZE l_alloc_count = 10;
 
@@ -208,10 +206,10 @@ namespace black_cat
 
 			l_memory_heap.destroy();
 #endif
-		}
+	}
 
-		TEST(MemoryHeap, RandomDefragmentTest)
-		{
+	TEST(MemoryHeap, RandomDefragmentTest)
+	{
 #ifdef BC_MEMORY_DEFRAG
 			constexpr bcSIZE l_alloc_count = 1000;
 			constexpr bcSIZE l_free_count = 100;
@@ -293,6 +291,5 @@ namespace black_cat
 
 			l_memory_heap.destroy();
 #endif
-		}
 	}
 }

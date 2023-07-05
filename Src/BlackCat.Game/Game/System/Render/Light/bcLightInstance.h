@@ -8,65 +8,62 @@
 #include "Game/bcExport.h"
 #include "Game/System/Render/Light/bcLight.h"
 
-namespace black_cat
+namespace black_cat::game
 {
-	namespace game
-	{
-		/**
+	/**
 		 * \brief Copied light information with transformations applied
 		 */
-		class BC_GAME_DLL bc_light_instance
+	class BC_GAME_DLL bc_light_instance
+	{
+	public:
+		using id_t = bc_light::id_t;
+			
+	public:
+		explicit bc_light_instance(const bc_light& p_light) noexcept;
+
+		bc_light_instance(const bc_light_instance& p_other) noexcept = default;
+
+		~bc_light_instance() = default;
+
+		bc_light_instance& operator=(const bc_light_instance& p_other) noexcept = default;
+
+		id_t get_id() const noexcept
 		{
-		public:
-			using id_t = bc_light::id_t;
+			return m_id;
+		}
 			
-		public:
-			explicit bc_light_instance(const bc_light& p_light) noexcept;
+		bc_light_type get_type() const noexcept
+		{
+			return m_type;
+		}
 
-			bc_light_instance(const bc_light_instance& p_other) noexcept = default;
+		const physics::bc_bound_box& get_bound_box() const noexcept
+		{
+			return m_bound_box;
+		}
 
-			~bc_light_instance() = default;
+		core::bc_vector3f get_min_bound() const noexcept;
 
-			bc_light_instance& operator=(const bc_light_instance& p_other) noexcept = default;
+		core::bc_vector3f get_max_bound() const noexcept;
 
-			id_t get_id() const noexcept
-			{
-				return m_id;
-			}
+		const bc_light_flare* get_flare() const noexcept;
 			
-			bc_light_type get_type() const noexcept
-			{
-				return m_type;
-			}
+		bc_direct_light* as_direct_light() noexcept;
 
-			const physics::bc_bound_box& get_bound_box() const noexcept
-			{
-				return m_bound_box;
-			}
+		const bc_direct_light* as_direct_light() const noexcept;
 
-			core::bc_vector3f get_min_bound() const noexcept;
+		bc_point_light* as_point_light() noexcept;
 
-			core::bc_vector3f get_max_bound() const noexcept;
+		const bc_point_light* as_point_light() const noexcept;
 
-			const bc_light_flare* get_flare() const noexcept;
+		bc_spot_light* as_spot_light() noexcept;
+
+		const bc_spot_light* as_spot_light() const noexcept;
 			
-			bc_direct_light* as_direct_light() noexcept;
-
-			const bc_direct_light* as_direct_light() const noexcept;
-
-			bc_point_light* as_point_light() noexcept;
-
-			const bc_point_light* as_point_light() const noexcept;
-
-			bc_spot_light* as_spot_light() noexcept;
-
-			const bc_spot_light* as_spot_light() const noexcept;
-			
-		private:
-			id_t m_id;
-			bc_light_type m_type;
-			std::variant<bc_direct_light, bc_point_light, bc_spot_light> m_light;
-			physics::bc_bound_box m_bound_box;
-		};
-	}
+	private:
+		id_t m_id;
+		bc_light_type m_type;
+		std::variant<bc_direct_light, bc_point_light, bc_spot_light> m_light;
+		physics::bc_bound_box m_bound_box;
+	};
 }

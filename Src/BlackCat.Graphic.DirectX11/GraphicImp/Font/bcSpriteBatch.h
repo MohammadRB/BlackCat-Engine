@@ -7,15 +7,12 @@
 #include "Graphic/Font/bcSpriteBatch.h"
 #include "3rdParty/DirectXTK/Include/SpriteFont.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<>
+	struct bc_platform_sprite_batch_pack<g_api_dx11>
 	{
-		template<>
-		struct bc_platform_sprite_batch_pack<g_api_dx11>
-		{
-			core::bc_unique_ptr<DirectX::SpriteBatch> m_sprite_batch;
-			core::bc_vector<Microsoft::WRL::ComPtr<ID3D11BlendState>> m_blend_states;
-		};
-	}
+		core::bc_unique_ptr<DirectX::SpriteBatch> m_sprite_batch;
+		core::bc_vector<Microsoft::WRL::ComPtr<ID3D11BlendState>> m_blend_states;
+	};
 }

@@ -37,66 +37,64 @@
 #include "Editor/Application/bcEditorRenderApplication.h"
 #include "Editor/Application/bcUICommandService.h"
 
-namespace black_cat
+namespace black_cat::editor
 {
-	namespace editor
+	bc_editor_render_app::bc_editor_render_app() = default;
+
+	bc_editor_render_app::~bc_editor_render_app() = default;
+
+	void bc_editor_render_app::application_start_engine_components(const bc_application_start_context& p_context)
 	{
-		bc_editor_render_app::bc_editor_render_app() = default;
+		core::bc_register_service(core::bc_make_service<bc_ui_command_service>
+		(
+			*core::bc_get_service<core::bc_content_stream_manager>(),
+			*core::bc_get_service<core::bc_event_manager>(),
+			*m_game_system
+		));
+		core::bc_register_loader<game::bc_height_map, bc_editor_height_map_loader_dx11>
+		(
+			"height_map", core::bc_make_loader<bc_editor_height_map_loader_dx11>()
+		);
+	}
 
-		bc_editor_render_app::~bc_editor_render_app() = default;
+	void bc_editor_render_app::application_initialize(const bc_application_initialize_context& p_context)
+	{
+		auto& l_render_system = m_game_system->get_render_system();
+		auto& l_input_system = m_game_system->get_input_system();
+		auto l_camera = core::bc_make_unique<game::bc_free_camera>
+		(
+			l_render_system.get_device_swap_buffer().get_back_buffer_width(),
+			l_render_system.get_device_swap_buffer().get_back_buffer_height(),
+			1.2,
+			0.3,
+			3000
+		);
+		l_input_system.add_editor_camera(std::move(l_camera));
 
-		void bc_editor_render_app::application_start_engine_components(const bc_application_start_context& p_context)
-		{
-			core::bc_register_service(core::bc_make_service<bc_ui_command_service>
-			(
-				*core::bc_get_service<core::bc_content_stream_manager>(),
-				*core::bc_get_service<core::bc_event_manager>(),
-				*m_game_system
-			));
-			core::bc_register_loader<game::bc_height_map, bc_editor_height_map_loader_dx11>
-			(
-				"height_map", core::bc_make_loader<bc_editor_height_map_loader_dx11>()
-			);
-		}
-
-		void bc_editor_render_app::application_initialize(const bc_application_initialize_context& p_context)
-		{
-			auto& l_render_system = m_game_system->get_render_system();
-			auto& l_input_system = m_game_system->get_input_system();
-			auto l_camera = core::bc_make_unique<game::bc_free_camera>
-			(
-				l_render_system.get_device_swap_buffer().get_back_buffer_width(),
-				l_render_system.get_device_swap_buffer().get_back_buffer_height(),
-				1.2,
-				0.3,
-				3000
-			);
-			l_input_system.add_editor_camera(std::move(l_camera));
-
-			l_render_system.add_render_pass(bc_gbuffer_initialize_pass());
-			l_render_system.add_render_pass(bc_gbuffer_pass());
-			l_render_system.add_render_pass(bc_gbuffer_vegetable_pass());
-			l_render_system.add_render_pass(bc_gbuffer_skinned_pass());
-			l_render_system.add_render_pass(bc_gbuffer_terrain_pass_dx11());
-			l_render_system.add_render_pass(bc_gbuffer_decal_pass());
-			l_render_system.add_render_pass(bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 2, { {40, 1}, {70, 1}, {130, 2} }));
-			l_render_system.add_render_pass(bc_vegetable_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
-			l_render_system.add_render_pass(bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
-			l_render_system.add_render_pass(bc_gbuffer_light_map_pass
+		l_render_system.add_render_pass(bc_gbuffer_initialize_pass());
+		l_render_system.add_render_pass(bc_gbuffer_pass());
+		l_render_system.add_render_pass(bc_gbuffer_vegetable_pass());
+		l_render_system.add_render_pass(bc_gbuffer_skinned_pass());
+		l_render_system.add_render_pass(bc_gbuffer_terrain_pass_dx11());
+		l_render_system.add_render_pass(bc_gbuffer_decal_pass());
+		l_render_system.add_render_pass(bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 2, { {40, 1}, {70, 1}, {130, 2} }));
+		l_render_system.add_render_pass(bc_vegetable_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
+		l_render_system.add_render_pass(bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
+		l_render_system.add_render_pass(bc_gbuffer_light_map_pass
 			(
 				constant::g_rpass_direct_light_depth_buffers, 
 				constant::g_rpass_deferred_rendering_gbuffer_texture,
 				constant::g_rpass_deferred_rendering_gbuffer_read_view,
 				constant::g_rpass_deferred_rendering_gbuffer_render_view
 			));
-			l_render_system.add_render_pass(bc_particle_system_pass_dx11
+		l_render_system.add_render_pass(bc_particle_system_pass_dx11
 			(
 				constant::g_rpass_deferred_rendering_gbuffer_texture,
 				constant::g_rpass_deferred_rendering_gbuffer_render_view,
 				bcL("Texture\\Particle\\Particle.dds")
 			));
-			l_render_system.add_render_pass(bc_light_flare_pass(constant::g_rpass_deferred_rendering_gbuffer_texture, constant::g_rpass_deferred_rendering_gbuffer_render_view));
-			l_render_system.add_render_pass(bc_hdr_rendering_pass
+		l_render_system.add_render_pass(bc_light_flare_pass(constant::g_rpass_deferred_rendering_gbuffer_texture, constant::g_rpass_deferred_rendering_gbuffer_render_view));
+		l_render_system.add_render_pass(bc_hdr_rendering_pass
 			(
 				constant::g_rpass_deferred_rendering_gbuffer_texture,
 				constant::g_rpass_deferred_rendering_gbuffer_read_view,
@@ -105,15 +103,15 @@ namespace black_cat
 				constant::g_rpass_hdr_output_texture_read_view,
 				constant::g_rpass_hdr_output_texture_render_view
 			));
-			l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_hdr_output_texture, constant::g_rpass_hdr_output_texture_render_view));
-			l_render_system.add_render_pass(bc_back_buffer_write_pass(constant::g_rpass_hdr_output_texture));
-			l_render_system.add_render_pass(bc_edge_detection_anti_aliasing_pass
+		l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_hdr_output_texture, constant::g_rpass_hdr_output_texture_render_view));
+		l_render_system.add_render_pass(bc_back_buffer_write_pass(constant::g_rpass_hdr_output_texture));
+		l_render_system.add_render_pass(bc_edge_detection_anti_aliasing_pass
 			(
 				constant::g_rpass_hdr_output_texture_read_view,
 				constant::g_rpass_back_buffer_texture, 
 				constant::g_rpass_back_buffer_render_view
 			));
-			l_render_system.add_render_pass(bc_icon_draw_pass
+		l_render_system.add_render_pass(bc_icon_draw_pass
 			(
 				constant::g_rpass_back_buffer_texture, 
 				constant::g_rpass_back_buffer_render_view, 
@@ -131,112 +129,111 @@ namespace black_cat
 				64, 
 				64
 			));
-			l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
-			l_render_system.add_render_pass(bc_counter_value_draw_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
-		}
+		l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
+		l_render_system.add_render_pass(bc_counter_value_draw_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
+	}
 
-		void bc_editor_render_app::application_load_content(const bc_application_load_context& p_context)
+	void bc_editor_render_app::application_load_content(const bc_application_load_context& p_context)
+	{
+		core::bc_get_service<bc_ui_command_service>()->load_content();
+	}
+
+	void bc_editor_render_app::application_update(const bc_application_update_context& p_context)
+	{
+	}
+
+	void bc_editor_render_app::application_render(const bc_application_render_context& p_context)
+	{
+	}
+
+	void bc_editor_render_app::application_event(core::bci_event& p_event)
+	{
+		if (const auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event))
 		{
-			core::bc_get_service<bc_ui_command_service>()->load_content();
-		}
-
-		void bc_editor_render_app::application_update(const bc_application_update_context& p_context)
-		{
-		}
-
-		void bc_editor_render_app::application_render(const bc_application_render_context& p_context)
-		{
-		}
-
-		void bc_editor_render_app::application_event(core::bci_event& p_event)
-		{
-			if (const auto* l_key_event = core::bci_message::as<platform::bc_app_event_key>(p_event))
-			{
-				if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
-				{
-					auto& l_input_system = m_game_system->get_input_system();
-					auto& l_camera = *l_input_system.get_camera();
-					auto* l_scene = m_game_system->get_scene();
-
-					//m_game_system->get_render_system().get_render_pass<bc_cascaded_shadow_map_pass>()->capture_debug_shapes();
-				}
-				
-				return;
-			}
-
-			if (const auto* l_editor_event = core::bci_message::as<game::bc_event_editor_started>(p_event))
+			if (l_key_event->get_key_state() == platform::bc_key_state::pressing && l_key_event->get_key() == platform::bc_key::kb_space)
 			{
 				auto& l_input_system = m_game_system->get_input_system();
-				load_config(*static_cast<game::bc_free_camera*>(l_input_system.get_camera()));
+				auto& l_camera = *l_input_system.get_camera();
+				auto* l_scene = m_game_system->get_scene();
 
-				return;
+				//m_game_system->get_render_system().get_render_pass<bc_cascaded_shadow_map_pass>()->capture_debug_shapes();
 			}
-
-			if (const auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event))
-			{
-				save_config();
-				return;
-			}
+				
+			return;
 		}
 
-		void bc_editor_render_app::application_unload_content(const bc_application_load_context& p_context)
+		if (const auto* l_editor_event = core::bci_message::as<game::bc_event_editor_started>(p_event))
 		{
-			core::bc_get_service<bc_ui_command_service>()->unload_content();
+			auto& l_input_system = m_game_system->get_input_system();
+			load_config(*static_cast<game::bc_free_camera*>(l_input_system.get_camera()));
+
+			return;
 		}
 
-		void bc_editor_render_app::application_destroy()
+		if (const auto* l_exit_event = core::bci_message::as<platform::bc_app_event_exit>(p_event))
 		{
+			save_config();
+			return;
 		}
+	}
 
-		void bc_editor_render_app::application_close_engine_components()
-		{
-		}
+	void bc_editor_render_app::application_unload_content(const bc_application_load_context& p_context)
+	{
+		core::bc_get_service<bc_ui_command_service>()->unload_content();
+	}
 
-		void bc_editor_render_app::load_config(game::bc_free_camera& p_camera)
-		{
-			auto& l_global_config = bc_get_global_config();
+	void bc_editor_render_app::application_destroy()
+	{
+	}
 
-			bool l_window_read = false;
-			bool l_camera_read = false;
-			core::bc_vector2i l_window_size;
-			core::bc_vector3f l_camera_pos;
-			core::bc_vector3f l_camera_look_at;
-			l_global_config
+	void bc_editor_render_app::application_close_engine_components()
+	{
+	}
+
+	void bc_editor_render_app::load_config(game::bc_free_camera& p_camera)
+	{
+		auto& l_global_config = bc_get_global_config();
+
+		bool l_window_read = false;
+		bool l_camera_read = false;
+		core::bc_vector2i l_window_size;
+		core::bc_vector3f l_camera_pos;
+		core::bc_vector3f l_camera_look_at;
+		l_global_config
 				.read_config_key("window_size", l_window_size, l_window_read)
 				.read_config_key("camera_position", l_camera_pos, l_camera_read)
 				.read_config_key("camera_lookat", l_camera_look_at, l_camera_read);
 
-			if (l_window_read)
-			{
-				get_output_window()->set_size(l_window_size.x, l_window_size.y);
-			}
-
-			if (l_camera_read)
-			{
-				p_camera.set_look_at(l_camera_pos, l_camera_look_at);
-			}
+		if (l_window_read)
+		{
+			get_output_window()->set_size(l_window_size.x, l_window_size.y);
 		}
 
-		void bc_editor_render_app::save_config()
+		if (l_camera_read)
 		{
-			auto& l_global_config = bc_get_global_config();
-			auto* l_camera = m_game_system->get_input_system().get_camera();
-			auto* l_output_window = get_output_window();
+			p_camera.set_look_at(l_camera_pos, l_camera_look_at);
+		}
+	}
 
-			if (!l_camera)
-			{
-				return;
-			}
+	void bc_editor_render_app::save_config()
+	{
+		auto& l_global_config = bc_get_global_config();
+		auto* l_camera = m_game_system->get_input_system().get_camera();
+		auto* l_output_window = get_output_window();
 
-			const auto l_window_size = core::bc_vector2i(l_output_window->get_width(), l_output_window->get_height());
-			const auto l_camera_position = l_camera->get_position();
-			const auto l_camera_target = l_camera->get_look_at();
+		if (!l_camera)
+		{
+			return;
+		}
 
-			l_global_config
+		const auto l_window_size = core::bc_vector2i(l_output_window->get_width(), l_output_window->get_height());
+		const auto l_camera_position = l_camera->get_position();
+		const auto l_camera_target = l_camera->get_look_at();
+
+		l_global_config
 				.add_or_update_config_key("window_size", l_window_size)
 				.add_or_update_config_key("camera_position", l_camera_position)
 				.add_or_update_config_key("camera_lookat", l_camera_target)
 				.flush_changes();
-		}
 	}
 }

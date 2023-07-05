@@ -4,11 +4,9 @@
 #include "PhysicsImp/bcExport.h"
 #include "PhysicsImp/Collision/bcSceneQuery.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
-	{
-		/*template<>
+	/*template<>
 		BC_PHYSICSIMP_DLL
 		bc_platform_scene_query_buffer<g_api_physx, bc_platform_ray_hit<g_api_physx>>::bc_platform_scene_query_buffer(bcUINT32 p_touching_hit_count)
 		{
@@ -76,5 +74,4 @@ namespace black_cat
 
 			return m_pack.m_touches.data();
 		}*/
-	}
 }

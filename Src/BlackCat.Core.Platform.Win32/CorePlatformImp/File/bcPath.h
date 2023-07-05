@@ -6,26 +6,23 @@
 
 #include "CorePlatform/File/bcPath.h"
 
-namespace black_cat
+namespace black_cat::platform
 {
-	namespace platform
+	template< >
+	struct bc_platform_path_pack< g_api_win32 >
 	{
-		template< >
-		struct bc_platform_path_pack< g_api_win32 >
-		{
-		public:
+	public:
 #ifdef BC_UNICODE
-			using path_string = std::wstring;
+		using path_string = std::wstring;
 #else
 			using path_string = std::string;
 #endif
 
-			bc_platform_path_pack(path_string p_path)
-				: m_path(std::move(p_path))
-			{
-			}
+		bc_platform_path_pack(path_string p_path)
+			: m_path(std::move(p_path))
+		{
+		}
 
-			path_string m_path;
-		};
-	}
+		path_string m_path;
+	};
 }

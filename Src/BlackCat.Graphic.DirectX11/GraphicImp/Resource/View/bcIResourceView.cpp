@@ -3,9 +3,6 @@
 #include "GraphicImp/GraphicImpPCH.h"
 #include "GraphicImp/Resource/View/bcIResourceView.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
-	{
-	}
 }

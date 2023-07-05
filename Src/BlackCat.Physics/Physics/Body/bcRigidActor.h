@@ -10,39 +10,37 @@
 #include "Physics/Collision/bcCollisionGroup.h"
 #include "Physics/Collision/bcQueryGroup.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	template<bc_physics_api TApi>
+	struct bc_platform_rigid_actor_pack
 	{
-		template<bc_physics_api TApi>
-		struct bc_platform_rigid_actor_pack
-		{
-		};
+	};
 
-		template<bc_physics_api TApi>
-		class bc_platform_rigid_actor : public bc_platform_actor<TApi>
-		{
-		public:
-			using platform_pack = bc_platform_rigid_actor_pack<TApi>;
+	template<bc_physics_api TApi>
+	class bc_platform_rigid_actor : public bc_platform_actor<TApi>
+	{
+	public:
+		using platform_pack = bc_platform_rigid_actor_pack<TApi>;
 
-		public:
-			bc_platform_rigid_actor() noexcept;
+	public:
+		bc_platform_rigid_actor() noexcept;
 			
-			explicit bc_platform_rigid_actor(platform_pack& p_pack) noexcept;
+		explicit bc_platform_rigid_actor(platform_pack& p_pack) noexcept;
 
-			bc_platform_rigid_actor(const bc_platform_rigid_actor&) noexcept;
+		bc_platform_rigid_actor(const bc_platform_rigid_actor&) noexcept;
 
-			virtual ~bc_platform_rigid_actor() override;
+		virtual ~bc_platform_rigid_actor() override;
 
-			bc_platform_rigid_actor& operator=(const bc_platform_rigid_actor&);
+		bc_platform_rigid_actor& operator=(const bc_platform_rigid_actor&);
 
-			/**
+		/**
 			 * \brief Get actor world space transform.
 			 * \return 
 			 */
-			bc_transform get_global_pose() const noexcept;
+		bc_transform get_global_pose() const noexcept;
 
-			/**
+		/**
 			 * \brief Set actor world space transform.
 			 * This method is mainly for dynamic rigid bodies and even with dynamic bodies there are restrictions:
 			 * 
@@ -51,54 +49,53 @@ namespace black_cat
 			 * 
 			 * \param p_transform 
 			 */
-			void set_global_pose(const bc_transform& p_transform) noexcept;
+		void set_global_pose(const bc_transform& p_transform) noexcept;
 
-			/**
+		/**
 			 * \brief Attach a shape to actor
 			 * Waking: No
 			 * \param p_shape 
 			 */
-			void attach_shape(bc_shape& p_shape) noexcept;
+		void attach_shape(bc_shape& p_shape) noexcept;
 
-			/**
+		/**
 			 * \brief detach shape from actor
 			 * Waking: No
 			 * \param p_shape 
 			 */
-			void detach_shape(bc_shape& p_shape) noexcept;
+		void detach_shape(bc_shape& p_shape) noexcept;
 
-			bcUINT32 get_shape_count() const noexcept;
+		bcUINT32 get_shape_count() const noexcept;
 
-			/**
+		/**
 			 * \brief Retrieve all the shape pointers belonging to the actor.
 			 * \param p_buffer 
 			 * \param p_buffer_size 
 			 * \param p_start_index
 			 * \return Number of shape pointers written to the buffer.
 			 */
-			bcUINT32 get_shapes(bc_shape* p_buffer, bcUINT32 p_buffer_size, bcUINT32 p_start_index = 0) const noexcept;
+		bcUINT32 get_shapes(bc_shape* p_buffer, bcUINT32 p_buffer_size, bcUINT32 p_start_index = 0) const noexcept;
 
-			/**
+		/**
 			 * \brief Set collision group and mask for all shapes included in this actor
 			 * \param p_filter 
 			 */
-			void set_collision_group(bc_collision_filter p_filter) noexcept;
+		void set_collision_group(bc_collision_filter p_filter) noexcept;
 
-			/**
+		/**
 			* \brief Set query group for all shapes included in this actor
 			* \param p_filter
 			*/
-			void set_query_group(bc_query_group p_filter) noexcept;
+		void set_query_group(bc_query_group p_filter) noexcept;
 
-			/**
+		/**
 			 * \brief Set notify flag for all shapes included in this actor
 			 * \param p_flag 
 			 * \param p_value 
 			 */
-			void set_notify_flag(bc_shape_notify_flag p_flag, bool p_value) noexcept;
-		};
+		void set_notify_flag(bc_shape_notify_flag p_flag, bool p_value) noexcept;
+	};
 
-		using bc_rigid_actor = bc_platform_rigid_actor<g_current_physics_api>;
-		using bc_rigid_actor_ref = bc_physics_ref<bc_rigid_actor>;
-	}
+	using bc_rigid_actor = bc_platform_rigid_actor<g_current_physics_api>;
+	using bc_rigid_actor_ref = bc_physics_ref<bc_rigid_actor>;
 }

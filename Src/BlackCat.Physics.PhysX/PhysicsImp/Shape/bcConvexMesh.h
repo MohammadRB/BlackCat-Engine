@@ -9,14 +9,11 @@
 #include "Physics/Shape/bcConvexMesh.h"
 #include "PlatformImp/PlatformImpPCH.h"
 
-namespace black_cat
+namespace black_cat::physics
 {
-	namespace physics
+	template<>
+	struct bc_platform_convex_mesh_pack<g_api_physx> : bc_platform_physics_reference_pack<g_api_physx>
 	{
-		template<>
-		struct bc_platform_convex_mesh_pack<g_api_physx> : bc_platform_physics_reference_pack<g_api_physx>
-		{
-			constexpr static bcUINT16 s_polygon_limit = 256;
-		};
-	}
+		constexpr static bcUINT16 s_polygon_limit = 256;
+	};
 }

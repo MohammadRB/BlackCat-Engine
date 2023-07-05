@@ -4,47 +4,44 @@
 
 #include "Graphic/bcRenderApi.h"
 
-namespace black_cat
+namespace black_cat::graphic
 {
-	namespace graphic
+	template<bc_render_api TRenderApi>
+	struct bc_platform_texture_config_pack
 	{
-		template<bc_render_api TRenderApi>
-		struct bc_platform_texture_config_pack
+	};
+
+	template<bc_render_api TRenderApi>
+	class bc_platform_texture_config
+	{
+	public:
+		using platform_pack = bc_platform_texture_config_pack<TRenderApi>;
+
+		bcUINT32 get_width() const noexcept;
+
+		bcUINT32 get_height() const noexcept;
+
+		bc_resource_usage get_usage() const noexcept;
+
+		bc_texture_ms_config get_sample_count() const noexcept;
+
+		bc_format get_format() const noexcept;
+
+		bc_resource_view_type get_view_types() const noexcept;
+
+		platform_pack& get_platform_pack() noexcept
 		{
-		};
+			return m_pack;
+		}
 
-		template<bc_render_api TRenderApi>
-		class bc_platform_texture_config
+		const platform_pack& get_platform_pack() const  noexcept
 		{
-		public:
-			using platform_pack = bc_platform_texture_config_pack<TRenderApi>;
+			return m_pack;
+		}
 
-			bcUINT32 get_width() const noexcept;
+	private:
+		platform_pack m_pack;
+	};
 
-			bcUINT32 get_height() const noexcept;
-
-			bc_resource_usage get_usage() const noexcept;
-
-			bc_texture_ms_config get_sample_count() const noexcept;
-
-			bc_format get_format() const noexcept;
-
-			bc_resource_view_type get_view_types() const noexcept;
-
-			platform_pack& get_platform_pack() noexcept
-			{
-				return m_pack;
-			}
-
-			const platform_pack& get_platform_pack() const  noexcept
-			{
-				return m_pack;
-			}
-
-		private:
-			platform_pack m_pack;
-		};
-
-		using bc_texture_config = bc_platform_texture_config<g_current_render_api>;
-	}
+	using bc_texture_config = bc_platform_texture_config<g_current_render_api>;
 }
