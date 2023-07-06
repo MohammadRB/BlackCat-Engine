@@ -22,6 +22,7 @@
 #include "Game/System/bcGameSystem.h"
 #include "Game/Query/bcQueryContext.h"
 #include "Game/bcEvent.h"
+#include "Input/bcGlobalConfig.h"
 
 namespace black_cat::game
 {
@@ -283,14 +284,15 @@ namespace black_cat::game
 		m_script_system->initialize(true);
 		m_render_system = core::bc_make_unique<bc_render_system>(core::bc_alloc_type::program);
 		m_render_system->initialize(bc_render_system_parameter
-			(
-				p_parameter.m_content_stream,
-				*m_physics_system,
-				p_parameter.m_device_backbuffer_width,
-				p_parameter.m_device_backbuffer_height,
-				p_parameter.m_device_backbuffer_format,
-				p_parameter.m_output_window ? p_parameter.m_output_window->get_device_output() : graphic::bc_device_output()
-			));
+		(
+			p_parameter.m_content_stream,
+			*m_physics_system,
+			p_parameter.m_output_window ? p_parameter.m_output_window->get_device_output() : graphic::bc_device_output(),
+			p_parameter.m_device_backbuffer_width,
+			p_parameter.m_device_backbuffer_height,
+			p_parameter.m_device_backbuffer_format,
+			m_file_system->get_global_config().get_preferred_gpu()
+		));
 		m_console = core::bc_make_unique<bc_game_console>(core::bc_alloc_type::program, *m_script_system);
 
 		m_pause_event_handle = m_event_manager->register_event_listener<bc_event_game_pause_state>

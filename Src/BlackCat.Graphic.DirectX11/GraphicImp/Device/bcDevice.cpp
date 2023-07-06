@@ -651,23 +651,23 @@ namespace black_cat::graphic
 		return l_shader_ptr;
 	}
 
-	template<>
+	template <>
 	BC_GRAPHICIMP_DLL
-	bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_hull_shader(const bcBYTE* p_data, 
-	                                                                           bcSIZE p_data_size, 
-	                                                                           const bcCHAR* p_function_name, 
-	                                                                           const bcCHAR* p_source_file, 
-	                                                                           const bc_shader_macro* p_macros, 
-	                                                                           bcUINT32 p_macro_count)
+	bc_compiled_shader_ptr bc_platform_device<g_api_dx11>::compile_hull_shader(const bcBYTE* p_data,
+		bcSIZE p_data_size,
+		const bcCHAR* p_function_name,
+		const bcCHAR* p_source_file,
+		const bc_shader_macro* p_macros,
+		bcUINT32 p_macro_count)
 	{
 		const D3D_SHADER_MACRO* l_macros = nullptr;
 
-		if (p_macro_count> 0)
+		if (p_macro_count > 0)
 		{
 			core::bc_vector<D3D_SHADER_MACRO> l_macro_definitions;
 			l_macros = _create_shader_macro_array(p_macros, p_macro_count, l_macro_definitions);
 		}
-			
+
 		auto* l_dx_shader = _compile_shader
 		(
 			p_data,
@@ -1352,10 +1352,10 @@ namespace black_cat::graphic
 	template<>
 	BC_GRAPHICIMP_DLL
 	void bc_platform_device<g_api_dx11>::resize_texture2d(bc_texture2d& p_texture,
-	                                                      bcUINT p_width,
-	                                                      bcUINT p_height,
-	                                                      bci_resource_view** p_views,
-	                                                      bcUINT p_num_views)
+		bcUINT p_width,
+		bcUINT p_height,
+		bci_resource_view** p_views,
+		bcUINT p_num_views)
 	{
 		bc_texture_config l_texture_config;
 		p_texture.get_platform_pack().m_texture->GetDesc(&l_texture_config.get_platform_pack().m_desc);
@@ -1417,7 +1417,7 @@ namespace black_cat::graphic
 
 				auto* l_dx_view = _initialize_render_target_view
 				(
-					static_cast<bc_device*>(this),
+					this,
 					&p_texture,
 					&l_render_view_config
 				);
@@ -1445,7 +1445,7 @@ namespace black_cat::graphic
 
 	template<>
 	BC_GRAPHICIMP_DLL
-	void bc_platform_device<g_api_dx11>::_initialize()
+	void bc_platform_device<g_api_dx11>::_initialize(core::bc_string_view p_preferred_gpu)
 	{
 		HRESULT l_result = S_OK;
 
@@ -1468,14 +1468,19 @@ namespace black_cat::graphic
 			std::end(l_adapters),
 			[&](const ComPtr<IDXGIAdapter>& p_adapter1, const ComPtr<IDXGIAdapter>& p_adapter2)
 			{
-				const auto l_get_adapter_rank = [](IDXGIAdapter& p_adapter, core::bc_const_span<core::bc_wstring_view> p_preferred_adapters)
+				const auto l_get_adapter_rank = [&](IDXGIAdapter& p_adapter, core::bc_const_span<core::bc_wstring_view> p_preferred_adapters)
 				{
 					DXGI_ADAPTER_DESC l_adapter_desc;
 					p_adapter.GetDesc(&l_adapter_desc);
 
+					auto l_adapter_rank = 0U;
 					core::bc_wstring_view l_adapter_title = l_adapter_desc.Description;
 
-					auto l_adapter_rank = 0U;
+					if (!p_preferred_gpu.empty() && core::bc_to_wstring_frame(p_preferred_gpu.data()) == l_adapter_title)
+					{
+						return l_adapter_rank;
+					}
+
 					for (auto l_preferred_adapter : p_preferred_adapters)
 					{
 						auto l_adapter_ite = std::search

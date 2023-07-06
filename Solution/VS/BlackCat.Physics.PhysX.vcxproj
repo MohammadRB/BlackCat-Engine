@@ -227,12 +227,9 @@ xcopy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\Physi
       <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Device\*.h ..\..\BC_SDK\Include\PhysicsImp\Body
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Device\Command\*.h ..\..\BC_SDK\Include\PhysicsImp\Collision
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\PipelineStage\*.h ..\..\BC_SDK\Include\PhysicsImp\Fundation
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Resource\*.h ..\..\BC_SDK\Include\Graphic\PhysicsImp\Joint
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Resource\Buffer\*.h ..\..\BC_SDK\Include\PhysicsImp\Shape
+      <Command>if not exist ..\..\BC_SDK\Include\PhysicsImp\ mkdir ..\..\BC_SDK\Include\PhysicsImp\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
@@ -241,7 +238,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Develope|x64'">
@@ -265,12 +264,9 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Device\*.h ..\..\BC_SDK\Include\PhysicsImp\Body
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Device\Command\*.h ..\..\BC_SDK\Include\PhysicsImp\Collision
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\PipelineStage\*.h ..\..\BC_SDK\Include\PhysicsImp\Fundation
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Resource\*.h ..\..\BC_SDK\Include\Graphic\PhysicsImp\Joint
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Resource\Buffer\*.h ..\..\BC_SDK\Include\PhysicsImp\Shape
+      <Command>if not exist ..\..\BC_SDK\Include\PhysicsImp\ mkdir ..\..\BC_SDK\Include\PhysicsImp\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
@@ -279,7 +275,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -347,12 +345,9 @@ xcopy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\Physi
       <AdditionalLibraryDirectories>$(Configuration);..\..\3rdParty\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Device\*.h ..\..\BC_SDK\Include\PhysicsImp\Body
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Device\Command\*.h ..\..\BC_SDK\Include\PhysicsImp\Collision
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\PipelineStage\*.h ..\..\BC_SDK\Include\PhysicsImp\Fundation
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Resource\*.h ..\..\BC_SDK\Include\Graphic\PhysicsImp\Joint
-copy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\Resource\Buffer\*.h ..\..\BC_SDK\Include\PhysicsImp\Shape
+      <Command>if not exist ..\..\BC_SDK\Include\PhysicsImp\ mkdir ..\..\BC_SDK\Include\PhysicsImp\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
@@ -361,7 +356,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Physics.PhysX\PhysicsImp\*.h ..\..\BC_SDK\Include\PhysicsImp\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
