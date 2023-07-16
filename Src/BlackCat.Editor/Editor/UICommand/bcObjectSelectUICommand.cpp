@@ -23,7 +23,8 @@ namespace black_cat::editor
 		  m_screen_height(p_screen_height),
 		  m_point_left(p_point_left),
 		  m_point_top(p_point_top),
-		  m_is_object_hover(p_is_object_hover)
+		  m_is_object_hover(p_is_object_hover),
+		  m_actor_transformation()
 	{
 	}
 
@@ -60,7 +61,7 @@ namespace black_cat::editor
 		auto* l_shape_draw_pass = p_context.m_game_system.get_render_system().get_render_pass<bc_shape_draw_pass>();
 		if (l_shape_draw_pass)
 		{
-			if(m_is_object_hover)
+			if (m_is_object_hover)
 			{
 				l_shape_draw_pass->set_hovered_actor(m_actor);
 			}

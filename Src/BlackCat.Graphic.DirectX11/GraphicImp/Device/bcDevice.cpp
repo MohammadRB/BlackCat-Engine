@@ -219,7 +219,7 @@ namespace black_cat::graphic
 		{
 			bcUINT l_flags = 0;
 #if defined( BC_DEBUG )
-			l_flags |= D3D10_SHADER_DEBUG | D3D10_SHADER_SKIP_OPTIMIZATION/*|D3D10_SHADER_WARNINGS_ARE_ERRORS*/;
+			l_flags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION /*| D3DCOMPILE_WARNINGS_ARE_ERRORS*/;
 #endif
 
 			ID3D10Blob* l_compiled_shader;
@@ -275,12 +275,12 @@ namespace black_cat::graphic
 		ID3D11VertexShader* l_shader;
 
 		dx_call(p_device->get_platform_pack().m_device->CreateVertexShader
-			(
-				p_data,
-				p_data_size,
-				nullptr,
-				&l_shader
-			));
+		(
+			p_data,
+			p_data_size,
+			nullptr,
+			&l_shader
+		));
 
 		dx_call(D3DCreateBlob(p_data_size, &l_compiled_shader));
 		std::memcpy(l_compiled_shader->GetBufferPointer(), p_data, p_data_size);
@@ -293,12 +293,12 @@ namespace black_cat::graphic
 		ID3D11HullShader* l_shader;
 
 		dx_call(p_device->get_platform_pack().m_device->CreateHullShader
-			(
-				p_data,
-				p_data_size,
-				nullptr,
-				&l_shader
-			));
+		(
+			p_data,
+			p_data_size,
+			nullptr,
+			&l_shader
+		));
 
 		return l_shader;
 	}
@@ -308,12 +308,12 @@ namespace black_cat::graphic
 		ID3D11DomainShader* l_shader;
 
 		dx_call(p_device->get_platform_pack().m_device->CreateDomainShader
-			(
-				p_data,
-				p_data_size,
-				nullptr,
-				&l_shader
-			));
+		(
+			p_data,
+			p_data_size,
+			nullptr,
+			&l_shader
+		));
 
 		return l_shader;
 	}
@@ -323,12 +323,12 @@ namespace black_cat::graphic
 		ID3D11GeometryShader* l_shader;
 
 		dx_call(p_device->get_platform_pack().m_device->CreateGeometryShader
-			(
-				p_data,
-				p_data_size,
-				nullptr,
-				&l_shader
-			));
+		(
+			p_data,
+			p_data_size,
+			nullptr,
+			&l_shader
+		));
 
 		return l_shader;
 	}
@@ -338,12 +338,12 @@ namespace black_cat::graphic
 		ID3D11PixelShader* l_shader;
 
 		dx_call(p_device->get_platform_pack().m_device->CreatePixelShader
-			(
-				p_data,
-				p_data_size,
-				nullptr,
-				&l_shader
-			));
+		(
+			p_data,
+			p_data_size,
+			nullptr,
+			&l_shader
+		));
 
 		return l_shader;
 	}
@@ -353,12 +353,12 @@ namespace black_cat::graphic
 		ID3D11ComputeShader* l_shader;
 
 		dx_call(p_device->get_platform_pack().m_device->CreateComputeShader
-			(
-				p_data,
-				p_data_size,
-				nullptr,
-				&l_shader
-			));
+		(
+			p_data,
+			p_data_size,
+			nullptr,
+			&l_shader
+		));
 
 		return l_shader;
 	}
@@ -411,11 +411,11 @@ namespace black_cat::graphic
 		const D3D11_DEPTH_STENCIL_VIEW_DESC& l_depth_stencil_view_desc = p_view_config->get_platform_pack().m_depth_stencil_view_desc;
 
 		dx_call(p_device->get_platform_pack().m_device->CreateDepthStencilView
-			(
-				l_resource,
-				&l_depth_stencil_view_desc,
-				&l_depth_stencil_view
-			));
+		(
+			l_resource,
+			&l_depth_stencil_view_desc,
+			&l_depth_stencil_view
+		));
 
 		return l_depth_stencil_view;
 	}
@@ -428,11 +428,11 @@ namespace black_cat::graphic
 		const D3D11_RENDER_TARGET_VIEW_DESC& l_render_target_view_desc = p_view_config->get_platform_pack().m_render_target_view_desc;
 
 		dx_call(p_device->get_platform_pack().m_device->CreateRenderTargetView
-			(
-				l_resource,
-				&l_render_target_view_desc,
-				&l_render_target_view
-			));
+		(
+			l_resource,
+			&l_render_target_view_desc,
+			&l_render_target_view
+		));
 
 		return l_render_target_view;
 	}

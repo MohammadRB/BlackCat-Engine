@@ -14,11 +14,11 @@ namespace black_cat::game
 	};
 
 	/**
-		 * \brief Actor identifier which consist of three peace of data.
-		 * \n First 3 bits is actor repeat index which indicate how many times a new actor is initialized in physical storage of actor.
-		 * \n Second 2 bits is manager index which refers to actor component manager that owns this actor.
-		 * \n Last 27 bits is actor index which refers to physical storage of actor.
-		 */
+	 * \brief Actor identifier which consist of three peace of data.
+	 * \n First 3 bits is actor repeat index which indicate how many times a new actor is initialized in physical storage of actor.
+	 * \n Second 2 bits is manager index which refers to actor component manager that owns this actor.
+	 * \n Last 27 bits is actor index which refers to physical storage of actor.
+	 */
 	struct bc_actor_id
 	{
 	private:
@@ -39,8 +39,8 @@ namespace black_cat::game
 
 	public:
 		/**
-			 * \brief Default construction which initialize with invalid id
-			 */
+		 * \brief Default construction which initialize with invalid id
+		 */
 		bc_actor_id() = default;
 
 		explicit constexpr bc_actor_id(bcSIZE p_hash) noexcept
@@ -74,26 +74,26 @@ namespace black_cat::game
 		static bcUINT32 generate_new_manager_id(bcUINT32 p_old_manager_id) noexcept;
 
 		/**
-			 * \brief Decompose actor id into actor index, actor manager id and actor repeat index
-			 * \param p_id 
-			 * \return 
-			 */
+		 * \brief Decompose actor id into actor index, actor manager id and actor repeat index
+		 * \param p_id 
+		 * \return 
+		 */
 		static bc_actor_id_data decompose_id(bc_actor_id p_id) noexcept;
 
 		/**
-			 * \brief Generate actor id from actor index, actor manager id and actor repeat index
-			 * \param p_index
-			 * \param p_manager_index 
-			 * \param p_repeat_index 
-			 * \return 
-			 */
+		 * \brief Generate actor id from actor index, actor manager id and actor repeat index
+		 * \param p_index
+		 * \param p_manager_index 
+		 * \param p_repeat_index 
+		 * \return 
+		 */
 		static bc_actor_id compose_id(bcUINT32 p_index, bcUINT32 p_manager_index, bcUINT32 p_repeat_index) noexcept;
 
 		/**
-			 * \brief Generate actor id with invalid index and provided repeat index
-			 * \param p_repeat_index 
-			 * \return 
-			 */
+		 * \brief Generate actor id with invalid index and provided repeat index
+		 * \param p_repeat_index 
+		 * \return 
+		 */
 		static bc_actor_id compose_invalid_index(bcUINT32 p_repeat_index) noexcept;
 
 	private:

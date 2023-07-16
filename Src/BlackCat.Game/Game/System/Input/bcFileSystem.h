@@ -34,35 +34,35 @@ namespace black_cat::game
 
 		core::bc_estring_view get_content_path() const noexcept;
 
-		core::bc_estring get_content_path(const bcECHAR* p_path) const noexcept;
+		core::bc_estring get_content_path(core::bc_estring_view p_path) const noexcept;
 
 		core::bc_estring_view get_content_data_path() const noexcept;
 
-		core::bc_estring get_content_data_path(const bcECHAR* p_data_path) const noexcept;
+		core::bc_estring get_content_data_path(core::bc_estring_view p_data_path) const noexcept;
 
 		core::bc_estring_view get_content_texture_path() const noexcept;
 
-		core::bc_estring get_content_texture_path(const bcECHAR* p_texture_path) const noexcept;
+		core::bc_estring get_content_texture_path(core::bc_estring_view p_texture_path) const noexcept;
 
 		core::bc_estring_view get_content_sound_path() const noexcept;
 
-		core::bc_estring get_content_sound_path(const bcECHAR* p_sound_path) const noexcept;
+		core::bc_estring get_content_sound_path(core::bc_estring_view p_sound_path) const noexcept;
 
 		core::bc_estring_view get_content_model_path() const noexcept;
 
-		core::bc_estring get_content_model_path(const bcECHAR* p_model_path) const noexcept;
+		core::bc_estring get_content_model_path(core::bc_estring_view p_model_path) const noexcept;
 
 		core::bc_estring_view get_content_platform_shader_path() const noexcept;
 
-		core::bc_estring get_content_platform_shader_path(const bcECHAR* p_shader_path) const noexcept;
+		core::bc_estring get_content_platform_shader_path(core::bc_estring_view p_shader_path) const noexcept;
 
 		core::bc_estring_view get_content_script_path() const noexcept;
 
-		core::bc_estring get_content_script_path(const bcECHAR* p_script_path) const noexcept;
+		core::bc_estring get_content_script_path(core::bc_estring_view p_script_path) const noexcept;
 
 		core::bc_estring_view get_content_scene_path() const noexcept;
 
-		core::bc_estring get_content_scene_path(const bcECHAR* p_scene_path) const noexcept;
+		core::bc_estring get_content_scene_path(core::bc_estring_view p_scene_path) const noexcept;
 
 		bc_global_config& get_global_config() noexcept;
 

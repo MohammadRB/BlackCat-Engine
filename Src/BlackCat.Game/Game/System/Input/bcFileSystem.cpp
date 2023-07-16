@@ -126,7 +126,7 @@ namespace black_cat::game
 		return m_content_base_path;
 	}
 
-	core::bc_estring bc_file_system::get_content_path(const bcECHAR* p_path) const noexcept
+	core::bc_estring bc_file_system::get_content_path(core::bc_estring_view p_path) const noexcept
 	{
 		core::bc_path l_path(get_content_path());
 		l_path.combine(core::bc_path(p_path));
@@ -139,7 +139,7 @@ namespace black_cat::game
 		return m_content_data_path;
 	}
 
-	core::bc_estring bc_file_system::get_content_data_path(const bcECHAR* p_data_path) const noexcept
+	core::bc_estring bc_file_system::get_content_data_path(core::bc_estring_view p_data_path) const noexcept
 	{
 		core::bc_path l_path(get_content_data_path());
 		l_path.combine(core::bc_path(p_data_path));
@@ -152,7 +152,7 @@ namespace black_cat::game
 		return m_content_texture_path;
 	}
 
-	core::bc_estring bc_file_system::get_content_texture_path(const bcECHAR* p_texture_path) const noexcept
+	core::bc_estring bc_file_system::get_content_texture_path(core::bc_estring_view p_texture_path) const noexcept
 	{
 		core::bc_path l_path(get_content_texture_path());
 		l_path.combine(core::bc_path(p_texture_path));
@@ -165,7 +165,7 @@ namespace black_cat::game
 		return m_content_sound_path;
 	}
 
-	core::bc_estring bc_file_system::get_content_sound_path(const bcECHAR* p_sound_path) const noexcept
+	core::bc_estring bc_file_system::get_content_sound_path(core::bc_estring_view p_sound_path) const noexcept
 	{
 		core::bc_path l_path(get_content_sound_path());
 		l_path.combine(core::bc_path(p_sound_path));
@@ -178,7 +178,7 @@ namespace black_cat::game
 		return m_content_model_path;
 	}
 
-	core::bc_estring bc_file_system::get_content_model_path(const bcECHAR* p_model_path) const noexcept
+	core::bc_estring bc_file_system::get_content_model_path(core::bc_estring_view p_model_path) const noexcept
 	{
 		core::bc_path l_path(get_content_model_path());
 		l_path.combine(core::bc_path(p_model_path));
@@ -191,7 +191,7 @@ namespace black_cat::game
 		return m_content_platform_shader_path;
 	}
 
-	core::bc_estring bc_file_system::get_content_platform_shader_path(const bcECHAR* p_shader_path) const noexcept
+	core::bc_estring bc_file_system::get_content_platform_shader_path(core::bc_estring_view p_shader_path) const noexcept
 	{
 		core::bc_path l_path(get_content_platform_shader_path());
 		l_path.combine(core::bc_path(p_shader_path));
@@ -204,7 +204,7 @@ namespace black_cat::game
 		return m_content_script_path;
 	}
 
-	core::bc_estring bc_file_system::get_content_script_path(const bcECHAR* p_script_path) const noexcept
+	core::bc_estring bc_file_system::get_content_script_path(core::bc_estring_view p_script_path) const noexcept
 	{
 		core::bc_path l_path(get_content_script_path());
 		l_path.combine(core::bc_path(p_script_path));
@@ -217,10 +217,10 @@ namespace black_cat::game
 		return m_content_scene_path;
 	}
 
-	core::bc_estring bc_file_system::get_content_scene_path(const bcECHAR* p_scene_path) const noexcept
+	core::bc_estring bc_file_system::get_content_scene_path(core::bc_estring_view p_scene_path) const noexcept
 	{
 		constexpr core::bc_estring_view l_scene_extension(bcL(".json"));
-		core::bc_estring_frame l_scene_name = p_scene_path;
+		core::bc_estring_frame l_scene_name = p_scene_path.data();
 
 		const bool l_end_with_json = core::bc_string_ends_with(l_scene_name, l_scene_extension);
 		if (!l_end_with_json)

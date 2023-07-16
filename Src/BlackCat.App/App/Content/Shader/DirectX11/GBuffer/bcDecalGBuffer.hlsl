@@ -120,7 +120,7 @@ bc_ps_output ps(bc_vs_output p_input)
 
 	clip((l_stencil & p_input.m_group) - 1.0f);
 	
-	const float3 l_pixel_world = bc_reconstruct_world_space(l_clip_space.xy, l_depth, g_view_projection_inv);
+	const float3 l_pixel_world = bc_reconstruct_world_position(l_clip_space.xy, l_depth, g_view_projection_inv);
 	const float3 l_pixel_local = mul(float4(l_pixel_world, 1), p_input.m_world_inv).xyz;
 
 	clip(0.5 - abs(l_pixel_local));
@@ -151,9 +151,7 @@ bc_ps_output ps(bc_vs_output p_input)
 	
 	clip(l_diffuse_map.a - 0.005);
 	
-	const float3 l_ddx_pixel_world = ddx(l_pixel_world);
-	const float3 l_ddy_pixel_world = ddy(l_pixel_world);
-	const float3 l_pixel_normal = normalize(cross(l_ddx_pixel_world, l_ddy_pixel_world));
+	const float3 l_pixel_normal = bc_reconstruct_world_normal(l_pixel_world);
 	const float3x3 l_tangent_space = cotangent_frame(l_pixel_normal, l_pixel_world, l_decal_texcoord);
 
 	const float3 l_world_normal = normalize(mul(bc_to_decoded_normal(l_normal_map.rgb), l_tangent_space));

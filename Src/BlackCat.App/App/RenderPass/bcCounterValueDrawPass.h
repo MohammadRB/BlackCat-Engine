@@ -24,7 +24,7 @@ namespace black_cat
 	public:
 		bc_counter_value_draw_pass(game::bc_render_pass_variable_t p_render_target_texture_param, 
 			game::bc_render_pass_variable_t p_render_target_view_param, 
-			core::bc_estring_view p_font_path);
+			core::bc_estring p_font_path);
 		
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 		
@@ -43,7 +43,7 @@ namespace black_cat
 	private:
 		game::bc_render_pass_variable_t m_render_target_texture_param;
 		game::bc_render_pass_variable_t m_render_target_view_param;
-		core::bc_estring_view m_font_path;
+		core::bc_estring m_font_path;
 
 		core::bc_array<core::bc_vector<core::bc_string>, 2> m_counter_values;
 		bcUINT32 m_counter_values_read_index;

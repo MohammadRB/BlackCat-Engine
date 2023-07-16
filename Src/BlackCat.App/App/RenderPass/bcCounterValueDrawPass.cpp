@@ -17,10 +17,10 @@ namespace black_cat
 {
 	bc_counter_value_draw_pass::bc_counter_value_draw_pass(game::bc_render_pass_variable_t p_render_target_texture_param, 
 		game::bc_render_pass_variable_t p_render_target_view_parameter, 
-		core::bc_estring_view p_font_path)
+		core::bc_estring p_font_path)
 		: m_render_target_texture_param(p_render_target_texture_param),
 		m_render_target_view_param(p_render_target_view_parameter),
-		m_font_path(p_font_path),
+		m_font_path(std::move(p_font_path)),
 		m_counter_values_read_index(0),
 		m_counter_values_update_interval(1000),
 		m_char_bound()

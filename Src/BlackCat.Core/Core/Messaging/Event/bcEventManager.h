@@ -142,7 +142,7 @@ namespace black_cat::core
 		auto l_event = static_cast<bc_event_ptr<bci_event>>(bc_make_event(std::forward<TEvent>(p_event)));
 		constexpr bool l_is_app_event = std::is_base_of_v<bc_app_event, std::decay_t<TEvent>>;
 			
-		if(l_is_app_event)
+		if (l_is_app_event)
 		{
 			m_global_queue.push(_bc_queued_event(std::move(l_event), p_millisecond));
 		}
