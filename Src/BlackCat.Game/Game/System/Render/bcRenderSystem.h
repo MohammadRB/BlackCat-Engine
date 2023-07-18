@@ -36,141 +36,139 @@
 #include "Game/bcEvent.h"
 #include "Game/bcExport.h"
 
-namespace black_cat
+namespace black_cat::core
 {
-	namespace core
+	class bc_content_stream_manager;
+	class bc_query_manager;
+}
+
+namespace black_cat::game
+{
+	class bci_render_task;
+	class bc_render_thread_manager;
+	class bc_material_manager;
+	class bc_decal_manager;
+	class bc_particle_manager;
+	class bc_scene;
+
+	struct bc_render_system_update_context
 	{
-		class bc_content_stream_manager;
-		class bc_query_manager;
-	}
+		bc_render_system_update_context(const platform::bc_clock::update_param& p_clock, const bc_camera_instance& p_camera)
+			: m_clock(p_clock),
+			  m_camera(p_camera)
+		{
+		}
 
-	namespace game
+		platform::bc_clock::update_param m_clock;
+		const bc_camera_instance& m_camera;
+	};
+
+	struct bc_render_system_render_context
 	{
-		class bci_render_task;
-		class bc_render_thread_manager;
-		class bc_material_manager;
-		class bc_decal_manager;
-		class bc_particle_manager;
-		class bc_scene;
-
-		struct bc_render_system_update_context
+		bc_render_system_render_context(const platform::bc_clock::update_param& p_clock, core::bc_query_manager& p_query_manager)
+			: m_clock(p_clock),
+			  m_query_manager(p_query_manager)
 		{
-			bc_render_system_update_context(const platform::bc_clock::update_param& p_clock, const bc_camera_instance& p_camera)
-				: m_clock(p_clock),
-				m_camera(p_camera)
-			{
-			}
+		}
 
-			platform::bc_clock::update_param m_clock;
-			const bc_camera_instance& m_camera;
-		};
+		platform::bc_clock::update_param m_clock;
+		core::bc_query_manager& m_query_manager;
+	};
 
-		struct bc_render_system_render_context
+	struct bc_render_system_swap_context
+	{
+		bc_render_system_swap_context(const platform::bc_clock::update_param& p_clock)
+			: m_clock(p_clock)
 		{
-			bc_render_system_render_context(const platform::bc_clock::update_param& p_clock, core::bc_query_manager& p_query_manager)
-				: m_clock(p_clock),
-				m_query_manager(p_query_manager)
-			{
-			}
+		}
 
-			platform::bc_clock::update_param m_clock;
-			core::bc_query_manager& m_query_manager;
-		};
+		platform::bc_clock::update_param m_clock;
+	};
 
-		struct bc_render_system_swap_context
-		{
-			bc_render_system_swap_context(const platform::bc_clock::update_param& p_clock)
-				: m_clock(p_clock)
-			{
-			}
+	class BC_GAME_DLL bc_render_system : public core::bc_initializable<bc_render_system_parameter>
+	{
+	private:
+		friend class _bc_render_pass_state_handle_deleter;
+		friend class _bc_render_state_handle_deleter;
+		friend class _bc_compute_state_handle_deleter;
 
-			platform::bc_clock::update_param m_clock;
-		};
+	public:
+		using update_context = bc_render_system_update_context;
+		using render_context = bc_render_system_render_context;
+		using swap_context = bc_render_system_swap_context;
 
-		class BC_GAME_DLL bc_render_system : public core::bc_initializable<bc_render_system_parameter>
-		{
-		private:
-			friend class _bc_render_pass_state_handle_deleter;
-			friend class _bc_render_state_handle_deleter;
-			friend class _bc_compute_state_handle_deleter;
+	public:
+		bc_render_system();
 
-		public:
-			using update_context = bc_render_system_update_context;
-			using render_context = bc_render_system_render_context;
-			using swap_context = bc_render_system_swap_context;
+		bc_render_system(bc_render_system&&) noexcept;
 
-		public:
-			bc_render_system();
+		~bc_render_system();
 
-			bc_render_system(bc_render_system&&) noexcept;
+		bc_render_system& operator=(bc_render_system&&) noexcept;
 
-			~bc_render_system();
-
-			bc_render_system& operator=(bc_render_system&&) noexcept;
-
-			graphic::bc_device& get_device() noexcept;
+		graphic::bc_device& get_device() noexcept;
 			
-			const graphic::bc_device& get_device() const noexcept;
+		const graphic::bc_device& get_device() const noexcept;
 
-			graphic::bc_device_swap_buffer& get_device_swap_buffer() noexcept;
+		graphic::bc_device_swap_buffer& get_device_swap_buffer() noexcept;
 
-			const graphic::bc_device_swap_buffer& get_device_swap_buffer() const noexcept;
+		const graphic::bc_device_swap_buffer& get_device_swap_buffer() const noexcept;
 
-			bcUINT64 get_device_clock() const noexcept;
+		bcUINT64 get_device_clock() const noexcept;
 
-			bcFLOAT get_device_time() const noexcept;
+		bcFLOAT get_device_time() const noexcept;
 
-			bc_material_manager& get_material_manager() noexcept;
+		bc_material_manager& get_material_manager() noexcept;
 			
-			const bc_material_manager& get_material_manager() const noexcept;
+		const bc_material_manager& get_material_manager() const noexcept;
 
-			bc_decal_manager& get_decal_manager() noexcept;
+		bc_decal_manager& get_decal_manager() noexcept;
 
-			const bc_decal_manager& get_decal_manager() const noexcept;
+		const bc_decal_manager& get_decal_manager() const noexcept;
 
-			bc_particle_manager& get_particle_manager() noexcept;
+		bc_particle_manager& get_particle_manager() noexcept;
 
-			const bc_particle_manager& get_particle_manager() const noexcept;
+		const bc_particle_manager& get_particle_manager() const noexcept;
 
-			bc_shape_drawer& get_shape_drawer() noexcept;
+		bc_shape_drawer& get_shape_drawer() noexcept;
 			
-			const bc_shape_drawer& get_shape_drawer() const noexcept;
+		const bc_shape_drawer& get_shape_drawer() const noexcept;
 
-			const graphic::bc_constant_buffer_parameter& get_global_cbuffer() const;
+		const graphic::bc_constant_buffer_parameter& get_global_cbuffer() const;
 
-			const graphic::bc_constant_buffer_parameter& get_per_object_cbuffer() const;
+		const graphic::bc_constant_buffer_parameter& get_per_object_cbuffer() const;
 			
-			const graphic::bc_constant_buffer_parameter& get_per_skinned_object_cbuffer() const;
+		const graphic::bc_constant_buffer_parameter& get_per_skinned_object_cbuffer() const;
 
-			template<class TPass>
-			TPass* get_render_pass();
+		template<class TPass>
+		TPass* get_render_pass();
 
-			template<class TPass>
-			void add_render_pass(TPass p_pass);
+		template<class TPass>
+		void add_render_pass(TPass p_pass);
 
-			template<class TPass, class TPassBefore>
-			void add_render_pass_before(TPass p_pass);
+		template<class TPass, class TPassBefore>
+		void add_render_pass_before(TPass p_pass);
 
-			template<typename TPass>
-			bool remove_render_pass();
+		template<typename TPass>
+		bool remove_render_pass();
 
-			/**
+		/**
 			 * \brief \b ThreadSafe
 			 * \param p_task
 			 */
-			void add_render_task(bci_render_task& p_task);
+		void add_render_task(bci_render_task& p_task);
 			
-			void update(const update_context& p_update_params);
+		void update(const update_context& p_update_params);
 
-			void render(const render_context& p_render_param);
+		void render(const render_context& p_render_param);
 
-			void present();
+		void present();
 
-			void swap_frame(const swap_context& p_swap_context);
+		void swap_frame(const swap_context& p_swap_context);
 
-			void render_swap_frame(const swap_context& p_swap_context);
+		void render_swap_frame(const swap_context& p_swap_context);
 
-			/**
+		/**
 			 * \brief \b ThreadSafe
 			 * \param p_vertex_shader_name 
 			 * \param p_hull_shader_name 
@@ -187,28 +185,28 @@ namespace black_cat
 			 * \param p_ms_config 
 			 * \return 
 			 */
-			graphic::bc_device_pipeline_state_ref create_device_pipeline_state(const bcCHAR* p_vertex_shader_name,
-				const bcCHAR* p_hull_shader_name,
-				const bcCHAR* p_domain_shader_name,
-				const bcCHAR* p_geometry_shader_name,
-				const bcCHAR* p_pixel_shader_name,
-				bc_vertex_type p_vertex_layout,
-				bc_blend_type p_blend,
-				bc_depth_stencil_type p_depth_stencil,
-				bc_rasterizer_type p_rasterizer,
-				bcUINT p_sample_mask,
-				std::initializer_list<bc_surface_format_type> p_render_target_formats,
-				bc_surface_format_type p_depth_stencil_format,
-				bc_multi_sample_type p_ms_config);
+		graphic::bc_device_pipeline_state_ref create_device_pipeline_state(const bcCHAR* p_vertex_shader_name,
+			const bcCHAR* p_hull_shader_name,
+			const bcCHAR* p_domain_shader_name,
+			const bcCHAR* p_geometry_shader_name,
+			const bcCHAR* p_pixel_shader_name,
+			bc_vertex_type p_vertex_layout,
+			bc_blend_type p_blend,
+			bc_depth_stencil_type p_depth_stencil,
+			bc_rasterizer_type p_rasterizer,
+			bcUINT p_sample_mask,
+			std::initializer_list<bc_surface_format_type> p_render_target_formats,
+			bc_surface_format_type p_depth_stencil_format,
+			bc_multi_sample_type p_ms_config);
 
-			/**
+		/**
 			 * \brief \n \b ThreadSafe
 			 * \param p_compute_shader_name 
 			 * \return 
 			 */
-			graphic::bc_device_compute_state_ref create_device_compute_state(const bcCHAR* p_compute_shader_name);
+		graphic::bc_device_compute_state_ref create_device_compute_state(const bcCHAR* p_compute_shader_name);
 
-			/**
+		/**
 			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
 			 * \n \b ThreadSafe
 			 * \param p_pipeline_state 
@@ -221,16 +219,16 @@ namespace black_cat
 			 * \param p_shader_buffers 
 			 * \return 
 			 */
-			bc_render_pass_state_ptr create_render_pass_state(graphic::bc_device_pipeline_state p_pipeline_state,
-				graphic::bc_viewport p_viewport,
-				bc_render_pass_state_render_target_view_array p_shader_targets,
-				graphic::bc_depth_stencil_view p_shader_depth,
-				bc_render_pass_state_sampler_array p_shader_samplers,
-				bc_render_pass_state_resource_view_array p_resource_views,
-				bc_render_pass_state_unordered_view_array p_unordered_views,
-				bc_render_pass_state_constant_buffer_array p_shader_buffers);
+		bc_render_pass_state_ptr create_render_pass_state(graphic::bc_device_pipeline_state p_pipeline_state,
+			graphic::bc_viewport p_viewport,
+			bc_render_pass_state_render_target_view_array p_shader_targets,
+			graphic::bc_depth_stencil_view p_shader_depth,
+			bc_render_pass_state_sampler_array p_shader_samplers,
+			bc_render_pass_state_resource_view_array p_resource_views,
+			bc_render_pass_state_unordered_view_array p_unordered_views,
+			bc_render_pass_state_constant_buffer_array p_shader_buffers);
 
-			/**
+		/**
 			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
 			 * \n \b ThreadSafe
 			 * \param p_primitive 
@@ -245,18 +243,18 @@ namespace black_cat
 			 * \param p_shader_buffers 
 			 * \return 
 			 */
-			bc_render_state_ptr create_render_state(graphic::bc_primitive p_primitive,
-				graphic::bc_buffer p_vertex_buffer,
-				bcUINT32 p_vertex_buffer_stride,
-				bcUINT32 p_vertex_buffer_offset,
-				graphic::bc_buffer p_index_buffer,
-				bc_index_type p_index_type,
-				bcUINT32 p_index_count,
-				bcUINT32 p_index_buffer_offset,
-				bc_render_state_resource_view_array p_resource_views,
-				bc_render_state_constant_buffer_array p_shader_buffers);
+		bc_render_state_ptr create_render_state(graphic::bc_primitive p_primitive,
+			graphic::bc_buffer p_vertex_buffer,
+			bcUINT32 p_vertex_buffer_stride,
+			bcUINT32 p_vertex_buffer_offset,
+			graphic::bc_buffer p_index_buffer,
+			bc_index_type p_index_type,
+			bcUINT32 p_index_count,
+			bcUINT32 p_index_buffer_offset,
+			bc_render_state_resource_view_array p_resource_views,
+			bc_render_state_constant_buffer_array p_shader_buffers);
 
-			/**
+		/**
 			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
 			 * \n \b ThreadSafe
 			 * \param p_compute_state 
@@ -266,184 +264,183 @@ namespace black_cat
 			 * \param p_cbuffers 
 			 * \return 
 			 */
-			bc_compute_state_ptr create_compute_state(graphic::bc_device_compute_state p_compute_state,
-				bc_compute_state_sampler_array p_samplers,
-				bc_compute_state_resource_view_array p_resource_views,
-				bc_compute_state_unordered_view_array p_unordered_views,
-				bc_compute_state_constant_buffer_array p_cbuffers);
+		bc_compute_state_ptr create_compute_state(graphic::bc_device_compute_state p_compute_state,
+			bc_compute_state_sampler_array p_samplers,
+			bc_compute_state_resource_view_array p_resource_views,
+			bc_compute_state_unordered_view_array p_unordered_views,
+			bc_compute_state_constant_buffer_array p_cbuffers);
 
-			/**
+		/**
 			 * \brief Destroy all registered render passes to release probable references in queries
 			 */
-			void destroy_render_passes();
+		void destroy_render_passes();
 			
-		private:			
-			void _initialize(bc_render_system_parameter p_parameter) override;
+	private:			
+		void _initialize(bc_render_system_parameter p_parameter) override;
 
-			void _destroy() override;
+		void _destroy() override;
 
-			void _event_handler(core::bci_event& p_event);
+		void _event_handler(core::bci_event& p_event);
 
-			/**
+		/**
 			 * \brief ThreadSafe function
 			 * \param p_render_pass_state
 			 */
-			void _destroy_render_pass_state(bc_render_pass_state* p_render_pass_state);
+		void _destroy_render_pass_state(bc_render_pass_state* p_render_pass_state);
 
-			/**
+		/**
 			 * \brief ThreadSafe function
 			 * \param p_render_state
 			 */
-			void _destroy_render_state(bc_render_state* p_render_state);
+		void _destroy_render_state(bc_render_state* p_render_state);
 
-			/**
+		/**
 			 * \brief ThreadSafe function
 			 * \param p_compute_state
 			 */
-			void _destroy_compute_state(bc_compute_state* p_compute_state);
+		void _destroy_compute_state(bc_compute_state* p_compute_state);
 
-			graphic::bc_device m_device;
-			graphic::bc_device_swap_buffer_ref m_device_swap_buffer;
-			bc_device_query<graphic::bc_device_clock_query> m_device_clock_query;
-			bc_device_query<graphic::bc_device_timestamp_query, 1> m_device_start_query;
-			bc_device_query<graphic::bc_device_timestamp_query, 1> m_device_end_query;
-			bool m_device_timestamps_are_ready;
-			core::bc_value_sampler<platform::bc_clock::small_time, 32> m_device_elapsed_sampler;
+		graphic::bc_device m_device;
+		graphic::bc_device_swap_buffer_ref m_device_swap_buffer;
+		bc_device_query<graphic::bc_device_clock_query> m_device_clock_query;
+		bc_device_query<graphic::bc_device_timestamp_query, 1> m_device_start_query;
+		bc_device_query<graphic::bc_device_timestamp_query, 1> m_device_end_query;
+		bool m_device_timestamps_are_ready;
+		core::bc_value_sampler<platform::bc_clock::small_time, 32> m_device_elapsed_sampler;
 
-			core::bc_concurrent_object_pool<bc_render_pass_state> m_render_pass_states;
-			core::bc_concurrent_object_pool<bc_render_state> m_render_states;
-			core::bc_concurrent_object_pool<bc_compute_state> m_compute_states;
+		core::bc_concurrent_object_pool<bc_render_pass_state> m_render_pass_states;
+		core::bc_concurrent_object_pool<bc_render_state> m_render_states;
+		core::bc_concurrent_object_pool<bc_compute_state> m_compute_states;
 			
-			core::bc_content_stream_manager* m_content_stream;
-			core::bc_unique_ptr<bc_render_thread_manager> m_thread_manager;
-			core::bc_unique_ptr<bc_material_manager> m_material_manager;
-			core::bc_unique_ptr<bc_decal_manager> m_decal_manager;
-			core::bc_unique_ptr<bc_particle_manager> m_particle_manager;
-			core::bc_unique_ptr<bc_render_pass_manager> m_render_pass_manager;
-			core::bc_unique_ptr<bc_shape_drawer> m_shape_drawer;
-			core::bc_unique_ptr<bc_frame_renderer> m_frame_renderer;
+		core::bc_content_stream_manager* m_content_stream;
+		core::bc_unique_ptr<bc_render_thread_manager> m_thread_manager;
+		core::bc_unique_ptr<bc_material_manager> m_material_manager;
+		core::bc_unique_ptr<bc_decal_manager> m_decal_manager;
+		core::bc_unique_ptr<bc_particle_manager> m_particle_manager;
+		core::bc_unique_ptr<bc_render_pass_manager> m_render_pass_manager;
+		core::bc_unique_ptr<bc_shape_drawer> m_shape_drawer;
+		core::bc_unique_ptr<bc_frame_renderer> m_frame_renderer;
 
-			core::bc_event_listener_handle m_window_resize_handle;
-			core::bc_event_listener_handle m_app_active_handle;
-			core::bc_event_listener_handle m_device_reset_handle;
-			core::bc_event_listener_handle m_config_change_handle;
-			core::bc_nullable<graphic::bc_app_event_device_reset> m_device_reset_event;
-			core::bc_nullable<bc_event_global_config_changed> m_config_change_event;
-		};
+		core::bc_event_listener_handle m_window_resize_handle;
+		core::bc_event_listener_handle m_app_active_handle;
+		core::bc_event_listener_handle m_device_reset_handle;
+		core::bc_event_listener_handle m_config_change_handle;
+		core::bc_nullable<graphic::bc_app_event_device_reset> m_device_reset_event;
+		core::bc_nullable<bc_event_global_config_changed> m_config_change_event;
+	};
 
-		inline graphic::bc_device& bc_render_system::get_device() noexcept
-		{
-			return m_device;
-		}
+	inline graphic::bc_device& bc_render_system::get_device() noexcept
+	{
+		return m_device;
+	}
 
-		inline const graphic::bc_device& bc_render_system::get_device() const noexcept
-		{
-			return m_device;
-		}
+	inline const graphic::bc_device& bc_render_system::get_device() const noexcept
+	{
+		return m_device;
+	}
 
-		inline graphic::bc_device_swap_buffer& bc_render_system::get_device_swap_buffer() noexcept
-		{
-			return m_device_swap_buffer.get();
-		}
+	inline graphic::bc_device_swap_buffer& bc_render_system::get_device_swap_buffer() noexcept
+	{
+		return m_device_swap_buffer.get();
+	}
 
-		inline const graphic::bc_device_swap_buffer& bc_render_system::get_device_swap_buffer() const noexcept
-		{
-			return m_device_swap_buffer.get();
-		}
+	inline const graphic::bc_device_swap_buffer& bc_render_system::get_device_swap_buffer() const noexcept
+	{
+		return m_device_swap_buffer.get();
+	}
 
-		inline bcUINT64 bc_render_system::get_device_clock() const noexcept
-		{
-			return m_device_clock_query.get_last_data();
-		}
+	inline bcUINT64 bc_render_system::get_device_clock() const noexcept
+	{
+		return m_device_clock_query.get_last_data();
+	}
 
-		inline bcFLOAT bc_render_system::get_device_time() const noexcept
-		{
-			return m_device_elapsed_sampler.average_value();
-		}
+	inline bcFLOAT bc_render_system::get_device_time() const noexcept
+	{
+		return m_device_elapsed_sampler.average_value();
+	}
 
-		inline bc_material_manager& bc_render_system::get_material_manager() noexcept
-		{
-			return *m_material_manager;
-		}
+	inline bc_material_manager& bc_render_system::get_material_manager() noexcept
+	{
+		return *m_material_manager;
+	}
 
-		inline const bc_material_manager& bc_render_system::get_material_manager() const noexcept
-		{
-			return *m_material_manager;
-		}
+	inline const bc_material_manager& bc_render_system::get_material_manager() const noexcept
+	{
+		return *m_material_manager;
+	}
 
-		inline bc_decal_manager& bc_render_system::get_decal_manager() noexcept
-		{
-			return *m_decal_manager;
-		}
+	inline bc_decal_manager& bc_render_system::get_decal_manager() noexcept
+	{
+		return *m_decal_manager;
+	}
 
-		inline const bc_decal_manager& bc_render_system::get_decal_manager() const noexcept
-		{
-			return *m_decal_manager;
-		}
+	inline const bc_decal_manager& bc_render_system::get_decal_manager() const noexcept
+	{
+		return *m_decal_manager;
+	}
 
-		inline bc_particle_manager& bc_render_system::get_particle_manager() noexcept
-		{
-			return *m_particle_manager;
-		}
+	inline bc_particle_manager& bc_render_system::get_particle_manager() noexcept
+	{
+		return *m_particle_manager;
+	}
 
-		inline const bc_particle_manager& bc_render_system::get_particle_manager() const noexcept
-		{
-			return *m_particle_manager;
-		}
+	inline const bc_particle_manager& bc_render_system::get_particle_manager() const noexcept
+	{
+		return *m_particle_manager;
+	}
 				
-		inline bc_shape_drawer& bc_render_system::get_shape_drawer() noexcept
-		{
-			return *m_shape_drawer;
-		}
+	inline bc_shape_drawer& bc_render_system::get_shape_drawer() noexcept
+	{
+		return *m_shape_drawer;
+	}
 
-		inline const bc_shape_drawer& bc_render_system::get_shape_drawer() const noexcept
-		{
-			return *m_shape_drawer;
-		}
+	inline const bc_shape_drawer& bc_render_system::get_shape_drawer() const noexcept
+	{
+		return *m_shape_drawer;
+	}
 
-		inline const graphic::bc_constant_buffer_parameter& bc_render_system::get_global_cbuffer() const
-		{
-			return m_frame_renderer->get_global_cbuffer();
-		}
+	inline const graphic::bc_constant_buffer_parameter& bc_render_system::get_global_cbuffer() const
+	{
+		return m_frame_renderer->get_global_cbuffer();
+	}
 
-		inline const graphic::bc_constant_buffer_parameter& bc_render_system::get_per_object_cbuffer() const
-		{
-			return m_frame_renderer->get_per_object_cbuffer();
-		}
+	inline const graphic::bc_constant_buffer_parameter& bc_render_system::get_per_object_cbuffer() const
+	{
+		return m_frame_renderer->get_per_object_cbuffer();
+	}
 
-		inline const graphic::bc_constant_buffer_parameter& bc_render_system::get_per_skinned_object_cbuffer() const
-		{
-			return m_frame_renderer->get_per_skinned_object_cbuffer();
-		}
+	inline const graphic::bc_constant_buffer_parameter& bc_render_system::get_per_skinned_object_cbuffer() const
+	{
+		return m_frame_renderer->get_per_skinned_object_cbuffer();
+	}
 		
-		template<typename TPass>
-		TPass* bc_render_system::get_render_pass()
+	template<typename TPass>
+	TPass* bc_render_system::get_render_pass()
+	{
+		return m_render_pass_manager->get_pass<TPass>();
+	}
+
+	template<typename TPass>
+	void bc_render_system::add_render_pass(TPass p_pass)
+	{
+		m_render_pass_manager->add_pass<TPass>(std::move(p_pass));
+	}
+
+	template<class TPass, class TPassBefore>
+	void bc_render_system::add_render_pass_before(TPass p_pass)
+	{
+		m_render_pass_manager->add_pass_before<TPass, TPassBefore>(std::move(p_pass));
+	}
+
+	template<typename TPass>
+	bool bc_render_system::remove_render_pass()
+	{
+		auto* l_pass = m_render_pass_manager->get_pass<TPass>();
+		if (!l_pass)
 		{
-			return m_render_pass_manager->get_pass<TPass>();
+			return false;
 		}
 
-		template<typename TPass>
-		void bc_render_system::add_render_pass(TPass p_pass)
-		{
-			m_render_pass_manager->add_pass<TPass>(std::move(p_pass));
-		}
-
-		template<class TPass, class TPassBefore>
-		void bc_render_system::add_render_pass_before(TPass p_pass)
-		{
-			m_render_pass_manager->add_pass_before<TPass, TPassBefore>(std::move(p_pass));
-		}
-
-		template<typename TPass>
-		bool bc_render_system::remove_render_pass()
-		{
-			auto* l_pass = m_render_pass_manager->get_pass<TPass>();
-			if (!l_pass)
-			{
-				return false;
-			}
-
-			return m_render_pass_manager->remove_pass<TPass>();
-		}
+		return m_render_pass_manager->remove_pass<TPass>();
 	}
 }

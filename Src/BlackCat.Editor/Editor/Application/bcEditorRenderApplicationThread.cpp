@@ -8,10 +8,10 @@
 
 namespace black_cat::editor
 {
-	void bc_editor_render_app_thread::start(HINSTANCE p_instance, 
-	                                        const char* p_cmd_line, 
-	                                        bc_editor_render_app_factory p_render_app_factory, 
-	                                        game::bci_render_application_output_window* p_output_window)
+	void bc_editor_render_app_thread::start(HINSTANCE p_instance,
+		const char* p_cmd_line,
+		bc_editor_render_app_factory p_render_app_factory,
+		game::bci_render_application_output_window* p_output_window)
 	{
 		m_instance = p_instance;
 		m_cmd_line = p_cmd_line;

@@ -47,7 +47,7 @@ bc_vs_output hdr_quad_vs(uint p_vertex_id : SV_VertexID)
 bc_ps_output hdr_luminance_ps(bc_vs_output p_input)
 {
 	const float4 l_color = g_tex2d_hdr_input.Sample(g_sam_point, p_input.m_texcoord);
-	const float l_luminance = calculate_luminance(l_color);
+	const float l_luminance = calculate_luminance(l_color.xyz);
 
 	bc_ps_output l_output;
 	l_output.m_color = l_luminance;

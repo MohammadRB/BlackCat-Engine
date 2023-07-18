@@ -6,6 +6,33 @@
 
 namespace black_cat::game
 {
+	bc_render_pass_reset_context bc_render_pass_reset_context::create_default_instance(
+		bc_render_system& p_render_system,
+		graphic::bc_device& p_device,
+		graphic::bc_device_swap_buffer& p_device_swap_buffer)
+	{
+		return bc_render_pass_reset_context
+		(
+			p_render_system,
+			p_device,
+			p_device_swap_buffer,
+			graphic::bc_device_parameters
+			(
+				0,
+				0,
+				graphic::bc_format::unknown,
+				graphic::bc_texture_ms_config(1, 0)
+			),
+			graphic::bc_device_parameters
+			(
+				p_device_swap_buffer.get_back_buffer_width(),
+				p_device_swap_buffer.get_back_buffer_height(),
+				p_device_swap_buffer.get_back_buffer_format(),
+				p_device_swap_buffer.get_back_buffer_texture().get_sample_count()
+			)
+		);
+	}
+
 	inline void bci_render_pass::request_device_reset(const graphic::bc_device_parameters& p_new_parameters)
 	{
 		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();

@@ -296,12 +296,9 @@ xcopy ..\..\Src\BlackCat.Physics\Physics\*.h ..\..\BC_SDK\Include\Physics\ /E /Y
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Physics\Physics\*.h ..\..\BC_SDK\Include\Physics
-copy ..\..\Src\BlackCat.Physics\Physics\Device\*.h ..\..\BC_SDK\Include\Physics\Body
-copy ..\..\Src\BlackCat.Physics\Physics\Device\Command\*.h ..\..\BC_SDK\Include\Physics\Collision
-copy ..\..\Src\BlackCat.Physics\Physics\PipelineStage\*.h ..\..\BC_SDK\Include\Physics\Fundation
-copy ..\..\Src\BlackCat.Physics\Physics\Resource\*.h ..\..\BC_SDK\Include\Graphic\Physics\Joint
-copy ..\..\Src\BlackCat.Physics\Physics\Resource\Buffer\*.h ..\..\BC_SDK\Include\Physics\Shape
+      <Command>if not exist ..\..\BC_SDK\Include\Physics\ mkdir ..\..\BC_SDK\Include\Physics\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
@@ -310,7 +307,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Physics\Physics\*.h ..\..\BC_SDK\Include\Physics\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Develope|x64'">
@@ -330,12 +329,9 @@ copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configur
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Physics\Physics\*.h ..\..\BC_SDK\Include\Physics
-copy ..\..\Src\BlackCat.Physics\Physics\Device\*.h ..\..\BC_SDK\Include\Physics\Body
-copy ..\..\Src\BlackCat.Physics\Physics\Device\Command\*.h ..\..\BC_SDK\Include\Physics\Collision
-copy ..\..\Src\BlackCat.Physics\Physics\PipelineStage\*.h ..\..\BC_SDK\Include\Physics\Fundation
-copy ..\..\Src\BlackCat.Physics\Physics\Resource\*.h ..\..\BC_SDK\Include\Graphic\Physics\Joint
-copy ..\..\Src\BlackCat.Physics\Physics\Resource\Buffer\*.h ..\..\BC_SDK\Include\Physics\Shape
+      <Command>if not exist ..\..\BC_SDK\Include\Physics\ mkdir ..\..\BC_SDK\Include\Physics\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
@@ -344,7 +340,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Physics\Physics\*.h ..\..\BC_SDK\Include\Physics\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -408,12 +406,9 @@ xcopy ..\..\Src\BlackCat.Physics\Physics\*.h ..\..\BC_SDK\Include\Physics\ /E /Y
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy ..\..\Src\BlackCat.Physics\Physics\*.h ..\..\BC_SDK\Include\Physics
-copy ..\..\Src\BlackCat.Physics\Physics\Device\*.h ..\..\BC_SDK\Include\Physics\Body
-copy ..\..\Src\BlackCat.Physics\Physics\Device\Command\*.h ..\..\BC_SDK\Include\Physics\Collision
-copy ..\..\Src\BlackCat.Physics\Physics\PipelineStage\*.h ..\..\BC_SDK\Include\Physics\Fundation
-copy ..\..\Src\BlackCat.Physics\Physics\Resource\*.h ..\..\BC_SDK\Include\Graphic\Physics\Joint
-copy ..\..\Src\BlackCat.Physics\Physics\Resource\Buffer\*.h ..\..\BC_SDK\Include\Physics\Shape
+      <Command>if not exist ..\..\BC_SDK\Include\Physics\ mkdir ..\..\BC_SDK\Include\Physics\
+if not exist ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\ mkdir ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\
+
 copy $(Configuration)\$(ProjectName).dll ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).dll
 
 copy $(Configuration)\$(ProjectName).exp ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).exp
@@ -422,7 +417,9 @@ copy $(Configuration)\$(ProjectName).ilk ..\..\BC_SDK\Lib\$(Platform)_$(Configur
 
 copy $(Configuration)\$(ProjectName).lib ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).lib
 
-copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb</Command>
+copy $(Configuration)\$(ProjectName).pdb ..\..\BC_SDK\Lib\$(Platform)_$(Configuration)\$(ProjectName).pdb
+
+xcopy ..\..\Src\BlackCat.Physics\Physics\*.h ..\..\BC_SDK\Include\Physics\ /E /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -13,14 +13,14 @@ namespace black_cat::game
 	struct bc_engine_component_parameter
 	{
 		bc_engine_component_parameter(bcSIZE p_memmng_fsa_start_size,
-		                              bcSIZE p_memmng_fsa_count,
-		                              bcSIZE p_memmng_fsa_step_size,
-		                              bcSIZE p_memmng_fsa_allocation_count,
-		                              bcSIZE p_memmng_program_stack_size,
-		                              bcSIZE p_memmng_frame_stack_size,
-		                              bcSIZE p_memmng_super_heap_size,
-		                              bcSIZE p_thread_manager_thread_count,
-		                              bcSIZE p_thread_manager_reserved_thread_count)
+			bcSIZE p_memmng_fsa_count,
+			bcSIZE p_memmng_fsa_step_size,
+			bcSIZE p_memmng_fsa_allocation_count,
+			bcSIZE p_memmng_program_stack_size,
+			bcSIZE p_memmng_frame_stack_size,
+			bcSIZE p_memmng_super_heap_size,
+			bcSIZE p_thread_manager_thread_count,
+			bcSIZE p_thread_manager_reserved_thread_count)
 			: m_memmng_fsa_start_size(p_memmng_fsa_start_size),
 			  m_memmng_fsa_count(p_memmng_fsa_count),
 			  m_memmng_fsa_step_size(p_memmng_fsa_step_size),
@@ -56,9 +56,9 @@ namespace black_cat::game
 		
 	struct bc_render_application_parameter : public platform::bc_application_parameter
 	{
-		bc_render_application_parameter(const platform::bc_application_parameter& p_app_parameters, 
-		                                bc_render_output_window_factory p_output_window_factory, 
-		                                bc_scene_graph_node_factory p_scene_graph_factory)
+		bc_render_application_parameter(const platform::bc_application_parameter& p_app_parameters,
+			bc_render_output_window_factory p_output_window_factory,
+			bc_scene_graph_node_factory p_scene_graph_factory)
 			: platform::bc_application_parameter(p_app_parameters),
 			  m_output_window_factory(std::move(p_output_window_factory)),
 			  m_scene_graph_factory(std::move(p_scene_graph_factory))

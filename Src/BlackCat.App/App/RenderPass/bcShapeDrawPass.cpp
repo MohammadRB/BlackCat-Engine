@@ -26,15 +26,15 @@ namespace black_cat
 		m_shape_drawer(&p_shape_drawer),
 		m_hovered_actor(std::move(p_hovered_actor)),
 		m_selected_actor(std::move(p_selected_actor)),
-		m_hovered_decal(std::move(p_hovered_decal)),
-		m_selected_decal(std::move(p_selected_decal)),
+		m_hovered_decal(p_hovered_decal),
+		m_selected_decal(p_selected_decal),
 		m_draw_scene_graph(p_draw_scene_graph)
 	{
 	}
 
 	void bc_scene_debug_shape_query::execute(const game::bc_scene_query_context& p_context) noexcept
 	{
-		if(!p_context.m_scene)
+		if (!p_context.m_scene)
 		{
 			return;
 		}
@@ -45,12 +45,12 @@ namespace black_cat
 			m_shape_drawer->draw_wired_bound_box(l_mediate_component->get_bound_box());
 		}
 
-		if(m_selected_actor.is_valid())
+		if (m_selected_actor.is_valid())
 		{
 			m_selected_actor.draw_debug(*m_shape_drawer);
 		}
 
-		if(m_hovered_decal)
+		if (m_hovered_decal)
 		{
 			const auto l_box = m_hovered_decal->get_box();
 			m_shape_drawer->draw_wired_box(l_box.first, l_box.second);
@@ -62,7 +62,7 @@ namespace black_cat
 			m_shape_drawer->draw_wired_box(l_box.first, l_box.second);
 		}
 
-		if(m_draw_scene_graph)
+		if (m_draw_scene_graph)
 		{
 			p_context.m_scene->draw_debug_shapes(*m_shape_drawer);
 		}
@@ -278,7 +278,7 @@ namespace black_cat
 	{
 		if (const auto* l_editor_event = core::bci_message::as<game::bc_event_editor_mode>(p_event))
 		{
-			if(const auto l_is_game_mode = !l_editor_event->get_editor_mode())
+			if (const auto l_is_game_mode = !l_editor_event->get_editor_mode())
 			{
 				// Because selected decal can be deleted by removing its owner actor during checkpoint restore process
 				// we should clear these weak references when switching to game mode
@@ -289,7 +289,7 @@ namespace black_cat
 			return;
 		}
 
-		if(const auto* l_scene_change_event = core::bci_message::as<game::bc_event_scene_change>(p_event))
+		if (const auto* l_scene_change_event = core::bci_message::as<game::bc_event_scene_change>(p_event))
 		{
 			m_selected_actor = game::bc_actor();
 			m_hovered_actor = game::bc_actor();

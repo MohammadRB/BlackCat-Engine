@@ -73,6 +73,7 @@ StructuredBuffer<spot_light> g_spot_lights			: register(BC_COMPUTE_STATE_T6);
 StructuredBuffer<cascade_shadow_map> g_shadow_maps	: register(BC_COMPUTE_STATE_T7);
 
 Texture2DArray<float> g_light_shadow_map_1			: register(BC_COMPUTE_STATE_T8);
+Texture2D<float4> g_ambient_occlusion_map           : register(BC_COMPUTE_STATE_T9);
 
 SamplerState g_linear_sampler				        : register(BC_COMPUTE_STATE_S0);
 SamplerComparisonState g_pcf_sampler				: register(BC_COMPUTE_STATE_S1);
@@ -84,6 +85,7 @@ cbuffer g_cb_parameters                             : register(BC_COMPUTE_STATE_
     uint g_direct_lights_count                      : packoffset(c0.x);
     uint g_point_lights_count                       : packoffset(c0.y);
     uint g_spot_lights_count                        : packoffset(c0.z);
+	bool g_has_ambient_occlusion                    : packoffset(c0.w);
     float4x4 g_view_proj_inv                        : packoffset(c1.x);
 };
 
@@ -309,7 +311,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	const float4 l_normal_map = load_texture(g_normal_map, l_global_texcoord);
 	const float4 l_specular_map = load_texture(g_specular_map, l_global_texcoord);
 	
-	const float3 l_world_position = bc_reconstruct_world_space(bc_to_screen_space_texcoord(l_global_texcoord, g_screen_width, g_screen_height), l_depth, g_view_proj_inv);
+	const float3 l_world_position = bc_reconstruct_world_position(bc_to_screen_space_texcoord(l_global_texcoord, g_screen_width, g_screen_height), l_depth, g_view_proj_inv);
 	const float3 l_diffuse = l_diffuse_map.xyz;
 	const float3 l_normal = bc_to_decoded_normal(l_normal_map.xyz);
 	const float l_specular_intensity = l_specular_map.x;
@@ -393,7 +395,15 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
             l_light_map += l_cascade_colors[l_shadow_map.y];
         }*/
     }
-	
+
+    if (g_has_ambient_occlusion)
+    {
+		const float l_occlusion = load_texture(g_ambient_occlusion_map, l_global_texcoord).x;
+
+		//l_light_map *= l_occlusion;
+		l_ambient_map *= l_occlusion;
+	}
+
     for (uint l_p = 0; l_p < gs_number_of_visible_point_lights; ++l_p)
     {
 		const uint l_point_light_index = gs_visible_point_light_indices[l_p];

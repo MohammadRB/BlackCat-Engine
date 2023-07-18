@@ -40,10 +40,14 @@ namespace black_cat
 		graphic::bc_texture2d_ref m_diffuse_map_texture;
 		graphic::bc_texture2d_ref m_normal_map_texture;
 		graphic::bc_texture2d_ref m_specular_map_texture;
-		graphic::bc_depth_stencil_view_ref m_depth_stencil_view;
+		graphic::bc_depth_stencil_view_ref m_depth_stencil_render_view;
 		graphic::bc_render_target_view_ref m_diffuse_map_render_view;
 		graphic::bc_render_target_view_ref m_normal_map_render_view;
 		graphic::bc_render_target_view_ref m_specular_map_render_view;
+		graphic::bc_resource_view_ref m_depth_stencil_view;
+		graphic::bc_resource_view_ref m_diffuse_map_view;
+		graphic::bc_resource_view_ref m_normal_map_view;
+		graphic::bc_resource_view_ref m_specular_map_view;
 
 		constexpr static bcFLOAT m_light_wind_query_time_ms{ 1000 };
 		bcFLOAT m_light_wind_query_elapsed_ms{ m_light_wind_query_time_ms };

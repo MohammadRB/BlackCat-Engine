@@ -3,7 +3,9 @@
 #include "Editor/EditorPCH.h"
 
 #include "Game/Object/Scene/bcScene.h"
+#include "Game/System/Render/bcRenderSystem.h"
 #include "Game/System/bcGameSystem.h"
+#include "App/RenderPass/bcShapeDrawPass.h"
 #include "Editor/UICommand/bcObjectDeleteUICommand.h"
 #include "Editor/UI/bcFormObject.h"
 
@@ -38,6 +40,13 @@ namespace black_cat::editor
 		}
 
 		p_context.m_game_system.get_scene()->remove_actor(m_actor);
+
+		if (auto* l_shape_draw_pass = p_context.m_game_system.get_render_system().get_render_pass<bc_shape_draw_pass>())
+		{
+			l_shape_draw_pass->set_hovered_actor(game::bc_actor());
+			l_shape_draw_pass->set_selected_actor(game::bc_actor());
+		}
+
 		return false;
 	}
 

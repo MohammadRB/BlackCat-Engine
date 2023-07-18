@@ -89,7 +89,7 @@ namespace black_cat
 			const bc_camera_instance& m_render_camera; // render camera instance reference is valid until the end of frame
 		};
 
-		class bc_render_pass_reset_context
+		class BC_GAME_DLL bc_render_pass_reset_context
 		{
 		public:
 			bc_render_pass_reset_context(bc_render_system& p_render_system,
@@ -110,6 +110,10 @@ namespace black_cat
 			graphic::bc_device_swap_buffer& m_device_swap_buffer;
 			const graphic::bc_device_parameters& m_old_parameters;
 			const graphic::bc_device_parameters& m_new_parameters;
+
+			static bc_render_pass_reset_context create_default_instance(bc_render_system& p_render_system,
+				graphic::bc_device& p_device,
+				graphic::bc_device_swap_buffer& p_device_swap_buffer);
 		};
 
 		class bc_render_pass_config_change_context
@@ -267,12 +271,13 @@ namespace black_cat
 		T& bci_render_pass::get_shared_resource_throw(bc_render_pass_variable_t p_variable) const
 		{
 			auto* l_resource = get_shared_resource<T>(p_variable);
-			if(l_resource)
+			if (l_resource)
 			{
 				return *l_resource;
 			}
 
-			throw bc_key_not_found_exception("No shared resource were found in render passes with the given key");
+			BC_ASSERT(false);
+			throw bc_key_not_found_exception("No shared render pass resource were found with the given key");
 		}
 		
 		inline bc_intermediate_texture_guard bci_render_pass::get_intermediate_texture(const graphic::bc_texture_config& p_texture_config)

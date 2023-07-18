@@ -30,8 +30,8 @@ namespace black_cat
 	struct _bc_blur_params_struct
 	{
 		BC_CBUFFER_ALIGN
-		bcUINT32 m_width;
-		bcUINT32 m_height;
+		bcFLOAT m_texel_width;
+		bcFLOAT m_texel_height;
 	};
 
 	bc_glow_pass::bc_glow_pass(game::bc_render_pass_variable_t p_render_target_texture, game::bc_render_pass_variable_t p_render_target_view)
@@ -176,8 +176,8 @@ namespace black_cat
 
 			const _bc_blur_params_struct l_blur_params
 			{
-				l_blur_intermediate_texture_config.get_width(),
-				l_blur_intermediate_texture_config.get_height()
+				1.f / l_blur_intermediate_texture_config.get_width(),
+				1.f / l_blur_intermediate_texture_config.get_height()
 			};
 			p_context.m_render_thread.update_subresource(*m_blur_params_buffer, 0, &l_blur_params, 0, 0);
 

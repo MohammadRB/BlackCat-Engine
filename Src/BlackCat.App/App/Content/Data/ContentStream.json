@@ -373,6 +373,42 @@
           "content_loader": "pixel_shader",
           "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcHDRRendering.hlsl",
           "content_parameter": { "function": "hdr_tone_map_ps" }
+        },
+        {
+          "content_title": "ao_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcAmbientOcclusion.hlsl",
+          "content_parameter": { "function": "ao_vs" }
+        },
+        {
+          "content_title": "ao_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcAmbientOcclusion.hlsl",
+          "content_parameter": { "function": "ao_ps" }
+        },
+        {
+          "content_title": "ao_blur_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcAmbientOcclusionBlur.hlsl",
+          "content_parameter": { "function": "ao_blur_vs" }
+        },
+        {
+          "content_title": "ao_hor_blur_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcAmbientOcclusionBlur.hlsl",
+          "content_parameter": { "function": "ao_hor_blur_ps" }
+        },
+        {
+          "content_title": "ao_ver_blur_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcAmbientOcclusionBlur.hlsl",
+          "content_parameter": { "function": "ao_ver_blur_ps" }
+        },
+        {
+          "content_title": "ao_apply_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcAmbientOcclusionBlur.hlsl",
+          "content_parameter": { "function": "ao_apply_ps" }
         }
       ]
     },

@@ -82,10 +82,10 @@ namespace black_cat
 
 	bc_particle_system_pass_dx11::bc_particle_system_pass_dx11(game::bc_render_pass_variable_t p_render_target_texture,
 		game::bc_render_pass_variable_t p_render_target_view, 
-		core::bc_estring_view p_sprites_content_path)
+		core::bc_estring p_sprites_content_path)
 		: m_render_target_texture_param(p_render_target_texture),
 		m_render_target_view_param(p_render_target_view),
-		m_sprites_content_path(p_sprites_content_path),
+		m_sprites_content_path(std::move(p_sprites_content_path)),
 		m_intermediate_texture_config()
 	{
 		m_emitters_query_result.reserve(s_emitters_count);

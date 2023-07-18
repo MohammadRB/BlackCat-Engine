@@ -296,13 +296,13 @@ namespace black_cat::game
 	}
 
 	bc_render_pass_state_ptr bc_render_system::create_render_pass_state(graphic::bc_device_pipeline_state p_pipeline_state,
-	                                                                    graphic::bc_viewport p_viewport,
-	                                                                    bc_render_pass_state_render_target_view_array p_shader_targets,
-	                                                                    graphic::bc_depth_stencil_view p_shader_depth,
-	                                                                    bc_render_pass_state_sampler_array p_shader_samplers,
-	                                                                    bc_render_pass_state_resource_view_array p_resource_views,
-	                                                                    bc_render_pass_state_unordered_view_array p_unordered_views,
-	                                                                    bc_render_pass_state_constant_buffer_array p_shader_buffers)
+		graphic::bc_viewport p_viewport,
+		bc_render_pass_state_render_target_view_array p_shader_targets,
+		graphic::bc_depth_stencil_view p_shader_depth,
+		bc_render_pass_state_sampler_array p_shader_samplers,
+		bc_render_pass_state_resource_view_array p_resource_views,
+		bc_render_pass_state_unordered_view_array p_unordered_views,
+		bc_render_pass_state_constant_buffer_array p_shader_buffers)
 	{
 		bc_render_pass_state l_render_pass_state
 		(
@@ -341,17 +341,17 @@ namespace black_cat::game
 			
 		return bc_render_pass_state_ptr(l_render_pass_state_ptr, _bc_render_pass_state_handle_deleter(this));
 	}
-		
+
 	bc_render_state_ptr bc_render_system::create_render_state(graphic::bc_primitive p_primitive,
-	                                                          graphic::bc_buffer p_vertex_buffer, 
-	                                                          bcUINT32 p_vertex_buffer_stride,
-	                                                          bcUINT32 p_vertex_buffer_offset, 
-	                                                          graphic::bc_buffer p_index_buffer, 
-	                                                          bc_index_type p_index_type,
-	                                                          bcUINT32 p_index_count, 
-	                                                          bcUINT32 p_index_buffer_offset, 
-	                                                          bc_render_state_resource_view_array p_resource_views,
-	                                                          bc_render_state_constant_buffer_array p_shader_buffers)
+		graphic::bc_buffer p_vertex_buffer,
+		bcUINT32 p_vertex_buffer_stride,
+		bcUINT32 p_vertex_buffer_offset,
+		graphic::bc_buffer p_index_buffer,
+		bc_index_type p_index_type,
+		bcUINT32 p_index_count,
+		bcUINT32 p_index_buffer_offset,
+		bc_render_state_resource_view_array p_resource_views,
+		bc_render_state_constant_buffer_array p_shader_buffers)
 	{
 		bc_render_state l_render_state
 		(
@@ -387,10 +387,10 @@ namespace black_cat::game
 	}
 
 	bc_compute_state_ptr bc_render_system::create_compute_state(graphic::bc_device_compute_state p_compute_state,
-	                                                            bc_compute_state_sampler_array p_samplers,
-	                                                            bc_compute_state_resource_view_array p_resource_views,
-	                                                            bc_compute_state_unordered_view_array p_unordered_views,
-	                                                            bc_compute_state_constant_buffer_array p_cbuffers)
+		bc_compute_state_sampler_array p_samplers,
+		bc_compute_state_resource_view_array p_resource_views,
+		bc_compute_state_unordered_view_array p_unordered_views,
+		bc_compute_state_constant_buffer_array p_cbuffers)
 	{
 		bc_compute_state l_compute_state
 		(
@@ -450,7 +450,7 @@ namespace black_cat::game
 		platform::bc_basic_hardware_info l_hw_info{};
 		platform::bc_hardware_info::get_basic_info(l_hw_info);
 
-		m_device.initialize();
+		m_device.initialize(p_parameter.m_preferred_gpu);
 		m_device_clock_query = bc_device_query<graphic::bc_device_clock_query>({ m_device.create_clock_query(), m_device.create_clock_query() });
 		m_device_start_query = bc_device_query<graphic::bc_device_timestamp_query, 1>({ m_device.create_timestamp_query() });
 		m_device_end_query = bc_device_query<graphic::bc_device_timestamp_query, 1>({ m_device.create_timestamp_query() });

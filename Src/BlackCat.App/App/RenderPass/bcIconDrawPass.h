@@ -36,7 +36,7 @@ namespace black_cat
 		bc_icon_draw_pass(game::bc_render_pass_variable_t p_render_target_texture, 
 			game::bc_render_pass_variable_t p_render_target_view,
 			std::initializer_list<std::string_view> p_icons,
-			const bcECHAR* p_sprites_texture_name,
+			core::bc_estring p_sprites_texture_name,
 			bcUINT32 p_sprites_width,
 			bcUINT32 p_sprites_count) noexcept;
 
@@ -71,7 +71,7 @@ namespace black_cat
 
 		game::bc_render_pass_variable_t m_render_target_texture;
 		game::bc_render_pass_variable_t m_render_target_view;
-		const bcECHAR* m_sprites_texture_name;
+		core::bc_estring m_sprites_texture_name;
 		core::bc_unordered_map<std::string_view, _bc_sprite_texcoord> m_sprites_map;
 		bcUINT32 m_sprites_width;
 		bcUINT32 m_sprites_count_per_row;

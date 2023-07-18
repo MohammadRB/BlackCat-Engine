@@ -173,11 +173,11 @@ namespace black_cat::graphic
 	};
 
 	/**
-		 * \brief ThreadSafe 
-		 * \tparam TRenderApi 
-		 */
+	 * \brief ThreadSafe 
+	 * \tparam TRenderApi 
+	 */
 	template<bc_render_api TRenderApi>
-	class bc_platform_device : public core::bc_initializable<>,
+	class bc_platform_device : public core::bc_initializable<core::bc_string_view>,
 	                           public core::bc_object_allocator,
 	                           public platform::bc_no_copy
 	{
@@ -207,57 +207,57 @@ namespace black_cat::graphic
 
 		bc_sampler_state_ref create_sampler_state(const bc_sampler_state_config& p_config);
 
-		bc_compiled_shader_ptr compile_vertex_shader(const bcBYTE* p_data, 
-		                                             bcSIZE p_data_size, 
-		                                             const bcCHAR* p_function_name, 
-		                                             const bcCHAR* p_source_file, 
-		                                             const bc_shader_macro* p_macros = nullptr, 
-		                                             bcUINT32 p_macro_count = 0);
+		bc_compiled_shader_ptr compile_vertex_shader(const bcBYTE* p_data,
+			bcSIZE p_data_size,
+			const bcCHAR* p_function_name,
+			const bcCHAR* p_source_file,
+			const bc_shader_macro* p_macros = nullptr,
+			bcUINT32 p_macro_count = 0);
 
 		bc_vertex_shader_ref create_vertex_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-		bc_compiled_shader_ptr compile_hull_shader(const bcBYTE* p_data, 
-		                                           bcSIZE p_data_size, 
-		                                           const bcCHAR* p_function_name, 
-		                                           const bcCHAR* p_source_file, 
-		                                           const bc_shader_macro* p_macros = nullptr, 
-		                                           bcUINT32 p_macro_count = 0);
+		bc_compiled_shader_ptr compile_hull_shader(const bcBYTE* p_data,
+			bcSIZE p_data_size,
+			const bcCHAR* p_function_name,
+			const bcCHAR* p_source_file,
+			const bc_shader_macro* p_macros = nullptr,
+			bcUINT32 p_macro_count = 0);
 
 		bc_hull_shader_ref create_hull_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
 		bc_compiled_shader_ptr compile_domain_shader(const bcBYTE* p_data,
-		                                             bcSIZE p_data_size, 
-		                                             const bcCHAR* p_function_name,
-		                                             const bcCHAR* p_source_file, 
-		                                             const bc_shader_macro* p_macros = nullptr, 
-		                                             bcUINT32 p_macro_count = 0);
+			bcSIZE p_data_size,
+			const bcCHAR* p_function_name,
+			const bcCHAR* p_source_file,
+			const bc_shader_macro* p_macros = nullptr,
+			bcUINT32 p_macro_count = 0);
 
 		bc_domain_shader_ref create_domain_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
 		bc_compiled_shader_ptr compile_geometry_shader(const bcBYTE* p_data,
-		                                               bcSIZE p_data_size, 
-		                                               const bcCHAR* p_function_name,
-		                                               const bcCHAR* p_source_file, 
-		                                               const bc_shader_macro* p_macros = nullptr, 
-		                                               bcUINT32 p_macro_count = 0);
+			bcSIZE p_data_size,
+			const bcCHAR* p_function_name,
+			const bcCHAR* p_source_file,
+			const bc_shader_macro* p_macros = nullptr,
+			bcUINT32 p_macro_count = 0);
 
 		bc_geometry_shader_ref create_geometry_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-		bc_compiled_shader_ptr compile_pixel_shader(const bcBYTE* p_data, 
-		                                            bcSIZE p_data_size, 
-		                                            const bcCHAR* p_function_name, 
-		                                            const bcCHAR* p_source_file, 
-		                                            const bc_shader_macro* p_macros = nullptr,
-		                                            bcUINT32 p_macro_count = 0);
+		bc_compiled_shader_ptr compile_pixel_shader(const bcBYTE* p_data,
+			bcSIZE p_data_size,
+			const bcCHAR* p_function_name,
+			const bcCHAR* p_source_file,
+			const bc_shader_macro* p_macros = nullptr,
+			bcUINT32 p_macro_count = 0);
 
 		bc_pixel_shader_ref create_pixel_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
-		bc_compiled_shader_ptr compile_compute_shader(const bcBYTE* p_data, 
-		                                              bcSIZE p_data_size, 
-		                                              const bcCHAR* p_function_name, 
-		                                              const bcCHAR* p_source_file, 
-		                                              const bc_shader_macro* p_macros = nullptr,
-		                                              bcUINT32 p_macro_count = 0);
+		bc_compiled_shader_ptr compile_compute_shader(const bcBYTE* p_data,
+			bcSIZE p_data_size,
+			const bcCHAR* p_function_name,
+			const bcCHAR* p_source_file,
+			const bc_shader_macro* p_macros = nullptr,
+			bcUINT32 p_macro_count = 0);
 
 		bc_compute_shader_ref create_compute_shader(const bcBYTE* p_data, bcSIZE p_data_size, const bcCHAR* p_function);
 
@@ -296,19 +296,19 @@ namespace black_cat::graphic
 		void unmap_resource(bci_resource& p_resource, bcUINT p_subresource);
 
 		/**
-			 * \brief Resize texture and recreate all resource views on that texture that are passed to the function.
-			 * Before calling this function all strong references to the texture and resource views must be released.
-			 * \param p_texture 
-			 * \param p_width 
-			 * \param p_height 
-			 * \param p_views 
-			 * \param p_num_views 
-			 */
-		void resize_texture2d(bc_texture2d& p_texture, 
-		                      bcUINT p_width, 
-		                      bcUINT p_height, 
-		                      bci_resource_view** p_views,
-		                      bcUINT p_num_views);
+		 * \brief Resize texture and recreate all resource views on that texture that are passed to the function.
+		 * Before calling this function all strong references to the texture and resource views must be released.
+		 * \param p_texture 
+		 * \param p_width 
+		 * \param p_height 
+		 * \param p_views 
+		 * \param p_num_views 
+		 */
+		void resize_texture2d(bc_texture2d& p_texture,
+			bcUINT p_width,
+			bcUINT p_height,
+			bci_resource_view** p_views,
+			bcUINT p_num_views);
 
 		platform_pack& get_platform_pack()
 		{
@@ -321,7 +321,7 @@ namespace black_cat::graphic
 		}
 
 	private:
-		void _initialize() override;
+		void _initialize(core::bc_string_view p_preferred_gpu) override;
 
 		void _destroy() override;
 

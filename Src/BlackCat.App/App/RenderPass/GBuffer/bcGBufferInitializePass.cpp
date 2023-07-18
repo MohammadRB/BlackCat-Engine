@@ -129,7 +129,7 @@ namespace black_cat
 		p_context.m_render_thread.clear_render_target_view(m_normal_map_render_view.get(), &l_clear_color[0]);
 		p_context.m_render_thread.clear_render_target_view(m_specular_map_render_view.get(), &l_clear_color[0]);
 		p_context.m_render_thread.clear_render_target_view(m_back_buffer_render_view.get(), &l_clear_color[0]);
-		p_context.m_render_thread.clear_depth_stencil_view(m_depth_stencil_view.get());
+		p_context.m_render_thread.clear_depth_stencil_view(m_depth_stencil_render_view.get());
 		
 		p_context.m_render_thread.finish();
 	}
@@ -203,22 +203,43 @@ namespace black_cat
 				core::bc_enum::mask_or({ graphic::bc_resource_view_type::render_target, graphic::bc_resource_view_type::shader })
 			).as_render_target_texture();
 
-		auto l_depth_stencil_view_config = l_resource_configure
+		auto l_depth_stencil_render_view_config = l_resource_configure
 			.as_resource_view()
 			.as_texture_view(graphic::bc_format::D24_UNORM_S8_UINT)
 			.as_tex2d_depth_stencil_view(0);
-		auto l_diffuse_map_view_config = l_resource_configure
+		auto l_diffuse_map_render_view_config = l_resource_configure
 			.as_resource_view()
 			.as_texture_view(l_diffuse_map_config.get_format())
 			.as_tex2d_render_target_view(0);
-		auto l_normal_map_view_config = l_resource_configure
+		auto l_normal_map_render_view_config = l_resource_configure
 			.as_resource_view()
 			.as_texture_view(l_normal_map_config.get_format())
 			.as_tex2d_render_target_view(0);
-		auto l_specular_map_view_config = l_resource_configure
+		auto l_specular_map_render_view_config = l_resource_configure
 			.as_resource_view()
 			.as_texture_view(l_specular_map_config.get_format())
 			.as_tex2d_render_target_view(0);
+
+		auto l_depth_resource_view_config = l_resource_configure
+			.as_resource_view()
+			.as_texture_view(graphic::bc_format::R24_UNORM_X8_TYPELESS)
+			.as_tex2d_shader_view(0, 1)
+			.on_texture2d();
+		auto l_diffuse_map_view_config = l_resource_configure
+			.as_resource_view()
+			.as_texture_view(l_diffuse_map_config.get_format())
+			.as_tex2d_shader_view(0, 1)
+			.on_texture2d();
+		auto l_normal_map_view_config = l_resource_configure
+			.as_resource_view()
+			.as_texture_view(l_normal_map_config.get_format())
+			.as_tex2d_shader_view(0, 1)
+			.on_texture2d();
+		auto l_specular_map_view_config = l_resource_configure
+			.as_resource_view()
+			.as_texture_view(l_specular_map_config.get_format())
+			.as_tex2d_shader_view(0, 1)
+			.on_texture2d();
 
 		m_back_buffer_render_view = p_context.m_device.create_render_target_view(l_back_buffer_texture, l_back_buffer_view_config);
 		m_depth_stencil_texture = p_context.m_device.create_texture2d(l_depth_stencil_config, nullptr);
@@ -229,24 +250,38 @@ namespace black_cat
 		m_normal_map_texture->set_debug_name("normal_map");
 		m_specular_map_texture = p_context.m_device.create_texture2d(l_specular_map_config, nullptr);
 		m_specular_map_texture->set_debug_name("specular_map");
-		m_depth_stencil_view = p_context.m_device.create_depth_stencil_view(m_depth_stencil_texture.get(), l_depth_stencil_view_config);
+
+		m_depth_stencil_render_view = p_context.m_device.create_depth_stencil_view(m_depth_stencil_texture.get(), l_depth_stencil_render_view_config);
+		m_depth_stencil_render_view->set_debug_name("depth_stencil_render_view");
+		m_diffuse_map_render_view = p_context.m_device.create_render_target_view(m_diffuse_map_texture.get(), l_diffuse_map_render_view_config);
+		m_diffuse_map_render_view->set_debug_name("diffuse_map_render_view");
+		m_normal_map_render_view = p_context.m_device.create_render_target_view(m_normal_map_texture.get(), l_normal_map_render_view_config);
+		m_normal_map_render_view->set_debug_name("normal_map_render_view");
+		m_specular_map_render_view = p_context.m_device.create_render_target_view(m_specular_map_texture.get(), l_specular_map_render_view_config);
+		m_specular_map_render_view->set_debug_name("specular_map_render_view");
+
+		m_depth_stencil_view = p_context.m_device.create_resource_view(*m_depth_stencil_texture, l_depth_resource_view_config);
 		m_depth_stencil_view->set_debug_name("depth_stencil_view");
-		m_diffuse_map_render_view = p_context.m_device.create_render_target_view(m_diffuse_map_texture.get(), l_diffuse_map_view_config);
-		m_diffuse_map_render_view->set_debug_name("diffuse_map_view");
-		m_normal_map_render_view = p_context.m_device.create_render_target_view(m_normal_map_texture.get(), l_normal_map_view_config);
-		m_normal_map_render_view->set_debug_name("normal_map_view");
-		m_specular_map_render_view = p_context.m_device.create_render_target_view(m_specular_map_texture.get(), l_specular_map_view_config);
-		m_specular_map_render_view->set_debug_name("specular_map_view");
+		m_diffuse_map_view = p_context.m_device.create_resource_view(*m_diffuse_map_texture, l_diffuse_map_view_config);
+		m_diffuse_map_view->set_debug_name("diffuse_map_view");
+		m_normal_map_view = p_context.m_device.create_resource_view(*m_normal_map_texture, l_normal_map_view_config);
+		m_normal_map_view->set_debug_name("normal_map_view");
+		m_specular_map_view = p_context.m_device.create_resource_view(*m_specular_map_texture, l_specular_map_view_config);
+		m_specular_map_view->set_debug_name("specular_map_view");
 
 		share_resource(constant::g_rpass_back_buffer_texture, l_back_buffer_texture);
 		share_resource(constant::g_rpass_back_buffer_render_view, m_back_buffer_render_view.get());
 		share_resource(constant::g_rpass_depth_stencil_texture, m_depth_stencil_texture.get());
-		share_resource(constant::g_rpass_depth_stencil_render_view, m_depth_stencil_view.get());
+		share_resource(constant::g_rpass_depth_stencil_read_view, m_depth_stencil_view.get());
+		share_resource(constant::g_rpass_depth_stencil_render_view, m_depth_stencil_render_view.get());
 		share_resource(constant::g_rpass_render_target_texture_1, m_diffuse_map_texture.get());
+		share_resource(constant::g_rpass_render_target_read_view_1, m_diffuse_map_view.get());
 		share_resource(constant::g_rpass_render_target_render_view_1, m_diffuse_map_render_view.get());
 		share_resource(constant::g_rpass_render_target_texture_2, m_normal_map_texture.get());
+		share_resource(constant::g_rpass_render_target_read_view_2, m_normal_map_view.get());
 		share_resource(constant::g_rpass_render_target_render_view_2, m_normal_map_render_view.get());
 		share_resource(constant::g_rpass_render_target_texture_3, m_specular_map_texture.get());
+		share_resource(constant::g_rpass_render_target_read_view_3, m_specular_map_view.get());
 		share_resource(constant::g_rpass_render_target_render_view_3, m_specular_map_render_view.get());
 	}
 
@@ -255,12 +290,16 @@ namespace black_cat
 		unshare_resource(constant::g_rpass_back_buffer_texture);
 		unshare_resource(constant::g_rpass_back_buffer_render_view);
 		unshare_resource(constant::g_rpass_depth_stencil_texture);
+		unshare_resource(constant::g_rpass_depth_stencil_read_view);
 		unshare_resource(constant::g_rpass_depth_stencil_render_view);
 		unshare_resource(constant::g_rpass_render_target_texture_1);
+		unshare_resource(constant::g_rpass_render_target_read_view_1);
 		unshare_resource(constant::g_rpass_render_target_render_view_1);
 		unshare_resource(constant::g_rpass_render_target_texture_2);
+		unshare_resource(constant::g_rpass_render_target_read_view_2);
 		unshare_resource(constant::g_rpass_render_target_render_view_2);
 		unshare_resource(constant::g_rpass_render_target_texture_3);
+		unshare_resource(constant::g_rpass_render_target_read_view_3);
 		unshare_resource(constant::g_rpass_render_target_render_view_3);
 
 		m_back_buffer_render_view.reset();
@@ -268,7 +307,7 @@ namespace black_cat
 		m_diffuse_map_texture.reset();
 		m_normal_map_texture.reset();
 		m_specular_map_texture.reset();
-		m_depth_stencil_view.reset();
+		m_depth_stencil_render_view.reset();
 		m_diffuse_map_render_view.reset();
 		m_normal_map_render_view.reset();
 		m_specular_map_render_view.reset();

@@ -28,6 +28,7 @@
 #include "App/RenderPass/PostProcess/bcGlowPass.h"
 #include "App/RenderPass/PostProcess/bcEdgeDetectionAntiAliasingPass.h"
 #include "App/RenderPass/PostProcess/bcHDRRenderingPass.h"
+#include "App/RenderPass/PostProcess/bcAmbientOcclusionPass.h"
 #include "App/RenderPass/bcIconDrawPass.h"
 #include "App/RenderPass/bcShapeDrawPass.h"
 #include "App/RenderPass/bcCounterValueDrawPass.h"
@@ -80,57 +81,77 @@ namespace black_cat::editor
 		l_render_system.add_render_pass(bc_cascaded_shadow_map_pass(constant::g_rpass_direct_light_depth_buffers, 2, { {40, 1}, {70, 1}, {130, 2} }));
 		l_render_system.add_render_pass(bc_vegetable_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
 		l_render_system.add_render_pass(bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
+		l_render_system.add_render_pass(bc_ambient_occlusion_pass
+		(
+			constant::g_rpass_gbuffer_read_view,
+			constant::g_rpass_ambient_occlusion_texture,
+			constant::g_rpass_ambient_occlusion_read_view
+		));
 		l_render_system.add_render_pass(bc_gbuffer_light_map_pass
-			(
-				constant::g_rpass_direct_light_depth_buffers, 
-				constant::g_rpass_deferred_rendering_gbuffer_texture,
-				constant::g_rpass_deferred_rendering_gbuffer_read_view,
-				constant::g_rpass_deferred_rendering_gbuffer_render_view
-			));
+		(
+			constant::g_rpass_direct_light_depth_buffers,
+			constant::g_rpass_ambient_occlusion_read_view,
+			constant::g_rpass_gbuffer_texture,
+			constant::g_rpass_gbuffer_read_view,
+			constant::g_rpass_gbuffer_render_view
+		));
 		l_render_system.add_render_pass(bc_particle_system_pass_dx11
-			(
-				constant::g_rpass_deferred_rendering_gbuffer_texture,
-				constant::g_rpass_deferred_rendering_gbuffer_render_view,
-				bcL("Texture\\Particle\\Particle.dds")
-			));
-		l_render_system.add_render_pass(bc_light_flare_pass(constant::g_rpass_deferred_rendering_gbuffer_texture, constant::g_rpass_deferred_rendering_gbuffer_render_view));
+		(
+			constant::g_rpass_gbuffer_texture,
+			constant::g_rpass_gbuffer_render_view,
+			bcL("Texture\\Particle\\Particle.dds")
+		));
+		l_render_system.add_render_pass(bc_light_flare_pass
+		(
+			constant::g_rpass_gbuffer_texture, 
+			constant::g_rpass_gbuffer_render_view
+		));
 		l_render_system.add_render_pass(bc_hdr_rendering_pass
-			(
-				constant::g_rpass_deferred_rendering_gbuffer_texture,
-				constant::g_rpass_deferred_rendering_gbuffer_read_view,
-				constant::g_rpass_deferred_rendering_gbuffer_render_view,
-				constant::g_rpass_hdr_output_texture,
-				constant::g_rpass_hdr_output_texture_read_view,
-				constant::g_rpass_hdr_output_texture_render_view
-			));
-		l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_hdr_output_texture, constant::g_rpass_hdr_output_texture_render_view));
-		l_render_system.add_render_pass(bc_back_buffer_write_pass(constant::g_rpass_hdr_output_texture));
+		(
+			constant::g_rpass_gbuffer_texture,
+			constant::g_rpass_gbuffer_read_view,
+			constant::g_rpass_gbuffer_render_view,
+			constant::g_rpass_hdr_output_texture,
+			constant::g_rpass_hdr_output_read_view,
+			constant::g_rpass_hdr_output_render_view
+		));
+		l_render_system.add_render_pass(bc_glow_pass
+		(
+			constant::g_rpass_hdr_output_texture,
+			constant::g_rpass_hdr_output_render_view
+		));
 		l_render_system.add_render_pass(bc_edge_detection_anti_aliasing_pass
-			(
-				constant::g_rpass_hdr_output_texture_read_view,
-				constant::g_rpass_back_buffer_texture, 
-				constant::g_rpass_back_buffer_render_view
-			));
+		(
+			constant::g_rpass_hdr_output_read_view,
+			constant::g_rpass_back_buffer_texture,
+			constant::g_rpass_back_buffer_render_view
+		));
+		//l_render_system.add_render_pass(bc_back_buffer_write_pass(constant::g_rpass_hdr_output_texture));
 		l_render_system.add_render_pass(bc_icon_draw_pass
-			(
-				constant::g_rpass_back_buffer_texture, 
-				constant::g_rpass_back_buffer_render_view, 
-				{
-					game::bc_icon_type::player,
-					game::bc_icon_type::sun,
-					game::bc_icon_type::light,
-					game::bc_icon_type::cloud,
-					game::bc_icon_type::wind,
-					game::bc_icon_type::sound,
-					game::bc_icon_type::particle,
-					game::bc_icon_type::decal
-				},
-				bcL("Texture\\SpriteIcon.png"), 
-				64, 
-				64
-			));
+		(
+			constant::g_rpass_back_buffer_texture,
+			constant::g_rpass_back_buffer_render_view,
+			{
+				game::bc_icon_type::player,
+				game::bc_icon_type::sun,
+				game::bc_icon_type::light,
+				game::bc_icon_type::cloud,
+				game::bc_icon_type::wind,
+				game::bc_icon_type::sound,
+				game::bc_icon_type::particle,
+				game::bc_icon_type::decal
+			},
+			bcL("Texture\\SpriteIcon.png"),
+			64,
+			64
+		));
 		l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
-		l_render_system.add_render_pass(bc_counter_value_draw_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
+		l_render_system.add_render_pass(bc_counter_value_draw_pass
+		(
+			constant::g_rpass_back_buffer_texture, 
+			constant::g_rpass_back_buffer_render_view, 
+			bcL("Data\\Dx.spritefont")
+		));
 	}
 
 	void bc_editor_render_app::application_load_content(const bc_application_load_context& p_context)

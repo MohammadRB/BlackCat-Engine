@@ -21,6 +21,7 @@ namespace black_cat
 
 	public:
 		bc_gbuffer_light_map_pass(game::bc_render_pass_variable_t p_csm_buffers_container,
+			game::bc_render_pass_variable_t p_ambient_occlusion_read_view,
 			game::bc_render_pass_variable_t p_output_texture, 
 			game::bc_render_pass_variable_t p_output_texture_read_view,
 			game::bc_render_pass_variable_t p_output_texture_render_view);
@@ -50,15 +51,11 @@ namespace black_cat
 		constexpr static bcSIZE m_num_spot_lights = 100;
 
 		game::bc_render_pass_variable_t m_csm_buffers_container_share_slot;
+		game::bc_render_pass_variable_t m_ambient_occlusion_read_view;
 		game::bc_render_pass_variable_t m_output_texture_share_slot;
 		game::bc_render_pass_variable_t m_output_texture_read_view_share_slot;
 		game::bc_render_pass_variable_t m_output_texture_render_view_share_slot;
 		bool m_hdr_enabled;
-
-		graphic::bc_resource_view_ref m_depth_stencil_view;
-		graphic::bc_resource_view_ref m_diffuse_map_view;
-		graphic::bc_resource_view_ref m_normal_map_view;
-		graphic::bc_resource_view_ref m_specular_map_view;
 
 		graphic::bc_sampler_state_ref m_linear_sampler;
 		graphic::bc_sampler_state_ref m_pcf_sampler;

@@ -19,9 +19,9 @@
 namespace black_cat::core
 {
 	/**
-		 * \brief Interface for log listeners. Calls to 'on_log' method can be called from different threads so
-		 * clients must take care of threads in their implementations.
-		 */
+	 * \brief Interface for log listeners. Calls to 'on_log' method can be called from different threads so
+	 * clients must take care of threads in their implementations.
+	 */
 	class bci_log_listener
 	{
 	public:
@@ -94,10 +94,10 @@ namespace black_cat::core
 		void set_enabled_log_types(bc_log_type p_types) noexcept;
 
 		/**
-			 * \brief Use binary OR to pass multiple type.
-			 * \param p_types
-			 * \param p_log 
-			 */
+		 * \brief Use binary OR to pass multiple type.
+		 * \param p_types
+		 * \param p_log 
+		 */
 		void log(bc_log_type p_types, const bcECHAR* p_log);
 
 		void log_info(const bcECHAR* p_log)
@@ -121,9 +121,9 @@ namespace black_cat::core
 		}
 
 		/**
-			 * \brief Get logger output stream for formatted logs
-			 * \return 
-			 */
+		 * \brief Get logger output stream for formatted logs
+		 * \return 
+		 */
 		bc_logger_output_stream& log(bc_log_type p_types);
 
 		bc_logger_output_stream& log_info()
@@ -147,17 +147,17 @@ namespace black_cat::core
 		}
 			
 		/**
-			 * \brief Register and take the ownership of listener. Use binary OR to pass multiple types.
-			 * \param p_types
-			 * \param p_listener 
-			 */
+		 * \brief Register and take the ownership of listener. Use binary OR to pass multiple types.
+		 * \param p_types
+		 * \param p_listener 
+		 */
 		void register_listener(bc_log_type p_types, bc_unique_ptr<bci_log_listener> p_listener);
 
 		/**
-			 * \brief Register listener. Use binary OR to pass multiple types.
-			 * \param p_types
-			 * \param p_listener 
-			 */
+		 * \brief Register listener. Use binary OR to pass multiple types.
+		 * \param p_types
+		 * \param p_listener 
+		 */
 		void register_listener(bc_log_type p_types, bci_log_listener* p_listener);
 
 		void unregister_listener(bci_log_listener* p_listener);
