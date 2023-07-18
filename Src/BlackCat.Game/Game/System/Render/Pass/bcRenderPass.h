@@ -271,12 +271,13 @@ namespace black_cat
 		T& bci_render_pass::get_shared_resource_throw(bc_render_pass_variable_t p_variable) const
 		{
 			auto* l_resource = get_shared_resource<T>(p_variable);
-			if(l_resource)
+			if (l_resource)
 			{
 				return *l_resource;
 			}
 
-			throw bc_key_not_found_exception("No shared resource were found in render passes with the given key");
+			BC_ASSERT(false);
+			throw bc_key_not_found_exception("No shared render pass resource were found with the given key");
 		}
 		
 		inline bc_intermediate_texture_guard bci_render_pass::get_intermediate_texture(const graphic::bc_texture_config& p_texture_config)

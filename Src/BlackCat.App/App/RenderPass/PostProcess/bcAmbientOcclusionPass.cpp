@@ -55,7 +55,7 @@ namespace black_cat
 		  m_update_parameters(true),
 		  m_num_rays(4),
 		  m_steps_per_ray(4),
-		  m_strength(2.5),
+		  m_strength(1.6f),
 		  m_radius(1.5f),
 		  m_attenuation(2.0f),
 		  m_bias(0.1f),
@@ -139,8 +139,13 @@ namespace black_cat
 	{
 		if (m_num_rays == 0 || m_steps_per_ray == 0)
 		{
+			unshare_resource(m_render_target_texture);
+			unshare_resource(m_render_target_view);
 			return;
 		}
+
+		share_resource(m_render_target_texture, *m_output_texture);
+		share_resource(m_render_target_view, *m_output_texture_read_view);
 
 		p_context.m_render_thread.start();
 
@@ -154,10 +159,8 @@ namespace black_cat
 		}
 
 		_update_frustum_params(p_context.m_render_thread, p_context.m_render_camera);
-
-		const auto l_intermediate_texture_1 = get_intermediate_texture(m_intermediate_texture_config);
-		const auto l_intermediate_texture_2 = get_intermediate_texture(m_intermediate_texture_config);
-		m_intermediate_texture_link_1.set_as_render_target_view(l_intermediate_texture_1.get_render_target_view());
+		
+		const auto l_intermediate_texture = get_intermediate_texture(m_intermediate_texture_config);
 
 		// AO stage
 		p_context.m_render_thread.bind_render_pass_state(*m_ao_render_pass_state);
@@ -165,9 +168,8 @@ namespace black_cat
 		p_context.m_render_thread.draw(0, 6);
 		p_context.m_render_thread.unbind_render_state(*m_ao_render_state);
 		p_context.m_render_thread.unbind_render_pass_state(*m_ao_render_pass_state);
-
-		m_intermediate_texture_link_1.set_as_resource_view(l_intermediate_texture_1.get_resource_view());
-		m_intermediate_texture_link_2.set_as_render_target_view(l_intermediate_texture_2.get_render_target_view());
+		
+		m_intermediate_texture_link.set_as_render_target_view(l_intermediate_texture.get_render_target_view());
 
 		// Blur stage
 		p_context.m_render_thread.bind_render_pass_state(*m_hor_blur_render_pass_state);
@@ -175,9 +177,8 @@ namespace black_cat
 		p_context.m_render_thread.draw(0, 6);
 		p_context.m_render_thread.unbind_render_state(*m_hor_blur_render_state);
 		p_context.m_render_thread.unbind_render_pass_state(*m_hor_blur_render_pass_state);
-
-		m_intermediate_texture_link_1.set_as_render_target_view(l_intermediate_texture_1.get_render_target_view());
-		m_intermediate_texture_link_2.set_as_resource_view(l_intermediate_texture_2.get_resource_view());
+		
+		m_intermediate_texture_link.set_as_resource_view(l_intermediate_texture.get_resource_view());
 
 		p_context.m_render_thread.bind_render_pass_state(*m_ver_blur_render_pass_state);
 		p_context.m_render_thread.bind_render_state(*m_ver_blur_render_state);
@@ -186,33 +187,33 @@ namespace black_cat
 		p_context.m_render_thread.unbind_render_pass_state(*m_ver_blur_render_pass_state);
 
 		// Apply stage
-		m_intermediate_texture_link_1.set_as_resource_view(l_intermediate_texture_1.get_resource_view());
+		//m_intermediate_texture_link_1.set_as_resource_view(l_intermediate_texture_1.get_resource_view());
 
-		p_context.m_render_thread.bind_render_pass_state(*m_apply_render_pass_state);
-		p_context.m_render_thread.bind_render_state(*m_apply_render_state);
-		p_context.m_render_thread.draw(0, 6);
-		p_context.m_render_thread.unbind_render_state(*m_apply_render_state);
-		p_context.m_render_thread.unbind_render_pass_state(*m_apply_render_pass_state);
+		//p_context.m_render_thread.bind_render_pass_state(*m_apply_render_pass_state);
+		//p_context.m_render_thread.bind_render_state(*m_apply_render_state);
+		//p_context.m_render_thread.draw(0, 6);
+		//p_context.m_render_thread.unbind_render_state(*m_apply_render_state);
+		//p_context.m_render_thread.unbind_render_pass_state(*m_apply_render_pass_state);
 
 		p_context.m_render_thread.finish();
 	}
-
+	
 	void bc_ambient_occlusion_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
 	{
 	}
 
 	void bc_ambient_occlusion_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
-		const auto& l_input_texture_view = get_shared_resource_throw<graphic::bc_resource_view>(m_input_texture_view);
+		//const auto& l_input_texture_view = get_shared_resource_throw<graphic::bc_resource_view>(m_input_texture_view);
 		const auto& l_depth_texture = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_depth_stencil_texture);
 		const auto& l_depth_read_view = get_shared_resource_throw<graphic::bc_resource_view>(constant::g_rpass_depth_stencil_read_view);
 		const auto& l_normal_texture = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_render_target_texture_2);
 		const auto& l_normal_read_view = get_shared_resource_throw<graphic::bc_resource_view>(constant::g_rpass_render_target_read_view_2);
-		const auto& l_render_target_texture = get_shared_resource_throw<graphic::bc_texture2d>(m_render_target_texture);
-		const auto& l_render_target_view = get_shared_resource_throw<graphic::bc_render_target_view>(m_render_target_view);
+		//const auto& l_render_target_texture = get_shared_resource_throw<graphic::bc_texture2d>(m_render_target_texture);
+		//const auto& l_render_target_view = get_shared_resource_throw<graphic::bc_render_target_view>(m_render_target_view);
 		const auto l_viewport = graphic::bc_viewport::default_config(l_depth_texture.get_width(), l_depth_texture.get_height());
 
-		m_intermediate_texture_config = graphic::bc_graphic_resource_builder()
+		const auto l_output_texture_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_texture2d
 			(
@@ -225,6 +226,21 @@ namespace black_cat
 				core::bc_enum::mask_or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::render_target })
 			)
 			.as_render_target_texture();
+		const auto l_output_texture_read_view_config = graphic::bc_graphic_resource_builder()
+			.as_resource_view()
+			.as_texture_view(l_output_texture_config.get_format())
+			.as_tex2d_shader_view(0, 1)
+			.on_render_target_texture2d();
+		const auto l_output_texture_render_view_config = graphic::bc_graphic_resource_builder()
+			.as_resource_view()
+			.as_texture_view(l_output_texture_config.get_format())
+			.as_tex2d_render_target_view(0);
+
+		m_output_texture = p_context.m_device.create_texture2d(l_output_texture_config, nullptr);
+		m_output_texture_read_view = p_context.m_device.create_resource_view(*m_output_texture, l_output_texture_read_view_config);
+		m_output_texture_render_view = p_context.m_device.create_render_target_view(*m_output_texture, l_output_texture_render_view_config);
+
+		m_intermediate_texture_config = l_output_texture_config;
 
 		m_ao_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
 		(
@@ -239,7 +255,7 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0xffffffff,
 			{
-				m_intermediate_texture_config.get_format()
+				l_output_texture_config.get_format()
 			},
 			graphic::bc_format::unknown,
 			game::bc_multi_sample_type::c1_q1
@@ -249,7 +265,7 @@ namespace black_cat
 			*m_ao_device_pipeline_state,
 			l_viewport,
 			{
-				graphic::bc_render_target_view_parameter(m_intermediate_texture_link_1)
+				graphic::bc_render_target_view_parameter(*m_output_texture_render_view)
 			},
 			graphic::bc_depth_stencil_view(),
 			{
@@ -301,7 +317,7 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0xffffffff,
 			{
-				m_intermediate_texture_config.get_format()
+				l_output_texture_config.get_format()
 			},
 			graphic::bc_format::unknown,
 			game::bc_multi_sample_type::c1_q1
@@ -311,7 +327,7 @@ namespace black_cat
 			*m_hor_blur_device_pipeline_state,
 			l_viewport,
 			{
-				graphic::bc_render_target_view_parameter(m_intermediate_texture_link_2)
+				graphic::bc_render_target_view_parameter(m_intermediate_texture_link)
 			},
 			graphic::bc_depth_stencil_view(),
 			{
@@ -321,7 +337,7 @@ namespace black_cat
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_depth_read_view),
 				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::pixel, l_normal_read_view),
-				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::pixel, m_intermediate_texture_link_1)
+				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::pixel, *m_output_texture_read_view)
 			},
 			{
 			},
@@ -359,7 +375,7 @@ namespace black_cat
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0xffffffff,
 			{
-				m_intermediate_texture_config.get_format()
+				l_output_texture_config.get_format()
 			},
 			graphic::bc_format::unknown,
 			game::bc_multi_sample_type::c1_q1
@@ -369,7 +385,7 @@ namespace black_cat
 			*m_ver_blur_device_pipeline_state,
 			l_viewport,
 			{
-				graphic::bc_render_target_view_parameter(m_intermediate_texture_link_1)
+				graphic::bc_render_target_view_parameter(*m_output_texture_render_view)
 			},
 			graphic::bc_depth_stencil_view(),
 			{
@@ -379,7 +395,7 @@ namespace black_cat
 			{
 				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_depth_read_view),
 				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::pixel, l_normal_read_view),
-				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::pixel, m_intermediate_texture_link_2),
+				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::pixel, m_intermediate_texture_link),
 			},
 			{
 			},
@@ -404,7 +420,7 @@ namespace black_cat
 			}
 		);
 
-		m_apply_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
+		/*m_apply_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
 		(
 			"ao_blur_vs",
 			nullptr,
@@ -412,7 +428,7 @@ namespace black_cat
 			nullptr,
 			"ao_apply_ps",
 			game::bc_vertex_type::pos_tex,
-			game::bc_blend_type::opaque,
+			game::bc_blend_type::blend_preserve_alpha,
 			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
 			game::bc_rasterizer_type::fill_solid_cull_none,
 			0xffffffff,
@@ -460,7 +476,10 @@ namespace black_cat
 			},
 			{
 			}
-		);
+		);*/
+
+		share_resource(m_render_target_texture, *m_output_texture);
+		share_resource(m_render_target_view, *m_output_texture_read_view);
 	}
 
 	void bc_ambient_occlusion_pass::config_changed(const game::bc_render_pass_config_change_context& p_context)
@@ -539,6 +558,9 @@ namespace black_cat
 		m_apply_device_pipeline_state.reset();
 		m_apply_render_pass_state.reset();
 		m_apply_render_state.reset();
+
+		unshare_resource(m_render_target_texture);
+		unshare_resource(m_render_target_view);
 	}
 
 	void bc_ambient_occlusion_pass::_update_params(game::bc_default_render_thread& p_render_thread)

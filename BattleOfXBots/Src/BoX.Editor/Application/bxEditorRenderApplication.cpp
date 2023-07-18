@@ -42,8 +42,8 @@ namespace box
 		(
 			bx_bullet_trail_pass
 			(
-				constant::g_rpass_deferred_rendering_gbuffer_texture,
-				constant::g_rpass_deferred_rendering_gbuffer_render_view,
+				constant::g_rpass_gbuffer_texture,
+				constant::g_rpass_gbuffer_render_view,
 				bcL("Texture\\Flare\\BulletTrail.dds")
 			)
 		);

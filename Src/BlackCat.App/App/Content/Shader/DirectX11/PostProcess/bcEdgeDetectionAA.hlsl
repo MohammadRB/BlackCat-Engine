@@ -91,7 +91,7 @@ float get_depth_edge_factor(float2 p_texcoord, float2 l_pixel_size)
 
 	const float l_depth_threshold = lerp(g_min_depth_threshold, g_max_depth_threshold, l_depth[0]);
 
-	//Find min and max gradient, ensuring min != 0
+	// Find min and max gradient, ensuring min != 0
 	const float2 l_max_deltas = max(l_deltas1, l_deltas2);
 	const float2 l_min_deltas = max(min(l_deltas1, l_deltas2), l_depth_threshold / (g_far_plane - g_near_plane));
 
@@ -140,29 +140,30 @@ bc_vs_output edge_aa_vs(uint p_vertex_id : SV_VertexID)
 bc_ps_output edge_aa_ps(bc_vs_output p_input)
 {
 	bc_ps_output l_output;
-	const float2 l_pixel_size = float2(1.f / g_screen_width, 1.f / g_screen_height);
+	const float2 l_pixel_size = rcp(float2(g_screen_width, g_screen_height));
 
 	const float	l_depth_factor = get_depth_edge_factor(p_input.m_texcoord, l_pixel_size);
 	const float	l_normal_factor = get_normal_edge_factor(p_input.m_texcoord, l_pixel_size);
 	const float l_edge_factor = max(l_depth_factor, l_normal_factor);
 
+	const float4 l_color = g_tex2d_diffuse.Sample(g_sam_point, p_input.m_texcoord);
 	if (l_edge_factor <= 0.0)
 	{
-		discard;
+		l_output.m_color = l_color;
+		return l_output;
 	}
-
-	const float3 l_diffuse = g_tex2d_diffuse.Sample(g_sam_point, p_input.m_texcoord).xyz;
-	float3 l_neighbors_diffuse = l_diffuse;
+	
+	float4 l_neighbors_color = l_color;
 
 	for (int l_i = 0; l_i < g_sample_count; ++l_i)
 	{
 		const float2 l_uv = p_input.m_texcoord + g_diffuse_offsets[l_i] * l_pixel_size;
-		l_neighbors_diffuse += g_tex2d_diffuse.Sample(g_sam_point, l_uv).xyz;
+		l_neighbors_color += g_tex2d_diffuse.Sample(g_sam_point, l_uv);
 	}
 
-	l_neighbors_diffuse /= g_sample_count + 1;
+	l_neighbors_color /= g_sample_count + 1;
 
-	l_output.m_color.xyz = (1 - l_edge_factor) * l_diffuse + l_edge_factor * l_neighbors_diffuse;
+	l_output.m_color.xyz = (1 - l_edge_factor) * l_color + l_edge_factor * l_neighbors_color;
 	//l_output.m_color = l_edge_factor;
 
 	return l_output;

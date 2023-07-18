@@ -193,5 +193,6 @@ namespace black_cat::game
 		}
 
 		m_manager->free_texture(m_texture);
+		m_manager = nullptr;
 	}
 }

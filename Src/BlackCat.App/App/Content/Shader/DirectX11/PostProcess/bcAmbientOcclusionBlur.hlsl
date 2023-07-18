@@ -98,8 +98,8 @@ float4 ao_ver_blur_ps(bc_vs_output p_input) : SV_Target0
 
 float4 ao_apply_ps(bc_vs_output p_input) : SV_Target0
 {
-	const float4 l_color = g_tex2d_input.Sample(g_sam_point, p_input.m_texcoord);
+	//const float4 l_color = g_tex2d_input.Sample(g_sam_point, p_input.m_texcoord);
 	const float l_occlusion = g_tex2d_ao_buffer.Sample(g_sam_point, p_input.m_texcoord).r;
 
-	return l_color * l_occlusion;
+	return float4(l_occlusion, l_occlusion, l_occlusion, 1 - l_occlusion);
 }

@@ -53,9 +53,11 @@ namespace black_cat
 		bcFLOAT m_blur_distance;
 		bcFLOAT m_blur_angle;
 
+		graphic::bc_texture2d_ref m_output_texture;
+		graphic::bc_resource_view_ref m_output_texture_read_view;
+		graphic::bc_render_target_view_ref m_output_texture_render_view;
 		graphic::bc_texture_config m_intermediate_texture_config;
-		graphic::bc_shader_parameter_link m_intermediate_texture_link_1;
-		graphic::bc_shader_parameter_link m_intermediate_texture_link_2;
+		graphic::bc_shader_parameter_link m_intermediate_texture_link;
 
 		graphic::bc_sampler_state_ref m_point_sampler;
 		graphic::bc_sampler_state_ref m_linear_sampler;
