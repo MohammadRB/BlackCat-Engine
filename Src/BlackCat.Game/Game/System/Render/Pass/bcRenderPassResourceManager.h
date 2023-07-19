@@ -9,7 +9,7 @@
 namespace black_cat::game
 {
 	using bc_render_pass_variable_t = const bcCHAR*;
-		
+
 	class bc_render_pass_resource_manager
 	{
 	private:
@@ -36,11 +36,11 @@ namespace black_cat::game
 		}
 
 		/**
-			 * \brief Return shared variable ar null in case of no variable were found.
-			 * \tparam T
-			 * \param p_variable
-			 * \return
-			 */
+		 * \brief Return shared variable ar null in case of no variable were found.
+		 * \tparam T
+		 * \param p_variable
+		 * \return
+		 */
 		template<typename T>
 		T* get_resource(bc_render_pass_variable_t p_variable) noexcept
 		{
@@ -55,11 +55,11 @@ namespace black_cat::game
 		}
 
 		/**
-			 * \brief Return shared variable ar null in case of no variable were found.
-			 * \tparam T 
-			 * \param p_variable 
-			 * \return 
-			 */
+		 * \brief Return shared variable ar null in case of no variable were found.
+		 * \tparam T 
+		 * \param p_variable 
+		 * \return 
+		 */
 		template<typename T>
 		const T* get_resource(bc_render_pass_variable_t p_variable) const noexcept
 		{

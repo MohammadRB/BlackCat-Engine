@@ -97,14 +97,14 @@ namespace black_cat
 
 	void bc_edge_detection_anti_aliasing_pass::execute(const game::bc_render_pass_render_context& p_context)
 	{
-		if(m_sample_count == 0)
+		if (m_sample_count == 0)
 		{
 			return;
 		}
 
 		p_context.m_render_thread.start();
 
-		if(m_parameters_changed)
+		if (m_parameters_changed)
 		{
 			_update_parameters(p_context.m_render_thread);
 		}

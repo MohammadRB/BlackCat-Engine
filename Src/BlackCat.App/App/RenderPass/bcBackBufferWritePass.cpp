@@ -13,11 +13,12 @@
 
 namespace black_cat
 {
-	bc_back_buffer_write_pass::bc_back_buffer_write_pass(game::bc_render_pass_variable_t p_input_texture)
-		: m_input_texture(p_input_texture)
+	bc_back_buffer_write_pass::bc_back_buffer_write_pass(game::bc_render_pass_variable_t p_input_texture, game::bc_render_pass_variable_t p_input_texture_view)
+		: m_input_texture(p_input_texture),
+		m_input_texture_view(p_input_texture_view)
 	{
 	}
-	
+
 	void bc_back_buffer_write_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
@@ -48,29 +49,7 @@ namespace black_cat
 			{}
 		);
 
-		after_reset
-		(
-			game::bc_render_pass_reset_context
-			(
-				p_render_system,
-				l_device,
-				l_device_swap_buffer,
-				graphic::bc_device_parameters
-				(
-					0,
-					0,
-					graphic::bc_format::unknown,
-					graphic::bc_texture_ms_config(1, 0)
-				),
-				graphic::bc_device_parameters
-				(
-					l_device_swap_buffer.get_back_buffer_width(),
-					l_device_swap_buffer.get_back_buffer_height(),
-					l_device_swap_buffer.get_back_buffer_format(),
-					l_device_swap_buffer.get_back_buffer_texture().get_sample_count()
-				)
-			)
-		);
+		after_reset(game::bc_render_pass_reset_context::create_default_instance(p_render_system, l_device, l_device_swap_buffer));
 	}
 
 	void bc_back_buffer_write_pass::update(const game::bc_render_pass_update_context& p_context)
@@ -102,21 +81,12 @@ namespace black_cat
 
 	void bc_back_buffer_write_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
-		auto l_resource_configure = graphic::bc_graphic_resource_builder();
-
 		const auto l_back_buffer_texture = get_shared_resource_throw<graphic::bc_texture2d>(constant::g_rpass_back_buffer_texture);
 		const auto l_back_buffer_render_view = get_shared_resource_throw<graphic::bc_render_target_view>(constant::g_rpass_back_buffer_render_view);
-		const auto l_input_texture = *get_shared_resource<graphic::bc_texture2d>(m_input_texture);
+		const auto l_input_texture = get_shared_resource_throw<graphic::bc_texture2d>(m_input_texture);
+		const auto l_input_texture_view = get_shared_resource_throw<graphic::bc_resource_view>(m_input_texture_view);
 		const auto l_viewport = graphic::bc_viewport::default_config(l_back_buffer_texture.get_width(), l_back_buffer_texture.get_height());
-
-		const auto l_input_texture_view_config = l_resource_configure
-		                                         .as_resource_view()
-		                                         .as_texture_view(l_input_texture.get_format())
-		                                         .as_tex2d_shader_view(0, 1)
-		                                         .on_texture2d();
-
-		m_input_texture_view = p_context.m_device.create_resource_view(l_input_texture, l_input_texture_view_config);
-
+		
 		m_pipeline_state = p_context.m_render_system.create_device_pipeline_state
 		(
 			"bb_write_vs",
@@ -145,7 +115,7 @@ namespace black_cat
 				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, m_sampler_state.get())
 			},
 			{
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, m_input_texture_view.get())
+				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, l_input_texture_view)
 			},
 			{
 			},
@@ -160,8 +130,7 @@ namespace black_cat
 		m_render_state.reset();
 		m_render_pass_state.reset();
 		m_pipeline_state.reset();
-
-		m_input_texture_view.reset();
+		
 		m_sampler_state.reset();
 	}
 }

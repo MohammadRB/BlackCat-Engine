@@ -62,9 +62,9 @@ namespace black_cat
 		game::bc_render_pass_variable_t m_render_target_view_param;
 		bcUINT32 m_back_buffer_width;
 		bcUINT32 m_back_buffer_height;
-		bcFLOAT m_glow_threshold = 0;
-		bcFLOAT m_glow_intensity = 0;
-		bool m_parameters_changed = false;
+		bcFLOAT m_glow_threshold;
+		bcFLOAT m_glow_intensity;
+		bool m_parameters_changed;
 		
 		graphic::bc_sampler_state_ref m_point_sampler;
 		graphic::bc_sampler_state_ref m_linear_sampler;

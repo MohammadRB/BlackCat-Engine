@@ -18,7 +18,7 @@ namespace black_cat
 		BC_RENDER_PASS(bb_wrt)
 
 	public:
-		explicit bc_back_buffer_write_pass(game::bc_render_pass_variable_t p_input_texture);
+		bc_back_buffer_write_pass(game::bc_render_pass_variable_t p_input_texture, game::bc_render_pass_variable_t p_input_texture_view);
 
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 
@@ -36,9 +36,9 @@ namespace black_cat
 
 	private:
 		game::bc_render_pass_variable_t m_input_texture;
+		game::bc_render_pass_variable_t m_input_texture_view;
 
 		graphic::bc_sampler_state_ref m_sampler_state;
-		graphic::bc_resource_view_ref m_input_texture_view;
 
 		graphic::bc_device_pipeline_state_ref m_pipeline_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;

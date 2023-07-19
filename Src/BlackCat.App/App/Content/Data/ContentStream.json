@@ -403,12 +403,6 @@
           "content_loader": "pixel_shader",
           "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcAmbientOcclusionBlur.hlsl",
           "content_parameter": { "function": "ao_ver_blur_ps" }
-        },
-        {
-          "content_title": "ao_apply_ps",
-          "content_loader": "pixel_shader",
-          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcAmbientOcclusionBlur.hlsl",
-          "content_parameter": { "function": "ao_apply_ps" }
         }
       ]
     },

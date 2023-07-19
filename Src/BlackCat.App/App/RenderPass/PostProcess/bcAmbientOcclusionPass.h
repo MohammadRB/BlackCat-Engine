@@ -14,9 +14,7 @@ namespace black_cat
 		BC_RENDER_PASS(amb_occ)
 
 	public:
-		bc_ambient_occlusion_pass(game::bc_render_pass_variable_t p_input_texture_view,
-			game::bc_render_pass_variable_t p_render_target_texture, 
-			game::bc_render_pass_variable_t p_render_target_view) noexcept;
+		bc_ambient_occlusion_pass(game::bc_render_pass_variable_t p_output_texture, game::bc_render_pass_variable_t p_output_render_view) noexcept;
 
 		void initialize_resources(game::bc_render_system& p_render_system) override;
 
@@ -38,13 +36,12 @@ namespace black_cat
 		void _update_params(game::bc_default_render_thread& p_render_thread);
 
 		void _update_frustum_params(game::bc_default_render_thread& p_render_thread, const game::bc_camera_instance& p_camera);
-
-		game::bc_render_pass_variable_t m_input_texture_view;
+		
 		game::bc_render_pass_variable_t m_render_target_texture;
 		game::bc_render_pass_variable_t m_render_target_view;
 		bool m_update_parameters;
-		bcUINT32 m_num_rays;
-		bcUINT32 m_steps_per_ray;
+		bcUINT m_num_rays;
+		bcUINT m_steps_per_ray;
 		bcFLOAT m_strength;
 		bcFLOAT m_radius;
 		bcFLOAT m_attenuation;
@@ -75,9 +72,5 @@ namespace black_cat
 		graphic::bc_device_pipeline_state_ref m_ver_blur_device_pipeline_state;
 		game::bc_render_pass_state_ptr m_ver_blur_render_pass_state;
 		game::bc_render_state_ptr m_ver_blur_render_state;
-
-		graphic::bc_device_pipeline_state_ref m_apply_device_pipeline_state;
-		game::bc_render_pass_state_ptr m_apply_render_pass_state;
-		game::bc_render_state_ptr m_apply_render_state;
 	};
 }

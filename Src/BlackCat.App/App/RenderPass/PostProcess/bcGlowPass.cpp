@@ -39,13 +39,16 @@ namespace black_cat
 		  m_render_target_view_param(p_render_target_view),
 		  m_back_buffer_width(0),
 		  m_back_buffer_height(0),
+		  m_glow_threshold(.92f),
+		  m_glow_intensity(8.f),
+		  m_parameters_changed(false),
 		  m_glow_intermediate_texture_config(),
 		  m_upscale_intermediate_texture_config()
 	{
 		auto& l_global_config = bc_get_global_config();
 		l_global_config
-				.add_if_not_exist_config_key("render_glow_threshold", core::bc_any(.9f))
-				.add_if_not_exist_config_key("render_glow_intensity", core::bc_any(8.f))
+				.add_if_not_exist_config_key("render_glow_threshold", core::bc_any(m_glow_threshold))
+				.add_if_not_exist_config_key("render_glow_intensity", core::bc_any(m_glow_intensity))
 				.flush_changes();
 	}
 
