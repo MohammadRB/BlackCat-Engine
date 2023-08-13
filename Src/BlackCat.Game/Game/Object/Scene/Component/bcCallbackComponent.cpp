@@ -23,17 +23,17 @@ namespace black_cat::game
 
 	void bc_callback_component::update(const bc_actor_component_update_content& p_context)
 	{
-		if(!m_callback.is_valid())
+		if (!m_callback.is_valid())
 		{
 			return;
 		}
 
 		m_current_delay += p_context.m_clock.m_elapsed;
-		if(m_current_delay >= m_delay_ms)
+		if (m_current_delay >= m_delay_ms)
 		{
 			m_callback(p_context.m_actor);
 
-			if(m_call_mode == call_mode::once)
+			if (m_call_mode == call_mode::once)
 			{
 				m_callback.reset();
 			}
@@ -53,7 +53,7 @@ namespace black_cat::game
 		(
 			call_mode::once,
 			p_delay_ms,
-			[=](const game::bc_actor& p_actor)
+			[=](const bc_actor& p_actor)
 			{
 				auto* l_mediate_component = p_actor.get_component<bc_mediate_component>();
 				auto* l_scene = l_mediate_component->get_scene();

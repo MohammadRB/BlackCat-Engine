@@ -59,27 +59,27 @@ namespace black_cat::platform
 		~bc_platform_clock() noexcept;
 
 		/**
-			 * \brief Number of cpu cycles that has been elapsed since clock startup
-			 * \return 
-			 */
+		 * \brief Number of cpu cycles that has been elapsed since clock startup
+		 * \return 
+		 */
 		big_clock get_clocks() const noexcept;
 
 		/**
-			 * \brief Total elapsed time by millisecond since clock startup(This is a real value)
-			 * \return 
-			 */
+		 * \brief Total elapsed time by millisecond since clock startup(This is a real value)
+		 * \return 
+		 */
 		big_time get_total_elapsed() const noexcept;
 
 		/**
-			 * \brief Elapsed time by millisecond from last update(This can be scaled or limited)
-			 * \return 
-			 */
+		 * \brief Elapsed time by millisecond from last update(This can be scaled or limited)
+		 * \return 
+		 */
 		small_time get_elapsed() const noexcept;
 
 		/**
-			 * \brief Scale up/down clock progress
-			 * \param p_scale 
-			 */
+		 * \brief Scale up/down clock progress
+		 * \param p_scale 
+		 */
 		void set_scale(small_time p_scale) noexcept;
 
 		small_time get_scale() const noexcept;
@@ -91,22 +91,22 @@ namespace black_cat::platform
 		void resume();
 
 		/**
-			 * \brief Specify a fixed step time by millisecond
-			 * \param p_delta 
-			 */
+		 * \brief Specify a fixed step time by millisecond
+		 * \param p_delta 
+		 */
 		void fixed_step(small_time p_delta) noexcept;
 
 		/**
-			 * \brief Fixed step time by millisecond if clock is in fixed step mode otherwise -1
-			 * \return 
-			 */
+		 * \brief Fixed step time by millisecond if clock is in fixed step mode otherwise -1
+		 * \return 
+		 */
 		small_time fixed_step() const noexcept;
 
 		/**
-			 * \brief Time difference between two clock by millisecond
-			 * \param p_other 
-			 * \return 
-			 */
+		 * \brief Time difference between two clock by millisecond
+		 * \param p_other 
+		 * \return 
+		 */
 		small_time get_delta_time(const bc_platform_clock& p_other);
 
 		small_time operator -(const bc_platform_clock& p_other) noexcept;

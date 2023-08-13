@@ -13,7 +13,7 @@
 
 namespace black_cat::json_parse
 {
-	inline void bc_load(const core::bc_json_value_object& p_jvalue, core::bc_vector2f& p_value)
+	inline void bc_load(const core::bc_native_json_value& p_jvalue, core::bc_vector2f& p_value)
 	{
 		if(!p_jvalue.IsArray())
 		{
@@ -26,15 +26,15 @@ namespace black_cat::json_parse
 		p_value.y = l_jarray.Size() > 1 ? l_jarray[1].GetFloat() : 0;
 	}
 
-	inline void bc_write(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, const core::bc_vector2f& p_value)
+	inline void bc_write(core::bc_native_json_document& p_document, core::bc_native_json_value& p_jvalue, const core::bc_vector2f& p_value)
 	{
 		p_jvalue.SetArray();
 
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.x), p_document.GetAllocator());
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.y), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.x), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.y), p_document.GetAllocator());
 	}
 
-	inline void bc_load(const core::bc_json_value_object& p_jvalue, core::bc_vector2i& p_value)
+	inline void bc_load(const core::bc_native_json_value& p_jvalue, core::bc_vector2i& p_value)
 	{
 		if (!p_jvalue.IsArray())
 		{
@@ -47,15 +47,15 @@ namespace black_cat::json_parse
 		p_value.y = l_jarray.Size() > 1 ? l_jarray[1].GetInt() : 0;
 	}
 
-	inline void bc_write(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, const core::bc_vector2i& p_value)
+	inline void bc_write(core::bc_native_json_document& p_document, core::bc_native_json_value& p_jvalue, const core::bc_vector2i& p_value)
 	{
 		p_jvalue.SetArray();
 
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.x), p_document.GetAllocator());
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.y), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.x), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.y), p_document.GetAllocator());
 	}
 
-	inline void bc_load(const core::bc_json_value_object& p_jvalue, core::bc_vector3f& p_value)
+	inline void bc_load(const core::bc_native_json_value& p_jvalue, core::bc_vector3f& p_value)
 	{
 		if (!p_jvalue.IsArray())
 		{
@@ -69,16 +69,16 @@ namespace black_cat::json_parse
 		p_value.z = l_jarray.Size() > 2 ? l_jarray[2].GetFloat() : 0;
 	}
 
-	inline void bc_write(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, const core::bc_vector3f& p_value)
+	inline void bc_write(core::bc_native_json_document& p_document, core::bc_native_json_value& p_jvalue, const core::bc_vector3f& p_value)
 	{
 		p_jvalue.SetArray();
 
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.x), p_document.GetAllocator());
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.y), p_document.GetAllocator());
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.z), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.x), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.y), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.z), p_document.GetAllocator());
 	}
 
-	inline void bc_load(const core::bc_json_value_object& p_jvalue, core::bc_vector3i& p_value)
+	inline void bc_load(const core::bc_native_json_value& p_jvalue, core::bc_vector3i& p_value)
 	{
 		if (!p_jvalue.IsArray())
 		{
@@ -92,16 +92,16 @@ namespace black_cat::json_parse
 		p_value.z = l_jarray.Size() > 3 ? l_jarray[3].GetInt() : 0;
 	}
 
-	inline void bc_write(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, const core::bc_vector3i& p_value)
+	inline void bc_write(core::bc_native_json_document& p_document, core::bc_native_json_value& p_jvalue, const core::bc_vector3i& p_value)
 	{
 		p_jvalue.SetArray();
 
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.x), p_document.GetAllocator());
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.y), p_document.GetAllocator());
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.z), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.x), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.y), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.z), p_document.GetAllocator());
 	}
 
-	inline void bc_load(const core::bc_json_value_object& p_jvalue, core::bc_vector4f& p_value)
+	inline void bc_load(const core::bc_native_json_value& p_jvalue, core::bc_vector4f& p_value)
 	{
 		if (!p_jvalue.IsArray())
 		{
@@ -116,17 +116,17 @@ namespace black_cat::json_parse
 		p_value.w = l_jarray.Size() > 3 ? l_jarray[3].GetFloat() : 0;
 	}
 
-	inline void bc_write(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, const core::bc_vector4f& p_value)
+	inline void bc_write(core::bc_native_json_document& p_document, core::bc_native_json_value& p_jvalue, const core::bc_vector4f& p_value)
 	{
 		p_jvalue.SetArray();
 
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.x), p_document.GetAllocator());
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.y), p_document.GetAllocator());
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.z), p_document.GetAllocator());
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.w), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.x), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.y), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.z), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.w), p_document.GetAllocator());
 	}
 
-	inline void bc_load(const core::bc_json_value_object& p_jvalue, core::bc_vector4i& p_value)
+	inline void bc_load(const core::bc_native_json_value& p_jvalue, core::bc_vector4i& p_value)
 	{
 		if (!p_jvalue.IsArray())
 		{
@@ -141,14 +141,14 @@ namespace black_cat::json_parse
 		p_value.w = l_jarray.Size() > 3 ? l_jarray[3].GetInt() : 0;
 	}
 
-	inline void bc_write(core::bc_json_document_object& p_document, core::bc_json_value_object& p_jvalue, const core::bc_vector4i& p_value)
+	inline void bc_write(core::bc_native_json_document& p_document, core::bc_native_json_value& p_jvalue, const core::bc_vector4i& p_value)
 	{
 		p_jvalue.SetArray();
 
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.x), p_document.GetAllocator());
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.y), p_document.GetAllocator());
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.z), p_document.GetAllocator());
-		p_jvalue.PushBack(core::bc_json_value_object(p_value.w), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.x), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.y), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.z), p_document.GetAllocator());
+		p_jvalue.PushBack(core::bc_native_json_value(p_value.w), p_document.GetAllocator());
 	}
 				
 	inline bool bc_load(const core::bc_json_key_value& p_key_value, core::bc_string_view p_key, core::bc_vector2f& p_value) noexcept

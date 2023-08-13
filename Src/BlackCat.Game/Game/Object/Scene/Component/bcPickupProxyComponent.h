@@ -27,10 +27,10 @@ namespace black_cat::game
 
 	public:
 		/**
-			 * \brief Test to see if a ray collide with actor
-			 * \param p_ray 
-			 * \return 
-			 */
+		 * \brief Test to see if a ray collide with actor
+		 * \param p_ray 
+		 * \return 
+		 */
 		virtual bc_pickup_proxy_result ray_pickup(const physics::bc_ray& p_ray) const = 0;
 
 	protected:

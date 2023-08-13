@@ -237,6 +237,9 @@
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcAmbientOcclusionPass.h">
       <Filter>BlackCat\RenderPass\PostProcess</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcVolumetricFogPass.h">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcComputeShaderLoader.cpp">
@@ -383,6 +386,9 @@
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcAmbientOcclusionPass.cpp">
       <Filter>BlackCat\RenderPass\PostProcess</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcVolumetricFogPass.cpp">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\bcShapeDraw.hlsl">
@@ -470,6 +476,9 @@
       <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\PostProcess\bcAmbientOcclusionBlur.hlsl">
+      <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Src\BlackCat.App\App\Content\Shader\DirectX11\PostProcess\bcVolumetricFog.hlsl">
       <Filter>BlackCat\Content\Shader\DirectX11\PostProcess</Filter>
     </FxCompile>
   </ItemGroup>

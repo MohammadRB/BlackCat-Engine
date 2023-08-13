@@ -16,6 +16,16 @@
       ]
     },
     {
+      "name": "env_fog",
+      "components": [
+        {
+          "name": "fog",
+          "parameters": {
+          }
+        }
+      ]
+    },
+    {
       "name": "env_tower_spot_light",
       "components": [
         {

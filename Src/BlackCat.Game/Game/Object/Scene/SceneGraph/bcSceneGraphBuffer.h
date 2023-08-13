@@ -14,8 +14,8 @@
 namespace black_cat::game
 {
 	/**
-		 * \brief This class uses frame memory
-		 */
+	 * \brief This class uses frame memory
+	 */
 	class bc_scene_graph_buffer : public core::bc_iterator_adapter<core::bc_vector_frame<bc_actor>>
 	{
 	public:

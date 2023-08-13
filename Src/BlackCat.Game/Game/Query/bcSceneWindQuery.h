@@ -60,10 +60,16 @@ namespace black_cat::game
 
 		bc_scene_graph_buffer l_scene_graph_buffer = l_scene_graph_query.get_scene_buffer();
 		m_winds.reserve(l_scene_graph_buffer.size());
-			
-		std::transform(std::begin(l_scene_graph_buffer), std::end(l_scene_graph_buffer), std::back_inserter(m_winds), [](const bc_actor& p_actor)
-		{
-			return *p_actor.get_component<bc_wind_component>()->get_wind();
-		});
+
+		std::transform
+		(
+			std::begin(l_scene_graph_buffer),
+			std::end(l_scene_graph_buffer),
+			std::back_inserter(m_winds),
+			[](const bc_actor& p_actor)
+			{
+				return *p_actor.get_component<bc_wind_component>()->get_wind();
+			}
+		);
 	}
 }

@@ -22,6 +22,7 @@ namespace black_cat::game
 		static constexpr const bcCHAR* sound = "sound";
 		static constexpr const bcCHAR* particle = "particle";
 		static constexpr const bcCHAR* decal = "decal";
+		static constexpr const bcCHAR* fog = "fog";
 	};
 
 	class BC_GAME_DLL bc_icon_component : public bci_actor_component
@@ -53,9 +54,9 @@ namespace black_cat::game
 		void initialize(const bc_actor_component_initialize_context& p_context) override;
 
 		/**
-			 * \brief set icon with default size and 'editor' mode
-			 * \param p_name 
-			 */
+		 * \brief set icon with default size and 'editor' mode
+		 * \param p_name 
+		 */
 		void set_icon(core::bc_string p_name) noexcept;
 
 		void set_icon(core::bc_string p_name, bcUINT16 p_size, bc_icon_mode p_mode) noexcept;

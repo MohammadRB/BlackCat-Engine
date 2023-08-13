@@ -123,7 +123,7 @@ namespace black_cat
 
 		m_point_sampler = l_device.create_sampler_state(l_point_sampler_config);
 		m_linear_sampler = l_device.create_sampler_state(l_linear_sampler_config);
-				
+
 		after_reset
 		(
 			game::bc_render_pass_reset_context
@@ -192,12 +192,12 @@ namespace black_cat
 
 		_render_decals(p_context, *m_render_pass_state, l_decal_groups, &l_non_culling_decals);
 	
-		if(!l_non_culling_decals.empty())
+		if (!l_non_culling_decals.empty())
 		{
 			_render_decals(p_context, *m_render_pass_state_for_non_culling, l_non_culling_decals, nullptr);
 		}
 
-		if(m_draw_decal_bounds)
+		if (m_draw_decal_bounds)
 		{
 			_render_decals(p_context, *m_render_pass_state_for_debug_bounds, l_decal_groups, nullptr);
 		}

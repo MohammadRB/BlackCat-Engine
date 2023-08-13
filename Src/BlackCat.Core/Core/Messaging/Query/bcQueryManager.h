@@ -3,9 +3,6 @@
 #pragma once
 
 #include "CorePlatformImp/Concurrency/bcMutex.h"
-#include "Core/bcExport.h"
-#include "Core/bcConstant.h"
-#include "Core/bcException.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcList.h"
 #include "Core/Container/bcUnorderedMap.h"
@@ -18,6 +15,9 @@
 #include "Core/Utility/bcObjectPoolAllocator.h"
 #include "Core/Utility/bcObjectPool.h"
 #include "Core/Utility/bcObjectStackPool.h"
+#include "Core/bcException.h"
+#include "Core/bcConstant.h"
+#include "Core/bcExport.h"
 
 namespace black_cat::core
 {
@@ -48,11 +48,11 @@ namespace black_cat::core
 		bc_query_manager& operator=(bc_query_manager&&) noexcept = delete;
 
 		/**
-			 * \brief Context can be allocated using frame memory
-			 * \tparam TContext
-			 * \param p_delegate
-			 * \return
-			 */
+		 * \brief Context can be allocated using frame memory
+		 * \tparam TContext
+		 * \param p_delegate
+		 * \return
+		 */
 		template<class TContext>
 		bc_query_provider_handle register_query_provider(provider_delegate_t&& p_delegate);
 
@@ -61,22 +61,22 @@ namespace black_cat::core
 		void unregister_query_provider(const bc_query_provider_handle& p_provider_handle);
 
 		/**
-			 * \brief Put query into queue to be executed.
-			 * \n The ownership of query is not moved and the caller is responsible for query object lifetime.
-			 * \tparam TQuery 
-			 * \param p_query 
-			 * \return 
-			 */
+		 * \brief Put query into queue to be executed.
+		 * \n The ownership of query is not moved and the caller is responsible for query object lifetime.
+		 * \tparam TQuery 
+		 * \param p_query 
+		 * \return 
+		 */
 		template<class TQuery>
 		bc_query_result<bci_query> queue_ext_query(TQuery& p_query);
 
 		/**
-			 * \brief Put query into queue to be executed.
-			 * \n The ownership of query is moved.
-			 * \tparam TQuery 
-			 * \param p_query 
-			 * \return 
-			 */
+		 * \brief Put query into queue to be executed.
+		 * \n The ownership of query is moved.
+		 * \tparam TQuery 
+		 * \param p_query 
+		 * \return 
+		 */
 		template<class TQuery>
 		bc_query_result<std::decay_t<TQuery>> queue_query(TQuery p_query);
 
@@ -164,7 +164,6 @@ namespace black_cat::core
 		static_assert(!query_t::is_shared(), "TQuery must not be a shared query");
 
 		auto& l_context_type_info = typeid(typename query_t::context_t);
-
 		auto& l_shared_state = _queue_query(l_context_type_info.hash_code(), false, false, &p_query);
 
 		return bc_query_result<bci_query>(*this, l_shared_state);
@@ -179,7 +178,6 @@ namespace black_cat::core
 			
 		auto* l_query = BC_NEW(query_t(std::move(p_query)), core::bc_alloc_type::unknown);
 		auto& l_context_type_info = typeid(typename query_t::context_t);
-			
 		auto& l_shared_state = _queue_query(l_context_type_info.hash_code(), false, true, l_query);
 
 		return bc_query_result<query_t>(*this, l_shared_state);

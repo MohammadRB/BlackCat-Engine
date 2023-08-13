@@ -403,6 +403,18 @@
           "content_loader": "pixel_shader",
           "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcAmbientOcclusionBlur.hlsl",
           "content_parameter": { "function": "ao_ver_blur_ps" }
+        },
+        {
+          "content_title": "vol_fog_vs",
+          "content_loader": "vertex_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcVolumetricFog.hlsl",
+          "content_parameter": { "function": "vol_fog_vs" }
+        },
+        {
+          "content_title": "vol_fog_ps",
+          "content_loader": "pixel_shader",
+          "content_file": "Content\\Shader\\DirectX11\\PostProcess\\bcVolumetricFog.hlsl",
+          "content_parameter": { "function": "vol_fog_ps" }
         }
       ]
     },

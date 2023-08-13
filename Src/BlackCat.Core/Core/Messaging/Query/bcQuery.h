@@ -30,9 +30,9 @@ namespace black_cat::core
 	};
 
 	/**
-		 * \brief Do not use memory frame for internal allocation in queries
-		 * \tparam TContext 
-		 */
+	 * \brief Do not use memory frame for internal allocation in queries
+	 * \tparam TContext 
+	 */
 	template<class TContext>
 	class bc_query : public bci_query
 	{
@@ -62,14 +62,14 @@ namespace black_cat::core
 	}
 
 	template<class TContext>
-	void bc_query<TContext>::execute(const bc_query_context& p_context) noexcept
-	{
-		execute(static_cast<const TContext&>(p_context));
-	}
-
-	template<class TContext>
 	bc_query<TContext>::bc_query(const bcCHAR* p_name) noexcept
 		: bci_query(p_name)
 	{
+	}
+
+	template<class TContext>
+	void bc_query<TContext>::execute(const bc_query_context& p_context) noexcept
+	{
+		execute(static_cast<const TContext&>(p_context));
 	}
 }

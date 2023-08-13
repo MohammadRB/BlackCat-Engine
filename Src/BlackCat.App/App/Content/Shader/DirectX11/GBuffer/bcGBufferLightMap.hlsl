@@ -399,8 +399,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
     if (g_has_ambient_occlusion)
     {
 		const float l_occlusion = load_texture(g_ambient_occlusion_map, l_global_texcoord).x;
-
-		//l_light_map *= l_occlusion;
+        
 		l_ambient_map *= l_occlusion;
 	}
 

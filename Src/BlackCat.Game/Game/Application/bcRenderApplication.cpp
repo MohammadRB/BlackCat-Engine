@@ -222,12 +222,12 @@ namespace black_cat::game
 
 				l_local_elapsed += l_clock_elapsed;
 				const auto l_update_call_count = std::max(static_cast<bcUINT32>(std::floor(l_local_elapsed / l_min_update_elapsed)), 1U);
-				auto l_update_call_counter = l_update_call_count;
+				auto l_update_call_left = l_update_call_count;
 
-				while (l_update_call_counter > 0)
+				while (l_update_call_left > 0)
 				{
-					app_update(platform::bc_clock::update_param(l_clock_total_elapsed, l_clock_elapsed, l_clock_average_elapsed, std::min(l_clock_elapsed, l_min_update_elapsed)), l_update_call_counter > 1);
-					--l_update_call_counter;
+					app_update(platform::bc_clock::update_param(l_clock_total_elapsed, l_clock_elapsed, l_clock_average_elapsed, std::min(l_clock_elapsed, l_min_update_elapsed)), l_update_call_left > 1);
+					--l_update_call_left;
 				}
 
 				l_local_elapsed = std::max(l_local_elapsed - l_min_update_elapsed * l_update_call_count, static_cast<platform::bc_clock::small_time>(0));

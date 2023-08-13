@@ -25,9 +25,10 @@ namespace black_cat::game
 			for (auto& l_decal_instance : l_iterator)
 			{
 				const auto* l_decal = l_decal_instance.get_decal();
-				const auto l_camera_distance = (l_decal_instance.get_world_transform().get_translation() - m_camera_position).magnitude();
+				const auto l_decal_view_distance_sq = l_decal->get_view_distance() * l_decal->get_view_distance();
+				const auto l_camera_distance_sq = core::bc_vector3f::length_sq(l_decal_instance.get_world_transform().get_translation() - m_camera_position);
 
-				if (l_camera_distance <= l_decal->get_view_distance())
+				if (l_camera_distance_sq <= l_decal_view_distance_sq)
 				{
 					m_buffer.add_decal_instance
 					(

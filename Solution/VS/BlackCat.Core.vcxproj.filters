@@ -339,7 +339,7 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcStack.h">
       <Filter>Core\Container</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcSboVector.h">
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Container\bcVectorSbo.h">
       <Filter>Core\Container</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Memory\bcMemoryStack1.h">

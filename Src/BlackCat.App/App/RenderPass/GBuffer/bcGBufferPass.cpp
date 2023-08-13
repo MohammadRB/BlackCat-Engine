@@ -58,7 +58,8 @@ namespace black_cat
 			(
 				game::bc_actor_render_camera(p_context.m_update_camera),
 				p_context.m_frame_renderer.create_buffer()
-			).only<game::bc_simple_mesh_component>()
+			)
+			.only<game::bc_simple_mesh_component>()
 		);
 		m_query_result = p_context.m_query_manager.queue_ext_query(m_query);
 	}

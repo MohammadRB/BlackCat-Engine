@@ -52,7 +52,7 @@ namespace black_cat
 		  m_update_parameters(true),
 		  m_num_rays(4),
 		  m_steps_per_ray(4),
-		  m_strength(1.6f),
+		  m_strength(1.2f),
 		  m_radius(1.5f),
 		  m_attenuation(2.0f),
 		  m_bias(0.1f),
