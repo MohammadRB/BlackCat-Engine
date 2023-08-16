@@ -130,9 +130,6 @@ namespace black_cat::core
 		 */
 		bci_query& get();
 
-		template<class TQuery>
-		TQuery& get();
-
 	private:
 		bc_query_result(bc_query_manager& p_query_manager, _bc_query_shared_state& p_shared_state) noexcept;
 
@@ -237,14 +234,5 @@ namespace black_cat::core
 		m_shared_state = nullptr;
 			
 		return l_query;
-	}
-
-	template<class TQuery>
-	TQuery& bc_query_result<bci_query>::get()
-	{
-		auto& l_query = get();
-		BC_ASSERT(bci_message::is<TQuery>(l_query));
-
-		return static_cast<TQuery&>(l_query);
 	}
 }

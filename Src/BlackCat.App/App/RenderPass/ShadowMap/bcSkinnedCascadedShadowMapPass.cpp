@@ -56,7 +56,8 @@ namespace black_cat
 
 		if (m_scene_query_results[p_context.m_cascade_absolute_index].is_executed())
 		{
-			m_scene_render_states[p_context.m_cascade_absolute_index] = m_scene_query_results[p_context.m_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>().get_render_state_buffer();
+			auto& l_scene_query_result = static_cast<game::bc_scene_graph_render_state_query&>(m_scene_query_results[p_context.m_cascade_absolute_index].get());
+			m_scene_render_states[p_context.m_cascade_absolute_index] = l_scene_query_result.get_render_state_buffer();
 		}
 
 		if(p_context.m_render_next_frame)

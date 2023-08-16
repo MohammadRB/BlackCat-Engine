@@ -92,9 +92,8 @@ namespace black_cat
 
 		if(m_height_maps_query_result.is_executed())
 		{
-			auto& l_height_map_query = m_height_maps_query_result.get<game::bc_height_map_scene_query>();
-			l_height_maps = l_height_map_query.get_height_maps();
-			m_height_maps_render_buffer = l_height_map_query.get_render_state_buffer();
+			l_height_maps = m_height_maps_query.get_height_maps();
+			m_height_maps_render_buffer = m_height_maps_query.get_render_state_buffer();
 		}
 
 		m_height_maps_query = game::bc_height_map_scene_query(game::bc_actor_render_camera(p_context.m_update_camera), p_context.m_frame_renderer.create_buffer());

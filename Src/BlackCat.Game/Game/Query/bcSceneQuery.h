@@ -36,11 +36,11 @@ namespace black_cat::game
 
 		core::bc_any& get_result() noexcept;
 
-		//template<typename T>
-		//T* get_result_as() noexcept;
+		template<typename T>
+		T* get_result_as() noexcept;
 
-		//template<typename T>
-		//T& get_result_as_throw() noexcept;
+		template<typename T>
+		T& get_result_as_throw() noexcept;
 		
 	protected:
 		void execute(const bc_scene_query_context& p_context) noexcept override;
@@ -69,17 +69,17 @@ namespace black_cat::game
 		return *this;
 	}
 
-	//template <typename T>
-	//T* bc_scene_query::get_result_as() noexcept
-	//{
-	//	return m_result.as<T>();
-	//}
+	template <typename T>
+	T* bc_scene_query::get_result_as() noexcept
+	{
+		return m_result.as<T>();
+	}
 
-	//template <typename T>
-	//T& bc_scene_query::get_result_as_throw() noexcept
-	//{
-	//	return m_result.as_throw<T>();
-	//}
+	template <typename T>
+	T& bc_scene_query::get_result_as_throw() noexcept
+	{
+		return m_result.as_throw<T>();
+	}
 
 	inline core::bc_any& bc_scene_query::get_result() noexcept
 	{

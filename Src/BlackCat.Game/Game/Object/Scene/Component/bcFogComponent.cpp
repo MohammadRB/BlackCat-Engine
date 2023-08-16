@@ -4,7 +4,7 @@
 
 #include "Game/Object/Scene/Component/bcFogComponent.h"
 #include "Game/Object/Scene/Component/bcIconComponent.h"
-#include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
+#include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/bcJsonParse.h"
@@ -14,7 +14,6 @@ namespace black_cat::game
 {
 	bc_fog_component::bc_fog_component(bc_actor_id p_actor_id, bc_actor_component_id p_id)
 		: bci_actor_component(p_actor_id, p_id),
-		m_center(0),
 		m_extend(.5)
 	{
 	}
@@ -22,6 +21,12 @@ namespace black_cat::game
 	bc_actor bc_fog_component::get_actor() const noexcept
 	{
 		return get_manager().component_get_actor<bc_fog_component>(*this);
+	}
+
+	inline const core::bc_vector3f& bc_fog_component::get_center() const noexcept
+	{
+		const auto* l_mediate_component = get_actor().get_component<bc_mediate_component>();
+		return l_mediate_component->get_position();
 	}
 
 	void bc_fog_component::initialize_entity(const bc_actor_component_initialize_entity_context& p_context)
@@ -32,21 +37,11 @@ namespace black_cat::game
 
 	void bc_fog_component::load_instance(const bc_actor_component_load_context& p_context)
 	{
-		json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_fog_center, m_center);
 		json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_fog_extend, m_extend);
 	}
 
 	void bc_fog_component::write_instance(const bc_actor_component_write_context& p_context)
 	{
-		json_parse::bc_write(p_context.m_parameters, constant::g_param_fog_center, m_center);
 		json_parse::bc_write(p_context.m_parameters, constant::g_param_fog_extend, m_extend);
-	}
-
-	void bc_fog_component::handle_event(const bc_actor_component_event_context& p_context)
-	{
-		if (const auto* l_transform_event = core::bci_event::as<bc_world_transform_actor_event>(p_context.m_event))
-		{
-			m_center = l_transform_event->get_transform().get_translation();
-		}
 	}
 }

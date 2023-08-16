@@ -49,7 +49,7 @@ namespace black_cat
 	{
 		if (m_query_result.is_executed())
 		{
-			m_render_states = m_query_result.get<game::bc_main_camera_render_state_query>().get_render_state_buffer();
+			m_render_states = static_cast<game::bc_main_camera_render_state_query&>(m_query_result.get()).get_render_state_buffer();
 		}
 
 		m_query = std::move

@@ -34,18 +34,10 @@ namespace black_cat::game
 		void load_instance(const bc_actor_component_load_context& p_context) override;
 
 		void write_instance(const bc_actor_component_write_context& p_context) override;
-
-		void handle_event(const bc_actor_component_event_context& p_context) override;
-
+		
 	private:
-		core::bc_vector3f m_center;
 		core::bc_vector3f m_extend;
 	};
-
-	inline const core::bc_vector3f& bc_fog_component::get_center() const noexcept
-	{
-		return m_center;
-	}
 
 	inline const core::bc_vector3f& bc_fog_component::get_extend() const noexcept
 	{

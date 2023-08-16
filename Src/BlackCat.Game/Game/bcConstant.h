@@ -91,6 +91,5 @@ namespace black_cat::constant
 	BC_PARAMETER(player_id, "player_id");
 	BC_PARAMETER(network_data_dir, "data_dir");
 	BC_PARAMETER(network_entity_name, "entity_name");
-	BC_PARAMETER(fog_center, "fog_center");
 	BC_PARAMETER(fog_extend, "fog_extend");
 }

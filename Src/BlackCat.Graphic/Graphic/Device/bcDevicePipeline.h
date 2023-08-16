@@ -60,17 +60,17 @@ namespace black_cat::graphic
 		bc_platform_device_pipeline& operator=(const bc_platform_device_pipeline&) noexcept;
 
 		/**
-			 * \brief Bind and Apply required pipeline states.
-			 * \param p_state
-			 */
+		 * \brief Bind and Apply required pipeline states.
+		 * \param p_state
+		 */
 		void bind_pipeline_state(bc_device_pipeline_state p_state);
 
 		void unbind_pipeline_state();
 
 		/**
-			 * \brief Bind and Apply required pipeline states.
-			 * \param p_state
-			 */
+		 * \brief Bind and Apply required pipeline states.
+		 * \param p_state
+		 */
 		void bind_compute_state(bc_device_compute_state p_state);
 
 		void unbind_compute_state();
@@ -158,14 +158,14 @@ namespace black_cat::graphic
 		void generate_mips(bc_resource_view& p_resource);
 
 		/**
-			 * \brief Start capturing command lists and put pipeline to lock state
-			 */
+		 * \brief Start capturing command lists and put pipeline to lock state
+		 */
 		void start_command_list();
 			
 		/**
-			 * \brief Write commands to command list and reset pipeline state and lock
-			 * \param p_command_list
-			 */
+		 * \brief Write commands to command list and reset pipeline state and lock
+		 * \param p_command_list
+		 */
 		void finish_command_list(bc_device_command_list& p_command_list);
 
 		void start_query(bc_device_clock_query& p_query);
@@ -179,11 +179,11 @@ namespace black_cat::graphic
 		void end_query(bc_device_occlusion_query& p_query);
 
 		/**
-			 * \brief Get the result of clock query if it is ready.
-			 * \param p_query
-			 * \return true if result is ready otherwise false.
-			 * \n if clock value is not reliable the return value equals to zero and must be discarded.
-			 */
+		 * \brief Get the result of clock query if it is ready.
+		 * \param p_query
+		 * \return true if result is ready otherwise false.
+		 * \n if clock value is not reliable the return value equals to zero and must be discarded.
+		 */
 		std::pair<bool, bcUINT64> get_query_data(bc_device_clock_query& p_query);
 
 		std::pair<bool, bcUINT64> get_query_data(bc_device_timestamp_query& p_query);

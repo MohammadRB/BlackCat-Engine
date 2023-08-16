@@ -48,14 +48,12 @@ namespace black_cat
 		void destroy(game::bc_render_system& p_render_system) override;
 
 	private:
-		void _copy_fog_instances_to_buffer(game::bc_default_render_thread& p_render_thread,
-			const game::bc_camera_instance& p_camera,
-			core::bc_const_span<_bc_fog_query_instance> p_instances);
+		void _copy_fog_instances_to_buffer(const game::bc_render_pass_render_context& p_context, core::bc_const_span<_bc_fog_query_instance> p_instances);
 
 		void _update_params(game::bc_default_render_thread& p_render_thread, const game::bc_camera_instance& p_camera);
 
 		static constexpr bcUINT s_query_execution_delay_ms = 1000;
-		static constexpr bcUINT32 s_max_instance_per_draw = 10;
+		static constexpr bcUINT s_max_instance_per_draw = 10;
 
 		game::bc_render_pass_variable_t m_render_target_texture;
 		game::bc_render_pass_variable_t m_render_target_view;

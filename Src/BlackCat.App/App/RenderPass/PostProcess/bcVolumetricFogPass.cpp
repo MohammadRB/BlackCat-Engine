@@ -151,8 +151,7 @@ namespace black_cat
 
 		if (m_fog_query.is_executed())
 		{
-			auto& l_fog_instances = m_fog_query.get().get_result().as_throw<core::bc_vector<_bc_fog_query_instance>>();
-			m_fog_instances = std::move(l_fog_instances);
+			m_fog_instances = std::move(m_fog_query.get().get_result_as_throw<core::bc_vector<_bc_fog_query_instance>>());
 			m_update_fog_instances = true;
 		}
 
@@ -173,12 +172,10 @@ namespace black_cat
 	{
 		p_context.m_render_thread.start();
 
-		if (!m_fog_instances.empty())
+		if (m_update_fog_instances)
 		{
-			_copy_fog_instances_to_buffer(p_context.m_render_thread, p_context.m_render_camera, core::bc_make_cspan(m_fog_instances));
-
+			_copy_fog_instances_to_buffer(p_context, core::bc_make_cspan(m_fog_instances));
 			m_update_fog_instances = false;
-			p_context.m_render_thread.update_subresource(*m_fog_instances_buffer, 0, m_fog_instances.data(), 0, 0);
 		}
 
 		_update_params(p_context.m_render_thread, p_context.m_render_camera);
@@ -236,14 +233,15 @@ namespace black_cat
 				graphic::bc_resource_view_parameter
 				(
 					1,
-					core::bc_enum::mask_or({graphic::bc_shader_type::vertex, graphic::bc_shader_type::pixel}),
+					graphic::bc_shader_type::vertex,
 					m_fog_instances_buffer_view.get()
 				)
 			},
 			{
 			},
 			{
-				p_context.m_render_system.get_global_cbuffer()
+				p_context.m_render_system.get_global_cbuffer(),
+				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::vertex, m_params_buffer.get())
 			}
 		);
 		m_render_state = p_context.m_render_system.create_render_state
@@ -275,31 +273,45 @@ namespace black_cat
 		m_render_pass_state.reset();
 	}
 
-	void bc_volumetric_fog_pass::_copy_fog_instances_to_buffer(game::bc_default_render_thread& p_render_thread, 
-		const game::bc_camera_instance& p_camera,
+	void bc_volumetric_fog_pass::_copy_fog_instances_to_buffer(const game::bc_render_pass_render_context& p_context, 
 		core::bc_const_span<_bc_fog_query_instance> p_instances)
 	{
+		if (p_instances.empty())
+		{
+			return;
+		}
+
+		const auto l_instance_count = std::min<bcUINT>(s_max_instance_per_draw, m_fog_instances.size());
 		core::bc_vector_frame<_bc_fog_instance_parameters> l_instances;
-		l_instances.reserve(p_instances.size());
+		l_instances.reserve(l_instance_count);
 
 		std::transform
 		(
 			std::begin(m_fog_instances),
-			std::end(m_fog_instances),
+			std::next(std::begin(m_fog_instances), l_instance_count),
 			std::back_inserter(l_instances),
 			[&](const _bc_fog_query_instance& p_instance)
 			{
-				const auto l_world_transform = core::bc_matrix4f::translation_matrix(p_instance.m_center) *
-					core::bc_matrix4f::scale_matrix(p_instance.m_extend);
+				auto l_world_transform = core::bc_matrix4f::scale_matrix(p_instance.m_extend) * core::bc_matrix4f::translation_matrix(p_instance.m_center);
 
-				return _bc_fog_instance_parameters
+				// Because matrices are put in regular buffer rather than cbuffer they must be stored in row major format
+				if constexpr (!p_context.m_frame_renderer.need_matrix_transpose())
 				{
-					l_world_transform * p_camera.get_view() * p_camera.get_projection()
-				};
+					l_world_transform = l_world_transform.transpose();
+				}
+
+				return _bc_fog_instance_parameters{ l_world_transform };
 			}
 		);
 
-		p_render_thread.update_subresource(m_params_buffer.get(), 0, l_instances.data(), 0, 0);
+		p_context.m_render_thread.update_subresource
+		(
+			m_fog_instances_buffer.get(), 
+			0, 
+			l_instances.data(), 
+			0, 
+			0
+		);
 	}
 
 	void bc_volumetric_fog_pass::_update_params(game::bc_default_render_thread& p_render_thread, const game::bc_camera_instance& p_camera)

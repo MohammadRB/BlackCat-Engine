@@ -40,7 +40,7 @@ namespace black_cat
 		  m_back_buffer_width(0),
 		  m_back_buffer_height(0),
 		  m_glow_threshold(.92f),
-		  m_glow_intensity(8.f),
+		  m_glow_intensity(10.f),
 		  m_parameters_changed(false),
 		  m_glow_intermediate_texture_config(),
 		  m_upscale_intermediate_texture_config()

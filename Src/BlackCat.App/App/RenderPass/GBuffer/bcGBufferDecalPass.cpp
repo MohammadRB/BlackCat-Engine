@@ -157,7 +157,7 @@ namespace black_cat
 	{
 		if (m_query_result.is_executed())
 		{
-			m_decals_render_state_buffer = m_query_result.get<game::bc_scene_decal_query>().get_render_state_buffer();
+			m_decals_render_state_buffer = static_cast<game::bc_scene_decal_query&>(m_query_result.get()).get_render_state_buffer();
 		}
 
 		m_query = game::bc_scene_decal_query
@@ -411,7 +411,7 @@ namespace black_cat
 			
 			p_context.m_render_thread.bind_render_state(*l_render_state_ite->second);
 
-			core::bc_vector_frame<bc_decal_instance_parameter> l_instance_buffer_data(s_max_instance_per_draw);
+			core::bc_vector_frame<bc_decal_instance_parameter> l_instance_buffer(s_max_instance_per_draw);
 			auto l_instance_buffer_ite = 0U;
 			auto l_instance_ite = std::begin(l_entry.second);
 			auto l_instances_end = std::end(l_entry.second);
@@ -437,20 +437,20 @@ namespace black_cat
 					}
 				}
 
-				auto& l_decal_instance_buffer_entry = l_instance_buffer_data[l_instance_buffer_ite];
-				l_decal_instance_buffer_entry.m_world_inv = l_instance_world_inv;
-				l_decal_instance_buffer_entry.m_world_view_projection = l_render_instance.get_transform() * l_view_proj;
-				l_decal_instance_buffer_entry.m_u0 = l_decal.get_u0();
-				l_decal_instance_buffer_entry.m_v0 = l_decal.get_v0();
-				l_decal_instance_buffer_entry.m_u1 = l_decal.get_u1();
-				l_decal_instance_buffer_entry.m_v1 = l_decal.get_v1();
-				l_decal_instance_buffer_entry.m_group = static_cast<bcUINT32>(l_render_instance.get_render_group());
+				auto& l_decal_instance = l_instance_buffer[l_instance_buffer_ite];
+				l_decal_instance.m_world_inv = l_instance_world_inv;
+				l_decal_instance.m_world_view_projection = l_render_instance.get_transform() * l_view_proj;
+				l_decal_instance.m_u0 = l_decal.get_u0();
+				l_decal_instance.m_v0 = l_decal.get_v0();
+				l_decal_instance.m_u1 = l_decal.get_u1();
+				l_decal_instance.m_v1 = l_decal.get_v1();
+				l_decal_instance.m_group = static_cast<bcUINT32>(l_render_instance.get_render_group());
 				
 				// Because matrices are put in regular buffer rather than cbuffer they must be stored in row major format
 				if constexpr (!p_context.m_frame_renderer.need_matrix_transpose())
 				{
-					l_decal_instance_buffer_entry.m_world_inv.make_transpose();
-					l_decal_instance_buffer_entry.m_world_view_projection.make_transpose();
+					l_decal_instance.m_world_inv.make_transpose();
+					l_decal_instance.m_world_view_projection.make_transpose();
 				}
 
 				++l_instance_buffer_ite;
@@ -458,7 +458,7 @@ namespace black_cat
 
 				if (l_instance_buffer_ite % s_max_instance_per_draw == 0)
 				{
-					p_context.m_render_thread.update_subresource(*m_instance_buffer, 0, l_instance_buffer_data.data(), 0, 0);
+					p_context.m_render_thread.update_subresource(*m_instance_buffer, 0, l_instance_buffer.data(), 0, 0);
 					p_context.m_render_thread.draw_indexed_instanced
 					(
 						l_render_state_ite->second->get_index_count(),
@@ -474,7 +474,7 @@ namespace black_cat
 
 			if (l_instance_buffer_ite > 0)
 			{
-				p_context.m_render_thread.update_subresource(*m_instance_buffer, 0, l_instance_buffer_data.data(), 0, 0);
+				p_context.m_render_thread.update_subresource(*m_instance_buffer, 0, l_instance_buffer.data(), 0, 0);
 				p_context.m_render_thread.draw_indexed_instanced
 				(
 					l_render_state_ite->second->get_index_count(),
