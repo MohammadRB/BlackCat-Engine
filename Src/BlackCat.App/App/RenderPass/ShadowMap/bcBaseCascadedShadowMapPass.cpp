@@ -271,11 +271,11 @@ namespace black_cat
 
 			if (m_state->m_capture_debug_shapes)
 			{
-				m_state->m_captured_camera = p_context.m_render_camera.get_extends();
+				m_state->m_captured_camera = p_context.m_render_camera.get_extend_points();
 
 				for (auto& l_cascade_camera : m_last_render_cascade_cameras)
 				{
-					game::bci_camera::extend l_extends;
+					game::bci_camera::extend_points l_extends;
 					l_cascade_camera.get_extend_points(l_extends);
 					
 					m_state->m_captured_cascades.push_back(l_extends);
@@ -513,7 +513,7 @@ namespace black_cat
 
 	core::bc_vector<bc_cascaded_shadow_map_camera> bc_base_cascaded_shadow_map_pass::_get_light_cascades(const game::bci_camera& p_camera, const game::bc_direct_light& p_light)
 	{
-		game::bci_camera::extend l_camera_frustum_corners;
+		game::bci_camera::extend_points l_camera_frustum_corners;
 		p_camera.get_extend_points(l_camera_frustum_corners);
 
 		core::bc_vector_frame<bcFLOAT> l_cascade_break_points;
@@ -549,7 +549,7 @@ namespace black_cat
 			const auto l_cascade_camera_min_z_distance_ratio = (l_min_z / l_camera_far_plane_distance);
 			const auto l_cascade_camera_max_z_distance_ratio = (l_max_z / l_camera_far_plane_distance);
 
-			game::bci_camera::extend l_frustum_points
+			game::bci_camera::extend_points l_frustum_points
 			{
 				l_lower_left_ray * l_cascade_camera_min_z_distance_ratio + l_camera_position,
 				l_upper_left_ray * l_cascade_camera_min_z_distance_ratio + l_camera_position,
@@ -580,7 +580,7 @@ namespace black_cat
 
 			auto l_cascade_view_matrix = core::bc_matrix4f::look_at_matrix_lh(l_cascade_camera_pos, l_frustum_center, core::bc_vector3f::up());
 			//auto l_cascade_view_matrix = core::bc_matrix4f::look_at_matrix_lh(l_light_frustum_center, l_light_camera_look, core::bc_vector3f::up());
-			game::bci_camera::extend l_frustum_points_vs
+			game::bci_camera::extend_points l_frustum_points_vs
 			{
 				(l_cascade_view_matrix * core::bc_vector4f(l_frustum_points[0], 1)).xyz(),
 				(l_cascade_view_matrix * core::bc_vector4f(l_frustum_points[1], 1)).xyz(),
@@ -621,7 +621,7 @@ namespace black_cat
 
 	core::bc_vector<bc_cascaded_shadow_map_camera> bc_base_cascaded_shadow_map_pass::_get_light_stabilized_cascades(const game::bc_camera_instance& p_camera, const game::bc_direct_light& p_light)
 	{
-		const auto& l_camera_extends = p_camera.get_extends();
+		const auto& l_camera_extends = p_camera.get_extend_points();
 
 		core::bc_vector_frame<bcFLOAT> l_cascade_break_points;
 		l_cascade_break_points.reserve(m_state->m_cascade_sizes.size() + 1);
@@ -656,7 +656,7 @@ namespace black_cat
 			const auto l_cascade_camera_min_z_distance_ratio = (l_min_z / l_camera_far_plane_distance);
 			const auto l_cascade_camera_max_z_distance_ratio = (l_max_z / l_camera_far_plane_distance);
 
-			game::bci_camera::extend l_frustum_points
+			game::bci_camera::extend_points l_frustum_points
 			{
 				l_lower_left_ray * l_cascade_camera_min_z_distance_ratio + l_camera_position,
 				l_upper_left_ray * l_cascade_camera_min_z_distance_ratio + l_camera_position,

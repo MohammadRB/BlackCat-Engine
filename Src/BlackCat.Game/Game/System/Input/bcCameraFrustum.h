@@ -27,7 +27,7 @@ namespace black_cat::game
 		bool intersects(const physics::bc_bound_box& p_box) const noexcept;
 
 	private:
-		void _construct(const bci_camera::extend& p_extends);
+		void _construct(const bci_camera::extend_points& p_extends);
 			
 		// Ordered by: near, far, left, top, right, bottom
 		core::bc_array<physics::bc_shape_plane, 6> m_planes;

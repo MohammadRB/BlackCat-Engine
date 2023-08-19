@@ -214,7 +214,7 @@ namespace black_cat::game
 		}
 	}
 
-	void bc_shape_generator::create_wired_frustum(bc_shape_generator_buffer& p_buffer, const bci_camera::extend& p_camera_extend)
+	void bc_shape_generator::create_wired_frustum(bc_shape_generator_buffer& p_buffer, const bci_camera::extend_points& p_camera_extend)
 	{
 		const auto l_start_index = p_buffer.vertices_count();
 			

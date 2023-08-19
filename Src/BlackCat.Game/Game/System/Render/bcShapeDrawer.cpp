@@ -108,7 +108,7 @@ namespace black_cat::game
 		}
 	}
 
-	void bc_shape_drawer::draw_wired_frustum(const bci_camera::extend& p_camera_extend)
+	void bc_shape_drawer::draw_wired_frustum(const bci_camera::extend_points& p_camera_extend)
 	{
 		{
 			platform::bc_mutex_guard l_guard(m_mutex);

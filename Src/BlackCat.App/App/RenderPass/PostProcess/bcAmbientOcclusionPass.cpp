@@ -579,7 +579,7 @@ namespace black_cat
 	{
 		_bc_frustum_params_struct l_params{};
 
-		const auto l_camera_extends = p_camera.get_extends();
+		const auto l_camera_extends = p_camera.get_extend_points();
 		const auto l_top_left_vector = core::bc_vector3f::normalize(l_camera_extends[5] - l_camera_extends[1]);
 		const auto l_top_right_vector = core::bc_vector3f::normalize(l_camera_extends[6] - l_camera_extends[2]);
 		const auto l_bottom_right_vector = core::bc_vector3f::normalize(l_camera_extends[7] - l_camera_extends[3]);

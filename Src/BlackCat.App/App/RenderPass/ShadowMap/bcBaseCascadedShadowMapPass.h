@@ -56,8 +56,8 @@ namespace black_cat
 		core::bc_vector<game::bc_light_instance> m_lights;
 		
 		bool m_capture_debug_shapes = false;
-		game::bci_camera::extend m_captured_camera;
-		core::bc_vector_movable<game::bci_camera::extend> m_captured_cascades;
+		game::bci_camera::extend_points m_captured_camera;
+		core::bc_vector_movable<game::bci_camera::extend_points> m_captured_cascades;
 		core::bc_vector_movable<physics::bc_bound_box> m_captured_boxes;
 		
 		void wait_for_sync_flag(bcUINT p_sync_id) noexcept

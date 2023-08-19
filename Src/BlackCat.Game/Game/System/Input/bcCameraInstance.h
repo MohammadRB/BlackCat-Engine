@@ -52,7 +52,9 @@ namespace black_cat::game
 
 		const core::bc_matrix4f& get_projection() const noexcept;
 
-		const bci_camera::extend& get_extends() const noexcept;
+		const bci_camera::extend_points& get_extend_points() const noexcept;
+
+		const bci_camera::extend_rays& get_extend_rays() const noexcept;
 			
 	private:
 		bcUINT16 m_screen_width;
@@ -67,7 +69,8 @@ namespace black_cat::game
 		core::bc_vector3f m_right;
 		core::bc_matrix4f m_view;
 		core::bc_matrix4f m_projection;
-		bci_camera::extend m_extends;
+		bci_camera::extend_points m_extend_points;
+		bci_camera::extend_rays m_extend_rays;
 		};
 
 	inline bc_camera_instance::bc_camera_instance(const bci_camera& p_camera)
@@ -88,7 +91,8 @@ namespace black_cat::game
 			m_fov.reset(l_perspective_camera->get_field_of_view());
 		}
 
-		p_camera.get_extend_points(m_extends);
+		p_camera.get_extend_points(m_extend_points);
+		p_camera.get_extend_rays(m_extend_rays);
 	}
 		
 	inline bcUINT16 bc_camera_instance::get_screen_width() const noexcept
@@ -166,8 +170,13 @@ namespace black_cat::game
 		return m_projection;
 	}
 
-	inline const bci_camera::extend& bc_camera_instance::get_extends() const noexcept
+	inline const bci_camera::extend_points& bc_camera_instance::get_extend_points() const noexcept
 	{
-		return m_extends;
+		return m_extend_points;
+	}
+
+	inline const bci_camera::extend_rays& bc_camera_instance::get_extend_rays() const noexcept
+	{
+		return m_extend_rays;
 	}
 }
