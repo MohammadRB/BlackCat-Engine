@@ -23,7 +23,7 @@ namespace black_cat::game
 		return get_manager().component_get_actor<bc_fog_component>(*this);
 	}
 
-	inline const core::bc_vector3f& bc_fog_component::get_center() const noexcept
+	core::bc_vector3f bc_fog_component::get_center() const noexcept
 	{
 		const auto* l_mediate_component = get_actor().get_component<bc_mediate_component>();
 		return l_mediate_component->get_position();

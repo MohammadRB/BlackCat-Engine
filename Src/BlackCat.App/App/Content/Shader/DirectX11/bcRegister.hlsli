@@ -133,18 +133,19 @@ cbuffer g_cb_global_state					: register(BC_RENDER_PASS_STATE_CB0)
     float g_near_plane						: packoffset(c20.z);
     float g_far_plane						: packoffset(c20.w);
     float3 g_camera_position				: packoffset(c21);
-    double g_total_elapsed					: packoffset(c22.x);
-    double g_total_elapsed_second			: packoffset(c22.z);
-    float g_elapsed							: packoffset(c23.x);
-    float g_elapsed_second					: packoffset(c23.y);
-	float g_global_scale					: packoffset(c24.x);
-	float3 g_global_light_direction			: packoffset(c24.y);
-	float3 g_global_light_color				: packoffset(c25.x);
-	float g_global_light_intensity			: packoffset(c25.w);
-	float3 g_global_light_ambient_color		: packoffset(c26.x);
-	float g_global_light_ambient_intensity	: packoffset(c26.w);
-	float3 g_global_wind_direction			: packoffset(c27.x);
-	float g_global_wind_power				: packoffset(c27.w);
+	float3 g_camera_direction               : packoffset(c22);
+    double g_total_elapsed					: packoffset(c23.x);
+    double g_total_elapsed_second			: packoffset(c23.z);
+    float g_elapsed							: packoffset(c24.x);
+    float g_elapsed_second					: packoffset(c24.y);
+	float g_global_scale					: packoffset(c25.x);
+	float3 g_global_light_direction			: packoffset(c25.y);
+	float3 g_global_light_color				: packoffset(c26.x);
+	float g_global_light_intensity			: packoffset(c26.w);
+	float3 g_global_light_ambient_color		: packoffset(c27.x);
+	float g_global_light_ambient_intensity	: packoffset(c27.w);
+	float3 g_global_wind_direction			: packoffset(c28.x);
+	float g_global_wind_power				: packoffset(c28.w);
 }
 
 // Bound to vertex, hull, domain shader

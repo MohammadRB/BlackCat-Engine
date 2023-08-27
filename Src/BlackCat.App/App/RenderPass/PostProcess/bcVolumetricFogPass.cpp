@@ -17,6 +17,9 @@ namespace black_cat
 	struct _bc_fog_instance_parameters
 	{
 		core::bc_matrix4f m_world;
+		core::bc_vector3f m_extend;
+		core::bc_vector3f m_min;
+		core::bc_vector3f m_max;
 	};
 
 	struct _bc_params_struct
@@ -24,7 +27,7 @@ namespace black_cat
 		BC_CBUFFER_ALIGN
 		core::bc_vector4f m_view_frustum_vectors[4];
 	};
-
+	
 	core::bc_vector<_bc_fog_query_instance> _fog_query_callback(const game::bc_scene& p_scene)
 	{
 		const auto l_scene_buffer = p_scene.get_scene_graph().get_actors<game::bc_fog_component>();
@@ -40,7 +43,13 @@ namespace black_cat
 			[](const game::bc_actor& p_actor)
 			{
 				const auto* l_fog_component = p_actor.get_component<game::bc_fog_component>();
-				return _bc_fog_query_instance{ l_fog_component->get_center(), l_fog_component->get_extend() };
+				return _bc_fog_query_instance
+				{
+					l_fog_component->get_center(),
+					l_fog_component->get_extend(),
+					l_fog_component->get_min(),
+					l_fog_component->get_max()
+				};
 			}
 		);
 
@@ -137,7 +146,7 @@ namespace black_cat
 	void bc_volumetric_fog_pass::update(const game::bc_render_pass_update_context& p_context)
 	{
 	}
-
+	
 	void bc_volumetric_fog_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
 	{
 		m_last_query_execution_elapsed += p_context.m_clock.m_elapsed;
@@ -241,7 +250,7 @@ namespace black_cat
 			},
 			{
 				p_context.m_render_system.get_global_cbuffer(),
-				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::vertex, m_params_buffer.get())
+				graphic::bc_constant_buffer_parameter(1, graphic::bc_shader_type::pixel, m_params_buffer.get())
 			}
 		);
 		m_render_state = p_context.m_render_system.create_render_state
@@ -300,7 +309,7 @@ namespace black_cat
 					l_world_transform = l_world_transform.transpose();
 				}
 
-				return _bc_fog_instance_parameters{ l_world_transform };
+				return _bc_fog_instance_parameters{ l_world_transform, p_instance.m_extend, p_instance.m_min, p_instance.m_max };
 			}
 		);
 
@@ -319,10 +328,10 @@ namespace black_cat
 		_bc_params_struct l_params{};
 
 		const auto l_camera_extends = p_camera.get_extend_rays();
-		l_params.m_view_frustum_vectors[0] = core::bc_vector4f(l_camera_extends[3], 1);
-		l_params.m_view_frustum_vectors[1] = core::bc_vector4f(l_camera_extends[0], 1);
-		l_params.m_view_frustum_vectors[2] = core::bc_vector4f(l_camera_extends[1], 1);
-		l_params.m_view_frustum_vectors[3] = core::bc_vector4f(l_camera_extends[2], 1);
+		l_params.m_view_frustum_vectors[0] = core::bc_vector4f(l_camera_extends[1], 1);
+		l_params.m_view_frustum_vectors[1] = core::bc_vector4f(l_camera_extends[2], 1);
+		l_params.m_view_frustum_vectors[2] = core::bc_vector4f(l_camera_extends[3], 1);
+		l_params.m_view_frustum_vectors[3] = core::bc_vector4f(l_camera_extends[0], 1);
 
 		p_render_thread.update_subresource(*m_params_buffer, 0, &l_params, 0, 0);
 	}

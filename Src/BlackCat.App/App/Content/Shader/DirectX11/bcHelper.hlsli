@@ -17,7 +17,7 @@ float3 bc_to_decoded_normal(float3 p_normal)
 	return (p_normal - 0.5) * 2;
 }
 
-float2 bc_to_screen_space_texcoord(int2 p_texcoord, uint p_screen_width, uint p_screen_height)
+float2 bc_to_ss_texcoord(int2 p_texcoord, uint p_screen_width, uint p_screen_height)
 {
 	float2 l_coordinate = float2(p_texcoord.x * rcp((float) p_screen_width), p_texcoord.y * rcp((float) p_screen_height));
 	l_coordinate.x = l_coordinate.x * 2.0f - 1.0f;
@@ -26,7 +26,7 @@ float2 bc_to_screen_space_texcoord(int2 p_texcoord, uint p_screen_width, uint p_
 	return l_coordinate;
 }
 
-float2 bc_to_screen_space_texcoord(float2 p_texcoord)
+float2 bc_to_ss_texcoord(float2 p_texcoord)
 {
 	float2 l_texcoord = p_texcoord;
 	l_texcoord.x = l_texcoord.x * 2.0f - 1.0f;
@@ -35,9 +35,9 @@ float2 bc_to_screen_space_texcoord(float2 p_texcoord)
 	return l_texcoord;
 }
 
-float2 bc_clip_space_to_texcoord(float4 p_input)
+float2 bc_clip_space_to_texcoord(float4 p_clip_space)
 {
-	float2 l_uv = float2(0.5f, -0.5f) * (p_input.xy / p_input.w) + 0.5f;
+	float2 l_uv = float2(0.5f, -0.5f) * (p_clip_space.xy / p_clip_space.w) + 0.5f;
 	return l_uv;
 }
 
@@ -78,10 +78,11 @@ float3 bc_reconstruct_world_position(float2 p_ss_texcoord, float p_depth, float4
 	return l_position.xyz;
 }
 
-float3 bc_reconstruct_world_position(float p_depth, float3 p_world_frustum_vector, float3 p_camera_position, float p_near_plane, float p_far_plane)
+float3 bc_reconstruct_world_position(float p_depth, float3 p_world_frustum_vector, float3 p_camera_position, float3 p_camera_dir, float p_near_plane, float p_far_plane)
 {
 	const float l_scaled_linear_depth = bc_convert_to_scaled_linear_depth(p_depth, p_near_plane, p_far_plane);
-	const float3 l_world_pos = p_camera_position + p_world_frustum_vector * l_scaled_linear_depth;
+	const float l_frustum_vector_scale = dot(p_camera_dir, p_world_frustum_vector);
+	const float3 l_world_pos = p_camera_position + p_world_frustum_vector * (l_scaled_linear_depth / l_frustum_vector_scale);
 
 	return l_world_pos;
 }

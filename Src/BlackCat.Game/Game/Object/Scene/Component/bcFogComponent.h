@@ -24,10 +24,16 @@ namespace black_cat::game
 		bc_actor get_actor() const noexcept override;
 
 		[[nodiscard]]
-		const core::bc_vector3f& get_center() const noexcept;
+		core::bc_vector3f get_center() const noexcept;
 
 		[[nodiscard]]
 		const core::bc_vector3f& get_extend() const noexcept;
+
+		[[nodiscard]]
+		core::bc_vector3f get_min() const noexcept;
+
+		[[nodiscard]]
+		core::bc_vector3f get_max() const noexcept;
 
 		void initialize_entity(const bc_actor_component_initialize_entity_context& p_context) override;
 
@@ -42,5 +48,15 @@ namespace black_cat::game
 	inline const core::bc_vector3f& bc_fog_component::get_extend() const noexcept
 	{
 		return m_extend;
+	}
+
+	inline core::bc_vector3f bc_fog_component::get_min() const noexcept
+	{
+		return { get_center() - get_extend() / 2 };
+	}
+
+	inline core::bc_vector3f bc_fog_component::get_max() const noexcept
+	{
+		return { get_center() + get_extend() / 2 };
 	}
 }

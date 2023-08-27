@@ -127,8 +127,8 @@ bool is_light_in_sight(float3 p_world_pos, float3 p_light_top_left_min_z, float3
     
     float2 l_group_top_left = float2(p_group_id * THREAD_GROUP_SIZE);
     float2 l_group_bottom_right = l_group_top_left + (THREAD_GROUP_SIZE - 1);
-    float2 l_group_top_left_ss = bc_to_screen_space_texcoord(l_group_top_left, g_screen_width, g_screen_height);
-    float2 l_group_bottom_right_ss = bc_to_screen_space_texcoord(l_group_bottom_right, g_screen_width, g_screen_height);
+    float2 l_group_top_left_ss = bc_to_ss_texcoord(l_group_top_left, g_screen_width, g_screen_height);
+    float2 l_group_bottom_right_ss = bc_to_ss_texcoord(l_group_bottom_right, g_screen_width, g_screen_height);
     float2 l_light_top_left = p_light_top_left_min_z.xy;
     float2 l_light_bottom_right = p_light_bottom_right_max_z.xy;
 
@@ -319,7 +319,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 
 	const float3 l_world_position = bc_reconstruct_world_position
 	(
-	    bc_to_screen_space_texcoord(l_global_texcoord, g_screen_width, g_screen_height),
+	    bc_to_ss_texcoord(l_global_texcoord, g_screen_width, g_screen_height),
 	    l_depth,
 	    g_view_proj_inv
     );
