@@ -38,13 +38,14 @@ StructuredBuffer<bc_fog_instance> g_buf_instances : register(BC_RENDER_PASS_STAT
 cbuffer g_cb_params : register(BC_RENDER_PASS_STATE_CB1)
 {
 	// ordered by top-left top-right bottom-right bottom-left
-	float4 g_frustum_vectors[4] : packoffset(c0);
+	float3 g_frustum_vectors[4] : packoffset(c0);
+	float3 g_frustum_hor_diff : packoffset(c4);
+	float3 g_frustum_ver_diff : packoffset(c5);
 }
 
 static const float l_center_fade = 0.5;
-static const float l_center_face_inv = 0.5;
-static const float l_visbility_distance = 15;
-static const float l_intensity = 0.8;
+static const float l_visbility_distance = 8;
+static const float l_intensity = 0.7;
 static const float3 l_color = float3(1, 1, 1);
 
 struct bc_vs_input
@@ -56,12 +57,10 @@ struct bc_vs_output
 {
 	float4 m_position : SV_POSITION;
 	float4 m_cs_position : TEXCOORD0;
-	float3 m_world_position : TEXCOORD1;
-	float3 m_box_half_extend : TEXCOORD2;
-	float3 m_box_min : TEXCOORD3;
-	float3 m_box_max : TEXCOORD4;
-	float3 m_box_center : TEXCOORD5;
-	float m_box_diameter : TEXCOORD6;
+	float3 m_box_half_extend : TEXCOORD1;
+	float3 m_box_min : TEXCOORD2;
+	float3 m_box_max : TEXCOORD3;
+	float3 m_box_center : TEXCOORD4;
 };
 
 // https://tavianator.com/2022/ray_box_boundary.html
@@ -100,9 +99,9 @@ float2 snap_to_texel(float2 p_uv, float2 p_screen_coords)
 	return round(p_uv * p_screen_coords) * rcp(p_screen_coords);
 }
 
-float3 interpolate_frustum_vector(float2 p_uv, float2x3 p_frustum_diff)
+float3 interpolate_frustum_vector(float2 p_uv, float3 p_frustum_hor_diff, float3 p_frustum_ver_diff)
 {
-	const float3 l_frustum_vector = g_frustum_vectors[0].xyz + (p_uv.x * p_frustum_diff[0]) + (p_uv.y * p_frustum_diff[1]);
+	const float3 l_frustum_vector = g_frustum_vectors[0] + (p_uv.x * p_frustum_hor_diff) + (p_uv.y * p_frustum_ver_diff);
 	return normalize(l_frustum_vector);
 }
 
@@ -111,9 +110,9 @@ float3 get_world_position(float p_depth, float3 p_frustum_vector)
 	return bc_reconstruct_world_position(p_depth, p_frustum_vector, g_camera_position, g_camera_direction, g_near_plane, g_far_plane);
 }
 
-float3 get_world_position(float p_depth, float2 p_uv, float2x3 p_frustum_diff)
+float3 get_world_position(float p_depth, float2 p_uv, float3 p_frustum_hor_diff, float3 p_frustum_ver_diff)
 {
-	const float3 l_frustum_vector = interpolate_frustum_vector(p_uv, p_frustum_diff);
+	const float3 l_frustum_vector = interpolate_frustum_vector(p_uv, p_frustum_hor_diff, p_frustum_ver_diff);
 	return get_world_position(p_depth, l_frustum_vector);
 }
 
@@ -122,14 +121,12 @@ bc_vs_output vol_fog_vs(bc_vs_input p_input, uint p_instance_index : SV_Instance
 	bc_vs_output l_output;
 	const bc_fog_instance l_instance = g_buf_instances.Load(p_instance_index);
 
-	l_output.m_world_position = mul(float4(p_input.m_position, 1), l_instance.m_world);
-	l_output.m_position = mul(float4(l_output.m_world_position, 1), g_view_projection);
+	l_output.m_position = mul(mul(float4(p_input.m_position, 1), l_instance.m_world), g_view_projection);
 	l_output.m_cs_position = l_output.m_position;
 	l_output.m_box_half_extend = l_instance.m_extend / 2;
 	l_output.m_box_min = l_instance.m_min;
 	l_output.m_box_max = l_instance.m_max;
 	l_output.m_box_center = (l_instance.m_min + l_instance.m_max) / 2;
-	l_output.m_box_diameter = length(l_instance.m_max - l_instance.m_min);
 
 	return l_output;
 }
@@ -138,22 +135,14 @@ float4 vol_fog_ps(bc_vs_output p_input) : SV_Target0
 {
 	const float2 l_texcoord = bc_clip_space_to_texcoord(p_input.m_cs_position);
 	const float l_pixel_depth = g_tex2d_depth.Sample(g_sam_point, l_texcoord);
-	const float l_geometry_depth = p_input.m_position.z;
 
-	clip(l_pixel_depth - l_geometry_depth);
-	
-	const float2x3 l_frustum_diff = float2x3
-	(
-		g_frustum_vectors[1].xyz - g_frustum_vectors[0].xyz,
-		g_frustum_vectors[3].xyz - g_frustum_vectors[0].xyz
-	);
-	const float3 l_frustum_vector = interpolate_frustum_vector(l_texcoord, l_frustum_diff);
-	const float3 l_pixel_world_pos = get_world_position(l_pixel_depth, l_texcoord, l_frustum_diff);
+	const float3 l_frustum_vector = interpolate_frustum_vector(l_texcoord, g_frustum_hor_diff, g_frustum_ver_diff);
+	const float3 l_pixel_world_pos = get_world_position(l_pixel_depth, l_frustum_vector);
 	
 	bc_ray l_ray;
 	l_ray.m_origin = g_camera_position;
 	l_ray.m_dir = l_frustum_vector;
-	l_ray.m_dir_inv = 1. / l_ray.m_dir;
+	l_ray.m_dir_inv = rcp(l_ray.m_dir);
 
 	bc_box l_box;
 	l_box.m_min = p_input.m_box_min;
@@ -164,15 +153,17 @@ float4 vol_fog_ps(bc_vs_output p_input) : SV_Target0
 	const float l_pixel_distance = length(l_pixel_world_pos - l_ray.m_origin);
 	const float l_tmin = max(l_intersect_result.m_tmin, 0);
 	const float l_tmax = min(l_intersect_result.m_tmax, l_pixel_distance);
+	
+	clip(l_tmax - l_tmin);
 
 	const float l_ray_length = l_tmax - l_tmin;
 	const float l_ray_length_ratio = min(1, l_ray_length / l_visbility_distance);
 
-	const float3 l_ray_middle_point = l_ray.m_origin + l_ray.m_dir * ((l_intersect_result.m_tmax + l_intersect_result.m_tmin) / 2);
+	const float3 l_ray_middle_point = l_ray.m_origin + l_ray.m_dir * ((l_tmin + l_tmax) * .5);
 	const float3 l_ray_middle_box_center_distance = abs(l_ray_middle_point - p_input.m_box_center);
 
 	const float3 l_center_fade_distance = p_input.m_box_half_extend * l_center_fade;
-	const float3 l_center_fade_distance_inv = p_input.m_box_half_extend * l_center_face_inv;
+	const float3 l_center_fade_distance_inv = p_input.m_box_half_extend * (1. - l_center_fade);
 	float3 l_center_distance_fade = max(0, l_ray_middle_box_center_distance - l_center_fade_distance);
 	l_center_distance_fade /= l_center_fade_distance_inv;
 	l_center_distance_fade = pow(l_center_distance_fade, 2);
@@ -180,8 +171,7 @@ float4 vol_fog_ps(bc_vs_output p_input) : SV_Target0
 
 	const float l_center_distance_ratio = min
 	(
-		min(l_center_distance_fade.x, l_center_distance_fade.y),
-		l_center_distance_fade.z
+		min(l_center_distance_fade.x, l_center_distance_fade.y), l_center_distance_fade.z
 	);
 	
 	const float l_fog = l_ray_length_ratio * l_center_distance_ratio * l_intensity;

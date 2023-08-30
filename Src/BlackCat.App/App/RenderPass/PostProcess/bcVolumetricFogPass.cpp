@@ -25,7 +25,11 @@ namespace black_cat
 	struct _bc_params_struct
 	{
 		BC_CBUFFER_ALIGN
-		core::bc_vector4f m_view_frustum_vectors[4];
+		core::bc_vector4f m_frustum_vectors[4];
+		BC_CBUFFER_ALIGN
+		core::bc_vector3f m_frustum_hor_diff;
+		BC_CBUFFER_ALIGN
+		core::bc_vector3f m_frustum_ver_diff;
 	};
 	
 	core::bc_vector<_bc_fog_query_instance> _fog_query_callback(const game::bc_scene& p_scene)
@@ -220,7 +224,7 @@ namespace black_cat
 			game::bc_vertex_type::pos,
 			game::bc_blend_type::blend_overwrite_alpha,
 			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
-			game::bc_rasterizer_type::fill_solid_cull_back,
+			game::bc_rasterizer_type::fill_solid_cull_front,
 			0x1,
 			{ l_render_target_texture.get_format() },
 			graphic::bc_format::unknown,
@@ -328,10 +332,13 @@ namespace black_cat
 		_bc_params_struct l_params{};
 
 		const auto l_camera_extends = p_camera.get_extend_rays();
-		l_params.m_view_frustum_vectors[0] = core::bc_vector4f(l_camera_extends[1], 1);
-		l_params.m_view_frustum_vectors[1] = core::bc_vector4f(l_camera_extends[2], 1);
-		l_params.m_view_frustum_vectors[2] = core::bc_vector4f(l_camera_extends[3], 1);
-		l_params.m_view_frustum_vectors[3] = core::bc_vector4f(l_camera_extends[0], 1);
+		l_params.m_frustum_vectors[0] = core::bc_vector4f(l_camera_extends[1], 1);
+		l_params.m_frustum_vectors[1] = core::bc_vector4f(l_camera_extends[2], 1);
+		l_params.m_frustum_vectors[2] = core::bc_vector4f(l_camera_extends[3], 1);
+		l_params.m_frustum_vectors[3] = core::bc_vector4f(l_camera_extends[0], 1);
+
+		l_params.m_frustum_hor_diff = (l_params.m_frustum_vectors[1] - l_params.m_frustum_vectors[0]).xyz();
+		l_params.m_frustum_ver_diff = (l_params.m_frustum_vectors[3] - l_params.m_frustum_vectors[0]).xyz();
 
 		p_render_thread.update_subresource(*m_params_buffer, 0, &l_params, 0, 0);
 	}
