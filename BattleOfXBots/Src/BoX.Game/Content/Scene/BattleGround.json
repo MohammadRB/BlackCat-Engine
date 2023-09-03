@@ -35,6 +35,34 @@
     {
       "entity_name": "env_fog",
       "position": [
+        -2.0,
+        2.0,
+        0.0
+      ],
+      "rotation": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "parameters": {
+        "fog_extend": [
+          1024.0,
+          64.0,
+          1024.0
+        ],
+        "fog_color": [
+          0.9,
+          0.95,
+          1.0
+        ],
+        "fog_center_fade": 0.8,
+        "fog_visibility_distance": 450.0,
+        "fog_intensity": 0.45
+      }
+    },
+    {
+      "entity_name": "env_fog",
+      "position": [
         370.0,
         1.0,
         90.0
@@ -49,7 +77,15 @@
           150.0,
           10.0,
           150.0
-        ]
+        ],
+        "fog_color": [
+          0.9,
+          0.95,
+          1.0
+        ],
+        "fog_center_fade": 0.5,
+        "fog_visibility_distance": 8.0,
+        "fog_intensity": 0.7
       }
     },
     {

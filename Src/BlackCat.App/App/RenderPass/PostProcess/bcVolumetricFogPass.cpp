@@ -20,6 +20,10 @@ namespace black_cat
 		core::bc_vector3f m_extend;
 		core::bc_vector3f m_min;
 		core::bc_vector3f m_max;
+		core::bc_vector3f m_color;
+		float m_center_fade;
+		float m_visibility_distance;
+		float m_intensity;
 	};
 
 	struct _bc_params_struct
@@ -52,7 +56,11 @@ namespace black_cat
 					l_fog_component->get_center(),
 					l_fog_component->get_extend(),
 					l_fog_component->get_min(),
-					l_fog_component->get_max()
+					l_fog_component->get_max(),
+					l_fog_component->get_color(),
+					l_fog_component->get_center_fade(),
+					l_fog_component->get_visibility_distance(),
+					l_fog_component->get_intensity()
 				};
 			}
 		);
@@ -313,7 +321,17 @@ namespace black_cat
 					l_world_transform = l_world_transform.transpose();
 				}
 
-				return _bc_fog_instance_parameters{ l_world_transform, p_instance.m_extend, p_instance.m_min, p_instance.m_max };
+				return _bc_fog_instance_parameters
+				{
+					l_world_transform,
+					p_instance.m_extend,
+					p_instance.m_min,
+					p_instance.m_max,
+					p_instance.m_color,
+					p_instance.m_center_fade,
+					p_instance.m_visibility_distance,
+					p_instance. m_intensity
+				};
 			}
 		);
 

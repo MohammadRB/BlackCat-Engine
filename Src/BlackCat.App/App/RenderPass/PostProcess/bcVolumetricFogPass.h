@@ -26,6 +26,10 @@ namespace black_cat
 		core::bc_vector3f m_extend;
 		core::bc_vector3f m_min;
 		core::bc_vector3f m_max;
+		core::bc_vector3f m_color;
+		float m_center_fade;
+		float m_visibility_distance;
+		float m_intensity;
 	};
 
 	class BC_DLL bc_volumetric_fog_pass : public game::bci_render_pass

@@ -92,8 +92,8 @@ namespace black_cat
 			.as_buffer_view(graphic::bc_format::unknown)
 			.as_shader_view(0, s_max_instance_per_draw)
 			.as_structured_buffer();
-		auto l_cube_vb_data = graphic::bc_subresource_data(&l_cube_vertices[0], 0, 0);
-		auto l_cube_ib_data = graphic::bc_subresource_data(&l_cube_indices[0], 0, 0);
+		auto l_cube_vb_data = graphic::bc_subresource_data(l_cube_vertices.data(), 0, 0);
+		auto l_cube_ib_data = graphic::bc_subresource_data(l_cube_indices.data(), 0, 0);
 		
 		m_cube_vb = l_device.create_buffer(l_cube_vb_config, &l_cube_vb_data);
 		m_cube_ib = l_device.create_buffer(l_cube_ib_config, &l_cube_ib_data);

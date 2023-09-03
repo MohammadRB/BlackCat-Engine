@@ -35,6 +35,18 @@ namespace black_cat::game
 		[[nodiscard]]
 		core::bc_vector3f get_max() const noexcept;
 
+		[[nodiscard]]
+		core::bc_vector3f get_color() const noexcept;
+
+		[[nodiscard]]
+		float get_center_fade() const noexcept;
+
+		[[nodiscard]]
+		float get_visibility_distance() const noexcept;
+
+		[[nodiscard]]
+		float get_intensity() const noexcept;
+
 		void initialize_entity(const bc_actor_component_initialize_entity_context& p_context) override;
 
 		void load_instance(const bc_actor_component_load_context& p_context) override;
@@ -43,6 +55,10 @@ namespace black_cat::game
 		
 	private:
 		core::bc_vector3f m_extend;
+		core::bc_vector3f m_color;
+		float m_center_fade;
+		float m_visibility_distance;
+		float m_intensity;
 	};
 
 	inline const core::bc_vector3f& bc_fog_component::get_extend() const noexcept
@@ -58,5 +74,25 @@ namespace black_cat::game
 	inline core::bc_vector3f bc_fog_component::get_max() const noexcept
 	{
 		return { get_center() + get_extend() / 2 };
+	}
+
+	inline core::bc_vector3f bc_fog_component::get_color() const noexcept
+	{
+		return m_color;
+	}
+
+	inline float bc_fog_component::get_center_fade() const noexcept
+	{
+		return m_center_fade;
+	}
+
+	inline float bc_fog_component::get_visibility_distance() const noexcept
+	{
+		return m_visibility_distance;
+	}
+
+	inline float bc_fog_component::get_intensity() const noexcept
+	{
+		return m_intensity;
 	}
 }

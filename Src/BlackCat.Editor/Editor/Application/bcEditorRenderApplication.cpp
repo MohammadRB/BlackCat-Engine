@@ -106,6 +106,11 @@ namespace black_cat::editor
 			constant::g_rpass_gbuffer_texture, 
 			constant::g_rpass_gbuffer_render_view
 		));
+		l_render_system.add_render_pass(bc_volumetric_fog_pass
+		(
+			constant::g_rpass_gbuffer_texture,
+			constant::g_rpass_gbuffer_render_view
+		));
 		l_render_system.add_render_pass(bc_hdr_rendering_pass
 		(
 			constant::g_rpass_gbuffer_texture,
@@ -116,11 +121,6 @@ namespace black_cat::editor
 			constant::g_rpass_hdr_output_render_view
 		));
 		l_render_system.add_render_pass(bc_glow_pass
-		(
-			constant::g_rpass_hdr_output_texture,
-			constant::g_rpass_hdr_output_render_view
-		));
-		l_render_system.add_render_pass(bc_volumetric_fog_pass
 		(
 			constant::g_rpass_hdr_output_texture,
 			constant::g_rpass_hdr_output_render_view
