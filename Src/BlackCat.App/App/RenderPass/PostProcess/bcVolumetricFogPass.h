@@ -23,12 +23,12 @@ namespace black_cat
 	struct _bc_fog_query_instance
 	{
 		core::bc_vector3f m_center;
-		core::bc_vector3f m_extend;
+		core::bc_vector3f m_half_extend;
 		core::bc_vector3f m_min;
 		core::bc_vector3f m_max;
 		core::bc_vector3f m_color;
+		float m_visibility;
 		float m_center_fade;
-		float m_visibility_distance;
 		float m_intensity;
 	};
 

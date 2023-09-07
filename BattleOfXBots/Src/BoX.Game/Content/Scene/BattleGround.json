@@ -45,19 +45,19 @@
         -0.0
       ],
       "parameters": {
-        "fog_extend": [
-          1024.0,
-          64.0,
-          1024.0
+        "fog_half_extend": [
+          512.0,
+          32.0,
+          512.0
         ],
         "fog_color": [
           0.9,
           0.95,
           1.0
         ],
+        "fog_visibility": 400.0,
         "fog_center_fade": 0.8,
-        "fog_visibility_distance": 450.0,
-        "fog_intensity": 0.45
+        "fog_intensity": 0.5
       }
     },
     {
@@ -73,18 +73,18 @@
         -0.0
       ],
       "parameters": {
-        "fog_extend": [
-          150.0,
-          10.0,
-          150.0
+        "fog_half_extend": [
+          75.0,
+          5.0,
+          75.0
         ],
         "fog_color": [
           0.9,
           0.95,
           1.0
         ],
+        "fog_visibility": 8.0,
         "fog_center_fade": 0.5,
-        "fog_visibility_distance": 8.0,
         "fog_intensity": 0.7
       }
     },

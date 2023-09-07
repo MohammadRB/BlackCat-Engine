@@ -14,10 +14,10 @@ namespace black_cat::game
 {
 	bc_fog_component::bc_fog_component(bc_actor_id p_actor_id, bc_actor_component_id p_id)
 		: bci_actor_component(p_actor_id, p_id),
-		  m_extend(.5),
+		  m_half_extend(.5),
 		  m_color(1),
+		  m_visibility(0),
 		  m_center_fade(.5),
-		  m_visibility_distance(0),
 		  m_intensity(0)
 	{
 	}
@@ -41,19 +41,19 @@ namespace black_cat::game
 
 	void bc_fog_component::load_instance(const bc_actor_component_load_context& p_context)
 	{
-		json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_fog_extend, m_extend);
+		json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_fog_half_extend, m_half_extend);
 		json_parse::bc_load(p_context.m_parameters, constant::g_param_fog_color, m_color);
 		json_parse::bc_load(p_context.m_parameters, constant::g_param_fog_center_fade, m_center_fade);
-		json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_fog_visibility_distance, m_visibility_distance);
+		json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_fog_visibility, m_visibility);
 		json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_fog_intensity, m_intensity);
 	}
 
 	void bc_fog_component::write_instance(const bc_actor_component_write_context& p_context)
 	{
-		json_parse::bc_write(p_context.m_parameters, constant::g_param_fog_extend, m_extend);
+		json_parse::bc_write(p_context.m_parameters, constant::g_param_fog_half_extend, m_half_extend);
 		json_parse::bc_write(p_context.m_parameters, constant::g_param_fog_color, m_color);
 		json_parse::bc_write(p_context.m_parameters, constant::g_param_fog_center_fade, m_center_fade);
-		json_parse::bc_write(p_context.m_parameters, constant::g_param_fog_visibility_distance, m_visibility_distance);
+		json_parse::bc_write(p_context.m_parameters, constant::g_param_fog_visibility, m_visibility);
 		json_parse::bc_write(p_context.m_parameters, constant::g_param_fog_intensity, m_intensity);
 	}
 }

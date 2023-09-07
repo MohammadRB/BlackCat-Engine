@@ -17,12 +17,12 @@ namespace black_cat
 	struct _bc_fog_instance_parameters
 	{
 		core::bc_matrix4f m_world;
-		core::bc_vector3f m_extend;
+		core::bc_vector3f m_half_extend;
 		core::bc_vector3f m_min;
 		core::bc_vector3f m_max;
 		core::bc_vector3f m_color;
+		float m_visibility;
 		float m_center_fade;
-		float m_visibility_distance;
 		float m_intensity;
 	};
 
@@ -54,12 +54,12 @@ namespace black_cat
 				return _bc_fog_query_instance
 				{
 					l_fog_component->get_center(),
-					l_fog_component->get_extend(),
+					l_fog_component->get_half_extend(),
 					l_fog_component->get_min(),
 					l_fog_component->get_max(),
 					l_fog_component->get_color(),
+					l_fog_component->get_visibility(),
 					l_fog_component->get_center_fade(),
-					l_fog_component->get_visibility_distance(),
 					l_fog_component->get_intensity()
 				};
 			}
@@ -313,7 +313,7 @@ namespace black_cat
 			std::back_inserter(l_instances),
 			[&](const _bc_fog_query_instance& p_instance)
 			{
-				auto l_world_transform = core::bc_matrix4f::scale_matrix(p_instance.m_extend) * core::bc_matrix4f::translation_matrix(p_instance.m_center);
+				auto l_world_transform = core::bc_matrix4f::scale_matrix(p_instance.m_half_extend * 2) * core::bc_matrix4f::translation_matrix(p_instance.m_center);
 
 				// Because matrices are put in regular buffer rather than cbuffer they must be stored in row major format
 				if constexpr (!p_context.m_frame_renderer.need_matrix_transpose())
@@ -324,12 +324,12 @@ namespace black_cat
 				return _bc_fog_instance_parameters
 				{
 					l_world_transform,
-					p_instance.m_extend,
+					p_instance.m_half_extend,
 					p_instance.m_min,
 					p_instance.m_max,
 					p_instance.m_color,
+					p_instance.m_visibility,
 					p_instance.m_center_fade,
-					p_instance.m_visibility_distance,
 					p_instance. m_intensity
 				};
 			}

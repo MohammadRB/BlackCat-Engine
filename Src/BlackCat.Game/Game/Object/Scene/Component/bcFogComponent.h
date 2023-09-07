@@ -27,7 +27,7 @@ namespace black_cat::game
 		core::bc_vector3f get_center() const noexcept;
 
 		[[nodiscard]]
-		const core::bc_vector3f& get_extend() const noexcept;
+		const core::bc_vector3f& get_half_extend() const noexcept;
 
 		[[nodiscard]]
 		core::bc_vector3f get_min() const noexcept;
@@ -39,11 +39,11 @@ namespace black_cat::game
 		core::bc_vector3f get_color() const noexcept;
 
 		[[nodiscard]]
-		float get_center_fade() const noexcept;
+		float get_visibility() const noexcept;
 
 		[[nodiscard]]
-		float get_visibility_distance() const noexcept;
-
+		float get_center_fade() const noexcept;
+		
 		[[nodiscard]]
 		float get_intensity() const noexcept;
 
@@ -54,26 +54,26 @@ namespace black_cat::game
 		void write_instance(const bc_actor_component_write_context& p_context) override;
 		
 	private:
-		core::bc_vector3f m_extend;
+		core::bc_vector3f m_half_extend;
 		core::bc_vector3f m_color;
+		float m_visibility;
 		float m_center_fade;
-		float m_visibility_distance;
 		float m_intensity;
 	};
 
-	inline const core::bc_vector3f& bc_fog_component::get_extend() const noexcept
+	inline const core::bc_vector3f& bc_fog_component::get_half_extend() const noexcept
 	{
-		return m_extend;
+		return m_half_extend;
 	}
 
 	inline core::bc_vector3f bc_fog_component::get_min() const noexcept
 	{
-		return { get_center() - get_extend() / 2 };
+		return { get_center() - get_half_extend() };
 	}
 
 	inline core::bc_vector3f bc_fog_component::get_max() const noexcept
 	{
-		return { get_center() + get_extend() / 2 };
+		return { get_center() + get_half_extend() };
 	}
 
 	inline core::bc_vector3f bc_fog_component::get_color() const noexcept
@@ -81,16 +81,16 @@ namespace black_cat::game
 		return m_color;
 	}
 
+	inline float bc_fog_component::get_visibility() const noexcept
+	{
+		return m_visibility;
+	}
+
 	inline float bc_fog_component::get_center_fade() const noexcept
 	{
 		return m_center_fade;
 	}
-
-	inline float bc_fog_component::get_visibility_distance() const noexcept
-	{
-		return m_visibility_distance;
-	}
-
+	
 	inline float bc_fog_component::get_intensity() const noexcept
 	{
 		return m_intensity;

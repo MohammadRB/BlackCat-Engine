@@ -6,12 +6,12 @@
 struct bc_fog_instance
 {
 	float4x4 m_world;
-	float3 m_extend;
+	float3 m_half_extend;
 	float3 m_min;
 	float3 m_max;
 	float3 m_color;
+	float m_visibility;
 	float m_center_fade;
-	float m_visibility_distance;
 	float m_intensity;
 };
 
@@ -61,8 +61,8 @@ struct bc_vs_output
 	float3 m_fog_extend_max : TEXCOORD3;
 	float3 m_fog_center : TEXCOORD4;
 	float3 m_fog_color : TEXCOORD5;
-	float m_fog_center_fade : TEXCOORD6;
-	float m_fog_visibility_distance : TEXCOORD7;
+	float m_fog_visibility : TEXCOORD6;
+	float m_fog_center_fade : TEXCOORD7;
 	float m_fog_intensity : TEXCOORD8;
 };
 
@@ -121,13 +121,13 @@ bc_vs_output vol_fog_vs(bc_vs_input p_input, uint p_instance_index : SV_Instance
 
 	l_output.m_position = mul(mul(float4(p_input.m_position, 1), l_instance.m_world), g_view_projection);
 	l_output.m_cs_position = l_output.m_position;
-	l_output.m_fog_half_extend = l_instance.m_extend / 2;
+	l_output.m_fog_half_extend = l_instance.m_half_extend;
 	l_output.m_fog_extend_min = l_instance.m_min;
 	l_output.m_fog_extend_max = l_instance.m_max;
 	l_output.m_fog_center = (l_instance.m_min + l_instance.m_max) / 2;
 	l_output.m_fog_color = l_instance.m_color;
 	l_output.m_fog_center_fade = l_instance.m_center_fade;
-	l_output.m_fog_visibility_distance = l_instance.m_visibility_distance;
+	l_output.m_fog_visibility = l_instance.m_visibility;
 	l_output.m_fog_intensity = l_instance.m_intensity;
 
 	return l_output;
@@ -158,8 +158,12 @@ float4 vol_fog_ps(bc_vs_output p_input) : SV_Target0
 	
 	clip(l_tmax - l_tmin);
 
+	const float l_fog_visibility_fade_distance = p_input.m_fog_half_extend.y;
+	const float l_fog_visibility_modifier = (abs(l_ray.m_dir.y * 2) + 1) * (min(l_fog_visibility_fade_distance, l_tmin) / l_fog_visibility_fade_distance);
+	const float l_fog_visibility = p_input.m_fog_visibility / (l_fog_visibility_modifier + 1);
+	
 	const float l_ray_length = l_tmax - l_tmin;
-	const float l_ray_length_ratio = min(1, l_ray_length / p_input.m_fog_visibility_distance);
+	const float l_ray_length_ratio = min(1, l_ray_length / l_fog_visibility);
 
 	const float3 l_ray_middle_point = l_ray.m_origin + l_ray.m_dir * ((l_tmin + l_tmax) * .5);
 	const float3 l_ray_middle_box_center_distance = abs(l_ray_middle_point - p_input.m_fog_center);
