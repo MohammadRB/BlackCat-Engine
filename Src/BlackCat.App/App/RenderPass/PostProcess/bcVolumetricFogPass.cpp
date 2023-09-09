@@ -24,6 +24,7 @@ namespace black_cat
 		float m_visibility;
 		float m_center_fade;
 		float m_intensity;
+		bcUINT32 m_global_light;
 	};
 
 	struct _bc_params_struct
@@ -60,7 +61,8 @@ namespace black_cat
 					l_fog_component->get_color(),
 					l_fog_component->get_visibility(),
 					l_fog_component->get_center_fade(),
-					l_fog_component->get_intensity()
+					l_fog_component->get_intensity(),
+					l_fog_component->get_apply_global_light()
 				};
 			}
 		);
@@ -330,7 +332,8 @@ namespace black_cat
 					p_instance.m_color,
 					p_instance.m_visibility,
 					p_instance.m_center_fade,
-					p_instance. m_intensity
+					p_instance.m_intensity,
+					p_instance.m_global_light
 				};
 			}
 		);

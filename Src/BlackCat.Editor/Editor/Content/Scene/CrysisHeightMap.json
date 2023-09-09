@@ -71,9 +71,9 @@
       ],
       "parameters": {
         "fog_half_extend": [
-          1024.0,
+          1400.0,
           180.0,
-          1024.0
+          1400.0
         ],
         "fog_color": [
           0.9,
@@ -82,7 +82,8 @@
         ],
         "fog_visibility": 798.0,
         "fog_center_fade": 0.8,
-        "fog_intensity": 0.8
+        "fog_intensity": 0.8,
+        "fog_global_light": true
       }
     },
     {

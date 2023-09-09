@@ -30,6 +30,7 @@ namespace black_cat
 		float m_visibility;
 		float m_center_fade;
 		float m_intensity;
+		bool m_global_light;
 	};
 
 	class BC_DLL bc_volumetric_fog_pass : public game::bci_render_pass

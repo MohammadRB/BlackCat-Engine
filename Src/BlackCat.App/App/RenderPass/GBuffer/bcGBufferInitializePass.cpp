@@ -120,7 +120,14 @@ namespace black_cat
 		}
 		
 		p_context.m_render_thread.start();
-		p_context.m_frame_renderer.update_global_cbuffer(p_context.m_render_thread, p_context.m_clock, p_context.m_render_camera, l_direct_light, l_direct_wind);
+		p_context.m_frame_renderer.update_global_cbuffer
+		(
+			p_context.m_render_thread,
+			p_context.m_clock,
+			p_context.m_render_camera,
+			l_direct_light,
+			l_direct_wind
+		);
 
 		core::bc_vector4f l_diffuse_clear_color(l_direct_light.get_color() * l_direct_light.get_intensity(), 1);
 		core::bc_vector4f l_clear_color(0, 0, 0, 1);

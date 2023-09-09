@@ -18,7 +18,8 @@ namespace black_cat::game
 		  m_color(1),
 		  m_visibility(0),
 		  m_center_fade(.5),
-		  m_intensity(0)
+		  m_intensity(0),
+		  m_global_light(false)
 	{
 	}
 
@@ -46,6 +47,7 @@ namespace black_cat::game
 		json_parse::bc_load(p_context.m_parameters, constant::g_param_fog_center_fade, m_center_fade);
 		json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_fog_visibility, m_visibility);
 		json_parse::bc_load_throw(p_context.m_parameters, constant::g_param_fog_intensity, m_intensity);
+		json_parse::bc_load(p_context.m_parameters, constant::g_param_fog_global_light, m_global_light);
 	}
 
 	void bc_fog_component::write_instance(const bc_actor_component_write_context& p_context)
@@ -55,5 +57,6 @@ namespace black_cat::game
 		json_parse::bc_write(p_context.m_parameters, constant::g_param_fog_center_fade, m_center_fade);
 		json_parse::bc_write(p_context.m_parameters, constant::g_param_fog_visibility, m_visibility);
 		json_parse::bc_write(p_context.m_parameters, constant::g_param_fog_intensity, m_intensity);
+		json_parse::bc_write(p_context.m_parameters, constant::g_param_fog_global_light, m_global_light);
 	}
 }

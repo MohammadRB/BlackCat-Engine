@@ -47,6 +47,9 @@ namespace black_cat::game
 		[[nodiscard]]
 		float get_intensity() const noexcept;
 
+		[[nodiscard]]
+		bool get_apply_global_light() const noexcept;
+
 		void initialize_entity(const bc_actor_component_initialize_entity_context& p_context) override;
 
 		void load_instance(const bc_actor_component_load_context& p_context) override;
@@ -59,6 +62,7 @@ namespace black_cat::game
 		float m_visibility;
 		float m_center_fade;
 		float m_intensity;
+		bool m_global_light;
 	};
 
 	inline const core::bc_vector3f& bc_fog_component::get_half_extend() const noexcept
@@ -94,5 +98,10 @@ namespace black_cat::game
 	inline float bc_fog_component::get_intensity() const noexcept
 	{
 		return m_intensity;
+	}
+
+	inline bool bc_fog_component::get_apply_global_light() const noexcept
+	{
+		return m_global_light;
 	}
 }

@@ -96,4 +96,5 @@ namespace black_cat::constant
 	BC_PARAMETER(fog_center_fade, "fog_center_fade");
 	BC_PARAMETER(fog_visibility, "fog_visibility");
 	BC_PARAMETER(fog_intensity, "fog_intensity");
+	BC_PARAMETER(fog_global_light, "fog_global_light");
 }

@@ -13,6 +13,7 @@ struct bc_fog_instance
 	float m_visibility;
 	float m_center_fade;
 	float m_intensity;
+	bool m_global_light;
 };
 
 struct bc_box
@@ -64,6 +65,7 @@ struct bc_vs_output
 	float m_fog_visibility : TEXCOORD6;
 	float m_fog_center_fade : TEXCOORD7;
 	float m_fog_intensity : TEXCOORD8;
+	bool m_fog_global_light : TEXCOORD9;
 };
 
 // https://tavianator.com/2022/ray_box_boundary.html
@@ -129,6 +131,7 @@ bc_vs_output vol_fog_vs(bc_vs_input p_input, uint p_instance_index : SV_Instance
 	l_output.m_fog_center_fade = l_instance.m_center_fade;
 	l_output.m_fog_visibility = l_instance.m_visibility;
 	l_output.m_fog_intensity = l_instance.m_intensity;
+	l_output.m_fog_global_light = l_instance.m_global_light;
 
 	return l_output;
 }
@@ -159,13 +162,13 @@ float4 vol_fog_ps(bc_vs_output p_input) : SV_Target0
 	clip(l_tmax - l_tmin);
 
 	const float l_fog_visibility_fade_distance = p_input.m_fog_half_extend.y;
-	const float l_fog_visibility_modifier = (abs(l_ray.m_dir.y * 2) + 1) * (min(l_fog_visibility_fade_distance, l_tmin) / l_fog_visibility_fade_distance);
+	const float l_fog_visibility_modifier = (abs(l_view_ray.y * 2) + 1) * (min(l_fog_visibility_fade_distance, l_tmin) / l_fog_visibility_fade_distance);
 	const float l_fog_visibility = p_input.m_fog_visibility / (l_fog_visibility_modifier + 1);
 	
 	const float l_ray_length = l_tmax - l_tmin;
 	const float l_ray_length_ratio = min(1, l_ray_length / l_fog_visibility);
 
-	const float3 l_ray_middle_point = l_ray.m_origin + l_ray.m_dir * ((l_tmin + l_tmax) * .5);
+	const float3 l_ray_middle_point = l_ray.m_origin + l_view_ray * ((l_tmin + l_tmax) * .5);
 	const float3 l_ray_middle_box_center_distance = abs(l_ray_middle_point - p_input.m_fog_center);
 
 	const float3 l_center_fade_distance = p_input.m_fog_half_extend * p_input.m_fog_center_fade;
@@ -174,14 +177,21 @@ float4 vol_fog_ps(bc_vs_output p_input) : SV_Target0
 	l_center_distance_fade /= l_center_fade_distance_inv;
 	l_center_distance_fade = pow(l_center_distance_fade, 2);
 	l_center_distance_fade = 1. - l_center_distance_fade;
-
 	const float l_center_distance_ratio = min
 	(
 		min(l_center_distance_fade.x, l_center_distance_fade.y), l_center_distance_fade.z
 	);
 	
 	const float l_fog = l_ray_length_ratio * l_center_distance_ratio * p_input.m_fog_intensity;
-	const float3 l_fog_color = p_input.m_fog_color * g_global_light_ambient_color * g_global_light_ambient_intensity;
-	
-	return float4(l_fog_color, l_fog);
+	const float3 l_ambient_color = g_global_light_ambient_color * g_global_light_ambient_intensity;
+	float3 l_fog_color = l_ambient_color;
+
+	if (p_input.m_fog_global_light)
+	{
+		const float3 l_light_color = g_global_light_color * max(g_global_light_intensity, g_global_light_ambient_intensity);
+		const float l_light_coefficient = max(0, dot(l_view_ray, -g_global_light_direction));
+		l_fog_color = lerp(l_ambient_color, l_light_color, l_light_coefficient);
+	}
+
+	return float4(l_fog_color * p_input.m_fog_color, l_fog);
 }

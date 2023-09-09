@@ -57,7 +57,8 @@
         ],
         "fog_visibility": 400.0,
         "fog_center_fade": 0.8,
-        "fog_intensity": 0.5
+        "fog_intensity": 0.5,
+        "fog_global_light": true
       }
     },
     {

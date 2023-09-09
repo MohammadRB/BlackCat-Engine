@@ -60,7 +60,7 @@ namespace box
 
 		auto l_scene = l_content_manager.load<game::bc_scene>
 		(
-			l_file_system.get_content_scene_path(bcL("CrysisHeightMap")),
+			l_file_system.get_content_scene_path(bcL("BattleGround")),
 			{},
 			core::bc_content_loader_parameter()
 		);
