@@ -285,48 +285,48 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorApplication.h">
+    <QtMoc Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorApplication.h">
       <Filter>Editor\Application</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorGameConsole.h">
+    </QtMoc>
+    <QtMoc Include="..\..\Src\BlackCat.Editor\Editor\Application\bcEditorGameConsole.h">
       <Filter>Editor\Application</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\QtAwesome\QtAwesome.h">
+    </QtMoc>
+    <QtMoc Include="..\..\Src\BlackCat.Editor\Editor\QtAwesome\QtAwesome.h">
       <Filter>Editor\QtAwesome</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\QtAwesome\QtAwesomeAnim.h">
+    </QtMoc>
+    <QtMoc Include="..\..\Src\BlackCat.Editor\Editor\QtAwesome\QtAwesomeAnim.h">
       <Filter>Editor\QtAwesome</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormTools.h">
+    </QtMoc>
+    <QtMoc Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormTools.h">
       <Filter>Editor\UI</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainMenu.h">
+    </QtMoc>
+    <QtMoc Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainMenu.h">
       <Filter>Editor\UI</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetConsole.h">
+    </QtMoc>
+    <QtMoc Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetConsole.h">
       <Filter>Editor\Widget</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetD3DOutput.h">
+    </QtMoc>
+    <QtMoc Include="..\..\Src\BlackCat.Editor\Editor\Widget\bcWidgetD3DOutput.h">
       <Filter>Editor\Widget</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainToolBar.h">
+    </QtMoc>
+    <QtMoc Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormMainToolBar.h">
       <Filter>Editor\UI</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormDecal.h">
+    </QtMoc>
+    <QtMoc Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormDecal.h">
       <Filter>Editor\UI</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.h">
+    </QtMoc>
+    <QtMoc Include="..\..\Src\BlackCat.Editor\Editor\UI\bcFormObject.h">
       <Filter>Editor\UI</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\FormFiles\bcBlackCatEditor.ui">
+    </QtMoc>
+    <QtUic Include="..\..\Src\BlackCat.Editor\Editor\FormFiles\bcBlackCatEditor.ui">
       <Filter>Editor\FormFiles</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Resources\bcBlackCatEditor.qrc">
+    </QtUic>
+    <QtRcc Include="..\..\Src\BlackCat.Editor\Editor\Resources\bcBlackCatEditor.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\..\Src\BlackCat.Editor\Editor\Resources\qdarkstyle\style.qrc">
+    </QtRcc>
+    <QtRcc Include="..\..\Src\BlackCat.Editor\Editor\Resources\qdarkstyle\style.qrc">
       <Filter>Resource Files\qdarkstyle</Filter>
-    </CustomBuild>
+    </QtRcc>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Src\BlackCat.Editor\Editor\Content\Data\EditorContentStream.json">
