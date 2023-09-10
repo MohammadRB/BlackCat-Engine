@@ -31,9 +31,9 @@ namespace black_cat::game
 	};
 
 	/**
-		 * \brief Non-mutable object that represent whole configuration that is needed for a render pass.
-		 * \n Shader parameters will be mapped to device registers as they appear in their array
-		 */
+	 * \brief Non-mutable object that represent whole configuration that is needed for a render pass.
+	 * \n Shader parameters will be mapped to device registers as they appear in their array
+	 */
 	class BC_GAME_DLL bc_render_pass_state
 			: public core::bc_ref_count,
 			  platform::bc_no_copy

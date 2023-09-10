@@ -192,8 +192,8 @@ namespace black_cat::game
 
 		if (m_imp)
 		{
-			const bool l_log_enabled = m_log_types[std::log2(static_cast<bcSIZE>(l_type))];
-			if(l_log_enabled)
+			const bool l_log_enabled = m_log_types[std::log2(static_cast<bcINT>(l_type))];
+			if (l_log_enabled)
 			{
 				m_imp->write_output(l_type, p_log);
 			}

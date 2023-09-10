@@ -50,6 +50,22 @@ namespace black_cat::game
 	{
 	}
 
+	void bci_camera::get_extend_rays(extend_rays& p_rays) const noexcept
+	{
+		extend_points l_extend_points;
+
+		get_extend_points(l_extend_points);
+		const auto l_bottom_left_vector = core::bc_vector3f::normalize(l_extend_points[4] - l_extend_points[0]);
+		const auto l_top_left_vector = core::bc_vector3f::normalize(l_extend_points[5] - l_extend_points[1]);
+		const auto l_top_right_vector = core::bc_vector3f::normalize(l_extend_points[6] - l_extend_points[2]);
+		const auto l_bottom_right_vector = core::bc_vector3f::normalize(l_extend_points[7] - l_extend_points[3]);
+
+		p_rays[0] = l_bottom_left_vector;
+		p_rays[1] = l_top_left_vector;
+		p_rays[2] = l_top_right_vector;
+		p_rays[3] = l_bottom_right_vector;
+	}
+
 	core::bc_vector3f bci_camera::project_clip_point_to_3d_ray(bcUINT16 p_left, bcUINT16 p_top) const noexcept
 	{
 		//auto l_view = get_view();
@@ -77,7 +93,7 @@ namespace black_cat::game
 
 		const bcFLOAT l_left = static_cast<bcFLOAT>(p_left) / m_screen_width;
 		const bcFLOAT l_bottom = 1 - (static_cast<bcFLOAT>(p_top) / m_screen_height);
-		extend l_camera_extends;
+		extend_points l_camera_extends;
 
 		get_extend_points(l_camera_extends);
 
@@ -177,7 +193,7 @@ namespace black_cat::game
 		return *this;
 	}
 		
-	void bc_orthographic_camera::get_extend_points(extend& p_points) const noexcept
+	void bc_orthographic_camera::get_extend_points(extend_points& p_points) const noexcept
 	{
 		const auto l_near_clip_height = m_max_y - m_min_y;
 		const auto l_near_clip_width = m_max_x - m_min_x;
@@ -246,7 +262,7 @@ namespace black_cat::game
 		return *this;
 	}
 		
-	void bc_perspective_camera::get_extend_points(extend& p_points) const noexcept
+	void bc_perspective_camera::get_extend_points(extend_points& p_points) const noexcept
 	{
 		const auto l_fov_tan = 2 * std::tanf(m_field_of_view / 2);
 		const auto l_near_clip_height = l_fov_tan * get_near_clip();

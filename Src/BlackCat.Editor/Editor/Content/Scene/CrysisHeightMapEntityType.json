@@ -8,8 +8,8 @@
           "parameters": {
             "type": "direct",
             "direction": [ 0.4, -0.3, -0.5 ],
-            "color": [ 0.79, 0.78, 0.68, 1.2 ],
-            "ambient_color": [ 0.66, 0.68, 0.70, 0.8 ]
+            "color": [ 0.79, 0.58, 0.48, 2.0 ],
+            "ambient_color": [ 0.66, 0.68, 0.70, 1.5 ]
           }
         }
       ]
@@ -21,8 +21,18 @@
           "name": "wind",
           "parameters": {
             "type": "direct",
-            "direction": [0.0, 0.0, 1.0],
+            "direction": [ 0.0, 0.0, 1.0 ],
             "power": 2.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "env_fog",
+      "components": [
+        {
+          "name": "fog",
+          "parameters": {
           }
         }
       ]
@@ -35,7 +45,7 @@
           "parameters": {
             "type": "point",
             "position": [ 0.0, 2.0, 0.0 ],
-            "color": [ 0.79, 0.28, 0.18 , 2.0],
+            "color": [ 0.79, 0.28, 0.18, 2.0 ],
             "radius": 6.0
           }
         }
@@ -50,7 +60,7 @@
             "type": "spot",
             "position": [ 0.0, 4.0, 0.0 ],
             "direction": [ 0.0, -0.6, 0.7 ],
-            "color": [ 0.39, 0.78, 0.48, 2.0], 
+            "color": [ 0.39, 0.78, 0.48, 2.0 ],
             "length": 12.0,
             "angle": 60.0
           }

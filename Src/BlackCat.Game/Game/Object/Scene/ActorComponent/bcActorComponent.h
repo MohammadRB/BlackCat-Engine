@@ -247,7 +247,7 @@ namespace black_cat
 			bci_actor_component& operator=(bci_actor_component&& p_other) noexcept;
 
 			bc_actor_component_manager_container& get_manager() const noexcept;
-
+			
 		private:
 			bc_actor_id m_actor_id;
 			bc_actor_component_id m_id;

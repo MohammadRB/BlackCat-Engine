@@ -52,7 +52,7 @@ namespace black_cat
 		  m_update_parameters(true),
 		  m_num_rays(4),
 		  m_steps_per_ray(4),
-		  m_strength(1.6f),
+		  m_strength(1.2f),
 		  m_radius(1.5f),
 		  m_attenuation(2.0f),
 		  m_bias(0.1f),
@@ -579,16 +579,11 @@ namespace black_cat
 	{
 		_bc_frustum_params_struct l_params{};
 
-		const auto l_camera_extends = p_camera.get_extends();
-		const auto l_top_left_vector = core::bc_vector3f::normalize(l_camera_extends[5] - l_camera_extends[1]);
-		const auto l_top_right_vector = core::bc_vector3f::normalize(l_camera_extends[6] - l_camera_extends[2]);
-		const auto l_bottom_right_vector = core::bc_vector3f::normalize(l_camera_extends[7] - l_camera_extends[3]);
-		const auto l_bottom_left_vector = core::bc_vector3f::normalize(l_camera_extends[4] - l_camera_extends[0]);
-
-		l_params.m_view_frustum_vectors[0] = core::bc_vector4f(l_top_left_vector, 1);
-		l_params.m_view_frustum_vectors[1] = core::bc_vector4f(l_top_right_vector, 1);
-		l_params.m_view_frustum_vectors[2] = core::bc_vector4f(l_bottom_right_vector, 1);
-		l_params.m_view_frustum_vectors[3] = core::bc_vector4f(l_bottom_left_vector, 1);
+		const auto l_camera_extends = p_camera.get_extend_rays();
+		l_params.m_view_frustum_vectors[0] = core::bc_vector4f(l_camera_extends[1], 1);
+		l_params.m_view_frustum_vectors[1] = core::bc_vector4f(l_camera_extends[2], 1);
+		l_params.m_view_frustum_vectors[2] = core::bc_vector4f(l_camera_extends[3], 1);
+		l_params.m_view_frustum_vectors[3] = core::bc_vector4f(l_camera_extends[0], 1);
 
 		p_render_thread.update_subresource(*m_frustum_params_buffer, 0, &l_params, 0, 0);
 	}

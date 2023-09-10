@@ -20,11 +20,17 @@ namespace black_cat::game
 	{
 	public:
 		/**
-		 * \brief 8 point that describe camera frustum. First four points lay on near clip and second four points on far clip
-		 * ordered by lower-left upper-left upper-right lower-right
+		 * \brief 8 points that describe camera frustum.
+		 * First four points lay on near clip and second four points on far clip ordered by lower-left upper-left upper-right lower-right.
 		 * \param p_points
 		 */
-		using extend = core::bc_array<core::bc_vector3f, 8>;
+		using extend_points = core::bc_array<core::bc_vector3f, 8>;
+
+		/**
+		 * \brief 4 rays that describe camera frustum.
+		 * ordered by lower-left upper-left upper-right lower-right.
+		 */
+		using extend_rays = core::bc_array<core::bc_vector3f, 4>;
 
 	public:
 		virtual ~bci_camera() noexcept;
@@ -115,20 +121,27 @@ namespace black_cat::game
 		}
 
 		/**
-			 * \brief Get 8 point that describe camera frustum. First four points lay on near clip and second four points on far clip
-			 * ordered by lower-left upper-left upper-right lower-right
-			 * \param p_points
-			 */
-		virtual void get_extend_points(extend& p_points) const noexcept = 0;
-			
+		 * \brief Get 8 point that describe camera frustum.
+		 * First four points lay on near clip and second four points on far clip ordered by lower-left upper-left upper-right lower-right
+		 * \param p_points
+		 */
+		virtual void get_extend_points(extend_points& p_points) const noexcept = 0;
+
 		/**
-			 * \brief Convert a point from screen space to a normalized ray in 3d space
-			 * \param p_screen_width
-			 * \param p_screen_height
-			 * \param p_left Point offset from the left of screen
-			 * \param p_top point offset from the top of screen
-			 * \return
-			 */
+		 * \brief Get 4 rays that describe camera frustum.
+		 * Ordered by lower-left upper-left upper-right lower-right.
+		 * \param p_rays 
+		 */
+		void get_extend_rays(extend_rays& p_rays) const noexcept;
+
+		/**
+		 * \brief Convert a point from screen space to a normalized ray in 3d space
+		 * \param p_screen_width
+		 * \param p_screen_height
+		 * \param p_left Point offset from the left of screen
+		 * \param p_top point offset from the top of screen
+		 * \return
+		 */
 		core::bc_vector3f project_clip_point_to_3d_ray(bcUINT16 p_left, bcUINT16 p_top) const noexcept;
 
 		void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height) noexcept;
@@ -189,7 +202,7 @@ namespace black_cat::game
 			return m_max_y;
 		}
 
-		void get_extend_points(extend& p_points) const noexcept override;
+		void get_extend_points(extend_points& p_points) const noexcept override;
 			
 	protected:
 		bc_orthographic_camera(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
@@ -225,7 +238,7 @@ namespace black_cat::game
 			return m_field_of_view;
 		}
 
-		void get_extend_points(extend& p_points) const noexcept override final;
+		void get_extend_points(extend_points& p_points) const noexcept override final;
 
 		void set_projection(bcUINT16 p_back_buffer_width, bcUINT16 p_back_buffer_height, bcFLOAT p_height_fov, bcFLOAT p_near_clip, bcFLOAT p_far_clip) noexcept;
 			

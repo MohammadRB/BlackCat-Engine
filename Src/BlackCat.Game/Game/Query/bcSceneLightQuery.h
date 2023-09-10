@@ -10,7 +10,6 @@
 #include "Game/System/Render/Light/bcLightInstance.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/Query/bcQueryContext.h"
-#include "Game/bcExport.h"
 
 namespace black_cat::game
 {

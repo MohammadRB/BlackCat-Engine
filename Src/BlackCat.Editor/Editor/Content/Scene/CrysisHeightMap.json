@@ -58,6 +58,35 @@
       "parameters": {}
     },
     {
+      "entity_name": "env_fog",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -0.0,
+        0.0,
+        -0.0
+      ],
+      "parameters": {
+        "fog_half_extend": [
+          1400.0,
+          180.0,
+          1400.0
+        ],
+        "fog_color": [
+          0.9,
+          0.95,
+          1.0
+        ],
+        "fog_visibility": 798.0,
+        "fog_center_fade": 0.8,
+        "fog_intensity": 0.8,
+        "fog_global_light": true
+      }
+    },
+    {
       "entity_name": "crysis_heightmap",
       "position": [
         0.0,

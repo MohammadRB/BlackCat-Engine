@@ -87,11 +87,13 @@ namespace black_cat
 
 		if (m_leaf_query_results[p_context.m_cascade_absolute_index].is_executed())
 		{
-			m_leaf_render_states[p_context.m_cascade_absolute_index] = m_leaf_query_results[p_context.m_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>().get_render_state_buffer();
+			auto& l_leaf_query = static_cast<game::bc_scene_graph_render_state_query&>(m_leaf_query_results[p_context.m_cascade_absolute_index].get());
+			m_leaf_render_states[p_context.m_cascade_absolute_index] = l_leaf_query.get_render_state_buffer();
 		}
 		if (m_trunk_query_results[p_context.m_cascade_absolute_index].is_executed())
 		{
-			m_trunk_render_states[p_context.m_cascade_absolute_index] = m_trunk_query_results[p_context.m_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>().get_render_state_buffer();
+			auto& l_trunk_query = static_cast<game::bc_scene_graph_render_state_query&>(m_trunk_query_results[p_context.m_cascade_absolute_index].get());
+			m_trunk_render_states[p_context.m_cascade_absolute_index] = l_trunk_query.get_render_state_buffer();
 		}
 
 		if (p_context.m_render_next_frame)

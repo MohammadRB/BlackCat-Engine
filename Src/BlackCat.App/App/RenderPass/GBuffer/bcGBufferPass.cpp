@@ -49,7 +49,7 @@ namespace black_cat
 	{
 		if (m_query_result.is_executed())
 		{
-			m_render_states = m_query_result.get<game::bc_main_camera_render_state_query>().get_render_state_buffer();
+			m_render_states = static_cast<game::bc_main_camera_render_state_query&>(m_query_result.get()).get_render_state_buffer();
 		}
 
 		m_query = std::move
@@ -58,7 +58,8 @@ namespace black_cat
 			(
 				game::bc_actor_render_camera(p_context.m_update_camera),
 				p_context.m_frame_renderer.create_buffer()
-			).only<game::bc_simple_mesh_component>()
+			)
+			.only<game::bc_simple_mesh_component>()
 		);
 		m_query_result = p_context.m_query_manager.queue_ext_query(m_query);
 	}

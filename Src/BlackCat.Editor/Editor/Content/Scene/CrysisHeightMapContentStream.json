@@ -160,7 +160,7 @@
         {
           "content_title": "Palm_Tree_Large_d",
           "content_loader": "mesh",
-          "content_file": "content\\model\\nature\\palm_tree\\Palm_Tree_Large_d.FBX",
+          "content_file": "Content\\Model\\Nature\\PalmTree\\Palm_Tree_Large_d.fbx",
           "content_parameter": {
             "auto_scale": 15.0,
             "high_detail_query_shape": true
@@ -169,7 +169,7 @@
         {
           "content_title": "Green_Fern_Bush_a",
           "content_loader": "mesh",
-          "content_file": "content\\model\\nature\\Green_Fern_Bush_a\\Green_Fern_Bush_a.FBX",
+          "content_file": "Content\\Model\\Nature\\Plant\\Green_Fern_Bush_a.fbx",
           "content_parameter": {
             "auto_scale": 5.0,
             "high_detail_query_shape": true
@@ -178,7 +178,7 @@
         {
           "content_title": "thin_leave_tree_big_bright_green",
           "content_loader": "mesh",
-          "content_file": "content\\model\\nature\\trees\\thin_leave_tree_big_bright_green.FBX",
+          "content_file": "Content\\Model\\Nature\\Tree\\thin_leave_tree_big_bright_green.fbx",
           "content_parameter": {
             "auto_scale": 20.0,
             "high_detail_query_shape": true

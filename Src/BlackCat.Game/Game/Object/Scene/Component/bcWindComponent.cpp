@@ -13,42 +13,28 @@
 namespace black_cat::game
 {
 	bc_wind::bc_wind(const bc_direct_wind& p_direct)
-		: m_direct(p_direct),
-		  m_type(bc_wind_type::direct)
+		: m_wind(p_direct)
 	{
 		_calculate_bound_box();
 	}
 
 	bc_wind::bc_wind(const bc_point_wind& p_point)
-		: m_point(p_point),
-		  m_type(bc_wind_type::point)
+		: m_wind(p_point)
 	{
 		_calculate_bound_box();
 	}
 
 	bc_wind::bc_wind(const bc_wind& p_other) noexcept
+		: m_wind(p_other.m_wind)
 	{
-		operator=(p_other);
+		_calculate_bound_box();
 	}
 
 	bc_wind::~bc_wind() = default;
 
 	bc_wind& bc_wind::operator=(const bc_wind& p_other) noexcept
 	{
-		switch (p_other.m_type)
-		{
-		case bc_wind_type::direct:
-			m_direct = p_other.m_direct;
-			break;
-		case bc_wind_type::point:
-			m_point = p_other.m_point;
-			break;
-		default:
-			BC_ASSERT(false);
-			break;
-		}
-
-		m_type = p_other.m_type;
+		m_wind = p_other.m_wind;
 		m_bound_box = p_other.m_bound_box;
 
 		return *this;
@@ -56,9 +42,9 @@ namespace black_cat::game
 
 	void bc_wind::set_transformation(const core::bc_matrix4f& p_transformation) noexcept
 	{
-		if(m_type == bc_wind_type::point)
+		if (auto* l_point = std::get_if<bc_point_wind>(&m_wind))
 		{
-			m_point.m_position = p_transformation.get_translation();
+			l_point->m_position = p_transformation.get_translation();
 		}
 
 		_calculate_bound_box();
@@ -71,9 +57,9 @@ namespace black_cat::game
 
 	bc_direct_wind* bc_wind::as_direct_wind() noexcept
 	{
-		if(m_type == bc_wind_type::direct)
+		if (auto* l_direct = std::get_if<bc_direct_wind>(&m_wind))
 		{
-			return &m_direct;
+			return l_direct;
 		}
 
 		return nullptr;
@@ -86,9 +72,9 @@ namespace black_cat::game
 
 	bc_point_wind* bc_wind::as_point_wind() noexcept
 	{
-		if (m_type == bc_wind_type::point)
+		if (auto* l_point = std::get_if<bc_point_wind>(&m_wind))
 		{
-			return &m_point;
+			return l_point;
 		}
 
 		return nullptr;
@@ -99,23 +85,38 @@ namespace black_cat::game
 		return const_cast<bc_wind&>(*this).as_point_wind();
 	}
 
+	bc_wind_type bc_wind::_get_type() const
+	{
+		if (std::holds_alternative<bc_direct_wind>(m_wind))
+		{
+			return bc_wind_type::direct;
+		}
+
+		if (std::holds_alternative<bc_point_wind>(m_wind))
+		{
+			return bc_wind_type::point;
+		}
+
+		return bc_wind_type::direct;
+	}
+
 	void bc_wind::_calculate_bound_box() noexcept
 	{
-		switch (m_type)
+		if (const auto* l_direct = std::get_if<bc_direct_wind>(&m_wind))
 		{
-		case bc_wind_type::direct:
 			m_bound_box = physics::bc_bound_box(core::bc_vector3f(0), core::bc_vector3f(.5, .5, .5));
-			break;
-		case bc_wind_type::point:
+		}
+		else if(const auto* l_point = std::get_if<bc_point_wind>(&m_wind))
+		{
 			m_bound_box = physics::bc_bound_box
 			(
-				m_point.m_position,
-				core::bc_vector3f(m_point.m_radios)
+				l_point->m_position,
+				core::bc_vector3f(l_point->m_radios)
 			);
-			break;
-		default:
+		}
+		else
+		{
 			BC_ASSERT(false);
-			break;
 		}
 	}
 

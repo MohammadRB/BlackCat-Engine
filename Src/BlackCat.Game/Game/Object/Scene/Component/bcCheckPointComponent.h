@@ -8,8 +8,8 @@
 namespace black_cat::game
 {
 	/**
-		 * \brief Tag component which indicates actor state must be preserved in scene checkpoint process
-		 */
+	 * \brief Tag component which indicates actor state must be preserved in scene checkpoint process
+	 */
 	class BC_GAME_DLL bc_checkpoint_component : public bci_actor_component
 	{
 		BC_COMPONENT(chk_pnt, false, false)

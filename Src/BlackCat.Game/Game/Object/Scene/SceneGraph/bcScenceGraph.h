@@ -54,27 +54,27 @@ namespace black_cat::game
 		const_iterator cend() const noexcept;
 
 		/**
-			 * \brief Try to add actor to scene.
-			 * \n ThreadSafe
-			 * \param p_actor 
-			 * \return True if the actor was added and False if actor was out of bound of scene graph
-			 */
+		 * \brief Try to add actor to scene.
+		 * \n ThreadSafe
+		 * \param p_actor 
+		 * \return True if the actor was added and False if actor was out of bound of scene graph
+		 */
 		bool add_actor(bc_actor& p_actor) noexcept;
 
 		/**
-			 * \brief Update actor in scene graph.
-			 * \n ThreadSafe
-			 * \param p_actor 
-			 * \return True if the actor was updated and False if actor went out of bound of scene graph
-			 */
+		 * \brief Update actor in scene graph.
+		 * \n ThreadSafe
+		 * \param p_actor 
+		 * \return True if the actor was updated and False if actor went out of bound of scene graph
+		 */
 		bool update_actor(bc_actor& p_actor) noexcept;
 
 		/**
-			 * \brief Try to remove actor from scene.
-			 * \n ThreadSafe
-			 * \param p_actor 
-			 * \return True if the actor was removed and False if actor was not found
-			 */
+		 * \brief Try to remove actor from scene.
+		 * \n ThreadSafe
+		 * \param p_actor 
+		 * \return True if the actor was removed and False if actor was not found
+		 */
 		bool remove_actor(bc_actor& p_actor) noexcept;
 
 		bc_actor get_actor(const physics::bc_ray& p_ray, bc_scene_graph_ray_query_filter_callback* p_filter = nullptr) const noexcept;

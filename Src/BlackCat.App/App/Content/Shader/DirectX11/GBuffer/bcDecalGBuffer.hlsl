@@ -102,13 +102,13 @@ bc_ps_output ps(bc_vs_output p_input)
 {
 	bc_ps_output l_output;
 
-	const float4 l_clip_space = p_input.m_cs_position / p_input.m_cs_position.w;
+	const float4 l_ndc_position = p_input.m_cs_position / p_input.m_cs_position.w;
 	const float2 l_texcoord = bc_clip_space_to_texcoord(p_input.m_cs_position);
 	const float l_depth = g_tex2d_depth.Sample(g_sam_point, l_texcoord).r;
 
 	if (!CAMERA_INSIDE)
 	{
-		clip(l_depth - (l_clip_space.z));
+		clip(l_depth - (l_ndc_position.z));
 	}
 
 	//l_output.m_diffuse = float4(1, 1, 1, 0.5);
@@ -120,7 +120,7 @@ bc_ps_output ps(bc_vs_output p_input)
 
 	clip((l_stencil & p_input.m_group) - 1.0f);
 	
-	const float3 l_pixel_world = bc_reconstruct_world_position(l_clip_space.xy, l_depth, g_view_projection_inv);
+	const float3 l_pixel_world = bc_reconstruct_world_position(l_ndc_position.xy, l_depth, g_view_projection_inv);
 	const float3 l_pixel_local = mul(float4(l_pixel_world, 1), p_input.m_world_inv).xyz;
 
 	clip(0.5 - abs(l_pixel_local));

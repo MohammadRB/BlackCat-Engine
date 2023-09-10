@@ -32,9 +32,9 @@ namespace black_cat::core
 	public:
 		virtual ~bci_json_structure() = default;
 
-		void load(bc_json_value_object& p_json_value);
+		void load(bc_native_json_value& p_json_value);
 
-		void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value);
+		void write(bc_native_json_document& p_document, bc_native_json_value& p_json_value);
 
 		void _add_json_value(bci_json_value* p_parser);
 
@@ -51,22 +51,22 @@ namespace black_cat::core
 
 		bool has_value() const noexcept;
 
-		virtual void load(bc_json_value_object& p_json_value) = 0;
+		virtual void load(bc_native_json_value& p_json_value) = 0;
 
-		virtual void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) = 0;
+		virtual void write(bc_native_json_document& p_document, bc_native_json_value& p_json_value) = 0;
 
 	protected:
 		bci_json_value(bci_json_structure* p_structure, bool p_optional);
 
-		bc_json_value_object* get_json_field(bc_json_value_object& p_json, const bcCHAR* p_name) const;
+		bc_native_json_value* get_json_field(bc_native_json_value& p_json, const bcCHAR* p_name) const;
 
-		bc_json_value_object* set_json_field(bc_json_document_object& p_document, bc_json_value_object& p_json, const bcCHAR* p_name) const;
+		bc_native_json_value* set_json_field(bc_native_json_document& p_document, bc_native_json_value& p_json, const bcCHAR* p_name) const;
 
 		bool m_optional;
 		bool m_had_value;
 	};
 
-	inline void bci_json_structure::load(bc_json_value_object& p_json_value)
+	inline void bci_json_structure::load(bc_native_json_value& p_json_value)
 	{
 		for (auto* l_field : m_json_fields)
 		{
@@ -74,7 +74,7 @@ namespace black_cat::core
 		}
 	}
 
-	inline void bci_json_structure::write(bc_json_document_object& p_document, bc_json_value_object& p_json_value)
+	inline void bci_json_structure::write(bc_native_json_document& p_document, bc_native_json_value& p_json_value)
 	{
 		for (auto* l_field : m_json_fields)
 		{
@@ -107,7 +107,7 @@ namespace black_cat::core
 		}
 	}
 
-	inline bc_json_value_object* bci_json_value::get_json_field(bc_json_value_object& p_json, const bcCHAR* p_name) const
+	inline bc_native_json_value* bci_json_value::get_json_field(bc_native_json_value& p_json, const bcCHAR* p_name) const
 	{
 		auto* l_value = p_json.HasMember(p_name) ? &p_json[p_name] : nullptr;
 
@@ -123,9 +123,9 @@ namespace black_cat::core
 		return l_value;
 	}
 
-	inline bc_json_value_object* bci_json_value::set_json_field(bc_json_document_object& p_document, bc_json_value_object& p_json, const bcCHAR* p_name) const
+	inline bc_native_json_value* bci_json_value::set_json_field(bc_native_json_document& p_document, bc_native_json_value& p_json, const bcCHAR* p_name) const
 	{
-		bc_json_value_object* l_result;
+		bc_native_json_value* l_result;
 
 		if (p_json.HasMember(p_name))
 		{
@@ -133,8 +133,8 @@ namespace black_cat::core
 		}
 		else
 		{
-			bc_json_value_object l_name(rapidjson::kStringType);
-			bc_json_value_object l_value(rapidjson::kNullType);
+			bc_native_json_value l_name(rapidjson::kStringType);
+			bc_native_json_value l_value(rapidjson::kNullType);
 			l_name.SetString(p_name, std::strlen(p_name));
 
 			p_json.AddMember(l_name, l_value, p_document.GetAllocator());
@@ -304,7 +304,7 @@ namespace black_cat::core
 
 		bc_json_value& operator=(bc_json_value&&) noexcept(std::is_nothrow_move_assignable_v<T>) = delete;
 
-		void load(bc_json_value_object& p_json_value) override
+		void load(bc_native_json_value& p_json_value) override
 		{
 			// If we use json value within json array m_name will be null
 			auto* l_value = m_name != nullptr ? get_json_field(p_json_value, m_name) : &p_json_value;
@@ -324,7 +324,7 @@ namespace black_cat::core
 			m_had_value = true;
 		}
 
-		void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override
+		void write(bc_native_json_document& p_document, bc_native_json_value& p_json_value) override
 		{
 			// If we use json value within json array m_name will be null
 			auto* l_json = m_name != nullptr ? set_json_field(p_document, p_json_value, m_name) : &p_json_value;
@@ -377,7 +377,7 @@ namespace black_cat::core
 		}
 
 	private:
-		void _load(const bc_json_value_object& p_json_value, bool& p_value)
+		void _load(const bc_native_json_value& p_json_value, bool& p_value)
 		{
 			if (!p_json_value.IsBool())
 			{
@@ -387,12 +387,12 @@ namespace black_cat::core
 			p_value = p_json_value.GetBool();
 		}
 
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bool& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const bool& p_value)
 		{
 			p_json_value.SetBool(p_value);
 		}
 
-		void _load(const bc_json_value_object& p_json_value, bcINT32& p_value)
+		void _load(const bc_native_json_value& p_json_value, bcINT32& p_value)
 		{
 			if (p_json_value.IsNumber())
 			{
@@ -413,12 +413,12 @@ namespace black_cat::core
 			throw bc_io_exception("bad json format. expected int value.");
 		}
 
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcINT32& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const bcINT32& p_value)
 		{
 			p_json_value.SetInt(p_value);
 		}
 
-		void _load(const bc_json_value_object& p_json_value, bcUINT32& p_value)
+		void _load(const bc_native_json_value& p_json_value, bcUINT32& p_value)
 		{
 			if (p_json_value.IsNumber())
 			{
@@ -439,12 +439,12 @@ namespace black_cat::core
 			throw bc_io_exception("bad json format. expected uint value.");
 		}
 
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcUINT32& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const bcUINT32& p_value)
 		{
 			p_json_value.SetUint(p_value);
 		}
 
-		void _load(const bc_json_value_object& p_json_value, bcINT64& p_value)
+		void _load(const bc_native_json_value& p_json_value, bcINT64& p_value)
 		{
 			if (p_json_value.IsNumber())
 			{
@@ -465,12 +465,12 @@ namespace black_cat::core
 			throw bc_io_exception("bad json format. expected int value.");
 		}
 
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcINT64& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const bcINT64& p_value)
 		{
 			p_json_value.SetInt64(p_value);
 		}
 
-		void _load(const bc_json_value_object& p_json_value, bcUINT64& p_value)
+		void _load(const bc_native_json_value& p_json_value, bcUINT64& p_value)
 		{
 			if (p_json_value.IsNumber())
 			{
@@ -491,12 +491,12 @@ namespace black_cat::core
 			throw bc_io_exception("bad json format. expected uint value.");
 		}
 
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcUINT64& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const bcUINT64& p_value)
 		{
 			p_json_value.SetUint64(p_value);
 		}
 
-		void _load(const bc_json_value_object& p_json_value, bcFLOAT& p_value)
+		void _load(const bc_native_json_value& p_json_value, bcFLOAT& p_value)
 		{
 			if (p_json_value.IsFloat())
 			{
@@ -517,12 +517,12 @@ namespace black_cat::core
 			throw bc_io_exception("bad json format. expected float value.");
 		}
 
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcFLOAT& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const bcFLOAT& p_value)
 		{
 			p_json_value.SetFloat(p_value);
 		}
 
-		void _load(const bc_json_value_object& p_json_value, bcDOUBLE& p_value)
+		void _load(const bc_native_json_value& p_json_value, bcDOUBLE& p_value)
 		{
 			if (p_json_value.IsDouble())
 			{
@@ -543,12 +543,12 @@ namespace black_cat::core
 			throw bc_io_exception("bad json format. expected double value.");
 		}
 
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bcDOUBLE& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const bcDOUBLE& p_value)
 		{
 			p_json_value.SetDouble(p_value);
 		}
 
-		void _load(const bc_json_value_object& p_json_value, bc_string& p_value)
+		void _load(const bc_native_json_value& p_json_value, bc_string& p_value)
 		{
 			if (!p_json_value.IsString())
 			{
@@ -558,12 +558,12 @@ namespace black_cat::core
 			p_value = p_json_value.GetString();
 		}
 
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bc_string& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const bc_string& p_value)
 		{
 			p_json_value.SetString(p_value.c_str(), p_value.length());
 		}
 
-		void _load(const bc_json_value_object& p_json_value, bc_string_program& p_value)
+		void _load(const bc_native_json_value& p_json_value, bc_string_program& p_value)
 		{
 			if (!p_json_value.IsString())
 			{
@@ -573,12 +573,12 @@ namespace black_cat::core
 			p_value = p_json_value.GetString();
 		}
 
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bc_string_program& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const bc_string_program& p_value)
 		{
 			p_json_value.SetString(p_value.c_str(), p_value.length());
 		}
 
-		void _load(const bc_json_value_object& p_json_value, bc_string_frame& p_value)
+		void _load(const bc_native_json_value& p_json_value, bc_string_frame& p_value)
 		{
 			if (!p_json_value.IsString())
 			{
@@ -588,12 +588,12 @@ namespace black_cat::core
 			p_value = p_json_value.GetString();
 		}
 
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bc_string_frame& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const bc_string_frame& p_value)
 		{
 			p_json_value.SetString(p_value.c_str(), p_value.length());
 		}
 
-		void _load(const bc_json_value_object& p_json_value, bc_parameter_pack& p_value)
+		void _load(const bc_native_json_value& p_json_value, bc_parameter_pack& p_value)
 		{
 			if (p_json_value.IsBool())
 			{
@@ -658,7 +658,7 @@ namespace black_cat::core
 			}
 		}
 
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bc_parameter_pack& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const bc_parameter_pack& p_value)
 		{
 			if (const auto* l_bool = p_value.as<bool>())
 			{
@@ -710,7 +710,7 @@ namespace black_cat::core
 
 				for (const auto& l_value : *l_vector)
 				{
-					bc_json_value_object l_json_value;
+					bc_native_json_value l_json_value;
 					_write(p_document, l_json_value, l_value);
 
 					p_json_value.PushBack(l_json_value, p_document.GetAllocator());
@@ -722,17 +722,17 @@ namespace black_cat::core
 			}
 		}
 
-		void _load(const bc_json_value_object& p_json_value, bc_any& p_value)
+		void _load(const bc_native_json_value& p_json_value, bc_any& p_value)
 		{
 			_load(p_json_value, static_cast<bc_parameter_pack&>(p_value));
 		}
 
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bc_any& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const bc_any& p_value)
 		{
 			_write(p_document, p_json_value, static_cast<const bc_parameter_pack&>(p_value));
 		}
 
-		void _load(const bc_json_value_object& p_json_value, bc_json_key_value& p_value)
+		void _load(const bc_native_json_value& p_json_value, bc_json_key_value& p_value)
 		{
 			if (p_json_value.IsObject())
 			{
@@ -754,7 +754,7 @@ namespace black_cat::core
 			}
 		}
 
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const bc_json_key_value& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const bc_json_key_value& p_value)
 		{
 			p_json_value.SetObject(); // Mark json value as an object
 
@@ -766,13 +766,13 @@ namespace black_cat::core
 		}
 
 		template<typename T1>
-		void _load(const bc_json_value_object& p_json_value, T1& p_value)
+		void _load(const bc_native_json_value& p_json_value, T1& p_value)
 		{
 			json_parse::bc_load(p_json_value, p_value);
 		}
 
 		template<typename T1>
-		void _write(bc_json_document_object& p_document, bc_json_value_object& p_json_value, const T1& p_value)
+		void _write(bc_native_json_document& p_document, bc_native_json_value& p_json_value, const T1& p_value)
 		{
 			json_parse::bc_write(p_document, p_json_value, p_value);
 		}
@@ -802,7 +802,7 @@ namespace black_cat::core
 
 		bc_json_object& operator=(bc_json_object&&) noexcept(std::is_nothrow_move_assignable_v<T>) = delete;
 
-		void load(bc_json_value_object& p_json_value) override
+		void load(bc_native_json_value& p_json_value) override
 		{
 			// If we use json object within json array m_name will be null
 			auto* l_value = m_name != nullptr ? get_json_field(p_json_value, m_name) : &p_json_value;
@@ -827,7 +827,7 @@ namespace black_cat::core
 			m_had_value = true;
 		}
 
-		void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override
+		void write(bc_native_json_document& p_document, bc_native_json_value& p_json_value) override
 		{
 			// If we use json object within json array m_name will be null
 			auto* l_json = m_name != nullptr ? set_json_field(p_document, p_json_value, m_name) : &p_json_value;
@@ -929,7 +929,7 @@ namespace black_cat::core
 
 		bc_json_array& operator=(bc_json_array&&) noexcept(std::is_nothrow_move_assignable_v<T>) = default;
 
-		void load(bc_json_value_object& p_json_value) override
+		void load(bc_native_json_value& p_json_value) override
 		{
 			auto* l_value = get_json_field(p_json_value, m_name);
 			if (!l_value)
@@ -961,14 +961,14 @@ namespace black_cat::core
 			m_had_value = true;
 		}
 
-		void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override
+		void write(bc_native_json_document& p_document, bc_native_json_value& p_json_value) override
 		{
 			auto* l_json_value = set_json_field(p_document, p_json_value, m_name);
 			l_json_value->SetArray(); // Mark this json object as an array
 
 			for (auto& l_value : m_value)
 			{
-				bc_json_value_object l_json_item(rapidjson::kObjectType);
+				bc_native_json_value l_json_item(rapidjson::kObjectType);
 				l_value.write(p_document, l_json_item);
 
 				l_json_value->PushBack(l_json_item, p_document.GetAllocator());
@@ -1052,7 +1052,7 @@ namespace black_cat::core
 
 		bc_json_array& operator=(bc_json_array&&) noexcept(std::is_nothrow_move_assignable_v<T>) = delete;
 
-		void load(bc_json_value_object& p_json_value) override
+		void load(bc_native_json_value& p_json_value) override
 		{
 			auto* l_value = get_json_field(p_json_value, m_name);
 			if (!l_value)
@@ -1084,14 +1084,14 @@ namespace black_cat::core
 			m_had_value = true;
 		}
 
-		void write(bc_json_document_object& p_document, bc_json_value_object& p_json_value) override
+		void write(bc_native_json_document& p_document, bc_native_json_value& p_json_value) override
 		{
 			auto* l_json_value = set_json_field(p_document, p_json_value, m_name);
 			l_json_value->SetArray(); // Mark this json object as an array
 
 			for (auto& l_value : m_value)
 			{
-				bc_json_value_object l_json_item;
+				bc_native_json_value l_json_item;
 				l_value.write(p_document, l_json_item);
 
 				l_json_value->PushBack(l_json_item, p_document.GetAllocator());
@@ -1134,7 +1134,7 @@ namespace black_cat::core
 
 		void load(bc_string_view p_json)
 		{
-			bc_json_document_object l_json_document;
+			bc_native_json_document l_json_document;
 			l_json_document.Parse(p_json.data(), p_json.size());
 
 			if (l_json_document.HasParseError())
@@ -1222,7 +1222,7 @@ namespace black_cat::core
 		template<typename TWriter>
 		rapidjson::StringBuffer _write()
 		{
-			bc_json_document_object l_json_document(rapidjson::kObjectType);
+			bc_native_json_document l_json_document(rapidjson::kObjectType);
 			m_value.write(l_json_document, l_json_document);
 
 			rapidjson::StringBuffer l_json_buffer;

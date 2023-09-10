@@ -99,7 +99,6 @@ namespace black_cat::core
 		static void _unregister_pointer(allocator_type& p_allocator, pointer* p_pointer, std::false_type)
 		{
 		}
-
 	};
 
 	template<typename T, bcUINT32 TAlignment, bc_alloc_type TAllocType>
@@ -165,10 +164,10 @@ namespace black_cat::core
 			{
 				return static_cast<pointer>(BC_ALLOC_THROW(sizeof(value_type) * p_count, TAllocType));
 			}
+
 			return static_cast<pointer>(BC_ALIGNED_ALLOC_THROW(sizeof(value_type) * p_count, TAlignment, TAllocType));
 		}
-
-		// Parameter n is for compatibility with std allocators
+		
 		void deallocate(pointer p_pointer, size_type n = 0) noexcept
 		{
 			if (TAlignment <= BC_MEMORY_MIN_ALIGN)
@@ -369,9 +368,9 @@ namespace black_cat::core
 		{
 			if (m_alignment <= BC_MEMORY_MIN_ALIGN)
 			{
-				return static_cast<pointer>(BC_ALLOC_THROW(sizeof(value_type)* p_count, m_alloc_type));
+				return static_cast<pointer>(BC_ALLOC_THROW(sizeof(value_type) * p_count, m_alloc_type));
 			}
-			return static_cast<pointer>(BC_ALIGNED_ALLOC_THROW(sizeof(value_type)* p_count, m_alignment, m_alloc_type));
+			return static_cast<pointer>(BC_ALIGNED_ALLOC_THROW(sizeof(value_type) * p_count, m_alignment, m_alloc_type));
 		}
 
 		void deallocate(pointer p_pointer, size_type p_n = 0) noexcept
@@ -434,9 +433,9 @@ namespace black_cat::core
 	}
 
 	/**
-		 * \brief Provide an interface for classes that use memory allocation and their clients need to change allocation properties.
-		 * (Don't use movable memory to allocate objects of this type)
-		 */
+	 * \brief Provide an interface for classes that use memory allocation and their clients need to change allocation properties.
+	 * (Don't use movable memory to allocate objects of this type)
+	 */
 	class bc_object_allocator
 	{
 	public:

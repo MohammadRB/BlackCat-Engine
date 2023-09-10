@@ -4,13 +4,24 @@
 #include "Core/Utility/bcLogger.h"
 #include "Core/Utility/bcEnumOperand.h"
 
+namespace 
+{
+	using namespace black_cat;
+	constexpr bcSIZE g_logs_buffer_size = 25;
+
+	bcSIZE _bc_advance_log_ptr(bcSIZE p_ptr)
+	{
+		return (p_ptr + 1) % g_logs_buffer_size;
+	}
+}
+
 namespace black_cat::core
 {
 	bc_logger::bc_logger()
 		: m_enabled_logs(bc_log_type::all),
 		  m_logs_ptr(0)
 	{
-		m_logs.resize(25, std::make_pair(bc_log_type::info, bc_estring()));
+		m_logs.resize(g_logs_buffer_size, std::make_pair(bc_log_type::info, bc_estring()));
 	}
 
 	void bc_logger::set_enabled_log_types(bc_log_type p_types) noexcept
@@ -105,7 +116,7 @@ namespace black_cat::core
 			auto l_new_logs_ptr = l_logs_ptr;
 			do
 			{
-				l_new_logs_ptr = (l_logs_ptr + 1) % m_logs.size();
+				l_new_logs_ptr = _bc_advance_log_ptr(l_logs_ptr);
 			} while (m_logs_ptr.compare_exchange_weak(&l_logs_ptr, l_new_logs_ptr, platform::bc_memory_order::relaxed));
 
 			m_logs[l_logs_ptr].first = p_type;
@@ -137,9 +148,10 @@ namespace black_cat::core
 
 	void bc_logger::_replicate_last_logs(bc_log_type p_types, bci_log_listener* p_listener)
 	{
-		auto l_logs_ptr = m_logs_ptr.load(platform::bc_memory_order::relaxed) + 1; // Start from last logs
+		// Start from last logs
+		auto l_logs_ptr = _bc_advance_log_ptr(m_logs_ptr.load(platform::bc_memory_order::relaxed));
 
-		for (auto l_ite = 0U; l_ite != m_logs.size(); ++l_ite, l_logs_ptr = (l_logs_ptr + 1) % m_logs.size())
+		for (auto l_ite = 0U; l_ite != m_logs.size(); ++l_ite, l_logs_ptr = _bc_advance_log_ptr(l_logs_ptr))
 		{
 			auto& [l_type, l_log] = m_logs[l_logs_ptr];
 			if (l_log.empty())

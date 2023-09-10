@@ -78,18 +78,18 @@ namespace black_cat::core
 		bc_query_result& operator=(bc_query_result<TQuery1>&& p_other) noexcept;
 
 		/**
-			 * \brief Check to see if query is executed and the result is ready.
-			 * \n After the result is fetched the internal state of query will be removed and any subsequent call on this object will be undefined.
-			 * \return 
-			 */
+		 * \brief Check to see if query is executed and the result is ready.
+		 * \n After the result is fetched the internal state of query will be removed and any subsequent call on this object will be undefined.
+		 * \return 
+		 */
 		bool is_executed() const noexcept;
 
 		/**
-			 * \brief Before calling this function availability of query must be examined by <b>is_executed</b> function.
-			 * \n If query is not executed calling this function will throw an exception.
-			 * \n After calling this function the internal state of query will be removed and any subsequent call on this object will be undefined.
-			 * \return Original query which was scheduled.
-			 */
+		 * \brief Before calling this function availability of query must be examined by <b>is_executed</b> function.
+		 * \n If query is not executed calling this function will throw an exception.
+		 * \n After calling this function the internal state of query will be removed and any subsequent call on this object will be undefined.
+		 * \return Original query which was scheduled.
+		 */
 		TQuery get();
 
 	private:
@@ -103,6 +103,8 @@ namespace black_cat::core
 	class BC_CORE_DLL bc_query_result<bci_query>
 	{
 		friend class bc_query_manager;
+		template<class TQuery>
+		friend class bc_query_result;
 
 	public:
 		bc_query_result() noexcept;
@@ -114,22 +116,19 @@ namespace black_cat::core
 		bc_query_result& operator=(bc_query_result&&) noexcept;
 			
 		/**
-			 * \brief Check to see if query is executed and the result is ready.
-			 * \n After the result is fetched the internal state of query will be removed and any subsequent call on this object will be undefined.
-			 * \return
-			 */
+		 * \brief Check to see if query is executed and the result is ready.
+		 * \n After the result is fetched the internal state of query will be removed and any subsequent call on this object will be undefined.
+		 * \return
+		 */
 		bool is_executed() const noexcept;
 
 		/**
-			 * \brief Before calling this function availability of query must be examined by <b>is_executed</b> function.
-			 * \n If query is not executed calling this function will throw an exception.
-			 * \n After calling this function the internal state of query will be removed and any subsequent call on this object will be undefined.
-			 * \return Original query which was scheduled.
-			 */
+		 * \brief Before calling this function availability of query must be examined by <b>is_executed</b> function.
+		 * \n If query is not executed calling this function will throw an exception.
+		 * \n After calling this function the internal state of query will be removed and any subsequent call on this object will be undefined.
+		 * \return Original query which was scheduled.
+		 */
 		bci_query& get();
-
-		template<class TQuery>
-		TQuery& get();
 
 	private:
 		bc_query_result(bc_query_manager& p_query_manager, _bc_query_shared_state& p_shared_state) noexcept;
@@ -235,14 +234,5 @@ namespace black_cat::core
 		m_shared_state = nullptr;
 			
 		return l_query;
-	}
-
-	template<class TQuery>
-	TQuery& bc_query_result<bci_query>::get()
-	{
-		auto& l_query = get();
-		BC_ASSERT(bci_message::is<TQuery>(l_query));
-
-		return static_cast<TQuery&>(l_query);
 	}
 }

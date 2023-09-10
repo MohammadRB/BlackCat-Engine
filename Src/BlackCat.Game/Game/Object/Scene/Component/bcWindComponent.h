@@ -8,6 +8,7 @@
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
+#include <variant>
 
 namespace black_cat::game
 {
@@ -70,14 +71,11 @@ namespace black_cat::game
 		const bc_point_wind* as_point_wind() const noexcept;
 
 	private:
+		bc_wind_type _get_type() const;
+
 		void _calculate_bound_box() noexcept;
-			
-		union
-		{
-			bc_direct_wind m_direct;
-			bc_point_wind m_point;
-		};
-		bc_wind_type m_type;
+		
+		std::variant<bc_direct_wind, bc_point_wind> m_wind;
 		physics::bc_bound_box m_bound_box;
 	};
 		

@@ -76,7 +76,7 @@ namespace black_cat::game
 			 * \ThreadSafe
 			 * \param p_camera_extend
 			 */
-		void draw_wired_frustum(const bci_camera::extend& p_camera_extend);
+		void draw_wired_frustum(const bci_camera::extend_points& p_camera_extend);
 
 		/**
 			 * \brief

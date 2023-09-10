@@ -35,6 +35,8 @@ namespace black_cat::game
 		BC_CBUFFER_ALIGN
 		core::bc_vector3f m_camera_position;
 		BC_CBUFFER_ALIGN
+		core::bc_vector3f m_camera_direction;
+		BC_CBUFFER_ALIGN
 		bcDOUBLE m_total_elapsed;
 		bcDOUBLE m_total_elapsed_second;
 		BC_CBUFFER_ALIGN
@@ -179,6 +181,7 @@ namespace black_cat::game
 		l_global_cbuffer_data.m_near_plan = p_camera.get_near_clip();
 		l_global_cbuffer_data.m_far_plan = p_camera.get_far_clip();
 		l_global_cbuffer_data.m_camera_position = p_camera.get_position();
+		l_global_cbuffer_data.m_camera_direction = p_camera.get_direction();
 		l_global_cbuffer_data.m_total_elapsed = p_clock.m_total_elapsed;
 		l_global_cbuffer_data.m_total_elapsed_second = p_clock.m_total_elapsed_second;
 		l_global_cbuffer_data.m_elapsed = p_clock.m_elapsed;
@@ -225,6 +228,7 @@ namespace black_cat::game
 		l_global_cbuffer_data.m_near_plan = p_camera.get_near_clip();
 		l_global_cbuffer_data.m_far_plan = p_camera.get_far_clip();
 		l_global_cbuffer_data.m_camera_position = p_camera.get_position();
+		l_global_cbuffer_data.m_camera_direction = p_camera.get_direction();
 		l_global_cbuffer_data.m_total_elapsed = p_clock.m_total_elapsed;
 		l_global_cbuffer_data.m_total_elapsed_second = p_clock.m_total_elapsed_second;
 		l_global_cbuffer_data.m_elapsed = p_clock.m_elapsed;

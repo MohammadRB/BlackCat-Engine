@@ -81,7 +81,7 @@ float3 interpolate_frustum_vector(float2 p_uv, float2x3 p_frustum_diff)
 
 float3 get_world_position(float p_depth, float3 p_frustum_vector)
 {
-	return bc_reconstruct_world_position(p_depth, p_frustum_vector, g_camera_position, g_near_plane, g_far_plane);
+	return bc_reconstruct_world_position(p_depth, p_frustum_vector, g_camera_position, g_camera_direction, g_near_plane, g_far_plane);
 }
 
 float3 get_world_position(float2 p_uv, float2x3 p_frustum_diff)
@@ -183,8 +183,8 @@ float4 ao_ps(bc_vs_output p_input) : SV_Target0
 	);
 
 	const float l_depth = g_tex2d_depth.SampleLevel(g_sam_point, p_input.m_texcoord, 0);
-	const float l_scaled_linear_depth = bc_convert_to_scaled_linear_depth(l_depth, g_near_plane, g_far_plane);
-	const float3 l_world_pos = g_camera_position + p_input.m_view_frustum_vector * l_scaled_linear_depth;
+	const float l_linear_depth = bc_convert_to_scaled_linear_depth(l_depth, g_near_plane, g_far_plane);
+	const float3 l_world_pos = get_world_position(l_depth, p_input.m_view_frustum_vector);
 	const float3 l_world_normal = bc_reconstruct_world_normal(l_world_pos);
 	const float3 l_view_vector = normalize(g_camera_position - l_world_pos);
 
@@ -194,7 +194,7 @@ float4 ao_ps(bc_vs_output p_input) : SV_Target0
 	const uint l_rotation_array_skip_per_ray = g_max_ray_count / g_num_rays;
 	const uint l_rotation_array_start = (l_random1 + l_random2) / 2 * g_max_ray_count;
 
-	const float l_ss_radios = max(1, calculate_screen_space_distance(g_radius, l_scaled_linear_depth, g_screen_height));
+	const float l_ss_radios = max(1, calculate_screen_space_distance(g_radius, l_linear_depth, g_screen_height));
 	const uint l_steps_per_ray = min(g_steps_per_ray, l_ss_radios);
 	float l_occlusion = 0;
 	
