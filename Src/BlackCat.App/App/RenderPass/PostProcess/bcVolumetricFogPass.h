@@ -59,7 +59,7 @@ namespace black_cat
 
 		void _update_params(game::bc_default_render_thread& p_render_thread, const game::bc_camera_instance& p_camera);
 
-		static constexpr bcUINT s_query_execution_delay_ms = 1000;
+		static constexpr bcUINT s_query_execution_delay_ms = 2000;
 		static constexpr bcUINT s_max_instance_per_draw = 10;
 
 		game::bc_render_pass_variable_t m_render_target_texture;

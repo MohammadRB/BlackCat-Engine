@@ -21,9 +21,9 @@ namespace black_cat
 		core::bc_vector3f m_min;
 		core::bc_vector3f m_max;
 		core::bc_vector3f m_color;
-		float m_visibility;
-		float m_center_fade;
-		float m_intensity;
+		bcFLOAT m_visibility;
+		bcFLOAT m_center_fade;
+		bcFLOAT m_intensity;
 		bcUINT32 m_global_light;
 	};
 

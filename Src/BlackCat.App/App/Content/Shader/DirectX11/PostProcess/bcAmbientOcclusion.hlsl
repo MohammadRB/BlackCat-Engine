@@ -76,7 +76,7 @@ float2 rotate_vector(float2 p_vector, uint p_rotation_index)
 float3 interpolate_frustum_vector(float2 p_uv, float2x3 p_frustum_diff)
 {
 	const float3 l_frustum_vector = g_frustum_vectors[0].xyz + (p_uv.x * p_frustum_diff[0]) + (p_uv.y * p_frustum_diff[1]);
-	return normalize(l_frustum_vector);
+	return l_frustum_vector;
 }
 
 float3 get_world_position(float p_depth, float3 p_frustum_vector)

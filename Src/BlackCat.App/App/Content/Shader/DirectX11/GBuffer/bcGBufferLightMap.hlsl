@@ -246,15 +246,15 @@ float2 direct_light_shadow_map(direct_light p_light, float3 p_position, float p_
 
 float4 direct_light_shading(direct_light p_light, float3 p_camera_pos, float3 p_position, float3 p_normal, float p_specular_intensity, float p_specular_power)
 {
-	const float3 l_light_vector = -normalize(p_light.m_direction);
+	const float3 l_light_vector = -p_light.m_direction;
 	const float l_dot = max(0.0f, dot(p_normal, l_light_vector));
-    const float3 l_diffuse_light = p_light.m_color * l_dot;
+	const float3 l_diffuse_light = p_light.m_color * l_dot;
 	
-	const float3 l_reflection_vector = normalize(reflect(-l_light_vector, p_normal));
+	const float3 l_reflection_vector = normalize(reflect(p_light.m_direction, p_normal));
 	const float3 l_direction_to_camera = normalize(p_camera_pos - p_position);
-	const float l_specular_light = p_specular_intensity * saturate(pow(max(0.0, dot(l_reflection_vector, l_direction_to_camera)), p_specular_power));
+	const float l_specular_light = p_specular_intensity * pow(max(0.0, dot(l_reflection_vector, l_direction_to_camera)), p_specular_power);
 	
-    return p_light.m_intensity * float4(l_diffuse_light, l_specular_light);
+	return p_light.m_intensity * float4(l_diffuse_light, l_specular_light);
 }
 
 float4 point_light_shading(point_light p_light, float3 p_camera_pos, float3 p_position, float3 p_normal, float p_specular_intensity, float p_specular_power)
@@ -267,7 +267,7 @@ float4 point_light_shading(point_light p_light, float3 p_camera_pos, float3 p_po
     
 	const float3 l_reflection_vector = normalize(reflect(-l_light_vector, p_normal));
 	const float3 l_direction_to_camera = normalize(p_camera_pos - p_position);
-	const float l_specular_light = p_specular_intensity * saturate(pow(max(0.0, dot(l_reflection_vector, l_direction_to_camera)), p_specular_power));
+	const float l_specular_light = p_specular_intensity * pow(max(0.0, dot(l_reflection_vector, l_direction_to_camera)), p_specular_power);
 	
 	const float l_attenuation = pow(1.0f - saturate(l_light_vector_length / p_light.m_radius), 1.5);
 
@@ -287,7 +287,7 @@ float4 spot_light_shading(spot_light p_light, float3 p_camera_pos, float3 p_posi
     
 		const float3 l_reflection_vector = normalize(reflect(-l_light_vector, p_normal));
 		const float3 l_direction_to_camera = normalize(p_camera_pos - p_position);
-		const float l_specular_light = p_specular_intensity * saturate(pow(max(0.0, dot(l_reflection_vector, l_direction_to_camera)), p_specular_power));
+		const float l_specular_light = p_specular_intensity * pow(max(0.0, dot(l_reflection_vector, l_direction_to_camera)), p_specular_power);
 		
 		const float l_attenuation = 1.0f - saturate(length(p_light.m_position - p_position) / p_light.m_length);
 		float l_angle_attenuation = l_light_surface_angle - p_light.m_angle_cos;
@@ -326,7 +326,7 @@ void main(uint3 p_group_id : SV_GroupID, uint p_group_index : SV_GroupIndex, uin
 	const float3 l_diffuse = l_diffuse_map.xyz;
 	const float3 l_normal = bc_to_decoded_normal(l_normal_map.xyz);
 	const float l_specular_intensity = l_specular_map.x;
-	const float l_specular_power = l_specular_map.y * g_specular_power_scale;
+	const float l_specular_power = max(l_specular_map.y * g_specular_power_scale, 1);
     
 	const int l_world_pos_min_z = floor(l_world_position.z);
 	const int l_world_pos_max_z = ceil(l_world_position.z);
