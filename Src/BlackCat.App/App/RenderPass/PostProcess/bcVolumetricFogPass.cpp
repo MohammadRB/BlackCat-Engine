@@ -183,6 +183,11 @@ namespace black_cat
 		(
 			[](const game::bc_scene_query_context& p_context)
 			{
+				if (!p_context.m_scene)
+				{
+					return core::bc_any(core::bc_vector<_bc_fog_query_instance>());
+				}
+
 				auto l_fog_instances = _fog_query_callback(*p_context.m_scene);
 				return core::bc_any(std::move(l_fog_instances));
 			}

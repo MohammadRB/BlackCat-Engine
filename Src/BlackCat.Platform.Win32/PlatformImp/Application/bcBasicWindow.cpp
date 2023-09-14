@@ -14,16 +14,47 @@
 
 namespace black_cat::platform
 {
-	void _get_window_size(HWND p_hwnd, bcUINT& p_width, bcUINT& p_height)
+	void _get_window_size(HWND p_hwnd, bcUINT& p_width, bcUINT& p_height, bcINT& p_left, bcINT& p_top)
 	{
 		RECT l_rect;
 		if (GetClientRect(p_hwnd, &l_rect))
 		{
 			p_width = l_rect.right - l_rect.left;
 			p_height = l_rect.bottom - l_rect.top;
+			p_left = l_rect.left;
+			p_top = l_rect.top;
 		}
 	}
-		
+
+	void _get_window_size(HWND p_hwnd, bcUINT& p_width, bcUINT& p_height)
+	{
+		bcINT l_left, l_top;
+		_get_window_size(p_hwnd, p_width, p_height, l_left, l_top);
+	}
+
+	bcUINT _get_window_dpi(HWND p_hwnd)
+	{
+		return GetDpiForWindow(p_hwnd);
+	}
+
+	bool _update_window_pos_size(HWND p_hwnd, bcUINT p_left, bcUINT p_top, bcUINT p_width, bcUINT p_height)
+	{
+		const bcUINT l_current_dpi = _get_window_dpi(p_hwnd);
+
+		p_width = MulDiv(static_cast<bcINT>(p_width), static_cast<bcINT>(l_current_dpi), USER_DEFAULT_SCREEN_DPI);
+		p_height = MulDiv(static_cast<bcINT>(p_height), static_cast<bcINT>(l_current_dpi), USER_DEFAULT_SCREEN_DPI);
+
+		return MoveWindow
+		(
+			p_hwnd,
+			static_cast<bcINT>(p_left),
+			static_cast<bcINT>(p_top),
+			static_cast<bcINT>(p_width),
+			static_cast<bcINT>(p_height),
+			true
+		);
+	}
+
 	LRESULT CALLBACK _window_proc(HWND p_hwnd, UINT p_msg, WPARAM p_wparam, LPARAM p_lparam)
 	{
 		if(!core::bc_service_manager::get())
@@ -36,8 +67,7 @@ namespace black_cat::platform
 		// Handle some specific messages. Note that if we handle a message, we should return 0.
 		switch (p_msg)
 		{
-		// WM_ACTIVATE is sent when the window is activated or deactivated.
-		case WM_ACTIVATE:
+		case WM_ACTIVATE: // WM_ACTIVATE is sent when the window is activated or deactivated.
 		{
 			if (LOWORD(p_wparam) == WA_INACTIVE)
 			{
@@ -77,8 +107,7 @@ namespace black_cat::platform
 
 			break;
 		}
-		// WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
-		case WM_ENTERSIZEMOVE:
+		case WM_ENTERSIZEMOVE: // WM_EXITSIZEMOVE is sent when the user grabs the resize bars.
 		{
 			bcUINT32 l_width, l_height;
 			_get_window_size(p_hwnd, l_width, l_height);
@@ -88,8 +117,7 @@ namespace black_cat::platform
 
 			break;
 		}
-		// WM_EXITSIZEMOVE is sent when the user releases the resize bars.
-		case WM_EXITSIZEMOVE:
+		case WM_EXITSIZEMOVE: // WM_EXITSIZEMOVE is sent when the user releases the resize bars.
 		{
 			bcUINT32 l_width, l_height;
 			_get_window_size(p_hwnd, l_width, l_height);
@@ -99,7 +127,19 @@ namespace black_cat::platform
 
 			break;
 		}
-		// WM_DESTROY is sent when the window is being destroyed.
+		case WM_DPICHANGED:
+		{
+			bcUINT l_width, l_height;
+			bcINT l_left, l_top;
+
+			_get_window_size(p_hwnd, l_width, l_height, l_left, l_top);
+			const bcUINT l_dpi = _get_window_dpi(p_hwnd);
+
+			l_width = l_width / l_dpi * USER_DEFAULT_SCREEN_DPI;
+			l_height = l_height / l_dpi * USER_DEFAULT_SCREEN_DPI;
+
+			_update_window_pos_size(p_hwnd, l_left, l_top, l_width, l_height);
+		}
 		case WM_DESTROY:
 		{
 			bc_app_event_window_close l_close_event(reinterpret_cast<bc_window::id>(p_hwnd));
@@ -116,17 +156,14 @@ namespace black_cat::platform
 		return 0;
 	}
 
-	bool _update_window_pos_size(HWND p_hwnd, bcUINT p_left, bcUINT p_top, bcUINT p_width, bcUINT p_height)
-	{
-		return MoveWindow(p_hwnd, p_left, p_top, p_width, p_height, true);
-	}
-
 	template<>
 	BC_PLATFORMIMP_DLL 
 	bc_platform_basic_window<bc_platform::win32>::bc_platform_basic_window(const bc_basic_window_parameter& p_parameters)
 	{
 		m_pack.m_instance = p_parameters.m_instance;
 		m_pack.m_handle = nullptr;
+		m_pack.m_initial_width = p_parameters.m_width;
+		m_pack.m_initial_height = p_parameters.m_height;
 
 		// The first task to creating a window is to describe some of its characteristics by filling out a WNDCLASS structure.
 		WNDCLASS l_window_class;
@@ -166,6 +203,8 @@ namespace black_cat::platform
 
 		ShowWindow(m_pack.m_handle, SW_SHOW);
 		UpdateWindow(m_pack.m_handle);
+
+		_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), m_pack.m_initial_width, m_pack.m_initial_height);
 	}
 
 	template<>
@@ -206,34 +245,36 @@ namespace black_cat::platform
 	BC_PLATFORMIMP_DLL 
 	bcUINT bc_platform_basic_window<bc_platform::win32>::get_width() const noexcept
 	{
-		RECT l_rect;
-		GetClientRect(m_pack.m_handle, &l_rect);
+		bcUINT l_width, l_height;
+		_get_window_size(m_pack.m_handle, l_width, l_height);
 
-		return l_rect.right - l_rect.left;
+		return l_width;
 	}
 
 	template<>
 	BC_PLATFORMIMP_DLL 
 	void bc_platform_basic_window<bc_platform::win32>::set_width(bcUINT p_width) noexcept
 	{
-		_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), p_width, get_height());
+		m_pack.m_initial_width = p_width;
+		_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), m_pack.m_initial_width, m_pack.m_initial_height);
 	}
 
 	template<>
 	BC_PLATFORMIMP_DLL 
 	bcUINT bc_platform_basic_window<bc_platform::win32>::get_height() const noexcept
 	{
-		RECT l_rect;
-		GetClientRect(m_pack.m_handle, &l_rect);
+		bcUINT l_width, l_height;
+		_get_window_size(m_pack.m_handle, l_width, l_height);
 
-		return l_rect.bottom - l_rect.top;
+		return l_height;
 	}
 
 	template<>
 	BC_PLATFORMIMP_DLL 
 	void bc_platform_basic_window<bc_platform::win32>::set_height(bcUINT p_height) noexcept
 	{
-		_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), get_width(), p_height);
+		m_pack.m_initial_height = p_height;
+		_update_window_pos_size(m_pack.m_handle, get_left(), get_top(), m_pack.m_initial_width, m_pack.m_initial_height);
 	}
 
 	template<>

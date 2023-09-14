@@ -456,7 +456,7 @@ namespace black_cat::game
 		m_device_end_query = bc_device_query<graphic::bc_device_timestamp_query, 1>({ m_device.create_timestamp_query() });
 		m_device_timestamps_are_ready = true;
 
-		if(p_parameter.m_render_output.is_valid())
+		if (p_parameter.m_render_output.is_valid())
 		{
 			m_device_swap_buffer = m_device.create_swap_buffer
 			(

@@ -36,14 +36,14 @@ namespace black_cat::platform
 		virtual void set_caption(const bcECHAR* p_caption) = 0;
 			
 		/**
-			 * \brief Update method for things like message dispatching.
-			 * Implementation must propagate application events in response to OS events.
-			 */
+		 * \brief Update method for things like message dispatching.
+		 * Implementation must propagate application events in response to OS events.
+		 */
 		virtual void update() = 0;
 
 		/**
-			 * \brief Before window being destructed close function must be called
-			 */
+		 * \brief Before window being destructed close function must be called
+		 */
 		virtual void close() = 0;
 
 		virtual platform_pack& get_platform_pack() = 0;

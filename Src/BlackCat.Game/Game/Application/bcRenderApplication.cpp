@@ -328,12 +328,11 @@ namespace black_cat::game
 		try
 		{
 			m_app_name = p_parameters.m_app_parameters.m_app_name;
+			m_app = std::make_unique<platform::bc_application>(p_parameters.m_app_parameters);
+			m_clock = std::make_unique<platform::bc_clock>();
 			m_output_window = p_parameters.m_app_parameters.m_output_window_factory(); // Make output window available before starting game components
 
 			app_start_engine_components(p_parameters);
-
-			m_app = core::bc_make_unique<platform::bc_application>(core::bc_alloc_type::program, p_parameters.m_app_parameters);
-			m_clock = core::bc_make_unique<platform::bc_clock>(core::bc_alloc_type::program);
 
 			m_min_update_rate = 60;
 			m_render_rate = static_cast<bcINT32>(m_min_update_rate);
@@ -393,7 +392,7 @@ namespace black_cat::game
 		}
 		catch (std::exception& l_exception)
 		{
-			if(auto* l_event_manager = core::bc_get_service<core::bc_event_manager>())
+			if (auto* l_event_manager = core::bc_get_service<core::bc_event_manager>())
 			{
 				auto l_event = core::bc_app_event_error(l_exception.what());
 				if(!l_event_manager->process_event(l_event))

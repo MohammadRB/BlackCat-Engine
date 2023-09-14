@@ -32,6 +32,8 @@
 #include "App/RenderPass/PostProcess/bcEdgeDetectionAntiAliasingPass.h"
 #include "App/RenderPass/PostProcess/bcParticleSystemPassDx11.h"
 #include "App/RenderPass/PostProcess/bcAmbientOcclusionPass.h"
+#include "App/RenderPass/PostProcess/bcHDRRenderingPass.h"
+#include "App/RenderPass/PostProcess/bcVolumetricFogPass.h"
 #include "App/RenderPass/ShadowMap/bcCascadedShadowMapPass.h"
 #include "App/RenderPass/ShadowMap/bcSkinnedCascadedShadowMapPass.h"
 #include "App/RenderPass/ShadowMap/bcVegetableCascadedShadowMapPass.h"
@@ -128,7 +130,6 @@ namespace box
 		l_render_system.add_render_pass(bc_skinned_cascaded_shadow_map_pass(*l_render_system.get_render_pass<bc_cascaded_shadow_map_pass>()));
 		l_render_system.add_render_pass(bc_ambient_occlusion_pass
 		(
-			constant::g_rpass_gbuffer_read_view,
 			constant::g_rpass_ambient_occlusion_texture,
 			constant::g_rpass_ambient_occlusion_read_view
 		));
@@ -146,24 +147,60 @@ namespace box
 			constant::g_rpass_gbuffer_render_view,
 			bcL("Texture\\Particle\\Particle.dds")
 		));
-		l_render_system.add_render_pass(bc_back_buffer_write_pass(constant::g_rpass_gbuffer_texture));
+		l_render_system.add_render_pass(bc_light_flare_pass
+		(
+			constant::g_rpass_gbuffer_texture,
+			constant::g_rpass_gbuffer_render_view
+		));
+		l_render_system.add_render_pass(bx_bullet_trail_pass
+		(
+			constant::g_rpass_gbuffer_texture,
+			constant::g_rpass_gbuffer_render_view,
+			bcL("Texture\\Flare\\BulletTrail.dds")
+		));
+		l_render_system.add_render_pass(bc_volumetric_fog_pass
+		(
+			constant::g_rpass_gbuffer_texture,
+			constant::g_rpass_gbuffer_render_view
+		));
+		l_render_system.add_render_pass(bc_hdr_rendering_pass
+		(
+			constant::g_rpass_gbuffer_texture,
+			constant::g_rpass_gbuffer_read_view,
+			constant::g_rpass_gbuffer_render_view,
+			constant::g_rpass_hdr_output_texture,
+			constant::g_rpass_hdr_output_read_view,
+			constant::g_rpass_hdr_output_render_view
+		));
+		l_render_system.add_render_pass(bc_glow_pass
+		(
+			constant::g_rpass_hdr_output_texture,
+			constant::g_rpass_hdr_output_render_view
+		));
+		l_render_system.add_render_pass(bc_back_buffer_write_pass
+		(
+			constant::g_rpass_hdr_output_texture,
+			constant::g_rpass_hdr_output_read_view
+		));
 		l_render_system.add_render_pass(bc_edge_detection_anti_aliasing_pass
 		(
-			constant::g_rpass_gbuffer_read_view,
+			constant::g_rpass_hdr_output_read_view,
 			constant::g_rpass_back_buffer_texture,
 			constant::g_rpass_back_buffer_render_view
 		));
-		l_render_system.add_render_pass(bc_light_flare_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
-		l_render_system.add_render_pass(bx_bullet_trail_pass
+		l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
+		l_render_system.add_render_pass(bc_counter_value_draw_pass
+		(
+			constant::g_rpass_back_buffer_texture,
+			constant::g_rpass_back_buffer_render_view, 
+			bcL("Data\\Dx.spritefont")
+		));
+		l_render_system.add_render_pass(bx_player_ui_pass
 		(
 			constant::g_rpass_back_buffer_texture, 
-			constant::g_rpass_back_buffer_render_view,
-			bcL("Texture\\Flare\\BulletTrail.dds")
+			constant::g_rpass_back_buffer_render_view, 
+			bcL("Data\\Dx.spritefont")
 		));
-		l_render_system.add_render_pass(bc_glow_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view));
-		l_render_system.add_render_pass(bc_shape_draw_pass(constant::g_rpass_back_buffer_render_view));
-		l_render_system.add_render_pass(bc_counter_value_draw_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
-		l_render_system.add_render_pass(bx_player_ui_pass(constant::g_rpass_back_buffer_texture, constant::g_rpass_back_buffer_render_view, bcL("Data\\Dx.spritefont")));
 
 		m_player_spawn_event_handle = l_event_manager.register_event_listener<bx_player_spawned_event>
 		(

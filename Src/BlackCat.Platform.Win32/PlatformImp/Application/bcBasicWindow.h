@@ -31,5 +31,7 @@ namespace black_cat::platform
 	{
 		HINSTANCE m_instance;
 		HWND m_handle;
+		bcUINT m_initial_width;
+		bcUINT m_initial_height;
 	};
 }

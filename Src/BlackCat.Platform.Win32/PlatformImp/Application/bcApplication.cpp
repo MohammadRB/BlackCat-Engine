@@ -14,6 +14,7 @@ namespace black_cat::platform
 	bc_platform_application<bc_platform::win32>::bc_platform_application(bc_application_parameter& p_parameter)
 		: m_pack(p_parameter.m_instance)
 	{
+		 SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
 	}
 
 	template<>

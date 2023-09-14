@@ -120,7 +120,7 @@ namespace box
 			l_script_system.run_script_throw(game::bc_script_context::app, L"server.start(6600);");
 
 #ifdef BC_DEBUG
-			l_script_system.run_script_throw(game::bc_script_context::app, L"server.load_scene('Test');");
+			l_script_system.run_script_throw(game::bc_script_context::app, L"server.load_scene('BattleGround');");
 #else
 			l_script_system.run_script_throw(game::bc_script_context::app, L"server.load_scene('BattleGround');");
 #endif

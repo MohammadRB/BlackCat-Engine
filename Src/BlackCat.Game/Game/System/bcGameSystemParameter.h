@@ -50,10 +50,10 @@ namespace black_cat::game
 			: m_content_stream(p_content_stream),
 			  m_query_manager(p_query_manager),
 			  m_event_manager(p_event_manager),
+			  m_output_window(nullptr),
 			  m_device_backbuffer_width(0),
 			  m_device_backbuffer_height(0),
-			  m_device_backbuffer_format(graphic::bc_format::unknown),
-			  m_output_window(nullptr)
+			  m_device_backbuffer_format(graphic::bc_format::unknown)
 		{
 		}
 

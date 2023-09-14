@@ -151,9 +151,9 @@ namespace black_cat::game
 		void _app_event(core::bci_event& p_event);
 
 		const bcECHAR* m_app_name;
-		core::bc_unique_ptr<platform::bc_application> m_app;
+		std::unique_ptr<platform::bc_application> m_app;
+		std::unique_ptr<platform::bc_clock> m_clock;
 		bci_render_application_output_window* m_output_window;
-		core::bc_unique_ptr<platform::bc_clock> m_clock;
 		core::bc_stop_watch m_frame_watch;
 		core::bc_value_sampler<platform::bc_clock::small_time> m_fps_sampler;
 		platform::bc_clock::small_time m_fps;
