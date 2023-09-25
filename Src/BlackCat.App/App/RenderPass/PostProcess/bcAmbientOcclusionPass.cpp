@@ -404,65 +404,7 @@ namespace black_cat
 			{
 			}
 		);
-
-		/*m_apply_device_pipeline_state = p_context.m_render_system.create_device_pipeline_state
-		(
-			"ao_blur_vs",
-			nullptr,
-			nullptr,
-			nullptr,
-			"ao_apply_ps",
-			game::bc_vertex_type::pos_tex,
-			game::bc_blend_type::blend_preserve_alpha,
-			core::bc_enum::mask_or({ game::bc_depth_stencil_type::depth_off, game::bc_depth_stencil_type::stencil_off }),
-			game::bc_rasterizer_type::fill_solid_cull_none,
-			0xffffffff,
-			{
-				l_render_target_texture.get_format()
-			},
-			graphic::bc_format::unknown,
-			game::bc_multi_sample_type::c1_q1
-		);
-		m_apply_render_pass_state = p_context.m_render_system.create_render_pass_state
-		(
-			*m_apply_device_pipeline_state,
-			l_viewport,
-			{
-				graphic::bc_render_target_view_parameter(l_render_target_view)
-			},
-			graphic::bc_depth_stencil_view(),
-			{
-				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, *m_point_sampler),
-				graphic::bc_sampler_parameter(0, graphic::bc_shader_type::pixel, *m_linear_sampler)
-			},
-			{
-				graphic::bc_resource_view_parameter(0, graphic::bc_shader_type::pixel, graphic::bc_resource_view()),
-				graphic::bc_resource_view_parameter(1, graphic::bc_shader_type::pixel, graphic::bc_resource_view()),
-				graphic::bc_resource_view_parameter(2, graphic::bc_shader_type::pixel, m_intermediate_texture_link_1),
-				graphic::bc_resource_view_parameter(3, graphic::bc_shader_type::pixel, graphic::bc_resource_view(l_input_texture_view)),
-			},
-			{
-			},
-			{
-				p_context.m_render_system.get_global_cbuffer()
-			}
-		);
-		m_apply_render_state = p_context.m_render_system.create_render_state
-		(
-			graphic::bc_primitive::trianglelist,
-			graphic::bc_buffer(),
-			0,
-			0,
-			graphic::bc_buffer(),
-			game::i16bit,
-			0,
-			0,
-			{
-			},
-			{
-			}
-		);*/
-
+		
 		share_resource(m_render_target_texture, *m_output_texture);
 		share_resource(m_render_target_view, *m_output_texture_read_view);
 	}

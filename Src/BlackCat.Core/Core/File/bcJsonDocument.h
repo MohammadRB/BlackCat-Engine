@@ -987,29 +987,34 @@ namespace black_cat::core
 		{
 			m_value.erase(p_iterator);
 		}
-		
+
+		void clear()
+		{
+			m_value.clear();
+		}
+
 	private:
 		const bcCHAR* m_name;
-		list_t m_value;			// Because json objects are not copyable and movable we have used list instead of vector
+		list_t m_value; // Because json objects are not copyable and movable we have used list instead of vector
 	};
 
 	template<typename T>
 	class bc_json_array
-			<
-				T,
-				std::enable_if_t
-				<
-					std::is_same_v<bool, std::decay_t<T>> ||
-					std::is_same_v<bcINT, std::decay_t<T>> ||
-					std::is_same_v<bcUINT, std::decay_t<T>> ||
-					std::is_same_v<bcFLOAT, std::decay_t<T>> ||
-					std::is_same_v<bc_string, std::decay_t<T>> ||
-					std::is_same_v<bc_string_program, std::decay_t<T>> ||
-					std::is_same_v<bc_string_frame, std::decay_t<T>> ||
-					std::is_same_v<bc_parameter_pack, std::decay_t<T>> ||
-					std::is_same_v<bc_any, std::decay_t<T>>
-				>
-			> : public bci_json_value, public bc_iterator_adapter<bc_list<bc_json_value<T>>>
+	<
+		T,
+		std::enable_if_t
+		<
+			std::is_same_v<bool, std::decay_t<T>> ||
+			std::is_same_v<bcINT, std::decay_t<T>> ||
+			std::is_same_v<bcUINT, std::decay_t<T>> ||
+			std::is_same_v<bcFLOAT, std::decay_t<T>> ||
+			std::is_same_v<bc_string, std::decay_t<T>> ||
+			std::is_same_v<bc_string_program, std::decay_t<T>> ||
+			std::is_same_v<bc_string_frame, std::decay_t<T>> ||
+			std::is_same_v<bc_parameter_pack, std::decay_t<T>> ||
+			std::is_same_v<bc_any, std::decay_t<T>>
+		>
+	> : public bci_json_value, public bc_iterator_adapter<bc_list<bc_json_value<T>>>
 	{
 	public:
 		using list_t = bc_list<bc_json_value<T>>;
@@ -1111,9 +1116,14 @@ namespace black_cat::core
 			m_value.erase(p_iterator);
 		}
 
+		void clear()
+		{
+			m_value.clear();
+		}
+
 	private:
 		const bcCHAR* m_name;
-		list_t m_value;			// Because json objects are not copyable and movable we have used list instead of vector
+		list_t m_value; // Because json objects are not copyable and movable we have used list instead of vector
 	};
 
 	template<typename T>

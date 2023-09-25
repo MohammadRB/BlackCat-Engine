@@ -46,12 +46,6 @@ namespace black_cat::game
 		);
 
 		// Put device reset event in render event queue
-		l_event_manager->queue_event(graphic::bc_app_event_device_reset
-		(
-			*m_device,
-			*m_device_swap_buffer,
-			l_old_parameters,
-			p_new_parameters
-		), 0);
+		l_event_manager->queue_event(graphic::bc_app_event_device_reset(l_old_parameters, p_new_parameters), 0);
 	}
 }

@@ -68,14 +68,12 @@ namespace black_cat
 		auto& l_device = p_render_system.get_device();
 		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 
-		m_command_list = p_render_system.get_device().create_command_list();
+		m_state->m_active_instance_count++;
+
+		m_command_list = l_device.create_command_list();
 		initialize_pass(p_render_system);
-
-		if(m_my_index == 0)
-		{
-			share_resource(m_state->m_output_depth_buffers_share_slot, bc_cascaded_shadow_map_buffer_container());
-		}
-
+		share_resource(m_state->m_output_depth_buffers_share_slot, bc_cascaded_shadow_map_buffer_container());
+		
 		after_reset(game::bc_render_pass_reset_context
 		(
 			p_render_system,
@@ -111,7 +109,7 @@ namespace black_cat
 
 		m_last_cameras.clear();
 
-		if (m_my_index == 0)
+		if (m_state->enter_once_call())
 		{
 			if (m_state->m_lights_query.is_executed())
 			{
@@ -185,7 +183,7 @@ namespace black_cat
 
 	void bc_base_cascaded_shadow_map_pass::execute(const game::bc_concurrent_render_pass_render_context& p_context)
 	{
-		if(m_state->m_lights.empty() || m_state->m_cascade_sizes.empty())
+		if (m_state->m_lights.empty() || m_state->m_cascade_sizes.empty())
 		{
 			return;
 		}
@@ -208,7 +206,7 @@ namespace black_cat
 			}
 
 			// Update shared resource so gbuffer light map pass can do its job
-			if (m_my_index == 0)
+			if (m_state->enter_once_call())
 			{
 				bc_cascaded_shadow_map_buffer_container::entry l_shadow_map_buffer;
 				l_shadow_map_buffer.m_shadow_map_size = m_state->m_shadow_map_size;
@@ -245,7 +243,7 @@ namespace black_cat
 				));
 			}
 
-			for(auto l_cascade_ite = 0U; l_cascade_ite < l_cascade_count; ++l_cascade_ite)
+			for (auto l_cascade_ite = 0U; l_cascade_ite < l_cascade_count; ++l_cascade_ite)
 			{
 				const auto l_update_interval = std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
 				if (l_update_interval == 0)
@@ -289,7 +287,7 @@ namespace black_cat
 		
 		m_state->wait_for_sync_flag(2);
 
-		if (m_my_index == 0)
+		if (m_state->enter_once_call())
 		{
 			// Restore global cbuffer to its default state
 			p_context.m_frame_renderer.update_global_cbuffer(p_context.m_render_thread, p_context.m_clock, p_context.m_render_camera);
@@ -310,11 +308,10 @@ namespace black_cat
 	{
 		const auto l_cascade_count = m_state->m_cascade_sizes.size();
 
-		if (m_my_index == 0)
+		if (m_state->enter_once_call())
 		{
 			get_shared_resource_throw<bc_cascaded_shadow_map_buffer_container>(m_state->m_output_depth_buffers_share_slot).clear();
-			m_state->reset_sync_flag();
-
+			
 			for (auto l_cascade_ite = 0U; l_cascade_ite < l_cascade_count; ++l_cascade_ite)
 			{
 				auto& l_update_interval = std::get<1>(m_state->m_cascade_update_intervals[l_cascade_ite]);
@@ -351,6 +348,9 @@ namespace black_cat
 				));
 			}
 		}
+
+		m_state->reset_once_flag();
+		m_state->reset_sync_flag();
 	}
 
 	void bc_base_cascaded_shadow_map_pass::before_reset(const game::bc_render_pass_reset_context& p_context)
@@ -359,17 +359,17 @@ namespace black_cat
 
 	void bc_base_cascaded_shadow_map_pass::after_reset(const game::bc_render_pass_reset_context& p_context)
 	{
-		if(my_index() != 0)
+		if (!m_state->enter_once_call())
 		{
 			return;
 		}
 
-		const auto l_light_state_count = m_state->m_light_states.size();
-
 		m_state->m_back_buffer_width = p_context.m_device_swap_buffer.get_back_buffer_width();
 		m_state->m_back_buffer_height = p_context.m_device_swap_buffer.get_back_buffer_height();
-		m_state->m_shadow_map_size = (m_state->m_back_buffer_width + m_state->m_back_buffer_height) / 2 * m_state->m_shadow_map_multiplier;
+		m_state->m_shadow_map_size = (m_state->m_back_buffer_width + m_state->m_back_buffer_height) / 2U * m_state->m_shadow_map_multiplier;
 		m_state->m_light_states.clear();
+
+		const auto l_light_state_count = m_state->m_light_states.size();
 
 		for(auto l_ite = 0U; l_ite < l_light_state_count; ++l_ite)
 		{
@@ -381,15 +381,16 @@ namespace black_cat
 	{
 		destroy_pass(p_render_system);
 
-		if (m_my_index == 0)
+		m_state->m_active_instance_count--;
+
+		if (m_state->m_active_instance_count == 0)
 		{
+			m_command_list.reset();
+			m_state->m_light_states.clear();
+
 			get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_state->m_output_depth_buffers_share_slot)->clear();
 			unshare_resource(m_state->m_output_depth_buffers_share_slot);
 		}
-
-		m_command_list.reset();
-		m_state->m_light_states.clear();
-		m_state.reset();
 	}
 
 	void bc_base_cascaded_shadow_map_pass::config_changed(const game::bc_render_pass_config_change_context& p_context)
@@ -439,12 +440,8 @@ namespace black_cat
 		m_state->m_captured_boxes.clear();
 	}
 
-	bcSIZE bc_base_cascaded_shadow_map_pass::my_index() const
-	{
-		return m_my_index;
-	}
-
-	void bc_base_cascaded_shadow_map_pass::_reset_cascade_sizes(bcFLOAT p_shadow_map_multiplier, core::bc_const_span<bc_cascade_shadow_map_trait> p_cascades)
+	void bc_base_cascaded_shadow_map_pass::_reset_cascade_sizes(bcFLOAT p_shadow_map_multiplier, 
+		core::bc_const_span<bc_cascade_shadow_map_trait> p_cascades)
 	{
 		m_state->m_shadow_map_multiplier = p_shadow_map_multiplier;
 		m_state->m_shadow_map_size = (m_state->m_back_buffer_width + m_state->m_back_buffer_height) / 2 * m_state->m_shadow_map_multiplier;
@@ -511,7 +508,8 @@ namespace black_cat
 		return l_instance;
 	}
 
-	core::bc_vector<bc_cascaded_shadow_map_camera> bc_base_cascaded_shadow_map_pass::_get_light_cascades(const game::bci_camera& p_camera, const game::bc_direct_light& p_light)
+	core::bc_vector<bc_cascaded_shadow_map_camera> bc_base_cascaded_shadow_map_pass::_get_light_cascades(const game::bci_camera& p_camera, 
+		const game::bc_direct_light& p_light)
 	{
 		game::bci_camera::extend_points l_camera_frustum_corners;
 		p_camera.get_extend_points(l_camera_frustum_corners);
@@ -619,7 +617,8 @@ namespace black_cat
 		return l_cascade_cameras;
 	}
 
-	core::bc_vector<bc_cascaded_shadow_map_camera> bc_base_cascaded_shadow_map_pass::_get_light_stabilized_cascades(const game::bc_camera_instance& p_camera, const game::bc_direct_light& p_light)
+	core::bc_vector<bc_cascaded_shadow_map_camera> bc_base_cascaded_shadow_map_pass::_get_light_stabilized_cascades(const game::bc_camera_instance& p_camera, 
+		const game::bc_direct_light& p_light)
 	{
 		const auto& l_camera_extends = p_camera.get_extend_points();
 

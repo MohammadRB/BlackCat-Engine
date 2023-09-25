@@ -7,7 +7,7 @@
 
 namespace black_cat::game
 {
-	class bc_concurrent_render_pass_render_context : public bc_render_pass_render_context
+	struct bc_concurrent_render_pass_render_context : public bc_render_pass_render_context
 	{
 	public:
 		bc_concurrent_render_pass_render_context(const bc_render_pass_render_context& p_context, bc_render_thread& p_child_render_thread)

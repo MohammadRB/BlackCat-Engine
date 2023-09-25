@@ -153,9 +153,9 @@ namespace black_cat::game
 		bool remove_render_pass();
 
 		/**
-			 * \brief \b ThreadSafe
-			 * \param p_task
-			 */
+		 * \brief \b ThreadSafe
+		 * \param p_task
+		 */
 		void add_render_task(bci_render_task& p_task);
 			
 		void update(const update_context& p_update_params);
@@ -169,22 +169,22 @@ namespace black_cat::game
 		void render_swap_frame(const swap_context& p_swap_context);
 
 		/**
-			 * \brief \b ThreadSafe
-			 * \param p_vertex_shader_name 
-			 * \param p_hull_shader_name 
-			 * \param p_domain_shader_name 
-			 * \param p_geometry_shader_name 
-			 * \param p_pixel_shader_name 
-			 * \param p_vertex_layout 
-			 * \param p_blend 
-			 * \param p_depth_stencil 
-			 * \param p_rasterizer 
-			 * \param p_sample_mask 
-			 * \param p_render_target_formats 
-			 * \param p_depth_stencil_format 
-			 * \param p_ms_config 
-			 * \return 
-			 */
+		 * \brief \b ThreadSafe
+		 * \param p_vertex_shader_name 
+		 * \param p_hull_shader_name 
+		 * \param p_domain_shader_name 
+		 * \param p_geometry_shader_name 
+		 * \param p_pixel_shader_name 
+		 * \param p_vertex_layout 
+		 * \param p_blend 
+		 * \param p_depth_stencil 
+		 * \param p_rasterizer 
+		 * \param p_sample_mask 
+		 * \param p_render_target_formats 
+		 * \param p_depth_stencil_format 
+		 * \param p_ms_config 
+		 * \return 
+		 */
 		graphic::bc_device_pipeline_state_ref create_device_pipeline_state(const bcCHAR* p_vertex_shader_name,
 			const bcCHAR* p_hull_shader_name,
 			const bcCHAR* p_domain_shader_name,
@@ -200,25 +200,25 @@ namespace black_cat::game
 			bc_multi_sample_type p_ms_config);
 
 		/**
-			 * \brief \n \b ThreadSafe
-			 * \param p_compute_shader_name 
-			 * \return 
-			 */
+		 * \brief \n \b ThreadSafe
+		 * \param p_compute_shader_name 
+		 * \return 
+		 */
 		graphic::bc_device_compute_state_ref create_device_compute_state(const bcCHAR* p_compute_shader_name);
 
 		/**
-			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
-			 * \n \b ThreadSafe
-			 * \param p_pipeline_state 
-			 * \param p_viewport 
-			 * \param p_shader_targets 
-			 * \param p_shader_depth 
-			 * \param p_shader_samplers 
-			 * \param p_resource_views
-			 * \param p_unordered_views 
-			 * \param p_shader_buffers 
-			 * \return 
-			 */
+		 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
+		 * \n \b ThreadSafe
+		 * \param p_pipeline_state 
+		 * \param p_viewport 
+		 * \param p_shader_targets 
+		 * \param p_shader_depth 
+		 * \param p_shader_samplers 
+		 * \param p_resource_views
+		 * \param p_unordered_views 
+		 * \param p_shader_buffers 
+		 * \return 
+		 */
 		bc_render_pass_state_ptr create_render_pass_state(graphic::bc_device_pipeline_state p_pipeline_state,
 			graphic::bc_viewport p_viewport,
 			bc_render_pass_state_render_target_view_array p_shader_targets,
@@ -229,20 +229,20 @@ namespace black_cat::game
 			bc_render_pass_state_constant_buffer_array p_shader_buffers);
 
 		/**
-			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
-			 * \n \b ThreadSafe
-			 * \param p_primitive 
-			 * \param p_vertex_buffer
-			 * \param p_vertex_buffer_stride 
-			 * \param p_vertex_buffer_offset 
-			 * \param p_index_buffer 
-			 * \param p_index_type 
-			 * \param p_index_count 
-			 * \param p_index_buffer_offset 
-			 * \param p_resource_views 
-			 * \param p_shader_buffers 
-			 * \return 
-			 */
+		 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
+		 * \n \b ThreadSafe
+		 * \param p_primitive 
+		 * \param p_vertex_buffer
+		 * \param p_vertex_buffer_stride 
+		 * \param p_vertex_buffer_offset 
+		 * \param p_index_buffer 
+		 * \param p_index_type 
+		 * \param p_index_count 
+		 * \param p_index_buffer_offset 
+		 * \param p_resource_views 
+		 * \param p_shader_buffers 
+		 * \return 
+		 */
 		bc_render_state_ptr create_render_state(graphic::bc_primitive p_primitive,
 			graphic::bc_buffer p_vertex_buffer,
 			bcUINT32 p_vertex_buffer_stride,
@@ -255,15 +255,15 @@ namespace black_cat::game
 			bc_render_state_constant_buffer_array p_shader_buffers);
 
 		/**
-			 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
-			 * \n \b ThreadSafe
-			 * \param p_compute_state 
-			 * \param p_samplers 
-			 * \param p_resource_views 
-			 * \param p_unordered_views 
-			 * \param p_cbuffers 
-			 * \return 
-			 */
+		 * \brief Shader parameter register indices will be re-indexed based on their ordering in the array.
+		 * \n \b ThreadSafe
+		 * \param p_compute_state 
+		 * \param p_samplers 
+		 * \param p_resource_views 
+		 * \param p_unordered_views 
+		 * \param p_cbuffers 
+		 * \return 
+		 */
 		bc_compute_state_ptr create_compute_state(graphic::bc_device_compute_state p_compute_state,
 			bc_compute_state_sampler_array p_samplers,
 			bc_compute_state_resource_view_array p_resource_views,
@@ -271,8 +271,8 @@ namespace black_cat::game
 			bc_compute_state_constant_buffer_array p_cbuffers);
 
 		/**
-			 * \brief Destroy all registered render passes to release probable references in queries
-			 */
+		 * \brief Destroy all registered render passes to release probable references in queries
+		 */
 		void destroy_render_passes();
 			
 	private:			
@@ -283,21 +283,21 @@ namespace black_cat::game
 		void _event_handler(core::bci_event& p_event);
 
 		/**
-			 * \brief ThreadSafe function
-			 * \param p_render_pass_state
-			 */
+		 * \brief ThreadSafe function
+		 * \param p_render_pass_state
+		 */
 		void _destroy_render_pass_state(bc_render_pass_state* p_render_pass_state);
 
 		/**
-			 * \brief ThreadSafe function
-			 * \param p_render_state
-			 */
+		 * \brief ThreadSafe function
+		 * \param p_render_state
+		 */
 		void _destroy_render_state(bc_render_state* p_render_state);
 
 		/**
-			 * \brief ThreadSafe function
-			 * \param p_compute_state
-			 */
+		 * \brief ThreadSafe function
+		 * \param p_compute_state
+		 */
 		void _destroy_compute_state(bc_compute_state* p_compute_state);
 
 		graphic::bc_device m_device;

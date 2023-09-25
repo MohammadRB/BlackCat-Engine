@@ -224,18 +224,18 @@ namespace black_cat
 		l_spot_lights.reserve(m_num_spot_lights);
 		l_shadow_maps.reserve(m_shader_shadow_map_count);
 
+		// Reset shadow maps
+		for (auto& l_shadow_map_parameter : m_shadow_map_parameters)
+		{
+			l_shadow_map_parameter.set_as_resource_view(graphic::bc_resource_view());
+		}
+
 		auto* l_shadow_map_buffer_container = get_shared_resource<bc_cascaded_shadow_map_buffer_container>(m_csm_buffers_container_share_slot);
 
 		// Associate light depth maps to their structures
 		if (l_shadow_map_buffer_container != nullptr)
 		{
 			BC_ASSERT(l_shadow_map_buffer_container->size() <= m_shader_shadow_map_count);
-
-			// Reset all parameters
-			for (auto& l_shadow_map_parameter : m_shadow_map_parameters)
-			{
-				l_shadow_map_parameter.set_as_resource_view(graphic::bc_resource_view());
-			}
 
 			for (bcSIZE l_shadow_map_buffer_ite = 0, l_end = l_shadow_map_buffer_container->size(); l_shadow_map_buffer_ite < l_end; ++l_shadow_map_buffer_ite)
 			{

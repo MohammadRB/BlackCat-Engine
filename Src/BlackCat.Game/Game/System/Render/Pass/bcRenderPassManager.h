@@ -5,6 +5,7 @@
 #include "CorePlatform/Utility/bcNoCopy.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcString.h"
 #include "Core/Utility/bcStopWatch.h"
 #include "GraphicImp/Device/Query/bcDeviceTimeStampQuery.h"
 #include "Game/System/Render/bcDeviceQuery.h"
@@ -22,8 +23,9 @@ namespace black_cat::game
 	{
 		using device_query = bc_device_query<graphic::bc_device_timestamp_query, 1>;
 
-		const bcCHAR* m_name;
-		bool m_is_concurrent;
+		const bcCHAR* m_name{ nullptr };
+		bool m_is_concurrent{ false };
+		bool m_is_enable{ true };
 		core::bc_unique_ptr<bci_render_pass> m_pass;
 
 		core::bc_stop_watch m_stop_watch;
@@ -34,7 +36,7 @@ namespace black_cat::game
 	class BC_GAME_DLL bc_render_pass_manager : public platform::bc_no_copy
 	{
 	public:
-		explicit bc_render_pass_manager(bc_render_system& p_render_system) noexcept;
+		bc_render_pass_manager(bc_render_system& p_render_system, bc_global_config& p_config) noexcept;
 
 		bc_render_pass_manager(bc_render_pass_manager&&) noexcept;
 			
@@ -53,6 +55,12 @@ namespace black_cat::game
 
 		template<typename TPass>
 		bool remove_pass();
+
+		template<class TPass>
+		void enable_pass();
+
+		template<class TPass>
+		void disable_pass();
 
 		void pass_initialize_resources(bc_render_system& p_render_system);
 
@@ -75,9 +83,14 @@ namespace black_cat::game
 
 		bool _remove_pass(const bcCHAR* p_name);
 
-		bci_render_pass* _get_pass(const bcCHAR* p_name);
+		bool _enable_pass(const bcCHAR* p_name);
+
+		bool _disable_pass(const bcCHAR* p_name);
+
+		_bc_render_pass_entry* _get_pass(const bcCHAR* p_name);
 
 		bc_render_system* m_render_system;
+		bc_global_config* m_config;
 		core::bc_vector<_bc_render_pass_entry> m_passes;
 		bc_render_pass_resource_manager m_resource_manager;
 		bc_intermediate_texture_manager m_texture_manager;
@@ -91,7 +104,8 @@ namespace black_cat::game
 	{
 		static_assert(std::is_base_of_v<bci_render_pass, TPass>, "TPass must inherit from bc_irender_pass");
 
-		return static_cast<TPass*>(_get_pass(bc_render_pass_trait<TPass>::render_pass_name()));
+		auto* l_pass_entry = _get_pass(bc_render_pass_trait<TPass>::render_pass_name());
+		return static_cast<TPass*>(l_pass_entry->m_pass.get());
 	}
 		
 	template<typename TPass>
@@ -127,5 +141,21 @@ namespace black_cat::game
 		static_assert(std::is_base_of_v<bci_render_pass, TPass>, "T must inherit from bc_irender_pass");
 
 		return _remove_pass(bc_render_pass_trait<TPass>::render_pass_name());
+	}
+
+	template <class TPass>
+	void bc_render_pass_manager::enable_pass()
+	{
+		static_assert(std::is_base_of_v<bci_render_pass, TPass>, "T must inherit from bc_irender_pass");
+
+		_enable_pass(bc_render_pass_trait<TPass>::render_pass_name());
+	}
+
+	template <class TPass>
+	void bc_render_pass_manager::disable_pass()
+	{
+		static_assert(std::is_base_of_v<bci_render_pass, TPass>, "T must inherit from bc_irender_pass");
+
+		_disable_pass(bc_render_pass_trait<TPass>::render_pass_name());
 	}
 }

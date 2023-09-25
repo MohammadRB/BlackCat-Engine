@@ -9,6 +9,7 @@
 #include "Game/System/Render/bcRenderTask.h"
 #include "Game/System/Render/bcDefaultRenderThread.h"
 #include "Game/System/Render/Pass/bcRenderPassManager.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 
 namespace black_cat::game
 {
@@ -42,8 +43,9 @@ namespace black_cat::game
 		const bc_render_pass_render_context* m_context;
 	};
 
-	bc_render_pass_manager::bc_render_pass_manager(bc_render_system& p_render_system) noexcept
+	bc_render_pass_manager::bc_render_pass_manager(bc_render_system& p_render_system, bc_global_config& p_config) noexcept
 		: m_render_system(&p_render_system),
+		  m_config(&p_config),
 		  m_texture_manager(m_render_system->get_device()),
 		  m_all_queries_fetched(true)
 	{
@@ -54,6 +56,7 @@ namespace black_cat::game
 
 	bc_render_pass_manager::bc_render_pass_manager(bc_render_pass_manager&& p_other) noexcept
 		: m_render_system(p_other.m_render_system),
+		  m_config(p_other.m_config),
 		  m_passes(std::move(p_other.m_passes)),
 		  m_resource_manager(std::move(p_other.m_resource_manager)),
 		  m_texture_manager(std::move(p_other.m_texture_manager)),
@@ -67,6 +70,7 @@ namespace black_cat::game
 	bc_render_pass_manager& bc_render_pass_manager::operator=(bc_render_pass_manager&& p_other) noexcept
 	{
 		m_render_system = p_other.m_render_system;
+		m_config = p_other.m_config;
 		m_passes = std::move(p_other.m_passes);
 		m_resource_manager = std::move(p_other.m_resource_manager);
 		m_texture_manager = std::move(p_other.m_texture_manager);
@@ -77,17 +81,22 @@ namespace black_cat::game
 
 	void bc_render_pass_manager::pass_initialize_resources(bc_render_system& p_render_system)
 	{
-		for (const auto& l_entry : m_passes)
+		for (const auto& l_pass : m_passes)
 		{
-			l_entry.m_pass->initialize_resources(p_render_system);
+			l_pass.m_pass->initialize_resources(p_render_system);
 		}
 	}
 
 	void bc_render_pass_manager::pass_update(const bc_render_pass_update_context& p_context)
 	{
-		for (const auto& l_entry : m_passes)
+		for (const auto& l_pass : m_passes)
 		{
-			l_entry.m_pass->update(p_context);
+			if (!l_pass.m_is_enable)
+			{
+				continue;
+			}
+
+			l_pass.m_pass->update(p_context);
 		}
 	}
 
@@ -121,6 +130,11 @@ namespace black_cat::game
 
 		for (auto& l_pass : m_passes)
 		{
+			if (!l_pass.m_is_enable)
+			{
+				continue;
+			}
+
 			if (!l_pass.m_is_concurrent)
 			{
 				if (!l_concurrent_tasks.empty())
@@ -156,15 +170,20 @@ namespace black_cat::game
 		{
 			auto& l_pass = m_passes[l_ite];
 
+			if (!l_pass.m_is_enable)
+			{
+				continue;
+			}
+
 			l_pass.m_stop_watch.start();
 			l_pass.m_pass->cleanup_frame(p_context);
 			l_pass.m_stop_watch.stop();
 			l_pass.m_stop_watch.restart();
 
-			if(l_pass.m_is_concurrent)
+			if (l_pass.m_is_concurrent)
 			{
 				const auto& l_next_pass = m_passes[l_ite + 1];
-				if(l_next_pass.m_is_concurrent)
+				if (l_next_pass.m_is_concurrent)
 				{
 					// Only device query of last concurrent pass is used
 					l_string_stream.str(core::bc_wstring());
@@ -176,7 +195,7 @@ namespace black_cat::game
 				}
 			}
 
-			if(m_all_queries_fetched)
+			if (m_all_queries_fetched)
 			{
 				const auto l_previous_pass_device_timestamp = l_device_query_results[l_device_query_ite];
 				const auto l_current_pass_device_timestamp = l_device_query_results[l_device_query_ite + 1];
@@ -197,35 +216,87 @@ namespace black_cat::game
 
 	void bc_render_pass_manager::before_reset(const bc_render_pass_reset_context& p_context)
 	{
-		for (const auto& l_entry : m_passes)
+		for (const auto& l_pass : m_passes)
 		{
-			l_entry.m_pass->before_reset(p_context);
+			if (!l_pass.m_is_enable)
+			{
+				continue;
+			}
+
+			l_pass.m_pass->before_reset(p_context);
 		}
 		m_texture_manager.before_reset(p_context);
 	}
 
 	void bc_render_pass_manager::after_reset(const bc_render_pass_reset_context& p_context)
 	{
-		for (const auto& l_entry : m_passes)
+		for (const auto& l_pass : m_passes)
 		{
-			l_entry.m_pass->after_reset(p_context);
+			if (!l_pass.m_is_enable)
+			{
+				continue;
+			}
+
+			l_pass.m_pass->after_reset(p_context);
 		}
 		m_texture_manager.after_reset(p_context);
 	}
 
 	void bc_render_pass_manager::config_changed(const bc_render_pass_config_change_context& p_context)
 	{
-		for (const auto& l_entry : m_passes)
+		for (const auto& l_pass : m_passes)
 		{
-			l_entry.m_pass->config_changed(p_context);
+			if (!l_pass.m_is_enable)
+			{
+				continue;
+			}
+
+			l_pass.m_pass->config_changed(p_context);
+		}
+
+		bool l_any_pass_state_changed = false;
+		const auto l_config = p_context.m_global_config.get_render_pass_configs();
+		for (auto& l_pass_config : l_config)
+		{
+			if (l_pass_config.m_enabled)
+			{
+				l_any_pass_state_changed |= _enable_pass(l_pass_config.m_name.c_str());
+			}
+			else
+			{
+				l_any_pass_state_changed |= _disable_pass(l_pass_config.m_name.c_str());
+			}
+		}
+
+		if (l_any_pass_state_changed)
+		{
+			const auto& l_device_swap_buffer = m_render_system->get_device_swap_buffer().get_back_buffer_texture();
+			const graphic::bc_device_parameters l_old_parameters
+			(
+				l_device_swap_buffer.get_width(),
+				l_device_swap_buffer.get_height(),
+				l_device_swap_buffer.get_format(),
+				l_device_swap_buffer.get_sample_count()
+			);
+			const graphic::bc_device_parameters l_new_parameters
+			(
+				l_device_swap_buffer.get_width(),
+				l_device_swap_buffer.get_height(),
+				l_device_swap_buffer.get_format(),
+				l_device_swap_buffer.get_sample_count()
+			);
+
+			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
+			auto l_device_reset_event = graphic::bc_app_event_device_reset(l_old_parameters, l_new_parameters);
+			l_event_manager->process_event(l_device_reset_event);
 		}
 	}
 
 	void bc_render_pass_manager::pass_destroy(bc_render_system& p_render_system)
 	{
-		for (const auto& l_entry : m_passes)
+		for (const auto& l_pass : m_passes)
 		{
-			l_entry.m_pass->destroy(p_render_system);
+			l_pass.m_pass->destroy(p_render_system);
 		}
 	}
 
@@ -236,17 +307,22 @@ namespace black_cat::game
 
 	void bc_render_pass_manager::_add_pass(const bcCHAR* p_name, bool p_is_concurrent, core::bc_unique_ptr<bci_render_pass> p_pass, const bcCHAR* p_before)
 	{
+		auto l_pass_config = m_config->get_render_pass_config(p_name);
+
 		_bc_render_pass_entry l_entry;
 		l_entry.m_name = p_name;
 		l_entry.m_is_concurrent = p_is_concurrent;
+		l_entry.m_is_enable = l_pass_config.has_value() ? l_pass_config->m_enabled : true;
 		l_entry.m_pass = std::move(p_pass);
 		l_entry.m_pass->_set_private_fields(m_render_system->get_device(), m_render_system->get_device_swap_buffer(), m_resource_manager, m_texture_manager);
-		l_entry.m_pass->initialize_resources(*m_render_system);
 		l_entry.m_device_query = _bc_render_pass_entry::device_query({ m_render_system->get_device().create_timestamp_query() });
+
+		auto l_ite = std::end(m_passes);
 
 		if (p_before == nullptr)
 		{
 			m_passes.push_back(std::move(l_entry));
+			l_ite = std::rbegin(m_passes).base();
 		}
 		else
 		{
@@ -262,44 +338,68 @@ namespace black_cat::game
 
 			BC_ASSERT(l_before_ite != std::end(m_passes));
 
-			m_passes.insert(l_before_ite, std::move(l_entry));
+			l_ite = m_passes.insert(l_before_ite, std::move(l_entry));
+		}
+
+		m_config->set_render_pass_config({ l_ite->m_name, l_ite->m_is_enable });
+
+		if (l_ite->m_is_enable)
+		{
+			l_ite->m_pass->initialize_resources(*m_render_system);
 		}
 	}
 
 	bool bc_render_pass_manager::_remove_pass(const bcCHAR* p_name)
 	{
-		bool l_found = false;
-		bcINT32 l_location = 0;
-
-		for (const auto& l_entry : m_passes)
+		for (auto l_ite = std::begin(m_passes); l_ite != std::end(m_passes); ++l_ite)
 		{
-			if (std::strcmp(l_entry.m_name, p_name) == 0)
+			if (std::strcmp(l_ite->m_name, p_name) == 0)
 			{
-				l_found = true;
-				break;
+				l_ite->m_pass->destroy(*m_render_system);
+				m_passes.erase(l_ite);
+				
+				return true;
 			}
-
-			l_location++;
-		}
-
-		if (l_found)
-		{
-			const auto l_pass_ite = std::next(std::cbegin(m_passes), l_location);
-			l_pass_ite->m_pass->destroy(*m_render_system);
-			m_passes.erase(l_pass_ite);
-			return true;
 		}
 
 		return false;
 	}
 
-	bci_render_pass* bc_render_pass_manager::_get_pass(const bcCHAR* p_name)
+	bool bc_render_pass_manager::_enable_pass(const bcCHAR* p_name)
+	{
+		_bc_render_pass_entry* l_pass = _get_pass(p_name);
+		if (!l_pass || l_pass->m_is_enable)
+		{
+			return false;
+		}
+
+		l_pass->m_is_enable = true;
+		l_pass->m_pass->initialize_resources(*m_render_system);
+
+		return true;
+	}
+
+	bool bc_render_pass_manager::_disable_pass(const bcCHAR* p_name)
+	{
+		_bc_render_pass_entry* l_pass = _get_pass(p_name);
+		if (!l_pass || !l_pass->m_is_enable)
+		{
+			return false;
+		}
+
+		l_pass->m_is_enable = false;
+		l_pass->m_pass->destroy(*m_render_system);
+
+		return true;
+	}
+
+	_bc_render_pass_entry* bc_render_pass_manager::_get_pass(const bcCHAR* p_name)
 	{
 		for (auto& l_entry : m_passes)
 		{
 			if (std::strcmp(l_entry.m_name, p_name) == 0)
 			{
-				return l_entry.m_pass.get();
+				return &l_entry;
 			}
 		}
 

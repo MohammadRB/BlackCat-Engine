@@ -4,6 +4,8 @@
 
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
+#include "Core/Container/bcSpan.h"
+#include "Core/Utility/bcNullable.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcJsonParse.h"
@@ -12,7 +14,13 @@
 
 namespace black_cat::game
 {
-	BC_JSON_STRUCTURE(bc_config_layout)
+	BC_JSON_STRUCTURE(bc_config_render_pass_json)
+	{
+		BC_JSON_VALUE(core::bc_string, name);
+		BC_JSON_VALUE(bool, enabled);
+	};
+
+	BC_JSON_STRUCTURE(bc_config_json)
 	{
 		BC_JSON_VALUE_OP(core::bc_string, preferred_gpu);
 		BC_JSON_ARRAY_OP(core::bc_string, log_types);
@@ -23,9 +31,16 @@ namespace black_cat::game
 		BC_JSON_VALUE_OP(bcFLOAT, scene_bullet_reference_mass);
 		BC_JSON_VALUE_OP(core::bc_string, network_client_name);
 		BC_JSON_ARRAY_OP(core::bc_string, counter_values);
+		BC_JSON_ARRAY_OP(bc_config_render_pass_json, render_passes);
 		BC_JSON_VALUE_OP(core::bc_json_key_value, key_values);
 	};
-	
+
+	struct bc_render_pass_config
+	{
+		core::bc_string m_name;
+		bool m_enabled;
+	};
+
 	class bc_global_config final : public bc_config_file
 	{
 	public:
@@ -58,13 +73,21 @@ namespace black_cat::game
 		const core::bc_json_array<core::bc_string>& get_counter_values() const noexcept;
 		
 		core::bc_json_array<core::bc_string>& get_counter_values() noexcept;
+
+		core::bc_nullable<bc_render_pass_config> get_render_pass_config(core::bc_string_view p_name) const noexcept;
+
+		core::bc_vector<bc_render_pass_config> get_render_pass_configs() const noexcept;
+
+		void set_render_pass_config(const bc_render_pass_config& p_pass) noexcept;
+
+		void set_render_pass_configs(const core::bc_const_span<bc_render_pass_config>& p_passes) noexcept;
 	
 	private:
 		core::bc_json_key_value* load_json(const bcCHAR* p_json) override;
 		
 		core::bc_string_frame write_json() override;
 
-		core::bc_unique_ptr<core::bc_json_document<bc_config_layout>> m_json;
+		core::bc_unique_ptr<core::bc_json_document<bc_config_json>> m_json;
 	};
 
 	inline bc_global_config::bc_global_config(bc_global_config&&) noexcept = default;

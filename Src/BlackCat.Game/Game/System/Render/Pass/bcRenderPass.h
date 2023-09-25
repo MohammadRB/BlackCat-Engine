@@ -46,7 +46,7 @@ namespace black_cat
 			}
 		};
 
-		class bc_render_pass_update_context
+		struct bc_render_pass_update_context
 		{
 		public:
 			bc_render_pass_update_context(const platform::bc_clock::update_param& p_clock,
@@ -60,7 +60,7 @@ namespace black_cat
 			const bc_camera_instance& m_camera;
 		};
 
-		class bc_render_pass_render_context
+		struct bc_render_pass_render_context
 		{
 		public:
 			bc_render_pass_render_context(const platform::bc_clock::update_param& p_clock,
@@ -89,7 +89,7 @@ namespace black_cat
 			const bc_camera_instance& m_render_camera; // render camera instance reference is valid until the end of frame
 		};
 
-		class BC_GAME_DLL bc_render_pass_reset_context
+		struct BC_GAME_DLL bc_render_pass_reset_context
 		{
 		public:
 			bc_render_pass_reset_context(bc_render_system& p_render_system,
@@ -116,7 +116,7 @@ namespace black_cat
 				graphic::bc_device_swap_buffer& p_device_swap_buffer);
 		};
 
-		class bc_render_pass_config_change_context
+		struct bc_render_pass_config_change_context
 		{
 		public:
 			bc_render_pass_config_change_context(bc_render_system& p_render_system,

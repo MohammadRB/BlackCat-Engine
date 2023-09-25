@@ -91,18 +91,18 @@ namespace black_cat::core
 		void unregister_event_listener(bc_event_listener_handle& p_listener_handle);
 
 		/**
-			 * \brief Process an event and return true if there is any handler for this type of event, otherwise return false.
-			 * \param p_event 
-			 * \return 
-			 */
+		 * \brief Process an event and return true if there is any handler for this type of event, otherwise return false.
+		 * \param p_event 
+		 * \return 
+		 */
 		bool process_event(bci_event& p_event);
 
 		/**
-			 * \brief Queue event for processing in a specific time in future that will be indicated by millisecond.
-			 * \ThreadSafe
-			 * \param p_event
-			 * \param p_millisecond
-			 */
+		 * \brief Queue event for processing in a specific time in future that will be indicated by millisecond.
+		 * \ThreadSafe
+		 * \param p_event
+		 * \param p_millisecond
+		 */
 		template<class TEvent>
 		void queue_event(TEvent&& p_event, platform::bc_clock::small_time p_millisecond);
 

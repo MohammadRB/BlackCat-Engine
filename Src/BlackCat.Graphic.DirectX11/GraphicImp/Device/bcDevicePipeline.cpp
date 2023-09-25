@@ -1130,10 +1130,10 @@ namespace black_cat::graphic
 		{
 			p_command_list.finished();
 			dx_call(m_pack.m_pipeline_proxy->m_context->FinishCommandList
-				(
-					false,
-					&p_command_list.get_platform_pack().m_command_list_proxy->m_command_list
-				));
+			(
+				false,
+				&p_command_list.get_platform_pack().m_command_list_proxy->m_command_list
+			));
 
 			m_pack.m_pipeline_proxy->m_input_assembler_stage.set_to_default_state(*this);
 			m_pack.m_pipeline_proxy->m_stream_output_stage.set_to_default_state(*this);

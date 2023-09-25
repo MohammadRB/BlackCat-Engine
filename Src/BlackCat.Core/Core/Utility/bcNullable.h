@@ -8,11 +8,11 @@
 namespace black_cat::core
 {
 	/**
-		 * \brief 
-		 * Wrap a non-nullable object (a class that does not support uninitialized state).
-		 * This class does not use dynamic memory
-		 * \tparam T 
-		 */
+	 * \brief 
+	 * Wrap a non-nullable object (a class that does not support uninitialized state).
+	 * This class does not use dynamic memory
+	 * \tparam T 
+	 */
 	template<typename T>
 	class bc_nullable
 	{
@@ -249,4 +249,10 @@ namespace black_cat::core
 			return !has_value();
 		}
 	};
+
+	template<typename T>
+	bc_nullable<T> bc_make_nullable(T&& p_value)
+	{
+		return bc_nullable<T>(std::forward<T>(p_value));
+	}
 }

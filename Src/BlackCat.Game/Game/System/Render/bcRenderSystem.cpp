@@ -16,6 +16,7 @@
 #include "Graphic/bcEvent.h"
 #include "GraphicImp/Device/bcDevice.h"
 #include "Game/System/Input/bcFileSystem.h"
+#include "Game/System/Input/bcGlobalConfig.h"
 #include "Game/System/Input/bcInputSystem.h"
 #include "Game/System/Physics/bcPhysicsSystem.h"
 #include "Game/System/Network/bcNetworkSystem.h"
@@ -116,14 +117,14 @@ namespace black_cat::game
 		
 	void bc_render_system::render(const render_context& p_render_param)
 	{
-		if(!m_device_swap_buffer->is_valid())
+		if (!m_device_swap_buffer->is_valid())
 		{
 			return;
 		}
 
 		m_device_clock_query.start(m_thread_manager->get_default_render_thread());
 
-		if(m_device_timestamps_are_ready)
+		if (m_device_timestamps_are_ready)
 		{
 			m_device_start_query.end(m_thread_manager->get_default_render_thread());
 		}
@@ -151,7 +152,7 @@ namespace black_cat::game
 		m_device_timestamps_are_ready = m_device_start_query.get_data(m_thread_manager->get_default_render_thread()).first &&
 				m_device_end_query.get_data(m_thread_manager->get_default_render_thread()).first;
 
-		if(m_device_timestamps_are_ready)
+		if (m_device_timestamps_are_ready)
 		{
 			const auto l_device_elapsed_clocks = m_device_end_query.get_last_data() - m_device_start_query.get_last_data();
 			const auto l_device_elapsed_ms = static_cast<platform::bc_clock::small_time>(l_device_elapsed_clocks) / get_device_clock() * 1000.f;
@@ -169,13 +170,13 @@ namespace black_cat::game
 		if (m_device_reset_event.has_value())
 		{
 			m_render_pass_manager->before_reset(bc_render_pass_reset_context
-				(
-					*this,
-					*m_device_reset_event->m_device,
-					m_device_swap_buffer.get(),
-					m_device_reset_event->m_old_parameters,
-					m_device_reset_event->m_new_parameters
-				));
+			(
+				*this,
+				m_device,
+				m_device_swap_buffer.get(),
+				m_device_reset_event->m_old_parameters,
+				m_device_reset_event->m_new_parameters
+			));
 
 			if (m_device_swap_buffer->is_valid())
 			{
@@ -190,13 +191,13 @@ namespace black_cat::game
 			}
 
 			m_render_pass_manager->after_reset(bc_render_pass_reset_context
-				(
-					*this,
-					*m_device_reset_event->m_device,
-					m_device_swap_buffer.get(),
-					m_device_reset_event->m_old_parameters,
-					m_device_reset_event->m_new_parameters
-				));
+			(
+				*this,
+				m_device,
+				m_device_swap_buffer.get(),
+				m_device_reset_event->m_old_parameters,
+				m_device_reset_event->m_new_parameters
+			));
 
 			m_device_reset_event.reset();
 		}
@@ -205,12 +206,12 @@ namespace black_cat::game
 		{
 			const auto& l_global_config = m_config_change_event->get_config();
 			m_render_pass_manager->config_changed(bc_render_pass_config_change_context
-				(
-					*this,
-					m_device,
-					m_device_swap_buffer.get(),
-					l_global_config
-				));
+			(
+				*this,
+				m_device,
+				m_device_swap_buffer.get(),
+				l_global_config
+			));
 
 			m_config_change_event.reset();
 		}
@@ -474,13 +475,29 @@ namespace black_cat::game
 		m_compute_states.initialize(10, core::bc_alloc_type::program);
 			
 		m_content_stream = &p_parameter.m_content_stream;
-		m_thread_manager = core::bc_make_unique<bc_render_thread_manager>(core::bc_alloc_type::program, bc_render_thread_manager(*this, std::max(1_uz, l_hw_info.m_processor_count / 2)));
-		m_material_manager = core::bc_make_unique<bc_material_manager>(core::bc_alloc_type::program, bc_material_manager(*m_content_stream, *this, p_parameter.m_physics_system));
+		m_thread_manager = core::bc_make_unique<bc_render_thread_manager>
+		(
+			core::bc_alloc_type::program,
+			bc_render_thread_manager(*this, std::max(1_uz, l_hw_info.m_processor_count / 2))
+		);
+		m_material_manager = core::bc_make_unique<bc_material_manager>
+		(
+			core::bc_alloc_type::program, 
+			bc_material_manager(*m_content_stream, *this, p_parameter.m_physics_system)
+		);
 		m_decal_manager = core::bc_make_unique<bc_decal_manager>(core::bc_alloc_type::program, bc_decal_manager(*m_material_manager));
 		m_particle_manager = core::bc_make_unique<bc_particle_manager>(core::bc_alloc_type::program);
-		m_render_pass_manager = core::bc_make_unique<bc_render_pass_manager>(core::bc_alloc_type::program, bc_render_pass_manager(*this));
+		m_render_pass_manager = core::bc_make_unique<bc_render_pass_manager>
+		(
+			core::bc_alloc_type::program, 
+			bc_render_pass_manager(*this, bc_get_global_config())
+		);
 		m_shape_drawer = core::bc_make_unique<bc_shape_drawer>(core::bc_alloc_type::program);
-		m_frame_renderer = core::bc_make_unique<bc_frame_renderer>(core::bc_alloc_type::program, bc_frame_renderer(m_device, *m_thread_manager, *m_render_pass_manager));
+		m_frame_renderer = core::bc_make_unique<bc_frame_renderer>
+		(
+			core::bc_alloc_type::program, 
+			bc_frame_renderer(m_device, *m_thread_manager, *m_render_pass_manager)
+		);
 
 		m_device.set_allocator_alloc_type(l_alloc_type);
 			
@@ -568,13 +585,7 @@ namespace black_cat::game
 
 			// Put device reset event in render event queue
 			auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
-			l_event_manager->queue_event(graphic::bc_app_event_device_reset
-			                             (
-				                             m_device,
-				                             m_device_swap_buffer.get(),
-				                             l_old_parameters,
-				                             l_new_parameters
-			                             ), 0);
+			l_event_manager->queue_event(graphic::bc_app_event_device_reset(l_old_parameters, l_new_parameters), 0);
 
 			return;
 		}
