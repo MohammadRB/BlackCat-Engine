@@ -4,7 +4,7 @@
 
 #include "Core/Container/bcVector.h"
 #include "Core/Messaging/Query/bcQuery.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/System/Render/Light/bcLightInstance.h"
 #include "Game/Object/Scene/bcScene.h"

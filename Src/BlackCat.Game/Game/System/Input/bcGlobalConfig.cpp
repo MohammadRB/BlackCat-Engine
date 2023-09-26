@@ -118,7 +118,7 @@ namespace black_cat::game
 		return l_output;
 	}
 
-	core::bc_nullable<bc_render_pass_config> bc_global_config::get_render_pass_config(core::bc_string_view p_name) const noexcept
+	core::bc_optional<bc_render_pass_config> bc_global_config::get_render_pass_config(core::bc_string_view p_name) const noexcept
 	{
 		auto& l_json = *m_json;
 
@@ -126,7 +126,7 @@ namespace black_cat::game
 		{
 			if (*l_pass->m_name == p_name)
 			{
-				return core::bc_make_nullable(bc_render_pass_config{ *l_pass->m_name, *l_pass->m_enabled });
+				return core::bc_make_optional(bc_render_pass_config{ *l_pass->m_name, *l_pass->m_enabled });
 			}
 		}
 

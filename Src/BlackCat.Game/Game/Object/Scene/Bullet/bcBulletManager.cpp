@@ -140,7 +140,7 @@ namespace black_cat::game
 		);
 	}
 
-	core::bc_nullable<physics::bc_ray_hit> bc_bullet_manager::_scene_ray_query(const physics::bc_scene& p_px_scene, 
+	core::bc_optional<physics::bc_ray_hit> bc_bullet_manager::_scene_ray_query(const physics::bc_scene& p_px_scene, 
 	                                                                           const physics::bc_ray& p_ray, 
 	                                                                           physics::bc_scene_ray_query_buffer& p_buffer,
 	                                                                           core::bc_vector_frame<physics::bc_shape>& p_shapes_buffer,
@@ -234,6 +234,6 @@ namespace black_cat::game
 			}
 		);
 			
-		return core::bc_nullable<physics::bc_ray_hit>(*l_min_distance_ite);
+		return core::bc_optional<physics::bc_ray_hit>(*l_min_distance_ite);
 	}
 }

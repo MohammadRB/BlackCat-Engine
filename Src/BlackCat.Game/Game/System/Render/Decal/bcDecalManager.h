@@ -5,7 +5,7 @@
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Container/bcUnorderedMap.h"
 #include "Core/Utility/bcObjectPool.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Game/System/Render/Decal/bcDecal.h"
 #include "Game/System/Render/Decal/bcDecalInstance.h"
 #include "Game/System/Render/Decal/bcDecalManagerContainer.h"
@@ -20,10 +20,10 @@ namespace black_cat::game
 	{
 		core::bc_string m_name;
 		core::bc_string m_material_name;
-		core::bc_nullable<bcUINT32> m_u0;
-		core::bc_nullable<bcUINT32> m_v0;
-		core::bc_nullable<bcUINT32> m_u1;
-		core::bc_nullable<bcUINT32> m_v1;
+		core::bc_optional<bcUINT32> m_u0;
+		core::bc_optional<bcUINT32> m_v0;
+		core::bc_optional<bcUINT32> m_u1;
+		core::bc_optional<bcUINT32> m_v1;
 		bcFLOAT m_width;
 		bcFLOAT m_height;
 		bcFLOAT m_depth;

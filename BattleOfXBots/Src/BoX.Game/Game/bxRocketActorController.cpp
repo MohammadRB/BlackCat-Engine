@@ -1,7 +1,7 @@
 // [27/04/2021 MRB]
 
 #include "Core/Messaging/Query/bcQueryManager.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Game/System/Physics/bcPxWrap.h"
 #include "Game/System/Physics/bcActorGroup.h"
 #include "Game/Object/Scene/bcEntityManager.h"
@@ -55,7 +55,7 @@ namespace box
 		
 		if(m_scene_query.is_executed())
 		{
-			auto l_query_result = m_scene_query.get().get_result().as_throw<core::bc_nullable<game::bc_ray_hit>>();
+			auto l_query_result = m_scene_query.get().get_result().as_throw<core::bc_optional<game::bc_ray_hit>>();
 
 			if(l_query_result.has_value())
 			{
@@ -94,7 +94,7 @@ namespace box
 				);
 			}
 
-			core::bc_nullable<game::bc_ray_hit> l_result;
+			core::bc_optional<game::bc_ray_hit> l_result;
 
 			if (l_has_collided)
 			{

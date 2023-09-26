@@ -5,7 +5,7 @@
 #include "CorePlatformImp/Utility/bcClock.h"
 #include "Core/Container/bcStateMachine.h"
 #include "Core/File/bcMemoryStream.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "PlatformImp/Network/bcNonBlockSocket.h"
 
 namespace black_cat::game
@@ -79,7 +79,7 @@ namespace black_cat::game
 		}
 
 		platform::bc_non_block_socket* m_socket;
-		core::bc_nullable<bc_network_exception> m_last_exception;
+		core::bc_optional<bc_network_exception> m_last_exception;
 	};
 
 	class bc_client_socket_connecting_state : public core::bc_state<bc_client_socket_state_machine, bc_client_socket_update_event>

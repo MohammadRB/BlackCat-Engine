@@ -271,6 +271,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectPool.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectPoolAllocator.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcObjectStackPool.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcOptional.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcParameterPack.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcRandom.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcRefCountPtr.h" />

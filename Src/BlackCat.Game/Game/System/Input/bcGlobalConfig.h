@@ -5,7 +5,7 @@
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Container/bcSpan.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Core/Memory/bcPtr.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/Utility/bcJsonParse.h"
@@ -74,7 +74,7 @@ namespace black_cat::game
 		
 		core::bc_json_array<core::bc_string>& get_counter_values() noexcept;
 
-		core::bc_nullable<bc_render_pass_config> get_render_pass_config(core::bc_string_view p_name) const noexcept;
+		core::bc_optional<bc_render_pass_config> get_render_pass_config(core::bc_string_view p_name) const noexcept;
 
 		core::bc_vector<bc_render_pass_config> get_render_pass_configs() const noexcept;
 

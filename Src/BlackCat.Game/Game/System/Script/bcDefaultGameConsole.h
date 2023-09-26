@@ -5,7 +5,7 @@
 #include "CorePlatformImp/Concurrency/bcMutex.h"
 #include "Core/Container/bcString.h"
 #include "Core/Concurrency/bcTask.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "PlatformImp/Application/bcConsoleWindow.h"
 #include "Game/bcExport.h"
 #include "Game/Application/bcRenderApplication.h"
@@ -46,7 +46,7 @@ namespace black_cat::game
 
 		bc_render_application* m_application;
 		platform::bc_mutex m_console_mutex;
-		core::bc_nullable<platform::bc_console_window> m_console;
+		core::bc_optional<platform::bc_console_window> m_console;
 		core::bc_task<void> m_input_spin_task;
 		platform::bc_mutex m_input_mutex;
 		core::bc_string m_input_line;

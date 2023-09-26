@@ -4,7 +4,7 @@
 
 #include "Core/Math/bcVector3f.h"
 #include "Core/Messaging/Query/bcQuery.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Game/Query/bcQueryContext.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/System/Render/bcRenderStateBuffer.h"
@@ -36,7 +36,7 @@ namespace black_cat::game
 
 	private:
 		core::bc_vector3f m_camera_position;
-		core::bc_nullable<bc_camera_frustum> m_frustum;
+		core::bc_optional<bc_camera_frustum> m_frustum;
 		bc_render_state_buffer m_buffer;
 	};
 

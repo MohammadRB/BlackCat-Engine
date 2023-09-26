@@ -4,7 +4,7 @@
 
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Game/System/Render/Light/bcLightFlare.h"
 
 namespace black_cat::game
@@ -71,7 +71,7 @@ namespace black_cat::game
 		bcFLOAT m_intensity;
 		bool m_particle_cast;
 		bcFLOAT m_particle_intensity;
-		core::bc_nullable<bc_light_flare> m_flare;
+		core::bc_optional<bc_light_flare> m_flare;
 	};
 
 	inline bc_point_light::bc_point_light(const core::bc_vector3f& p_position,

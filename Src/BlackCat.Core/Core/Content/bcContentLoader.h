@@ -10,7 +10,7 @@
 #include "Core/File/bcJsonDocument.h"
 #include "Core/File/bcStream.h"
 #include "Core/Content/bcContent.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 
 namespace black_cat::core
 {
@@ -106,7 +106,7 @@ namespace black_cat::core
 		bcUINT64 m_file_buffer_size;						// Used to give loader access to file content size
 		const bc_content_loader_parameter& m_parameters;	// Used to pass constant parameters to loader
 		bc_content_loader_parameter m_instance_parameters;	// Used to pass instance parameters to loader
-		bc_nullable<bc_content_loader_result> m_result;		// Used to pass result from loader to caller
+		bc_optional<bc_content_loader_result> m_result;		// Used to pass result from loader to caller
 	};
 
 	struct bc_content_saving_context

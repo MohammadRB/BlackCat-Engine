@@ -3,7 +3,7 @@
 #include "Core/Messaging/Query/bcQueryManager.h"
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Utility/bcRandom.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Core/bcUtility.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Physics/bcPxWrap.h"
@@ -86,7 +86,7 @@ namespace box
 			m_position = l_explosion_mediate_component.get_position();
 			m_direction = l_explosion_mediate_component.get_world_transform().get_basis_z();
 
-			const auto l_terrain_hit_result = *m_scene_terrain_query.get().get_result().as<core::bc_nullable<game::bc_ray_hit>>();
+			const auto l_terrain_hit_result = *m_scene_terrain_query.get().get_result().as<core::bc_optional<game::bc_ray_hit>>();
 			if (l_terrain_hit_result.has_value())
 			{
 				auto* l_height_map_component = l_terrain_hit_result->get_actor().get_component<game::bc_height_map_component>();
@@ -172,7 +172,7 @@ namespace box
 					);
 				}
 
-				core::bc_nullable<game::bc_ray_hit> l_result;
+				core::bc_optional<game::bc_ray_hit> l_result;
 
 				if (l_has_collided)
 				{

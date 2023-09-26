@@ -7,7 +7,7 @@
 #include "Core/Container/bcListPool.h"
 #include "Core/Container/bcVector.h"
 #include "Core/Concurrency/bcTask.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "PhysicsImp/Fundation/bcScene.h"
 #include "Game/Object/Scene/Bullet/bcBullet.h"
 #include "Game/bcExport.h"
@@ -41,7 +41,7 @@ namespace black_cat::game
 		core::bc_task<void> update_async(bc_scene& p_scene, const platform::bc_clock::update_param& p_clock) noexcept;
 			
 	private:
-		core::bc_nullable<physics::bc_ray_hit> _scene_ray_query(const physics::bc_scene& p_px_scene, 
+		core::bc_optional<physics::bc_ray_hit> _scene_ray_query(const physics::bc_scene& p_px_scene, 
 		                                                        const physics::bc_ray& p_ray, 
 		                                                        physics::bc_scene_ray_query_buffer& p_buffer,
 		                                                        core::bc_vector_frame<physics::bc_shape>& p_shapes_buffer,

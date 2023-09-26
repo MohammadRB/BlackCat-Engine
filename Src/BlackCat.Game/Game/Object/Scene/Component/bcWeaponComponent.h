@@ -68,7 +68,7 @@ namespace black_cat::game
 		core::bc_vector3f m_fire_light_color;
 		bcFLOAT m_fire_light_radius;
 		bcFLOAT m_fire_light_intensity;
-		core::bc_nullable<bc_light_flare> m_fire_light_flare;
+		core::bc_optional<bc_light_flare> m_fire_light_flare;
 		bcFLOAT m_rate_of_fire_seconds;
 		bcFLOAT m_bullet_speed;
 		bcFLOAT m_bullet_mass;

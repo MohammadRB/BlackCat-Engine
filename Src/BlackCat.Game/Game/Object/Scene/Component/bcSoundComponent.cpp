@@ -148,8 +148,8 @@ namespace black_cat::game
 			{
 				std::move(l_sound_name_param),
 				l_sound_mode,
-				l_has_min_max_param ? core::bc_nullable<core::bc_vector2f>(l_min_max_distance_param) : core::bc_nullable<core::bc_vector2f>(),
-				l_has_volume_param ? core::bc_nullable<bcFLOAT>(l_volume_param) : core::bc_nullable<bcFLOAT>(),
+				l_has_min_max_param ? core::bc_optional<core::bc_vector2f>(l_min_max_distance_param) : core::bc_optional<core::bc_vector2f>(),
+				l_has_volume_param ? core::bc_optional<bcFLOAT>(l_volume_param) : core::bc_optional<bcFLOAT>(),
 				l_has_auto_play_param ? l_auto_play_param : false,
 				std::move(l_sound),
 				sound::bc_channel()

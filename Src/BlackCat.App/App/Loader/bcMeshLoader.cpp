@@ -11,7 +11,7 @@
 #include "Core/Math/bcVector2f.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Core/File/bcPath.h"
 #include "Core/bcConstant.h"
 #include "Core/bcUtility.h"
@@ -217,7 +217,7 @@ namespace black_cat
 		p_material.m_specular_power = l_specular_power;
 
 		const auto l_root_path = core::bc_path(p_context.m_file_path).set_filename(bcL(""));
-		core::bc_nullable<core::bc_path> l_diffuse_file_name;
+		core::bc_optional<core::bc_path> l_diffuse_file_name;
 		aiString l_ai_string;
 
 		if (p_ai_material.GetTexture(aiTextureType_DIFFUSE, 0, &l_ai_string) == aiReturn_SUCCESS)

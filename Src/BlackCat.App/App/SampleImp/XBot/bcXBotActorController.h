@@ -7,7 +7,7 @@
 #include "Core/Container/bcArray.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Utility/bcVelocity.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "PhysicsImp/Fundation/bcCController.h"
 #include "PhysicsImp/Fundation/bcCControllerSimulationCallback.h"
 #include "SoundImp/Resource/bcChannel.h"
@@ -210,8 +210,8 @@ namespace black_cat
 		
 		core::bc_unique_ptr<bc_xbot_state_machine> m_state_machine;
 		core::bc_shared_ptr<game::bci_animation_job> m_animation_pipeline;
-		core::bc_nullable<bc_xbot_weapon> m_weapon;
-		core::bc_nullable<bc_xbot_grenade> m_grenade;
+		core::bc_optional<bc_xbot_weapon> m_weapon;
+		core::bc_optional<bc_xbot_grenade> m_grenade;
 		sound::bc_channel m_running_sound;
 	};
 	

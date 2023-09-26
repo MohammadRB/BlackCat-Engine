@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/Messaging/Query/bcQuery.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/Query/bcQueryContext.h"
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
@@ -34,7 +34,7 @@ namespace black_cat::game
 		void execute(const bc_scene_query_context& p_context) noexcept override;
 
 	private:
-		core::bc_nullable<core::bc_vector3f> m_camera_position;
+		core::bc_optional<core::bc_vector3f> m_camera_position;
 		bc_camera_frustum m_frustum;
 		bc_scene_graph_buffer m_scene_buffer;
 	};

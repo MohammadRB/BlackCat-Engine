@@ -6,7 +6,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Messaging/Event/bcEventListenerHandle.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "PlatformImp/Script/bcScriptContext.hpp"
 #include "PlatformImp/Script/bcScriptObject.h"
 #include "Game/System/Script/bcDefaultGameConsole.h"

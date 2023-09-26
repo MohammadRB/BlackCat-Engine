@@ -3,7 +3,7 @@
 #include "Game/GamePCH.h"
 
 #include "Core/bcUtility.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Game/System/Render/Light/bcLightManager.h"
 #include "Game/System/Render/Material/bcMaterialManager.h"
 #include "Game/System/Render/bcRenderSystem.h"
@@ -83,7 +83,7 @@ namespace black_cat::game
 			json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_surface, l_flare_surface);
 			json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_mask_material, l_flare_mask_material);
 				
-			core::bc_nullable<bc_light_flare> l_flare;
+			core::bc_optional<bc_light_flare> l_flare;
 			if(l_flare_mask_material)
 			{
 				const auto l_material = l_material_manager.load_mesh_material_throw(l_flare_mask_material->c_str());
@@ -147,7 +147,7 @@ namespace black_cat::game
 			json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_surface, l_flare_surface);
 			json_parse::bc_load(p_context.m_parameters, constant::g_param_light_flare_mask_material, l_flare_mask_material);
 
-			core::bc_nullable<bc_light_flare> l_flare;
+			core::bc_optional<bc_light_flare> l_flare;
 			if (l_flare_mask_material)
 			{
 				const auto l_material = l_material_manager.load_mesh_material_throw(l_flare_mask_material->c_str());

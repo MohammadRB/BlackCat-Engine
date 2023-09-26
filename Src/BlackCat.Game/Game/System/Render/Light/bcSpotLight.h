@@ -4,7 +4,7 @@
 
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Game/System/Render/Light/bcLightFlare.h"
 #include "Game/bcExport.h"
 
@@ -70,7 +70,7 @@ namespace black_cat::game
 		bcFLOAT m_angle;
 		core::bc_vector3f m_color;
 		bcFLOAT m_intensity;
-		core::bc_nullable<bc_light_flare> m_flare;
+		core::bc_optional<bc_light_flare> m_flare;
 	};
 
 	inline bc_spot_light::bc_spot_light(const core::bc_vector3f& p_position, 

@@ -66,7 +66,7 @@ namespace black_cat::game
 		auto* l_particle_manager = l_scene ? &l_scene->get_particle_manager() : static_cast<bc_particle_manager_container*>(nullptr);
 		auto* l_decal_manager = l_scene ? &l_scene->get_decal_manager() : static_cast<bc_decal_manager_container*>(nullptr);
 		auto* l_sound_manager = l_scene ? &l_scene->get_sound_manager() : static_cast<bc_sound_manager*>(nullptr);
-		core::bc_nullable<bc_camera_instance> l_camera;
+		core::bc_optional<bc_camera_instance> l_camera;
 
 		if(m_input_system->get_camera())
 		{

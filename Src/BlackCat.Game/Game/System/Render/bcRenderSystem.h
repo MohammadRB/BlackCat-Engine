@@ -8,7 +8,7 @@
 #include "Core/Messaging/Event/bcEvent.h"
 #include "Core/Messaging/bcMessageHandle.h"
 #include "Core/Utility/bcInitializable.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Core/Utility/bcObjectPool.h"
 #include "Core/Utility/bcValueSampler.h"
 #include "Graphic/bcEvent.h"
@@ -325,8 +325,8 @@ namespace black_cat::game
 		core::bc_event_listener_handle m_app_active_handle;
 		core::bc_event_listener_handle m_device_reset_handle;
 		core::bc_event_listener_handle m_config_change_handle;
-		core::bc_nullable<graphic::bc_app_event_device_reset> m_device_reset_event;
-		core::bc_nullable<bc_event_global_config_changed> m_config_change_event;
+		core::bc_optional<graphic::bc_app_event_device_reset> m_device_reset_event;
+		core::bc_optional<bc_event_global_config_changed> m_config_change_event;
 	};
 
 	inline graphic::bc_device& bc_render_system::get_device() noexcept

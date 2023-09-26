@@ -6,7 +6,7 @@
 #include "Core/Container/bcVector.h"
 #include "Core/Math/bcVector3f.h"
 #include "Core/Utility/bcServiceManager.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "PlatformImp/Network/bcNetworkAddress.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/System/Network/Server/bcNetworkClient.h"
@@ -30,7 +30,7 @@ namespace box
 		core::bc_string m_name;
 
 		core::bc_vector3f m_seat;
-		core::bc_nullable<bx_team> m_team;
+		core::bc_optional<bx_team> m_team;
 		game::bc_actor m_actor;
 		bool m_is_dead = false;
 		bcFLOAT m_dead_passed_time = 0;

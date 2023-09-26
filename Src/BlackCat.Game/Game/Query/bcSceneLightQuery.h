@@ -4,7 +4,7 @@
 
 #include "Core/Container/bcVector.h"
 #include "Core/Messaging/Query/bcQuery.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Game/System/Input/bcCameraFrustum.h"
 #include "Game/System/Render/Light/bcLight.h"
 #include "Game/System/Render/Light/bcLightInstance.h"
@@ -35,7 +35,7 @@ namespace black_cat::game
 			
 	private:
 		bc_light_type m_types;
-		core::bc_nullable<bc_camera_frustum> m_frustum;
+		core::bc_optional<bc_camera_frustum> m_frustum;
 		core::bc_vector<bc_light_instance> m_lights;
 	};
 

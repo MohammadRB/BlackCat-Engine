@@ -4,7 +4,7 @@
 
 #include "Core/Container/bcVector.h"
 #include "Core/Math/bcVector2f.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "SoundImp/Resource/bcSound.h"
 #include "SoundImp/Resource/bcChannel.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
@@ -18,8 +18,8 @@ namespace black_cat::game
 	{
 		core::bc_string m_name;
 		sound::bc_sound_mode m_mode;
-		core::bc_nullable<core::bc_vector2f> m_min_max_distance;
-		core::bc_nullable<bcFLOAT> m_volume;
+		core::bc_optional<core::bc_vector2f> m_min_max_distance;
+		core::bc_optional<bcFLOAT> m_volume;
 		bool m_auto_play;
 
 		sound::bc_sound_content_ptr m_sound;

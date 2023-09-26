@@ -6,7 +6,7 @@
 #include "Core/Memory/bcPtr.h"
 #include "Core/Container/bcString.h"
 #include "Core/Container/bcVector.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "PhysicsImp/Shape/bcBoundBox.h"
 #include "Game/Object/Mesh/bcMesh.h"
 #include "Game/Object/Mesh/bcMeshCollider.h"
@@ -89,7 +89,7 @@ namespace black_cat::game
 			
 	private:
 		core::bc_estring m_name;
-		core::bc_nullable<bcFLOAT> m_auto_scale;
+		core::bc_optional<bcFLOAT> m_auto_scale;
 		bool m_skinned = false;
 		bcUINT32 m_node_count = 0;
 		bcUINT32 m_mesh_part_count = 0;

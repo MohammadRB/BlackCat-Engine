@@ -7,12 +7,6 @@
 
 namespace black_cat::core
 {
-	/**
-	 * \brief 
-	 * Wrap a non-nullable object (a class that does not support uninitialized state).
-	 * This class does not use dynamic memory
-	 * \tparam T 
-	 */
 	template<typename T>
 	class bc_optional
 	{

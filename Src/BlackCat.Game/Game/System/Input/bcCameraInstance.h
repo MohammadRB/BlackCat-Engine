@@ -4,7 +4,7 @@
 
 #include "Core/Math/bcVector3f.h"
 #include "Core/Math/bcMatrix4f.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Game/System/Input/bcCamera.h"
 
 namespace black_cat::game
@@ -30,7 +30,7 @@ namespace black_cat::game
 
 		bcFLOAT get_far_clip() const noexcept;
 
-		core::bc_nullable<bcFLOAT> get_fov() const noexcept;
+		core::bc_optional<bcFLOAT> get_fov() const noexcept;
 
 		core::bc_vector3f get_position() const noexcept;
 
@@ -61,7 +61,7 @@ namespace black_cat::game
 		bcUINT16 m_screen_height;
 		bcFLOAT m_near_clip;
 		bcFLOAT m_far_clip;
-		core::bc_nullable<bcFLOAT> m_fov;
+		core::bc_optional<bcFLOAT> m_fov;
 		core::bc_vector3f m_position;
 		core::bc_vector3f m_direction;
 		core::bc_vector3f m_forward;
@@ -115,7 +115,7 @@ namespace black_cat::game
 		return m_far_clip;
 	}
 
-	inline core::bc_nullable<bcFLOAT> bc_camera_instance::get_fov() const noexcept
+	inline core::bc_optional<bcFLOAT> bc_camera_instance::get_fov() const noexcept
 	{
 		return m_fov;
 	}

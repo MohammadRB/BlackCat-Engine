@@ -9,7 +9,7 @@
 #include "Core/Messaging/Query/bcQueryProviderHandle.h"
 #include "Core/Content/bcContent.h"
 #include "Core/Utility/bcServiceManager.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Game/System/bcGameSystemParameter.h"
 #include "Game/bcExport.h"
 
@@ -204,7 +204,7 @@ namespace black_cat
 
 			bool m_paused;
 			bool m_editor_mode;
-			core::bc_nullable<platform::bc_clock::big_time> m_pause_last_total_elapsed;
+			core::bc_optional<platform::bc_clock::big_time> m_pause_last_total_elapsed;
 		};
 	}
 }

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "Core/Math/bcVector3f.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Game/bcExport.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.h"
 #include "Game/Object/Scene/ActorComponent/bcActorComponent.h"
@@ -101,6 +101,6 @@ namespace black_cat::game
 		void handle_event(const bc_actor_component_event_context& p_context) override;
 
 	private:			
-		core::bc_nullable<bc_wind> m_wind;
+		core::bc_optional<bc_wind> m_wind;
 	};
 }

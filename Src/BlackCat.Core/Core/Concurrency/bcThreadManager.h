@@ -19,7 +19,7 @@
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Utility/bcObjectPool.h"
 #include "Core/Utility/bcObjectPoolAllocator.h"
-#include "Core/Utility/bcNullable.h"
+#include "Core/Utility/bcOptional.h"
 #include "Core/bcExport.h"
 #include "Core/bcConstant.h"
 
@@ -107,7 +107,7 @@ namespace black_cat::core
 			
 		bc_concurrent_memory_pool m_queue_pool;
 		bc_concurrent_memory_pool m_task_pool;
-		bc_nullable<task_queue_type> m_queue;
+		bc_optional<task_queue_type> m_queue;
 	};
 
 	class bc_thread_manager::_thread_data
