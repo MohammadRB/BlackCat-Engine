@@ -223,12 +223,12 @@ namespace black_cat::physics
 	using bc_contact_shape_pair = bc_platform_contact_shape_pair< g_current_physics_api >;
 
 	/**
-		 * \brief An interface class that the user can implement in order to receive simulation events.
-		 * States should not be modified from within the callbacks. In particular objects should not
-		 * be created or destroyed. If state modification is needed then the changes should be stored to a buffer
-		 * and performed after the simulation step.
-		 * \n Threading: It is not necessary to make this class thread safe as it will only be called in the context of the user thread.
-		 */
+	 * \brief An interface class that the user can implement in order to receive simulation events.
+	 * States should not be modified from within the callbacks. In particular objects should not
+	 * be created or destroyed. If state modification is needed then the changes should be stored to a buffer
+	 * and performed after the simulation step.
+	 * \n Threading: It is not necessary to make this class thread safe as it will only be called in the context of the user thread.
+	 */
 	class bci_physics_simulation_callback
 	{
 	public:
@@ -241,18 +241,18 @@ namespace black_cat::physics
 		virtual void on_sleep(bc_actor* p_actors, bcUINT32 p_count) = 0;
 
 		/**
-			 * \brief This is called with the current trigger pair events.
-			 * \param[in] p_pairs - The trigger pairs which caused events.
-			 * \param[in] p_count - The number of trigger pairs.
-			 */
+		 * \brief This is called with the current trigger pair events.
+		 * \param[in] p_pairs - The trigger pairs which caused events.
+		 * \param[in] p_count - The number of trigger pairs.
+		 */
 		virtual void on_trigger(bc_trigger_pair* p_pairs, bcUINT32 p_count) = 0;
 
 		/**
-			 * \brief This is called when certain contact events occur.
-			 * \param[in] p_pair Information on the two actors whose shapes triggered a contact report.
-			 * \param[in] p_shape_pairs The contact pairs of two actors for which contact reports have been requested.
-			 * \param[in] p_count The number of provided contact pairs.
-			 */
+		 * \brief This is called when certain contact events occur.
+		 * \param[in] p_pair Information on the two actors whose shapes triggered a contact report.
+		 * \param[in] p_shape_pairs The contact pairs of two actors for which contact reports have been requested.
+		 * \param[in] p_count The number of provided contact pairs.
+		 */
 		virtual void on_contact(const bc_contant_pair& p_pair, const bc_contact_shape_pair* p_shape_pairs, bcUINT32 p_count) = 0;
 	};
 }

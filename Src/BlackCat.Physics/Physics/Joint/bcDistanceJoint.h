@@ -32,16 +32,16 @@ namespace black_cat::physics
 		bc_platform_distance_joint& operator=(const bc_platform_distance_joint&) noexcept;
 
 		/**
-			 * \brief Return the current distance of the joint
-			 */
+		 * \brief Return the current distance of the joint
+		 */
 		bcFLOAT get_distance() const noexcept;
 
 		/**
-			* \brief Enable the allowed minimum/maximum distance for the joint along with strength and damping of the joint spring.
-			* Default 0.0f
-			* Range [0, MAX_F32)
-			* \param p_limit
-			*/
+		* \brief Enable the allowed minimum/maximum distance for the joint along with strength and damping of the joint spring.
+		* Default 0.0f
+		* Range [0, MAX_F32)
+		* \param p_limit
+		*/
 		void enable_limit(const bc_joint_linear_limit_pair& p_limit) noexcept;
 
 		void disable_limit() noexcept;

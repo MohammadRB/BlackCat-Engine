@@ -76,9 +76,9 @@ namespace black_cat::physics
 		bc_bounded_strided_data get_indices() const;
 
 		/**
-			 * \brief Returns the local-space (vertex space) AABB from the triangle mesh.
-			 * \return
-			 */
+		 * \brief Returns the local-space (vertex space) AABB from the triangle mesh.
+		 * \return
+		 */
 		bc_bound_box get_local_bound() const;
 
 		bool is_valid() const noexcept override;

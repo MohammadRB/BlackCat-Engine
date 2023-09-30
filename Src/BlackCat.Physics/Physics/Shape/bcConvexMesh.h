@@ -43,12 +43,12 @@ namespace black_cat::physics
 		}
 
 		/**
-			 * \brief Vertex positions data in bc_vector3f format.
-			 */
+		 * \brief Vertex positions data in bc_vector3f format.
+		 */
 		const bc_bounded_strided_typed_data<core::bc_vector3f> m_points;
 		/**
-			 * \brief Limits the number of vertices of the result convex mesh. Hard maximum limit is 256 and minimum limit is 4. 
-			 */
+		 * \brief Limits the number of vertices of the result convex mesh. Hard maximum limit is 256 and minimum limit is 4. 
+		 */
 		const bcUINT16 m_vertex_limit;
 		const bc_convex_mesh_flag m_flags;
 	};
@@ -87,9 +87,9 @@ namespace black_cat::physics
 		bc_convex_mesh_polygon get_polygon(bcINT32 p_index) const;
 
 		/**
-			 * \brief Returns the local-space (vertex space) AABB from the convex mesh.
-			 * \return 
-			 */
+		 * \brief Returns the local-space (vertex space) AABB from the convex mesh.
+		 * \return 
+		 */
 		bc_bound_box get_local_bound() const;
 
 		bool is_valid() const noexcept override;

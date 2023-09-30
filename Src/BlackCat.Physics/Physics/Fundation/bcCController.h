@@ -33,50 +33,50 @@ namespace black_cat::physics
 		bc_ccontroller_desc& with_hit_callback(bci_ccontroller_hit_callback* p_callback) noexcept;
 			
 		/**
-			 * \brief The position of the character
-			 */
+		 * \brief The position of the character
+		 */
 		core::bc_vector3f m_position;
 		/**
-			 * \brief Specifies the 'up' direction.
-			 * \n Default value is (0, 1, 0)
-			 */
+		 * \brief Specifies the 'up' direction.
+		 * \n Default value is (0, 1, 0)
+		 */
 		core::bc_vector3f m_up;
 		/**
-			 * \brief The maximum slope which the character can walk up.
-			 * The value is expressed in degree.
-			 * \n Default value is 30 degree.
-			 */
+		 * \brief The maximum slope which the character can walk up.
+		 * The value is expressed in degree.
+		 * \n Default value is 30 degree.
+		 */
 		bcFLOAT m_slope_limit;
 		/**
-			 * \brief The contact offset used by the controller.
-			 * \n Default value is 0.1.
-			 */
+		 * \brief The contact offset used by the controller.
+		 * \n Default value is 0.1.
+		 */
 		bcFLOAT m_contact_offset;
 		/**
-			 * \brief Defines the maximum height of an obstacle which the character can climb.
-			 * \n Default value is 0.5.
-			 */
+		 * \brief Defines the maximum height of an obstacle which the character can climb.
+		 * \n Default value is 0.5.
+		 */
 		bcFLOAT m_step_offset;
 		/**
-			 * \brief Density of underlying kinematic actor
-			 * \n Default value is 10.
-			 */
+		 * \brief Density of underlying kinematic actor
+		 * \n Default value is 10.
+		 */
 		bcFLOAT m_density;
 		/**
-			 * \brief The height of the capsule.
-			 */
+		 * \brief The height of the capsule.
+		 */
 		bcFLOAT m_capsule_height;
 		/**
-			 * \brief The radius of the capsule.
-			 */
+		 * \brief The radius of the capsule.
+		 */
 		bcFLOAT m_capsule_radius;
 		/**
-			 * \brief The material which is used for controller
-			 */
+		 * \brief The material which is used for controller
+		 */
 		bc_material m_material;
 		/**
-			 * \brief Specifies a user hit callback.
-			 */
+		 * \brief Specifies a user hit callback.
+		 */
 		bci_ccontroller_hit_callback* m_hit_callback;
 	};
 
@@ -162,27 +162,27 @@ namespace black_cat::physics
 		bc_rigid_dynamic get_actor() const noexcept;
 			
 		/**
-			 * \brief The position retrieved by this function is the center of the collision shape.
-			 * \return 
-			 */
+		 * \brief The position retrieved by this function is the center of the collision shape.
+		 * \return 
+		 */
 		core::bc_vector3f get_position() const noexcept;
 			
 		/**
-			 * \brief The position controlled by this function is the center of the collision shape.
-			 * \param p_position 
-			 */
+		 * \brief The position controlled by this function is the center of the collision shape.
+		 * \param p_position 
+		 */
 		void set_position(const core::bc_vector3f& p_position) noexcept;
 
 		/**
-			 * \brief Retrieve the "foot" position of the controller, i.e. the position of the bottom of the CCT's shape.
-			 * \return
-			 */
+		 * \brief Retrieve the "foot" position of the controller, i.e. the position of the bottom of the CCT's shape.
+		 * \return
+		 */
 		core::bc_vector3f get_foot_position() const noexcept;
 
 		/**
-			 * \brief The position controlled by this function is the bottom of the collision shape, a.k.a. the foot position.
-			 * \param p_position 
-			 */
+		 * \brief The position controlled by this function is the bottom of the collision shape, a.k.a. the foot position.
+		 * \param p_position 
+		 */
 		void set_foot_position(const core::bc_vector3f& p_position) noexcept;
 
 		core::bc_vector3f get_up() const noexcept;
@@ -204,14 +204,14 @@ namespace black_cat::physics
 		void resize(bcFLOAT p_height, bool p_align_foot = true) noexcept;
 
 		/**
-			 * \brief Moves the character
-			 * \param p_displacement Displacement vector. It is typically a combination of vertical motion due to gravity and lateral motion when your character is moving.
-			 * \param p_clock
-			 * \param p_pre_filter
-			 * \param p_post_filter 
-			 * \param p_cc_vs_cc_filter 
-			 * \return 
-			 */
+		 * \brief Moves the character
+		 * \param p_displacement Displacement vector. It is typically a combination of vertical motion due to gravity and lateral motion when your character is moving.
+		 * \param p_clock
+		 * \param p_pre_filter
+		 * \param p_post_filter 
+		 * \param p_cc_vs_cc_filter 
+		 * \return 
+		 */
 		bc_ccontroller_collision_flag move(const core::bc_vector3f& p_displacement,
 		                                   const platform::bc_clock::update_param& p_clock,
 		                                   bc_scene_query_pre_filter_callback* p_pre_filter = nullptr,

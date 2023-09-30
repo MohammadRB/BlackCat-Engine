@@ -39,58 +39,58 @@ namespace black_cat::physics
 		bc_platform_contact_modify_set& operator=(const bc_platform_contact_modify_set&) noexcept;
 
 		/**
-			 * \brief Get the position of a specific contact point in the set.
-			 */
+		 * \brief Get the position of a specific contact point in the set.
+		 */
 		core::bc_vector3f get_point(bcUINT32 p_index) const noexcept;
 
 		/**
-			 * \brief Alter the position of a specific contact point in the set.
-			 */
+		 * \brief Alter the position of a specific contact point in the set.
+		 */
 		void set_point(bcUINT32 p_index, const core::bc_vector3f& p_point) noexcept;
 
 		/**
-			 * \brief Get the contact normal of a specific contact point in the set.
-			 * The contact normal points from the second shape to the first shape.
-			 */
+		 * \brief Get the contact normal of a specific contact point in the set.
+		 * The contact normal points from the second shape to the first shape.
+		 */
 		core::bc_vector3f get_normal(bcUINT32 p_index) const noexcept;
 
 		/**
-			 * \brief Alter the contact normal of a specific contact point in the set.
-			 * \note Changing the normal can cause contact points to be ignored.
-			 * \note This must be a normalized vector.
-			 */
+		 * \brief Alter the contact normal of a specific contact point in the set.
+		 * \note Changing the normal can cause contact points to be ignored.
+		 * \note This must be a normalized vector.
+		 */
 		void set_normal(bcUINT32 p_index, const core::bc_vector3f& p_normal) noexcept;
 
 		/**
-			 * \brief Get the separation of a specific contact point in the set.
-			 * This value can be either positive or negative. A negative value denotes penetration whereas a positive value denotes separation.
-			 */
+		 * \brief Get the separation of a specific contact point in the set.
+		 * This value can be either positive or negative. A negative value denotes penetration whereas a positive value denotes separation.
+		 */
 		bcFLOAT get_separation(bcUINT32 p_index) const noexcept;
 
 		/**
-			 * \brief Alter the separation of a specific contact point in the set.
-			 */
+		 * \brief Alter the separation of a specific contact point in the set.
+		 */
 		void set_separation(bcUINT32 p_index, bcFLOAT p_sep) noexcept;
 
 		/**
-			 * \brief Get the face index with respect to the first shape of the pair for a specific contact point in the set.
-			 */
+		 * \brief Get the face index with respect to the first shape of the pair for a specific contact point in the set.
+		 */
 		bcUINT32 getInternalFaceIndex0(bcUINT32 p_index) const noexcept;
 
 		/**
-			 * \brief Get the face index with respect to the second shape of the pair for a specific contact point in the set.
-			 */
+		 * \brief Get the face index with respect to the second shape of the pair for a specific contact point in the set.
+		 */
 		bcUINT32 getInternalFaceIndex1(bcUINT32 p_index) const noexcept;
 
 		/**
-			 * \brief Ignore the contact point.
-			 * If a contact point is ignored then no force will get applied at this point. This can be used to disable collision in certain areas of a shape, for example.
-			 */
+		 * \brief Ignore the contact point.
+		 * If a contact point is ignored then no force will get applied at this point. This can be used to disable collision in certain areas of a shape, for example.
+		 */
 		void ignore(bcUINT32 p_index) noexcept;
 
 		/**
-			 * \brief The number of contact points in the set.
-			 */
+		 * \brief The number of contact points in the set.
+		 */
 		bcUINT32 size() const noexcept;
 
 		platform_pack& get_platform_pack() noexcept
@@ -142,9 +142,9 @@ namespace black_cat::physics
 		bool is_ccd_contact() const noexcept;
 
 		/**
-			 * \brief An array of contact points between these two shapes.
-			 * \return 
-			 */
+		 * \brief An array of contact points between these two shapes.
+		 * \return 
+		 */
 		bc_contact_modify_set& get_contacts() noexcept;
 
 		platform_pack& get_platform_pack()
@@ -164,17 +164,17 @@ namespace black_cat::physics
 	using bc_contact_modify_pair = bc_platform_contact_modify_pair<g_current_physics_api>;
 		
 	/**
-		 * \brief An interface class that the user can implement in order to modify contact constraints.
-		 * \n Threading: The callback execute in simulation threads.
-		 */
+	 * \brief An interface class that the user can implement in order to modify contact constraints.
+	 * \n Threading: The callback execute in simulation threads.
+	 */
 	class bci_contact_modify_callback
 	{
 	public:
 		virtual ~bci_contact_modify_callback() = default;
 		
 		/**
-			 * \brief Passes modifiable arrays of contacts to the application.
-			 */
+		 * \brief Passes modifiable arrays of contacts to the application.
+		 */
 		virtual void on_contact_modify(bc_contact_modify_pair* const p_pairs, bcUINT32 p_count) = 0;
 	};
 }

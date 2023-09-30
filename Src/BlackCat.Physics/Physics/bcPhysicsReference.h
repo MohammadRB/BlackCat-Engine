@@ -12,9 +12,9 @@ namespace black_cat::physics
 	};
 
 	/**
-		 * \brief Base class for reference counted objects
-		 * \tparam TApi 
-		 */
+	 * \brief Base class for reference counted objects
+	 * \tparam TApi 
+	 */
 	template< bc_physics_api TApi >
 	class bc_platform_physics_reference
 	{

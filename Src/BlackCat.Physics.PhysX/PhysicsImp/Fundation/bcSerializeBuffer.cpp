@@ -7,9 +7,6 @@
 namespace black_cat::physics
 {
 	template<>
-	bc_platform_serialize_buffer< g_api_physx >& bc_platform_serialize_buffer< g_api_physx >::operator=(bc_platform_serialize_buffer&& p_other) noexcept;
-
-	template<>
 	BC_PHYSICSIMP_DLL
 	bc_platform_serialize_buffer< g_api_physx >::bc_platform_serialize_buffer() noexcept
 		: m_pack()
@@ -38,12 +35,12 @@ namespace black_cat::physics
 	BC_PHYSICSIMP_DLL
 	bc_platform_serialize_buffer< g_api_physx >::~bc_platform_serialize_buffer()
 	{
-		if(m_pack.m_collection)
+		if (m_pack.m_collection)
 		{
 			m_pack.m_collection->release();
 			m_pack.m_registry->release();
 		}
-		if(m_pack.m_collection_deserialize_buffer)
+		if (m_pack.m_collection_deserialize_buffer)
 		{
 			BC_ALIGNED_FREE(m_pack.m_collection_deserialize_buffer);
 		}

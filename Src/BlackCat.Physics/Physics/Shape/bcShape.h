@@ -87,11 +87,11 @@ namespace black_cat::physics
 			bc_collision_filter get_collision_filter() const noexcept;*/
 
 		/**
-			 * \brief Sets the pose of the shape in actor space, i.e. relative to the actors to which they are attached.
-			 * Does not automatically update the inertia properties of the owning actor.
-			 * Waking: No.
-			 * \param p_pose 
-			 */
+		 * \brief Sets the pose of the shape in actor space, i.e. relative to the actors to which they are attached.
+		 * Does not automatically update the inertia properties of the owning actor.
+		 * Waking: No.
+		 * \param p_pose 
+		 */
 		void set_local_pose(const bc_transform& p_pose) noexcept;
 
 		bcUINT32 get_material_count() const noexcept;
@@ -99,20 +99,20 @@ namespace black_cat::physics
 		bcUINT32 get_materials(bc_material* p_buffer, bcUINT32 p_buffer_size) const noexcept;
 
 		/**
-			 * \brief 
-			 * Waking: No.
-			 * \param p_materials 
-			 * \param p_count 
-			 */
+		 * \brief 
+		 * Waking: No.
+		 * \param p_materials 
+		 * \param p_count 
+		 */
 		void set_materials(const bc_material* p_materials, bcUINT32 p_count);
 
 		/**
-			 * \brief Retrieve material from given triangle index.
-			 * his function is only useful for triangle meshes or height-fields, which have per-triangle materials. 
-			 * For other shapes the function returns the single material associated with the shape, regardless of the index.
-			 * \param p_face_index 
-			 * \return 
-			 */
+		 * \brief Retrieve material from given triangle index.
+		 * his function is only useful for triangle meshes or height-fields, which have per-triangle materials. 
+		 * For other shapes the function returns the single material associated with the shape, regardless of the index.
+		 * \param p_face_index 
+		 * \return 
+		 */
 		bc_material get_material_from_face(bcUINT32 p_face_index) const;
 
 		bcFLOAT get_contact_offset() const noexcept;
@@ -133,13 +133,13 @@ namespace black_cat::physics
 		bcFLOAT get_rest_offset() const noexcept;
 
 		/**
-			 * \brief Sets the rest offset. 
-			 * Two shapes will come to rest at a distance equal to the sum of their restOffset values. 
-			 * If the restOffset is 0, they should converge to touching exactly.
-			 * Having a restOffset greater than zero is useful to have objects slide smoothly, 
-			 * so that they do not get hung up on irregularities of each others' surfaces.
-			 * Default: 0.0f
-			 */
+		 * \brief Sets the rest offset. 
+		 * Two shapes will come to rest at a distance equal to the sum of their restOffset values. 
+		 * If the restOffset is 0, they should converge to touching exactly.
+		 * Having a restOffset greater than zero is useful to have objects slide smoothly, 
+		 * so that they do not get hung up on irregularities of each others' surfaces.
+		 * Default: 0.0f
+		 */
 		void set_rest_offset(bcFLOAT p_offset) noexcept;
 
 		bc_shape_flag get_flags() const noexcept;

@@ -36,6 +36,7 @@ namespace black_cat::physics
 	BC_PHYSICSIMP_DLL
 	bc_platform_height_field< g_api_physx >::~bc_platform_height_field()
 	{
+		m_pack.m_px_object = nullptr;
 	}
 
 	template<>
@@ -64,6 +65,21 @@ namespace black_cat::physics
 		physx::PxHeightField* l_px_height_field = static_cast<physx::PxHeightField*>(m_pack.m_px_object);
 
 		return l_px_height_field->getNbColumns();
+	}
+
+	template<>
+	BC_PHYSICSIMP_DLL bc_height_field_sample bc_platform_height_field<g_api_physx>::get_sample(bcUINT32 p_x, bcUINT32 p_z) const noexcept
+	{
+		physx::PxHeightField* l_px_height_field = static_cast<physx::PxHeightField*>(m_pack.m_px_object);
+
+		const physx::PxHeightFieldSample& l_px_sample = l_px_height_field->getSample(p_x, p_z);
+
+		return
+		{
+			l_px_sample.height,
+			l_px_sample.materialIndex0,
+			l_px_sample.materialIndex1
+		};
 	}
 
 	template<>

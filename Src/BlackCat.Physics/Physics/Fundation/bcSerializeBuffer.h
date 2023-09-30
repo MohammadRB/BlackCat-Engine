@@ -14,9 +14,9 @@ namespace black_cat::physics
 	};
 
 	/**
-		 * \brief Collection class for serialization and deserialization.
-		 * \tparam TApi 
-		 */
+	 * \brief Collection class for serialization and deserialization.
+	 * \tparam TApi 
+	 */
 	template< bc_physics_api TApi >
 	class bc_platform_serialize_buffer
 	{
@@ -35,32 +35,32 @@ namespace black_cat::physics
 		bc_platform_serialize_buffer& operator=(bc_platform_serialize_buffer&&) noexcept;
 
 		/**
-			 * \brief Get number of objects in the collection
-			 * \return 
-			 */
+		 * \brief Get number of objects in the collection
+		 * \return 
+		 */
 		bcUINT32 get_object_count() const noexcept;
 
 		/**
-			 * \brief Get buffer used to deserialize objects. This buffer must persist while deserialized objects
-			 * exist. This buffer allocated with aligned allocation routines and must be deallocate with aligned
-			 * deallocation routines.
-			 * This method can be called only one time.
-			 * \return 
-			 */
+		 * \brief Get buffer used to deserialize objects. This buffer must persist while deserialized objects
+		 * exist. This buffer allocated with aligned allocation routines and must be deallocate with aligned
+		 * deallocation routines.
+		 * This method can be called only one time.
+		 * \return 
+		 */
 		void* get_deserialize_buffer() noexcept;
 
 		/**
-			 * \brief Try to retrieve a bc_height_field variable from deserialized collection at given index.
-			 * \param p_index 
-			 * \param p_height_field 
-			 * \return True if succeeded
-			 */
+		 * \brief Try to retrieve a bc_height_field variable from deserialized collection at given index.
+		 * \param p_index 
+		 * \param p_height_field 
+		 * \return True if succeeded
+		 */
 		bool get(bcUINT32 p_index, bc_height_field& p_height_field) noexcept;
 
 		/**
-			 * \brief Add a bc_height_field object to collection for serialization.
-			 * \param p_height_field 
-			 */
+		 * \brief Add a bc_height_field object to collection for serialization.
+		 * \param p_height_field 
+		 */
 		void add(bc_height_field p_height_field) noexcept;
 
 		platform_pack& get_platform_pack() noexcept

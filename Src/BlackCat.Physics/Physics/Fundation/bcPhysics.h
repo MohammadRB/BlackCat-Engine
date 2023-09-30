@@ -154,63 +154,63 @@ namespace black_cat::physics
 		bcUINT32 get_scene_count() const noexcept;
 
 		/**
-			* \brief Creates a static rigid actor with the specified pose and all other fields initialized to their default values.
-			* \param[in] p_pose the initial pose of the actor. Must be a valid transform
-			*/
+		* \brief Creates a static rigid actor with the specified pose and all other fields initialized to their default values.
+		* \param[in] p_pose the initial pose of the actor. Must be a valid transform
+		*/
 		bc_rigid_static_ref create_rigid_static(const bc_transform& p_pose);
 
 		/**
-			* \brief Creates a dynamic rigid actor with the specified pose and all other fields initialized to their default values.
-			* \param[in] p_pose the initial pose of the actor. Must be a valid transform
-			*/
+		* \brief Creates a dynamic rigid actor with the specified pose and all other fields initialized to their default values.
+		* \param[in] p_pose the initial pose of the actor. Must be a valid transform
+		*/
 		bc_rigid_dynamic_ref create_rigid_dynamic(const bc_transform& p_pose);
 
 		/**
-			* \brief Creates a shape which may be attached to multiple actors
-			* \param[in] p_geometry the geometry for the shape
-			* \param[in] p_material the material for the shape
-			* \param[in] p_is_exclusive whether this shape is exclusive to a single actor or maybe be shared
-			* Shared shapes are not mutable when they are attached to an actor
-			*/
+		* \brief Creates a shape which may be attached to multiple actors
+		* \param[in] p_geometry the geometry for the shape
+		* \param[in] p_material the material for the shape
+		* \param[in] p_is_exclusive whether this shape is exclusive to a single actor or maybe be shared
+		* Shared shapes are not mutable when they are attached to an actor
+		*/
 		bc_shape_ref create_shape(const bc_shape_geometry& p_geometry,
 		                          const bc_material& p_material,
 		                          bool p_is_exclusive = false);
 
 		/**
-			* \brief Creates a shape which may be attached to multiple actors
-			* \param[in] p_geometry the geometry for the shape
-			* \param[in] p_material the material for the shape
-			* \param[in] p_shape_flags
-			* \param[in] p_is_exclusive whether this shape is exclusive to a single actor or maybe be shared
-			* Shared shapes are not mutable when they are attached to an actor
-			*/
+		* \brief Creates a shape which may be attached to multiple actors
+		* \param[in] p_geometry the geometry for the shape
+		* \param[in] p_material the material for the shape
+		* \param[in] p_shape_flags
+		* \param[in] p_is_exclusive whether this shape is exclusive to a single actor or maybe be shared
+		* Shared shapes are not mutable when they are attached to an actor
+		*/
 		bc_shape_ref create_shape(const bc_shape_geometry& p_geometry,
 		                          const bc_material& p_material,
 		                          bc_shape_flag p_shape_flags,
 		                          bool p_is_exclusive = false);
 
 		/**
-			* \brief Creates a shape which may be attached to multiple actors.
-			* \param[in] p_geometry the geometry for the shape
-			* \param[in] p_materials the materials for the shape
-			* \param[in] p_material_count the number of materials
-			* \param[in] p_is_exclusive whether this shape is exclusive to a single actor or may be shared
-			* Shared shapes are not mutable when they are attached to an actor
-			*/
+		* \brief Creates a shape which may be attached to multiple actors.
+		* \param[in] p_geometry the geometry for the shape
+		* \param[in] p_materials the materials for the shape
+		* \param[in] p_material_count the number of materials
+		* \param[in] p_is_exclusive whether this shape is exclusive to a single actor or may be shared
+		* Shared shapes are not mutable when they are attached to an actor
+		*/
 		bc_shape_ref create_shape(const bc_shape_geometry& p_geometry,
 		                          const bc_material* p_materials,
 		                          bcUINT16 p_material_count,
 		                          bool p_is_exclusive = false);
 
 		/**
-			* \brief Creates a shape which may be attached to multiple actors.
-			* \param[in] p_geometry the geometry for the shape
-			* \param[in] p_materials the materials for the shape
-			* \param[in] p_material_count the number of materials
-			* \param[in] p_shape_flags the PxShapeFlags to be set
-			* \param[in] p_is_exclusive whether this shape is exclusive to a single actor or may be shared
-			* Shared shapes are not mutable when they are attached to an actor
-			*/
+		* \brief Creates a shape which may be attached to multiple actors.
+		* \param[in] p_geometry the geometry for the shape
+		* \param[in] p_materials the materials for the shape
+		* \param[in] p_material_count the number of materials
+		* \param[in] p_shape_flags the PxShapeFlags to be set
+		* \param[in] p_is_exclusive whether this shape is exclusive to a single actor or may be shared
+		* Shared shapes are not mutable when they are attached to an actor
+		*/
 		bc_shape_ref create_shape(const bc_shape_geometry& p_geometry,
 		                          const bc_material* p_materials,
 		                          bcUINT16 p_material_count,
@@ -220,22 +220,22 @@ namespace black_cat::physics
 		bcUINT32 get_shape_count() const noexcept;
 
 		/**
-			* \brief Creates a new material with default properties.
-			* \param p_static_friction the coefficient of static friction. Range [0, max_float]
-			* \param p_dynamic_friction the coefficient of dynamic friction. Range [0, max_float]
-			* \param p_restitution the coefficient of restitution. Range [0, 1]
-			* \return The new material.
-			*/
+		* \brief Creates a new material with default properties.
+		* \param p_static_friction the coefficient of static friction. Range [0, max_float]
+		* \param p_dynamic_friction the coefficient of dynamic friction. Range [0, max_float]
+		* \param p_restitution the coefficient of restitution. Range [0, 1]
+		* \return The new material.
+		*/
 		bc_material_ref create_material(bcFLOAT p_static_friction, bcFLOAT p_dynamic_friction, bcFLOAT p_restitution);
 
 		bcUINT32 get_material_count() const noexcept;
 
 		/**
-			 * \brief Creates an aggregate with the specified maximum size and selfCollision property.
-			 * \param[in] p_max_size the maximum number of actors that may be placed in the aggregate.  This value must not exceed 128, otherwise NULL will be returned.
-			 * \param[in] p_enable_self_collision whether the aggregate supports self-collision
-			 * \return The new aggregate.
-			 */
+		 * \brief Creates an aggregate with the specified maximum size and selfCollision property.
+		 * \param[in] p_max_size the maximum number of actors that may be placed in the aggregate.  This value must not exceed 128, otherwise NULL will be returned.
+		 * \param[in] p_enable_self_collision whether the aggregate supports self-collision
+		 * \return The new aggregate.
+		 */
 		bc_aggregate_ref create_aggregate(bcUINT32 p_max_size, bool p_enable_self_collision);
 
 		bc_memory_buffer create_convex_mesh(const bc_convex_mesh_desc& p_desc);
@@ -259,78 +259,78 @@ namespace black_cat::physics
 		bcUINT32 get_height_field_count() const noexcept;
 
 		/**
-			 * \brief Create a fixed joint.
-			 * \param[in] p_actor0 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
-			 * \param[in] p_local_frame0 the position and orientation of the joint relative to actor0
-			 * \param[in] p_actor1 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
-			 * \param[in] p_local_frame1 the position and orientation of the joint relative to actor1
-			 */
+		 * \brief Create a fixed joint.
+		 * \param[in] p_actor0 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
+		 * \param[in] p_local_frame0 the position and orientation of the joint relative to actor0
+		 * \param[in] p_actor1 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
+		 * \param[in] p_local_frame1 the position and orientation of the joint relative to actor1
+		 */
 		bc_fixed_joint_ref create_fixed_joint(bc_rigid_actor* p_actor0,
 		                                      const bc_transform& p_local_frame0,
 		                                      bc_rigid_actor* p_actor1,
 		                                      const bc_transform& p_local_frame1);
 
 		/**
-			* \brief Create a distance joint.
-			* \param[in] p_actor0 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
-			* \param[in] p_local_frame0 the position and orientation of the joint relative to actor0
-			* \param[in] p_actor1 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
-			* \param[in] p_local_frame1 the position and orientation of the joint relative to actor1
-			*/
+		* \brief Create a distance joint.
+		* \param[in] p_actor0 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
+		* \param[in] p_local_frame0 the position and orientation of the joint relative to actor0
+		* \param[in] p_actor1 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
+		* \param[in] p_local_frame1 the position and orientation of the joint relative to actor1
+		*/
 		bc_distance_joint_ref create_distance_joint(bc_rigid_actor* p_actor0,
 		                                            const bc_transform& p_local_frame0,
 		                                            bc_rigid_actor* p_actor1,
 		                                            const bc_transform& p_local_frame1);
 
 		/**
-			* \brief Create a prismatic joint.
-			* \param[in] p_actor0 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
-			* \param[in] p_local_frame0 the position and orientation of the joint relative to actor0
-			* \param[in] p_actor1 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
-			* \param[in] p_local_frame1 the position and orientation of the joint relative to actor1
-			*/
+		* \brief Create a prismatic joint.
+		* \param[in] p_actor0 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
+		* \param[in] p_local_frame0 the position and orientation of the joint relative to actor0
+		* \param[in] p_actor1 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
+		* \param[in] p_local_frame1 the position and orientation of the joint relative to actor1
+		*/
 		bc_prismatic_joint_ref create_prismatic_joint(bc_rigid_actor* p_actor0,
 		                                              const bc_transform& p_local_frame0,
 		                                              bc_rigid_actor* p_actor1,
 		                                              const bc_transform& p_local_frame1);
 
 		/**
-			* \brief Create a revolute joint.
-			* \param[in] p_actor0 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
-			* \param[in] p_local_frame0 the position and orientation of the joint relative to actor0
-			* \param[in] p_actor1 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
-			* \param[in] p_local_frame1 the position and orientation of the joint relative to actor1
-			*/
+		* \brief Create a revolute joint.
+		* \param[in] p_actor0 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
+		* \param[in] p_local_frame0 the position and orientation of the joint relative to actor0
+		* \param[in] p_actor1 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
+		* \param[in] p_local_frame1 the position and orientation of the joint relative to actor1
+		*/
 		bc_revolute_joint_ref create_revolute_joint(bc_rigid_actor* p_actor0,
 		                                            const bc_transform& p_local_frame0,
 		                                            bc_rigid_actor* p_actor1,
 		                                            const bc_transform& p_local_frame1);
 
 		/**
-			* \brief Create a spherical joint.
-			* \param[in] p_actor0 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
-			* \param[in] p_local_frame0 the position and orientation of the joint relative to actor0
-			* \param[in] p_actor1 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
-			* \param[in] p_local_frame1 the position and orientation of the joint relative to actor1
-			*/
+		* \brief Create a spherical joint.
+		* \param[in] p_actor0 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
+		* \param[in] p_local_frame0 the position and orientation of the joint relative to actor0
+		* \param[in] p_actor1 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
+		* \param[in] p_local_frame1 the position and orientation of the joint relative to actor1
+		*/
 		bc_spherical_joint_ref create_spherical_joint(bc_rigid_actor* p_actor0,
 		                                              const bc_transform& p_local_frame0,
 		                                              bc_rigid_actor* p_actor1,
 		                                              const bc_transform& p_local_frame1);
 
 		/**
-			* \brief Create a d6 joint.
-			* \param[in] p_actor0 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
-			* \param[in] p_local_frame0 the position and orientation of the joint relative to actor0
-			* \param[in] p_actor1 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
-			* \param[in] p_local_frame1 the position and orientation of the joint relative to actor1
-			*/
+		* \brief Create a d6 joint.
+		* \param[in] p_actor0 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
+		* \param[in] p_local_frame0 the position and orientation of the joint relative to actor0
+		* \param[in] p_actor1 an actor to which the joint is attached. NULL may be used to attach the joint to a specific point in the world frame
+		* \param[in] p_local_frame1 the position and orientation of the joint relative to actor1
+		*/
 		bc_d6_joint_ref create_d6_joint(bc_rigid_actor* p_actor0,
 		                                const bc_transform& p_local_frame0,
 		                                bc_rigid_actor* p_actor1,
 		                                const bc_transform& p_local_frame1);
 
-		bc_memory_buffer read_to_memory_buffer(void* p_data, bcUINT32 p_size);
+		bc_memory_buffer read_to_memory_buffer(const void* p_data, bcUINT32 p_size);
 
 		bc_serialize_buffer create_serialize_buffer();
 

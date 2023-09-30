@@ -25,28 +25,28 @@ namespace black_cat::physics
 	};
 
 	/**
-		 * \brief Filter callback to specify handling of collision pairs.
-		 * States should not be modified from within the callbacks.
-		 * \n Threading: The callbacks may execute in user threads or simulation threads, possibly simultaneously.
-		 */
+	 * \brief Filter callback to specify handling of collision pairs.
+	 * States should not be modified from within the callbacks.
+	 * \n Threading: The callbacks may execute in user threads or simulation threads, possibly simultaneously.
+	 */
 	class bci_contact_filter_callback
 	{
 	public:
 		virtual ~bci_contact_filter_callback() = default;
 
 		/**
-			 * \brief Filter method to specify how a pair of potentially colliding objects should be processed.
-			 * \param[in] p_attr0 The filter attribute of the first object
-			 * \param[in] p_collision_flag0 The custom filter data of the first object
-			 * \param[in] p_actor0 Actor pointer of the first object
-			 * \param[in] p_shape0 Shape pointer of the first object (NULL if the object has no shapes, for example in the case of a particle system)
-			 * \param[in] p_attr1 The filter attribute of the second object
-			 * \param[in] p_collision_flag1 The custom filter data of the second object
-			 * \param[in] p_actor1 Actor pointer of the second object
-			 * \param[in] p_shape1 Shape pointer of the second object (NULL if the object has no shapes, for example in the case of a  particle system)
-			 * \return Filter flags defining whether the pair should be discarded, temporarily ignored or processed and whether the pair
-			 * should be tracked and send a report on pair deletion through the filter callback
-			 */
+		 * \brief Filter method to specify how a pair of potentially colliding objects should be processed.
+		 * \param[in] p_attr0 The filter attribute of the first object
+		 * \param[in] p_collision_flag0 The custom filter data of the first object
+		 * \param[in] p_actor0 Actor pointer of the first object
+		 * \param[in] p_shape0 Shape pointer of the first object (NULL if the object has no shapes, for example in the case of a particle system)
+		 * \param[in] p_attr1 The filter attribute of the second object
+		 * \param[in] p_collision_flag1 The custom filter data of the second object
+		 * \param[in] p_actor1 Actor pointer of the second object
+		 * \param[in] p_shape1 Shape pointer of the second object (NULL if the object has no shapes, for example in the case of a  particle system)
+		 * \return Filter flags defining whether the pair should be discarded, temporarily ignored or processed and whether the pair
+		 * should be tracked and send a report on pair deletion through the filter callback
+		 */
 		virtual bool pair_found(bc_filter_object_flag p_attr0, 
 		                        bc_collision_filter p_collision_flag0, 
 		                        const bc_actor* p_actor0, 

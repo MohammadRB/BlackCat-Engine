@@ -32,11 +32,11 @@ namespace black_cat::physics
 		bc_platform_spherical_joint& operator=(const bc_platform_spherical_joint&) noexcept;
 
 		/**
-			* \brief Enable the the limit cone for the joint along with strength and damping of the joint spring.
-			* Default PI/2
-			* Range (0,PI)
-			* \param p_limit
-			*/
+		* \brief Enable the the limit cone for the joint along with strength and damping of the joint spring.
+		* Default PI/2
+		* Range (0,PI)
+		* \param p_limit
+		*/
 		void enable_limit(const bc_joint_cone_limit& p_limit) noexcept;
 
 		void disable_limit() noexcept;

@@ -77,9 +77,9 @@ namespace black_cat::physics
 		bc_rigid_dynamic is_rigid_dynamic() const noexcept;
 
 		/**
-			 * \brief Retrieves the axis aligned bounding box enclosing the actor.
-			 * \return The actor's bounding box.
-			 */
+		 * \brief Retrieves the axis aligned bounding box enclosing the actor.
+		 * \return The actor's bounding box.
+		 */
 		bc_bound_box get_world_bound() const noexcept;
 
 		bc_actor_flag get_actor_flags() const noexcept;
@@ -87,9 +87,9 @@ namespace black_cat::physics
 		void set_actor_flag(bc_actor_flag p_flag, bool p_value) noexcept;
 
 		/**
-			 * \brief If this actor belong to a aggregate return aggregate of this actor otherwise null
-			 * \return 
-			 */
+		 * \brief If this actor belong to a aggregate return aggregate of this actor otherwise null
+		 * \return 
+		 */
 		bc_aggregate get_aggregate() const noexcept;
 
 		bool is_valid() const noexcept override;

@@ -32,21 +32,21 @@ namespace black_cat::physics
 		bc_platform_revolute_joint& operator=(const bc_platform_revolute_joint&) noexcept;
 
 		/**
-			 * \brief return the angle of the joint, in the range (-Pi, Pi]
-			 */
+		 * \brief return the angle of the joint, in the range (-Pi, Pi]
+		 */
 		bcFLOAT get_angle() const noexcept;
 
 		/**
-			 * \brief return the velocity of the joint
-			 */
+		 * \brief return the velocity of the joint
+		 */
 		bcFLOAT get_velocity() const noexcept;
 
 		/**
-			 * \brief Enable the allowed minimum/maximum angle for the joint along with strength and damping of the joint spring.
-			 * Default 0.0f
-			 * Range (-2*PI, 2*PI)
-			 * \param p_limit
-			 */
+		 * \brief Enable the allowed minimum/maximum angle for the joint along with strength and damping of the joint spring.
+		 * Default 0.0f
+		 * Range (-2*PI, 2*PI)
+		 * \param p_limit
+		 */
 		void enable_limit(const bc_joint_angular_limit& p_limit) noexcept;
 
 		void disable_limit() noexcept;

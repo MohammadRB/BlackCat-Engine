@@ -1,4 +1,5 @@
 // [29/11/2016 MRB]
+// [29/11/2016 MRB]
 
 #pragma once
 
@@ -14,8 +15,8 @@ namespace black_cat::physics
 	};
 
 	/**
-		 * \brief Capsule shapes are aligned along x axis
-		 */
+	 * \brief Capsule shapes are aligned along x axis
+	 */
 	template<bc_physics_api TApi>
 	class bc_platform_shape_capsule : public bc_platform_shape_geometry<TApi>
 	{
@@ -28,10 +29,10 @@ namespace black_cat::physics
 		explicit bc_platform_shape_capsule(platform_pack& p_pack) noexcept;
 
 		/**
-			 * \brief Constructor to initialize capsule with passed radius and half height.
-			 * \param p_half_height Half of the capsule's height, measured between the centers of the hemispherical ends.
-			 * \param p_radius 
-			 */
+		 * \brief Constructor to initialize capsule with passed radius and half height.
+		 * \param p_half_height Half of the capsule's height, measured between the centers of the hemispherical ends.
+		 * \param p_radius 
+		 */
 		bc_platform_shape_capsule(bcFLOAT p_half_height, bcFLOAT p_radius) noexcept;
 
 		bc_platform_shape_capsule(const bc_platform_shape_capsule&) noexcept;

@@ -34,19 +34,19 @@ namespace black_cat::physics
 		bcUINT32 get_num_column() const noexcept;
 			
 		/**
-			 * \brief Any index out of height field boundaries are remapped
-			 * \param p_row 
-			 * \param p_column 
-			 * \return 
-			 */
+		 * \brief Any index out of height field boundaries are remapped
+		 * \param p_row 
+		 * \param p_column 
+		 * \return 
+		 */
 		std::tuple<bcINT16, bc_material_index> get_sample_from_top_left(bcINT32 p_row, bcINT32 p_column) const noexcept;
 
 		/**
-			 * \brief Any index out of height field boundaries are remapped
-			 * \param p_row
-			 * \param p_column
-			 * \return
-			 */
+		 * \brief Any index out of height field boundaries are remapped
+		 * \param p_row
+		 * \param p_column
+		 * \return
+		 */
 		std::tuple<bcINT16, bc_material_index> get_sample_from_bottom_left(bcINT32 p_row, bcINT32 p_column) const noexcept;
 			
 		platform_pack& get_platform_pack() noexcept

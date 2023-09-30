@@ -49,77 +49,77 @@ namespace black_cat::physics
 		bc_platform_d6_joint& operator=(const bc_platform_d6_joint&) noexcept;
 
 		/**
-			 * \brief Set the motion type around the specified axis.
-			 * \param[in] p_axis the axis around which motion is specified
-			 * \param[in] p_type the motion type around the specified axis
-			 * Default: all degrees of freedom are locked
-			 */
+		 * \brief Set the motion type around the specified axis.
+		 * \param[in] p_axis the axis around which motion is specified
+		 * \param[in] p_type the motion type around the specified axis
+		 * Default: all degrees of freedom are locked
+		 */
 		void set_motion(bc_d6_axis p_axis, bc_d6_motion p_type) noexcept;
 
 		/**
-			 * \brief Get the motion type around the specified axis.
-			 * \param[in] p_axis the degree of freedom around which the motion type is specified
-			 * \return the motion type around the specified axis
-			 */
+		 * \brief Get the motion type around the specified axis.
+		 * \param[in] p_axis the degree of freedom around which the motion type is specified
+		 * \return the motion type around the specified axis
+		 */
 		bc_d6_axis get_motion(bc_d6_axis p_axis) const noexcept;
 
 		/**
-			 * \brief get the twist angle of the joint
-			 */
+		 * \brief get the twist angle of the joint
+		 */
 		bcFLOAT get_x_angle() const noexcept;
 
 		/**
-			 * \brief get the swing angle of the joint from the Y axis
-			 */
+		 * \brief get the swing angle of the joint from the Y axis
+		 */
 		bcFLOAT get_y_angle() const noexcept;
 
 		/**
-			 * \brief get the swing angle of the joint from the Z axis
-			 */
+		 * \brief get the swing angle of the joint from the Z axis
+		 */
 		bcFLOAT get_z_angle() const noexcept;
 
 		/**
-			 * \brief Set the linear limit for the joint along with strength and damping of the joint spring.
-			 * Default MAX_F32
-			 * Range (0, MAX_F32)
-			 * \param p_limit
-			 */
+		 * \brief Set the linear limit for the joint along with strength and damping of the joint spring.
+		 * Default MAX_F32
+		 * Range (0, MAX_F32)
+		 * \param p_limit
+		 */
 		void set_linear_limit(const bc_joint_linear_limit& p_limit);
 
 		/**
-			 * \brief Get the linear limit for the joint.
-			 * \return the allowed minimum distance
-			 */
+		 * \brief Get the linear limit for the joint.
+		 * \return the allowed minimum distance
+		 */
 		bc_joint_linear_limit get_linear_limit() const noexcept;
 
 		/**
-			 * \brief Set the twist limit for the joint. The twist limit controls the range of motion around the twist axis.
-			 * The twist limit controls the range of motion around the twist axis.
-			 * Default PI/2
-			 * Range (-2*PI, 2*PI)
-			 * \param p_limit
-			 */
+		 * \brief Set the twist limit for the joint. The twist limit controls the range of motion around the twist axis.
+		 * The twist limit controls the range of motion around the twist axis.
+		 * Default PI/2
+		 * Range (-2*PI, 2*PI)
+		 * \param p_limit
+		 */
 		void set_twist_limit(const bc_joint_angular_limit& p_limit) noexcept;
 
 		/**
-			 * \brief
-			 * \return
-			 */
+		 * \brief
+		 * \return
+		 */
 		bc_joint_angular_limit get_twist_limit() const noexcept;
 
 		/**
-			 * \brief Enable the limit cone for the joint along with strength and damping of the joint spring.
-			 * The cone limit is used if either or both swing axes are limited.
-			 * Default PI/2
-			 * Range (0,PI)
-			 * \param p_limit
-			 */
+		 * \brief Enable the limit cone for the joint along with strength and damping of the joint spring.
+		 * The cone limit is used if either or both swing axes are limited.
+		 * Default PI/2
+		 * Range (0,PI)
+		 * \param p_limit
+		 */
 		void set_swing_limit(const bc_joint_cone_limit& p_limit) noexcept;
 
 		/**
-			 * \brief
-			 * \return
-			 */
+		 * \brief
+		 * \return
+		 */
 		bc_joint_cone_limit get_swing_limit() const noexcept;
 	};
 

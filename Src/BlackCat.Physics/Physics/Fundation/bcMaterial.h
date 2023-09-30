@@ -36,25 +36,25 @@ namespace black_cat::physics
 		bcFLOAT get_static_friction() const noexcept;
 
 		/**
-			 * \brief Sets the coefficient of static friction.
-			 * \param p_friction Coefficient of static friction. Range: [0, PX_MAX_F32)
-			 */
+		 * \brief Sets the coefficient of static friction.
+		 * \param p_friction Coefficient of static friction. Range: [0, PX_MAX_F32)
+		 */
 		void set_static_friction(bcFLOAT p_friction) noexcept;
 
 		bcFLOAT get_dynamic_friction() const noexcept;
 
 		/**
-			* \brief Sets the coefficient of dynamic friction.
-			* \param p_friction Coefficient of dynamic friction. Range: [0, PX_MAX_F32)
-			*/
+		* \brief Sets the coefficient of dynamic friction.
+		* \param p_friction Coefficient of dynamic friction. Range: [0, PX_MAX_F32)
+		*/
 		void set_dynamic_friction(bcFLOAT p_friction) noexcept;
 
 		bcFLOAT get_restitution() const noexcept;
 
 		/**
-			 * \brief Sets the coefficient of restitution.
-			 * \param p_restitution Coefficient of restitution. Range: [0,1]
-			 */
+		 * \brief Sets the coefficient of restitution.
+		 * \param p_restitution Coefficient of restitution. Range: [0,1]
+		 */
 		void set_restitution(bcFLOAT p_restitution) noexcept;
 
 		bool is_valid() const noexcept override;

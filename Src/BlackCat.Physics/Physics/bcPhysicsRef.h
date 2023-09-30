@@ -13,10 +13,10 @@ namespace black_cat::physics
 	};
 
 	/**
-		 * \brief Store a strong reference to physics reference objects
-		 * \tparam TApi 
-		 * \tparam TObject 
-		 */
+	 * \brief Store a strong reference to physics reference objects
+	 * \tparam TApi 
+	 * \tparam TObject 
+	 */
 	template<bc_physics_api TApi, class TObject>
 	class bc_platform_physics_ref
 	{

@@ -23,28 +23,28 @@ namespace black_cat::physics
 		}
 
 		/**
-			 * \brief Controls the amount of bounce when the joint hits a limit.
-			 * \n A restitution value of 1.0 causes the joint to bounce back with the velocity which it hit the limit. A value of zero causes the joint to stop dead.
-			 *
-			 * <b>Range:</b> [0,1]<br>
-			 * <b>Default:</b> 0.0
-			 */
+		 * \brief Controls the amount of bounce when the joint hits a limit.
+		 * \n A restitution value of 1.0 causes the joint to bounce back with the velocity which it hit the limit. A value of zero causes the joint to stop dead.
+		 *
+		 * <b>Range:</b> [0,1]<br>
+		 * <b>Default:</b> 0.0
+		 */
 		const bcFLOAT m_restitution;
 			
 		/**
-			* \brief if greater than zero, the limit is soft, i.e. a spring pulls the joint back to the limit
-			* 
-			* Range: [0, PX_MAX_F32)
-			* Default: 0.0
-			*/
+		* \brief if greater than zero, the limit is soft, i.e. a spring pulls the joint back to the limit
+		* 
+		* Range: [0, PX_MAX_F32)
+		* Default: 0.0
+		*/
 		const bcFLOAT m_stiffness;
 			
 		/**
-			* \brief if spring is greater than zero, this is the damping of the limit spring
-			* 
-			* Range: [0, PX_MAX_F32)
-			* Default: 0.0
-			*/
+		* \brief if spring is greater than zero, this is the damping of the limit spring
+		* 
+		* Range: [0, PX_MAX_F32)
+		* Default: 0.0
+		*/
 		const bcFLOAT m_damping;
 	};
 
@@ -63,10 +63,10 @@ namespace black_cat::physics
 		}
 
 		/**
-			 * \brief the extent of the limit.
-			 * Range:(0, PX_MAX_F32)
-			 * Default: PX_MAX_F32
-			 */
+		 * \brief the extent of the limit.
+		 * Range:(0, PX_MAX_F32)
+		 * Default: PX_MAX_F32
+		 */
 		const bcFLOAT m_limit;
 	};
 
@@ -87,10 +87,10 @@ namespace black_cat::physics
 		}
 
 		/**
-			* \brief the range of the limit.
-			* Unit: Angular: Radians
-			* Default: 0.0
-			*/
+		* \brief the range of the limit.
+		* Unit: Angular: Radians
+		* Default: 0.0
+		*/
 		const bcFLOAT m_upper, m_lower;
 	};
 
@@ -111,10 +111,10 @@ namespace black_cat::physics
 		}
 
 		/**
-			 * \brief the range of the limit.
-			 * Unit: Angular: Radians
-			 * Default: 0.0
-			 */
+		 * \brief the range of the limit.
+		 * Unit: Angular: Radians
+		 * Default: 0.0
+		 */
 		const bcFLOAT m_upper, m_lower;
 	};
 
@@ -135,19 +135,19 @@ namespace black_cat::physics
 		}
 
 		/**
-			 * \brief the maximum angle from the Y axis of the constraint frame.
-			 * Unit: Angular: Radians
-			 * Range: Angular: (0,PI)<br>
-			 * Default: PI/2
-			 */
+		 * \brief the maximum angle from the Y axis of the constraint frame.
+		 * Unit: Angular: Radians
+		 * Range: Angular: (0,PI)<br>
+		 * Default: PI/2
+		 */
 		const bcFLOAT m_y_angle;
 
 		/**
-			* \brief the maximum angle from the Z axis of the constraint frame.
-			* Unit: Angular: Radians
-			* Range: Angular: (0,PI)<br>
-			* Default: PI/2
-			*/
+		* \brief the maximum angle from the Z axis of the constraint frame.
+		* Unit: Angular: Radians
+		* Range: Angular: (0,PI)<br>
+		* Default: PI/2
+		*/
 		const bcFLOAT m_z_angle;
 	};
 }

@@ -10,8 +10,8 @@ namespace black_cat::physics
 	{
 	public:
 		/**
-			 * \brief Construct to null data
-			 */
+		 * \brief Construct to null data
+		 */
 		bc_strided_data()
 			: bc_strided_data(nullptr, 0)
 		{
@@ -38,8 +38,8 @@ namespace black_cat::physics
 	{
 	public:
 		/**
-			 * \brief Construct to null data
-			 */
+		 * \brief Construct to null data
+		 */
 		bc_bounded_strided_data()
 			: bc_strided_data(),
 			  m_count(0)
@@ -68,8 +68,8 @@ namespace black_cat::physics
 	{
 	public:
 		/**
-			* \brief Construct to null data
-			*/
+		* \brief Construct to null data
+		*/
 		bc_bounded_strided_typed_data()
 			: bc_bounded_strided_data()
 		{

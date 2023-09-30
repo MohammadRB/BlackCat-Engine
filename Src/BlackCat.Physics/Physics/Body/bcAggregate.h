@@ -19,9 +19,9 @@ namespace black_cat::physics
 	};
 
 	/**
-		 * \brief Class to aggregate actors into a single broad phase entry.
-		 * An aggregate object is a collection of actors, which will exist as a single entry in the broad-phase structures.
-		 */
+	 * \brief Class to aggregate actors into a single broad phase entry.
+	 * An aggregate object is a collection of actors, which will exist as a single entry in the broad-phase structures.
+	 */
 	template< bc_physics_api TApi >
 	class bc_platform_aggregate : public bc_platform_physics_reference< TApi >
 	{
@@ -47,11 +47,12 @@ namespace black_cat::physics
 		bcUINT32 get_actor_count() const noexcept;
 
 		/**
-			 * \brief Retrieve all actors contained in the aggregate.
-			 * \param p_buffer 
-			 * \param p_buffer_size 
-			 * \return Number of actor pointers written to the buffer.
-			 */
+		 * \brief Retrieve all actors contained in the aggregate.
+		 * \param p_buffer 
+		 * \param p_buffer_size
+		 * \param p_start_index 
+		 * \return Number of actor pointers written to the buffer.
+		 */
 		bcUINT32 get_actors(bc_actor* p_buffer, bcUINT32 p_buffer_size, bcUINT32 p_start_index = 0) const noexcept;
 
 		bool is_valid() const noexcept override;

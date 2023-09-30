@@ -16,9 +16,9 @@ namespace black_cat::physics
 	};
 
 	/**
-		 * \brief An intermediate format when creating triangle mesh or convex mesh from input data.
-		 * \tparam TApi 
-		 */
+	 * \brief An intermediate format when creating triangle mesh or convex mesh from input data.
+	 * \tparam TApi 
+	 */
 	template<bc_physics_api TApi>
 	class bc_platform_memory_buffer
 	{

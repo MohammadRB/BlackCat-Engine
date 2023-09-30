@@ -23,8 +23,8 @@ namespace black_cat::physics
 
 	public:
 		/**
-			 * \brief Initialize as empty bound box
-			 */
+		 * \brief Initialize as empty bound box
+		 */
 		bc_platform_bound_box() noexcept;
 
 		bc_platform_bound_box(const core::bc_vector3f& p_center, const core::bc_vector3f& p_half_extend) noexcept;
@@ -60,9 +60,9 @@ namespace black_cat::physics
 		void transform(const bc_transform& p_transform) noexcept;
 
 		/**
-			 * \brief Get 8 points of box. Start from -x,+z counter clockwise to +x,+z, from +y to -y
-			 * \param p_result 
-			 */
+		 * \brief Get 8 points of box. Start from -x,+z counter clockwise to +x,+z, from +y to -y
+		 * \param p_result 
+		 */
 		void get_points(core::bc_array<core::bc_vector3f, 8>& p_result) const noexcept;
 
 		static bc_platform_bound_box from_center_extends(const core::bc_vector3f& p_center, const core::bc_vector3f& p_half_extend);

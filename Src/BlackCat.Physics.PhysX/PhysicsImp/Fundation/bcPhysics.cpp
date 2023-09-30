@@ -599,7 +599,7 @@ namespace black_cat::physics
 
 	template<>
 	BC_PHYSICSIMP_DLL
-	bc_memory_buffer bc_platform_physics<g_api_physx>::read_to_memory_buffer(void* p_data, bcUINT32 p_size)
+	bc_memory_buffer bc_platform_physics<g_api_physx>::read_to_memory_buffer(const void* p_data, bcUINT32 p_size)
 	{
 		bc_memory_buffer l_buffer;
 		l_buffer.get_platform_pack().m_px_stream->write(p_data, p_size);

@@ -49,99 +49,99 @@ namespace black_cat::physics
 		virtual	bcFLOAT get_mass() const noexcept;
 
 		/**
-			 * \brief Sets the mass of a dynamic actor. The mass must be non-negative.
-			 * setMass() does not update the inertial properties of the body. to change the inertia tensor use update_mass_inertia().
-			 * Default: 1.0
-			 * Waking: No
-			 * \param p_mass 
-			 */
+		 * \brief Sets the mass of a dynamic actor. The mass must be non-negative.
+		 * setMass() does not update the inertial properties of the body. to change the inertia tensor use update_mass_inertia().
+		 * Default: 1.0
+		 * Waking: No
+		 * \param p_mass 
+		 */
 		virtual	void set_mass(bcFLOAT p_mass) noexcept;
 
 		virtual core::bc_vector3f get_inertia_tensor() const noexcept;
 
 		/**
-			 * \brief Sets the inertia tensor, using a parameter specified in mass space coordinates.
-			 * Default: (1.0, 1.0, 1.0)
-			 * Waking: No
-			 * \param p_mass 
-			 */
+		 * \brief Sets the inertia tensor, using a parameter specified in mass space coordinates.
+		 * Default: (1.0, 1.0, 1.0)
+		 * Waking: No
+		 * \param p_mass 
+		 */
 		virtual void set_inertia_tensor(const core::bc_vector3f& p_mass) noexcept;
 
 		/**
-			* \brief Computation of mass properties for a rigid body actor
-			* This method sets the mass, inertia and center of mass of a rigid body. The mass is set to the sum of all user-supplied
-			* shape mass values, and the inertia and center of mass are computed according to the rigid body's shapes and the per shape mass input values.
-			* If no collision shapes are found, the inertia tensor is set to (1,1,1)
-			* \param[in] p_shape_masses The per shape mass values. There must be one entry for each shape which has the PxShapeFlag::eSIMULATION_SHAPE set. Other shapes are ignored. The mass values must be greater than 0.
-			* \param[in] p_shape_masses_count The number of provided mass values.
-			* \param[in] p_mass_local_pose The center of mass relative to the actor frame. If set to null then (0,0,0) is assumed.
-			* \return Boolean. True on success else false.
-			*/
+		* \brief Computation of mass properties for a rigid body actor
+		* This method sets the mass, inertia and center of mass of a rigid body. The mass is set to the sum of all user-supplied
+		* shape mass values, and the inertia and center of mass are computed according to the rigid body's shapes and the per shape mass input values.
+		* If no collision shapes are found, the inertia tensor is set to (1,1,1)
+		* \param[in] p_shape_masses The per shape mass values. There must be one entry for each shape which has the PxShapeFlag::eSIMULATION_SHAPE set. Other shapes are ignored. The mass values must be greater than 0.
+		* \param[in] p_shape_masses_count The number of provided mass values.
+		* \param[in] p_mass_local_pose The center of mass relative to the actor frame. If set to null then (0,0,0) is assumed.
+		* \return Boolean. True on success else false.
+		*/
 		virtual bool set_mass_update_inertia(const bcFLOAT* p_shape_masses, bcUINT32 p_shape_masses_count, const core::bc_vector3f* p_mass_local_pose = nullptr) noexcept;
 			
 		/**
-			* \brief Computation of mass properties for a rigid body actor
-			* This method sets the mass, inertia and center of mass of a rigid body. The mass is set to the user-supplied
-			* value, and the inertia and center of mass are computed according to the rigid body's shapes and the input mass.
-			* If no collision shapes are found, the inertia tensor is set to (1,1,1)
-			* \param[in] p_mass The mass of the body. Must be greater than 0.
-			* \param[in] p_mass_local_pose The center of mass relative to the actor frame. If set to null then (0,0,0) is assumed.
-			* \return Boolean. True on success else false.
-			*/
+		* \brief Computation of mass properties for a rigid body actor
+		* This method sets the mass, inertia and center of mass of a rigid body. The mass is set to the user-supplied
+		* value, and the inertia and center of mass are computed according to the rigid body's shapes and the input mass.
+		* If no collision shapes are found, the inertia tensor is set to (1,1,1)
+		* \param[in] p_mass The mass of the body. Must be greater than 0.
+		* \param[in] p_mass_local_pose The center of mass relative to the actor frame. If set to null then (0,0,0) is assumed.
+		* \return Boolean. True on success else false.
+		*/
 		virtual bool set_mass_update_inertia(bcFLOAT p_mass, const core::bc_vector3f* p_mass_local_pose = nullptr) noexcept;
 
 		/**
-			 * \brief Computation of mass properties for a rigid body actor
-			 * To simulate a dynamic rigid actor, actor needs a mass and an inertia tensor.
-			 * This method will set the mass, center of mass, and inertia tensor.
-			 * if no collision shapes are found, the inertia tensor is set to (1,1,1) and the mass to 1.
-			 * if massLocalPose is non-NULL, the rigid body's center of mass parameter  will be set
-			 * to the user provided value (massLocalPose) and the inertia tensor will be resolved at that point.
-			 * \param[in] p_shape_densities The per shape densities. There must be one entry for each shape which has the PxShapeFlag::eSIMULATION_SHAPE set (or for all shapes if includeNonSimShapes is set to true). Other shapes are ignored. The density values must be greater than 0.
-			 * \param[in] p_shape_density_count The number of provided density values.
-			 * \param[in] p_mass_local_pose The center of mass relative to the actor frame.  If set to null then (0,0,0) is assumed.
-			 * \return Boolean. True on success else false.
-			 */
+		 * \brief Computation of mass properties for a rigid body actor
+		 * To simulate a dynamic rigid actor, actor needs a mass and an inertia tensor.
+		 * This method will set the mass, center of mass, and inertia tensor.
+		 * if no collision shapes are found, the inertia tensor is set to (1,1,1) and the mass to 1.
+		 * if massLocalPose is non-NULL, the rigid body's center of mass parameter  will be set
+		 * to the user provided value (massLocalPose) and the inertia tensor will be resolved at that point.
+		 * \param[in] p_shape_densities The per shape densities. There must be one entry for each shape which has the PxShapeFlag::eSIMULATION_SHAPE set (or for all shapes if includeNonSimShapes is set to true). Other shapes are ignored. The density values must be greater than 0.
+		 * \param[in] p_shape_density_count The number of provided density values.
+		 * \param[in] p_mass_local_pose The center of mass relative to the actor frame.  If set to null then (0,0,0) is assumed.
+		 * \return Boolean. True on success else false.
+		 */
 		virtual bool update_mass_inertia(const bcFLOAT* p_shape_densities, bcUINT32 p_shape_density_count, const core::bc_vector3f* p_mass_local_pose = nullptr) noexcept;
 			
 		/**
-			 * \brief Computation of mass properties for a rigid body actor
-			 * \param[in] p_density The density of the body. Used to compute the mass of the body. The density must be greater than 0.
-			 * \param[in] p_mass_local_pose The center of mass relative to the actor frame.  If set to null then (0,0,0) is assumed.
-			 * \return Boolean. True on success else false.
-			 */
+		 * \brief Computation of mass properties for a rigid body actor
+		 * \param[in] p_density The density of the body. Used to compute the mass of the body. The density must be greater than 0.
+		 * \param[in] p_mass_local_pose The center of mass relative to the actor frame.  If set to null then (0,0,0) is assumed.
+		 * \return Boolean. True on success else false.
+		 */
 		virtual bool update_mass_inertia(bcFLOAT p_density, const core::bc_vector3f* p_mass_local_pose = nullptr) noexcept;
 
 		virtual	core::bc_vector3f get_linear_velocity() const noexcept;
 
 		/**
-			 * \brief Sets the linear velocity of the actor.
-			 * It is invalid to use this method if simulation is disabled for this actor.
-			 * Default: (0.0, 0.0, 0.0)
-			 * Waking: Yes
-			 * \param p_velocity 
-			 */
+		 * \brief Sets the linear velocity of the actor.
+		 * It is invalid to use this method if simulation is disabled for this actor.
+		 * Default: (0.0, 0.0, 0.0)
+		 * Waking: Yes
+		 * \param p_velocity 
+		 */
 		virtual	void set_linear_velocity(const core::bc_vector3f& p_velocity) noexcept;
 
 		virtual	core::bc_vector3f get_angular_velocity() const noexcept;
 
 		/**
-			 * \brief Sets the angular velocity of the actor.
-			 * It is invalid to use this method if simulation is disabled for this actor.
-			 * Default: (0.0, 0.0, 0.0)
-			 * Waking: Yes
-			 * \param p_velocity 
-			 */
+		 * \brief Sets the angular velocity of the actor.
+		 * It is invalid to use this method if simulation is disabled for this actor.
+		 * Default: (0.0, 0.0, 0.0)
+		 * Waking: Yes
+		 * \param p_velocity 
+		 */
 		virtual void set_angular_velocity(const core::bc_vector3f& p_velocity);
 
 		/**
-			 * \brief Applies a force (or impulse) defined in the global coordinate frame to the actor at its center of mass.
-			 * This will not induce a torque.
-			 * It is invalid to use this method if simulation is disabled for this actor.
-			 * Waking: Yes.
-			 * \param p_force 
-			 * \param p_mode 
-			 */
+		 * \brief Applies a force (or impulse) defined in the global coordinate frame to the actor at its center of mass.
+		 * This will not induce a torque.
+		 * It is invalid to use this method if simulation is disabled for this actor.
+		 * Waking: Yes.
+		 * \param p_force 
+		 * \param p_mode 
+		 */
 		virtual	void add_force(const core::bc_vector3f& p_force, bc_force_mode p_mode = bc_force_mode::force) noexcept;
 
 		virtual	void add_force_at_pose(const core::bc_vector3f& p_force, const core::bc_vector3f& p_pose, bc_force_mode p_mode = bc_force_mode::force) noexcept;
@@ -153,24 +153,24 @@ namespace black_cat::physics
 		virtual	void add_local_force_at_local_pose(const core::bc_vector3f& p_force, const core::bc_vector3f& p_pose, bc_force_mode p_mode = bc_force_mode::force) noexcept;
 
 		/**
-			 * \brief Applies an impulsive torque defined in the global coordinate frame to the actor.
-			 * It is invalid to use this method if simulation is disabled for this actor.
-			 * Waking: Yes.
-			 * \param p_torque 
-			 * \param p_mode 
-			 */
+		 * \brief Applies an impulsive torque defined in the global coordinate frame to the actor.
+		 * It is invalid to use this method if simulation is disabled for this actor.
+		 * Waking: Yes.
+		 * \param p_torque 
+		 * \param p_mode 
+		 */
 		virtual void add_torque(const core::bc_vector3f& p_torque, bc_force_mode p_mode = bc_force_mode::force) noexcept;
 
 		/**
-			 * \brief Clears the accumulated forces (sets the accumulated force back to zero).
-			 * It is invalid to use this method if simulation is disabled for this actor.
-			 */
+		 * \brief Clears the accumulated forces (sets the accumulated force back to zero).
+		 * It is invalid to use this method if simulation is disabled for this actor.
+		 */
 		virtual void clear_force(bc_force_mode p_mode = bc_force_mode::force) noexcept;
 
 		/**
-			 * \brief Clears the impulsive torque defined in the global coordinate frame to the actor.
-			 * It is invalid to use this method if simulation is disabled for this actor.
-			 */
+		 * \brief Clears the impulsive torque defined in the global coordinate frame to the actor.
+		 * It is invalid to use this method if simulation is disabled for this actor.
+		 */
 		virtual	void clear_torque(bc_force_mode p_mode = bc_force_mode::force) noexcept;
 
 		virtual bc_rigid_body_flag get_rigid_body_flags() const noexcept;
