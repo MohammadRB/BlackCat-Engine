@@ -110,9 +110,9 @@ namespace black_cat
 		void content_processing(core::bc_content_saving_context& p_context) const override;
 
 	protected:
-		virtual std::pair< graphic::bc_texture_config, graphic::bc_resource_view_config > get_height_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const;
+		virtual std::pair<graphic::bc_texture_config, graphic::bc_resource_view_config> get_height_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const;
 
-		virtual std::pair< graphic::bc_texture_config, graphic::bc_resource_view_config > get_texture_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const;
+		virtual std::pair<graphic::bc_texture_config, graphic::bc_resource_view_config> get_texture_map_texture_config(bcUINT32 p_width, bcUINT32 p_height) const;
 
 	private:
 		constexpr static bcUINT32 s_chunk_size = 64;

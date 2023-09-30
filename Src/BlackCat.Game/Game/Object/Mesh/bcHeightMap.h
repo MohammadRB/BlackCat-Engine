@@ -6,6 +6,7 @@
 #include "Core/Container/bcSpan.h"
 #include "Core/bcConstant.h"
 #include "GraphicImp/Resource/Buffer/bcBuffer.h"
+#include "PhysicsImp/Fundation/bcSerializeBuffer.h"
 #include "PhysicsImp/Shape/bcHeightField.h"
 #include "Game/System/Render/State/bcRenderState.h"
 #include "Game/System/Render/Material/bcMeshMaterial.h"
@@ -24,9 +25,9 @@ namespace black_cat::game
 		BC_CONTENT(hgt_map)
 
 	public:
-		bc_height_map(bcUINT16 p_width,
-		              bcUINT16 p_height,
-		              bcUINT16 p_xz_multiplier,
+		bc_height_map(bcUINT32 p_width,
+		              bcUINT32 p_height,
+		              bcUINT32 p_xz_multiplier,
 		              bcFLOAT p_y_multiplier,
 		              bcFLOAT p_physics_y_scale,
 		              bc_render_state_ptr p_render_state,
@@ -42,11 +43,11 @@ namespace black_cat::game
 
 		bc_height_map& operator=(bc_height_map&& p_other) noexcept;
 
-		bcUINT16 get_width() const noexcept;
+		bcUINT32 get_width() const noexcept;
 
-		bcUINT16 get_height() const noexcept;
+		bcUINT32 get_height() const noexcept;
 
-		bcUINT16 get_xz_multiplier() const noexcept;
+		bcUINT32 get_xz_multiplier() const noexcept;
 
 		bcFLOAT get_y_multiplier() const noexcept;
 
@@ -69,9 +70,9 @@ namespace black_cat::game
 		core::bc_const_span<bc_height_map_material> get_materials() const noexcept;
 
 	private:
-		bcUINT16 m_width;
-		bcUINT16 m_height;
-		bcUINT16 m_xz_multiplier;
+		bcUINT32 m_width;
+		bcUINT32 m_height;
+		bcUINT32 m_xz_multiplier;
 		bcFLOAT m_y_multiplier;
 		bcFLOAT m_physics_y_scale;
 
@@ -85,17 +86,17 @@ namespace black_cat::game
 
 	using bc_height_map_ptr = core::bc_content_ptr< bc_height_map >;
 
-	inline bcUINT16 bc_height_map::get_width() const noexcept
+	inline bcUINT32 bc_height_map::get_width() const noexcept
 	{
 		return m_width;
 	}
 
-	inline bcUINT16 bc_height_map::get_height() const noexcept
+	inline bcUINT32 bc_height_map::get_height() const noexcept
 	{
 		return m_height;
 	}
 
-	inline bcUINT16 bc_height_map::get_xz_multiplier() const noexcept
+	inline bcUINT32 bc_height_map::get_xz_multiplier() const noexcept
 	{
 		return m_xz_multiplier;
 	}

@@ -54,8 +54,7 @@ namespace black_cat
 				graphic::bc_resource_usage::gpu_rw
 			)
 			.as_constant_buffer();
-
-		m_command_list = l_device.create_command_list();
+		
 		m_parameter_cbuffer = l_device.create_buffer(l_parameter_cbuffer_config, nullptr);
 		m_chunk_info_device_compute_state = p_render_system.create_device_compute_state("terrain_chunk_info_cs");
 		m_run_chunk_info_shader = true;
@@ -272,7 +271,6 @@ namespace black_cat
 
 	void bc_gbuffer_terrain_pass_dx11::destroy(game::bc_render_system& p_render_system)
 	{
-		m_command_list.reset();
 		m_device_pipeline_state.reset();
 		m_chunk_info_device_compute_state.reset();
 		m_parameter_cbuffer.reset();

@@ -89,20 +89,22 @@ namespace black_cat::game
 		if(const auto* l_world_transform_event = core::bci_message::as<bc_world_transform_actor_event>(p_context.m_event))
 		{
 			m_transform.translate(l_world_transform_event->get_transform().get_translation());
-				
+
+			const auto l_height_map_width = m_height_map->get_width() * m_height_map->get_xz_multiplier();
+			const auto l_height_map_height = m_height_map->get_height() * m_height_map->get_xz_multiplier();
 			p_context.m_actor.add_event(bc_bound_box_changed_actor_event
+			(
+				physics::bc_bound_box
 				(
-					physics::bc_bound_box
+					m_transform.get_translation(),
+					core::bc_vector3f
 					(
-						m_transform.get_translation(),
-						core::bc_vector3f
-						(
-							static_cast<bcFLOAT>(m_height_map->get_width() * m_height_map->get_xz_multiplier()) / 2,
-							m_height_map->get_y_multiplier() * 0.8f, // TODO Get actual terrain height
-							static_cast<bcFLOAT>(m_height_map->get_height() * m_height_map->get_xz_multiplier()) / 2
-						)
+						static_cast<bcFLOAT>(l_height_map_width) / 2,
+						m_height_map->get_y_multiplier() * 0.8f, // TODO Get actual terrain height
+						static_cast<bcFLOAT>(l_height_map_height) / 2
 					)
-				));
+				)
+			));
 		}
 
 		if(const auto* l_bullet_hit_event = core::bci_message::as<bc_bullet_hit_actor_event>(p_context.m_event))

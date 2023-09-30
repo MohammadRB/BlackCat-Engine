@@ -7,16 +7,16 @@
 
 namespace black_cat::game
 {
-	bc_height_map::bc_height_map(bcUINT16 p_width,
-	                             bcUINT16 p_height,
-	                             bcUINT16 p_xz_multiplier,
-	                             bcFLOAT p_y_multiplier,
-	                             bcFLOAT p_physics_y_scale,
-	                             bc_render_state_ptr p_render_state,
-	                             graphic::bc_buffer_ref p_vertex_buffer,
-	                             graphic::bc_buffer_ref p_index_buffer,
-	                             core::bc_vector<bc_height_map_material> p_materials,
-	                             physics::bc_height_field_ref p_px_height_map,
+	bc_height_map::bc_height_map(bcUINT32 p_width,
+		bcUINT32 p_height,
+		bcUINT32 p_xz_multiplier,
+		bcFLOAT p_y_multiplier,
+		bcFLOAT p_physics_y_scale,
+		bc_render_state_ptr p_render_state,
+		graphic::bc_buffer_ref p_vertex_buffer,
+		graphic::bc_buffer_ref p_index_buffer,
+		core::bc_vector<bc_height_map_material> p_materials,
+		physics::bc_height_field_ref p_px_height_map,
 	                             void* p_px_height_map_deserialize_buffer)
 		: m_width(p_width),
 		  m_height(p_height),

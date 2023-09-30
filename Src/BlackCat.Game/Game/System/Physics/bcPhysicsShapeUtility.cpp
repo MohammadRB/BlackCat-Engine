@@ -154,8 +154,8 @@ namespace black_cat::game
 	{
 		const auto l_half_width = (p_height_map.get_width() * p_height_map.get_xz_multiplier()) / 2;
 		const auto l_half_height = (p_height_map.get_height() * p_height_map.get_xz_multiplier()) / 2;
-		const auto l_position = p_transform.get_position() + core::bc_vector3f(-l_half_width, 0, l_half_height);
-
+		const auto l_position = p_transform.get_position() + core::bc_vector3f(-static_cast<bcFLOAT>(l_half_width), 0, static_cast<bcFLOAT>(l_half_height));
+		
 		return {l_position, p_transform.get_matrix3()};
 	}
 

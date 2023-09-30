@@ -45,8 +45,7 @@ namespace black_cat
 		static constexpr bcUINT16 s_chunk_size = 64;
 
 		bool m_run_chunk_info_shader = false;
-
-		graphic::bc_device_command_list_ref m_command_list;
+		
 		graphic::bc_device_pipeline_state_ref m_device_pipeline_state;
 		graphic::bc_device_compute_state_ref m_chunk_info_device_compute_state;
 		graphic::bc_buffer_ref m_parameter_cbuffer;
