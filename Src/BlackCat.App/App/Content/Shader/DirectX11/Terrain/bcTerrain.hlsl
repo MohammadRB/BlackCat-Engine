@@ -62,45 +62,45 @@ cbuffer g_cb_materials							: register(BC_RENDER_STATE_CB2)
 
 struct bc_vs_input
 {
-	float3 m_position   : POSITION;
-	float2 m_texcoord   : TEXCOORD0;
+	float3 m_position			: POSITION;
+	float2 m_texcoord			: TEXCOORD0;
 };
 
 struct bc_vs_output
 {
-	float3 m_position   : POSITION;
-	float2 m_texcoord   : TEXCOORD0;
+	float3 m_position			: POSITION;
+	float2 m_texcoord			: TEXCOORD0;
 };
 
 struct bc_constant_hs_output
 {
-	float m_edges[4]    : SV_TessFactor;
-	float m_inside[2]   : SV_InsideTessFactor;
+	float m_edges[4]			: SV_TessFactor;
+	float m_inside[2]			: SV_InsideTessFactor;
 };
 
 struct bc_hs_output
 {
-	float3 m_position   : POSITION;
-	float2 m_texcoord   : TEXCOORD0;
+	float3 m_position			: POSITION;
+	float2 m_texcoord			: TEXCOORD0;
 };
 
 struct bc_ds_output
 {
-	float4 m_position   : SV_POSITION;
-	float2 m_texcoord   : TEXCOORD0;
-	float3 m_pos_w      : TEXCOORD1;
+	float4 m_position			: SV_POSITION;
+	float2 m_texcoord			: TEXCOORD0;
+	float3 m_world_position		: TEXCOORD1;
 };
 
 struct bc_ps_output
 {
-	float4 m_color      : SV_Target0;
+	float4 m_color				: SV_Target0;
 };
 
 struct bc_ps_gbuffer_output
 {
-	float4 m_diffuse	: SV_Target0;
-	float4 m_normal		: SV_Target1;
-	float4 m_specular	: SV_Target2;
+	float4 m_diffuse			: SV_Target0;
+	float4 m_normal				: SV_Target1;
+	float4 m_specular			: SV_Target2;
 };
 
 struct bc_material_property
@@ -128,7 +128,6 @@ float get_height(float2 p_texcoord)
 
 float get_height_linear(float2 p_texcoord)
 {
-	int2 l_texcoord = int2(p_texcoord.x * g_width, p_texcoord.y * g_height);
 	return g_height_map.SampleLevel(g_height_map_sampler, p_texcoord, 0);
 }
 
@@ -453,13 +452,13 @@ bc_ds_output ds(bc_constant_hs_output p_input, float2 UV : SV_DomainLocation, co
 
 	const float2 l_texcoord1 = lerp(p_quad[0].m_texcoord, p_quad[1].m_texcoord, UV.y);
 	const float2 l_texcoord2 = lerp(p_quad[3].m_texcoord, p_quad[2].m_texcoord, UV.y);
-	const float2 l_final_texcoord = lerp(l_texcoord1, l_texcoord2, UV.x);
+	const float2 l_texcoord = lerp(l_texcoord1, l_texcoord2, UV.x);
 
-	l_final_pos.y += get_height(l_final_texcoord);
+	l_final_pos.y += get_height(l_texcoord);
 
 	l_output.m_position = mul(float4(l_final_pos, 1), g_view_projection);
-	l_output.m_pos_w = l_final_pos;
-	l_output.m_texcoord = l_final_texcoord;
+	l_output.m_texcoord = l_texcoord;
+	l_output.m_world_position = l_final_pos;
 
 	return l_output;
 }
@@ -474,20 +473,17 @@ bc_ps_gbuffer_output gbuffer_ps(bc_ds_output p_input)
 	const float l_specular_intensity = l_textures.m_specular_intensity;
 	const float l_specular_power = l_textures.m_specular_power;
 
-	const float2 l_texel_space = float2(1, 1) / float2(g_width + 1, g_height + 1);
-	const float2 l_left_tex = p_input.m_texcoord + float2(-l_texel_space.x, 0.0f);
+	const float2 l_texel_space = rcp(float2(g_width + 1, g_height + 1));
 	const float2 l_right_tex = p_input.m_texcoord + float2(l_texel_space.x, 0.0f);
-	const float2 l_bottom_tex = p_input.m_texcoord + float2(0.0f, l_texel_space.y);
 	const float2 l_top_tex = p_input.m_texcoord + float2(0.0f, -l_texel_space.y);
 
-	const float l_left_height = get_height_linear(l_left_tex);
+	const float l_height = p_input.m_world_position.y;
 	const float l_right_height = get_height_linear(l_right_tex);
-	const float l_bottom_height = get_height_linear(l_bottom_tex);
 	const float l_top_height = get_height_linear(l_top_tex);
 
 	float3x3 l_tbn;
-	l_tbn[0] = normalize(float3(2.0f * g_xz_multiplier, l_right_height - l_left_height, 0.0f));
-	l_tbn[1] = normalize(float3(0.0f, l_bottom_height - l_top_height, -2.0f * g_xz_multiplier));
+	l_tbn[0] = normalize(float3(1.0f * g_xz_multiplier, l_right_height - l_height, 0.0f));
+	l_tbn[1] = normalize(float3(0.0f, l_height - l_top_height, -1.0f * g_xz_multiplier));
 	l_tbn[2] = normalize(cross(l_tbn[0], l_tbn[1]));
 
 	const float3 l_final_normal = bc_to_encoded_normal(mul(l_normal, l_tbn));

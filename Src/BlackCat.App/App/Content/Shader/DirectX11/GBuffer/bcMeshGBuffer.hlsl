@@ -49,7 +49,8 @@ bc_vs_output gbuffer_vs(bc_vs_input p_input)
 	l_output.m_texcoord = p_input.m_texcoord;
     l_output.m_normal = normalize(mul(p_input.m_normal, (float3x3) g_world));
 
-    if (g_has_normal_map)
+	[branch]
+	if (g_has_normal_map)
     {
         l_output.m_tangent = normalize(mul(p_input.m_tangent, (float3x3) g_world));
         l_output.m_binormal = normalize(cross(l_output.m_normal, l_output.m_tangent));
