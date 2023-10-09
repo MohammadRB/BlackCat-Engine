@@ -7,6 +7,7 @@
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Utility/bcTemplateMetaType.h"
 #include "Core/Utility/bcRandom.h"
+#include "Core/bcExport.h"
 
 namespace black_cat
 {
@@ -36,7 +37,11 @@ namespace black_cat
 	}
 
 	template<typename TIte>
-	void bc_randomize_direction(core::bc_random& p_random, const core::bc_vector3f& p_direction, bcSIZE p_deviation, TIte p_destination, TIte p_destination_end)
+	void bc_randomize_direction(core::bc_random& p_random, 
+		const core::bc_vector3f& p_direction, 
+		bcUINT p_deviation, 
+		TIte p_destination, 
+		TIte p_destination_end)
 	{
 		const auto l_max_random = p_random.max();
 		const auto l_rnd_coefficient = p_deviation / 180.f;
@@ -62,4 +67,8 @@ namespace black_cat
 			++p_destination;
 		}
 	}
+
+	BC_CORE_DLL bcFLOAT bc_half_to_float(bcSHORT p_half);
+	
+	BC_CORE_DLL bcSHORT bc_float_to_half(bcFLOAT p_float);
 }

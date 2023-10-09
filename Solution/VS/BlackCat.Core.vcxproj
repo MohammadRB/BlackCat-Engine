@@ -316,6 +316,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcVelocity.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Src\BlackCat.Core\Core\bcUtility.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Container\bcString.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Container\bcBitVector.cpp" />

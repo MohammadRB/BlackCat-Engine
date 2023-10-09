@@ -14,10 +14,10 @@ namespace black_cat::core
 	};
 		
 	/**
-		 * \brief Calculate the rate of change of input samples based on different weights for each sample.
-		 * \tparam T 
-		 * \tparam TRatios Ratios must be between 0 - 100
-		 */
+	 * \brief Calculate the rate of change of input samples based on different weights for each sample.
+	 * \tparam T 
+	 * \tparam TRatios Ratios must be between 0 - 100
+	 */
 	template<typename T, bcUINT32 ...TRatios>
 	class bc_value_change_rate_sampler
 	{

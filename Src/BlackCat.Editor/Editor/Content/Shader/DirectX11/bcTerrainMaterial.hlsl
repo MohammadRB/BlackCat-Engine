@@ -6,7 +6,7 @@
 
 // == Resource ===================================================================================
 
-RWTexture2D<uint4> g_texturemap_uav			: register(BC_COMPUTE_STATE_U0);
+RWTexture2D<uint4> g_texture_map_uav		: register(BC_COMPUTE_STATE_U0);
 
 cbuffer g_cb_parameter						: register(BC_COMPUTE_STATE_CB0)
 {
@@ -35,71 +35,71 @@ cbuffer g_cb_parameter1						: register(BC_COMPUTE_STATE_CB1)
 
 uint4 get_texture_map(uint2 p_texcoord)
 {
-    return g_texturemap_uav[p_texcoord];
+    return g_texture_map_uav[p_texcoord];
 }
 
 void set_texture_map(uint2 p_texcoord, uint4 p_value)
 {
-    g_texturemap_uav[p_texcoord] = p_value;
+    g_texture_map_uav[p_texcoord] = p_value;
 }
 
 uint4 set_material(int p_material_index)
 {
-    uint4 l_texturemap = 0;
+    uint4 l_texture_map = 0;
 
     switch (p_material_index)
     {
         case 0:
         {
             const uint l_new_value = 255 << 8;
-            l_texturemap.x = l_new_value;
+            l_texture_map.x = l_new_value;
             break;
         }
         case 1:
         {
 	        const uint l_new_value = 255;
-            l_texturemap.x = l_new_value;
+            l_texture_map.x = l_new_value;
             break;
         }
         case 2:
         {
             const uint l_new_value = 255 << 8;
-            l_texturemap.y = l_new_value;
+            l_texture_map.y = l_new_value;
             break;
         }
         case 3:
         {
             const uint l_new_value = 255;
-            l_texturemap.y = l_new_value;
+            l_texture_map.y = l_new_value;
             break;
         }
         case 4:
         {
             const uint l_new_value = 255 << 8;
-            l_texturemap.z = l_new_value;
+            l_texture_map.z = l_new_value;
             break;
         }
         case 5:
         {
             const uint l_new_value = 255;
-            l_texturemap.z = l_new_value;
+            l_texture_map.z = l_new_value;
             break;
         }
         case 6:
         {
             const uint l_new_value = 255 << 8;
-            l_texturemap.w = l_new_value;
+            l_texture_map.w = l_new_value;
             break;
         }
         case 7:
         {
             const uint l_new_value = 255;
-            l_texturemap.w = l_new_value;
+            l_texture_map.w = l_new_value;
             break;
         }
     }
 
-    return l_texturemap;
+    return l_texture_map;
 }
 
 // == Shader =====================================================================================

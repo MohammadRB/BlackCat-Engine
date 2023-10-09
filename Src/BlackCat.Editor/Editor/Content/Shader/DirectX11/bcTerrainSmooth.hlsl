@@ -8,7 +8,7 @@
 
 // == Resource ===================================================================================
 
-RWTexture2D<float> g_heightmap			    : register(BC_COMPUTE_STATE_U0);
+RWTexture2D<half> g_height_map			    : register(BC_COMPUTE_STATE_U0);
 
 cbuffer g_cb_parameter						: register(BC_COMPUTE_STATE_CB0)
 {
@@ -37,8 +37,8 @@ cbuffer g_cb_parameter1					    : register(BC_COMPUTE_STATE_CB1)
 
 float get_height(uint2 p_texcoord)
 {
-    // Scale value from float to int based on physics y scale
-    float l_height = g_heightmap[p_texcoord];
+	// Scale value from float to int based on physics y scale
+	float l_height = g_height_map[p_texcoord];
 	int l_physx_height = l_height / g_physics_y_scale;
 	l_height = l_physx_height * g_physics_y_scale;
 
@@ -47,10 +47,10 @@ float get_height(uint2 p_texcoord)
 
 void set_height(uint2 p_texcoord, float p_height)
 {
-	int l_physx_height = p_height / g_physics_y_scale;
+	float l_physx_height = p_height / g_physics_y_scale;
 	float l_height = l_physx_height * g_physics_y_scale;
 
-	g_heightmap[p_texcoord] = l_height;
+	g_height_map[p_texcoord] = (half) l_height;
 }
 
 // == Shader =====================================================================================

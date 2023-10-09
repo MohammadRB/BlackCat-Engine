@@ -121,7 +121,7 @@ namespace black_cat
 		
 		auto* l_event_manager = core::bc_get_service<core::bc_event_manager>();
 
-		if(!p_is_partial_update)
+		if (!p_is_partial_update)
 		{
 			core::bc_event_frame_update_start l_event_frame_start;
 			l_event_manager->process_event(l_event_frame_start);
@@ -142,7 +142,7 @@ namespace black_cat
 			*m_game_system
 		});
 
-		if(!p_is_partial_update)
+		if (!p_is_partial_update)
 		{
 			core::bc_event_frame_update_finish l_event_frame_finish;
 			l_event_manager->process_event(l_event_frame_finish);

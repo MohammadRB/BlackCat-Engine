@@ -16,11 +16,11 @@
 namespace black_cat::editor
 {
 	bc_terrain_smooth_ui_command::bc_terrain_smooth_ui_command(bcUINT16 p_screen_width,
-	                                                           bcUINT16 p_screen_height,
-	                                                           bcUINT16 p_point_left,
-	                                                           bcUINT16 p_point_top,
-	                                                           bcUINT16 p_radius,
-	                                                           bcUINT16 p_smooth)
+		bcUINT16 p_screen_height,
+		bcUINT16 p_point_left,
+		bcUINT16 p_point_top,
+		bcUINT16 p_radius,
+		bcUINT16 p_smooth)
 		: bc_ui_terrain_command
 		  (
 			  p_screen_width,
@@ -49,14 +49,14 @@ namespace black_cat::editor
 		auto& l_render_system = p_context.m_game_system.get_render_system();
 
 		auto l_cb_config = graphic::bc_graphic_resource_builder().as_resource()
-		                                                         .as_buffer
-		                                                         (
-			                                                         1,
-			                                                         sizeof(bc_terrain_smooth_ui_command_parameter_cbuffer),
-			                                                         graphic::bc_resource_usage::gpu_rw,
-			                                                         graphic::bc_resource_view_type::none
-		                                                         )
-		                                                         .as_constant_buffer();
+			.as_buffer
+			(
+				1,
+				sizeof(bc_terrain_smooth_ui_command_parameter_cbuffer),
+				graphic::bc_resource_usage::gpu_rw,
+				graphic::bc_resource_view_type::none
+			)
+			.as_constant_buffer();
 
 		bc_terrain_smooth_ui_command_state l_state;
 		l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_smooth_cs");
@@ -141,8 +141,11 @@ namespace black_cat::editor
 				bcFLOAT l_source_height = std::get<0>(l_height_map_sample) * l_dx11_height_map.get_physics_y_scale();
 				bcFLOAT l_smooth_ratio = (s_smooth_max - l_cbuffer_parameters.m_tool_smooth * 1.0f) / s_smooth_max;
 				bcFLOAT l_final_height = (l_computed_height * (1 - l_smooth_ratio)) + (l_source_height * l_smooth_ratio);
+				l_final_height /= l_dx11_height_map.get_physics_y_scale();
+				// Reduce precision to have a matching height with 16bit float used on rendering side
+				l_final_height = static_cast<bcFLOAT>(static_cast<bcINT>(l_final_height * 1000) / 1000.f);
 
-				std::get<0>(l_height_map_sample) = l_final_height / l_dx11_height_map.get_physics_y_scale();
+				std::get<0>(l_height_map_sample) = l_final_height;
 				l_samples[l_sample_index] = l_height_map_sample;
 			}
 		}

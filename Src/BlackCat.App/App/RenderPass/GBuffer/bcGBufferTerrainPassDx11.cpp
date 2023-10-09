@@ -33,7 +33,7 @@ namespace black_cat
 
 		return core::bc_vector4f(l_normal, -l_distance);
 	}
-
+	
 	struct _bc_parameter_buffer
 	{
 		BC_CBUFFER_ALIGN

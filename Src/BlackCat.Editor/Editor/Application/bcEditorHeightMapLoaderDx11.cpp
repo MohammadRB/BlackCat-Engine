@@ -47,7 +47,6 @@ namespace black_cat::editor
 	std::pair<graphic::bc_texture_config, graphic::bc_resource_view_config> bc_editor_height_map_loader_dx11::get_height_map_texture_config(bcUINT32 p_width, 
 		bcUINT32 p_height) const
 	{
-		// Because in editor we need unordered view on height map texture and DX11.0 doesn't support typed UAV load on R16_SINT format, we use R32_SINT
 		auto l_texture_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
 			.as_texture2d
@@ -56,7 +55,7 @@ namespace black_cat::editor
 				p_height,
 				false,
 				1,
-				graphic::bc_format::R32_FLOAT,
+				graphic::bc_format::R16_FLOAT,
 				graphic::bc_resource_usage::gpu_rw,
 				core::bc_enum::mask_or({ graphic::bc_resource_view_type::shader, graphic::bc_resource_view_type::unordered })
 			)

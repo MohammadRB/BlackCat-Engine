@@ -25,6 +25,8 @@ namespace black_cat
 	using bcUINT16 = uint16_t;
 	using bcINT32 = int32_t;
 	using bcUINT32 = uint32_t;
+	using bcSHORT = short;
+	using bcUSHORT = unsigned short;
 	using bcINT = int;
 	using bcUINT = unsigned int;
 	using bcINT64 = int64_t;

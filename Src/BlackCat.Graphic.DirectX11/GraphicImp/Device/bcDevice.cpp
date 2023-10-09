@@ -521,7 +521,7 @@ namespace black_cat::graphic
 	BC_GRAPHICIMP_DLL
 	bc_texture2d_ref bc_platform_device<g_api_dx11>::create_texture2d(const bc_texture_config& p_config, const bc_subresource_data* p_data)
 	{
-		auto* l_dx_texture = _initialize_texture(static_cast<bc_device*>(this), &p_config, p_data);
+		auto* l_dx_texture = _initialize_texture(this, &p_config, p_data);
 
 		bc_texture2d::platform_pack l_pack;
 		l_pack.m_resource = l_dx_texture;
@@ -539,7 +539,7 @@ namespace black_cat::graphic
 	BC_GRAPHICIMP_DLL
 	bc_texture2d_ref bc_platform_device<g_api_dx11>::create_texture2d(const bc_texture_config& p_config, const bcBYTE* p_data, bcSIZE p_data_size, bc_image_format p_format)
 	{
-		auto* l_dx_texture = _initialize_texture(static_cast<bc_device*>(this), &p_config, p_data, p_data_size, p_format);
+		auto* l_dx_texture = _initialize_texture(this, &p_config, p_data, p_data_size, p_format);
 			
 		bc_texture2d::platform_pack l_pack;
 		l_pack.m_resource = l_dx_texture;
@@ -557,7 +557,7 @@ namespace black_cat::graphic
 	BC_GRAPHICIMP_DLL
 	void bc_platform_device<g_api_dx11>::save_texture2d(bc_texture2d p_texture, bc_image_format p_format, const bcECHAR* p_path)
 	{
-		_save_texture(static_cast<bc_device*>(this), &p_texture, p_format, p_path);
+		_save_texture(this, &p_texture, p_format, p_path);
 	}
 		 
 	template<>

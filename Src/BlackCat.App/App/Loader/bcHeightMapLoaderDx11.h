@@ -35,7 +35,7 @@ namespace black_cat
 			game::bc_render_state_ptr p_render_state,
 			graphic::bc_buffer_ref p_vertex_buffer,
 			graphic::bc_buffer_ref p_index_buffer,
-			graphic::bc_texture2d_ref p_height_map,
+			graphic::bc_texture2d_content_ptr p_height_map,
 			graphic::bc_resource_view_ref p_height_map_view,
 			graphic::bc_texture2d_content_ptr p_texture_map,
 			graphic::bc_resource_view_ref p_texture_map_view,
@@ -56,7 +56,12 @@ namespace black_cat
 		
 		graphic::bc_texture2d get_height_map() const
 		{
-			return m_height_map.get();
+			return m_height_map->get_resource();
+		}
+
+		graphic::bc_texture2d_content& get_height_map_content() const
+		{
+			return *m_height_map;
 		}
 
 		graphic::bc_resource_view get_height_map_view() const
@@ -98,7 +103,7 @@ namespace black_cat
 		bcUINT32 m_distance_detail;
 		bcUINT32 m_height_detail;
 
-		graphic::bc_texture2d_ref m_height_map;
+		graphic::bc_texture2d_content_ptr m_height_map;
 		graphic::bc_resource_view_ref m_height_map_view;
 		graphic::bc_texture2d_content_ptr m_texture_map;
 		graphic::bc_resource_view_ref m_texture_map_view;
@@ -130,10 +135,24 @@ namespace black_cat
 
 		core::bc_estring_frame _get_texture_map_texture_name(core::bc_estring_view p_file_path) const;
 
-		void _create_texture_map(core::bc_content_loading_context& p_context, 
+		void _copy_height_map_texture_to_px_buffer(const bcUBYTE* p_texture_data,
+			bcUINT32 p_texel_size,
+			bcUINT32 p_texel_count,
+			bcINT16* p_destination,
+			bcFLOAT p_px_y_scale,
+			bcINT32 p_y_multiplier) const;
+
+		void _create_texture_map_texture(core::bc_estring_view p_file_path,
 			game::bc_render_system& p_render_system, 
 			bcUINT32 p_width, 
 			bcUINT32 p_height) const;
+
+		void _create_height_map_texture(core::bc_estring_view p_file_path,
+			game::bc_render_system& p_render_system,
+			const bcINT16* p_samples,
+			bcUINT32 p_width,
+			bcUINT32 p_height,
+			bcFLOAT p_px_y_scale) const;
 
 		physics::bc_height_field_ref _create_px_height_field(game::bc_physics_system& p_physics_system,
 			const bcINT16* p_samples, 
@@ -141,9 +160,8 @@ namespace black_cat
 			bcUINT32 p_width, 
 			bcUINT32 p_height) const;
 
-		void _copy_px_height_field(const physics::bc_height_field& p_px_height_field, 
-			bcFLOAT p_px_y_scale, 
-			bcFLOAT* p_dest) const;
+		void _copy_px_height_field(const physics::bc_height_field& p_px_height_field,
+			bcINT16* p_dest) const;
 
 		core::bc_vector<game::bc_height_map_material> _read_materials(game::bc_material_manager& p_material_manager,
 			_bc_material_properties& p_material_properties,
@@ -156,8 +174,8 @@ namespace black_cat
 			core::bc_vector_frame<bcUINT16>& p_indices,
 			core::bc_vector_frame<std::array<bcINT32, 3>>& p_chunk_infos) const;
 
-		bc_height_map_dx11 _create_height_map(game::bc_render_system& p_render_system,
-			graphic::bc_texture2d_ref p_height_map_texture,
+		bc_height_map_dx11 _create_height_map_content(game::bc_render_system& p_render_system,
+			graphic::bc_texture2d_content_ptr p_height_map_texture,
 			graphic::bc_texture2d_content_ptr p_texture_map_texture,
 			graphic::bc_resource_view_config& p_height_map_view_config,
 			graphic::bc_resource_view_config& p_texture_map_view_config,

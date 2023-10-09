@@ -15,7 +15,7 @@ cbuffer g_cb_render_pass_parameter				: register(BC_RENDER_PASS_STATE_CB1)
 	float4 g_frustum_planes[6]					: packoffset(c0.x);
 };
 
-Texture2D<float> g_height_map					: register(BC_RENDER_STATE_T0);
+Texture2D<half> g_height_map					: register(BC_RENDER_STATE_T0);
 StructuredBuffer<int3> g_chunk_info				: register(BC_RENDER_STATE_T1);
 Texture2D<uint4> g_texture_map					: register(BC_RENDER_STATE_T2);
 
@@ -122,7 +122,7 @@ struct bc_texture_data
 
 float get_height(float2 p_texcoord)
 {
-	int2 l_texcoord = int2(p_texcoord.x * g_width, p_texcoord.y * g_height);
+	int2 l_texcoord = p_texcoord * int2(g_width, g_height);
 	return g_height_map.Load(int3(l_texcoord, 0));
 }
 

@@ -35,17 +35,17 @@ namespace black_cat::core
 		static void when_all(TIte p_begin, TIte p_end);
 
 		/**
-			 * \brief 
-			 * \tparam TIte								Iterator type
-			 * \tparam TInitFunc	<TLocal(void)>			Function that initialize local data
-			 * \tparam TBodyFunc	<TLocal(TLocal, Ite)>	Function that execute as for loop body
-			 * \tparam TFinalFunc	<void(TLocal)>		Function that will be called by all started threads to accumulate results
-			 * \param p_begin 
-			 * \param p_end 
-			 * \param p_init_func 
-			 * \param p_body_func 
-			 * \param p_finalizer_func 
-			 */
+		 * \brief 
+		 * \tparam TIte								Iterator type
+		 * \tparam TInitFunc	<TLocal(void)>			Function that initialize local data
+		 * \tparam TBodyFunc	<TLocal(TLocal, Ite)>	Function that execute as for loop body
+		 * \tparam TFinalFunc	<void(TLocal)>		Function that will be called by all started threads to accumulate results
+		 * \param p_begin 
+		 * \param p_end 
+		 * \param p_init_func 
+		 * \param p_body_func 
+		 * \param p_finalizer_func 
+		 */
 		template<typename TIte, typename TInitFunc, typename TBodyFunc, typename TFinalFunc>
 		static void concurrent_for_each(TIte p_begin, TIte p_end, TInitFunc p_init_func, TBodyFunc p_body_func, TFinalFunc p_finalizer_func);
 			

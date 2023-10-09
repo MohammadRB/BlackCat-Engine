@@ -6,7 +6,7 @@
 
 // == Resource ===================================================================================
 
-Texture2D<float> g_heightmap				    : register(BC_COMPUTE_STATE_T0);
+Texture2D<half> g_height_map				    : register(BC_COMPUTE_STATE_T0);
 RWStructuredBuffer<int3> g_chunk_info		    : register(BC_COMPUTE_STATE_U0);
 
 cbuffer g_cb_parameter                          : register(BC_COMPUTE_STATE_CB0)
@@ -38,8 +38,9 @@ float compute_distance_from_plane(float4 p_plane, float3 p_position)
 
 float get_height(uint2 p_texcoord)
 {
-    p_texcoord.y = g_height - p_texcoord.y; // In directX Texcoord (0,0) is top-left but we begin from bottom-left
-    return g_heightmap.Load(int3(p_texcoord, 0));
+    // In directx texcoord (0,0) is top-left but we begin from bottom-left
+    p_texcoord.y = g_height - p_texcoord.y;
+	return g_height_map.Load(int3(p_texcoord, 0));
 }
 
 uint2 get_chunk_id(uint2 p_dispatch_thread_id)
@@ -217,13 +218,13 @@ void main(uint3 p_group_id : SV_GroupID,
         l_point = l_point2.y < l_point.y ? l_point2 : l_point;
         l_point = l_point3.y < l_point.y ? l_point3 : l_point;
 
-        float3 l_normal = normalize
-            (
-                gs_normals[0] +
-                gs_normals[1] +
-                gs_normals[2] +
-                gs_normals[3]
-            );
+        const float3 l_normal = normalize
+        (
+	        gs_normals[0] +
+	        gs_normals[1] +
+	        gs_normals[2] +
+	        gs_normals[3]
+        );
 
         gs_plane = create_plane_from_point_and_normal(l_point, l_normal);
     }
@@ -231,7 +232,7 @@ void main(uint3 p_group_id : SV_GroupID,
     // Wait until plane equation is ready
     GroupMemoryBarrierWithGroupSync();
 
-    float l_distance_from_plane = compute_distance_from_plane(gs_plane, float3(p_dispatch_thread_id.x, l_height, p_dispatch_thread_id.y));
+    const float l_distance_from_plane = compute_distance_from_plane(gs_plane, float3(p_dispatch_thread_id.x, l_height, p_dispatch_thread_id.y));
 
     gs_height[p_group_thread_id.x][p_group_thread_id.y].z = abs(l_distance_from_plane);
 

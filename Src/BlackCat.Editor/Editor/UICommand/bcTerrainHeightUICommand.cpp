@@ -3,6 +3,7 @@
 #include "Editor/EditorPCH.h"
 
 #include "Core/Utility/bcLogger.h"
+#include "Core/bcUtility.h"
 #include "GraphicImp/Resource/bcResourceBuilder.h"
 #include "PhysicsImp/Shape/bcHeightField.h"
 #include "Game/System/Physics/bcPxWrap.h"
@@ -19,11 +20,11 @@
 namespace black_cat::editor
 {
 	bc_terrain_height_ui_command::bc_terrain_height_ui_command(bcUINT16 p_screen_width,
-	                                                           bcUINT16 p_screen_height,
-	                                                           bcUINT16 p_point_left,
-	                                                           bcUINT16 p_point_top,
-	                                                           bcUINT16 p_radius,
-	                                                           bcFLOAT p_height)
+		bcUINT16 p_screen_height,
+		bcUINT16 p_point_left,
+		bcUINT16 p_point_top,
+		bcUINT16 p_radius,
+		bcFLOAT p_height)
 		: bc_ui_terrain_command
 		  (
 			  p_screen_width,
@@ -52,15 +53,15 @@ namespace black_cat::editor
 		auto& l_render_system = p_context.m_game_system.get_render_system();
 
 		const auto l_cb_config = graphic::bc_graphic_resource_builder()
-		                         .as_resource()
-		                         .as_buffer
-		                         (
-			                         1,
-			                         sizeof(bc_terrain_height_ui_command_parameter_cbuffer),
-			                         graphic::bc_resource_usage::gpu_rw,
-			                         graphic::bc_resource_view_type::none
-		                         )
-		                         .as_constant_buffer();
+			.as_resource()
+			.as_buffer
+			(
+				1,
+				sizeof(bc_terrain_height_ui_command_parameter_cbuffer),
+				graphic::bc_resource_usage::gpu_rw,
+				graphic::bc_resource_view_type::none
+			)
+			.as_constant_buffer();
 
 		bc_terrain_height_ui_command_state l_state;
 		l_state.m_device_compute_state = l_render_system.create_device_compute_state("terrain_height_cs");
@@ -89,7 +90,7 @@ namespace black_cat::editor
 		bc_terrain_height_ui_command_render_task l_render_task
 		(
 			l_dx11_height_map, 
-			*static_cast< bc_terrain_height_ui_command_state* >(p_context.m_state), 
+			*static_cast<bc_terrain_height_ui_command_state*>(p_context.m_state), 
 			l_cbuffer_parameters
 		);
 		p_context.m_game_system.get_render_system().add_render_task(l_render_task);
@@ -99,9 +100,9 @@ namespace black_cat::editor
 		const bcINT32 l_diameter = l_cbuffer_parameters.m_tool_radius * 2;
 		const core::bc_vector2i l_tool_center(p_context.m_tool_center_x, p_context.m_tool_center_z);
 		const bcUINT32 l_sample_count = l_diameter * l_diameter;
-		const core::bc_unique_ptr< height_map_sample_t > l_sample_buffer
+		const core::bc_unique_ptr l_sample_buffer
 		(
-			static_cast<height_map_sample_t* >(BC_ALLOC(l_sample_count * sizeof(height_map_sample_t), core::bc_alloc_type::frame))
+			static_cast<height_map_sample_t*>(BC_ALLOC(l_sample_count * sizeof(height_map_sample_t), core::bc_alloc_type::frame))
 		);
 		auto* l_samples = l_sample_buffer.get();
 
@@ -121,11 +122,14 @@ namespace black_cat::editor
 					continue;
 				}
 
-				const bcFLOAT l_height_ratio = 1 - std::pow(l_center_distance / m_radius, 2);
-				bcFLOAT l_height = std::get<0>(l_height_map_sample) * l_dx11_height_map.get_physics_y_scale();
+				const bcFLOAT l_height_ratio = 1.f - std::pow(l_center_distance / m_radius, 2);
+				bcFLOAT l_height = std::get<bcINT16>(l_height_map_sample) * l_dx11_height_map.get_physics_y_scale();
 				l_height += l_height_ratio * l_cbuffer_parameters.m_tool_height;
+				l_height /= l_dx11_height_map.get_physics_y_scale();
+				// Reduce precision to have a matching height with 16bit float used on rendering side
+				l_height = static_cast<bcFLOAT>(static_cast<bcINT>(l_height * 1000) / 1000.f);
 
-				std::get<0>(l_height_map_sample) = static_cast<bcINT16>(l_height / l_dx11_height_map.get_physics_y_scale());
+				std::get<bcINT16>(l_height_map_sample) = static_cast<bcINT16>(l_height);
 				l_samples[l_sample_index] = l_height_map_sample;
 			}
 		}

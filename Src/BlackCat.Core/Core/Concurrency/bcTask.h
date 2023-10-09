@@ -59,8 +59,8 @@ namespace black_cat::core
 		}
 			
 		/**
-			 * \brief Waits for the result to become available or return immediately if the task does not have shared state 
-			 */
+		 * \brief Waits for the result to become available or return immediately if the task does not have shared state 
+		 */
 		void wait() const noexcept(noexcept(std::declval<platform::bc_future<value_type>>().wait()))
 		{
 			if(!m_future.valid())
@@ -112,8 +112,8 @@ namespace black_cat::core
 		}
 
 		/**
-			 * \brief When executor thread see this interrupt, it will throw a bc_thread_interrupted_exception
-			 */
+		 * \brief When executor thread see this interrupt, it will throw a bc_thread_interrupted_exception
+		 */
 		void interrupt_executor_thread()
 		{
 			platform::bc_thread::id l_executor_thread_id = m_thread_id_future.get();
