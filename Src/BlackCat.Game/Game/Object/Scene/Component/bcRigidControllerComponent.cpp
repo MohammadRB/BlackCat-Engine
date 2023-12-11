@@ -42,12 +42,7 @@ namespace black_cat::game
 	}
 
 	bc_rigid_controller_component& bc_rigid_controller_component::operator=(bc_rigid_controller_component&&) noexcept = default;
-
-	bc_actor bc_rigid_controller_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	void bc_rigid_controller_component::initialize_entity(const bc_actor_component_initialize_entity_context& p_context)
 	{
 		const auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();

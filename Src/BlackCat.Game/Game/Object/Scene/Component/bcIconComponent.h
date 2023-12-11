@@ -23,6 +23,7 @@ namespace black_cat::game
 		static constexpr const bcCHAR* particle = "particle";
 		static constexpr const bcCHAR* decal = "decal";
 		static constexpr const bcCHAR* fog = "fog";
+		static constexpr const bcCHAR* water = "water";
 	};
 
 	class BC_GAME_DLL bc_icon_component : public bci_actor_component
@@ -40,9 +41,7 @@ namespace black_cat::game
 		~bc_icon_component() override = default;
 
 		bc_icon_component& operator=(bc_icon_component&&) noexcept = default;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		bool has_icon() const noexcept;
 
 		std::string_view get_name() const noexcept;

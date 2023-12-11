@@ -20,12 +20,7 @@ namespace black_cat::game
 		  m_scene(nullptr)
 	{
 	}
-
-	bc_actor bc_particle_emitter_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	bc_external_particle_emitter* bc_particle_emitter_component::get_emitter() noexcept
 	{
 		return m_emitter.get();

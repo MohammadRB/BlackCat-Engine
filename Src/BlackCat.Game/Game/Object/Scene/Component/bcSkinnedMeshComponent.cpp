@@ -39,12 +39,7 @@ namespace black_cat::game
 	bc_skinned_mesh_component::~bc_skinned_mesh_component() = default;
 
 	bc_skinned_mesh_component& bc_skinned_mesh_component::operator=(bc_skinned_mesh_component&& p_other) noexcept = default;
-
-	bc_actor bc_skinned_mesh_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	bc_skeleton_animation* bc_skinned_mesh_component::find_animation(const bcCHAR* p_name) const noexcept
 	{
 		if(!p_name)

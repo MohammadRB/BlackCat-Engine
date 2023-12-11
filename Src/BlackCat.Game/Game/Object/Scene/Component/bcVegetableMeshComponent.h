@@ -19,9 +19,7 @@ namespace black_cat::game
 		~bc_vegetable_mesh_component() override;
 
 		bc_vegetable_mesh_component& operator=(bc_vegetable_mesh_component&&) noexcept;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		void initialize(const bc_actor_component_initialize_context& p_context) override;
 
 		void handle_event(const bc_actor_component_event_context& p_context) override;

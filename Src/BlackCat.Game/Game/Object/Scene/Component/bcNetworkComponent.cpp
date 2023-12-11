@@ -65,12 +65,7 @@ namespace black_cat::game
 		p_other.set_as_invalid_network_state();
 		return *this;
 	}
-
-	bc_actor bc_network_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	bc_network_type bc_network_component::get_network_type() const noexcept
 	{
 		return m_network_system->get_network_type();

@@ -15,12 +15,7 @@ namespace black_cat::game
 		  m_current_delay(0)
 	{
 	}
-
-	bc_actor bc_callback_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	void bc_callback_component::update(const bc_actor_component_update_content& p_context)
 	{
 		if (!m_callback.is_valid())

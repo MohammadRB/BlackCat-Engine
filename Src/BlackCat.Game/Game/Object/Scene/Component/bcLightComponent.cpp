@@ -28,12 +28,7 @@ namespace black_cat::game
 	}
 
 	bc_light_component::~bc_light_component() = default;
-
-	bc_actor bc_light_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	void bc_light_component::initialize(const bc_actor_component_initialize_context& p_context)
 	{
 		auto& l_material_manager = p_context.m_game_system.get_render_system().get_material_manager();

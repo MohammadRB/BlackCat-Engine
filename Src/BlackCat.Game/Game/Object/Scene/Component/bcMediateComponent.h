@@ -26,9 +26,7 @@ namespace black_cat::game
 		~bc_mediate_component() override;
 			
 		bc_mediate_component& operator=(bc_mediate_component&&) noexcept;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		const bcCHAR* get_entity_name() const noexcept;
 
 		bc_scene* get_scene() const noexcept;

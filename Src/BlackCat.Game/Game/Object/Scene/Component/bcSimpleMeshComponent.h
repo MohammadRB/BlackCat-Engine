@@ -20,9 +20,7 @@ namespace black_cat::game
 		~bc_simple_mesh_component() override;
 
 		bc_simple_mesh_component& operator=(bc_simple_mesh_component&& p_other) noexcept;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		void initialize_entity(const bc_actor_component_initialize_entity_context& p_context) override;
 			
 		void render(const bc_actor_component_render_context& p_context) const override;

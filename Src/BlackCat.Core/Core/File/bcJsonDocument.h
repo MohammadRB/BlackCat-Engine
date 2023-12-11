@@ -145,10 +145,10 @@ namespace black_cat::core
 	}
 
 	/**
-		 * \brief Store json values as key value pair.
-		 * If value is a json array, stored value will be bc_vector<bc_any>.
-		 * If value is a json object, stored value will be bc_json_key_value.
-		 */
+	 * \brief Store json values as key value pair.
+	 * If value is a json array, stored value will be bc_vector<bc_any>.
+	 * If value is a json object, stored value will be bc_json_key_value.
+	 */
 	class bc_json_key_value
 	{
 	public:
@@ -278,10 +278,10 @@ namespace black_cat::core
 	};
 
 	/**
-		 * \brief T can be fundamental types bool, bcINT8, bcUINT8, bcINT16, bcUINT16, bcINT32, bcUINT32, bcINT64, bcUINT64, bcFLOAT, bcDOUBLE,
-		 * bc_string, bc_string_program, bc_string_frame, bc_json_key_value and bc_parameter_pack which last one can hold all of previous types.
-		 * \tparam T
-		 */
+	 * \brief T can be fundamental types bool, bcINT8, bcUINT8, bcINT16, bcUINT16, bcINT32, bcUINT32, bcINT64, bcUINT64, bcFLOAT, bcDOUBLE,
+	 * bc_string, bc_string_program, bc_string_frame, bc_json_key_value and bc_parameter_pack which last one can hold all of previous types.
+	 * \tparam T
+	 */
 	template<typename T>
 	class bc_json_value : public bci_json_value
 	{

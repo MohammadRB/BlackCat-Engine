@@ -21,9 +21,7 @@ namespace black_cat::game
 		~bc_light_component() override;
 
 		bc_light_component& operator=(bc_light_component&& p_other) noexcept = default;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		core::bc_vector3f get_world_position() const noexcept;
 
 		const core::bc_matrix4f& get_world_transform() const noexcept;

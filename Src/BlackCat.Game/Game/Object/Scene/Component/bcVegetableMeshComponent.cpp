@@ -5,7 +5,6 @@
 #include "Core/Content/bcContentStreamManager.h"
 #include "Core/File/bcJsonDocument.h"
 #include "Core/bcUtility.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/Component/bcVegetableMeshComponent.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/Event/bcWorldTransformActorEvent.h"
@@ -41,12 +40,7 @@ namespace black_cat::game
 		bc_mesh_component::operator=(std::move(p_other));
 		return *this;
 	}
-
-	bc_actor bc_vegetable_mesh_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	void bc_vegetable_mesh_component::initialize(const bc_actor_component_initialize_context& p_context)
 	{
 		bc_mesh_component::initialize(p_context);

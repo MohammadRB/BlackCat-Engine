@@ -39,9 +39,7 @@ namespace black_cat::game
 		~bc_network_component() override = default;
 
 		bc_network_component& operator=(bc_network_component&&) noexcept;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		bc_network_type get_network_type() const noexcept;
 
 		const bcCHAR* get_network_entity_name() const noexcept;

@@ -46,12 +46,7 @@ namespace black_cat::game
 	bc_human_ragdoll_component::~bc_human_ragdoll_component() = default;
 
 	bc_human_ragdoll_component& bc_human_ragdoll_component::operator=(bc_human_ragdoll_component&&) noexcept = default;
-
-	bc_actor bc_human_ragdoll_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	bc_human_ragdoll_transforms bc_human_ragdoll_component::get_body_px_transforms() const noexcept
 	{
 		bc_human_ragdoll_transforms l_transforms;

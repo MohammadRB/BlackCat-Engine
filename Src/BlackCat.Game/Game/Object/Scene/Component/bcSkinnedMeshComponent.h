@@ -27,22 +27,20 @@ namespace black_cat::game
 		~bc_skinned_mesh_component() override;
 
 		bc_skinned_mesh_component& operator=(bc_skinned_mesh_component&& p_other) noexcept;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		bc_animation_skeleton* get_skeleton() const noexcept;
 
 		/**
-			 * \brief Find animation which its name contains passed string
-			 * \param p_name
-			 * \return Found animation otherwise null.
-			 */
+		 * \brief Find animation which its name contains passed string
+		 * \param p_name
+		 * \return Found animation otherwise null.
+		 */
 		bc_skeleton_animation* find_animation(const bcCHAR* p_name) const noexcept;
 
 		/**
-			 * \brief Find animation which its name contains passed string
-			 * \param p_name
-			 */
+		 * \brief Find animation which its name contains passed string
+		 * \param p_name
+		 */
 		bc_skeleton_animation& find_animation_throw(const bcCHAR* p_name) const;
 			
 		core::bc_const_span<bc_skeleton_animation*> get_animations() const noexcept;

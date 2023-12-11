@@ -38,13 +38,11 @@ namespace black_cat::game
 		~bc_sound_component() noexcept override;
 
 		bc_sound_component& operator=(bc_sound_component&& p_other) noexcept = default;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		/**
-			 * \brief Get max sound length among all contained sounds
-			 * \return 
-			 */
+		 * \brief Get max sound length among all contained sounds
+		 * \return 
+		 */
 		bcUINT32 get_max_length() const noexcept;
 
 		sound::bc_sound get_sound(core::bc_string_view p_name) const noexcept;
@@ -52,8 +50,8 @@ namespace black_cat::game
 		sound::bc_channel play_sound(core::bc_string_view p_name) const noexcept;
 
 		/**
-			 * \brief Play all contained sounds
-			 */
+		 * \brief Play all contained sounds
+		 */
 		void play_sounds() const noexcept;
 
 		void initialize(const bc_actor_component_initialize_context& p_context) override;

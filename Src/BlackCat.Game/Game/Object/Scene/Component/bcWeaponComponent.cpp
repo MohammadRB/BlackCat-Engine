@@ -7,7 +7,6 @@
 #include "Game/Object/Scene/Component/bcMediateComponent.h"
 #include "Game/Object/Scene/Component/bcSoundComponent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/bcScene.h"
 #include "Game/System/bcGameSystem.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
@@ -34,12 +33,7 @@ namespace black_cat::game
 		  m_fire_light_age(0)
 	{
 	}
-
-	bc_actor bc_weapon_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	bc_bullet bc_weapon_component::shoot(const core::bc_vector3f& p_aim_direction_ws, bc_network_client_id p_player_id)
 	{
 		const auto& l_transform = get_actor().get_component<bc_mediate_component>()->get_world_transform();

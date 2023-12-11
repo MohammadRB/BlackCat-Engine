@@ -31,9 +31,7 @@ namespace black_cat::game
 		~bc_weapon_component() override = default;
 
 		bc_weapon_component& operator=(bc_weapon_component&&) noexcept = default;
-
-		bc_actor get_actor() const noexcept override;
-			
+		
 		bc_weapon_class get_class() const noexcept;
 			
 		const core::bc_vector3f& get_up_ls() const noexcept;

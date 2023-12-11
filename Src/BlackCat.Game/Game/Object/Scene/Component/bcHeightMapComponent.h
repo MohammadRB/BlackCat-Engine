@@ -31,9 +31,7 @@ namespace black_cat::game
 		const bc_height_map& get_height_map() const noexcept;
 
 		bc_height_map_ptr get_height_map_ptr() const noexcept;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		void initialize(const bc_actor_component_initialize_context& p_context) override;
 
 		void load_instance(const bc_actor_component_load_context& p_context) override;

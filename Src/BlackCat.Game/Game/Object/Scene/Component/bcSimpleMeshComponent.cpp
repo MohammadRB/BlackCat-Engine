@@ -7,7 +7,6 @@
 #include "Game/System/Physics/bcPxShapeData.h"
 #include "Game/System/Render/Particle/bcParticleManager.h"
 #include "Game/System/bcGameSystem.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcSimpleMeshComponent.h"
 #include "Game/Object/Scene/Component/bcRigidBodyComponent.h"
@@ -43,12 +42,7 @@ namespace black_cat::game
 			
 		return *this;
 	}
-
-	bc_actor bc_simple_mesh_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	void bc_simple_mesh_component::initialize_entity(const bc_actor_component_initialize_entity_context& p_context)
 	{
 		bc_mesh_component::initialize_entity(p_context);

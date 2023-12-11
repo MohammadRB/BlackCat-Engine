@@ -24,17 +24,19 @@ namespace black_cat::game
 {
 	bc_mesh_component::bc_mesh_component() noexcept
 		: bc_render_component(),
-		  bc_decal_resolver_component(),
-		  m_view_distance(0)
+		bc_decal_resolver_component(),
+		bc_pickup_proxy_component(),
+		m_view_distance(0)
 	{
 	}
 
 	bc_mesh_component::bc_mesh_component(bc_mesh_component&& p_other) noexcept
 		: bc_render_component(std::move(p_other)),
-		  bc_decal_resolver_component(std::move(p_other)),
-		  m_sub_mesh(std::move(p_other.m_sub_mesh)),
-		  m_world_transforms(std::move(p_other.m_world_transforms)),
-		  m_view_distance(p_other.m_view_distance)
+		bc_decal_resolver_component(std::move(p_other)),
+		bc_pickup_proxy_component(),
+		m_sub_mesh(std::move(p_other.m_sub_mesh)),
+		m_view_distance(p_other.m_view_distance),
+		m_world_transforms(std::move(p_other.m_world_transforms))
 	{
 	}
 
@@ -68,7 +70,7 @@ namespace black_cat::game
 		m_world_transforms = bc_sub_mesh_mat4_transform(*m_sub_mesh.get_root_node());
 		m_view_distance = l_view_distance_param;
 
-		if(l_materials)
+		if (l_materials)
 		{
 			m_render_state = m_sub_mesh.create_render_states(p_context.m_game_system.get_render_system(), *l_materials);
 		}
@@ -77,7 +79,7 @@ namespace black_cat::game
 			m_render_state = m_sub_mesh.create_render_states(p_context.m_game_system.get_render_system());
 		}
 
-		if(m_view_distance <= 0)
+		if (m_view_distance <= 0)
 		{
 			physics::bc_bound_box l_bound_box;
 			m_sub_mesh.calculate_absolute_transforms(core::bc_matrix4f::identity(), m_world_transforms, l_bound_box);
@@ -103,7 +105,7 @@ namespace black_cat::game
 	bc_pickup_proxy_result bc_mesh_component::ray_pickup(const physics::bc_ray& p_ray) const
 	{
 		auto* l_rigid_body_component = get_actor().get_component<bc_rigid_body_component>();
-		if(!l_rigid_body_component)
+		if (!l_rigid_body_component)
 		{
 			return { bc_pickup_proxy_state::no_result, physics::bc_ray_hit() };
 		}
@@ -203,9 +205,9 @@ namespace black_cat::game
 	}
 
 	void bc_mesh_component::process_bullet_hit(const bc_physics_system& p_physics_system,
-	                                           bc_particle_manager_container& p_particle_manager,
-	                                           const bc_bullet_hit_actor_event& p_event,
-	                                           bool p_store_reference_to_bullet)
+		bc_particle_manager_container& p_particle_manager,
+		const bc_bullet_hit_actor_event& p_event,
+		bool p_store_reference_to_bullet)
 	{
 		auto* l_hit_shape_data = p_physics_system.get_game_shape_data(p_event.get_hit_shape());
 
@@ -231,8 +233,8 @@ namespace black_cat::game
 				p_event.get_hit_position(),
 				p_event.get_hit_normal(),
 				p_store_reference_to_bullet
-					? l_hit_shape_data->m_collider_entry->m_attached_node_index
-					: bc_mesh_node::s_invalid_index
+				? l_hit_shape_data->m_collider_entry->m_attached_node_index
+				: bc_mesh_node::s_invalid_index
 			);
 		}
 	}

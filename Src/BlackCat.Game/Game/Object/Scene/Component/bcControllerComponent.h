@@ -25,9 +25,7 @@ namespace black_cat::game
 		bci_actor_controller* get_controller() const noexcept;
 
 		void set_controller(core::bc_unique_ptr<bci_actor_controller> p_controller, const bc_actor_component_initialize_context& p_context) noexcept;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		inline void load_instance(const bc_actor_component_load_context& p_context) override;
 
 		inline void write_instance(const bc_actor_component_write_context& p_context) override;

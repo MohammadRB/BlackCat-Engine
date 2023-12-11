@@ -20,34 +20,23 @@ namespace black_cat::game
 		~bc_fog_component() override = default;
 
 		bc_fog_component& operator=(bc_fog_component&& p_other) noexcept = default;
-
-		bc_actor get_actor() const noexcept override;
-
-		[[nodiscard]]
+		
 		core::bc_vector3f get_center() const noexcept;
 
-		[[nodiscard]]
 		const core::bc_vector3f& get_half_extend() const noexcept;
 
-		[[nodiscard]]
 		core::bc_vector3f get_min() const noexcept;
 
-		[[nodiscard]]
 		core::bc_vector3f get_max() const noexcept;
 
-		[[nodiscard]]
 		core::bc_vector3f get_color() const noexcept;
-
-		[[nodiscard]]
+		
 		float get_visibility() const noexcept;
-
-		[[nodiscard]]
+		
 		float get_center_fade() const noexcept;
 		
-		[[nodiscard]]
 		float get_intensity() const noexcept;
-
-		[[nodiscard]]
+		
 		bool get_apply_global_light() const noexcept;
 
 		void initialize_entity(const bc_actor_component_initialize_entity_context& p_context) override;

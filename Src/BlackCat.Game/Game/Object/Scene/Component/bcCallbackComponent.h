@@ -24,9 +24,7 @@ namespace black_cat::game
 		~bc_callback_component() override = default;
 
 		bc_callback_component& operator=(bc_callback_component&&) noexcept = default;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		void update(const bc_actor_component_update_content& p_context) override;
 			
 		void set_callback(call_mode p_call_mode, bcFLOAT p_delay_ms, callback p_callback) noexcept;

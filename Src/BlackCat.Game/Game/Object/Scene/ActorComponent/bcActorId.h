@@ -14,7 +14,7 @@ namespace black_cat::game
 	};
 
 	/**
-	 * \brief Actor identifier which consist of three peace of data.
+	 * \brief Actor identifier which consist of three piece of data.
 	 * \n First 3 bits is actor repeat index which indicate how many times a new actor is initialized in physical storage of actor.
 	 * \n Second 2 bits is manager index which refers to actor component manager that owns this actor.
 	 * \n Last 27 bits is actor index which refers to physical storage of actor.

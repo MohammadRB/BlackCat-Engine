@@ -93,6 +93,7 @@ namespace black_cat::core
 
 	using bc_vector4f = bc_vector4<bcFLOAT>;
 	using bc_vector4i = bc_vector4<bcINT32>;
+	using bc_color4 = bc_vector4<bcUBYTE>;
 
 	BC_CORE_DLL bc_logger_output_stream& operator<<(bc_logger_output_stream& p_stream, const bc_vector4f& p_vector);
 

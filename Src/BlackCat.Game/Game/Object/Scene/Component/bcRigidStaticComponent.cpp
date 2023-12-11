@@ -6,7 +6,6 @@
 #include "Core/bcUtility.h"
 #include "PhysicsImp/Fundation/bcScene.h"
 #include "PhysicsImp/Shape/bcShapeHeightField.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/Component/bcRigidStaticComponent.h"
 #include "Game/Object/Scene/Component/bcMeshComponent.h"
 #include "Game/Object/Scene/Component/bcHeightMapComponent.h"
@@ -59,11 +58,6 @@ namespace black_cat::game
 		m_px_actor_ref = std::move(p_other.m_px_actor_ref);
 
 		return *this;
-	}
-
-	bc_actor bc_rigid_static_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
 	}
 
 	void bc_rigid_static_component::initialize_entity(const bc_actor_component_initialize_entity_context& p_context)

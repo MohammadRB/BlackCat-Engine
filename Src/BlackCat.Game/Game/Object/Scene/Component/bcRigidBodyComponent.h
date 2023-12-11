@@ -22,18 +22,18 @@ namespace black_cat::game
 		virtual physics::bc_rigid_body get_body() const noexcept = 0;
 
 		/**
-			 * \brief Enable or disable simulation of physics actor
-			 * \n bc_actor_flag::disable_gravity and bc_actor_flag::disable_simulation are affected
-			 * \n Scene lock will be acquired
-			 * \param p_enable 
-			 */
+		 * \brief Enable or disable simulation of physics actor
+		 * \n bc_actor_flag::disable_gravity and bc_actor_flag::disable_simulation are affected
+		 * \n Scene lock will be acquired
+		 * \param p_enable 
+		 */
 		void set_enable(bool p_enable) noexcept;
 
 		/**
-			 * \brief Enable or disable kinematic mode for the actor
-			 * * \n Scene lock will be acquired
-			 * \param p_enable 
-			 */
+		 * \brief Enable or disable kinematic mode for the actor
+		 * * \n Scene lock will be acquired
+		 * \param p_enable 
+		 */
 		void set_kinematic(bool p_enable) noexcept;
 
 		void lock();
@@ -62,7 +62,7 @@ namespace black_cat::game
 		void debug_draw(physics::bc_rigid_body& p_px_actor, const bc_actor_component_debug_draw_context& p_context);
 
 	private:
-		physics::bc_scene* m_scene;
+		physics::bc_scene* m_scene{ nullptr };
 	};
 
 	class bc_rigid_component_lock

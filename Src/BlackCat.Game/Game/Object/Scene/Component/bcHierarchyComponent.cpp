@@ -39,12 +39,7 @@ namespace black_cat::game
 
 		return *this;
 	}
-
-	bc_actor bc_hierarchy_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	const core::bc_vector_movable< bc_actor >& bc_hierarchy_component::get_actors() const
 	{
 		return m_actors;

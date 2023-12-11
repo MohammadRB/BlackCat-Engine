@@ -87,9 +87,7 @@ namespace black_cat
 			~bc_human_ragdoll_component() override;
 
 			bc_human_ragdoll_component& operator=(bc_human_ragdoll_component&&) noexcept;
-
-			bc_actor get_actor() const noexcept override;
-
+			
 			std::tuple<std::string_view, core::bc_vector3f> get_last_applied_force() const noexcept;
 
 			bc_human_ragdoll_transforms get_body_px_transforms() const noexcept;

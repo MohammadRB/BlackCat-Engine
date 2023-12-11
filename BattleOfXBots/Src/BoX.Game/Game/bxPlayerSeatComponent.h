@@ -23,9 +23,7 @@ namespace box
 		~bx_player_seat_component() override = default;
 
 		bx_player_seat_component& operator=(bx_player_seat_component&&) noexcept = default;
-
-		game::bc_actor get_actor() const noexcept override;
-
+		
 		bx_team get_team() const noexcept;
 
 		void initialize(const game::bc_actor_component_initialize_context& p_context) override;

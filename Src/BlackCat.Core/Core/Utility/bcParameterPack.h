@@ -87,11 +87,11 @@ namespace black_cat::core
 	};
 
 	/**
-		 * \brief This class can hold any data type, which for small data types it uses an internal buffer and for large
-		 * data types memory will be allocated from frame allocator.
-		 * \n You can use both copy and movable objects but if you use movable only object and try to copy this object
-		 * a logic exception will be thrown
-		 */
+	 * \brief This class can hold any data type, which for small data types it uses an internal buffer and for large
+	 * data types memory will be allocated from frame allocator.
+	 * \n You can use both copy and movable objects but if you use movable only object and try to copy this object
+	 * a logic exception will be thrown
+	 */
 	class bc_parameter_pack
 	{
 		template<typename T>
@@ -120,10 +120,10 @@ namespace black_cat::core
 		bool is() const noexcept;
 
 		/**
-			 * \brief Cast underlying type to requested type.
-			 * \tparam T
-			 * \return Return null if underlying type mismatch
-			 */
+		 * \brief Cast underlying type to requested type.
+		 * \tparam T
+		 * \return Return null if underlying type mismatch
+		 */
 		template<typename T>
 		T* as() noexcept;
 
@@ -131,10 +131,10 @@ namespace black_cat::core
 		const T* as() const noexcept;
 
 		/**
-			 * \brief Cast underlying type to requested type. Throw bad_cast exception if underlying type mismatch
-			 * \tparam T
-			 * \return
-			 */
+		 * \brief Cast underlying type to requested type. Throw bad_cast exception if underlying type mismatch
+		 * \tparam T
+		 * \return
+		 */
 		template<typename T>
 		T& as_throw();
 
@@ -153,8 +153,8 @@ namespace black_cat::core
 		T release_as();
 
 		/**
-			 * \brief Clear internal states if any exist
-			 */
+		 * \brief Clear internal states if any exist
+		 */
 		void reset();
 
 		bool has_value() const;
@@ -173,8 +173,8 @@ namespace black_cat::core
 	};
 
 	/**
-		 * \brief Same as bc_parameter_pack but does't use frame allocator by default.
-		 */
+	 * \brief Same as bc_parameter_pack but does't use frame allocator by default.
+	 */
 	class bc_any : public bc_parameter_pack
 	{
 	public:
@@ -426,7 +426,6 @@ namespace black_cat::core
 		
 	inline void bc_parameter_pack::reset()
 	{
-		// Free allocated memory
 		if (m_object && !used_internal_buffer())
 		{
 			BC_DELETE(m_object);

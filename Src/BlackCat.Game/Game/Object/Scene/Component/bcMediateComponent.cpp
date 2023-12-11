@@ -26,12 +26,7 @@ namespace black_cat::game
 		  m_world_transform()
 	{
 	}
-
-	bc_actor bc_mediate_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	void bc_mediate_component::initialize(const bc_actor_component_initialize_context& p_context)
 	{
 		m_scene = &p_context.m_scene;

@@ -91,9 +91,7 @@ namespace black_cat::game
 		~bc_wind_component() override = default;
 
 		bc_wind_component& operator=(bc_wind_component&& p_other) noexcept = default;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		const bc_wind* get_wind() const noexcept;
 
 		void initialize(const bc_actor_component_initialize_context& p_context) override;

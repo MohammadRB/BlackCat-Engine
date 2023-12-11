@@ -22,7 +22,5 @@ namespace black_cat::game
 		~bc_checkpoint_component() override = default;
 
 		bc_checkpoint_component& operator=(bc_checkpoint_component&&) noexcept = default;
-
-		bc_actor get_actor() const noexcept override;
 	};
 }

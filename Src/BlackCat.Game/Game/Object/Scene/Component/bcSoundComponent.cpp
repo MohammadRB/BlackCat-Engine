@@ -3,7 +3,6 @@
 #include "Game/GamePCH.h"
 
 #include "Core/Content/bcContentStreamManager.h"
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManagerContainer.h"
 #include "Game/Object/Scene/Component/bcSoundComponent.h"
 #include "Game/Object/Scene/Component/bcIconComponent.h"
 #include "Game/Object/Scene/Component/Event/bcAddedToSceneActorEvent.h"
@@ -35,12 +34,7 @@ namespace black_cat::game
 			}
 		}
 	}
-
-	bc_actor bc_sound_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	bcUINT32 bc_sound_component::get_max_length() const noexcept
 	{
 		bcUINT32 l_max_length = 0;

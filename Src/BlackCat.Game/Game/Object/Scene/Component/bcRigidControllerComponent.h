@@ -23,9 +23,7 @@ namespace black_cat::game
 		~bc_rigid_controller_component() override;
 
 		bc_rigid_controller_component& operator=(bc_rigid_controller_component&&) noexcept;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		physics::bc_actor_type get_body_type() const noexcept override;
 			
 		physics::bc_rigid_body get_body() const noexcept override;

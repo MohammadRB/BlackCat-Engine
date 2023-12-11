@@ -10,32 +10,27 @@ namespace black_cat::game
 {
 	bc_icon_component::bc_icon_component(bc_actor_id p_actor_id, bc_actor_component_id p_id)
 		: bci_actor_component(p_actor_id, p_id),
-		  m_size(s_default_icon_size),
-		  m_mode(bc_icon_mode::editor)
+		m_size(s_default_icon_size),
+		m_mode(bc_icon_mode::editor)
 	{
-	}
-
-	bc_actor bc_icon_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
 	}
 
 	void bc_icon_component::initialize(const bc_actor_component_initialize_context& p_context)
 	{
 		const auto* l_name = static_cast<core::bc_string*>(nullptr);
 		json_parse::bc_load(p_context.m_parameters, constant::g_param_icon_name, l_name);
-		if(!l_name)
+		if (!l_name)
 		{
 			json_parse::bc_load(p_context.m_instance_parameters, constant::g_param_icon_name, l_name);
 		}
-			
-		bcUINT32 l_size;
+
+		bcUINT32 l_size = s_default_icon_size;
 		const auto l_has_size = json_parse::bc_load(p_context.m_parameters, constant::g_param_icon_size, l_size);
 		if (!l_has_size)
 		{
 			json_parse::bc_load(p_context.m_instance_parameters, constant::g_param_icon_size, l_size);
 		}
-			
+
 		const auto* l_type = static_cast<core::bc_string*>(nullptr);
 		json_parse::bc_load(p_context.m_parameters, constant::g_param_icon_type, l_type);
 		if (!l_type)
@@ -43,20 +38,11 @@ namespace black_cat::game
 			json_parse::bc_load(p_context.m_instance_parameters, constant::g_param_icon_type, l_type);
 		}
 
-		if(l_name)
+		m_name = l_name ? *l_name : core::bc_string();
+		m_size = l_size;
+		if (l_type && *l_type == "editor")
 		{
-			m_name = *l_name;
-		}
-		if(l_size)
-		{
-			m_size = l_size;
-		}
-		if(l_type)
-		{
-			if(*l_type == "editor")
-			{
-				m_mode = bc_icon_mode::editor;
-			}
+			m_mode = bc_icon_mode::editor;
 		}
 	}
 

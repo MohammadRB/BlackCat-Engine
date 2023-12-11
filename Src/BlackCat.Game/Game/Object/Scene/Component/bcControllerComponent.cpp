@@ -16,12 +16,7 @@ namespace black_cat::game
 		m_controller = std::move(p_controller);
 		m_controller->initialize(p_context);
 	}
-
-	bc_actor bc_controller_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	void bc_controller_component::load_instance(const bc_actor_component_load_context& p_context)
 	{
 		m_controller->load_instance(p_context);

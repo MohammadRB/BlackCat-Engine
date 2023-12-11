@@ -18,12 +18,10 @@ namespace black_cat::game
 
 		bc_hierarchy_component(bc_hierarchy_component&&) noexcept;
 
-		~bc_hierarchy_component();
+		~bc_hierarchy_component() override;
 
 		bc_hierarchy_component& operator=(bc_hierarchy_component&&) noexcept;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		const core::bc_vector_movable< bc_actor >& get_actors() const;
 
 		void add_actor(const bc_actor& p_actor);

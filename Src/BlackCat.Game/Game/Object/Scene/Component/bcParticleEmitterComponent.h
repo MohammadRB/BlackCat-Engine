@@ -23,8 +23,6 @@ namespace black_cat::game
 		~bc_particle_emitter_component() override = default;
 
 		bc_particle_emitter_component& operator=(bc_particle_emitter_component&& p_other) noexcept = default;
-			
-		bc_actor get_actor() const noexcept override;
 
 		bc_external_particle_emitter* get_emitter() noexcept;
 			

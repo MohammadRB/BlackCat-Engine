@@ -34,7 +34,7 @@ namespace black_cat::game
 	};
 
 	inline bc_decal_resolver_component::bc_decal_resolver_component() noexcept = default;
-
+	
 	inline bc_decal_resolver_component::bc_decal_resolver_component(bc_decal_resolver_component&&) noexcept = default;
 
 	inline bc_decal_resolver_component::~bc_decal_resolver_component() = default;

@@ -57,12 +57,7 @@ namespace black_cat::game
 
 		return *this;
 	}
-
-	bc_actor bc_height_map_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	void bc_height_map_component::initialize(const bc_actor_component_initialize_context& p_context)
 	{
 		const auto* l_height_map_name = static_cast<core::bc_string*>(nullptr);

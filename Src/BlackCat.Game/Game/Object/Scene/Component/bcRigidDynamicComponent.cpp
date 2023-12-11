@@ -58,12 +58,7 @@ namespace black_cat::game
 
 		return *this;
 	}
-
-	bc_actor bc_rigid_dynamic_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	void bc_rigid_dynamic_component::initialize_entity(const bc_actor_component_initialize_entity_context& p_context)
 	{
 		if (const auto* l_mesh_component = p_context.m_actor.get_component<bc_mesh_component>())

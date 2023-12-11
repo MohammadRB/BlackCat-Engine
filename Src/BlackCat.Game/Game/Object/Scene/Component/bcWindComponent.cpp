@@ -124,12 +124,7 @@ namespace black_cat::game
 		: bci_actor_component(p_actor_id, p_id)
 	{
 	}
-
-	bc_actor bc_wind_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	const bc_wind* bc_wind_component::get_wind() const noexcept
 	{
 		return m_wind.has_value() ? m_wind.get() : nullptr;

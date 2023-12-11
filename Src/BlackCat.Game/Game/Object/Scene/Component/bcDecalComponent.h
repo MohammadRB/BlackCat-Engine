@@ -31,9 +31,7 @@ namespace black_cat::game
 		~bc_decal_component() override;
 
 		bc_decal_component& operator=(bc_decal_component&&) noexcept;
-
-		bc_actor get_actor() const noexcept override;
-
+		
 		void add_decal(core::bc_string_view p_name,
 		               const core::bc_vector3f& p_local_pos,
 		               const core::bc_matrix3f& p_local_rotation,

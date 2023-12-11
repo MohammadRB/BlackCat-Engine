@@ -69,11 +69,6 @@ namespace black_cat::game
 			
 		return *this;
 	}
-		
-	bc_actor bc_decal_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
 
 	void bc_decal_component::add_decal(core::bc_string_view p_name,
 	                                   const core::bc_vector3f& p_local_pos,

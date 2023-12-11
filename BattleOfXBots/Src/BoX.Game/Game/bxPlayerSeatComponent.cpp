@@ -1,6 +1,5 @@
 // [09/02/2022 MRB]
 
-#include "Game/Object/Scene/ActorComponent/bcActorComponentManager.h"
 #include "Game/Object/Scene/ActorComponent/bcActor.hpp"
 #include "Game/Object/Scene/Component/bcIconComponent.h"
 #include "Game/Object/Scene/Component/Event/bcBoundBoxChangedActorEvent.h"
@@ -16,12 +15,7 @@ namespace box
 		m_team(bx_team::red)
 	{
 	}
-
-	game::bc_actor bx_player_seat_component::get_actor() const noexcept
-	{
-		return get_manager().component_get_actor(*this);
-	}
-
+	
 	void bx_player_seat_component::initialize(const game::bc_actor_component_initialize_context& p_context)
 	{
 		const core::bc_string* l_team_value = nullptr;

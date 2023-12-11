@@ -63,10 +63,7 @@ namespace black_cat::game
 		bc_render_component& operator=(bc_render_component&&) noexcept;
 	};
 
-	inline bc_render_component::bc_render_component()
-		: bci_actor_abstract_component()
-	{
-	}
+	inline bc_render_component::bc_render_component() = default;
 
 	inline bc_render_component::bc_render_component(bc_render_component&& p_other) noexcept = default;
 

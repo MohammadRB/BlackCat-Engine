@@ -6,6 +6,9 @@
 
 namespace black_cat::constant
 {
+	BC_PARAMETER(global_half_extend, "half_extend");
+	BC_PARAMETER(global_color, "color");
+
 	BC_PARAMETER(shader_function, "function");
 	BC_PARAMETER(shader_macro, "macros");
 	BC_PARAMETER(mesh, "mesh");
