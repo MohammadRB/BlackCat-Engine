@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "Graphic/GraphicPCH.h"
-
 namespace black_cat::graphic
 {
 	enum class bc_render_api

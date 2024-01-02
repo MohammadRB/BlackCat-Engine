@@ -283,6 +283,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcLightFlarePass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcParticleSystemPassDx11.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcVolumetricFogPass.h" />
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcWaterPass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcBaseCascadedShadowMapPass.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcCascadedShadowMapBufferContainer.h" />
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcCascadedShadowMapCamera.h" />
@@ -343,6 +344,7 @@ xcopy ..\..\3rdParty\*.* ..\..\BC_SDK\3rdParty\ /E /Y</Command>
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcLightFlarePass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcParticleSystemPassDx11.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcVolumetricFogPass.cpp" />
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcWaterPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcBaseCascadedShadowMapPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcCascadedShadowMapPass.cpp" />
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\ShadowMap\bcSkinnedCascadedShadowMapPass.cpp" />

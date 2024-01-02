@@ -2,7 +2,9 @@
 
 #pragma once
 
-#include "CorePlatform/bcType.h"
+#define NOMINMAX
+
+#include "Core/CorePCH.h"
 #include <random>
 
 namespace black_cat::core

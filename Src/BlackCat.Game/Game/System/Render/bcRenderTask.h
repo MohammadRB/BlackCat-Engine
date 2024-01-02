@@ -11,20 +11,20 @@ namespace black_cat::game
 	class bc_render_thread;
 
 	/**
-		 * \brief Represent a rendering task that can execute commands on hardware device without bc_render_pass.
-		 * Task will be executed on different cpu and render thread from the thread which has submitted task.
-		 */
+	 * \brief Represent a rendering task that can execute commands on hardware device without bc_render_pass.
+	 * Task will be executed on different cpu and render thread from the thread which has submitted task.
+	 */
 	class bci_render_task
 	{
 	public:
 		virtual ~bci_render_task() = default;
 
 		/**
-			 * \brief Executor function.
-			 * \n This function will be executed concurrent by a cpu worker thread.
-			 * \param p_render_system 
-			 * \param p_render_thread 
-			 */
+		 * \brief Executor function.
+		 * \n This function will be executed concurrent by a cpu worker thread.
+		 * \param p_render_system 
+		 * \param p_render_thread 
+		 */
 		virtual void execute(bc_render_system& p_render_system, bc_render_thread& p_render_thread) = 0;
 
 		void wait() const

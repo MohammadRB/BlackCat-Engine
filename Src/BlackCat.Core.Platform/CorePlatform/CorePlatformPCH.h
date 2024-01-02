@@ -49,8 +49,8 @@
 #endif
 
 #if defined(_MSC_VER)
-#define BC_DEBUG_OPTIMIZE_ON __pragma(optimize("gt", on))    //enable optimizations
-#define BC_DEBUG_OPTIMIZE_OFF __pragma(optimize("", on))     //reset optimization settings
+#define BC_DEBUG_OPTIMIZE_ON __pragma(optimize("gt", on))    // enable optimizations
+#define BC_DEBUG_OPTIMIZE_OFF __pragma(optimize("", on))     // reset optimization settings
 #else
 #define BC_DEBUG_OPTIMIZE_ON
 #define BC_DEBUG_OPTIMIZE_OFF

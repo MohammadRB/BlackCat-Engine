@@ -169,7 +169,7 @@ namespace black_cat::core
 	template<class TQuery>
 	bc_query_result<TQuery>::~bc_query_result()
 	{
-		if(m_shared_state)
+		if (m_shared_state)
 		{
 			m_query_manager->_mark_shared_state(*m_shared_state);
 		}

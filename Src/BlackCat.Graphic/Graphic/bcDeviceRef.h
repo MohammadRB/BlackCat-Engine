@@ -13,10 +13,10 @@ namespace black_cat::graphic
 	};
 
 	/**
-		 * \brief Store a strong reference to device reference objects
-		 * \tparam TApi
-		 * \tparam TObject
-		 */
+	 * \brief Store a strong reference to device reference objects
+	 * \tparam TApi
+	 * \tparam TObject
+	 */
 	template<bc_render_api TApi, class TObject>
 	class bc_platform_device_ref
 	{
@@ -28,9 +28,9 @@ namespace black_cat::graphic
 		bc_platform_device_ref();
 
 		/**
-			 * \brief Construct associated object with parameter and add reference to object.
-			 * \param p_object 
-			 */
+		 * \brief Construct associated object with parameter and add reference to object.
+		 * \param p_object 
+		 */
 		template
 		<
 			typename = std::enable_if_t

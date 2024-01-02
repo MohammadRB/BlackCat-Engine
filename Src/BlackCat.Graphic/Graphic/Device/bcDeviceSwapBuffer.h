@@ -6,6 +6,7 @@
 #include "Graphic/bcDeviceReference.h"
 #include "Graphic/bcRenderApi.h"
 
+
 namespace black_cat::graphic
 {
 	template<bc_render_api>

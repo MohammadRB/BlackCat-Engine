@@ -240,6 +240,9 @@
     <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcVolumetricFogPass.h">
       <Filter>BlackCat\RenderPass\PostProcess</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcWaterPass.h">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.App\App\Loader\bcComputeShaderLoader.cpp">
@@ -387,6 +390,9 @@
       <Filter>BlackCat\RenderPass\PostProcess</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcVolumetricFogPass.cpp">
+      <Filter>BlackCat\RenderPass\PostProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\BlackCat.App\App\RenderPass\PostProcess\bcWaterPass.cpp">
       <Filter>BlackCat\RenderPass\PostProcess</Filter>
     </ClCompile>
   </ItemGroup>
