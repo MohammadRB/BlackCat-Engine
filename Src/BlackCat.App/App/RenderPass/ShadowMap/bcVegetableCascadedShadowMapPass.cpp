@@ -87,12 +87,12 @@ namespace black_cat
 
 		if (m_leaf_query_results[p_context.m_cascade_absolute_index].is_executed())
 		{
-			auto& l_leaf_query = static_cast<game::bc_scene_graph_render_state_query&>(m_leaf_query_results[p_context.m_cascade_absolute_index].get());
+			auto& l_leaf_query = m_leaf_query_results[p_context.m_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>();
 			m_leaf_render_states[p_context.m_cascade_absolute_index] = l_leaf_query.get_render_state_buffer();
 		}
 		if (m_trunk_query_results[p_context.m_cascade_absolute_index].is_executed())
 		{
-			auto& l_trunk_query = static_cast<game::bc_scene_graph_render_state_query&>(m_trunk_query_results[p_context.m_cascade_absolute_index].get());
+			auto& l_trunk_query = m_trunk_query_results[p_context.m_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>();
 			m_trunk_render_states[p_context.m_cascade_absolute_index] = l_trunk_query.get_render_state_buffer();
 		}
 
@@ -119,8 +119,8 @@ namespace black_cat
 				.only<game::bc_vegetable_mesh_component>(false)
 			);
 
-			m_leaf_query_results[p_context.m_cascade_absolute_index] = p_context.m_query_manager.queue_ext_query(m_leaf_queries[p_context.m_cascade_absolute_index]);
-			m_trunk_query_results[p_context.m_cascade_absolute_index] = p_context.m_query_manager.queue_ext_query(m_trunk_queries[p_context.m_cascade_absolute_index]);
+			m_leaf_query_results[p_context.m_cascade_absolute_index] = p_context.m_query_manager.queue_query_ref(m_leaf_queries[p_context.m_cascade_absolute_index]);
+			m_trunk_query_results[p_context.m_cascade_absolute_index] = p_context.m_query_manager.queue_query_ref(m_trunk_queries[p_context.m_cascade_absolute_index]);
 		}
 	}
 

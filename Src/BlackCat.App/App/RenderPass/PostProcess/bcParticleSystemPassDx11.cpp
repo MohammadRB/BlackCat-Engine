@@ -714,8 +714,8 @@ namespace black_cat
 
 	void bc_particle_system_pass_dx11::destroy(game::bc_render_system& p_render_system)
 	{
-		m_emitters_query = core::bc_query_result<game::bc_scene_particle_emitter_query>();
-		m_lights_query = core::bc_query_result<game::bc_scene_light_query>();
+		m_emitters_query = core::bc_query_result_t<game::bc_scene_particle_emitter_query>();
+		m_lights_query = core::bc_query_result_t<game::bc_scene_light_query>();
 		m_emitters_query_result.clear();
 		m_emitters_query_result.shrink_to_fit();
 		m_lights_query_result.clear();

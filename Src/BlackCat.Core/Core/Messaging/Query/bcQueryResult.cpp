@@ -6,26 +6,26 @@
 
 namespace black_cat::core
 {
-	bc_query_result<bci_query>::bc_query_result(bc_query_manager& p_query_manager, _bc_query_shared_state& p_shared_state) noexcept
+	bc_query_result::bc_query_result(bc_query_manager& p_query_manager, _bc_query_shared_state& p_shared_state) noexcept
 		: m_query_manager(&p_query_manager),
 		  m_shared_state(&p_shared_state)
 	{
 	}
 
-	bc_query_result<bci_query>::bc_query_result() noexcept
+	bc_query_result::bc_query_result() noexcept
 		: m_query_manager(nullptr),
 		  m_shared_state(nullptr)
 	{
 	}
 
-	bc_query_result<bci_query>::bc_query_result(bc_query_result&& p_other) noexcept
+	bc_query_result::bc_query_result(bc_query_result&& p_other) noexcept
 		: m_query_manager(nullptr),
 		  m_shared_state(nullptr)
 	{
 		operator=(std::move(p_other));
 	}
 
-	bc_query_result<bci_query>::~bc_query_result()
+	bc_query_result::~bc_query_result()
 	{
 		if (m_shared_state)
 		{
@@ -33,7 +33,7 @@ namespace black_cat::core
 		}
 	}
 
-	bc_query_result<bci_query>& bc_query_result<bci_query>::operator=(bc_query_result&& p_other) noexcept
+	bc_query_result& bc_query_result::operator=(bc_query_result&& p_other) noexcept
 	{
 		if (m_shared_state)
 		{
@@ -48,13 +48,13 @@ namespace black_cat::core
 		return *this;
 	}
 
-	bool bc_query_result<bci_query>::is_executed() const noexcept
+	bool bc_query_result::is_executed() const noexcept
 	{
 		// use acquire memory order so memory changes become available for calling thread
 		return m_shared_state && m_shared_state->m_state.load(platform::bc_memory_order::acquire) == _bc_query_shared_state::state::executed;
 	}
 
-	bci_query& bc_query_result<bci_query>::get()
+	bci_query& bc_query_result::get()
 	{
 		const bool l_is_executed = is_executed();
 

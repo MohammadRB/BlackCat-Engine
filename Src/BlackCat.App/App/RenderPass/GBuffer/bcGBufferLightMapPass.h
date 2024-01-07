@@ -79,7 +79,7 @@ namespace black_cat
 		graphic::bc_device_compute_state_ref m_device_compute_state;
 		game::bc_compute_state_ptr m_compute_state;
 
-		core::bc_query_result<game::bc_main_camera_scene_light_query> m_lights_query;
+		core::bc_query_result_t<game::bc_main_camera_scene_light_query> m_lights_query;
 		core::bc_vector<game::bc_light_instance> m_lights;
 	};
 }

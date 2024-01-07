@@ -43,8 +43,8 @@ namespace black_cat
 
 		game::bc_main_camera_render_state_query m_leafs_query;
 		game::bc_main_camera_render_state_query m_trunks_query;
-		core::bc_query_result<core::bci_query> m_leafs_query_result;
-		core::bc_query_result<core::bci_query> m_trunks_query_result;
+		core::bc_query_result m_leafs_query_result;
+		core::bc_query_result m_trunks_query_result;
 		game::bc_render_state_buffer m_leaf_render_states;
 		game::bc_render_state_buffer m_trunk_render_states;
 	};

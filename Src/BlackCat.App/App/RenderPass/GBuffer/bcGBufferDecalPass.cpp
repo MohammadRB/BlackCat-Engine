@@ -157,7 +157,7 @@ namespace black_cat
 	{
 		if (m_query_result.is_executed())
 		{
-			m_decals_render_state_buffer = static_cast<game::bc_scene_decal_query&>(m_query_result.get()).get_render_state_buffer();
+			m_decals_render_state_buffer = m_query_result.get<game::bc_scene_decal_query>().get_render_state_buffer();
 		}
 
 		m_query = game::bc_scene_decal_query
@@ -165,7 +165,7 @@ namespace black_cat
 			p_context.m_update_camera.get_position(),
 			p_context.m_frame_renderer.create_buffer()
 		);
-		m_query_result = p_context.m_query_manager.queue_ext_query(m_query);
+		m_query_result = p_context.m_query_manager.queue_query_ref(m_query);
 	}
 
 	void bc_gbuffer_decal_pass::execute(const game::bc_render_pass_render_context& p_context)

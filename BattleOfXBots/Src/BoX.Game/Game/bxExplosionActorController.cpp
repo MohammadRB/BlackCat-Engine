@@ -148,7 +148,7 @@ namespace box
 		}
 	}
 
-	core::bc_query_result<game::bc_scene_query> bx_explosion_actor_controller::_build_terrain_query(core::bc_query_manager& p_query_manager, const core::bc_vector3f& p_explosion_position) const
+	core::bc_query_result_t<game::bc_scene_query> bx_explosion_actor_controller::_build_terrain_query(core::bc_query_manager& p_query_manager, const core::bc_vector3f& p_explosion_position) const
 	{
 		auto l_scene_query = game::bc_scene_query
 		(
@@ -190,7 +190,7 @@ namespace box
 		return p_query_manager.queue_query(std::move(l_scene_query));
 	}
 
-	core::bc_query_result<game::bc_scene_query> bx_explosion_actor_controller::_build_dynamics_query(core::bc_query_manager& p_query_manager, const core::bc_vector3f& p_explosion_position) const
+	core::bc_query_result_t<game::bc_scene_query> bx_explosion_actor_controller::_build_dynamics_query(core::bc_query_manager& p_query_manager, const core::bc_vector3f& p_explosion_position) const
 	{
 		auto l_scene_query = game::bc_scene_query
 		(

@@ -76,7 +76,7 @@ namespace black_cat
 		game::bc_render_state_ptr m_render_state;
 
 		bcFLOAT m_last_query_execution_elapsed = s_query_execution_delay_ms;
-		core::bc_query_result<game::bc_scene_query> m_fog_query;
+		core::bc_query_result_t<game::bc_scene_query> m_fog_query;
 		core::bc_vector<_bc_fog_query_instance> m_fog_instances;
 		bool m_update_fog_instances;
 	};

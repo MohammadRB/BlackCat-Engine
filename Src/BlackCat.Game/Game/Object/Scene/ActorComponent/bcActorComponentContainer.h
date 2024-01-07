@@ -175,7 +175,7 @@ namespace black_cat::game
 	void bc_actor_component_container<TComponent>::remove(bc_actor_component_id p_id)
 	{
 		// First destroy component then modify its bit flag because components may want to do some cleanup
-		// which we must preserve their existence
+		// and we must preserve their bit flag
 		m_components[p_id].~TComponent();
 		m_bit_block.make_false(p_id);
 	}

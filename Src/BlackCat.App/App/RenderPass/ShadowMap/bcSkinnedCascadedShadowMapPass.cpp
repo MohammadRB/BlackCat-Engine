@@ -56,11 +56,11 @@ namespace black_cat
 
 		if (m_scene_query_results[p_context.m_cascade_absolute_index].is_executed())
 		{
-			auto& l_scene_query_result = static_cast<game::bc_scene_graph_render_state_query&>(m_scene_query_results[p_context.m_cascade_absolute_index].get());
+			auto& l_scene_query_result = m_scene_query_results[p_context.m_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>();
 			m_scene_render_states[p_context.m_cascade_absolute_index] = l_scene_query_result.get_render_state_buffer();
 		}
 
-		if(p_context.m_render_next_frame)
+		if (p_context.m_render_next_frame)
 		{
 			m_scene_queries[p_context.m_cascade_absolute_index] = std::move
 			(
@@ -72,7 +72,7 @@ namespace black_cat
 				.with(game::bc_camera_frustum(p_context.m_update_cascade_camera))
 				.only<game::bc_skinned_mesh_component>()
 			);
-			m_scene_query_results[p_context.m_cascade_absolute_index] = p_context.m_query_manager.queue_ext_query(m_scene_queries[p_context.m_cascade_absolute_index]);
+			m_scene_query_results[p_context.m_cascade_absolute_index] = p_context.m_query_manager.queue_query_ref(m_scene_queries[p_context.m_cascade_absolute_index]);
 		}
 	}
 

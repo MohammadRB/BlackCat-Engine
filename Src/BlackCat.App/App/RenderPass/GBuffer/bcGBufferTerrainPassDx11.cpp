@@ -89,14 +89,14 @@ namespace black_cat
 	{
 		core::bc_vector<game::bc_height_map_ptr> l_height_maps;
 
-		if(m_height_maps_query_result.is_executed())
+		if (m_height_maps_query_result.is_executed())
 		{
 			l_height_maps = m_height_maps_query.get_height_maps();
 			m_height_maps_render_buffer = m_height_maps_query.get_render_state_buffer();
 		}
 
 		m_height_maps_query = game::bc_height_map_scene_query(game::bc_actor_render_camera(p_context.m_update_camera), p_context.m_frame_renderer.create_buffer());
-		m_height_maps_query_result = p_context.m_query_manager.queue_ext_query(m_height_maps_query);
+		m_height_maps_query_result = p_context.m_query_manager.queue_query_ref(m_height_maps_query);
 
 		const auto l_height_maps_changed = std::any_of
 		(

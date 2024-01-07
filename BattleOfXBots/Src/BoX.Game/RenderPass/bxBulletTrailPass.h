@@ -78,7 +78,7 @@ namespace box
 		graphic::bc_device_pipeline_state_ref m_device_pipeline_state;
 		game::bc_render_pass_state_ptr m_render_pass_state;
 
-		core::bc_query_result<game::bc_scene_query> m_query_result;
+		core::bc_query_result_t<game::bc_scene_query> m_query_result;
 		core::bc_vector<_bx_bullet> m_bullets;
 	};
 }

@@ -50,11 +50,11 @@ namespace black_cat
 	{
 		if (m_leafs_query_result.is_executed())
 		{
-			m_leaf_render_states = static_cast<game::bc_main_camera_render_state_query&>(m_leafs_query_result.get()).get_render_state_buffer();
+			m_leaf_render_states = m_leafs_query_result.get<game::bc_main_camera_render_state_query>().get_render_state_buffer();
 		}
 		if (m_trunks_query_result.is_executed())
 		{
-			m_trunk_render_states = static_cast<game::bc_main_camera_render_state_query&>(m_trunks_query_result.get()).get_render_state_buffer();
+			m_trunk_render_states = m_trunks_query_result.get<game::bc_main_camera_render_state_query>().get_render_state_buffer();
 		}
 
 		m_leafs_query = std::move
@@ -74,8 +74,8 @@ namespace black_cat
 			).only<game::bc_vegetable_mesh_component>(false)
 		);
 
-		m_leafs_query_result = p_context.m_query_manager.queue_ext_query(m_leafs_query);
-		m_trunks_query_result = p_context.m_query_manager.queue_ext_query(m_trunks_query);
+		m_leafs_query_result = p_context.m_query_manager.queue_query_ref(m_leafs_query);
+		m_trunks_query_result = p_context.m_query_manager.queue_query_ref(m_trunks_query);
 	}
 
 	void bc_gbuffer_vegetable_pass::execute(const game::bc_concurrent_render_pass_render_context& p_context)

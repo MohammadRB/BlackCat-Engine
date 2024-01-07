@@ -46,8 +46,8 @@ namespace black_cat
 
 		core::bc_deque<game::bc_scene_graph_render_state_query> m_leaf_queries;
 		core::bc_deque<game::bc_scene_graph_render_state_query> m_trunk_queries;
-		core::bc_vector<core::bc_query_result<core::bci_query>> m_leaf_query_results;
-		core::bc_vector<core::bc_query_result<core::bci_query>> m_trunk_query_results;
+		core::bc_vector<core::bc_query_result> m_leaf_query_results;
+		core::bc_vector<core::bc_query_result> m_trunk_query_results;
 		core::bc_vector<game::bc_render_state_buffer> m_leaf_render_states;
 		core::bc_vector<game::bc_render_state_buffer> m_trunk_render_states;
 	};

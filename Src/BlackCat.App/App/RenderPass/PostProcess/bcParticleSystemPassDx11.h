@@ -108,8 +108,8 @@ namespace black_cat
 		graphic::bc_device_pipeline_state_ref m_merge_pipeline_state;
 		game::bc_render_pass_state_ptr m_merge_pass_state;
 
-		core::bc_query_result<game::bc_scene_particle_emitter_query> m_emitters_query;
-		core::bc_query_result<game::bc_scene_light_query> m_lights_query;
+		core::bc_query_result_t<game::bc_scene_particle_emitter_query> m_emitters_query;
+		core::bc_query_result_t<game::bc_scene_light_query> m_lights_query;
 		core::bc_vector_movable<game::bc_particle_emitter_state> m_emitters_query_result;
 		core::bc_vector<game::bc_light_instance> m_lights_query_result;
 	};

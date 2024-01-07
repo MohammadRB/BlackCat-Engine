@@ -95,7 +95,7 @@ namespace black_cat
 		game::bc_render_pass_state_ptr m_flare_render_pass_state;
 		game::bc_render_state_ptr m_flare_render_state;
 		
-		core::bc_query_result<game::bc_main_camera_scene_light_query> m_scene_light_query;
+		core::bc_query_result_t<game::bc_main_camera_scene_light_query> m_scene_light_query;
 		core::bc_vector<game::bc_light_instance> m_scene_light_query_result;
 		core::bc_vector<_bc_light_flare_query_instance> m_occlusion_queries;
 		core::bc_vector_frame<_bc_light_flare_instance> m_ready_to_draw_instances;

@@ -117,7 +117,7 @@ namespace black_cat
 		bcFLOAT m_grenade_throw_passed_time;
 
 		core::bc_velocity<bcFLOAT> m_weapon_shoot_velocity;
-		core::bc_query_result<game::bc_scene_query> m_weapon_obstacle_query;
+		core::bc_query_result_t<game::bc_scene_query> m_weapon_obstacle_query;
 		core::bc_velocity<bcFLOAT> m_weapon_obstacle_rotation_velocity;
 		bcFLOAT m_weapon_obstacle_distance;
 	};

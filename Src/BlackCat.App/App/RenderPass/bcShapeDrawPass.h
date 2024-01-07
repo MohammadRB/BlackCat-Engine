@@ -89,7 +89,7 @@ namespace black_cat
 		game::bc_render_pass_state_ptr m_render_pass_state;
 
 		bool m_draw_scene_graph_debug = false;
-		core::bc_query_result<bc_scene_debug_shape_query> m_scene_debug_query;
+		core::bc_query_result_t<bc_scene_debug_shape_query> m_scene_debug_query;
 		game::bc_actor m_hovered_actor;
 		game::bc_actor m_selected_actor;
 		game::bc_decal_instance* m_hovered_decal;

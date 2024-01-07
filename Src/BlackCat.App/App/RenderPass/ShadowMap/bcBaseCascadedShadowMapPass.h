@@ -53,7 +53,7 @@ namespace black_cat
 
 		game::bc_render_pass_variable_t m_output_depth_buffers_share_slot;
 		core::bc_vector<_bc_cascaded_shadow_map_light_state> m_light_states;
-		core::bc_query_result<game::bc_scene_light_query> m_lights_query;
+		core::bc_query_result_t<game::bc_scene_light_query> m_lights_query;
 		core::bc_vector<game::bc_light_instance> m_lights;
 		
 		bool m_capture_debug_shapes = false;

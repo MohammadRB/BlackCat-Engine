@@ -23,9 +23,9 @@ namespace box
 
 		void update(const game::bc_actor_component_update_content& p_context) override;
 		
-		core::bc_query_result<game::bc_scene_query> _build_terrain_query(core::bc_query_manager& p_query_manager, const core::bc_vector3f& p_explosion_position) const;
+		core::bc_query_result_t<game::bc_scene_query> _build_terrain_query(core::bc_query_manager& p_query_manager, const core::bc_vector3f& p_explosion_position) const;
 
-		core::bc_query_result<game::bc_scene_query> _build_dynamics_query(core::bc_query_manager& p_query_manager, const core::bc_vector3f& p_explosion_position) const;
+		core::bc_query_result_t<game::bc_scene_query> _build_dynamics_query(core::bc_query_manager& p_query_manager, const core::bc_vector3f& p_explosion_position) const;
 
 		bool _test_actor_visibility(const physics::bc_scene& p_px_scene, const game::bc_overlap_hit& p_hit, const core::bc_vector3f& p_explosion_position) const;
 	
@@ -48,7 +48,7 @@ namespace box
 
 		game::bc_scene* m_scene = nullptr;
 		game::bc_light_component* m_light_component = nullptr;
-		core::bc_query_result<game::bc_scene_query> m_scene_terrain_query;
-		core::bc_query_result<game::bc_scene_query> m_scene_dynamics_query;
+		core::bc_query_result_t<game::bc_scene_query> m_scene_terrain_query;
+		core::bc_query_result_t<game::bc_scene_query> m_scene_dynamics_query;
 	};
 }

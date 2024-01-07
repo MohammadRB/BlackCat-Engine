@@ -41,7 +41,7 @@ namespace black_cat
 
 		graphic::bc_device_pipeline_state_ref m_device_pipeline;
 		core::bc_deque<game::bc_scene_graph_render_state_query> m_scene_queries;
-		core::bc_vector<core::bc_query_result<core::bci_query>> m_scene_query_results;
+		core::bc_vector<core::bc_query_result> m_scene_query_results;
 		core::bc_vector<game::bc_render_state_buffer> m_scene_render_states;
 	};
 }

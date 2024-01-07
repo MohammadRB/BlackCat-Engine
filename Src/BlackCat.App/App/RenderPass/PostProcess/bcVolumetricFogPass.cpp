@@ -163,6 +163,12 @@ namespace black_cat
 	
 	void bc_volumetric_fog_pass::initialize_frame(const game::bc_render_pass_render_context& p_context)
 	{
+		if (m_fog_query.is_executed())
+		{
+			m_fog_instances = std::move(m_fog_query.get().get_result_as_throw<core::bc_vector<_bc_fog_query_instance>>());
+			m_update_fog_instances = true;
+		}
+
 		m_last_query_execution_elapsed += p_context.m_clock.m_elapsed;
 
 		if (m_last_query_execution_elapsed < s_query_execution_delay_ms)
@@ -171,12 +177,6 @@ namespace black_cat
 		}
 
 		m_last_query_execution_elapsed = 0;
-
-		if (m_fog_query.is_executed())
-		{
-			m_fog_instances = std::move(m_fog_query.get().get_result_as_throw<core::bc_vector<_bc_fog_query_instance>>());
-			m_update_fog_instances = true;
-		}
 
 		auto l_query = game::bc_scene_query();
 		l_query.with_callable

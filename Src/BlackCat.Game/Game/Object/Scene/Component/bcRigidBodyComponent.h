@@ -15,7 +15,7 @@ namespace black_cat::game
 		BC_ABSTRACT_COMPONENT(rgd_bdy)
 
 	public:
-		virtual ~bc_rigid_body_component() override;
+		virtual ~bc_rigid_body_component() override = default;
 
 		virtual physics::bc_actor_type get_body_type() const noexcept = 0;
 			
@@ -94,7 +94,7 @@ namespace black_cat::game
 	private:
 		bc_rigid_body_component& m_component;
 	};
-		
+	
 	inline bc_rigid_body_component::bc_rigid_body_component() noexcept
 		: bci_actor_abstract_component(),
 		  m_scene(nullptr)
@@ -102,9 +102,7 @@ namespace black_cat::game
 	}
 
 	inline bc_rigid_body_component::bc_rigid_body_component(bc_rigid_body_component&&) noexcept = default;
-
-	inline bc_rigid_body_component::~bc_rigid_body_component() = default;
-		
+			
 	inline bc_rigid_body_component& bc_rigid_body_component::operator=(bc_rigid_body_component&&) noexcept = default;
 
 	inline void bc_rigid_body_component::lock()

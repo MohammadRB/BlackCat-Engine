@@ -49,7 +49,7 @@ namespace black_cat
 	{
 		if (m_query_result.is_executed())
 		{
-			m_render_states = static_cast<game::bc_main_camera_render_state_query&>(m_query_result.get()).get_render_state_buffer();
+			m_render_states = m_query_result.get<game::bc_main_camera_render_state_query>().get_render_state_buffer();
 		}
 
 		m_query = std::move
@@ -61,7 +61,7 @@ namespace black_cat
 			)
 			.only<game::bc_skinned_mesh_component>()
 		);
-		m_query_result = p_context.m_query_manager.queue_ext_query(m_query);
+		m_query_result = p_context.m_query_manager.queue_query_ref(m_query);
 	}
 
 	void bc_gbuffer_skinned_pass::execute(const game::bc_concurrent_render_pass_render_context& p_context)

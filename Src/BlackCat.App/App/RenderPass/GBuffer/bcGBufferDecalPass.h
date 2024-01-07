@@ -78,7 +78,7 @@ namespace black_cat
 		core::bc_unordered_map<game::bc_mesh_material::id_t, game::bc_render_state_ptr> m_render_states;
 
 		game::bc_scene_decal_query m_query;
-		core::bc_query_result<core::bci_query> m_query_result;
+		core::bc_query_result m_query_result;
 		game::bc_render_state_buffer m_decals_render_state_buffer;
 		bool m_draw_decal_bounds = false;
 	};

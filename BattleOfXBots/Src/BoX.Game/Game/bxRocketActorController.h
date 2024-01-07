@@ -28,6 +28,6 @@ namespace box
 		core::bc_vector3f m_position;
 		core::bc_vector3f m_direction;
 		core::bc_vector3f m_deviated_position;
-		core::bc_query_result<game::bc_scene_query> m_scene_query;
+		core::bc_query_result_t<game::bc_scene_query> m_scene_query;
 	};
 }

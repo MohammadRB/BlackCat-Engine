@@ -51,9 +51,9 @@ namespace black_cat
 
 		constexpr static bcFLOAT m_light_wind_query_time_ms{ 1000 };
 		bcFLOAT m_light_wind_query_elapsed_ms{ m_light_wind_query_time_ms };
-		core::bc_query_result<game::bc_main_camera_scene_light_query> m_lights_query;
+		core::bc_query_result_t<game::bc_main_camera_scene_light_query> m_lights_query;
 		core::bc_vector<game::bc_light_instance> m_lights_query_result;
-		core::bc_query_result<game::bc_scene_wind_query> m_winds_query;
+		core::bc_query_result_t<game::bc_scene_wind_query> m_winds_query;
 		core::bc_vector<game::bc_wind> m_winds_query_result;
 	};
 }

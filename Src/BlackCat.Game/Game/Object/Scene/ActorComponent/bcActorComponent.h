@@ -23,7 +23,7 @@ namespace black_cat::game
 	class bc_game_system;
 	class bc_scene;
 	class bc_shape_drawer;
-		
+
 	using bc_actor_component_hash = core::bc_string_cmp_hash;
 	using bc_actor_component_id = bcINT32;
 
@@ -139,10 +139,10 @@ namespace black_cat::game
 
 	struct bc_actor_component_update_content
 	{
-		bc_actor_component_update_content(const platform::bc_clock::update_param& p_clock, 
-			core::bc_query_manager& p_query_manager, 
-			bc_game_system& p_game_system, 
-			bc_actor& p_actor, 
+		bc_actor_component_update_content(const platform::bc_clock::update_param& p_clock,
+			core::bc_query_manager& p_query_manager,
+			bc_game_system& p_game_system,
+			bc_actor& p_actor,
 			bool p_is_double_update = false)
 			: m_clock(p_clock),
 			  m_query_manager(p_query_manager),
@@ -162,9 +162,9 @@ namespace black_cat::game
 	struct bc_actor_component_event_context
 	{
 		bc_actor_component_event_context(const platform::bc_clock::update_param& p_clock,
-			core::bc_query_manager& p_query_manager, 
-			bc_game_system& p_game_system, 
-			bc_actor& p_actor, 
+			core::bc_query_manager& p_query_manager,
+			bc_game_system& p_game_system,
+			bc_actor& p_actor,
 			const bc_actor_event& p_event,
 			bcUINT32 p_event_index)
 			: m_clock(p_clock),
@@ -195,19 +195,19 @@ namespace black_cat::game
 		bc_shape_drawer& m_shape_drawer;
 		const bc_actor& m_actor;
 	};
-		
+
 	class BC_GAME_DLL bci_actor_component
 	{
 	public:
 		constexpr static bc_actor_component_id invalid_id = static_cast<bc_actor_component_id>(-1);
 
 	public:
-		virtual ~bci_actor_component() = 0;
+		virtual ~bci_actor_component();
 
 		bc_actor_id get_actor_id() const noexcept;
-			
+
 		bc_actor_component_id get_id() const noexcept;
-			
+
 		bc_actor get_actor() const noexcept;
 
 		/**
@@ -219,10 +219,10 @@ namespace black_cat::game
 
 		/**
 		 * \brief Will be called after all components of actor have been added and initialized.
-		 * \param p_context 
+		 * \param p_context
 		 */
 		virtual void initialize_entity(const bc_actor_component_initialize_entity_context& p_context);
-			
+
 		virtual void load_instance(const bc_actor_component_load_context& p_context);
 
 		virtual void write_instance(const bc_actor_component_write_context& p_context);
@@ -236,7 +236,7 @@ namespace black_cat::game
 		virtual void handle_event(const bc_actor_component_event_context& p_context);
 
 		virtual void debug_draw(const bc_actor_component_debug_draw_context& p_context);
-			
+
 	protected:
 		bci_actor_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept;
 
@@ -245,7 +245,7 @@ namespace black_cat::game
 		bci_actor_component& operator=(bci_actor_component&& p_other) noexcept;
 
 		bc_actor_component_manager_container& get_manager() const noexcept;
-			
+
 	private:
 		bc_actor_id m_actor_id;
 		bc_actor_component_id m_id;
@@ -272,7 +272,7 @@ namespace black_cat::game
 	{
 		return m_actor_id;
 	}
-		
+
 	inline bc_actor_component_id bci_actor_component::get_id() const noexcept
 	{
 		return m_id;
@@ -280,7 +280,7 @@ namespace black_cat::game
 
 	inline bc_actor bci_actor_component::get_actor() const noexcept
 	{
-		return bc_actor(m_actor_id);
+		return bc_actor(get_actor_id());
 	}
 
 	inline void bci_actor_component::initialize(const bc_actor_component_initialize_context& p_context)
@@ -290,7 +290,7 @@ namespace black_cat::game
 	inline void bci_actor_component::initialize_entity(const bc_actor_component_initialize_entity_context& p_context)
 	{
 	}
-		
+
 	inline void bci_actor_component::load_instance(const bc_actor_component_load_context& p_context)
 	{
 	}
@@ -306,7 +306,7 @@ namespace black_cat::game
 	inline void bci_actor_component::write_network_instance(const bc_actor_component_network_write_context& p_context)
 	{
 	}
-		
+
 	inline void bci_actor_component::update(const bc_actor_component_update_content& p_context)
 	{
 	}
@@ -314,11 +314,11 @@ namespace black_cat::game
 	inline void bci_actor_component::handle_event(const bc_actor_component_event_context& p_context)
 	{
 	}
-		
+
 	inline void bci_actor_component::debug_draw(const bc_actor_component_debug_draw_context& p_context)
 	{
 	}
-		
+
 	inline bci_actor_component::bci_actor_component(bc_actor_id p_actor_id, bc_actor_component_id p_id) noexcept
 		: m_actor_id(p_actor_id),
 		  m_id(p_id)

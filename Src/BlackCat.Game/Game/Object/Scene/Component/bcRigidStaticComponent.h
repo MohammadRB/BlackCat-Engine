@@ -43,7 +43,7 @@ namespace black_cat::game
 		
 	inline physics::bc_rigid_body bc_rigid_static_component::get_body() const noexcept
 	{
-		return m_px_actor_ref.get();
+		return static_cast<physics::bc_rigid_body>(m_px_actor_ref.get());
 	}
 
 	inline physics::bc_rigid_static bc_rigid_static_component::get_static_body() const noexcept

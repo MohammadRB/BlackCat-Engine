@@ -68,7 +68,7 @@ namespace black_cat::core
 		 * \return 
 		 */
 		template<class TQuery>
-		bc_query_result<bci_query> queue_ext_query(TQuery& p_query);
+		bc_query_result queue_query_ref(TQuery& p_query);
 
 		/**
 		 * \brief Put query into queue to be executed.
@@ -78,7 +78,7 @@ namespace black_cat::core
 		 * \return 
 		 */
 		template<class TQuery>
-		bc_query_result<std::decay_t<TQuery>> queue_query(TQuery p_query);
+		bc_query_result_t<std::decay_t<TQuery>> queue_query(TQuery p_query);
 
 		template<class TQuery>
 		void queue_shared_ext_query(TQuery& p_query);
@@ -157,7 +157,7 @@ namespace black_cat::core
 	}
 
 	template<class TQuery>
-	bc_query_result<bci_query> bc_query_manager::queue_ext_query(TQuery& p_query)
+	bc_query_result bc_query_manager::queue_query_ref(TQuery& p_query)
 	{
 		using query_t = std::decay_t<TQuery>;
 		static_assert(std::is_base_of_v<bci_query, query_t>, "TQuery must be derived from bc_iquery");
@@ -166,11 +166,11 @@ namespace black_cat::core
 		auto& l_context_type_info = typeid(typename query_t::context_t);
 		auto& l_shared_state = _queue_query(l_context_type_info.hash_code(), false, false, &p_query);
 
-		return bc_query_result<bci_query>(*this, l_shared_state);
+		return bc_query_result(*this, l_shared_state);
 	}
 
 	template<class TQuery>
-	bc_query_result<std::decay_t<TQuery>> bc_query_manager::queue_query(TQuery p_query)
+	bc_query_result_t<std::decay_t<TQuery>> bc_query_manager::queue_query(TQuery p_query)
 	{
 		using query_t = std::decay_t<TQuery>;
 		static_assert(std::is_base_of_v<bci_query, query_t>, "TQuery must be derived from bc_iquery");
@@ -180,7 +180,7 @@ namespace black_cat::core
 		auto& l_context_type_info = typeid(typename query_t::context_t);
 		auto& l_shared_state = _queue_query(l_context_type_info.hash_code(), false, true, l_query);
 
-		return bc_query_result<query_t>(*this, l_shared_state);
+		return bc_query_result_t<query_t>(*this, l_shared_state);
 	}
 
 	template<class TQuery>

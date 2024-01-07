@@ -87,7 +87,7 @@ namespace black_cat
 
 		bool m_editor_mode;
 		bool m_draw_decal_icons;
-		core::bc_query_result<game::bc_main_camera_scene_icon_query> m_icons_query;
+		core::bc_query_result_t<game::bc_main_camera_scene_icon_query> m_icons_query;
 		core::bc_vector<_bc_sprite_icon> m_sprites;
 
 		core::bc_event_listener_handle m_editor_event_handle;
