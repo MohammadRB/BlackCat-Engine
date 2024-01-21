@@ -13,7 +13,7 @@
 
 namespace black_cat::game
 {
-	class bc_render_pass_reset_context;
+	struct bc_render_pass_reset_context;
 
 	struct _bc_intermediate_texture_entry
 	{
@@ -45,17 +45,17 @@ namespace black_cat::game
 		bc_intermediate_texture_manager& operator=(bc_intermediate_texture_manager&&) noexcept;
 
 		/**
-			 * \brief Try to find an intermediate texture with given config or create one and mark it as in use texture
-			 * \n <b>ThreadSafe</b>
-			 * \param p_config 
-			 * \return 
-			 */
+		 * \brief Try to find an intermediate texture with given config or create one and mark it as in use texture
+		 * \n <b>ThreadSafe</b>
+		 * \param p_config 
+		 * \return 
+		 */
 		bc_intermediate_texture get_texture(const graphic::bc_texture_config& p_config);
 
 		/**
-			 * \brief Give back the texture to be marked as not in use
-			 * \param p_texture 
-			 */
+		 * \brief Give back the texture to be marked as not in use
+		 * \param p_texture 
+		 */
 		void free_texture(const bc_intermediate_texture& p_texture);
 
 		void before_reset(const bc_render_pass_reset_context& p_context);
@@ -69,8 +69,8 @@ namespace black_cat::game
 	};
 
 	/**
-		 * \brief RAII class for intermediate texture
-		 */
+	 * \brief RAII class for intermediate texture
+	 */
 	class BC_GAME_DLL bc_intermediate_texture_guard
 	{
 	public:

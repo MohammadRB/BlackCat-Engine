@@ -53,9 +53,9 @@ namespace black_cat::core
 		}
 
 		/**
-			 * \brief Return true if reference count reaches zero
-			 * \return 
-			 */
+		 * \brief Return true if reference count reaches zero
+		 * \return 
+		 */
 		bool dec_ref() noexcept
 		{
 			const auto l_ref_count = m_ref_count.fetch_sub(1U, platform::bc_memory_order::relaxed) - 1;
@@ -69,10 +69,10 @@ namespace black_cat::core
 	};
 
 	/**
-		 * \brief Reference counting pointer.
-		 * \tparam T 
-		 * \tparam TDeleter Must have operator() for deleting owing resource.
-		 */
+	 * \brief Reference counting pointer.
+	 * \tparam T 
+	 * \tparam TDeleter Must have operator() for deleting owing resource.
+	 */
 	template<class T, class TDeleter>
 	class bc_ref_count_ptr
 	{
@@ -157,11 +157,11 @@ namespace black_cat::core
 	};
 
 	/**
-		 * \brief Reference counting handle pointer.
-		 * Handle must be nullptr constructable, assignable and comparable.
-		 * \tparam T 
-		 * \tparam TDeleter Must have two operator(), one for deleting owing resource and another for dereferencing resource.
-		 */
+	 * \brief Reference counting handle pointer.
+	 * Handle must be nullptr constructable, assignable and comparable.
+	 * \tparam T 
+	 * \tparam TDeleter Must have two operator(), one for deleting owing resource and another for dereferencing resource.
+	 */
 	template<class T, class TDeleter>
 	class bc_ref_count_handle
 	{

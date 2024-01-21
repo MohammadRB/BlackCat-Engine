@@ -30,6 +30,7 @@
 #include "App/RenderPass/PostProcess/bcHDRRenderingPass.h"
 #include "App/RenderPass/PostProcess/bcAmbientOcclusionPass.h"
 #include "App/RenderPass/PostProcess/bcVolumetricFogPass.h"
+#include "App/RenderPass/PostProcess/bcWaterPass.h"
 #include "App/RenderPass/bcIconDrawPass.h"
 #include "App/RenderPass/bcShapeDrawPass.h"
 #include "App/RenderPass/bcCounterValueDrawPass.h"
@@ -104,6 +105,11 @@ namespace black_cat::editor
 		l_render_system.add_render_pass(bc_light_flare_pass
 		(
 			constant::g_rpass_gbuffer_texture, 
+			constant::g_rpass_gbuffer_render_view
+		));
+		l_render_system.add_render_pass(bc_water_pass
+		(
+			constant::g_rpass_gbuffer_texture,
 			constant::g_rpass_gbuffer_render_view
 		));
 		l_render_system.add_render_pass(bc_volumetric_fog_pass

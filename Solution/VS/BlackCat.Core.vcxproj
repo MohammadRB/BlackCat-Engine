@@ -259,6 +259,7 @@ xcopy ..\..\Src\BlackCat.Core\Core\*.h ..\..\BC_SDK\Include\Core\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryProviderHandle.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Messaging\Query\bcQueryResult.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcDelay.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcDelegate.hpp" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcCounterValueManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcEnumOperand.h" />

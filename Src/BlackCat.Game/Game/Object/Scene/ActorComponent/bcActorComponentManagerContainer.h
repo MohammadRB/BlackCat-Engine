@@ -468,6 +468,7 @@ namespace black_cat
 			_bc_actor_component_entry* l_component_entry = _get_component_entry<TComponent>();
 
 			BC_ASSERT(p_actor.is_valid());
+			BC_ASSERT(l_component_entry);
 			BC_ASSERT(!l_component_entry->m_is_abstract);
 
 			const auto l_actor_id = p_actor.get_id();
@@ -517,6 +518,7 @@ namespace black_cat
 			_bc_actor_component_entry* l_component_entry = _get_component_entry<TComponent>();
 
 			BC_ASSERT(p_actor.is_valid());
+			BC_ASSERT(l_component_entry);
 			BC_ASSERT(!l_component_entry->m_is_abstract);
 
 			const auto l_actor_index = bc_actor_id::decompose_id(p_actor.get_id()).m_index;
@@ -607,7 +609,9 @@ namespace black_cat
 		TComponent* bc_actor_component_manager_container::_actor_get_component(const bc_actor& p_actor, std::true_type)
 		{
 			_bc_actor_component_entry* l_component_entry = _get_component_entry<TComponent>();
-			
+
+			BC_ASSERT(l_component_entry);
+			BC_ASSERT(l_component_entry);
 			BC_ASSERT(l_component_entry->m_is_abstract);
 
 			for (auto& l_derived_get : l_component_entry->m_deriveds_delegates)
@@ -628,6 +632,7 @@ namespace black_cat
 			_bc_actor_component_entry* l_component_entry = _get_component_entry<TComponent>();
 
 			BC_ASSERT(p_actor.is_valid());
+			BC_ASSERT(l_component_entry);
 			BC_ASSERT(!l_component_entry->m_is_abstract);
 
 			const auto l_actor_index = bc_actor_id::decompose_id(p_actor.get_id()).m_index;

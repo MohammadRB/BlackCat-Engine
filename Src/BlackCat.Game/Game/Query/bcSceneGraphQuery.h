@@ -11,6 +11,10 @@
 
 namespace black_cat::game
 {
+	/**
+	 * \brief Helper query class intended to be used inside other queries.
+	 * \n This query must not be persisted cause it uses bc_scene_graph_buffer which contains frame memory.
+	 */
 	class bc_scene_graph_query : public core::bc_query<bc_scene_query_context>
 	{
 		BC_QUERY(sgq)
@@ -27,10 +31,10 @@ namespace black_cat::game
 		bc_scene_graph_buffer get_scene_buffer() noexcept;
 			
 		bc_scene_graph_query& with(const bc_camera_frustum& p_frustum);
-
+		
 		template<class TComponent>
 		bc_scene_graph_query& only() noexcept;
-
+		
 		void execute(const bc_scene_query_context& p_context) noexcept override;
 		
 	private:
@@ -104,12 +108,9 @@ namespace black_cat::game
 		{
 			m_scene_buffer = m_execute_with_component(p_context, m_frustum);
 		}
-		else
+		else if (m_frustum.has_value())
 		{
-			if (m_frustum.has_value())
-			{
-				m_scene_buffer = p_context.m_scene->get_scene_graph().get_actors(*m_frustum);
-			}
+			m_scene_buffer = p_context.m_scene->get_scene_graph().get_actors(*m_frustum);
 		}
 	}
 }

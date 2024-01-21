@@ -22,7 +22,7 @@ namespace black_cat::game
 	public:
 		_bc_decal_instance_entry(bc_decal_instance p_instance)
 			: bc_decal_instance(std::move(p_instance)),
-			  m_iterator(nullptr, nullptr)
+			m_iterator(nullptr, nullptr)
 		{
 		}
 
@@ -60,13 +60,13 @@ namespace black_cat::game
 		 * \return
 		 */
 		bc_decal_instance* create_decal(core::bc_string_view p_name,
-		                                const core::bc_vector3f& p_local_position,
-		                                const core::bc_matrix3f& p_local_rotation);
+			const core::bc_vector3f& p_local_position,
+			const core::bc_matrix3f& p_local_rotation);
 
 		bc_decal_instance* create_decal(core::bc_string_view p_name,
-		                                const core::bc_vector3f& p_local_position,
-		                                const core::bc_matrix3f& p_local_rotation,
-		                                bc_actor_render_group p_render_group);
+			const core::bc_vector3f& p_local_position,
+			const core::bc_matrix3f& p_local_rotation,
+			bc_actor_render_group p_render_group);
 
 		/**
 		 * \brief Create a decal with a strong reference to owning actor.
@@ -80,17 +80,17 @@ namespace black_cat::game
 		 * \return
 		 */
 		bc_decal_instance_ptr create_decal(core::bc_string_view p_name,
-		                                   const bc_actor& p_actor,
-		                                   const core::bc_vector3f& p_local_position,
-		                                   const core::bc_matrix3f& p_local_rotation,
-		                                   bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index);
+			const bc_actor& p_actor,
+			const core::bc_vector3f& p_local_position,
+			const core::bc_matrix3f& p_local_rotation,
+			bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index);
 
 		bc_decal_instance_ptr create_decal(core::bc_string_view p_name,
-		                                   const bc_actor& p_actor,
-		                                   const core::bc_vector3f& p_local_position,
-		                                   const core::bc_matrix3f& p_local_rotation,
-		                                   bc_actor_render_group p_render_group,
-		                                   bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index);
+			const bc_actor& p_actor,
+			const core::bc_vector3f& p_local_position,
+			const core::bc_matrix3f& p_local_rotation,
+			bc_actor_render_group p_render_group,
+			bc_mesh_node::node_index_t p_attached_node_index = bc_mesh_node::s_invalid_index);
 
 		void update_decal_lifespans(const platform::bc_clock::update_param& p_clock) noexcept;
 

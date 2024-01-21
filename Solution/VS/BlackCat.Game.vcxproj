@@ -201,6 +201,7 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponent.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentContainer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentContainer.hpp" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentEventAdapter.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentManager.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorComponentManagerContainer.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Object\Scene\ActorComponent\bcActorEvent.h" />
@@ -261,12 +262,13 @@ xcopy ..\..\Src\BlackCat.Game\Game\*.h ..\..\BC_SDK\Include\Game\ /E /Y</Command
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraSceneLightQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraSceneLightSharedQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraSceneSharedQuery.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneActorQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneParticleEmitterQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcQueryContext.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcMainCameraRenderStateQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneDecalQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneGraphQuery.h" />
-    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneGraphRenderStateQuery.h" />
+    <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneRenderStateQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneLightQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneQuery.h" />
     <ClInclude Include="..\..\Src\BlackCat.Game\Game\Query\bcSceneWindQuery.h" />

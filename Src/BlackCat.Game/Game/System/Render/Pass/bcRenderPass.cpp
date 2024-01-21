@@ -3,19 +3,20 @@
 #include "Game/GamePCH.h"
 #include "Core/Messaging/Event/bcEventManager.h"
 #include "Game/System/Render/Pass/bcRenderPass.h"
+#include "Game/System/Render/bcRenderSystem.h"
 
 namespace black_cat::game
 {
-	bc_render_pass_reset_context bc_render_pass_reset_context::create_default_instance(
-		bc_render_system& p_render_system,
-		graphic::bc_device& p_device,
-		graphic::bc_device_swap_buffer& p_device_swap_buffer)
+	bc_render_pass_reset_context bc_render_pass_reset_context::create_default_instance(bc_render_system& p_render_system)
 	{
+		auto& l_device = p_render_system.get_device();
+		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
+
 		return bc_render_pass_reset_context
 		(
 			p_render_system,
-			p_device,
-			p_device_swap_buffer,
+			l_device,
+			l_device_swap_buffer,
 			graphic::bc_device_parameters
 			(
 				0,
@@ -25,10 +26,10 @@ namespace black_cat::game
 			),
 			graphic::bc_device_parameters
 			(
-				p_device_swap_buffer.get_back_buffer_width(),
-				p_device_swap_buffer.get_back_buffer_height(),
-				p_device_swap_buffer.get_back_buffer_format(),
-				p_device_swap_buffer.get_back_buffer_texture().get_sample_count()
+				l_device_swap_buffer.get_back_buffer_width(),
+				l_device_swap_buffer.get_back_buffer_height(),
+				l_device_swap_buffer.get_back_buffer_format(),
+				l_device_swap_buffer.get_back_buffer_texture().get_sample_count()
 			)
 		);
 	}

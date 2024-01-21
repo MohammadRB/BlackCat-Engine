@@ -56,6 +56,7 @@
 #include "Game/Object/Scene/Component/bcLightComponent.h"
 #include "Game/Object/Scene/Component/bcWindComponent.h"
 #include "Game/Object/Scene/Component/bcFogComponent.h"
+#include "Game/Object/Scene/Component/bcWaterComponent.h"
 #include "Game/Object/Scene/Component/bcParticleEmitterComponent.h"
 #include "Game/Object/Scene/Component/bcDecalComponent.h"
 #include "Game/Object/Scene/Component/bcDecalResolverComponent.h"
@@ -197,6 +198,7 @@ namespace black_cat
 			game::bc_component_register<game::bc_light_component>("light"),
 			game::bc_component_register<game::bc_wind_component>("wind"),
 			game::bc_component_register<game::bc_fog_component>("fog"),
+			game::bc_component_register<game::bc_water_component>("water"),
 			game::bc_component_register<game::bc_particle_emitter_component>("particle_emitter"),
 			game::bc_component_register<game::bc_decal_component>("decal"),
 			game::bc_component_register<game::bc_weapon_component>("weapon"),

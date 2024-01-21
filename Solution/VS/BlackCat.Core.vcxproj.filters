@@ -351,6 +351,9 @@
     <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcOptional.h">
       <Filter>Core\Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\BlackCat.Core\Core\Utility\bcDelay.h">
+      <Filter>Core\Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\BlackCat.Core\Core\Concurrency\bcThreadManager.cpp">

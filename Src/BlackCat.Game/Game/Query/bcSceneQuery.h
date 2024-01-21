@@ -32,7 +32,7 @@ namespace black_cat::game
 		 * \param p_callable
 		 */
 		template<typename TCallable>
-		bc_scene_query& with_callable(TCallable p_callable) noexcept;
+		bc_scene_query& with_callback(TCallable p_callable) noexcept;
 
 		core::bc_any& get_result() noexcept;
 
@@ -63,7 +63,7 @@ namespace black_cat::game
 	}
 
 	template< typename TCallable >
-	bc_scene_query& bc_scene_query::with_callable(TCallable p_callable) noexcept
+	bc_scene_query& bc_scene_query::with_callback(TCallable p_callable) noexcept
 	{
 		m_delegate.bind(p_callable);
 		return *this;

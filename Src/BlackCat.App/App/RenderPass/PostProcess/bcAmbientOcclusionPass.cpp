@@ -77,7 +77,6 @@ namespace black_cat
 	void bc_ambient_occlusion_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
-		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 
 		const auto l_point_sampler_config = graphic::bc_graphic_resource_builder()
 			.as_resource()
@@ -121,7 +120,7 @@ namespace black_cat
 		m_blur_params_buffer = l_device.create_buffer(l_blur_params_buffer_config, nullptr);
 		m_blur_params_buffer->set_debug_name("ao_blur_params_cbuffer");
 
-		after_reset(game::bc_render_pass_reset_context::create_default_instance(p_render_system, l_device, l_device_swap_buffer));
+		after_reset(game::bc_render_pass_reset_context::create_default_instance(p_render_system));
 	}
 
 	void bc_ambient_occlusion_pass::update(const game::bc_render_pass_update_context& p_context)

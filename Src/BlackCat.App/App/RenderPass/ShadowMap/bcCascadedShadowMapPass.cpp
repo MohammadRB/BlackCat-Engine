@@ -56,7 +56,7 @@ namespace black_cat
 		
 		if (m_scene_query_results[p_context.m_cascade_absolute_index].is_executed())
 		{
-			auto& l_scene_query_result = m_scene_query_results[p_context.m_cascade_absolute_index].get<game::bc_scene_graph_render_state_query>();
+			auto& l_scene_query_result = m_scene_query_results[p_context.m_cascade_absolute_index].get<game::bc_scene_render_state_query>();
 			m_scene_render_states[p_context.m_cascade_absolute_index] = l_scene_query_result.get_render_state_buffer();
 		}
 
@@ -64,7 +64,7 @@ namespace black_cat
 		{
 			m_scene_queries[p_context.m_cascade_absolute_index] = std::move
 			(
-				game::bc_scene_graph_render_state_query
+				game::bc_scene_render_state_query
 				(
 					game::bc_actor_render_camera(p_context.m_update_camera, p_context.m_update_cascade_camera),
 					p_context.m_frame_renderer.create_buffer()

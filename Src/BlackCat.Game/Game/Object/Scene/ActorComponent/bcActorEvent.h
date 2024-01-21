@@ -8,8 +8,8 @@
 namespace black_cat::game
 {
 	/**
-		* \brief Base class for actor events
-		*/
+	* \brief Base class for actor events
+	*/
 	class BC_GAME_DLL bc_actor_event : public core::bc_event
 	{
 	public:

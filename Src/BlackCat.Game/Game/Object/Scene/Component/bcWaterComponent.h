@@ -9,7 +9,7 @@
 
 namespace black_cat::game
 {
-	class BC_GAME_DLL bc_water_component : public bc_base_actor_component
+	class BC_GAME_DLL bc_water_component : public bc_base_actor_component<bc_water_component>
 	{
 		BC_COMPONENT(wtr, false, false)
 

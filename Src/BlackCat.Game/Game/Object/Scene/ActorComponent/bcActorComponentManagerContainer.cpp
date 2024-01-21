@@ -239,16 +239,19 @@ namespace black_cat::game
 				m_write_event_pool = (m_write_event_pool + 1) % 2;
 				l_write_event_pool_size = m_event_pools[m_write_event_pool].size();
 
-				auto* l_events = actor_get_events(l_actor);
+				const auto* l_events = actor_get_events(l_actor);
 
 				for (bci_actor_component* l_component : l_components)
 				{
-					bc_actor_event* l_current_event = l_events;
+					const bc_actor_event* l_current_event = l_events;
 					bcUINT32 l_event_index = 0;
 
 					while (l_current_event)
 					{
-						l_component->handle_event(bc_actor_component_event_context(p_clock, *m_query_manager, *m_game_system, l_actor, *l_current_event, l_event_index));
+						l_component->handle_event
+						(
+							bc_actor_component_event_context(p_clock, *m_query_manager, *m_game_system, l_actor, *l_current_event, l_event_index)
+						);
 						l_current_event = l_current_event->get_next();
 						l_event_index++;
 					}

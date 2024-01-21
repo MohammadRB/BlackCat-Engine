@@ -81,7 +81,6 @@ namespace black_cat
 	void bc_volumetric_fog_pass::initialize_resources(game::bc_render_system& p_render_system)
 	{
 		auto& l_device = p_render_system.get_device();
-		auto& l_device_swap_buffer = p_render_system.get_device_swap_buffer();
 
 		core::bc_array<core::bc_vector3f, 8> l_cube_vertices
 		{
@@ -154,7 +153,7 @@ namespace black_cat
 
 		m_point_sampler = l_device.create_sampler_state(l_point_sampler_config);
 
-		after_reset(game::bc_render_pass_reset_context::create_default_instance(p_render_system, l_device, l_device_swap_buffer));
+		after_reset(game::bc_render_pass_reset_context::create_default_instance(p_render_system));
 	}
 
 	void bc_volumetric_fog_pass::update(const game::bc_render_pass_update_context& p_context)
@@ -170,16 +169,14 @@ namespace black_cat
 		}
 
 		m_last_query_execution_elapsed += p_context.m_clock.m_elapsed;
-
 		if (m_last_query_execution_elapsed < s_query_execution_delay_ms)
 		{
 			return;
 		}
-
 		m_last_query_execution_elapsed = 0;
 
 		auto l_query = game::bc_scene_query();
-		l_query.with_callable
+		l_query.with_callback
 		(
 			[](const game::bc_scene_query_context& p_context)
 			{

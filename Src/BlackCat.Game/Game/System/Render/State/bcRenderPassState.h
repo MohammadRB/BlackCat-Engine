@@ -34,13 +34,9 @@ namespace black_cat::game
 	 * \brief Non-mutable object that represent whole configuration that is needed for a render pass.
 	 * \n Shader parameters will be mapped to device registers as they appear in their array
 	 */
-	class BC_GAME_DLL bc_render_pass_state
-			: public core::bc_ref_count,
-			  platform::bc_no_copy
+	class BC_GAME_DLL bc_render_pass_state : public core::bc_ref_count, platform::bc_no_copy
 	{
 	public:
-		template< class T, class TDeleter >
-		friend class core::bc_ref_count_handle;
 		friend class bc_render_system;
 		friend class bc_render_thread;
 
@@ -111,5 +107,5 @@ namespace black_cat::game
 		bc_render_pass_state_constant_buffer_array m_shader_cbuffers;
 	};
 
-	using bc_render_pass_state_ptr = core::bc_ref_count_ptr< bc_render_pass_state, _bc_render_pass_state_handle_deleter >;
+	using bc_render_pass_state_ptr = core::bc_ref_count_ptr<bc_render_pass_state, _bc_render_pass_state_handle_deleter>;
 }

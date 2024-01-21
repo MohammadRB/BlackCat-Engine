@@ -8,7 +8,7 @@
 #include "GraphicImp/Device/bcDevicePipeline.h"
 #include "GraphicImp/Resource/State/bcSamplerState.h"
 #include "Game/System/Render/State/bcRenderPassState.h"
-#include "Game/Query/bcSceneGraphRenderStateQuery.h"
+#include "..\..\..\..\BlackCat.Game\Game\Query\bcSceneRenderStateQuery.h"
 #include "App/RenderPass/ShadowMap/bcBaseCascadedShadowMapPass.h"
 #include "App/bcExport.h"
 
@@ -44,8 +44,8 @@ namespace black_cat
 		graphic::bc_device_pipeline_state_ref m_trunk_pipeline_state;
 		graphic::bc_sampler_state_ref m_sampler_state;
 
-		core::bc_deque<game::bc_scene_graph_render_state_query> m_leaf_queries;
-		core::bc_deque<game::bc_scene_graph_render_state_query> m_trunk_queries;
+		core::bc_deque<game::bc_scene_render_state_query> m_leaf_queries;
+		core::bc_deque<game::bc_scene_render_state_query> m_trunk_queries;
 		core::bc_vector<core::bc_query_result> m_leaf_query_results;
 		core::bc_vector<core::bc_query_result> m_trunk_query_results;
 		core::bc_vector<game::bc_render_state_buffer> m_leaf_render_states;

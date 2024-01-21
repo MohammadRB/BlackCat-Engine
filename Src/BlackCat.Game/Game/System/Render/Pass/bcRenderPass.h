@@ -111,9 +111,7 @@ namespace black_cat
 			const graphic::bc_device_parameters& m_old_parameters;
 			const graphic::bc_device_parameters& m_new_parameters;
 
-			static bc_render_pass_reset_context create_default_instance(bc_render_system& p_render_system,
-				graphic::bc_device& p_device,
-				graphic::bc_device_swap_buffer& p_device_swap_buffer);
+			static bc_render_pass_reset_context create_default_instance(bc_render_system& p_render_system);
 		};
 
 		struct bc_render_pass_config_change_context

@@ -12,10 +12,10 @@
 namespace black_cat::core
 {
 	/**
-		 * \brief Store global counter and watch values. \n
-		 * At the end of every frame values become available for read. \n
-		 * <b>ThreadSafe</b>
-		 */
+	 * \brief Store global counter and watch values. \n
+	 * At the end of every frame values become available for read. \n
+	 * <b>ThreadSafe</b>
+	 */
 	class BC_CORE_DLL bc_counter_value_manager : public bci_service
 	{
 		BC_SERVICE(cv_mng)
@@ -56,10 +56,10 @@ namespace black_cat::core
 		void add_counter(const bcCHAR* p_name, bc_wstring p_value);
 			
 		/**
-			 * \brief Add float counter with %.1f format
-			 * \param p_name 
-			 * \param p_value 
-			 */
+		 * \brief Add float counter with %.1f format
+		 * \param p_name 
+		 * \param p_value 
+		 */
 		void add_counter(const bcCHAR* p_name, bcFLOAT p_value);
 
 		const_iterator find(const bcCHAR* p_name) const noexcept;

@@ -7,6 +7,7 @@
 #include "Core/Utility/bcEnumOperand.h"
 #include "Core/Utility/bcTemplateMetaType.h"
 #include "Core/Utility/bcRandom.h"
+#include "Core/Utility/bcDelay.h"
 #include "Core/bcExport.h"
 
 namespace black_cat
